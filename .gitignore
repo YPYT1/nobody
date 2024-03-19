@@ -47,3 +47,4 @@ config
 items
 units
 /game/scripts/npc/herolist.txt
+abilities
