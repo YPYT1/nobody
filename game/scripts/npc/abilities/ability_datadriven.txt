@@ -1,0 +1,59 @@
+"DOTAAbilities" {
+
+	"custom_datadriven_units"
+	{
+		"BaseClass"	"ability_datadriven"
+		"AbilityTextureName"	"ability_capture"
+		"AbilityBehavior"	"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+
+		"AbilityValues" {
+
+		}
+
+		"OnUpgrade"
+		{
+			"RunScript"
+			{
+				"ScriptFile"	"abilities/datadriven/custom_datadriven_units"
+				"Function"	"OnUpgrade"
+			}
+		}
+		
+		"Modifiers"
+		{
+
+			"modifier_custom_datadriven_units"
+			{
+				"IsHidden" "1"
+				"Passive"	"1"
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_units"
+						"Function"	"OnCreated"
+					}
+				}
+
+                "OnDeath"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_units"
+						"Function"	"OnDeath"
+					}
+				}
+
+				"OnAbilityExecuted"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_units"
+						"Function"	"OnAbilityExecuted"
+					}
+				}
+			}
+		}
+	}
+}

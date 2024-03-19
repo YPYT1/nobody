@@ -1,0 +1,81 @@
+#HeroDemoAttribute {
+    width: 100%;
+    flow-children: down;
+    background-color: #000000;
+
+    .AttributeRowList {
+        width: 100%;
+        height: 240px;
+        flow-children: down;
+        overflow: clip scroll;
+    }
+    .AttributeRows {
+        width: 100%;
+        // border: 1px solid #ffffff;
+        background-color: #111111;
+        margin-top: 1px;
+        margin-bottom: 1px;
+        flow-children: right;
+        height: 36px;
+
+        .Attribute {
+            vertical-align: middle;
+        }
+
+        .AttrName {
+            width: 80px;
+        }
+
+        .AttrTotal {
+            margin-left: 2px;
+            width: 100px;
+            
+        }
+
+        .AttrName,
+        .AttrTotal {
+            // background-color: #333333;
+            // height: 100%;
+            // line-height: 32px;
+            vertical-align: middle;
+        }
+
+        #AttrListDrop {
+            width: 160px;
+        }
+
+        #RowAttrTextEntry {
+            width: 80px;
+        }
+
+        .AttributeCols {
+            width: 120px;
+            background-color: #333333;
+            margin-left: 2px;
+            flow-children: right;
+
+            .Value {
+                color: #ffffff;
+            }
+
+            .Percent {
+                color: #00ff00;
+            }
+        }
+
+        .AboutTip {
+            margin-left: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: #666666;
+            vertical-align: middle;
+
+            Label {
+                font-weight: bold;
+                color:#000000;
+                align: center center;
+            }
+        }
+    }
+}

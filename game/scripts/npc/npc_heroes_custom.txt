@@ -1,0 +1,121 @@
+
+// npc_heroes_custom.xlsx npc_heroes_custom
+"XLSXContent"
+{
+	"npc_dota_hero_sniper" {
+		"override_hero" "npc_dota_hero_sniper"
+		"hero_id" "35"
+		"Enable" "1"
+		"sort" "7"
+		"Ability1" ""
+		"Ability2" ""
+		"Ability3" ""
+		"Ability4" ""
+		"AbilityValues" {
+		}
+		"AttributeValues" {
+			"HealthPoints" {
+"Base" "100"
+"PreLvBase" "10"
+}
+			"HealthRegen" {
+"Base" "1"
+}
+			"ManaPoints" {
+"Base" "100"
+"PreLvBase" "10"
+}
+			"ManaRegen" {
+"Base" "1"
+}
+			"PickItemRadius" {
+"Base" "150"
+}
+			"AttackDamage" {
+"Base" "50"
+"PreLvBase" "2"
+}
+			"AttackRange" {
+"Base" "600"
+"PreLvBase" "1"
+}
+			"AttackRate" {
+"Base" "1.7"
+"PreLvBase" "-0.01"
+}
+			"AttackSpeed" {
+"Base" "0"
+"PreLvBase" "1"
+}
+			"MoveSpeed" {
+"Base" "300"
+"PreLvBase" "5"
+}
+		}
+		"AttributePrimary" "DOTA_ATTRIBUTE_AGILITY"
+		"AttributeBaseStrength" "0"
+		"AttributeStrengthGain" "0"
+		"AttributeBaseAgility" "0"
+		"AttributeAgilityGain" "0"
+		"AttributeBaseIntelligence" "0"
+		"AttributeIntelligenceGain" "0"
+		"ArmorPhysical" "0"
+		"StatusHealth" "10"
+		"StatusHealthRegen" "0"
+		"StatusMana" "0"
+		"StatusManaRegen" "0"
+		"AttackDamageMin" "0"
+		"AttackDamageMax" "0"
+		"AttackRate" "1.4000"
+		"AttackRange" "100"
+		"MagicalResistance" "0"
+		"AbilityLayout" "6"
+		"Creature" {
+			"AttachWearables" {
+			}
+		}
+		"MovementSpeed" "300"
+		"AttackCapabilities" "DOTA_UNIT_CAP_RANGED_ATTACK"
+		"BoundsHullName" "DOTA_HULL_SIZE_SMALL"
+		"RingRadius" "60"
+		"ProjectileSpeed" "2000"
+		"AttackAnimationPoint" "0"
+		"VisionDaytimeRange" "1200"
+		"VisionNighttimeRange" "600"
+		"DisableWearables" "0"
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
