@@ -41,3 +41,9 @@ content/panorama/src/shared
 #ignore local test scripts
 scripts/.test
 .vscode
+materials
+/content/panorama/scripts/sync_keyvalues.js
+config
+items
+units
+/game/scripts/npc/herolist.txt

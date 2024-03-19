@@ -1,6 +1,6 @@
+#base "custom_datadriven.txt"
 #base "abilities/public.txt"
 #base "abilities/arms.txt"
-#base "abilities/ability_datadriven.txt"
 
 "DOTAAbilities"
 {
