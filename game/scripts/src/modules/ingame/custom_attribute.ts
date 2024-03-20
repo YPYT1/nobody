@@ -36,6 +36,7 @@ export class CustomAttribute {
         hUnit.custom_attribute_key_table = {};
         hUnit.custom_attribute_conversion = {};
         hUnit.last_attribute_update = 0;
+        hUnit.AbilityUpgrades = {};
         if (hHeroKvData) {
             for (let i = 0; i < 32; i++) {
                 let hAbility = hUnit.GetAbilityByIndex(i);
@@ -76,9 +77,15 @@ export class CustomAttribute {
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
-
+                
+                hUnit.AddAbility("public_null_1");
+                hUnit.AddAbility("public_null_2")
+                hUnit.AddAbility("public_null_3")
+                hUnit.AddAbility("public_null_4")
+                hUnit.AddAbility("public_null_5")
+                hUnit.AddAbility("public_null_6")
                 hUnit.AddAbility("public_attribute").SetLevel(1);
-                hUnit.AddAbility("public_arms").SetLevel(1);
+                // hUnit.AddAbility("public_arms").SetLevel(1);
 
                 this.AttributeCalculate(hUnit, Object.keys(Attr_Table) as AttributeMainKey[]);
 
@@ -318,6 +325,10 @@ export class CustomAttribute {
     GetUnitTotalAttribute(attr_key: CustomAttributeKey[]) {
 
     }
+
+
+    // 修改SpecialValue
+    
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);

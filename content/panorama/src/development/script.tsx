@@ -3,7 +3,7 @@ import { render } from 'react-panorama-x';
 import { HeroPick } from './component/_hero_pick';
 import { AbilityPick } from './component/_ability_pick';
 import { ItemListPick } from './component/_items_list';
-import { HeroDemoAttribute } from './component/hero_demo_attribute';
+import { HeroEditor } from './component/hero_demo_attribute';
 
 let current_action = "";
 
@@ -42,10 +42,10 @@ const UnitCountsPanel = () => {
 
     const [Counts, setCounts] = useState(0);
 
-    const Update = useCallback(()=>{
+    const Update = useCallback(() => {
         let entity = Entities.GetAllEntitiesByClassname("npc_dota_creature");
         setCounts(entity.length)
-    },[])
+    }, [])
 
     useEffect(() => {
         const interval = setInterval(() => { Update(); }, 250);
@@ -137,12 +137,7 @@ export const HeroDemo = () => {
                             <Label text="变更技能" />
                         </Button>
                     </Panel>
-                    <Panel className="fc-tool-row">
-                        <Label className="fc-tool-row-title" text="属性操作" />
-                    </Panel>
-                    <Panel className="fc-tool-row">
-                        <HeroDemoAttribute />
-                    </Panel>
+                    <HeroEditor />
                 </Panel>
 
                 <Panel className="fc-tool-content">
@@ -158,12 +153,10 @@ export const HeroDemo = () => {
                         </Button>
                     </Panel>
                 </Panel>
-
-
             </Panel>
 
             <Panel id='DevelopmentPopups' className={`Popups ${PopupsViews}`} hittest={false}>
-                <HeroPick />
+                <HeroPick closedHandle={()=>setPopupsViews("None")}/>
                 <AbilityPick />
                 <ItemListPick />
             </Panel >
@@ -174,32 +167,7 @@ export const HeroDemo = () => {
     )
 }
 
-function ChangeCameraValue(value: number) {
-    GameUI.SetCameraDistance(value);
-    let pitchmin = 60;
-    if (value > 1500) {
-        pitchmin += Math.min(1, (value - 1400) / (2300 - 1400)) * 32;
-    }
-    GameUI.SetCameraPitchMax(pitchmin);
-}
 
-let camera_value = 1200;
-
-export const CameraSetting = () => {
-    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-        if (value == 6 && camera_value < 1400) {
-            camera_value += 10;
-        } else if (value == 5 && camera_value > 800) {
-            camera_value -= 10;
-        }
-        ChangeCameraValue(camera_value);
-        return false;
-    });
-
-    return (
-        <Panel id="CameraSetting" visible={false} />
-    );
-};
 
 export const App = () => {
 
@@ -209,7 +177,6 @@ export const App = () => {
                 Game.IsInToolsMode() &&
                 <>
                     <HeroDemo />
-                    <CameraSetting />
                 </>
             }
         </>

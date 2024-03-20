@@ -4,9 +4,9 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 @registerAbility()
 export class public_arms extends BaseAbility {
 
-    GetIntrinsicModifierName(): string {
-        return "modifier_public_arms"
-    }
+    // GetIntrinsicModifierName(): string {
+    //     return "modifier_public_arms"
+    // }
 }
 
 @registerModifier()
@@ -17,7 +17,6 @@ export class modifier_public_arms extends BaseModifier {
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.timer = 0;
-        print("StartIntervalThink")
         this.StartIntervalThink(0.03)
     }
 

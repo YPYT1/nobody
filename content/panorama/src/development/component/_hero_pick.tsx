@@ -7,13 +7,14 @@ const PickHeroHandler = (heroid: number) => {
     })
 }
 
-export const HeroPick = () => {
+export const HeroPick = ({ closedHandle }: { closedHandle: (a: string) => void }) => {
 
     return (
         <Panel id="HeroPick" className={`fc-heropick`}>
             <GenericPanel id="HeroPicker" type='DOTAUIHeroPicker' onload={(e) => {
                 $.RegisterEventHandler('DOTAUIHeroPickerHeroSelected', e, (heroid: number) => {
                     PickHeroHandler(heroid);
+                    closedHandle("None")
                 })
             }} />
         </Panel>

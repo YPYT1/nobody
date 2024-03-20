@@ -19,6 +19,14 @@ declare interface CGED {
         CreatedItem: { item_name: string, queryUnit: EntityIndex };
         ModiyAttribute: { unit: EntityIndex, attr_object: CustomAttributeTableType }
     }
+
+    BasicRules: {
+        /** 英雄移动 */
+        MoveState: {
+            Direction: CMoveDirection,
+            State: 0 | 1,
+        }
+    }
 }
 
 

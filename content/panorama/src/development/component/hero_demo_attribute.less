@@ -1,3 +1,20 @@
+#HeroEditor {
+
+    height: 280px;
+
+    &.group_1 #HeroEditorAbility,
+    &.group_0 #HeroDemoAttribute {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    #HeroEditorAbility,
+    #HeroDemoAttribute {
+        opacity: 0;
+        visibility: collapse;
+    }
+}
+
 #HeroDemoAttribute {
     width: 100%;
     flow-children: down;
@@ -9,6 +26,7 @@
         flow-children: down;
         overflow: clip scroll;
     }
+
     .AttributeRows {
         width: 100%;
         // border: 1px solid #ffffff;
@@ -29,7 +47,7 @@
         .AttrTotal {
             margin-left: 2px;
             width: 100px;
-            
+
         }
 
         .AttrName,
@@ -73,9 +91,69 @@
 
             Label {
                 font-weight: bold;
-                color:#000000;
+                color: #000000;
                 align: center center;
             }
         }
     }
+}
+
+#HeroEditorAbility {
+    width: 100%;
+    height: 100%;
+    flow-children: right;
+
+    #AbilityEditorList {
+        margin-left: 4px;
+        width: 66px;
+        height: 100%;
+        flow-children: down;
+
+        .AbilityButtonRow {
+            width: 64px;
+            height: 64px;
+            border: 1px solid #ffffff;
+            margin: 2px;
+        }
+    }
+
+    #AbilityKeyValue {
+        margin-left: 8px;
+        width: 100%;
+        height: 100%;
+        background-color: #333333;
+        flow-children: down;
+    }
+
+    #AbilityKeyValueEditor {
+        flow-children: down;
+
+        .KeyValueTable {
+            flow-children: down;
+        }
+
+        .AbilityKvRowEditor {
+            // width: 100%;
+            margin-top: 4px;
+            border-bottom: 1px solid #666666;
+            .KvKey {
+                width: 160px;
+            }
+
+            .KvValue {
+                width: 90px;
+            }
+
+            TextEntry {
+                width: 120px;
+            }
+
+            Label,
+            TextEntry,
+            Panel {
+                vertical-align: middle;
+            }
+        }
+    }
+    // background-color: #ffffff;
 }

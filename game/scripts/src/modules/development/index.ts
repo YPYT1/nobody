@@ -165,6 +165,10 @@ export class Development extends UIEventRegisterClass {
             }, 0.25)
         }
 
+        if (cmd == "-hpbar") {
+            SendToConsole("dota_hud_healthbars 1")
+        }
+
         if (cmd == "-fuhuo") {
             let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
             hHeroUnit.SetRespawnPosition(hHeroUnit.GetAbsOrigin());

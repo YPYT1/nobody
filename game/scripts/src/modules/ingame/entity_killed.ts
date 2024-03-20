@@ -17,16 +17,25 @@ export class EntityKilled {
             let vAttacker = hAttacker.GetAbsOrigin();
             let vDir = (vect - vAttacker as Vector).Normalized()
             vDir.z = 0;
+
+
+            // hKilled.text
+            hKilled.SetSingleMeshGroup("textures/dev/ggx_integrate_brdf_lut_schlick.vtex")
             hKilled.SetContextThink("death_play", () => {
-                let vKilled = hKilled.GetAbsOrigin()
-                let distance = (vKilled - vect as Vector).Length2D();
-                if (distance < 50) {
-                    let vect = vKilled + vDir * 20 as Vector;
-                    hKilled.SetAbsOrigin(vect)
-                    return 0.03
-                }
+                hKilled.RemoveSelf()
                 return null
             }, 0)
+
+            // hKilled.SetContextThink("death_play", () => {
+            //     let vKilled = hKilled.GetAbsOrigin()
+            //     let distance = (vKilled - vect as Vector).Length2D();
+            //     if (distance < 50) {
+            //         let vect = vKilled + vDir * 20 as Vector;
+            //         hKilled.SetAbsOrigin(vect)
+            //         return 0.03
+            //     }
+            //     return null
+            // }, 0)
         }
     }
 }

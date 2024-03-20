@@ -1,27 +1,13 @@
 import { reloadable } from "../../utils/tstl-utils";
-
-
-const test_rules = {
-    "A": {
-        "A_1": { "A_1_1": {} }
-    },
-    "B": {
-        "B_1": { "B_1_1": {} },
-        "B_2": { "B_2_1": {} },
-    },
-    "C": {
-        "C_1": { "C_1_1": {} },
-    },
-    "D": {
-        "D_1": { "D_1_1": {} }
-    }
-}
-
-
+import { UIEventRegisterClass } from "../class_extends/ui_event_register_class";
 
 /** 游戏基础规则 */
 @reloadable
-export class BasicRules {
+export class BasicRules extends UIEventRegisterClass {
+
+    constructor() {
+        super("BasicRules");
+    }
 
     /**
      * 掉落经验,
@@ -41,5 +27,14 @@ export class BasicRules {
             // isStun: 1,
         })
         exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_exp", {})
+    }
+
+    MoveState(player_id: PlayerID, params: CGED["BasicRules"]["MoveState"]) {
+        const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let Direction = params.Direction;
+        let State = params.State;
+        hHero.AddNewModifier(hHero, null, "modifier_basic_move", {
+            [Direction]: State
+        })
     }
 }

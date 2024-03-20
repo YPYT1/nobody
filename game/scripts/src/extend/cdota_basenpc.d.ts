@@ -10,4 +10,5 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     /** 属性转换 */
     custom_attribute_conversion: CustomAttributeConversionType;
 
+    AbilityUpgrades:AbilitySpecialValueNT;
 }

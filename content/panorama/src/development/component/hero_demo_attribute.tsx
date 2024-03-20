@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGameEvent, useNetTableKey, useNetTableValues } from 'react-panorama-x';
 import { HideCustomTooltip, ShowCustomTextTooltip } from '../../utils/custom_tooltip';
-
+import { default as NpcAbilitiesCustom } from "./../../json/npc_abilities_custom.json";
 import * as attr_table from "./../../json/config/game/attr_table.json"
 
 
@@ -25,25 +25,6 @@ const AttributeRowsHeader = () => {
                 className='AttrName' text={"属性名"}
             />
             <Label className='AttrTotal' text={"总值"} />
-            {/* <Panel className='AttributeCols'>
-
-                <Label className='Value' text={"白字"} />
-                <Label className='Percent' text={`白字加成`} />
-            </Panel>
-
-            <Panel className='AttributeCols'>
-                <Label className='Value' text={"绿字"} />
-                <Label className='Percent' text={`绿字加成`} />
-            </Panel>
-
-            <Panel className='AttributeCols'>
-                <Label className='Value' text={"固定值"} />
-            </Panel>
-
-            <Panel className='AttributeCols'>
-                <Label className='Percent' text={`总百分比`} />
-            </Panel> */}
-
         </Panel>
     )
 }
@@ -147,28 +128,11 @@ const AttributeRows = (
             >
                 <Label text={"!"} />
             </Panel>
-            {/* <Panel className='AttributeCols'>
-                <Label className='Value' text={attr_data?.Base} />
-                <Label className='Percent' text={`(${attr_data?.BasePercent}%)`} />
-            </Panel>
-
-            <Panel className='AttributeCols'>
-                <Label className='Value' text={attr_data?.Bonus} />
-                <Label className='Percent' text={`(${attr_data?.BonusPercent}%)`} />
-            </Panel>
-            <Panel className='AttributeCols'>
-                <Label className='Value' text={attr_data?.Fixed} />
-            </Panel>
-
-            <Panel className='AttributeCols'>
-                <Label className='Percent' text={`${attr_data?.TotalPercent}%`} />
-            </Panel> */}
-
         </Panel>
     )
 }
 
-export const HeroDemoAttribute = () => {
+const HeroDemoAttribute = () => {
 
     const [AttributeTable, setAttributeTable] = useState<CustomAttributeTableType>({});
     const [AttributeValue, setAttributeValue] = useState<CustomAttributeValueType>({});
@@ -210,15 +174,149 @@ export const HeroDemoAttribute = () => {
                     <AttributeRows attr_key="ManaPoints" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="ManaRegen" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="PickItemRadius" attr_value={AttributeValue} attr_table={AttributeTable} />
-                    
                 </Panel>
+            </Panel>
+        </>
+    )
+}
 
-                {/* <AttributeRows attr_name='力量' attr_key='Strength' attr_value={AttributeValue} attr_table={AttributeTable} />
-                <AttributeRows attr_name='敏捷' attr_key='Agility' attr_value={AttributeValue} attr_table={AttributeTable} />
-                <AttributeRows attr_name='智力' attr_key='Intellect' attr_value={AttributeValue} attr_table={AttributeTable} /> */}
+
+const AbilityButtonRow = ({ entity, Btnhandle }: { entity: AbilityEntityIndex, Btnhandle: (e: AbilityEntityIndex) => void }) => {
+
+    return (
+        <Button className='AbilityButtonRow' onactivate={() => { Btnhandle(entity) }}>
+            <DOTAAbilityImage contextEntityIndex={entity} />
+        </Button>
+    )
+}
+
+const AbilityKvRowEditor = ({ entity, kv_key, kv_value }: { entity?: AbilityEntityIndex; kv_key: string; kv_value: number }) => {
+
+    const [value, setValue] = useState(entity ? Abilities.GetSpecialValueFor(entity, kv_key) : 0)
+
+    return (
+        <Panel className='AbilityKvRowEditor flow-right'>
+            <Label className='KvKey' text={kv_key} />
+            <Label className='KvValue' text={kv_value} />
+            <TextEntry
+                className='TextEntry'
+                textmode="numeric"
+                text={`${kv_value}`}
+                ontextentrychange={(e) => {
+                    let value = parseInt(e.text);
+                    setValue(value)
+                }}
+            />
+            <Panel style={{ width: "120px" }}>
+                <Button
+                    className='fc-tool-button'
+                    onactivate={() => {
+                        const queryUnit = Players.GetLocalPlayerPortraitUnit();
+                        $.Msg(["key", kv_key, "value", value, "ability", entity])
+                    }}
+                >
+                    <Label text={"修改"} />
+                </Button>
             </Panel>
 
-        </>
+        </Panel>
+    )
+}
+const AbilityKeyValueEditor = ({ ability_entity }: { ability_entity?: AbilityEntityIndex }) => {
+    let ability_name = ""
+    let ability_keyvalue: { [key: string]: number } = {}
+    $.Msg(["ability_entity", ability_entity])
+    if (ability_entity) {
+        ability_name = Abilities.GetAbilityName(ability_entity);
+        let kv_data = NpcAbilitiesCustom[ability_name as keyof typeof NpcAbilitiesCustom];
+        if (kv_data) {
+            ability_keyvalue = kv_data.AbilityValues as { [key: string]: number };
+        }
+    } else {
+
+    }
+
+
+    return useMemo(() => (
+        <Panel id='AbilityKeyValueEditor'>
+            <Label text={ability_name} />
+            <Panel className='KeyValueTable'>
+                {
+                    Object.entries(ability_keyvalue).map((v, k) => {
+                        return <AbilityKvRowEditor key={k} kv_key={v[0]} kv_value={v[1]} entity={ability_entity} />
+                    })
+                }
+            </Panel>
+        </Panel>
+    ), [ability_entity])
+}
+
+const HeroEditorAbility = () => {
+
+    const [QueryUnit, setQueryUnit] = useState(Players.GetLocalPlayerPortraitUnit())
+    const [AbilityEnti, setAbilityEnti] = useState<AbilityEntityIndex>()
+    // const [AbilityEnti, setAbilityEnti] = useState(-1)
+
+    const UpdateLocalPlayer = useCallback(() => {
+        setQueryUnit(Players.GetLocalPlayerPortraitUnit())
+    }, [])
+
+    const setAbilityHandle = useCallback((e: AbilityEntityIndex) => {
+        setAbilityEnti(e)
+    }, [])
+
+    useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
+    useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);
+
+    // UpdateLocalPlayer();
+
+    return (
+        <Panel id="HeroEditorAbility">
+            <Panel id='AbilityEditorList'>
+                {
+                    Array(4).fill(0).map((v, k) => {
+                        let ability_entity = Entities.GetAbility(QueryUnit, k)
+                        return <AbilityButtonRow
+                            key={k}
+                            entity={ability_entity}
+                            Btnhandle={setAbilityHandle}
+                        />
+                    })
+                }
+            </Panel>
+            <Panel id='AbilityKeyValue'>
+                <AbilityKeyValueEditor ability_entity={AbilityEnti} />
+            </Panel>
+        </Panel>
 
     )
 }
+
+
+export const HeroEditor = () => {
+
+    const [ToolRadioGroup, setToolRadioGroup] = useState(0);
+
+    return (
+        <>
+            <Panel className="fc-tool-row">
+                <RadioButton
+                    className='fc-tool-button'
+                    group='tool_radio_group'
+                    selected={true}
+                    onactivate={() => { setToolRadioGroup(0) }}
+                >
+                    <Label text="属性操作" />
+                </RadioButton>
+                <RadioButton className='fc-tool-button' group='tool_radio_group' onactivate={() => { setToolRadioGroup(1) }}>
+                    <Label text="技能KV调整" />
+                </RadioButton>
+            </Panel>
+            <Panel id='HeroEditor' className={"fc-tool-row group_" + ToolRadioGroup}>
+                <HeroDemoAttribute />
+                <HeroEditorAbility />
+            </Panel>
+        </>
+    )
+
+} 

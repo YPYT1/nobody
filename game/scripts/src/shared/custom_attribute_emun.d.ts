@@ -77,3 +77,18 @@ declare type CustomAttributeConversionType = {
         }
     }
 }
+
+declare interface AbilitySpecialValueNT {
+    [ability:string]:AbilitySpecialValueProps
+}
+
+declare interface AbilitySpecialValueProps {
+    [special_name: string]: {
+        /** 加算 */
+        add_value: number;
+        /** 乘算 */
+        mul_value: number;
+        /** 缓存值 */
+        cache_value: number;
+    };
+}

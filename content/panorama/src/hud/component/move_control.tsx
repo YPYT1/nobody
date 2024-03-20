@@ -38,44 +38,166 @@ const ke = {
     key_F12: "F12"
 };
 
+let WASD_down_state = {
+    "w": false,
+    "a": false,
+    "s": false,
+    "d": false,
+}
+
+let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+
+function OnInitMoveHotkey() {
+    SetHotKey("W", OnKey_Down_W, OnKey_Up_W);
+    SetHotKey("A", OnKey_Down_A, OnKey_Up_A);
+    SetHotKey("S", OnKey_Down_S, OnKey_Up_S);
+    SetHotKey("D", OnKey_Down_D, OnKey_Up_D);
+
+    // GameUI.SetCameraDistance(1300);
+    // GameUI.SetCameraPitchMin(70);
+    // GameUI.SetCameraPitchMax(70);
+    GameUI.SetCameraTarget(hero_entity)
+}
+
+function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
+    GameEvents.SendCustomGameEventToServer("BasicRules", {
+        event_name: "MoveState",
+        params: eventData
+    })
+}
+
+function OnKey_Down_W() {
+    MoveStateEvent({ Direction: "UP", State: 1 })
+}
+
+function OnKey_Up_W() {
+    MoveStateEvent({ Direction: "UP", State: 0 })
+}
+
+function OnKey_Down_A() {
+    MoveStateEvent({ Direction: "LEFT", State: 1 })
+}
+
+function OnKey_Up_A() {
+    MoveStateEvent({ Direction: "LEFT", State: 0 })
+}
+
+function OnKey_Down_S() {
+    MoveStateEvent({ Direction: "DOWN", State: 1 })
+}
+function OnKey_Up_S() {
+    MoveStateEvent({ Direction: "DOWN", State: 0 })
+}
+
+function OnKey_Down_D() {
+    MoveStateEvent({ Direction: "RIGHT", State: 1 })
+}
+
+function OnKey_Up_D() {
+    MoveStateEvent({ Direction: "RIGHT", State: 0 })
+}
+
+function SetMovePosition() {
+    let vect = Entities.GetAbsOrigin(hero_entity);
+    if (WASD_down_state.w) {
+        vect[1] += 50;
+    }
+    if (WASD_down_state.s) {
+        vect[1] -= 50;
+    }
+    if (WASD_down_state.a) {
+        vect[0] -= 50;
+    }
+    if (WASD_down_state.d) {
+        vect[0] += 50;
+    }
+
+    return vect
+}
+
+function StartMoveLoop() {
+    Game.PrepareUnitOrders({
+        OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION,
+        UnitIndex: hero_entity,
+        Position: SetMovePosition(),
+        ShowEffects: false,
+        QueueBehavior: OrderQueueBehavior_t.DOTA_ORDER_QUEUE_NEVER,
+    })
+    $.Schedule(0.1, StartMoveLoop)
+}
+
+function ChangeCameraValue(value: number) {
+    GameUI.SetCameraDistance(value);
+    // let pitchmin = 60;
+    // if (value > 1500) {
+    //     pitchmin += Math.min(1, (value - 1400) / (2300 - 1400)) * 32;
+    // }
+    // GameUI.SetCameraPitchMax(pitchmin);
+}
+
+let camera_value = 1200;
+
+const CameraSetting = () => {
+
+    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+        if (value == 6 && camera_value < 1400) {
+            camera_value += 10;
+        } else if (value == 5 && camera_value > 800) {
+            camera_value -= 10;
+        }
+        ChangeCameraValue(camera_value);
+        return false;
+    });
+
+    return (
+        <Panel id="CameraSetting" visible={false} />
+    );
+};
+/**
+ * 设置热键
+ * @param key 
+ * @param down_func 按下
+ * @param up_func 松开
+ */
+export function SetHotKey(key: string, down_func: Function, up_func: Function) {
+    let command_string = `On${key}${Date.now()}`;
+    Game.CreateCustomKeyBind(key, `+${command_string}`);
+    Game.AddCommand(
+        `+${command_string}`,
+        () => { if (down_func) { down_func(); } },
+        ``,
+        1 << 32
+    );
+    Game.AddCommand(
+        `-${command_string}`,
+        () => { if (up_func) { up_func(); } },
+        ``,
+        1 << 32
+    );
+}
+
 export const MoveControll = () => {
 
     return (
         <Panel id="MoveControll">
             <Button
                 id="InputButton"
-                className='HotkeyInput'
+                className='HotkeyInput LabelFXContainer'
                 // maxchars={1}
                 onload={(e) => {
+                    OnInitMoveHotkey();
                     e.SetDialogVariable("input_key", "");
                     // $.DispatchEvent("DropInputFocus", e);
                     for (let n in ke) {
                         const r = ke[n as keyof typeof ke];
-                        $.RegisterKeyBind(e, n, () => {
-                            // GameEvents.SendCustomGameEventToServer("event_playerinfo", {
-                            //     event_name: "SetKeyBind",
-                            //     parameter: {
-                            //         name: hotkey,
-                            //         key: r
-                            //     },
-                            //     callback: "callback_UpdateKeyBind"
-                            // });
-                            $.DispatchEvent("DropInputFocus", e);
+                        $.RegisterKeyBind(e, n, (source, presses, panel) => {
+                            $.Msg(["source", source])
                             e.SetDialogVariable("input_key", r);
                         });
                     }
                     for (let n = 65; n < 91; n++) {
                         let r = String.fromCharCode(n);
                         $.RegisterKeyBind(e, `key_${r}`, () => {
-                            // GameEvents.SendCustomGameEventToServer("event_playerinfo", {
-                            //     event_name: "SetKeyBind",
-                            //     parameter: {
-                            //         name: hotkey,
-                            //         key: r
-                            //     },
-                            //     callback: "callback_UpdateKeyBind"
-                            // });
-                            $.DispatchEvent("DropInputFocus", e);
                             e.SetDialogVariable("input_key", r);
                         });
                     }
@@ -95,6 +217,7 @@ export const MoveControll = () => {
             >
                 <Label localizedText='{s:input_key}' />
             </Button>
+            <CameraSetting />
         </Panel>
     )
 }

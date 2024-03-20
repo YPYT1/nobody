@@ -3,8 +3,6 @@ import { BaseModifier, registerModifier } from "../utils/dota_ts_adapter";
 @registerModifier()
 export class modifier_pickitem_exp extends BaseModifier {
 
-    ScaleModel: boolean;
-
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
             [ModifierState.NO_HEALTH_BAR]: true,
@@ -15,15 +13,5 @@ export class modifier_pickitem_exp extends BaseModifier {
             // [ModifierState.INVISIBLE]: true,
         }
     }
-
-    // DeclareFunctions(): ModifierFunction[] {
-    //     return [
-    //         ModifierFunction.INVISIBILITY_LEVEL
-    //     ]
-    // }
-
-    // GetModifierInvisibilityLevel(): number {
-    //     return 90
-    // }
 
 }

@@ -10,7 +10,7 @@ export class ItemArmsSystem {
     ItemEffect(hItem: CDOTA_Item, hParent: CDOTA_BaseNPC) {
         let item_name = hItem.GetAbilityName();
         let item_data = ItemArmsTable[item_name as keyof typeof ItemArmsTable];
-
+        if (item_data == null) { return }
         if (item_data.ProjectilesType == 1) {
             // 目标型
             this._TriggerItemOnTracking(hItem, hParent, item_data)

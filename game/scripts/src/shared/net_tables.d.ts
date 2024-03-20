@@ -31,7 +31,12 @@ declare interface CustomNetTableDeclarations {
         [entity: string]: {
             table: CustomAttributeTableType;
             value: CustomAttributeValueType;
+
         };
+    }
+
+    unit_special_value: {
+        [player_id: string]: AbilitySpecialValueNT;
     }
 
 }

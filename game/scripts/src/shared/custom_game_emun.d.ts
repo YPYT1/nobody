@@ -8,6 +8,9 @@
 */
 type CElementType = "fire" | "water" | "thunder" | "earth" | "wind" | "null";
 
+/** 按键移动方向 */
+type CMoveDirection = "UP" | "DOWN" | "LEFT" | "RIGHT";
+
 /** 负面状态类型 */
 declare const enum DebuffTypes {
     /** 无效果 */
