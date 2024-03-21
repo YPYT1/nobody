@@ -1,12 +1,13 @@
 import * as Attr_Table from "../../json/config/game/attr_table.json";
 import * as NpcHeroesCustom from "../../json/npc_heroes_custom.json";
 import { reloadable } from "../../utils/tstl-utils";
+import { CustomOverrideAbility } from "./custom_override_ability";
 
-declare type CustomAttributeKey = keyof typeof Attr_Table;
+// declare type CustomAttributeKey = keyof typeof Attr_Table;
 
-declare interface HeroAttr<T1 extends CustomAttributeKey, T2 extends keyof typeof Attr_Table[T1]["AbilityValues"]> {
-    [key: string]: T1
-}
+// declare interface HeroAttr<T1 extends CustomAttributeKey, T2 extends keyof typeof Attr_Table[T1]["AbilityValues"]> {
+//     [key: string]: T1
+// }
 
 /** 自定义属性系统 */
 @reloadable
@@ -17,7 +18,9 @@ export class CustomAttribute {
 
     constructor() {
         print("[CustomAttribute]:constructor")
+        GameRules.CustomOverrideAbility = new CustomOverrideAbility()
         ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
+
     }
 
     /** 升级事件 */
@@ -36,7 +39,7 @@ export class CustomAttribute {
         hUnit.custom_attribute_key_table = {};
         hUnit.custom_attribute_conversion = {};
         hUnit.last_attribute_update = 0;
-        hUnit.AbilityUpgrades = {};
+        GameRules.CustomOverrideAbility.InitAbilitySpecialValue(hUnit.GetPlayerOwnerID(),hUnit);
         if (hHeroKvData) {
             for (let i = 0; i < 32; i++) {
                 let hAbility = hUnit.GetAbilityByIndex(i);
@@ -322,7 +325,7 @@ export class CustomAttribute {
 
     }
 
-    GetUnitTotalAttribute(attr_key: CustomAttributeKey[]) {
+    GetUnitTotalAttribute(attr_key: AttributeMainKey[]) {
 
     }
 

@@ -10,6 +10,14 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 @registerAbility()
 export class arms_1 extends BaseAbility {
 
+    // OnUpgrade(): void {
+    //     if (this.GetLevel() == 1) {
+    //         const player_id = this.GetCaster().GetPlayerOwnerID();
+    //         const ability_name = this.GetAbilityName();
+    //         GameRules.CustomOverrideAbility.AddAbilitySpecialValue(player_id, ability_name)
+    //     }
+    // }
+
     GetIntrinsicModifierName(): string {
         return "modifier_arms_1"
     }
@@ -37,9 +45,9 @@ export class modifier_arms_1 extends BaseModifier {
 
     OnIntervalThink(): void {
         let hCaster = this.GetCaster();
-        if (hCaster.IsAlive() == false || this.ability == null) { 
+        if (hCaster.IsAlive() == false || this.ability == null) {
             this.StartIntervalThink(-1)
-            return 
+            return
         }
 
         // let ent = Entities.FindAllByClassnameWithin()

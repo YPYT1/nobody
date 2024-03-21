@@ -78,17 +78,37 @@ declare type CustomAttributeConversionType = {
     }
 }
 
-declare interface AbilitySpecialValueNT {
-    [ability:string]:AbilitySpecialValueProps
+
+declare type AbilitySpecialTypes = "Base" | "Percent";
+
+interface AbilitySpecialObjectProps {
+    [ability: string]: {
+        [special_key: string]: {
+            base_value: number;
+            mul_list: number[];
+        }
+    }
 }
 
-declare interface AbilitySpecialValueProps {
-    [special_name: string]: {
-        /** 加算 */
-        add_value: number;
-        /** 乘算 */
-        mul_value: number;
-        /** 缓存值 */
-        cache_value: number;
-    };
+interface AbilitySpecialValueProps {
+    [ability: string]: {
+        [special_key: string]: {
+            /** 额外伤害值 */
+            base_value: number;
+            /** 伤害倍率 百分比表示 */
+            mul_value: number;
+            cache_value?: number;
+        }
+    }
 }
+
+// declare interface AbilitySpecialValueProps {
+//     [special_name: string]: {
+//         /** 加算 */
+//         add_value: number;
+//         /** 乘算 */
+//         mul_value: number;
+//         /** 缓存值 */
+//         cache_value: number;
+//     };
+// }

@@ -43,8 +43,8 @@ scripts/.test
 .vscode
 materials
 /content/panorama/scripts/sync_keyvalues.js
-config
-items
-units
 /game/scripts/npc/herolist.txt
 /game/scripts/npc/abilities
+/game/scripts/npc/config
+/game/scripts/npc/items
+/game/scripts/npc/units

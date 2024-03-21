@@ -5,6 +5,7 @@ import { GameEvent } from './game_event';
 import { BasicRules } from './ingame/basic_rules';
 import { BuffManager } from './ingame/buff_manager';
 import { CustomAttribute } from './ingame/custom_attribute';
+import { CustomOverrideAbility } from './ingame/custom_override_ability';
 import { EntityKilled } from './ingame/entity_killed';
 import { ItemArmsSystem } from './ingame/item_arms_system';
 import { MapChapter } from './map_chapter';
@@ -23,6 +24,7 @@ declare global {
         BasicRules: BasicRules;
         MapChapter: MapChapter;
         BuffManager: BuffManager;
+        CustomOverrideAbility: CustomOverrideAbility;
     }
 }
 

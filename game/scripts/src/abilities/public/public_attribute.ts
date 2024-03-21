@@ -39,12 +39,12 @@ export class modifier_public_attribute extends BaseModifier {
     /** 初始化属性 */
     OnCreated(params: any): void {
         this.AttributeData = {}
-        if (!IsServer()) { return; }
         this.BaseKvHp = this.GetParent().GetMaxHealth();
         this.SetHasCustomTransmitterData(true);
+        if (!IsServer()) { return; }
         this.StartIntervalThink(0.2)
 
-        this.GetParent().AddNewModifier(this.GetParent(), this.GetAbility(), "modifier_public_attribute_kv", {})
+
         // this.PickItemFx = ParticleManager.CreateParticle(
         //     "particles/ui_mouseactions/range_display.vpcf",
         //     ParticleAttachment.ABSORIGIN_FOLLOW,
@@ -169,77 +169,5 @@ export class modifier_public_attribute extends BaseModifier {
 
     GetModifierConstantManaRegen(): number {
         return this.AttributeData.ManaRegen
-    }
-
-}
-
-
-@registerModifier()
-export class modifier_public_attribute_kv extends BaseModifier {
-
-    bDirty: boolean;
-
-    IsHidden(): boolean {
-        return true
-    }
-
-    RemoveOnDeath(): boolean {
-        return false
-    }
-
-    OnCreated(params: object): void {
-        this.bDirty = true
-    }
-
-    OnRefresh(params: object): void {
-        this.bDirty = true
-    }
-
-    DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.OVERRIDE_ABILITY_SPECIAL,
-            ModifierFunction.OVERRIDE_ABILITY_SPECIAL_VALUE,
-        ]
-    }
-
-    GetModifierOverrideAbilitySpecial(event: ModifierOverrideAbilitySpecialEvent): 0 | 1 {
-        if (this.GetParent() == null || event.ability == null) { return 0; }
-        let ability_name = event.ability.GetAbilityName();
-        let kv_data = NpcAbilityCustom[ability_name as keyof typeof NpcAbilityCustom];
-        if (kv_data) {
-            return 1
-        }
-        return 0
-    }
-
-    GetModifierOverrideAbilitySpecialValue(event: ModifierOverrideAbilitySpecialEvent): number {
-        let hUpgrades = this.GetParent().AbilityUpgrades
-        if (hUpgrades == null) {
-            hUpgrades = CustomNetTables.GetTableValue("unit_special_value", tostring(this.GetParent().GetPlayerOwnerID()))
-        }
-        
-        let sAbilityName = event.ability.GetAbilityName();
-        if (hUpgrades == null || hUpgrades[sAbilityName] == null) {
-            return 0
-        }
-        let sSpecialValueName = event.ability_special_value
-        let nSpecialLevel = event.ability_special_level
-        let flBaseValue = event.ability.GetLevelSpecialValueNoOverride(sSpecialValueName, nSpecialLevel);
-        let SpecialValueUpgrades = hUpgrades[sAbilityName][sSpecialValueName]
-        if (SpecialValueUpgrades != null) {
-            if (this.bDirty == false && SpecialValueUpgrades.cache_value != null) {
-                return SpecialValueUpgrades.cache_value
-            }
-            let flAddResult = 0
-            let flMulResult = 1.0
-            let flResult = (flBaseValue + flAddResult) * flMulResult
-
-            this.bDirty = false;
-            return flResult
-        }
-        // print(
-        //     "[GetModifierOverrideAbilitySpecialValue]:", IsServer(),
-        //     event.ability.GetAbilityName(), event.ability_special_value, event.ability_special_level, base_value)
-        return flBaseValue
     }
 }

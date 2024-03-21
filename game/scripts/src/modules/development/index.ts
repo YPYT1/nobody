@@ -129,6 +129,15 @@ export class Development extends UIEventRegisterClass {
         GameRules.CustomAttribute.ModifyAttribute(unit, attr_object)
     }
 
+    ModiyAbilitySpecialValue(player_id: PlayerID, params: CGED["Development"]["ModiyAbilitySpecialValue"]) {
+        DeepPrintTable(params)
+        let ability_name = params.ability_name;
+        let special_key = params.special_key;
+        let special_type = params.special_type;
+        let special_value = params.special_value;
+        GameRules.CustomOverrideAbility.ModifySpecialValue(player_id, ability_name, special_key, special_type, special_value)
+    }
+
     /** Debug命令 */
     DebugChat(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-reset") {

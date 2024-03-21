@@ -1,3 +1,7 @@
+declare interface KeyValueProps {
+    [key:string]:number
+}
+
 /**
  * 数据驱动技能类参数
  */

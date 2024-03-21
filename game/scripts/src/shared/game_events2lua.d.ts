@@ -18,6 +18,12 @@ declare interface CGED {
         DeleteAbility: { ability_enti: EntityIndex },
         CreatedItem: { item_name: string, queryUnit: EntityIndex };
         ModiyAttribute: { unit: EntityIndex, attr_object: CustomAttributeTableType }
+        ModiyAbilitySpecialValue: {
+            ability_name: string;
+            special_type: AbilitySpecialTypes;
+            special_key: string;
+            special_value: number;
+        }
     }
 
     BasicRules: {

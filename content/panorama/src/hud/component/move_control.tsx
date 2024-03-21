@@ -1,5 +1,6 @@
 
 
+
 const ke = {
     key_Backquote: "`",
     key_TAB: "TAB",
@@ -52,7 +53,10 @@ function OnInitMoveHotkey() {
     SetHotKey("A", OnKey_Down_A, OnKey_Up_A);
     SetHotKey("S", OnKey_Down_S, OnKey_Up_S);
     SetHotKey("D", OnKey_Down_D, OnKey_Up_D);
-
+    SetHotKey("S1_UP", OnKey_Down_W, OnKey_Up_W);
+    SetHotKey("S1_LEFT", OnKey_Down_A, OnKey_Up_A);
+    SetHotKey("S1_DOWN", OnKey_Down_S, OnKey_Up_S);
+    SetHotKey("S1_RIGHT", OnKey_Down_D, OnKey_Up_D);
     // GameUI.SetCameraDistance(1300);
     // GameUI.SetCameraPitchMin(70);
     // GameUI.SetCameraPitchMax(70);
@@ -95,35 +99,6 @@ function OnKey_Down_D() {
 
 function OnKey_Up_D() {
     MoveStateEvent({ Direction: "RIGHT", State: 0 })
-}
-
-function SetMovePosition() {
-    let vect = Entities.GetAbsOrigin(hero_entity);
-    if (WASD_down_state.w) {
-        vect[1] += 50;
-    }
-    if (WASD_down_state.s) {
-        vect[1] -= 50;
-    }
-    if (WASD_down_state.a) {
-        vect[0] -= 50;
-    }
-    if (WASD_down_state.d) {
-        vect[0] += 50;
-    }
-
-    return vect
-}
-
-function StartMoveLoop() {
-    Game.PrepareUnitOrders({
-        OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_MOVE_TO_POSITION,
-        UnitIndex: hero_entity,
-        Position: SetMovePosition(),
-        ShowEffects: false,
-        QueueBehavior: OrderQueueBehavior_t.DOTA_ORDER_QUEUE_NEVER,
-    })
-    $.Schedule(0.1, StartMoveLoop)
 }
 
 function ChangeCameraValue(value: number) {

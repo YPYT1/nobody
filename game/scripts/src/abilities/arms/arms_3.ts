@@ -14,7 +14,7 @@ export class modifier_arms_3 extends BaseModifier {
     duraton: number;
     caster: CDOTA_BaseNPC;
     ability: CDOTABaseAbility;
-    ability_range:number;
+    ability_range: number;
     ability_damage: number;
 
     OnCreated(params: object): void {
@@ -26,7 +26,6 @@ export class modifier_arms_3 extends BaseModifier {
         this.ability = this.GetAbility();
         this.caster = this.GetCaster();
         this.ability_range = 600;
-        this.duraton = 3;
         this.StartIntervalThink(0.1)
     }
 

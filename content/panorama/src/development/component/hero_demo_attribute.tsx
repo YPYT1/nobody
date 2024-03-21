@@ -190,34 +190,74 @@ const AbilityButtonRow = ({ entity, Btnhandle }: { entity: AbilityEntityIndex, B
     )
 }
 
-const AbilityKvRowEditor = ({ entity, kv_key, kv_value }: { entity?: AbilityEntityIndex; kv_key: string; kv_value: number }) => {
+const AbilityKvRowEditor = ({ entity, kv_key, kv_value }: { entity: AbilityEntityIndex; kv_key: string; kv_value: number }) => {
 
+    let real_value = Abilities.GetSpecialValueFor(entity, kv_key) ?? 0
     const [value, setValue] = useState(entity ? Abilities.GetSpecialValueFor(entity, kv_key) : 0)
+    const [AttrSubKey, setAttrSubKey] = useState<AbilitySpecialTypes>("Base");
+    const ability_name = Abilities.GetAbilityName(entity)
+    let vvvvv = CustomNetTables.GetTableValue("unit_special_value", "0");
+
+
+    // 
+    // if (vvvvv && vvvvv[ability_name] != null) {
+    //     let data = vvvvv[ability_name];
+    //     let special_data = data[kv_key];
+    //     if (special_data){
+    //         let cache_value = special_data.cache_value ?? 0
+    //         real_value = cache_value
+    //     }
+    // }
 
     return (
         <Panel className='AbilityKvRowEditor flow-right'>
             <Label className='KvKey' text={kv_key} />
-            <Label className='KvValue' text={kv_value} />
+            <Label className='KvValue' text={real_value} />
             <TextEntry
                 className='TextEntry'
                 textmode="numeric"
-                text={`${kv_value}`}
+                text={`0`}
                 ontextentrychange={(e) => {
-                    let value = parseInt(e.text);
+                    let value = parseFloat(e.text);
                     setValue(value)
                 }}
             />
-            <Panel style={{ width: "120px" }}>
-                <Button
-                    className='fc-tool-button'
-                    onactivate={() => {
-                        const queryUnit = Players.GetLocalPlayerPortraitUnit();
-                        $.Msg(["key", kv_key, "value", value, "ability", entity])
+            <Panel className='AttrList'>
+                <DropDown
+                    id='AttrListDrop'
+                    onload={(e) => {
+                        e.SetSelected(`Base`);
+                    }}
+
+                    oninputsubmit={(e) => {
+                        let sub_key = e.GetSelected().id as AbilitySpecialTypes;
+                        setAttrSubKey(sub_key)
                     }}
                 >
-                    <Label text={"修改"} />
-                </Button>
+                    <Label id={"Base"} text={"Base"} />
+                    <Label id={"Percent"} text={"Percent"} />
+                </DropDown>
             </Panel>
+
+            <Button
+                className='fc-tool-button'
+                onactivate={() => {
+                    if (!entity) { return }
+
+                    GameEvents.SendCustomGameEventToServer("Development", {
+                        event_name: "ModiyAbilitySpecialValue",
+                        params: {
+                            ability_name: Abilities.GetAbilityName(entity),
+                            special_type: AttrSubKey,
+                            special_key: kv_key,
+                            special_value: value,
+                        }
+                    })
+                }}
+            >
+                <Label text={"修改"} />
+            </Button>
+
 
         </Panel>
     )
@@ -225,15 +265,12 @@ const AbilityKvRowEditor = ({ entity, kv_key, kv_value }: { entity?: AbilityEnti
 const AbilityKeyValueEditor = ({ ability_entity }: { ability_entity?: AbilityEntityIndex }) => {
     let ability_name = ""
     let ability_keyvalue: { [key: string]: number } = {}
-    $.Msg(["ability_entity", ability_entity])
     if (ability_entity) {
         ability_name = Abilities.GetAbilityName(ability_entity);
         let kv_data = NpcAbilitiesCustom[ability_name as keyof typeof NpcAbilitiesCustom];
         if (kv_data) {
             ability_keyvalue = kv_data.AbilityValues as { [key: string]: number };
         }
-    } else {
-
     }
 
 
@@ -243,7 +280,10 @@ const AbilityKeyValueEditor = ({ ability_entity }: { ability_entity?: AbilityEnt
             <Panel className='KeyValueTable'>
                 {
                     Object.entries(ability_keyvalue).map((v, k) => {
-                        return <AbilityKvRowEditor key={k} kv_key={v[0]} kv_value={v[1]} entity={ability_entity} />
+                        if (ability_entity) {
+                            return <AbilityKvRowEditor key={k} kv_key={v[0]} kv_value={v[1]} entity={ability_entity} />
+                        }
+
                     })
                 }
             </Panel>

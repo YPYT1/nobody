@@ -11,7 +11,6 @@ export class arms_2 extends BaseAbility {
 @registerModifier()
 export class modifier_arms_2 extends BaseModifier {
 
-    duration: number;
     caster: CDOTA_BaseNPC;
     ability: CDOTABaseAbility;
 
@@ -23,7 +22,6 @@ export class modifier_arms_2 extends BaseModifier {
         if (!IsServer()) { return }
         this.ability = this.GetAbility();
         this.caster = this.GetCaster();
-        this.duration = this.ability.GetSpecialValueFor("duration");
         this.StartIntervalThink(0.1)
     }
 
@@ -34,12 +32,12 @@ export class modifier_arms_2 extends BaseModifier {
             return
         }
 
-
         if (this.GetAbility().IsCooldownReady()) {
             this.GetAbility().UseResources(false, false, false, true);
             this.GetAbility().SetFrozenCooldown(true);
+            let duration = this.ability.GetSpecialValueFor("duration");
             this.caster.AddNewModifier(this.caster, this.ability, "modifier_arms_2_ring", {
-                duration: this.duration,
+                duration: duration,
             })
         }
     }
@@ -51,23 +49,25 @@ export class modifier_arms_2_ring extends BaseModifier {
 
     ability_range: number;
     ability_damage: number;
+    interval: number;
+
     parent: CDOTA_BaseNPC;
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
         this.ability_range = this.GetAbility().GetSpecialValueFor("radius");
+        this.interval = this.GetAbility().GetSpecialValueFor("interval");
         this.parent = this.GetParent();
+        if (!IsServer()) { return }
         this.ability_damage = this.parent.GetAverageTrueAttackDamage(null);
-
         let effect_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_razor/razor_plasmafield.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.GetParent()
         )
-        ParticleManager.SetParticleControl(effect_fx, 1, Vector(9000, 300, 1))
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(9000, this.ability_range, 1))
         this.AddParticle(effect_fx, false, false, -1, false, false)
         this.OnIntervalThink()
-        this.StartIntervalThink(0.5)
+        this.StartIntervalThink(this.interval)
     }
 
     OnIntervalThink(): void {
@@ -75,7 +75,7 @@ export class modifier_arms_2_ring extends BaseModifier {
         let enemies = FindUnitsInRing(
             DotaTeam.GOODGUYS,
             this.parent.GetAbsOrigin(),
-            300, 24,
+            this.ability_range, 24,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE

@@ -6,7 +6,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
 }
 
 function PlayElementHitEffect(hUnit: CDOTA_BaseNPC, element_type?: CElementType) {
-    print("PlayElementHitEffect", element_type)
+    // print("PlayElementHitEffect", element_type)
     if (element_type == null) { return }
     if (element_type == "thunder") {
         let hit_fx = ParticleManager.CreateParticle(
