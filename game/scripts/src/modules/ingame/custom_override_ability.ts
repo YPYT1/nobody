@@ -70,9 +70,12 @@ export class CustomOverrideAbility {
             this.AbilitySpecialObject[player_id][ability_name][special_key] = {
                 base_value: 0,
                 mul_list: [],
+                amount: 0,
             }
         }
 
+        this.AbilitySpecialObject[player_id][ability_name][special_key].amount += 1;
+        
         if (special_type == "Base") {
             this.AbilitySpecialObject[player_id][ability_name][special_key].base_value += value;
             this.AbilitySpecialValue[player_id][ability_name][special_key]["base_value"] = this.AbilitySpecialObject[player_id][ability_name][special_key].base_value
@@ -87,6 +90,34 @@ export class CustomOverrideAbility {
             this.AbilitySpecialValue[player_id][ability_name][special_key]["mul_value"] = mul_value
         }
 
+        this.UpdateUpgradeStatus(player_id)
+    }
+
+    /**
+     * 退还技能升级次数
+     * @param player_id 
+     * @param ability_name 
+     * @returns 
+     */
+    RefundUpgrades(player_id: PlayerID, ability_name: string) {
+        if (this.AbilitySpecialObject[player_id][ability_name] != null) {
+            let amount = 0;
+            for (let special_key in this.AbilitySpecialObject[player_id][ability_name]) {
+                amount += this.AbilitySpecialObject[player_id][ability_name][special_key].amount;
+            }
+            this.AbilitySpecialObject[player_id][ability_name] = {};
+            this.AbilitySpecialValue[player_id][ability_name] = {};
+            this.UpdateUpgradeStatus(player_id)
+            return amount
+        }
+        return 0
+    }
+
+    /**
+     * 更新技能SV值
+     * @param player_id 
+     */
+    UpdateUpgradeStatus(player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         hHero.AbilityUpgrades = this.AbilitySpecialValue[player_id];
         CustomNetTables.SetTableValue("unit_special_value", tostring(player_id), hHero.AbilityUpgrades);

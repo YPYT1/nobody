@@ -86,6 +86,7 @@ interface AbilitySpecialObjectProps {
         [special_key: string]: {
             base_value: number;
             mul_list: number[];
+            amount: number;
         }
     }
 }

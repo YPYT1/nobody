@@ -88,10 +88,7 @@ export class CustomAttribute {
                 hUnit.AddAbility("public_null_5")
                 hUnit.AddAbility("public_null_6")
                 hUnit.AddAbility("public_attribute").SetLevel(1);
-                // hUnit.AddAbility("public_arms").SetLevel(1);
-
                 this.AttributeCalculate(hUnit, Object.keys(Attr_Table) as AttributeMainKey[]);
-
                 return null
             }, 0.1)
 
@@ -131,11 +128,7 @@ export class CustomAttribute {
 
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
-
-
                 hUnit.AddAbility("public_attribute").SetLevel(1);
-                hUnit.AddAbility("public_arms").SetLevel(1);
-
                 this.AttributeCalculate(hUnit, Object.keys(Attr_Table) as AttributeMainKey[]);
 
                 return null
