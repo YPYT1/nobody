@@ -1,4 +1,4 @@
-import { reloadable } from "../../utils/tstl-utils";
+import { reloadable } from "../../../utils/tstl-utils";
 
 /** 实体击杀 */
 @reloadable

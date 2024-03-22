@@ -2,12 +2,6 @@ import { Debug } from './Debug';
 import { GameConfig } from './GameConfig';
 import { Development } from './development';
 import { GameEvent } from './game_event';
-import { BasicRules } from './ingame/basic_rules';
-import { BuffManager } from './ingame/buff_manager';
-import { CustomAttribute } from './ingame/custom_attribute';
-import { CustomOverrideAbility } from './ingame/custom_override_ability';
-import { EntityKilled } from './ingame/entity_killed';
-import { ItemArmsSystem } from './ingame/item_arms_system';
 import { MapChapter } from './map_chapter';
 import { XNetTable } from './xnet-table';
 
@@ -18,13 +12,7 @@ declare global {
         GameEvent: GameEvent;
         XNetTable: XNetTable;
         Development: Development;
-        CustomAttribute: CustomAttribute;
-        ItemArmsSystem: ItemArmsSystem;
-        EntityKilled: EntityKilled;
-        BasicRules: BasicRules;
         MapChapter: MapChapter;
-        BuffManager: BuffManager;
-        CustomOverrideAbility: CustomOverrideAbility;
     }
 }
 
@@ -38,9 +26,6 @@ export function ActivateModules() {
     GameRules.GameEvent = new GameEvent();
     GameRules.XNetTable = new XNetTable();
     GameRules.Development = new Development();
-    GameRules.CustomAttribute = new CustomAttribute();
-    GameRules.ItemArmsSystem = new ItemArmsSystem();
-    GameRules.BasicRules = new BasicRules();
     GameRules.MapChapter = new MapChapter()
     // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
     new GameConfig();

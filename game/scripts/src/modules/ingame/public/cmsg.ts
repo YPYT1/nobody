@@ -1,6 +1,6 @@
 
-import { reloadable } from "../../utils/tstl-utils";
-import { UIEventRegisterClass } from "../class_extends/ui_event_register_class";
+import { reloadable } from "../../../utils/tstl-utils";
+import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 
 @reloadable
 export class CMsg extends UIEventRegisterClass {

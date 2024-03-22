@@ -1,7 +1,6 @@
-import * as Attr_Table from "../../json/config/game/attr_table.json";
-import * as NpcHeroesCustom from "../../json/npc_heroes_custom.json";
-import { reloadable } from "../../utils/tstl-utils";
-import { CustomOverrideAbility } from "./custom_override_ability";
+import * as Attr_Table from "../../../json/config/game/attr_table.json";
+import * as NpcHeroesCustom from "../../../json/npc_heroes_custom.json";
+import { reloadable } from "../../../utils/tstl-utils";
 
 // declare type CustomAttributeKey = keyof typeof Attr_Table;
 
@@ -18,7 +17,6 @@ export class CustomAttribute {
 
     constructor() {
         print("[CustomAttribute]:constructor")
-        GameRules.CustomOverrideAbility = new CustomOverrideAbility()
         ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
 
     }
@@ -34,12 +32,17 @@ export class CustomAttribute {
     InitHeroAttribute(hUnit: CDOTA_BaseNPC) {
         let heroname = hUnit.GetUnitName() as keyof typeof NpcHeroesCustom;
         let hHeroKvData = NpcHeroesCustom[heroname];
+        let player_id = hUnit.GetPlayerOwnerID()
         hUnit.custom_attribute_value = {};
         hUnit.custom_attribute_table = {};
         hUnit.custom_attribute_key_table = {};
         hUnit.custom_attribute_conversion = {};
         hUnit.last_attribute_update = 0;
-        GameRules.CustomOverrideAbility.InitAbilitySpecialValue(hUnit.GetPlayerOwnerID(),hUnit);
+
+        GameRules.CustomOverrideAbility.InitAbilitySpecialValue(player_id, hUnit);
+
+        GameRules.ArmsEvolution.InitPlayerUpgradeStatus(player_id);
+
         if (hHeroKvData) {
             for (let i = 0; i < 32; i++) {
                 let hAbility = hUnit.GetAbilityByIndex(i);
@@ -80,7 +83,7 @@ export class CustomAttribute {
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
-                
+
                 hUnit.AddAbility("public_null_1");
                 hUnit.AddAbility("public_null_2")
                 hUnit.AddAbility("public_null_3")
@@ -310,9 +313,11 @@ export class CustomAttribute {
         }
     }
 
-    DelAttributeInKey(hUnit: CDOTA_BaseNPC, key: string){
+    /** 删除一个key值的相关属性 */
+    DelAttributeInKey(hUnit: CDOTA_BaseNPC, key: string) {
 
     }
+
     /** 修改转换属性 */
     ModifyConversionAttribute(hUnit: CDOTA_BaseNPC, attr_key: CustomAttributeConversionType) {
 
@@ -324,7 +329,7 @@ export class CustomAttribute {
 
 
     // 修改SpecialValue
-    
+
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
@@ -359,7 +364,7 @@ export class CustomAttribute {
                 "AttackRange": {
                     Base: 10,
                 },
-    
+
             })
 
         }

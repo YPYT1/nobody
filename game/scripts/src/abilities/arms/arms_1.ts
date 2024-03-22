@@ -10,17 +10,10 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 @registerAbility()
 export class arms_1 extends BaseAbility {
 
-    // OnUpgrade(): void {
-    //     if (this.GetLevel() == 1) {
-    //         const player_id = this.GetCaster().GetPlayerOwnerID();
-    //         const ability_name = this.GetAbilityName();
-    //         GameRules.CustomOverrideAbility.AddAbilitySpecialValue(player_id, ability_name)
-    //     }
-    // }
-
     GetIntrinsicModifierName(): string {
         return "modifier_arms_1"
     }
+    
 }
 
 @registerModifier()

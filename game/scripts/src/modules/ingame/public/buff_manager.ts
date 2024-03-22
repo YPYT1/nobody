@@ -1,4 +1,4 @@
-import { reloadable } from "../../utils/tstl-utils";
+import { reloadable } from "../../../utils/tstl-utils";
 
 /** 增益效果操作 */
 @reloadable
