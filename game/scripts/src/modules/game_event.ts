@@ -6,6 +6,7 @@ import { BuffManager } from './ingame/public/buff_manager';
 import { CustomAttribute } from './ingame/hero_extend/custom_attribute';
 import { CustomOverrideAbility } from './ingame/hero_extend/custom_override_ability';
 import { EntityKilled } from './ingame/public/entity_killed';
+import { Spawns } from './ingame/spawns';
 
 declare global {
 
@@ -21,6 +22,7 @@ declare global {
 
         EntityKilled: EntityKilled;
 
+        Spawns:Spawns;
 
     }
 }
@@ -53,6 +55,7 @@ export class GameEvent {
             GameRules.CustomOverrideAbility = new CustomOverrideAbility()
             GameRules.BuffManager = new BuffManager();
             GameRules.EntityKilled = new EntityKilled();
+            GameRules.Spawns = new Spawns();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
 
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
@@ -61,6 +64,7 @@ export class GameEvent {
 
         } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段
             new Filter(); // 加载过滤器
+            
         } else if (State_Get == GameState.PRE_GAME) { //赛前阶段
 
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段

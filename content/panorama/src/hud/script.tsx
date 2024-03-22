@@ -1,18 +1,19 @@
 import 'panorama-polyfill-x/lib/console';
 import 'panorama-polyfill-x/lib/timers';
 
-import { useMemo, type FC } from 'react';
 import { render } from 'react-panorama-x';
-import { useXNetTableKey } from '../hooks/useXNetTable';
+
 import { MoveControll } from './component/move_control';
+import { MessageContainer } from './component/message';
 
 
  
 
-const Test: FC = () => {
+const Test = () => {
     return (
         <>
             <MoveControll />
+            <MessageContainer />
         </>
     )
 };

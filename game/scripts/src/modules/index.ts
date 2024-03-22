@@ -2,6 +2,7 @@ import { Debug } from './Debug';
 import { GameConfig } from './GameConfig';
 import { Development } from './development';
 import { GameEvent } from './game_event';
+import { CMsg } from './ingame/public/cmsg';
 import { MapChapter } from './map_chapter';
 import { XNetTable } from './xnet-table';
 
@@ -13,6 +14,7 @@ declare global {
         XNetTable: XNetTable;
         Development: Development;
         MapChapter: MapChapter;
+        CMsg:CMsg;
     }
 }
 
@@ -27,6 +29,7 @@ export function ActivateModules() {
     GameRules.XNetTable = new XNetTable();
     GameRules.Development = new Development();
     GameRules.MapChapter = new MapChapter()
+    GameRules.CMsg = new CMsg();
     // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
     new GameConfig();
     // 初始化测试模块xD

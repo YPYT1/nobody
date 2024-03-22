@@ -10,5 +10,9 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     /** 属性转换 */
     custom_attribute_conversion: CustomAttributeConversionType;
 
-    AbilityUpgrades:AbilitySpecialValueProps;
+    AbilityUpgrades: AbilitySpecialValueProps;
+    AdvancedUpgrades: { [rune: string]: number };
+    /** 所有技能的内置冷却相应 */
+    CDResp: { [key: string]: number }
+
 }

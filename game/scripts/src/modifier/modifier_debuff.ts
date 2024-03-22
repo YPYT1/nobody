@@ -125,37 +125,19 @@ export class modifier_debuff_immune extends BaseModifier {
     IsDebuff() { return false; }
     IsPurgable() { return false; }
     IsPurgeException() { return true; }
-    AllowIllusionDuplicate() { return false; }
     ShouldUseOverheadOffset() { return true; }
 }
-
-// 任何免疫
-@registerModifier()
-class modifier_debuff_immune_any extends modifier_debuff_immune { }
-// 免疫眩晕
-@registerModifier()
-class modifier_debuff_immune_stunned extends modifier_debuff_immune { }
-// 免疫减速
-@registerModifier()
-class modifier_debuff_immune_slow extends modifier_debuff_immune { }
-// 免疫沉默
-@registerModifier()
-class modifier_debuff_immune_silenced extends modifier_debuff_immune { }
-// 免疫禁足
-@registerModifier()
-class modifier_debuff_immune_rooted extends modifier_debuff_immune { }
-// 免疫中毒
-@registerModifier()
-class modifier_debuff_immune_poison extends modifier_debuff_immune { }
 
 // DEBUFF模版
 export class modifier_debuff_debuff_template extends BaseModifier {
 
     IsHidden() { return false; }
     IsDebuff() { return true; }
+
+    /** 是否可被驱散 */
     IsPurgable() { return true; }
     IsPurgeException() { return true; }
-    AllowIllusionDuplicate() { return false; }
+
     ShouldUseOverheadOffset() { return true; }
 
     OnIntervalThink() {
@@ -673,5 +655,38 @@ export class modifier_debuff_feared extends BaseModifier {
 
     GetEffectAttachType(): ParticleAttachment {
         return ParticleAttachment.OVERHEAD_FOLLOW;
+    }
+}
+
+/** 麻痹 */
+@registerModifier()
+export class modifier_debuff_paralysis extends modifier_debuff_debuff_template {
+
+    GetTexture(): string {
+        return "harpy_storm_chain_lightning"
+    }
+
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            [ModifierState.ROOTED]: true
+        }
+    }
+
+    DeclareFunctions(): ModifierFunction[] {
+        return [
+            ModifierFunction.ATTACKSPEED_PERCENTAGE
+        ]
+    }
+
+    GetModifierAttackSpeedPercentage(): number {
+        return -50
+    }
+
+    GetEffectName(): string {
+        return "particles/debuff/debuff_paralysis.vpcf"
+    }
+
+    GetEffectAttachType(): ParticleAttachment {
+        return ParticleAttachment.POINT_FOLLOW
     }
 }

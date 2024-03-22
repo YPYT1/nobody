@@ -48,3 +48,4 @@ materials
 /game/scripts/npc/config
 /game/scripts/npc/items
 /game/scripts/npc/units
+/game/resource/kv_generated.csv

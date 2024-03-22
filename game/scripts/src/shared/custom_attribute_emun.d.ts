@@ -103,6 +103,8 @@ interface AbilitySpecialValueProps {
     }
 }
 
+/** 资源类型 */
+type CTPlayerResources = "Gold" | "Wood" | "Kills" | "TeamExp" | "SingleExp";
 // declare interface AbilitySpecialValueProps {
 //     [special_name: string]: {
 //         /** 加算 */

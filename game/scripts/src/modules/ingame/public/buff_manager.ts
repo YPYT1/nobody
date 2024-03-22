@@ -37,6 +37,10 @@ export class BuffManager {
             if (duration > current_duration) {
                 hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
             }
+        } else if (state == DebuffTypes.paralysis) {
+            // let debuff = hUnit.FindModifierByName("modifier_debuff_paralysis");
+            // let current_duration = debuff ? debuff.GetDuration() : 0;
+            hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
         }
     }
 }

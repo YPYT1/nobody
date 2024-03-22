@@ -22,6 +22,7 @@ export class CustomOverrideAbility {
      */
     InitAbilitySpecialValue(player_id: PlayerID, hUnit: CDOTA_BaseNPC) {
         hUnit.AbilityUpgrades = {};
+        hUnit.AdvancedUpgrades = {};
         this.AbilitySpecialObject[player_id] = {}
         this.AbilitySpecialValue[player_id] = {};
         CustomNetTables.SetTableValue("unit_special_value", tostring(player_id), hUnit.AbilityUpgrades);
@@ -99,5 +100,11 @@ export class CustomOverrideAbility {
      */
     AbilityEvolution(player_id: PlayerID, ability_name: string, evo_key: string) {
 
+    }
+
+    Debug(cmd: string, args: string[], player_id: PlayerID) {
+        if(cmd == "-amrs2"){
+
+        }
     }
 }

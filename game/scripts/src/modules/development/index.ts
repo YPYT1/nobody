@@ -105,7 +105,8 @@ export class Development extends UIEventRegisterClass {
     AddDummy(player_id: PlayerID, params: CGED["Development"]["AddDummy"]) {
         let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
         let origin = hHeroUnit.GetAbsOrigin() + RandomVector(150) as Vector;
-        let Dummy = CreateUnitByName("npc_dota_hero_target_dummy", origin, true, null, null, DotaTeam.NEUTRALS)
+        let Dummy = CreateUnitByName("npc_dota_hero_target_dummy", origin, true, null, null, DotaTeam.NEUTRALS);
+        Dummy.CDResp = {};
         Dummy.SetControllableByPlayer(player_id, false)
     }
 
@@ -156,16 +157,9 @@ export class Development extends UIEventRegisterClass {
             GameRules.GetGameModeEntity().SetContextThink("devxg", () => {
                 amount += 1
                 for (let unit_name of unit_name_list) {
-                    let unit = CreateUnitByName(
-                        unit_name,
-                        hHero.GetAbsOrigin() + RandomVector(800) as Vector,
-                        true,
-                        null,
-                        null,
-                        DotaTeam.BADGUYS
-                    )
+                    let unit = GameRules.Spawns.CreateNormal(unit_name, hHero.GetAbsOrigin() + RandomVector(800) as Vector)
                     unit.SetControllableByPlayer(0, true)
-                    unit.SetHullRadius(36);
+                    // unit.SetHullRadius(36);
                 }
                 if (amount >= count) {
                     return null
