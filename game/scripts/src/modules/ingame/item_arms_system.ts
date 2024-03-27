@@ -8,19 +8,20 @@ export class ItemArmsSystem {
 
     /** 物品效果 */
     ItemEffect(hItem: CDOTA_Item, hParent: CDOTA_BaseNPC) {
+        print("ItemEffect")
         let item_name = hItem.GetAbilityName();
         let item_data = ItemArmsTable[item_name as keyof typeof ItemArmsTable];
         if (item_data == null) { return }
-        if (item_data.ProjectilesType == 1) {
-            // 目标型
-            this._TriggerItemOnTracking(hItem, hParent, item_data)
-        } else if (item_data.ProjectilesType == 2) {
-            // 线型
-            this._TriggerItemOnLinear(hItem, hParent, item_data)
-        } else {
-            // 无弹道
-            this._TriggerItemOnSelf(hItem, hParent, item_data)
-        }
+        // if (item_data.ProjectilesType == 1) {
+        //     // 目标型
+        //     this._TriggerItemOnTracking(hItem, hParent, item_data)
+        // } else if (item_data.ProjectilesType == 2) {
+        //     // 线型
+        //     this._TriggerItemOnLinear(hItem, hParent, item_data)
+        // } else {
+        //     // 无弹道
+        //     this._TriggerItemOnSelf(hItem, hParent, item_data)
+        // }
         // DeepPrintTable(item_kv)
         let interval = hItem.GetSpecialValueFor("interval");
         hItem.ArmsTriggerTime = GameRules.GetDOTATime(false, false) + interval;
@@ -68,7 +69,7 @@ export class ItemArmsSystem {
             null,
             search_radius,
             UnitTargetTeam.ENEMY,
-            UnitTargetType.BASIC,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE,
             FindOrder.ANY,
             false
@@ -88,6 +89,7 @@ export class ItemArmsSystem {
     }
 
     _TriggerItemOnLinear(hItem: CDOTA_Item, hParent: CDOTA_BaseNPC, KvData: any) {
+        print("_TriggerItemOnLinear")
         let EffectName = KvData.EffectName as string;
         let ProjectilesSpeed = KvData.ProjectilesSpeed as number;
         let search_radius = hItem.GetSpecialValueFor("search_radius");
@@ -97,7 +99,7 @@ export class ItemArmsSystem {
             null,
             search_radius,
             UnitTargetTeam.ENEMY,
-            UnitTargetType.BASIC,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE,
             FindOrder.ANY,
             false

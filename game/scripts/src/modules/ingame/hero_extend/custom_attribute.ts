@@ -85,11 +85,12 @@ export class CustomAttribute {
 
 
                 hUnit.AddAbility("public_null_1");
-                hUnit.AddAbility("public_null_2")
-                hUnit.AddAbility("public_null_3")
-                hUnit.AddAbility("public_null_4")
-                hUnit.AddAbility("public_null_5")
-                hUnit.AddAbility("public_null_6")
+                hUnit.AddAbility("public_null_2");
+                hUnit.AddAbility("public_null_3");
+                hUnit.AddAbility("public_null_4");
+                hUnit.AddAbility("public_null_5");
+                hUnit.AddAbility("public_null_6");
+                hUnit.AddAbility("public_arms").SetLevel(1);
                 hUnit.AddAbility("public_attribute").SetLevel(1);
                 this.AttributeCalculate(hUnit, Object.keys(Attr_Table) as AttributeMainKey[]);
                 return null

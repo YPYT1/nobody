@@ -7,17 +7,23 @@ const ItemPickButton = ({ item_name }: { item_name: string }) => {
     const image_src = GetItemImageSrc(item_name)
 
     return (
-        <Button className="ItemPickButton" onactivate={() => {
-            const queryUnit = Players.GetLocalPlayerPortraitUnit();
-            GameEvents.SendCustomGameEventToServer("Development", {
-                event_name: "CreatedItem",
-                params: {
-                    item_name: item_name,
-                    queryUnit: queryUnit,
-                }
-            })
-        }}>
-            <Image className="ItemImage" src={image_src} scaling='stretch-to-fit-y-preserve-aspect' />
+        <Button
+            className="ItemPickButton"
+            onactivate={() => {
+                const queryUnit = Players.GetLocalPlayerPortraitUnit();
+                GameEvents.SendCustomGameEventToServer("Development", {
+                    event_name: "CreatedItem",
+                    params: {
+                        item_name: item_name,
+                        queryUnit: queryUnit,
+                    }
+                })
+            }}
+
+          
+        >
+            {/* <Image className="ItemImage" src={image_src} scaling='stretch-to-fit-y-preserve-aspect' /> */}
+            <DOTAItemImage itemname={item_name} showtooltip={true}/>
         </Button>
     )
 }

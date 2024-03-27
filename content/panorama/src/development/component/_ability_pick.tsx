@@ -77,7 +77,7 @@ const CustomAbilityPanel = ({ abilityname }: { abilityname: string }) => {
             onload={onInit}
             draggable={true}
         >
-            <DOTAAbilityImage abilityname={abilityname} visible={!!abilityname} />
+            <DOTAAbilityImage abilityname={abilityname} visible={!!abilityname} showtooltip={true}/>
             <Label localizedText={`#DOTA_Tooltip_Ability_${abilityname}`} />
         </Panel>
     )

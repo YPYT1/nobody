@@ -7,6 +7,7 @@ import { CustomAttribute } from './ingame/hero_extend/custom_attribute';
 import { CustomOverrideAbility } from './ingame/hero_extend/custom_override_ability';
 import { EntityKilled } from './ingame/public/entity_killed';
 import { Spawns } from './ingame/spawns';
+import { ItemArmsSystem } from './ingame/item_arms_system';
 
 declare global {
 
@@ -22,6 +23,7 @@ declare global {
 
         EntityKilled: EntityKilled;
 
+        ItemArmsSystem:ItemArmsSystem;
         Spawns:Spawns;
 
     }
@@ -55,6 +57,7 @@ export class GameEvent {
             GameRules.CustomOverrideAbility = new CustomOverrideAbility()
             GameRules.BuffManager = new BuffManager();
             GameRules.EntityKilled = new EntityKilled();
+            GameRules.ItemArmsSystem = new ItemArmsSystem();
             GameRules.Spawns = new Spawns();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
 
@@ -88,6 +91,8 @@ export class GameEvent {
             // 英雄重新配置
             hUnit.isSpawned = true;
             GameRules.CustomAttribute.InitHeroAttribute(hUnit)
+
+            // 刷新完成之后发送至前端
         }
     }
 

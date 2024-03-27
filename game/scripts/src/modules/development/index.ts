@@ -51,24 +51,21 @@ export class Development extends UIEventRegisterClass {
         const ability_name = params.ability_name;
         const order = params.order;
         print("ability_name", ability_name)
-        if (hUnit.HasAbility(ability_name)) {
-            print("已有该技能,现在进行位置替换")
-            return
-        }
+        // if (hUnit.HasAbility(ability_name)) {
+        //     print("已有该技能,现在进行位置替换")
+        //     return
+        // }
 
         let order_ability = hUnit.GetAbilityByIndex(order);
 
-        let new_ability = hUnit.AddAbility(ability_name)
-        print("new_ability", new_ability)
-        new_ability.SetLevel(1);
+
         if (order_ability) {
             let order_ability_name = order_ability.GetAbilityName()
-            // 如果这个位置有技能,则进行替换
-
-            hUnit.SwapAbilities(order_ability_name, ability_name, true, true)
+            // hUnit.SwapAbilities(order_ability_name, ability_name, true, true)
             hUnit.RemoveAbilityByHandle(order_ability)
         }
-
+        let new_ability = hUnit.AddAbility(ability_name)
+        new_ability.SetLevel(1);
         // const hero_class = `npc_dota_hero_` + DOTAGameManager.GetHeroNameByID(heroid)
         // PlayerResource.ReplaceHeroWith(player_id, hero_class, 0, 0)
     }

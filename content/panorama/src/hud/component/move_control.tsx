@@ -1,3 +1,4 @@
+import { useGameEvent } from "react-panorama-x";
 
 
 
@@ -46,7 +47,7 @@ let WASD_down_state = {
     "d": false,
 }
 
-let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+
 
 function OnInitMoveHotkey() {
     SetHotKey("W", OnKey_Down_W, OnKey_Up_W);
@@ -60,10 +61,12 @@ function OnInitMoveHotkey() {
     // GameUI.SetCameraDistance(1300);
     // GameUI.SetCameraPitchMin(70);
     // GameUI.SetCameraPitchMax(70);
-    GameUI.SetCameraTarget(hero_entity)
+    
 }
 
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
+    let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+    GameUI.SetCameraTarget(hero_entity);
     GameEvents.SendCustomGameEventToServer("BasicRules", {
         event_name: "MoveState",
         params: eventData
