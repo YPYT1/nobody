@@ -115,3 +115,17 @@ type CTPlayerResources = "Gold" | "Wood" | "Kills" | "TeamExp" | "SingleExp";
 //         cache_value: number;
 //     };
 // }
+
+type ArmsItemCategory = "book" // 书籍
+    | "strengthen" // 强化
+    | "zhaohuan"// 召唤
+    | "resource"// 理财
+    | "scavenger" // 拾荒
+    | "spell"// 咒术
+    | "projectile"//投射
+    | "growth"//成长
+    | "consume"//消耗
+    | "aoe"//范围
+    | "health"//治疗
+    | "orb"//法球
+    | "bounce"//弹射

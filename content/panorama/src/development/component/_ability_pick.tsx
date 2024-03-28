@@ -3,6 +3,7 @@ import { default as NpcAbilitiesCustom } from "./../../json/npc_abilities_custom
 import { CreateDragPanelImage } from "../../common/panel_operaton";
 import { GetAbilityImageSrc } from "../../common/custom_kv_method";
 import { useGameEvent } from "react-panorama-x";
+import { HideCustomTooltip, ShowCustomTooltip } from "../../utils/custom_tooltip";
 
 
 const CustomAbilityPanel = ({ abilityname }: { abilityname: string }) => {
@@ -66,18 +67,18 @@ const CustomAbilityPanel = ({ abilityname }: { abilityname: string }) => {
         <Panel
             className={"CustomAbilityPanel"}
             onmouseover={(e) => {
-                // ShowCustomTooltip(e, "ability", abilityname, -1, level, ext_int);
+                ShowCustomTooltip(e, "ability", abilityname, -1, 0);
                 // $.DispatchEvent("DOTAShowTextTooltip", e, $.Localize("#DOTA_Tooltip_Ability_" + abilityname));
             }}
             onmouseout={() => {
-                // HideCustomTooltip();
+                HideCustomTooltip();
                 // $.DispatchEvent("DOTAHideTextTooltip");
             }}
 
             onload={onInit}
             draggable={true}
         >
-            <DOTAAbilityImage abilityname={abilityname} visible={!!abilityname} showtooltip={true}/>
+            <DOTAAbilityImage abilityname={abilityname} visible={!!abilityname} />
             <Label localizedText={`#DOTA_Tooltip_Ability_${abilityname}`} />
         </Panel>
     )

@@ -105,6 +105,7 @@ module.exports = {
                 // tooltips
                 { import: './tooltip/text/layout.xml', filename: 'tooltip/text/layout.xml' },
                 { import: './tooltip/item/layout.xml', filename: 'tooltip/item/layout.xml' },
+                { import: './tooltip/ability/layout.xml', filename: 'tooltip/ability/layout.xml' },
             ],
         }),
         // use ignore plugin to ignore less files changes

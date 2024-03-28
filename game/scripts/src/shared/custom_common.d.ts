@@ -1,6 +1,6 @@
-declare interface KeyValueProps {
-    [key:string]:number
-}
+
+declare interface AbilityValuesProps { [key: string]: string | number; }
+declare interface KeyValueProps { [key: string]: number }
 
 /**
  * 数据驱动技能类参数

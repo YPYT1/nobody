@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGameEvent, useNetTableKey, useNetTableValues } from 'react-panorama-x';
 import { HideCustomTooltip, ShowCustomTextTooltip } from '../../utils/custom_tooltip';
 import { default as NpcAbilitiesCustom } from "./../../json/npc_abilities_custom.json";
-import * as attr_table from "./../../json/config/game/attr_table.json"
+import * as attribute_const from "./../../json/config/game/attribute_const.json"
 
 
-const attr_sub_key_list = Object.keys(Object.values(attr_table)[0].AbilityValues);
+const attr_sub_key_list = Object.keys(Object.values(attribute_const)[0].AbilityValues);
 
 /** 属性表头 */
 const AttributeRowsHeader = () => {

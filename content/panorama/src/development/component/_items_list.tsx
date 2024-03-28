@@ -1,4 +1,5 @@
 import { GetItemImageSrc } from "../../common/custom_kv_method";
+import { HideCustomTooltip, ShowCustomTooltip } from "../../utils/custom_tooltip";
 import { default as NpcItemCustom } from "./../../json/npc_items_custom.json";
 
 
@@ -20,10 +21,17 @@ const ItemPickButton = ({ item_name }: { item_name: string }) => {
                 })
             }}
 
-          
+            onmouseover={(e) => {
+                ShowCustomTooltip(e, "item", item_name, -1, 0);
+                // $.DispatchEvent("DOTAShowTextTooltip", e, $.Localize("#DOTA_Tooltip_Ability_" + abilityname));
+            }}
+            onmouseout={() => {
+                HideCustomTooltip();
+                // $.DispatchEvent("DOTAHideTextTooltip");
+            }}
         >
             {/* <Image className="ItemImage" src={image_src} scaling='stretch-to-fit-y-preserve-aspect' /> */}
-            <DOTAItemImage itemname={item_name} showtooltip={true}/>
+            <DOTAItemImage itemname={item_name} showtooltip={false} />
         </Button>
     )
 }

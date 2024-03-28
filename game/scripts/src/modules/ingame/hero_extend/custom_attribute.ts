@@ -1,12 +1,7 @@
-import * as Attr_Table from "../../../json/config/game/attr_table.json";
+import * as AttributeConst from "../../../json/config/game/attribute_const.json";
 import * as NpcHeroesCustom from "../../../json/npc_heroes_custom.json";
+import * as ItemArmsJson from "../../../json/items/item_arms.json";
 import { reloadable } from "../../../utils/tstl-utils";
-
-// declare type CustomAttributeKey = keyof typeof Attr_Table;
-
-// declare interface HeroAttr<T1 extends CustomAttributeKey, T2 extends keyof typeof Attr_Table[T1]["AbilityValues"]> {
-//     [key: string]: T1
-// }
 
 /** 自定义属性系统 */
 @reloadable
@@ -54,12 +49,12 @@ export class CustomAttribute {
                 let attribute_table: CustomAttributeTableType = {};
                 /** 属性转换 */
                 let attribute_conversion: CustomAttributeConversionType = {};
-                for (let key in Attr_Table) {
-                    let attr_key = key as keyof typeof Attr_Table;
+                for (let key in AttributeConst) {
+                    let attr_key = key as keyof typeof AttributeConst;
                     hUnit.custom_attribute_value[attr_key] = 0
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
                     let AttributeRows = hHeroKvData.AttributeValues[key as keyof typeof hHeroKvData.AttributeValues];
-                    for (let key2 in Attr_Table[attr_key]["AbilityValues"]) {
+                    for (let key2 in AttributeConst[attr_key]["AbilityValues"]) {
                         let sub_key = key2 as AttributeSubKey
                         if (attribute_table[attr_key][sub_key] == null) {
                             let value: number;
@@ -73,7 +68,7 @@ export class CustomAttribute {
                     }
                     // 属性转换表加载
                     if (attribute_conversion[attr_key] == null) { attribute_conversion[attr_key] = {} }
-                    const ConversionValue = Attr_Table[attr_key]["ConversionValue"];
+                    const ConversionValue = AttributeConst[attr_key]["ConversionValue"];
                     for (let conver_key in ConversionValue) {
                         let data = ConversionValue[conver_key]
                         attribute_conversion[attr_key][conver_key] = data
@@ -92,7 +87,7 @@ export class CustomAttribute {
                 hUnit.AddAbility("public_null_6");
                 hUnit.AddAbility("public_arms").SetLevel(1);
                 hUnit.AddAbility("public_attribute").SetLevel(1);
-                this.AttributeCalculate(hUnit, Object.keys(Attr_Table) as AttributeMainKey[]);
+                this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
                 return null
             }, 0.1)
 
@@ -104,12 +99,12 @@ export class CustomAttribute {
                 let attribute_table: CustomAttributeTableType = {};
                 /** 属性转换 */
                 let attribute_conversion: CustomAttributeConversionType = {};
-                for (let key in Attr_Table) {
-                    let attr_key = key as keyof typeof Attr_Table;
+                for (let key in AttributeConst) {
+                    let attr_key = key as keyof typeof AttributeConst;
                     hUnit.custom_attribute_value[attr_key] = 0
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
                     let AttributeRows = {}
-                    for (let key2 in Attr_Table[attr_key]["AbilityValues"]) {
+                    for (let key2 in AttributeConst[attr_key]["AbilityValues"]) {
                         let sub_key = key2 as AttributeSubKey
                         if (attribute_table[attr_key][sub_key] == null) {
                             let value: number;
@@ -123,7 +118,7 @@ export class CustomAttribute {
                     }
                     // 属性转换表加载
                     if (attribute_conversion[attr_key] == null) { attribute_conversion[attr_key] = {} }
-                    const ConversionValue = Attr_Table[attr_key]["ConversionValue"];
+                    const ConversionValue = AttributeConst[attr_key]["ConversionValue"];
                     for (let conver_key in ConversionValue) {
                         let data = ConversionValue[conver_key]
                         attribute_conversion[attr_key][conver_key] = data
@@ -133,7 +128,7 @@ export class CustomAttribute {
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
                 hUnit.AddAbility("public_attribute").SetLevel(1);
-                this.AttributeCalculate(hUnit, Object.keys(Attr_Table) as AttributeMainKey[]);
+                this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
 
                 return null
             }, 0.1)
@@ -177,6 +172,7 @@ export class CustomAttribute {
      * @param hUnit 
      */
     UpdateAttributeInGame(hUnit: CDOTA_BaseNPC) {
+        print("UpdateAttributeInGame")
         hUnit.last_attribute_update = GameRules.GetDOTATime(false, false) + this.update_delay
         let buff = hUnit.FindModifierByName("modifier_public_attribute");
         if (buff) { buff.ForceRefresh(); }
@@ -316,7 +312,19 @@ export class CustomAttribute {
 
     /** 删除一个key值的相关属性 */
     DelAttributeInKey(hUnit: CDOTA_BaseNPC, key: string) {
+        if (hUnit.custom_attribute_key_table[key] == null) {
+            return;
+        }
+        let temp_attr_list = hUnit.custom_attribute_key_table[key];
+        hUnit.custom_attribute_key_table[key] = null;
+        this.ModifyAttribute(hUnit, temp_attr_list, -1)
+    }
 
+    /** 获取物品的属性 */
+    GetItemAttribute(item_name:string){
+        let item_data = ItemArmsJson[item_name as keyof typeof ItemArmsJson];
+        let AttributeValues = item_data.AttributeValues as CustomAttributeTableType
+        return AttributeValues
     }
 
     /** 修改转换属性 */
