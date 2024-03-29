@@ -1,23 +1,72 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../utils/dota_ts_adapter";
+import { BaseItem, BaseModifier, registerAbility, registerModifier } from '../../utils/dota_ts_adapter';
 
 @registerAbility()
-export class BaseArmsItem extends BaseAbility {
+export class BaseArmsItem extends BaseItem {
 
     mdf_name: string;
+    arms_cd: number;
+    caster: CDOTA_BaseNPC;
+
+    _OnEquip() {
+        print("_OnEquip")
+        this.caster = this.GetCaster();
+        this.arms_cd = this.GetSpecialValueFor("arms_cd");
+        if (this.arms_cd <= 0) { this.arms_cd = 1 }
+        this.ArmsActTime = GameRules.GetDOTATime(false, false) + 1;
+        this.OnEquip()
+    }
+
+    OnEquip(): void {
+
+    }
+
+    _OnUnequip() {
+        this._OnUnequip()
+    }
+
+    OnUnequip(): void {
+
+    }
+
+
 
     GetIntrinsicModifierName(): string {
         return this.mdf_name
+    }
+
+    _ArmsEffectStart(): void {
+        this.ArmsEffectStart_Before()
+        this.ArmsEffectStart()
+        this.ArmsEffectStart_After()
+    }
+
+    ArmsEffectStart(): void {
+
+    }
+
+    ArmsEffectStart_Before(): void {
+        this.ArmsActTime = GameRules.GetDOTATime(false, false) + this.arms_cd;
+    }
+
+    ArmsEffectStart_After(): void {
+
     }
 }
 
 @registerModifier()
 export class BaseArmsModifier extends BaseModifier {
 
+    thisItem: CDOTA_Item;
     parent: CDOTA_BaseNPC;
     item_key: string;
 
+
     GetAttributes(): ModifierAttribute {
         return ModifierAttribute.MULTIPLE
+    }
+
+    ItemOnSpellStart() {
+
     }
 
     OnCreated(params: any): void {
@@ -25,6 +74,8 @@ export class BaseArmsModifier extends BaseModifier {
         this.parent = this.GetParent();
         this.item_key = "item_" + this.GetAbility().entindex();
         this._CreatedBefore(params);
+        this.thisItem = this.GetAbility() as CDOTA_Item;
+        this.thisItem._OnEquip()
         print("[BaseArmsModifier OnCreated]:", this.GetName(), this.item_key)
         let item_attr = GameRules.CustomAttribute.GetItemAttribute(this.GetAbility().GetAbilityName());
         GameRules.CustomAttribute.SetAttributeInKey(this.parent, this.item_key, item_attr)
@@ -39,18 +90,19 @@ export class BaseArmsModifier extends BaseModifier {
 
     }
 
-
     OnDestroy(): void {
         if (!IsServer()) { return }
-        print("[BaseArmsModifier OnDestroy]:", this.GetName(), this.item_key)
+        this.thisItem.OnEquip()
+        this._DestroyBefore()
         GameRules.CustomAttribute.DelAttributeInKey(this.parent, this.item_key)
+        this._DestroyAfter();
     }
 
-    _DestroyBefore(params: any) {
+    _DestroyBefore() {
 
     }
 
-    _DestroyAfter(params: any) {
+    _DestroyAfter() {
 
     }
 }

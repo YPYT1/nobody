@@ -31,7 +31,9 @@ export class modifier_public_attribute extends BaseModifier {
     BaseKvHp: number;
     AttributeData: CustomAttributeValueType;
     PickItemFx: ParticleID;
+    hParent: CDOTA_BaseNPC;
 
+    timer: number;
     IsHidden(): boolean { return true }
     RemoveOnDeath(): boolean { return false; }
     GetAttributes(): ModifierAttribute { return ModifierAttribute.PERMANENT }
@@ -42,7 +44,9 @@ export class modifier_public_attribute extends BaseModifier {
         this.BaseKvHp = this.GetParent().GetMaxHealth();
         this.SetHasCustomTransmitterData(true);
         if (!IsServer()) { return; }
-        this.StartIntervalThink(0.2)
+        this.hParent = this.GetParent();
+        this.timer = 0;
+        this.StartIntervalThink(0.02)
 
 
         // this.PickItemFx = ParticleManager.CreateParticle(
@@ -62,30 +66,41 @@ export class modifier_public_attribute extends BaseModifier {
     }
 
     OnIntervalThink(): void {
-        let hParent = this.GetParent();
-        let vPos = hParent.GetAbsOrigin();
-        let ExpItems = FindUnitsInRadius(
-            DotaTeam.GOODGUYS,
-            vPos,
-            null,
-            this.AttributeData.PickItemRadius,
-            UnitTargetTeam.FRIENDLY,
-            UnitTargetType.OTHER,
-            UnitTargetFlags.INVULNERABLE,
-            FindOrder.ANY,
-            false
-        )
-        // print("ExpItems",ExpItems.length)
-        for (let ExpItem of ExpItems) {
-            // print("RowName",ExpItem.GetUnitName())
-            if (ExpItem.GetUnitName() == "npc_exp"
-                && !ExpItem.HasModifier("modifier_pick_animation")
-                && !ExpItem.HasModifier("modifier_generic_arc_lua")
-            ) {
-                ExpItem.AddNewModifier(hParent, null, "modifier_pick_animation", {})
+        this.timer += 1;
+        if (this.timer % 10 == 0) {
+            this.timer = 0;
+            let vPos = this.hParent.GetAbsOrigin();
+            let ExpItems = FindUnitsInRadius(
+                DotaTeam.GOODGUYS,
+                vPos,
+                null,
+                this.AttributeData.PickItemRadius,
+                UnitTargetTeam.FRIENDLY,
+                UnitTargetType.OTHER,
+                UnitTargetFlags.INVULNERABLE,
+                FindOrder.ANY,
+                false
+            )
+            // print("ExpItems",ExpItems.length)
+            for (let ExpItem of ExpItems) {
+                // print("RowName",ExpItem.GetUnitName())
+                if (ExpItem.GetUnitName() == "npc_exp"
+                    && !ExpItem.HasModifier("modifier_pick_animation")
+                    && !ExpItem.HasModifier("modifier_generic_arc_lua")
+                ) {
+                    ExpItem.AddNewModifier(this.hParent, null, "modifier_pick_animation", {})
+                }
             }
         }
 
+        let fGameTime = GameRules.GetDOTATime(false, false);
+        // print("fGameTime",fGameTime)
+        for (let i = 0; i < 6; i++) {
+            let hItem = this.hParent.GetItemInSlot(i);
+            if (hItem && (hItem.ArmsActTime ?? 0) <= fGameTime) {
+                hItem._ArmsEffectStart();
+            }
+        }
     }
 
     _UpdateAttribute() {

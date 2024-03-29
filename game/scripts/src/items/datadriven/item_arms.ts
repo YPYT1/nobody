@@ -11,9 +11,9 @@ Object.assign(getfenv(), {
 export function OnEquip(params: CGDatadrivenProps) {
     const hUnit = params.caster;
     const hItem = params.ability;
-    if (hItem.IsItem()) {
-        hItem.ArmsTriggerTime = GameRules.GetDOTATime(false, false) + 1;
-    }
+    // if (hItem.IsItem()) {
+    //     hItem.ArmsTriggerTime = GameRules.GetDOTATime(false, false) + 1;
+    // }
     print("[datadriven Item]:", params.ability.GetAbilityName(), "OnEquip", hItem.GetOwnerEntity().entindex())
 }
 

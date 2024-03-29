@@ -22,9 +22,9 @@ export class ItemArmsSystem {
         //     // 无弹道
         //     this._TriggerItemOnSelf(hItem, hParent, item_data)
         // }
-        // DeepPrintTable(item_kv)
-        let interval = hItem.GetSpecialValueFor("interval");
-        hItem.ArmsTriggerTime = GameRules.GetDOTATime(false, false) + interval;
+        // // DeepPrintTable(item_kv)
+        // let interval = hItem.GetSpecialValueFor("interval");
+        // hItem.ArmsEffectTime = GameRules.GetDOTATime(false, false) + interval;
     }
 
     _TriggerItemOnSelf(hItem: CDOTA_Item, hParent: CDOTA_BaseNPC, KvData: any) {

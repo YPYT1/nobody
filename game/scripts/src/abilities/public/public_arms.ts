@@ -16,7 +16,7 @@ export class modifier_public_arms extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
-        // this.StartIntervalThink(0.03)
+        this.StartIntervalThink(0.03)
     }
 
     OnIntervalThink(): void {
@@ -25,8 +25,8 @@ export class modifier_public_arms extends BaseModifier {
         // print("fGameTime",fGameTime)
         for (let i = 0; i < 6; i++) {
             let hItem = hParent.GetItemInSlot(i);
-            if (hItem && (hItem.ArmsTriggerTime ?? 0) <= fGameTime) {
-                GameRules.ItemArmsSystem.ItemEffect(hItem,hParent)
+            if (hItem && (hItem.ArmsActTime ?? 0) <= fGameTime) {
+                hItem._ArmsEffectStart();
             }
         }
     }

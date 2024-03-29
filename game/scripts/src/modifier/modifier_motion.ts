@@ -305,3 +305,147 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         }
     }
 }
+
+
+/**
+ * Modifier 环绕
+ */
+@registerModifier()
+export class modifier_motion_surround extends BaseModifierMotionBoth {
+
+    /** 环绕高度 */
+    surround_height: number;
+    /** 当前环绕目标距离 */
+    surround_distance: number;
+    /** 环绕渐变距离 */
+    surround_distance_bonus: number;
+    _distance_bonus: number;
+    /** 初始所处角度 */
+    surround_qangle: number;
+    /** 环绕速度 */
+    surround_speed: number;
+    /** 中心实体 */
+    surround_entity: EntityIndex;
+    /** 最终距离 */
+    final_distance: number;
+    /** x距离偏移 */
+    forward_offset: number;
+    /** 锁定面向 */
+    lock_forward: number;
+
+    _base_entity: CDOTA_BaseNPC;
+    _rote_value: number;
+    _downswing: boolean;
+
+    IsHidden(): boolean { return true; }
+    IsPurgable() { return false; }
+    RemoveOnDeath(): boolean { return true; }
+
+    GetPriority(): ModifierPriority {
+        return ModifierPriority.ULTRA + 100;
+    }
+
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            [ModifierState.NO_HEALTH_BAR]: true,
+            [ModifierState.UNSELECTABLE]: true,
+            [ModifierState.NOT_ON_MINIMAP]: true,
+        };
+    }
+
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return; }
+        this.GetParent().RemoveHorizontalMotionController(this);
+        this.GetParent().RemoveVerticalMotionController(this);
+        this.surround_distance = params.surround_distance;
+        this.final_distance = params.surround_distance;
+        this.surround_qangle = params.surround_qangle;
+        this.surround_speed = params.surround_speed * 0.01;
+        this.surround_entity = params.surround_entity;
+        this.surround_height = params.surround_height ?? 0;
+        this.forward_offset = params.forward_offset ?? 0;
+        this.lock_forward = params.lock_forward ?? 0;
+        this.surround_distance_bonus = params.surround_distance_bonus ?? 0;
+        this._distance_bonus = 0;
+        this._downswing = false;
+        this._base_entity = EntIndexToHScript(this.surround_entity) as CDOTA_BaseNPC;
+        this._rote_value = 0;
+        if (this.ApplyHorizontalMotionController() == false || this.ApplyVerticalMotionController() == false) {
+            this.Destroy();
+            return;
+        }
+        this.StartIntervalThink(0.1);
+        this._OnCreated(params);
+    }
+
+    _OnCreated(params: any) { }
+
+    OnRefresh(params: any): void {
+        if (!IsServer()) { return; }
+        // 变更坐标
+        this.final_distance = params.surround_distance;
+        // print(this.GetName(), " OnRefresh");
+    }
+
+    OnIntervalThink(): void {
+        if (this.GetCaster() == null || this.GetAbility() == null) {
+            this.StartIntervalThink(-1);
+            this.Destroy();
+            return;
+        }
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return; }
+        this.GetParent().RemoveHorizontalMotionController(this);
+        this.GetParent().RemoveVerticalMotionController(this);
+    }
+
+    OnVerticalMotionInterrupted() {
+        if (!IsServer()) { return; }
+        this.Destroy();
+    }
+
+    UpdateVerticalMotion(me: CDOTA_BaseNPC, dt: number): void {
+        if (!IsServer()) { return; }
+        let vCenterPos = this._base_entity.GetAbsOrigin();
+        let vPos = me.GetAbsOrigin();
+        vPos.z = vCenterPos.z + this.surround_height;
+        me.SetOrigin(vPos);
+    }
+
+    // 水平
+    UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
+        if (!IsServer()) { return; }
+        if (IsValid(this._base_entity)) {
+            this.Destroy();
+            return;
+        }
+        // print(this._base_entity, IsValid(this._base_entity));
+        let center_point = this._base_entity.GetAbsOrigin() + this._base_entity.GetForwardVector() * this.forward_offset as Vector;
+        let int_offset: Vector;
+        if (this.final_distance == this.surround_distance) {
+            // 如果距离等于
+            int_offset = Vector(center_point.x, center_point.y + this.surround_distance + this._distance_bonus, center_point.z);
+            this._distance_bonus += this.surround_distance_bonus;
+        } else {
+            int_offset = Vector(center_point.x, center_point.y + this.surround_distance + this._distance_bonus, center_point.z);
+            this.surround_distance += math.floor(this.final_distance - this.surround_distance) * 0.05;
+        }
+        let next_pos = RotatePosition(
+            center_point,
+            QAngle(0, (this.surround_qangle + this._rote_value), 0),
+            int_offset
+        );
+        this._rote_value += this.surround_speed;
+        if (this._rote_value > 360) { this._rote_value -= 360; }
+        me.SetAbsOrigin(next_pos);
+        if (this.lock_forward == 1) {
+            let direction = this.GetCaster().GetOrigin() - me.GetOrigin() as Vector;
+            let angleX = GetAngleByPosOfX(direction);
+            me.SetAngles(0, angleX, 0);
+        }
+    }
+
+}

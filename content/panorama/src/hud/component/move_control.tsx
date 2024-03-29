@@ -37,31 +37,35 @@ const ke = {
     key_F9: "F9",
     key_F10: "F10",
     key_F11: "F11",
-    key_F12: "F12"
+    key_F12: "F12",
+    key_LEFT: "LEFT",
+    key_RIGHT: "RIGHT",
+    key_UP: "UP",
+    key_DOWN: "DOWN",
 };
 
-let WASD_down_state = {
-    "w": false,
-    "a": false,
-    "s": false,
-    "d": false,
+function Onkey_Backspace_Down() {
+    let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+    GameUI.SetCameraTarget(hero_entity);
 }
 
+function Onkey_Backspace_Up() {
 
-
+}
 function OnInitMoveHotkey() {
-    SetHotKey("W", OnKey_Down_W, OnKey_Up_W);
-    SetHotKey("A", OnKey_Down_A, OnKey_Up_A);
-    SetHotKey("S", OnKey_Down_S, OnKey_Up_S);
-    SetHotKey("D", OnKey_Down_D, OnKey_Up_D);
-    SetHotKey("S1_UP", OnKey_Down_W, OnKey_Up_W);
-    SetHotKey("S1_LEFT", OnKey_Down_A, OnKey_Up_A);
-    SetHotKey("S1_DOWN", OnKey_Down_S, OnKey_Up_S);
-    SetHotKey("S1_RIGHT", OnKey_Down_D, OnKey_Up_D);
+    GameUI.SetCameraTarget(-1 as EntityIndex);
+    // SetHotKey("key_up", OnKey_Down_W, OnKey_Up_W);
+    // SetHotKey("key_LEFT", OnKey_Down_A, OnKey_Up_A);
+    // SetHotKey("key_DOWN", OnKey_Down_S, OnKey_Up_S);
+    // SetHotKey("key_RIGHT", OnKey_Down_D, OnKey_Up_D);
+    SetHotKey("space", Onkey_Backspace_Down, Onkey_Backspace_Up);
+    // SetHotKey("S1_UP", OnKey_Down_W, OnKey_Up_W);
+    // SetHotKey("S1_LEFT", OnKey_Down_A, OnKey_Up_A);
+    // SetHotKey("S1_DOWN", OnKey_Down_S, OnKey_Up_S);
+    // SetHotKey("S1_RIGHT", OnKey_Down_D, OnKey_Up_D);
     // GameUI.SetCameraDistance(1300);
     // GameUI.SetCameraPitchMin(70);
     // GameUI.SetCameraPitchMax(70);
-    
 }
 
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
@@ -154,6 +158,22 @@ export function SetHotKey(key: string, down_func: Function, up_func: Function) {
     );
 }
 
+export function SetArrowKey(key: string, down_func: Function, up_func: Function) {
+    let command_string = `On${key}_${Date.now()}`;
+    Game.CreateCustomKeyBind(key, `+${command_string}`);
+    Game.AddCommand(
+        `+${command_string}`,
+        () => { if (down_func) { down_func(); } },
+        ``,
+        0
+    );
+    Game.AddCommand(
+        `-${command_string}`,
+        () => { if (up_func) { up_func(); } },
+        ``,
+        0
+    );
+}
 export const MoveControll = () => {
 
     return (
@@ -162,6 +182,7 @@ export const MoveControll = () => {
                 id="InputButton"
                 className='HotkeyInput LabelFXContainer'
                 // maxchars={1}
+                style={{ width: "200px", height: "120px" }}
                 onload={(e) => {
                     OnInitMoveHotkey();
                     e.SetDialogVariable("input_key", "");
@@ -169,7 +190,7 @@ export const MoveControll = () => {
                     for (let n in ke) {
                         const r = ke[n as keyof typeof ke];
                         $.RegisterKeyBind(e, n, (source, presses, panel) => {
-                            $.Msg(["source", source])
+                            $.Msg(["RegisterKeyBind", source, presses, r, n])
                             e.SetDialogVariable("input_key", r);
                         });
                     }

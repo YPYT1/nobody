@@ -85,7 +85,7 @@ export class CustomAttribute {
                 hUnit.AddAbility("public_null_4");
                 hUnit.AddAbility("public_null_5");
                 hUnit.AddAbility("public_null_6");
-                hUnit.AddAbility("public_arms").SetLevel(1);
+                // hUnit.AddAbility("public_arms").SetLevel(1);
                 hUnit.AddAbility("public_attribute").SetLevel(1);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
                 return null
@@ -172,7 +172,7 @@ export class CustomAttribute {
      * @param hUnit 
      */
     UpdateAttributeInGame(hUnit: CDOTA_BaseNPC) {
-        print("UpdateAttributeInGame")
+        // print("UpdateAttributeInGame")
         hUnit.last_attribute_update = GameRules.GetDOTATime(false, false) + this.update_delay
         let buff = hUnit.FindModifierByName("modifier_public_attribute");
         if (buff) { buff.ForceRefresh(); }
