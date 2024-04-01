@@ -36,7 +36,7 @@ export class CustomAttribute {
 
         GameRules.CustomOverrideAbility.InitAbilitySpecialValue(player_id, hUnit);
 
-        GameRules.ArmsEvolution.InitPlayerUpgradeStatus(player_id);
+        GameRules.ItemEvolution.InitPlayerUpgradeStatus(player_id , hUnit);
 
         if (hHeroKvData) {
             for (let i = 0; i < 32; i++) {

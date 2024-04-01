@@ -2,9 +2,10 @@ import { Debug } from './Debug';
 import { GameConfig } from './GameConfig';
 import { Development } from './development';
 import { GameEvent } from './game_event';
-import { CMsg } from './ingame/public/cmsg';
 import { MapChapter } from './map_chapter';
 import { XNetTable } from './xnet-table';
+
+import * as public_const from "../json/config/public_const.json";
 
 declare global {
 
@@ -14,7 +15,8 @@ declare global {
         XNetTable: XNetTable;
         Development: Development;
         MapChapter: MapChapter;
-        CMsg:CMsg;
+         /**常量 */
+        PUBLIC_CONST: typeof public_const;
     }
 }
 
@@ -24,12 +26,13 @@ declare global {
  **/
 export function ActivateModules() {
     print("ActivateModules");
+    //初始化常量
+    GameRules.PUBLIC_CONST = public_const;
     // 初始化所有的GameRules模块
     GameRules.GameEvent = new GameEvent();
     GameRules.XNetTable = new XNetTable();
     GameRules.Development = new Development();
     GameRules.MapChapter = new MapChapter()
-    GameRules.CMsg = new CMsg();
     // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
     new GameConfig();
     // 初始化测试模块xD

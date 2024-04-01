@@ -1,6 +1,5 @@
 import { reloadable } from '../utils/tstl-utils';
 import { Filter } from './filter';
-import { ArmsEvolution } from './ingame/hero_extend/arms_evolution';
 import { BasicRules } from './ingame/basic_rules';
 import { BuffManager } from './ingame/public/buff_manager';
 import { CustomAttribute } from './ingame/hero_extend/custom_attribute';
@@ -8,12 +7,13 @@ import { CustomOverrideAbility } from './ingame/hero_extend/custom_override_abil
 import { EntityKilled } from './ingame/public/entity_killed';
 import { Spawns } from './ingame/spawns';
 import { ItemArmsSystem } from './ingame/item_arms_system';
+import { ItemEvolution } from './ingame/hero_extend/item_evolution';
 
 declare global {
 
     interface CDOTAGameRules {
         // 声明所有的GameRules模块，这个主要是为了方便其他地方的引用（保证单例模式）
-        ArmsEvolution: ArmsEvolution;
+        ItemEvolution: ItemEvolution;
 
         BasicRules: BasicRules;
         BuffManager: BuffManager;
@@ -51,7 +51,7 @@ export class GameEvent {
         } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) { //加载阶段
 
         } else if (State_Get == GameState.CUSTOM_GAME_SETUP) { //游戏设置阶段
-            GameRules.ArmsEvolution = new ArmsEvolution();
+            GameRules.ItemEvolution = new ItemEvolution();
             GameRules.BasicRules = new BasicRules();
             GameRules.CustomAttribute = new CustomAttribute();
             GameRules.CustomOverrideAbility = new CustomOverrideAbility()
