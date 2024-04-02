@@ -19,14 +19,20 @@ export class modifier_public_arms extends BaseModifier {
         this.StartIntervalThink(0.03)
     }
 
+    OnRefresh(params: object): void {
+        if (!IsServer()) { return }
+        this.StartIntervalThink(0.03)
+    }
+
     OnIntervalThink(): void {
         let hParent = this.GetParent();
+        if (!hParent.IsAlive()) { this.StartIntervalThink(-1) }
         let fGameTime = GameRules.GetDOTATime(false, false);
-        // print("fGameTime",fGameTime)
         for (let i = 0; i < 6; i++) {
-            let hItem = hParent.GetItemInSlot(i);
-            if (hItem && (hItem.ArmsActTime ?? 0) <= fGameTime) {
-                hItem._ArmsEffectStart();
+            let hArms = hParent.GetAbilityByIndex(i);
+            if (hArms && (hArms.ArmsActTime ?? 0) <= fGameTime) {
+                // print("hArms",hArms.GetAbilityName())
+                hArms._ArmsEffectStart();
             }
         }
     }

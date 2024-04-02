@@ -139,11 +139,11 @@ export function FormatDescription(
         // }
         let special_value = special_num % 1 ? special_num.toFixed(2) : special_num.toFixed(0);
         let value = special_value;
-        original_description_txt = original_description_txt.replace(
+        original_description_txt = original_description_txt.replaceAll(
             `%${key}%%%`,
             `<span class="GameplayVariable ${is_negative ? "negative" : ""}">${value}%</span>`
         );
-        original_description_txt = original_description_txt.replace(
+        original_description_txt = original_description_txt.replaceAll(
             `%${key}%`,
             `<span class="GameplayVariable ${is_negative ? "negative" : ""}">${value}</span>`
         );
@@ -168,17 +168,17 @@ export function FormatDescription(
             special_num = Math.abs(special_num);
             let special_value = special_num % 1 ? special_num.toFixed(2) : special_num.toFixed(0);
             let value = special_value;
-            original_description_txt = original_description_txt.replace(
+            original_description_txt = original_description_txt.replaceAll(
                 `%${key}%%%`,
                 `<span class="GameplayVariable ${is_negative ? "negative" : ""}">${value}%</span>`
             );
-            original_description_txt = original_description_txt.replace(
+            original_description_txt = original_description_txt.replaceAll(
                 `%${key}%`,
                 `<span class="GameplayVariable ${is_negative ? "negative" : ""}">${value}</span>`
             );
         }
     }
 
-
+    original_description_txt = original_description_txt.replaceAll("\n", "<br>");
     return original_description_txt;
 }

@@ -1,12 +1,13 @@
 /** 元素类型 
- * 火
- * 水
- * 雷
- * 土
- * 风
- * 
+ * 0.无元素
+ * 1.火
+ * 2.冰
+ * 3.风
+ * 4.雷
+ * 5.光
+ * 6.暗
 */
-type CElementType = "fire" | "water" | "thunder" | "earth" | "wind" | "null";
+type CElementType = "null" |  "fire" | "water" | "wind" | "thunder" | "light" | "dark" ;
 
 /** 按键移动方向 */
 type CMoveDirection = "UP" | "DOWN" | "LEFT" | "RIGHT";

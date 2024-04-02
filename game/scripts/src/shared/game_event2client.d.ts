@@ -8,7 +8,7 @@ declare interface CustomGameEventDeclarations {
         };
     };
 
-    CMsg_PopupNumbersToClients :{
+    CMsg_PopupNumbersToClients: {
         data: {
             // 值
             value: number,
@@ -27,8 +27,12 @@ declare interface CustomGameEventDeclarations {
 
     CMsg_PopupResourceNumber: {
         data: {
-            resource_type: CTPlayerResources;
+            resource_type: PlayerResourceTyps;
             amount: number;
         };
     };
+
+    ResourceSystem_SendPlayerResources: {
+        data: { [key in PlayerResourceTyps]: number }
+    }
 }

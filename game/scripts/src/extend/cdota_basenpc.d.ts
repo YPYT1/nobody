@@ -10,9 +10,13 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     /** 属性转换 */
     custom_attribute_conversion: CustomAttributeConversionType;
 
-    AbilityUpgrades: AbilitySpecialValueProps;
-    AdvancedUpgrades: { [rune: string]: number };
+    // AbilityUpgrades: AbilitySpecialValueProps;
+    /** 肉鸽专用词条词条 */
+    OverrideSpecial: OverrideSpecialValueProps;
+
     /** 所有技能的内置冷却相应 */
     CDResp: { [key: string]: number }
 
+    drop_resource_type: PlayerResourceTyps;
+    drop_resource_amount: number;
 }

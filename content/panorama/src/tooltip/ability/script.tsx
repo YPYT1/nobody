@@ -227,8 +227,8 @@ export function App() {
                 <Panel id="AbilityTopRowContainer" className="flow-right">
                     <Label id="AbilityCastType" dialogVariables={{ casttype: casttype }} localizedText="#DOTA_AbilityTooltip_CastType" html={true} />
                 </Panel>
-                <Label id="AbilityTargetType" localizedText="#DOTA_AbilityTooltip_TargetType" html={true} className='Hidden' />
-                <Label id="AbilityDamageType" localizedText="#DOTA_AbilityTooltip_DamageType" html={true} className='Hidden' />
+                {/* <Label id="AbilityTargetType" localizedText="#DOTA_AbilityTooltip_TargetType" html={true} className='Hidden' /> */}
+                {/* <Label id="AbilityDamageType" localizedText="#DOTA_AbilityTooltip_DamageType" html={true} className='Hidden' /> */}
             </Panel>
 
             <Panel id="AbilityCoreDetails" className="flow-down">

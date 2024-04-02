@@ -8,6 +8,7 @@ import { EntityKilled } from './ingame/public/entity_killed';
 import { Spawns } from './ingame/spawns';
 import { ItemArmsSystem } from './ingame/item_arms_system';
 import { ItemEvolution } from './ingame/hero_extend/item_evolution';
+import { ResourceSystem } from './ingame/system/resource_system';
 
 declare global {
 
@@ -22,7 +23,7 @@ declare global {
         CustomOverrideAbility: CustomOverrideAbility;
 
         EntityKilled: EntityKilled;
-
+        ResourceSystem:ResourceSystem;
         ItemArmsSystem:ItemArmsSystem;
         Spawns:Spawns;
 
@@ -59,6 +60,7 @@ export class GameEvent {
             GameRules.EntityKilled = new EntityKilled();
             GameRules.ItemArmsSystem = new ItemArmsSystem();
             GameRules.Spawns = new Spawns();
+            GameRules.ResourceSystem = new ResourceSystem();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
 
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
@@ -67,7 +69,6 @@ export class GameEvent {
 
         } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段
             new Filter(); // 加载过滤器
-            
         } else if (State_Get == GameState.PRE_GAME) { //赛前阶段
 
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段

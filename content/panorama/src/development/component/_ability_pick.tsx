@@ -100,7 +100,8 @@ const UnitAbilityImage = ({ order }: { order: number }) => {
         GameEvents.SendCustomGameEventToServer("Development", {
             event_name: "DeleteAbility",
             params: {
-                ability_enti: AbilityEnti,
+                queryUnit: Players.GetLocalPlayerPortraitUnit(),
+                ability_order: order,
             }
         })
 

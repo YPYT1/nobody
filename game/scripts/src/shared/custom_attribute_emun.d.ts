@@ -79,43 +79,48 @@ declare type CustomAttributeConversionType = {
 }
 
 
-declare type AbilitySpecialTypes = "Base" | "Percent";
+declare type OverrideSpecialKeyTypes = "projectile_speed"
+    | "bounce_count"
+    | "projectile_count"
+    | "aoe_radius"
+    | "damage_interval_cut"
+    | "cooldown_cut"
+    | "summoned_duration"
+    | "summoned_damage"
+    | "buff_duration"
+    | "debuff_duration"
+    | "shield_amplify"
+    | "health_amplify"
+    | "extra_count"
 
-interface AbilitySpecialObjectProps {
-    [ability: string]: {
-        [special_key: string]: {
-            base_value: number;
-            mul_list: number[];
-            amount: number;
-        }
+declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Correct";
+
+
+interface OverrideSpecialObjectProps {
+    [special_key: string]: {
+        // base_value: number;
+        mul_list: number[];
     }
 }
 
-interface AbilitySpecialValueProps {
-    [ability: string]: {
-        [special_key: string]: {
-            /** 额外伤害值 */
-            base_value: number;
-            /** 伤害倍率 百分比表示 */
-            mul_value: number;
-            cache_value?: number;
-        }
+interface OverrideSpecialValueProps {
+    [special_key: string]: {
+        /** 基础值 */
+        base_value: number;
+        /** 倍率 */
+        mul_value: number;
+        /** 修正值.默认为0即100% 最小[-100%]*/
+        correct_value: number;
+        /** 结果 (基础*倍率)*修正 */
+        // result_value: number;
+        cache_value?: number;
     }
 }
 
 /** 资源类型 */
-type CTPlayerResources = "Gold" | "Wood" | "Kills" | "TeamExp" | "SingleExp";
-// declare interface AbilitySpecialValueProps {
-//     [special_name: string]: {
-//         /** 加算 */
-//         add_value: number;
-//         /** 乘算 */
-//         mul_value: number;
-//         /** 缓存值 */
-//         cache_value: number;
-//     };
-// }
+type PlayerResourceTyps = "Gold" | "Soul" | "Kills" | "TeamExp" | "SingleExp";
 
+/** 物品类型 */
 type ArmsItemCategory = "book" // 书籍
     | "strengthen" // 强化
     | "zhaohuan"// 召唤

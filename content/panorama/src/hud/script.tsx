@@ -5,6 +5,7 @@ import { render } from 'react-panorama-x';
 
 import { MoveControll } from './component/move_control';
 import { MessageContainer } from './component/message';
+import { ResourceComponent } from './component/resource/resource';
 
 
  
@@ -14,6 +15,7 @@ const Test = () => {
         <>
             <MoveControll />
             <MessageContainer />
+            <ResourceComponent />
         </>
     )
 };

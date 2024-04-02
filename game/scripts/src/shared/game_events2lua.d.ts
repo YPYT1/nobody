@@ -15,13 +15,15 @@ declare interface CGED {
         ReplaceHero: { heroid: number },
         ReplaceAbility: { ability_name: string, order: number, queryUnit: EntityIndex },
         UpgradeAbility: { ability_enti: EntityIndex },
-        DeleteAbility: { ability_enti: EntityIndex },
+        DeleteAbility: {
+            queryUnit: EntityIndex,
+            ability_order: number,
+        },
         CreatedItem: { item_name: string, queryUnit: EntityIndex };
         ModiyAttribute: { unit: EntityIndex, attr_object: CustomAttributeTableType }
-        ModiyAbilitySpecialValue: {
-            ability_name: string;
-            special_type: AbilitySpecialTypes;
-            special_key: string;
+        ModiyOverrideSpecialValue: {
+            special_key: OverrideSpecialKeyTypes;
+            special_type: OverrideSpecialBonusTypes;
             special_value: number;
         }
     }
@@ -32,6 +34,10 @@ declare interface CGED {
             Direction: CMoveDirection,
             State: 0 | 1,
         }
+    }
+
+    ResourceSystem: {
+        GetPlayerResource: {}
     }
 }
 

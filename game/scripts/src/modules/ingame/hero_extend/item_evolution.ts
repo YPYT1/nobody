@@ -37,17 +37,17 @@ export class ItemEvolution extends UIEventRegisterClass {
         this.PlayerUpgradePool[player_id] = {};
         this.EvolutionPoint[player_id] = 0;
         for (const [key, val] of pairs(ItemArmsJson)) {
-            if(val.Quality > 0){
-                if(!this.PlayerUpgradePool[player_id].hasOwnProperty(val.Quality)){
-                    this.PlayerUpgradePool[player_id][val.Quality] = {
+            if(val.Rarity > 0){
+                if(!this.PlayerUpgradePool[player_id].hasOwnProperty(val.Rarity)){
+                    this.PlayerUpgradePool[player_id][val.Rarity] = {
                         key : [],
                         pro : [],
                     }
                 }
-                this.PlayerUpgradePool[player_id][val.Quality].key.push(key);
-                this.PlayerUpgradePool[player_id][val.Quality].pro.push(val.Probability);
-                if(this.ItemQmax < val.Quality){
-                    this.ItemQmax = val.Quality;
+                this.PlayerUpgradePool[player_id][val.Rarity].key.push(key);
+                this.PlayerUpgradePool[player_id][val.Rarity].pro.push(val.Probability);
+                if(this.ItemQmax < val.Rarity){
+                    this.ItemQmax = val.Rarity;
                 }
             }
         }
@@ -71,7 +71,7 @@ export class ItemEvolution extends UIEventRegisterClass {
             print("技能点不足！")
             return
         }
-        let Quality = ItemArmsJson[Key as keyof typeof ItemArmsJson].Quality;
+        let Quality = ItemArmsJson[Key as keyof typeof ItemArmsJson].Rarity;
         if(this.ItemQmax == Quality){
             print("已经是最高品质了！")
             return 

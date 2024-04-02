@@ -77,8 +77,13 @@ export class Development extends UIEventRegisterClass {
     }
 
     DeleteAbility(player_id: PlayerID, params: CGED["Development"]["DeleteAbility"]) {
-        let ability_enti = EntIndexToHScript(params.ability_enti) as CDOTABaseAbility;
-        ability_enti.RemoveSelf()
+        let ability_order = params.ability_order;
+        let hUnit = EntIndexToHScript(params.queryUnit) as CDOTA_BaseNPC;
+        let hAbility = hUnit.GetAbilityByIndex(ability_order);
+        hUnit.RemoveAbilityByHandle(hAbility)
+        if (ability_order < 6) {
+            hUnit.AddAbility("arms_passive_" + ability_order)
+        }
     }
 
     // 创建物品到单位身上
@@ -127,13 +132,16 @@ export class Development extends UIEventRegisterClass {
         GameRules.CustomAttribute.ModifyAttribute(unit, attr_object)
     }
 
-    ModiyAbilitySpecialValue(player_id: PlayerID, params: CGED["Development"]["ModiyAbilitySpecialValue"]) {
+    ModiyOverrideSpecialValue(player_id: PlayerID, params: CGED["Development"]["ModiyOverrideSpecialValue"]) {
         DeepPrintTable(params)
-        let ability_name = params.ability_name;
         let special_key = params.special_key;
         let special_type = params.special_type;
         let special_value = params.special_value;
-        GameRules.CustomOverrideAbility.ModifySpecialValue(player_id, ability_name, special_key, special_type, special_value)
+        GameRules.CustomOverrideAbility.ModifyOverrideSpecialValue(player_id, {
+            [special_key]: {
+                [special_type]: special_value
+            }
+        })
     }
 
     /** Debug命令 */
@@ -182,7 +190,7 @@ export class Development extends UIEventRegisterClass {
                 let vDrop = hHeroUnit.GetAbsOrigin() + RandomVector(600) as Vector;
                 vDrop.x += RandomInt(-600, 600)
                 vDrop.y += RandomInt(-600, 600)
-                GameRules.BasicRules.DropExpItem(hHeroUnit, vDrop, 100)
+                GameRules.ResourceSystem.DropResourceItem("TeamExp", vDrop, 100);
             }
 
         }

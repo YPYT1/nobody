@@ -1,1 +1,1 @@
-#base "items/item_arms.txt"
+#base "items/public.txt"

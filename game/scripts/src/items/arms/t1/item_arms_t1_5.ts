@@ -3,16 +3,16 @@ import { BaseModifier, registerAbility, registerModifier } from "../../../utils/
 import { BaseArmsItem, BaseArmsModifier } from "../base_arms";
 
 @registerAbility()
-export class arms_t1_5 extends BaseArmsItem {
+export class item_arms_t1_5 extends BaseArmsItem {
 
-    mdf_name = "modifier_arms_t1_5";
+    mdf_name = "modifier_item_arms_t1_5";
 
     Precache(context: CScriptPrecacheContext): void {
         PrecacheResource("particle", "particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf", context);
     }
 
     ArmsEffectStart(): void {
-        // print("ArmsEffectStart")
+        print("ArmsEffectStart")
         const vPoint = this.caster.GetOrigin();
         const projectile_distance = 600;
 
@@ -37,7 +37,7 @@ export class arms_t1_5 extends BaseArmsItem {
         CreateModifierThinker(
             this.caster,
             this,
-            "modifier_arms_t1_5_powershot",
+            "modifier_item_arms_t1_5_powershot",
             {
             },
             target_vect,
@@ -45,8 +45,7 @@ export class arms_t1_5 extends BaseArmsItem {
             false
         );
 
-        let extra_count = math.min(12, this.GetSpecialValueFor("projectile_count") - 1);
-        // print("extra_count",extra_count)
+        let extra_count = this.GetSpecialValueFor("projectile_count") - 1;
         if (extra_count > 0) {
             for (let i = 0; i < extra_count; i++) {
                 let is_even = i % 2 == 0; // 偶数
@@ -56,7 +55,7 @@ export class arms_t1_5 extends BaseArmsItem {
                 CreateModifierThinker(
                     this.caster,
                     this,
-                    "modifier_arms_t1_5_powershot",
+                    "modifier_item_arms_t1_5_powershot",
                     {
                         duration: 2
                     },
@@ -72,47 +71,35 @@ export class arms_t1_5 extends BaseArmsItem {
 
 
 
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: any): boolean | void {
-        let thinker = EntIndexToHScript(extraData.thinker) as CDOTA_BaseNPC;
-        if (!thinker) { return; }
-        let thinker_buff = thinker.FindModifierByName("modifier_arms_t1_5_powershot") as modifier_arms_t1_5_powershot;
-        if (!thinker_buff) { return; }
-        if (target) {
-            return thinker_buff.ApplyCustomDamage(target);
-        } else {
-            thinker_buff.Destroy();
-        }
-
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: object): boolean | void {
+        print("OnProjectileHit_ExtraData")
+        DeepPrintTable(extraData)
     }
 
+    OnProjectileHit(target: CDOTA_BaseNPC, location: Vector): boolean | void {
+        print("OnProjectileHit")
+    }
 }
 
 @registerModifier()
-export class modifier_arms_t1_5 extends BaseArmsModifier { }
+export class modifier_item_arms_t1_5 extends BaseArmsModifier { }
 
 
 
 @registerModifier()
-export class modifier_arms_t1_5_powershot extends BaseModifier {
-
-    damage_factor: number;
-    ability_damage: number;
-    dmg_reduction: number;
+export class modifier_item_arms_t1_5_powershot extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
-        let hAbility = this.GetAbility();
-        this.damage_factor = 1;
-        this.dmg_reduction = hAbility.GetSpecialValueFor("dmg_reduction") * 0.01;
-        this.ability_damage = this.GetCaster().GetAverageTrueAttackDamage(null) * 0.5
         let proj_radius = 150;
+        let hAbility = this.GetAbility();
         let EffectName = "particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf";
         let target_vect = this.GetParent().GetOrigin();
         let speed = 1800;
         let direction = target_vect - this.GetCaster().GetOrigin() as Vector;
         direction.z = 0;
         direction = direction.Normalized();
-        // print((direction * speed),direction)
+        print((direction * speed),direction)
         let projectile_id = ProjectileManager.CreateLinearProjectile({
             EffectName: EffectName,
             Ability: hAbility,
@@ -129,24 +116,6 @@ export class modifier_arms_t1_5_powershot extends BaseModifier {
                 thinker: this.GetParent().entindex()
             }
         });
+        print("modifier_item_arms_t1_5_powershot", projectile_id)
     }
-
-    ApplyCustomDamage(hTarget: CDOTA_BaseNPC) {
-        ApplyCustomDamage({
-            victim: hTarget,
-            attacker: this.GetCaster(),
-            damage: this.ability_damage * this.damage_factor,
-            damage_type: DamageTypes.MAGICAL,
-            ability: this.GetAbility(),
-            element_type: "wind",
-        });
-
-        this.damage_factor *= (1 + this.dmg_reduction);
-    }
-
-    OnDestroy(): void {
-        if (!IsServer()) { return; }
-        UTIL_Remove(this.GetParent());
-    }
-
 }

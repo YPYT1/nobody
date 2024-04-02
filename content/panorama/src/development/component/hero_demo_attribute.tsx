@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useGameEvent, useNetTableKey, useNetTableValues } from 'react-panorama-x';
 import { HideCustomTooltip, ShowCustomTextTooltip } from '../../utils/custom_tooltip';
 import { default as NpcAbilitiesCustom } from "./../../json/npc_abilities_custom.json";
-import * as attribute_const from "./../../json/config/game/attribute_const.json"
-
+import { default as attribute_const } from "./../../json/config/game/attribute_const.json"
+import { default as special_keyvalue } from "./../../json/config/game/special_keyvalue.json"
 
 const attr_sub_key_list = Object.keys(Object.values(attribute_const)[0].AbilityValues);
 
@@ -166,6 +166,7 @@ const HeroDemoAttribute = () => {
                 <AttributeRowsHeader />
                 <Panel className='AttributeRowList'>
                     <AttributeRows attr_key="AttackDamage" attr_value={AttributeValue} attr_table={AttributeTable} />
+                    <AttributeRows attr_key="ArmorCommon" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackRange" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="MoveSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
@@ -190,29 +191,23 @@ const AbilityButtonRow = ({ entity, Btnhandle }: { entity: AbilityEntityIndex, B
     )
 }
 
-const AbilityKvRowEditor = ({ entity, kv_key, kv_value }: { entity: AbilityEntityIndex; kv_key: string; kv_value: number }) => {
+const RowOverrideKvEditor = ({ kv_key }: { kv_key: OverrideSpecialKeyTypes }) => {
 
-    let real_value = Abilities.GetSpecialValueFor(entity, kv_key) ?? 0
-    const [value, setValue] = useState(entity ? Abilities.GetSpecialValueFor(entity, kv_key) : 0)
-    const [AttrSubKey, setAttrSubKey] = useState<AbilitySpecialTypes>("Base");
-    const ability_name = Abilities.GetAbilityName(entity)
-    let vvvvv = CustomNetTables.GetTableValue("unit_special_value", "0");
-
-
-    // 
-    // if (vvvvv && vvvvv[ability_name] != null) {
-    //     let data = vvvvv[ability_name];
-    //     let special_data = data[kv_key];
-    //     if (special_data){
-    //         let cache_value = special_data.cache_value ?? 0
-    //         real_value = cache_value
-    //     }
-    // }
+    const [value, setValue] = useState(0)
+    const [AttrSubKey, setAttrSubKey] = useState<OverrideSpecialBonusTypes>("Base");
 
     return (
         <Panel className='AbilityKvRowEditor flow-right'>
-            <Label className='KvKey' text={kv_key} />
-            <Label className='KvValue' text={real_value} />
+            <Label className='KvKey'
+                text={kv_key}
+                onmouseover={(e) => {
+                    ShowCustomTextTooltip(e, "#custom_special_key_"+kv_key, kv_key)
+                }}
+                onmouseout={() => {
+                    HideCustomTooltip()
+                }}
+            />
+            <Label className='KvValue' text={0} />
             <TextEntry
                 className='TextEntry'
                 textmode="numeric"
@@ -230,26 +225,24 @@ const AbilityKvRowEditor = ({ entity, kv_key, kv_value }: { entity: AbilityEntit
                     }}
 
                     oninputsubmit={(e) => {
-                        let sub_key = e.GetSelected().id as AbilitySpecialTypes;
+                        let sub_key = e.GetSelected().id as OverrideSpecialBonusTypes;
                         setAttrSubKey(sub_key)
                     }}
                 >
                     <Label id={"Base"} text={"Base"} />
                     <Label id={"Percent"} text={"Percent"} />
+                    <Label id={"Correct"} text={"Correct"} />
                 </DropDown>
             </Panel>
 
             <Button
                 className='fc-tool-button'
                 onactivate={() => {
-                    if (!entity) { return }
-
                     GameEvents.SendCustomGameEventToServer("Development", {
-                        event_name: "ModiyAbilitySpecialValue",
+                        event_name: "ModiyOverrideSpecialValue",
                         params: {
-                            ability_name: Abilities.GetAbilityName(entity),
-                            special_type: AttrSubKey,
                             special_key: kv_key,
+                            special_type: AttrSubKey,
                             special_value: value,
                         }
                     })
@@ -262,33 +255,22 @@ const AbilityKvRowEditor = ({ entity, kv_key, kv_value }: { entity: AbilityEntit
         </Panel>
     )
 }
-const AbilityKeyValueEditor = ({ ability_entity }: { ability_entity?: AbilityEntityIndex }) => {
-    let ability_name = ""
-    let ability_keyvalue: { [key: string]: number } = {}
-    if (ability_entity) {
-        ability_name = Abilities.GetAbilityName(ability_entity);
-        let kv_data = NpcAbilitiesCustom[ability_name as keyof typeof NpcAbilitiesCustom];
-        if (kv_data) {
-            ability_keyvalue = kv_data.AbilityValues as { [key: string]: number };
-        }
-    }
 
+const OverrideKeyList = Object.keys(special_keyvalue);
+const OverrideSpecialValueEditor = () => {
 
+    // overri
     return useMemo(() => (
         <Panel id='AbilityKeyValueEditor'>
-            <Label text={ability_name} />
             <Panel className='KeyValueTable'>
                 {
-                    Object.entries(ability_keyvalue).map((v, k) => {
-                        if (ability_entity) {
-                            return <AbilityKvRowEditor key={k} kv_key={v[0]} kv_value={v[1]} entity={ability_entity} />
-                        }
-
+                    Object.keys(special_keyvalue).map((v, k) => {
+                        return <RowOverrideKvEditor key={k} kv_key={v as keyof typeof special_keyvalue} />
                     })
                 }
             </Panel>
         </Panel>
-    ), [ability_entity])
+    ), [])
 }
 
 const HeroEditorAbility = () => {
@@ -312,21 +294,7 @@ const HeroEditorAbility = () => {
 
     return (
         <Panel id="HeroEditorAbility">
-            <Panel id='AbilityEditorList'>
-                {
-                    Array(4).fill(0).map((v, k) => {
-                        let ability_entity = Entities.GetAbility(QueryUnit, k)
-                        return <AbilityButtonRow
-                            key={k}
-                            entity={ability_entity}
-                            Btnhandle={setAbilityHandle}
-                        />
-                    })
-                }
-            </Panel>
-            <Panel id='AbilityKeyValue'>
-                <AbilityKeyValueEditor ability_entity={AbilityEnti} />
-            </Panel>
+            <OverrideSpecialValueEditor />
         </Panel>
 
     )

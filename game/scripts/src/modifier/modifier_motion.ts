@@ -267,21 +267,19 @@ export class modifier_pick_animation extends modifier_motion_bezier {
 
     OnDestroy(): void {
         if (!IsServer()) { return; }
+        let hParent = this.GetParent();
         let hCaster = this.GetCaster();
+        let resource_type = hParent.drop_resource_type;
+        let resource_amount = hParent.drop_resource_amount
+        GameRules.ResourceSystem.ModifyResource(hCaster.GetPlayerOwnerID(), {
+            [resource_type]: resource_amount
+        }, hCaster, true)
+
         let effect_fx = ParticleManager.CreateParticle(
             "particles/diy/pick_item_fx2.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
             hCaster
         )
-        // ParticleManager.SetParticleControlEnt(
-        //     effect_fx,
-        //     0,
-        //     hCaster,
-        //     ParticleAttachment.ABSORIGIN,
-        //     "attach_hitloc",
-        //     Vector(0, 0, -500),
-        //     false
-        // )
         ParticleManager.ReleaseParticleIndex(effect_fx)
         UTIL_RemoveImmediate(this.GetParent());
     }

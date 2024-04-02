@@ -34,7 +34,7 @@ export class CustomAttribute {
         hUnit.custom_attribute_conversion = {};
         hUnit.last_attribute_update = 0;
 
-        GameRules.CustomOverrideAbility.InitAbilitySpecialValue(player_id, hUnit);
+        GameRules.CustomOverrideAbility.InitOverrideSpecialTable(player_id, hUnit);
 
         GameRules.ItemEvolution.InitPlayerUpgradeStatus(player_id , hUnit);
 

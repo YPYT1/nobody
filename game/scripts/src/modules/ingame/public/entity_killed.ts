@@ -12,7 +12,7 @@ export class EntityKilled {
         if (hKilled.GetTeamNumber() == DotaTeam.BADGUYS) {
             // 掉落经验
             let vect = hKilled.GetAbsOrigin();
-            GameRules.BasicRules.DropExpItem(hAttacker, vect, 100);
+            GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, 100);
 
             let vAttacker = hAttacker.GetAbsOrigin();
             let vDir = (vect - vAttacker as Vector).Normalized()
