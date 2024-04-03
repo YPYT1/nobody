@@ -79,7 +79,7 @@ export class modifier_item_arms_t1_1_summoned_collision extends BaseModifier {
             damage: ability_damage,
             damage_type: DamageTypes.MAGICAL,
             ability: this.GetAbility(),
-            element_type: "thunder",
+            // element_type: 0,
         })
 
         let hAuraUnit = this.GetAuraOwner()

@@ -40,7 +40,7 @@ declare interface ApplyCustomDamageOptions {
     /** 额外伤害`整数` 后续会转为百分比小数  */
     bonus_pct?: number;
     /** 元素 */
-    element_type?: CElementType;
+    // element_type?: ElementTypeEnum;
     /** 是否为固定值,不吃任何加成 */
     fixed?: boolean;
 }

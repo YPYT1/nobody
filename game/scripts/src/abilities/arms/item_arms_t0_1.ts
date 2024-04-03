@@ -1,8 +1,8 @@
 import { registerAbility, registerModifier } from "../../utils/dota_ts_adapter";
-import { BaseArmsItem, BaseArmsModifier } from "./base_arms";
+import { BaseArmsAbility, BaseArmsModifier } from "./base_arms_ability";
 
 @registerAbility()
-export class item_arms_t0_1 extends BaseArmsItem {
+export class item_arms_t0_1 extends BaseArmsAbility {
 
     mdf_name = "modifier_item_arms_t0_1";
     

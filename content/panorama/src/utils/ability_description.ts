@@ -5,9 +5,9 @@ import { FormatDescription, FormatLocalize } from "./method";
 const DamageTypeLabel: { [key: string]: string; } = {
     "0": "无",
     "1": "<span class='fire'>火元素</span>",
-    "2": "<span class='water'>水元素</span>",
-    "3": "<span class='wind'>风元素</span>",
-    "4": "<span class='thunder'>雷元素</span>",
+    "2": "<span class='water'>冰元素</span>",
+    "3": "<span class='thunder'>雷元素</span>",
+    "4": "<span class='wind'>风元素</span>",
     "5": "<span class='light'>光元素</span>",
     "6": "<span class='dark'>暗元素</span>",
 };

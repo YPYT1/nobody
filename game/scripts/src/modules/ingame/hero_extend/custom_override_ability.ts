@@ -21,6 +21,7 @@ export class CustomOverrideAbility {
         this.OverrideSpecialValue = {}
     }
 
+    /** 初始化玩家的special key 值 */
     InitOverrideSpecialTable(player_id: PlayerID, hUnit: CDOTA_BaseNPC) {
         hUnit.OverrideSpecial = {};
         this.OverrideSpecialMul[player_id] = {}

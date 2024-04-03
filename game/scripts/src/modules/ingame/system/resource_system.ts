@@ -52,7 +52,16 @@ export class ResourceSystem extends UIEventRegisterClass {
         }
     }
 
-    /** 修改资源 */
+    /**
+     * 修改资源 
+     * @param player_id 
+     * @param resource_input 
+     * @param overhead_target 
+     * @param bSound 
+     * @param bFixed 
+     * @param bIgnoring 
+     * @returns 
+     */
     ModifyResource(
         player_id: PlayerID,
         resource_input: PlayerResourceInput,
@@ -62,7 +71,7 @@ export class ResourceSystem extends UIEventRegisterClass {
         bIgnoring: boolean = false, // 无视条件,为真则能把资源扣成负数
         // bIsSell: boolean = false, // 是否为出售
     ) {
-        let ret: { type: number, msg: string } = { type: 0, msg: "", };
+        let ret: { status: boolean, msg: string } = { status: true, msg: "", };
         for (let [resource, amount] of pairs(resource_input)) {
             amount = math.ceil(amount);
             // 不为固定,且不无视
@@ -72,11 +81,12 @@ export class ResourceSystem extends UIEventRegisterClass {
                     if (bFixed == false) {
                         amount = amount * this.player_cost_rate[player_id][resource] * 0.01
                     }
-                    const res_check = amount >= this.player_resource[player_id][resource];
+                    const res_check = math.abs(amount) <= this.player_resource[player_id][resource];
                     if (res_check == false) {
-                        print("resource not enough type==>", resource)
+                        // DeepPrintTable(this.player_resource[player_id])
+                        // print("resource not enough type==>", resource)
                         // 未满足条件,所以
-                        ret.type = 1;
+                        ret.status = false;
                         ret.msg = `[${resource}]:not enough`
                         return ret
                     }
@@ -139,7 +149,7 @@ export class ResourceSystem extends UIEventRegisterClass {
     ModifyCostRate(player_id: PlayerID, resource: PlayerResourceTyps, value: number) {
         this.player_cost_rate[player_id][resource] += value
     }
-
+    
     DropResourceItem(resource: PlayerResourceTyps, vPos: Vector, iCount: number) {
         let exp_unit = CreateUnitByName("npc_exp", vPos, false, null, null, DotaTeam.GOODGUYS)
         EmitSoundOn("Custom.ItemDrop", exp_unit)
@@ -158,7 +168,6 @@ export class ResourceSystem extends UIEventRegisterClass {
     }
 
     GetPlayerResource(player_id: PlayerID) {
-        print("GetPlayerResource")
         this.SendPlayerResource(player_id)
     }
 }

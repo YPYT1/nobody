@@ -80,6 +80,7 @@ export class Development extends UIEventRegisterClass {
         let ability_order = params.ability_order;
         let hUnit = EntIndexToHScript(params.queryUnit) as CDOTA_BaseNPC;
         let hAbility = hUnit.GetAbilityByIndex(ability_order);
+        hAbility.RemoveSelf()
         hUnit.RemoveAbilityByHandle(hAbility)
         if (ability_order < 6) {
             hUnit.AddAbility("arms_passive_" + ability_order)
@@ -158,11 +159,11 @@ export class Development extends UIEventRegisterClass {
                 // "npc_public_test2",
                 // "npc_public_test3",
             ]
-            const hHero = PlayerResource.GetPlayer(player_id).GetAssignedHero()
+            const vCenter = Vector(0,0,0)
             GameRules.GetGameModeEntity().SetContextThink("devxg", () => {
                 amount += 1
                 for (let unit_name of unit_name_list) {
-                    let unit = GameRules.Spawns.CreateNormal(unit_name, hHero.GetAbsOrigin() + RandomVector(800) as Vector)
+                    let unit = GameRules.Spawns.CreateNormal(unit_name, vCenter + RandomVector(3800) as Vector)
                     unit.SetControllableByPlayer(0, true)
                     // unit.SetHullRadius(36);
                 }
@@ -171,6 +172,12 @@ export class Development extends UIEventRegisterClass {
                 }
                 return 0.25
             }, 0.25)
+        }
+
+        if (cmd == "-vis") {
+            print("add vis")
+            // GameRules.GetGameModeEntity().SetFogOfWarDisabled(false)
+            AddFOWViewer(DotaTeam.GOODGUYS, Vector(0, 0, 0), 5000, 3600, true)
         }
 
         if (cmd == "-hpbar") {

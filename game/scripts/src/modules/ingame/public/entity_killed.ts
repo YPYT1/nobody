@@ -13,7 +13,9 @@ export class EntityKilled {
             // 掉落经验
             let vect = hKilled.GetAbsOrigin();
             GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, 100);
-
+            GameRules.ResourceSystem.ModifyResource(hAttacker.GetPlayerOwnerID(), {
+                "Soul": 10
+            })
             let vAttacker = hAttacker.GetAbsOrigin();
             let vDir = (vect - vAttacker as Vector).Normalized()
             vDir.z = 0;

@@ -1,6 +1,7 @@
 import * as AttributeConst from "../../../json/config/game/attribute_const.json";
 import * as NpcHeroesCustom from "../../../json/npc_heroes_custom.json";
 import * as ItemArmsJson from "../../../json/items/item_arms.json";
+import * as AbilitiesArmsJson from "../../../json/abilities/arms.json";
 import { reloadable } from "../../../utils/tstl-utils";
 
 /** 自定义属性系统 */
@@ -36,7 +37,7 @@ export class CustomAttribute {
 
         GameRules.CustomOverrideAbility.InitOverrideSpecialTable(player_id, hUnit);
 
-        GameRules.ItemEvolution.InitPlayerUpgradeStatus(player_id , hUnit);
+        // GameRules.ItemEvolution.InitPlayerUpgradeStatus(player_id , hUnit);
 
         if (hHeroKvData) {
             for (let i = 0; i < 32; i++) {
@@ -79,13 +80,13 @@ export class CustomAttribute {
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
 
-                hUnit.AddAbility("public_null_1");
-                hUnit.AddAbility("public_null_2");
-                hUnit.AddAbility("public_null_3");
-                hUnit.AddAbility("public_null_4");
-                hUnit.AddAbility("public_null_5");
-                hUnit.AddAbility("public_null_6");
-                // hUnit.AddAbility("public_arms").SetLevel(1);
+                hUnit.AddAbility("arms_passive_0");
+                hUnit.AddAbility("arms_passive_1");
+                hUnit.AddAbility("arms_passive_2");
+                hUnit.AddAbility("arms_passive_3");
+                hUnit.AddAbility("arms_passive_4");
+                hUnit.AddAbility("arms_passive_5");
+                hUnit.AddAbility("public_arms").SetLevel(1);
                 hUnit.AddAbility("public_attribute").SetLevel(1);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
                 return null
@@ -321,11 +322,18 @@ export class CustomAttribute {
     }
 
     /** 获取物品的属性 */
-    GetItemAttribute(item_name:string){
-        let item_data = ItemArmsJson[item_name as keyof typeof ItemArmsJson];
-        let AttributeValues = item_data.AttributeValues as CustomAttributeTableType
+    GetItemAttribute(item_name: string) {
+        let data = ItemArmsJson[item_name as keyof typeof ItemArmsJson];
+        let AttributeValues = data.AttributeValues as CustomAttributeTableType
         return AttributeValues
     }
+
+    GetAbilityAttribute(ability_name: string) {
+        let data = AbilitiesArmsJson[ability_name as keyof typeof AbilitiesArmsJson];
+        let AttributeValues = data.AttributeValues as CustomAttributeTableType
+        return AttributeValues
+    }
+
 
     /** 修改转换属性 */
     ModifyConversionAttribute(hUnit: CDOTA_BaseNPC, attr_key: CustomAttributeConversionType) {

@@ -1,9 +1,9 @@
 import { modifier_motion_surround } from "../../../modifier/modifier_motion";
 import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseArmsItem, BaseArmsModifier } from "../base_arms";
+import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 @registerAbility()
-export class arms_t1_5 extends BaseArmsItem {
+export class arms_t1_5 extends BaseArmsAbility {
 
     mdf_name = "modifier_arms_t1_5";
 
@@ -104,7 +104,7 @@ export class modifier_arms_t1_5_powershot extends BaseModifier {
         let hAbility = this.GetAbility();
         this.damage_factor = 1;
         this.dmg_reduction = hAbility.GetSpecialValueFor("dmg_reduction") * 0.01;
-        this.ability_damage = this.GetCaster().GetAverageTrueAttackDamage(null) * 0.5
+        this.ability_damage = this.GetAbility().GetAbilityDamage();
         let proj_radius = 150;
         let EffectName = "particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf";
         let target_vect = this.GetParent().GetOrigin();
@@ -138,7 +138,7 @@ export class modifier_arms_t1_5_powershot extends BaseModifier {
             damage: this.ability_damage * this.damage_factor,
             damage_type: DamageTypes.MAGICAL,
             ability: this.GetAbility(),
-            element_type: "wind",
+            // element_type: 0,
         });
 
         this.damage_factor *= (1 + this.dmg_reduction);

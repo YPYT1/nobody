@@ -2,12 +2,22 @@
  * 0.无元素
  * 1.火
  * 2.冰
- * 3.风
- * 4.雷
+ * 3.雷
+ * 4.风
  * 5.光
  * 6.暗
 */
-type CElementType = "null" |  "fire" | "water" | "wind" | "thunder" | "light" | "dark" ;
+type CElementType = "null" | "fire" | "ice" | "thunder" | "wind" | "light" | "dark" | "null";
+
+declare const enum ElementTypeEnum {
+    null = 0,
+    fire = 1,
+    ice = 2,
+    thunder = 3,
+    wind = 4,
+    light = 5,
+    dark = 6
+}
 
 /** 按键移动方向 */
 type CMoveDirection = "UP" | "DOWN" | "LEFT" | "RIGHT";

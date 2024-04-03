@@ -30,7 +30,7 @@ export class modifier_public_arms extends BaseModifier {
         let fGameTime = GameRules.GetDOTATime(false, false);
         for (let i = 0; i < 6; i++) {
             let hArms = hParent.GetAbilityByIndex(i);
-            if (hArms && (hArms.ArmsActTime ?? 0) <= fGameTime) {
+            if (hArms && hArms.GetClassname() == "ability_lua" && (hArms.ArmsActTime ?? 0) <= fGameTime) {
                 // print("hArms",hArms.GetAbilityName())
                 hArms._ArmsEffectStart();
             }
