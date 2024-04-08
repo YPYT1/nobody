@@ -1,18 +1,30 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
+import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
+import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
+/**
+ * 钢毛皮甲	"在受到伤害时触发，将尖刺喷射向敌人，对附近的敌人造成伤害。
+特效：钢背刺针扫射
+内置cd：1秒
+伤害系数：攻击力150%·风元素伤害
+作用范围：自身范围500码"
+
+ */
 @registerAbility()
-export class arms_t2_2 extends BaseAbility {
+export class arms_t2_2 extends BaseArmsAbility {
 
-    GetIntrinsicModifierName(): string {
-        return "modifier_arms_t2_2"
+    mdf_name = "modifier_arms_t2_2";
+
+    _OnUpdateKeyValue(): void {
+        this.AffectedAdd()
+    }
+
+    AffectedEffectStart(event: ModifierAttackEvent): void {
+        
     }
 }
 
 @registerModifier()
-export class modifier_arms_t2_2 extends BaseModifier {
-
-
-}
+export class modifier_arms_t2_2 extends BaseArmsModifier { }
 
 
 

@@ -7,6 +7,10 @@ export class arms_t1_1 extends BaseArmsAbility {
 
     mdf_name = "modifier_arms_t1_1";
 
+    _OnUpdateKeyValue(): void {
+        this.ArmsAdd()
+    }
+    
     ArmsEffectStart(): void {
         let count = 3;
         let surround_qangle = 360 / count;
@@ -25,7 +29,7 @@ export class arms_t1_1 extends BaseArmsAbility {
 }
 
 @registerModifier()
-export class modifier_arms_t1_1 extends BaseArmsModifier {}
+export class modifier_arms_t1_1 extends BaseArmsModifier { }
 
 @registerModifier()
 export class modifier_arms_t1_1_summoned extends modifier_motion_surround {
@@ -80,6 +84,7 @@ export class modifier_arms_t1_1_summoned_collision extends BaseModifier {
             damage: ability_damage,
             damage_type: DamageTypes.MAGICAL,
             ability: this.GetAbility(),
+            element_type: ElementTypeEnum.thunder,
         })
 
         let hAuraUnit = this.GetAuraOwner()

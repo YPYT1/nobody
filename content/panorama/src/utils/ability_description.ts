@@ -62,16 +62,16 @@ export function HeroPassiveDamageFormula(abilityName: string, formula: string, l
 }
 
 export function SetAbilityDescription(
-    name: string | null,
+    ability_name: string | null,
     entityIndex?: AbilityEntityIndex,
     level: number = 1,
 ) {
 
-    if (name == null) {
+    if (ability_name == null) {
         if (entityIndex) {
-            name = Abilities.GetAbilityName(entityIndex);
+            ability_name = Abilities.GetAbilityName(entityIndex);
         } else {
-            name = "null";
+            ability_name = "null";
         }
     }
 
@@ -79,9 +79,9 @@ export function SetAbilityDescription(
         level = Abilities.GetLevel(entityIndex);
     }
     $("#AbilityDamageType")?.SetHasClass("Hidden", true);
-    let abilityData = NpcAbilityCustom[name as "public_template"];
+    let abilityData = NpcAbilityCustom[ability_name as "public_template"];
     let AbilityValues: AbilityValuesProps = abilityData.AbilityValues;
-    let original_description_txt = FormatDescription(name, AbilityValues, level, undefined);
+    let original_description_txt = FormatDescription(ability_name, AbilityValues, level, undefined, entityIndex);
     // $.Msg(["original_description_txt",original_description_txt])
     if (original_description_txt.search("#") == 0) { return ""; }
     // 解锁
@@ -90,7 +90,7 @@ export function SetAbilityDescription(
         $("#AbilityDamageType")?.SetHasClass("Hidden", false);
         let damage_formula = abilityData.DamageFormula;
         if (damage_formula) {
-            let damageFormula_desc = HeroPassiveDamageFormula(name, `${damage_formula}`, level, abilityData.Element ?? "0");
+            let damageFormula_desc = HeroPassiveDamageFormula(ability_name, `${damage_formula}`, level, abilityData.Element ?? "0");
             original_description_txt = original_description_txt.replace("%DamageFormula%", damageFormula_desc);
         }
         // if (abilityData.Element) {
@@ -101,7 +101,7 @@ export function SetAbilityDescription(
         //     $("#CustomTooltipItem").SetDialogVariable("damagetype", "无");
         // }
 
-        let formula_text = ``;
+        // let formula_text = ``;
         // if (abilityData.AbilityType == "DOTA_ABILITY_TYPE_ULTIMATE") {
         //     IsUltimate = true;
         //     formula_text += `<br><br><span class="">${$.Localize("#custom_text_upgrade_ultimate")}</span>`;
@@ -126,8 +126,20 @@ export function SetAbilityDescription(
         //         formula_text += `<br><br><span class="${state_class}"> Lv.${ability_lv}解锁 :${awaken_text}</span>`;
         //     }
         // }
-        original_description_txt += formula_text;
+        // original_description_txt += formula_text;
     }
 
     return original_description_txt;
+}
+
+/** 获取技能品质 
+ *  1白2绿3蓝4紫5金6橙7红8黑9彩
+*/
+export const GetAbilityRarity = (ability_name: string) => {
+    let abilityData = NpcAbilityCustom[ability_name as "public_template"];
+    if (abilityData != null) {
+        return abilityData.Rarity
+    } else {
+        return 0
+    }
 }

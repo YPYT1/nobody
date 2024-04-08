@@ -5,7 +5,7 @@
 		"BaseClass"	"ability_datadriven"
 		"AbilityTextureName"	"ability_capture"
 		"AbilityBehavior"	"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
-
+		"Disable" "0"
 		"AbilityValues" {
 
 		}

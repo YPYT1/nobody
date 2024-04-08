@@ -8,6 +8,7 @@ export class BaseArmsAbility extends BaseAbility {
     caster: CDOTA_BaseNPC;
     dmg_formula: string;
     player_id: PlayerID;
+    ability_damage: number;
 
     // OverrideKyes
     projectile_speed: number
@@ -46,6 +47,9 @@ export class BaseArmsAbility extends BaseAbility {
 
     RemoveSelf(): void {
         print("Ability RemoveSelf", this.GetAbilityName())
+        const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
+        public_arms.AffectedRemove(this);
+        public_arms.ArmsRemove(this);
         this._RemoveSelf();
     }
 
@@ -63,12 +67,32 @@ export class BaseArmsAbility extends BaseAbility {
         this.ArmsEffectStart_After()
     }
 
-    ArmsEffectStart_Before(): void {
-        this.ArmsActTime = GameRules.GetDOTATime(false, false) + (this.arms_cd ?? 1);
+    ArmsEffectStart() { }
+    ArmsEffectStart_Before() { this.ArmsActTime = GameRules.GetDOTATime(false, false) + this.arms_cd; }
+    ArmsEffectStart_After() { }
+
+    _AffectedEffectStart(event: ModifierAttackEvent) {
+        this.AffectedEffectStart_Before()
+        this.AffectedEffectStart(event)
+        this.AffectedEffectStart_After()
     }
 
-    ArmsEffectStart(): void { }
-    ArmsEffectStart_After(): void { }
+    AffectedEffectStart(event: ModifierAttackEvent) { }
+    AffectedEffectStart_Before() { this.ArmsActTime = GameRules.GetDOTATime(false, false) + this.arms_cd; }
+    AffectedEffectStart_After() { }
+
+
+    /** 火力技注册 */
+    ArmsAdd() {
+        const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
+        public_arms.ArmsInsert(this)
+    }
+
+    /** 受击技注册 */
+    AffectedAdd() {
+        const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
+        public_arms.AffectedInsert(this)
+    }
 
     GetAbilityDamage() {
         if (this.dmg_formula == null) {
@@ -132,5 +156,97 @@ export class BaseArmsModifier extends BaseModifier {
 
     _DestroyAfter() {
 
+    }
+}
+
+
+// 属性
+@registerAbility()
+export class public_arms extends BaseAbility {
+
+    ArmsList: CDOTABaseAbility[];
+    AffectedList: CDOTABaseAbility[];
+
+    GetIntrinsicModifierName(): string {
+        return "modifier_public_arms"
+    }
+
+    OnUpgrade(): void {
+        if (this.ArmsList == null) { this.ArmsList = [] }
+        if (this.AffectedList == null) { this.AffectedList = [] }
+    }
+
+    ArmsInsert(hAbility: CDOTABaseAbility) {
+        let iIndex = this.ArmsList.indexOf(hAbility);
+        if (iIndex == -1) { this.ArmsList.push(hAbility) }
+
+    }
+
+    ArmsRemove(hAbility: CDOTABaseAbility) {
+        let iIndex = this.ArmsList.indexOf(hAbility);
+        if (iIndex != -1) { this.ArmsList.splice(iIndex, 1); }
+    }
+
+    AffectedInsert(hAbility: CDOTABaseAbility) {
+        let iIndex = this.AffectedList.indexOf(hAbility);
+        if (iIndex == -1) { this.AffectedList.push(hAbility) }
+    }
+
+    AffectedRemove(hAbility: CDOTABaseAbility) {
+        let iIndex = this.AffectedList.indexOf(hAbility);
+        if (iIndex != -1) { this.AffectedList.splice(iIndex, 1); }
+    }
+
+}
+
+@registerModifier()
+export class modifier_public_arms extends BaseModifier {
+
+    timer: number;
+    hAbility: public_arms;
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.hAbility = this.GetAbility() as public_arms;
+        this.StartIntervalThink(0.03)
+    }
+
+    OnRefresh(params: object): void {
+        if (!IsServer()) { return }
+        this.StartIntervalThink(0.03)
+    }
+
+    OnIntervalThink(): void {
+        let hParent = this.GetParent();
+        if (!hParent.IsAlive()) { this.StartIntervalThink(-1) }
+        let fGameTime = GameRules.GetDOTATime(false, false);
+        for (let hArmsAbility of this.hAbility.ArmsList) {
+            if ((hArmsAbility.ArmsActTime ?? 0) <= fGameTime) {
+                hArmsAbility._ArmsEffectStart()
+            }
+        }
+        // for (let i = 0; i < 6; i++) {
+        //     let hArms = hParent.GetAbilityByIndex(i);
+        //     if (hArms && hArms.GetClassname() == "ability_lua" && ) {
+        //         // print("hArms",hArms.GetAbilityName())
+        //         hArms._ArmsEffectStart();
+        //     }
+        // }
+    }
+
+    DeclareFunctions(): ModifierFunction[] {
+        return [
+            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
+        ]
+    }
+
+    GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
+        let fGameTime = GameRules.GetDOTATime(false, false);
+        for (let hAffectedAbility of this.hAbility.AffectedList) {
+            if ((hAffectedAbility.ArmsActTime ?? 0) <= fGameTime) {
+                hAffectedAbility._AffectedEffectStart(event)
+            }
+        }
+        return 0
     }
 }

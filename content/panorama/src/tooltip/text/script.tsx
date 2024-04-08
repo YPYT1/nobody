@@ -23,8 +23,14 @@ const App = () => {
         }
         let LocalizeDescription = $.Localize(description, ContextPanel);
         setText($.Localize(text, ContextPanel));
-        LocalizeDescription = LocalizeDescription.replaceAll("\n", "<br>")
-        setDescription(LocalizeDescription);
+        // $.Msg(["LocalizeDescription",LocalizeDescription.indexOf("#")])
+        if(LocalizeDescription.indexOf("#") == 0){
+            setDescription("");
+        } else {
+            LocalizeDescription = LocalizeDescription.replaceAll("\n", "<br>")
+            setDescription(LocalizeDescription);
+        }
+        
     });
 
     return (

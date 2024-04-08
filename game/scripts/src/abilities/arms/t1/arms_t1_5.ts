@@ -2,6 +2,11 @@ import { modifier_motion_surround } from "../../../modifier/modifier_motion";
 import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
+/**
+ * 向敌人射出%projectile_count%支强力的箭矢，每支箭矢穿透一名敌人伤害就会减少%dmg_reduction%%。
+
+伤害公式：%DamageFormula%
+ */
 @registerAbility()
 export class arms_t1_5 extends BaseArmsAbility {
 
@@ -11,6 +16,10 @@ export class arms_t1_5 extends BaseArmsAbility {
         PrecacheResource("particle", "particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf", context);
     }
 
+    _OnUpdateKeyValue(): void {
+        this.ArmsAdd();
+    }
+    
     ArmsEffectStart(): void {
         // print("ArmsEffectStart")
         const vPoint = this.caster.GetOrigin();
@@ -82,7 +91,6 @@ export class arms_t1_5 extends BaseArmsAbility {
         } else {
             thinker_buff.Destroy();
         }
-
     }
 
 }

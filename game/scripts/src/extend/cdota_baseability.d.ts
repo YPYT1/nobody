@@ -8,6 +8,8 @@ declare interface CDOTABaseAbility extends CBaseEntity {
     ArmsEffectStart_Before(): void;
     ArmsEffectStart_After(): void;
 
+    _AffectedEffectStart(event: ModifierAttackEvent):void;
+
     GetAbilityDamage(): number;
     // _OnEquip(): void;
     // _OnUnequip(): void;

@@ -11,7 +11,9 @@ export class arms_t1_2 extends BaseArmsAbility {
     gain_hp: number;
 
     _OnUpdateKeyValue(): void {
-        this.gain_hp = this.GetSpecialValueFor("gain_hp")
+        this.gain_hp = this.GetSpecialValueFor("gain_hp");
+
+        this.ArmsAdd()
     }
 
     ArmsEffectStart(): void {

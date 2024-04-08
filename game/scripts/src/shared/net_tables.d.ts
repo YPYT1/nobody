@@ -10,15 +10,16 @@ declare interface CustomNetTableDeclarations {
 
     /** 单位属性 */
     unit_attribute: {
-        [entity: string]: {
-            table: CustomAttributeTableType;
-            value: CustomAttributeValueType;
-
-        };
+        [entity: string]: UnitAttributeNT;
     }
 
     unit_special_value: {
         [player_id: string]: OverrideSpecialValueProps;
     }
 
+}
+
+interface UnitAttributeNT {
+    table: CustomAttributeTableType;
+    value: CustomAttributeValueType;
 }

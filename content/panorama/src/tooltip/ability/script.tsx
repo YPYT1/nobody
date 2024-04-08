@@ -126,6 +126,7 @@ function GetAbilityBehavior(name: string) {
 export function App() {
 
     const [index, setIndex] = useState(0 as AbilityEntityIndex);
+    const [AbilityName, setAbilityName] = useState("")
     const [name, setName] = useState("Loading...");
     const [description, setDescription] = useState("");
     const [level, setLevel] = useState(1);
@@ -166,7 +167,7 @@ export function App() {
             casttype_str_list.push($.Localize("#" + type_str));
         }
         setCasttype(casttype_str_list.join(" / "));
-
+        setAbilityName(name)
     };
 
     const UpdateAbilityFromEntity = (entityIndex: AbilityEntityIndex, ext_int: number) => {
@@ -195,6 +196,8 @@ export function App() {
         }
         // $.Msg(["casttype_str_list",casttype_str_list])
         setCasttype(casttype_str_list.join(" / "));
+
+        setAbilityName(name)
     };
 
     // 更新面板
@@ -202,10 +205,12 @@ export function App() {
         let ContextPanel = $.GetContextPanel();
         let entityIndex = $.GetContextPanel().GetAttributeInt("entityIndex", 0) as AbilityEntityIndex;
         let ext_int = $.GetContextPanel().GetAttributeInt("ext_int", 0);
+        let name = $.GetContextPanel().GetAttributeString("name", "");
         // setIndex(entityIndex);
         // $.Msg(["ontooltiploaded",entityIndex])
         // $.Msg(["ext_int", ext_int]);
         if (entityIndex < 1) {
+
             UpdateAbilityFromName(ext_int);
         } else {
             UpdateAbilityFromEntity(entityIndex, ext_int);
@@ -215,15 +220,27 @@ export function App() {
     return (
         <Panel id="CustomTooltipAbility" className="tooltip-row" >
             <Panel id="AbilityHeader" className="flow-right">
-                <Panel id="AbilityName" className="flow-right">
-                    <Label className='AbilityNameLabel' html={true} text={name} />
+                <Panel className='AbilityImage'>
+                    <DOTAAbilityImage id='AbilityImage' hittest={false} abilityname={AbilityName} />
                 </Panel>
-                <Panel id="AbilityLevel" className="flow-right">
-                    <Label html={true} dialogVariables={{ level: `${level}` }} localizedText="#DOTA_AbilityTooltip_Level" />
+                <Panel className='AbilityLabel'>
+                    <Panel className='NameAndCost'>
+                        <Panel id="AbilityName" className="flow-right">
+                            <Label className='AbilityNameLabel' html={true} text={name} />
+                            {/* <Label html={true} dialogVariables={{ level: `${level}` }} localizedText="#DOTA_AbilityTooltip_Level" /> */}
+                        </Panel>
+                        <Panel id="CurrentItemCosts" className="flow-right">
+                            <Label id="Cooldown" visible={cooldown > 0} text={cooldown} html={true} />
+                            <Label id="ManaCost" visible={mana > 0} text={mana} html={true} />
+                        </Panel>
+                    </Panel>
+                    <Panel className='Category'>
+                        <Label text={"范围型"} />
+                    </Panel>
                 </Panel>
             </Panel>
 
-            <Panel id="AbilityTarget" className="flow-down">
+            <Panel id="AbilityTarget" className="flow-down" visible={false}>
                 <Panel id="AbilityTopRowContainer" className="flow-right">
                     <Label id="AbilityCastType" dialogVariables={{ casttype: casttype }} localizedText="#DOTA_AbilityTooltip_CastType" html={true} />
                 </Panel>
@@ -238,10 +255,7 @@ export function App() {
 
                     </Panel>
                 </Panel>
-                <Panel id="CurrentItemCosts" className="flow-right">
-                    <Label id="Cooldown" visible={cooldown > 0} text={cooldown} html={true} />
-                    <Label id="ManaCost" visible={mana > 0} text={mana} html={true} />
-                </Panel>
+
             </Panel>
 
 

@@ -25,6 +25,7 @@ export class arms_t1_3 extends BaseArmsAbility {
             this.stack_buff = this.caster.AddNewModifier(this.caster, this, "modifier_arms_t1_3_stack", {})
         }
 
+        this.ArmsAdd();
     }
 
     ArmsEffectStart(): void {
@@ -35,7 +36,6 @@ export class arms_t1_3 extends BaseArmsAbility {
             this.lost_amount += this.losing_soul
             this.stack_buff.SetStackCount(this.lost_amount)
         }
-
     }
 
     _RemoveSelf(): void {

@@ -116,27 +116,32 @@ export function FormatDescription(
     AbilityValues: AbilityValuesProps,
     level: number = 1,
     AbilityValues2?: AbilityValuesProps,
+    entityIndex?: AbilityEntityIndex,
 ) {
     let original_description_txt = $.Localize(`#DOTA_Tooltip_Ability_${name}_Description`);
     if (level <= 0) { level = 1; }
+
     for (let key in AbilityValues) {
         let special_key = AbilityValues[key];
         let special_num = 0;
-        if (typeof (special_key) == "string") {
-            let _arr = special_key.split(" ").map((v, k) => { return parseFloat(v); });
-            const kv_value_len = _arr.length;
-            if (level >= kv_value_len) {
-                special_num = _arr[kv_value_len - 1];
-            } else {
-                special_num = _arr[level - 1];
-            }
+        if (entityIndex) {
+            special_num = Abilities.GetSpecialValueFor(entityIndex, key)
         } else {
-            special_num = special_key;
+            if (typeof (special_key) == "string") {
+                let _arr = special_key.split(" ").map((v, k) => { return parseFloat(v); });
+                const kv_value_len = _arr.length;
+                if (level >= kv_value_len) {
+                    special_num = _arr[kv_value_len - 1];
+                } else {
+                    special_num = _arr[level - 1];
+                }
+            } else {
+                special_num = special_key;
+            }
         }
+
         let is_negative = special_num < 0;
-        // if (bShowNegative == false) {
-        //     special_num = Math.abs(special_num);
-        // }
+        if (is_negative) { special_num = Math.abs(special_num); }
         let special_value = special_num % 1 ? special_num.toFixed(2) : special_num.toFixed(0);
         let value = special_value;
         original_description_txt = original_description_txt.replaceAll(

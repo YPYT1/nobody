@@ -93,14 +93,14 @@ export class modifier_public_attribute extends BaseModifier {
             }
         }
 
-        let fGameTime = GameRules.GetDOTATime(false, false);
-        // print("fGameTime",fGameTime)
-        for (let i = 0; i < 6; i++) {
-            let hItem = this.hParent.GetItemInSlot(i);
-            if (hItem && (hItem.ArmsActTime ?? 0) <= fGameTime) {
-                hItem._ArmsEffectStart();
-            }
-        }
+        // let fGameTime = GameRules.GetDOTATime(false, false);
+        // // print("fGameTime",fGameTime)
+        // for (let i = 0; i < 6; i++) {
+        //     let hItem = this.hParent.GetItemInSlot(i);
+        //     if (hItem && (hItem.ArmsActTime ?? 0) <= fGameTime) {
+        //         hItem._ArmsEffectStart();
+        //     }
+        // }
     }
 
     _UpdateAttribute() {
@@ -134,6 +134,14 @@ export class modifier_public_attribute extends BaseModifier {
 
     HandleCustomTransmitterData(data: CustomAttributeValueType) {
         this.AttributeData = data;
+    }
+
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            [ModifierState.PROVIDES_VISION]: true,
+            [ModifierState.BLOCK_DISABLED]: true,
+
+        }
     }
 
     DeclareFunctions(): ModifierFunction[] {
@@ -185,4 +193,5 @@ export class modifier_public_attribute extends BaseModifier {
     GetModifierConstantManaRegen(): number {
         return this.AttributeData.ManaRegen
     }
+
 }

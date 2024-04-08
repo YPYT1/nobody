@@ -19,7 +19,6 @@ export function Spawn(entityKeyValues: any) {
     // 判断是否有可以释放的技能
     // thisEntity.SetThink("AiThink", this, "AiThink", 1);
     // thisEntity.SetContextThink(DoUniqueString("AiThink"), AiThink, 0)
-    print("New BasicAI")
     new BasicAI(thisEntity);
 }
 
@@ -55,14 +54,6 @@ class BasicAI {
         }
         return 1
     }
-}
-
-function AiThink() {
-
-    if (thisEntity.IsChanneling()) { return 1 }
-    if (thisEntity.IsAttacking()) { return 1 }
-
-    return 1
 }
 
 function GetEnemyHeroesInRange(hUnit: CDOTA_BaseNPC, flRange: number = 9999) {

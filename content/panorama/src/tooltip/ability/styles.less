@@ -13,20 +13,20 @@
 }
 
 #CustomTooltipAbility {
-    width: 420px;
+    width: 380px;
     flow-children: down;
     border: 2px solid #000000;
-    border-radius: 6px;
+    // border-radius: 6px;
     // background-image: url("file://{images}/custom_game/hero_choose/border_background.png");
     background-image: url("file://{images}/custom_game/tooltip/text_tooltip_body.png");
     background-size: 100%;
-    background-color: #000000;
+    background-color: #000000fa;
     // border: 1px solid #3a3a3a;
     // padding: 8px;
 
     Label {
         font-size: 18px;
-        color: #e4e4e4;
+        color: #ffffff;
         // text-shadow: 0px 1px 1px 2.0 #000000;
     }
 
@@ -35,17 +35,47 @@
         padding: 8px;
         background-image: url("file://{images}/custom_game/tooltip/text_tooltip_header.png");
         background-size: 100%;
-        // background-color: #000000;
+        // background-color: #36af26;
+        background-color: gradient(linear, 0% 0%, 100% 0%, from(#36af26), to(#00000000));
         // background-image: url("file://{images}/custom_game/tooltip/text_tooltip_body.png");
         border-bottom: 1px solid #d8d8d8;
 
-        .AbilityNameLabel {
-            max-width: 240px;
-            font-size: 23px;
-            text-overflow: clip;
-            font-family: defaultFont;
-            text-shadow: 0px 0px 2px 3.0 #000000;
+        .AbilityImage {
+            width: 64px;
+            height: 64px;
+            border: 2px solid #000000;
         }
+
+        .AbilityLabel {
+            width: 100%;
+            // background-color: #5f5f5f;
+            margin-left: 6px;
+            vertical-align: middle;
+            // height: 64px;
+            flow-children: down;
+
+            .NameAndCost {
+                width: 100%;
+                height: 32px;
+                flow-children: right;
+                vertical-align: middle;
+
+                .AbilityName {
+                    vertical-align: middle;
+                    
+                }
+                .AbilityNameLabel {
+                    vertical-align: middle;
+                    font-size: 23px;
+                    text-overflow: clip;
+                    font-family: defaultFont;
+                    text-shadow: 0px 0px 2px 3.0 #000000;
+                }
+            }
+
+
+        }
+
 
         #AbilityLevel {
             min-width: 56px;
@@ -55,7 +85,34 @@
             Label {
                 text-shadow: 0px 0px 2px 2.0 #000000;
             }
-            
+
+        }
+    }
+
+    #CurrentItemCosts {
+        horizontal-align: right;
+
+        //margin-top: 6px;
+        // padding-top: 8px;
+        // padding-bottom: 0px;
+        Label {
+            text-overflow: shrink;
+            text-shadow: 2px 2px 0px 1.0 #00000088;
+            color: #ffffff;
+            background-repeat: no-repeat;
+            background-position: 0% 50%;
+            font-size: 16px;
+            font-weight: semi-bold;
+            padding-left: 25px;
+            margin-right: 20px;
+        }
+
+        #Cooldown {
+            background-image: url("s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex");
+        }
+
+        #ManaCost {
+            background-image: url("s2r://panorama/images/status_icons/ability_manacost_icon_psd.vtex");
         }
     }
 
@@ -84,7 +141,7 @@
 
 
         .DescriptionLabel {
-            color: #bbbbbb;
+            color: #78949b;
 
             .negative {
                 color: #ff0000;
@@ -115,11 +172,11 @@
             }
 
             .off {
-                color:#5f5f5f;
+                color: #5f5f5f;
             }
-        
+
             .on {
-                color:#ecca0d;
+                color: #ecca0d;
             }
 
         }
@@ -133,32 +190,7 @@
     }
 
 
-    #CurrentItemCosts {
-        //margin-top: 6px;
-        padding-top: 8px;
-        padding-bottom: 0px;
 
-
-        Label {
-            text-overflow: shrink;
-            text-shadow: 2px 2px 0px 1.0 #00000088;
-            color: #ffffff;
-            background-repeat: no-repeat;
-            background-position: 0% 50%;
-            font-size: 16px;
-            font-weight: semi-bold;
-            padding-left: 25px;
-            margin-right: 20px;
-        }
-
-        #Cooldown {
-            background-image: url("s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex");
-        }
-
-        #ManaCost {
-            background-image: url("s2r://panorama/images/status_icons/ability_manacost_icon_psd.vtex");
-        }
-    }
 
 
     .fire {
@@ -184,5 +216,5 @@
     .dark {
         color: #741281;
     }
-    
+
 }

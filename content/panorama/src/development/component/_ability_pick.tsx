@@ -207,8 +207,11 @@ export const AbilityPick = () => {
         <Panel id="AbilityPick" className={`fc-heropick`}>
             <Panel id="AbilityList">
                 {
-                    Object.keys(NpcAbilitiesCustom).map((v, k) => {
-                        return <CustomAbilityPanel key={k} abilityname={v} />
+                    Object.entries(NpcAbilitiesCustom).map((v, k) => {
+                        if (v[1].Disable == 0) {
+                            return <CustomAbilityPanel key={k} abilityname={v[0]} />
+                        }
+
                     })
                 }
 

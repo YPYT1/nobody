@@ -1,5 +1,10 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
+import { BaseArmsModifier } from "../base_arms_ability";
 
+/**
+ * 引燃	对500码内的x个敌人投射燃烧弹，导致其被火焰吞噬。
+
+ */
 @registerAbility()
 export class arms_t1_4 extends BaseAbility {
 
@@ -9,6 +14,6 @@ export class arms_t1_4 extends BaseAbility {
 }
 
 @registerModifier()
-export class modifier_arms_t1_4 extends BaseModifier {
+export class modifier_arms_t1_4 extends BaseArmsModifier {
 
 }
