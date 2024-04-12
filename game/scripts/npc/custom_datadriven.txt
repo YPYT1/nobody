@@ -113,12 +113,12 @@
 					}
 				}
 
-				"OnAttacked"
+				"OnAttackLanded"
 				{
 					"RunScript"
 					{
 						"ScriptFile"	"abilities/datadriven/custom_datadriven_hero"
-						"Function"	"OnAttacked"
+						"Function"	"OnAttackLanded"
 					}
 				}
 			}

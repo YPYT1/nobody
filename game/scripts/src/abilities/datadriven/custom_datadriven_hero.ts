@@ -4,7 +4,7 @@ Object.assign(getfenv(), {
     OnDeath: (params: any) => { OnDeath(params); },
     OnAttack: (params: any) => { OnAttack(params); },
     OnAttackStart: (params: any) => { OnAttackStart(params); },
-    OnAttacked: (params: any) => { OnAttacked(params); },
+    OnAttackLanded: (params: any) => { OnAttackLanded(params); },
 });
 
 
@@ -24,6 +24,6 @@ export const OnAttackStart = (params: CGDatadrivenProps) => {
     print("OnAttackStart")
 }
 
-export const OnAttacked = (params: CGDatadrivenProps) => {
-    print("OnAttacked")
+export const OnAttackLanded = (params: CGDatadrivenProps) => {
+    print("OnAttackLanded")
 }

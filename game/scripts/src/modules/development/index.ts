@@ -25,7 +25,8 @@ export class Development extends UIEventRegisterClass {
 
     KillUnit(player_id: PlayerID, params: CGED["Development"]["KillUnit"]) {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-        hHero.ForceKill(false)
+        hHero.Kill(null, hHero)
+        // hHero.ForceKill(true)
     }
 
     RespawnHero(player_id: PlayerID, params: CGED["Development"]["RespawnHero"]) {
