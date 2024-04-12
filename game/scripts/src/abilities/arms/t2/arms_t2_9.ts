@@ -1,14 +1,17 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
+import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
+import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 @registerAbility()
-export class arms_t2_9 extends BaseAbility {
+export class arms_t2_9 extends BaseArmsAbility {
 
     GetIntrinsicModifierName(): string {
         return "modifier_arms_t2_9"
     }
+
+
 }
 
 @registerModifier()
-export class modifier_arms_t2_9 extends BaseModifier {
+export class modifier_arms_t2_9 extends BaseArmsModifier {
 
 }

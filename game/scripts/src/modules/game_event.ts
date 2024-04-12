@@ -9,6 +9,8 @@ import { Spawns } from './ingame/spawns';
 import { ItemArmsSystem } from './ingame/item_arms_system';
 import { ItemEvolution } from './ingame/hero_extend/item_evolution';
 import { ResourceSystem } from './ingame/system/resource_system';
+import { ArmsCombo } from './ingame/hero_extend/arms_combo';
+import { SummonedSystem } from './ingame/system/summoned_system';
 
 declare global {
 
@@ -23,10 +25,12 @@ declare global {
         CustomOverrideAbility: CustomOverrideAbility;
 
         EntityKilled: EntityKilled;
-        ResourceSystem:ResourceSystem;
-        ItemArmsSystem:ItemArmsSystem;
-        Spawns:Spawns;
+        ResourceSystem: ResourceSystem;
+        ItemArmsSystem: ItemArmsSystem;
+        Spawns: Spawns;
+        ArmsCombo: ArmsCombo;
 
+        SummonedSystem: SummonedSystem;
     }
 }
 
@@ -61,6 +65,8 @@ export class GameEvent {
             GameRules.ItemArmsSystem = new ItemArmsSystem();
             GameRules.Spawns = new Spawns();
             GameRules.ResourceSystem = new ResourceSystem();
+            GameRules.ArmsCombo = new ArmsCombo();
+            GameRules.SummonedSystem = new SummonedSystem();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
 
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
@@ -83,7 +89,7 @@ export class GameEvent {
     }
 
     OnEntityKilled(event: GameEventProvidedProperties & EntityKilledEvent) {
-        GameRules.EntityKilled.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker)
+        GameRules.EntityKilled.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)
     }
 
     OnEntityDotaOnHeroFinishSpawn(event: GameEventProvidedProperties & DotaOnHeroFinishSpawnEvent) {

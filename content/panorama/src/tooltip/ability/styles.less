@@ -1,3 +1,5 @@
+@import url("./../../common/styles.less");
+
 #Contents {
     padding: 0px;
     border: 0px solid #00000000;
@@ -30,15 +32,45 @@
         // text-shadow: 0px 1px 1px 2.0 #000000;
     }
 
+    &.rarity_2 #AbilityHeader {
+        background-color: @rare2_background;
+    }
+
+    &.rarity_3 #AbilityHeader {
+        background-color: @rare3_background;
+    }
+
+    &.rarity_4 #AbilityHeader {
+        background-color: @rare4_background;
+    }
+
+    &.rarity_5 #AbilityHeader {
+        background-color: @rare5_background;
+    }
+
+    &.rarity_6 #AbilityHeader {
+        background-color: @rare6_background;
+    }
+
+    &.rarity_7 #AbilityHeader {
+        background-color: @rare7_background;
+    }
+
+    &.rarity_8 #AbilityHeader {
+        background-color: @rare8_background;
+    }
+
     #AbilityHeader {
         width: 100%;
         padding: 8px;
         background-image: url("file://{images}/custom_game/tooltip/text_tooltip_header.png");
         background-size: 100%;
+        background-color: @rare1_background;
+        border-bottom: 1px solid @rare1_border;
         // background-color: #36af26;
-        background-color: gradient(linear, 0% 0%, 100% 0%, from(#36af26), to(#00000000));
+        // background-color: gradient(linear, 0% 0%, 100% 0%, from(#36af26), to(#00000000));
         // background-image: url("file://{images}/custom_game/tooltip/text_tooltip_body.png");
-        border-bottom: 1px solid #d8d8d8;
+
 
         .AbilityImage {
             width: 64px;
@@ -62,8 +94,9 @@
 
                 .AbilityName {
                     vertical-align: middle;
-                    
+
                 }
+
                 .AbilityNameLabel {
                     vertical-align: middle;
                     font-size: 23px;
@@ -136,9 +169,6 @@
     #AbilityCoreDetails {
         width: 100%;
         padding: 8px;
-        // border-bottom: 1px solid #d8d8d8;
-
-
 
         .DescriptionLabel {
             color: #78949b;
@@ -181,15 +211,55 @@
 
         }
 
-        .val,
         .GameplayVariable {
             font-size: 22px;
             font-weight: bold;
             color: #ffffff;
         }
+
+
     }
 
 
+    #ComboContainer {
+        margin-top: 18px;
+        flow-children: down;
+
+        .ArmsCombieRows {
+            margin-top: 4px;
+            border-bottom: 1px solid #ffffff;
+            padding: 4px;
+            flow-children: down;
+
+            .Header {
+                flow-children: down;
+
+                .Title {
+                    color: #0de26d;
+                }
+
+                .Desc {
+                    color: #d8d8d8;
+                }
+
+                Label {
+                    font-size: 18px;
+
+                }
+            }
+
+            .CombieAbility {
+                // margin-left: 8px;
+                flow-children: right;
+
+                Label {
+                    color: #5f5f5f;
+                    font-size: 18px;
+                    margin-left: 4px;
+                }
+            }
+        }
+    }
 
 
 
@@ -215,6 +285,32 @@
 
     .dark {
         color: #741281;
+    }
+
+    .Attribute {
+        // background-color: #ffffff;
+        visibility: collapse;
+        font-size: 20px;
+        padding-bottom: 12px;
+        color: #535252;;
+
+        &.show {
+            visibility: visible;
+        }
+
+        .key {
+            color: #dfdfdf;
+        }
+
+        .val {
+            font-weight: bold;
+            color: #7fff94;
+            text-shadow: 0px 0px 2px 3.0 #000000;
+
+            &.negative {
+                color: #ff0000;
+            }
+        }
     }
 
 }

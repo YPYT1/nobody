@@ -12,7 +12,6 @@ export class arms_t1_2 extends BaseArmsAbility {
 
     _OnUpdateKeyValue(): void {
         this.gain_hp = this.GetSpecialValueFor("gain_hp");
-
         this.ArmsAdd()
     }
 

@@ -96,7 +96,7 @@ export class modifier_motion_bezier extends BaseModifierMotionBoth {
         this._init_distance = (this._origin - this._end_point as Vector).Length2D();
         this._pre_speed = (params.movespeed / 25) / this._init_distance;
         this._value = 0;
-        this._OnCreated(params);
+        this.C_OnCreated(params);
         DebugDrawCircle(this._origin, Vector(255, 0, 0), 1, 100, true, 1);
         DebugDrawCircle(mid_point, Vector(255, 0, 0), 1, 100, true, 1);
         DebugDrawCircle(this._end_point, Vector(0, 250, 0), 1, 100, true, 1);
@@ -128,7 +128,7 @@ export class modifier_motion_bezier extends BaseModifierMotionBoth {
         }
     }
 
-    _OnCreated(params: any) { }
+    C_OnCreated(params: any) { }
 
 }
 
@@ -181,7 +181,7 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         let height_end = GetGroundHeight(this._end_point, this.parent);
         let height_max = height_start + 400;
         // this.InitVerticalArc(height_start, height_max, height_end, 2);
-        this._OnCreated(params);
+        this.C_OnCreated(params);
         // DebugDrawCircle(this._origin, Vector(255, 0, 0), 1, 100, true, 1);
         // DebugDrawCircle(outer_point, Vector(255, 0, 0), 1, 64, true, 2);
         // DebugDrawCircle(this._origin, Vector(255, 255, 255), 1, 64, true, 2);
@@ -374,10 +374,10 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
             return;
         }
         this.StartIntervalThink(0.1);
-        this._OnCreated(params);
+        this.C_OnCreated(params);
     }
 
-    _OnCreated(params: any) { }
+    C_OnCreated(params: any) { }
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return; }

@@ -1,15 +1,16 @@
 declare interface CDOTABaseAbility extends CBaseEntity {
 
-    element_type:ElementTypeEnum
+    element_type: ElementTypeEnum
     ArmsActTime: number;
-    
-    _ArmsEffectStart(): void;
-    ArmsEffectStart(): void;
-    ArmsEffectStart_Before(): void;
-    ArmsEffectStart_After(): void;
 
-    _AffectedEffectStart(event: ModifierAttackEvent):void;
+    // _ArmsEffectStart(enemy_count: number, min_distance: number): void;
+    // ArmsEffectStart(): void;
+    // ArmsEffectStart_Before(): void;
+    // ArmsEffectStart_After(): void;
 
+    // _AffectedEffectStart(event: ModifierAttackEvent): void;
+    /** 受击 */
+    // AffectedEffectStart(event: ModifierAttackEvent): void;
     GetAbilityDamage(): number;
     // _OnEquip(): void;
     // _OnUnequip(): void;

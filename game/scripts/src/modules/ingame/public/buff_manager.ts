@@ -4,7 +4,9 @@ import { reloadable } from "../../../utils/tstl-utils";
 @reloadable
 export class BuffManager {
 
-    constructor() { }
+    constructor() {
+
+    }
 
     /**
      * 
@@ -42,5 +44,32 @@ export class BuffManager {
             // let current_duration = debuff ? debuff.GetDuration() : 0;
             hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
         }
+    }
+
+    AddPermanentMdf(
+        hCaster: CDOTA_BaseNPC,
+        hUnit: CDOTA_BaseNPC,
+        hAbility: CDOTABaseAbility,
+        mdf_name: string,
+        mdf_object: Object
+    ) {
+        if (hUnit.IsAlive()) {
+            hUnit.AddNewModifier(hCaster, hAbility, mdf_name, mdf_object);
+        } else {
+            // if (hUnit.buff_queue == null) { hUnit.buff_queue = [] }
+            // hUnit.buff_queue.push({ mdf_name: mdf_name, mdf_object: mdf_object, })
+            hUnit.SetThink((e) => {
+                if (hUnit.IsAlive()) {
+                    print("Add Mdf")
+                    hUnit.AddNewModifier(hCaster, hAbility, mdf_name, mdf_object);
+                    return null
+                }
+                return 1
+            }, this, "ThinkAddMdf", 1)
+        }
+    }
+
+    ThinkAddMdf() {
+
     }
 }

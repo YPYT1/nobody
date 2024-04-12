@@ -79,15 +79,7 @@ export class CustomAttribute {
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
-
-                hUnit.AddAbility("arms_passive_0");
-                hUnit.AddAbility("arms_passive_1");
-                hUnit.AddAbility("arms_passive_2");
-                hUnit.AddAbility("arms_passive_3");
-                hUnit.AddAbility("arms_passive_4");
-                hUnit.AddAbility("arms_passive_5");
-                hUnit.AddAbility("public_arms").SetLevel(1);
-                hUnit.AddAbility("public_attribute").SetLevel(1);
+                this.InitHeroAbility(hUnit);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
                 return null
             }, 0.1)
@@ -128,7 +120,10 @@ export class CustomAttribute {
 
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
+
+                hUnit.AddAbility("public_arms").SetLevel(1);
                 hUnit.AddAbility("public_attribute").SetLevel(1);
+                hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
 
                 return null
@@ -138,6 +133,17 @@ export class CustomAttribute {
 
     }
 
+    InitHeroAbility(hUnit: CDOTA_BaseNPC) {
+        hUnit.AddAbility("arms_passive_0");
+        hUnit.AddAbility("arms_passive_1");
+        hUnit.AddAbility("arms_passive_2");
+        hUnit.AddAbility("arms_passive_3");
+        hUnit.AddAbility("arms_passive_4");
+        hUnit.AddAbility("arms_passive_5");
+        hUnit.AddAbility("public_arms").SetLevel(1);
+        hUnit.AddAbility("public_attribute").SetLevel(1);
+        hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
+    }
 
     /** 计算属性 */
     AttributeCalculate(hUnit: CDOTA_BaseNPC, attr_key: AttributeMainKey[]) {

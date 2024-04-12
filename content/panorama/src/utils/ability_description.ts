@@ -25,7 +25,7 @@ export function HeroPassiveDamageFormula(abilityName: string, formula: string, l
         for (let k2 of attr2) {
             if (parseFloat(k2)) {
                 let value = bHasAsterisk ? (parseFloat(k2) * 100).toFixed(0) + "%" : k2
-                arr1.push(`<span class="val">${value}</span>`);
+                arr1.push(`<span class="Variable">${value}</span>`);
             } else {
                 let attr_text = $.Localize(`#custom_attribute_${k2}`);
                 let special_num = abilityData.AbilityValues[k2 as keyof typeof abilityData.AbilityValues] as number | string;
@@ -45,7 +45,7 @@ export function HeroPassiveDamageFormula(abilityName: string, formula: string, l
                     }
 
                     if (value != 0) {
-                        arr1.push(`<span class="val">${(value * 100).toFixed(0)}%</span>${attr_text}`);
+                        arr1.push(`<span class="Variable">${(value * 100).toFixed(0)}%</span>${attr_text}`);
                     }
                 } else {
                     arr1.push(`${attr_text}`);

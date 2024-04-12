@@ -7,7 +7,6 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 内置cd：1秒
 伤害系数：攻击力150%·风元素伤害
 作用范围：自身范围500码"
-
  */
 @registerAbility()
 export class arms_t2_2 extends BaseArmsAbility {
@@ -19,7 +18,39 @@ export class arms_t2_2 extends BaseArmsAbility {
     }
 
     AffectedEffectStart(event: ModifierAttackEvent): void {
-        
+        print("arms_t2_2", this.ArmsActTime, this.arms_cd)
+        const aoe_radius = this.GetSpecialValueFor("aoe_radius");
+        const vPoint = this.caster.GetAbsOrigin();
+        let ability_damage = this.GetAbilityDamage();
+        let cast_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_bristleback/bristleback_quill_spray.vpcf",
+            ParticleAttachment.POINT,
+            this.caster
+        )
+        ParticleManager.ReleaseParticleIndex(cast_fx);
+
+        const enemies = FindUnitsInRadius(
+            this.team,
+            vPoint,
+            null,
+            aoe_radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+        for (let enemy of enemies) {
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.caster,
+                damage: ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: this.element_type,
+            })
+        }
+
     }
 }
 

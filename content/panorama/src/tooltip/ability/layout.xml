@@ -3,7 +3,7 @@
         <include src="./script.tsx" />
     </scripts>
     <styles>
-        <include src="./../../common/styles.less" />
+        <include src="./../../common/keyframes.less" />
         <include src="./styles.less" />
     </styles>
     <Panel class="tooltip_ability" hittest="false"/>

@@ -1,10 +1,22 @@
 
 import { default as AttributeConst } from "../json/config/game/attribute_const.json";
 import { default as NpcItemCustom } from "../json/npc_items_custom.json";
+import { default as NpcAbilitiesCustom } from "../json/npc_abilities_custom.json";
 
 /** 获取物品的属性 */
 export const GetItemAttribute = (item_name: string) => {
     let item_data = NpcItemCustom[item_name as keyof typeof NpcItemCustom];
+    if (item_data.AttributeValues) {
+        let AttributeValues = item_data.AttributeValues as CustomAttributeTableType
+        return AttributeValues
+    } else {
+        return {}
+    }
+
+}
+
+export const GetAbilityAttribute = (name: string) => {
+    let item_data = NpcAbilitiesCustom[name as "arms_t0_1"];
     if (item_data.AttributeValues) {
         let AttributeValues = item_data.AttributeValues as CustomAttributeTableType
         return AttributeValues

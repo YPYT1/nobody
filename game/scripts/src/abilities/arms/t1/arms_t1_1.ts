@@ -51,7 +51,7 @@ export class modifier_arms_t1_1_summoned extends modifier_motion_surround {
         };
     }
 
-    _OnCreated(params: any): void {
+    C_OnCreated(params: any): void {
         let Vpcf1 = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf",
             ParticleAttachment.POINT_FOLLOW,

@@ -1,5 +1,5 @@
 
-declare type AttributeMainKey = | "AttackDamage" //攻击力
+declare type AttributeMainKey = "AttackDamage" //攻击力
     | "AttackSpeed" //攻击速度
     | "AttackRange" //攻击范围
     | "AttackRate" //攻击间隔

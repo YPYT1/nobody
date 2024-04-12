@@ -57,11 +57,8 @@ export class Development extends UIEventRegisterClass {
         // }
 
         let order_ability = hUnit.GetAbilityByIndex(order);
-
-
         if (order_ability) {
-            let order_ability_name = order_ability.GetAbilityName()
-            // hUnit.SwapAbilities(order_ability_name, ability_name, true, true)
+            order_ability.RemoveSelf()
             hUnit.RemoveAbilityByHandle(order_ability)
         }
         let new_ability = hUnit.AddAbility(ability_name)
@@ -108,7 +105,7 @@ export class Development extends UIEventRegisterClass {
     AddDummy(player_id: PlayerID, params: CGED["Development"]["AddDummy"]) {
         let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
         let origin = hHeroUnit.GetAbsOrigin() + RandomVector(150) as Vector;
-        let Dummy = CreateUnitByName("npc_dota_hero_target_dummy", origin, true, null, null, DotaTeam.NEUTRALS);
+        let Dummy = CreateUnitByName("npc_dota_hero_target_dummy", origin, true, null, null, DotaTeam.BADGUYS);
         Dummy.CDResp = {};
         Dummy.SetControllableByPlayer(player_id, false)
     }
@@ -159,7 +156,7 @@ export class Development extends UIEventRegisterClass {
                 // "npc_public_test2",
                 // "npc_public_test3",
             ]
-            const vCenter = Vector(0,0,0)
+            const vCenter = Vector(0, 0, 0)
             GameRules.GetGameModeEntity().SetContextThink("devxg", () => {
                 amount += 1
                 for (let unit_name of unit_name_list) {

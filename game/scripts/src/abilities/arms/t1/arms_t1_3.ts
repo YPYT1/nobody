@@ -7,52 +7,39 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
  * 替换该技能时获取已损失灵魂的%income_mul%倍收益。
  */
 @registerAbility()
-export class arms_t1_3 extends BaseArmsAbility {
+export class arms_t1_3 extends BaseArmsAbility { }
 
-    mdf_name = "modifier_arms_t1_3";
+@registerModifier()
+export class modifier_arms_t1_3 extends BaseArmsModifier {
 
     losing_soul: number;
-    income_mul: number;
     lost_amount: number;
+    income_mul: number;
 
-    stack_buff: CDOTA_Buff;
-
-    _OnUpdateKeyValue(): void {
-        this.losing_soul = this.GetSpecialValueFor("losing_soul")
-        this.income_mul = this.GetSpecialValueFor("income_mul")
-        if (this.lost_amount == null) { this.lost_amount = 0 }
-        if (this.stack_buff == null) {
-            this.stack_buff = this.caster.AddNewModifier(this.caster, this, "modifier_arms_t1_3_stack", {})
-        }
-
-        this.ArmsAdd();
+    IsHidden(): boolean {
+        return false
     }
 
-    ArmsEffectStart(): void {
+    C_OnCreated(params: any): void {
+        this.lost_amount = 0;
+        this.losing_soul = this.ability.GetSpecialValueFor("losing_soul")
+        this.income_mul = this.ability.GetSpecialValueFor("income_mul")
+        this.StartIntervalThink(1)
+    }
+
+    OnIntervalThink(): void {
         let res = GameRules.ResourceSystem.ModifyResource(this.player_id, {
             "Soul": -1 * this.losing_soul
         })
         if (res.status) {
             this.lost_amount += this.losing_soul
-            this.stack_buff.SetStackCount(this.lost_amount)
+            this.SetStackCount(this.lost_amount)
         }
     }
 
-    _RemoveSelf(): void {
-        this.stack_buff.Destroy();
+    _OnRemovedAfter(): void {
         GameRules.ResourceSystem.ModifyResource(this.player_id, {
-            "Soul": this.lost_amount * 2
+            "Soul": this.lost_amount * this.income_mul
         })
-    }
-}
-
-@registerModifier()
-export class modifier_arms_t1_3 extends BaseArmsModifier { }
-
-@registerModifier()
-export class modifier_arms_t1_3_stack extends BaseModifier {
-
-    GetAttributes(): ModifierAttribute {
-        return ModifierAttribute.MULTIPLE
     }
 }

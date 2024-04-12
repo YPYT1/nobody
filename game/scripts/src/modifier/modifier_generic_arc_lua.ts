@@ -261,9 +261,10 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         }
         this.InitVerticalArc(height_start, height_max, height_end, this.duration);
 
-        this._OnCreated(kv);
+        this.C_OnCreated(kv);
     }
-    _OnCreated(kv) { }
+    
+    C_OnCreated(kv) { }
     Jump() {
         if (this.distance > 0) {
             if (!this.ApplyHorizontalMotionController()) {

@@ -19,6 +19,20 @@ declare const enum ElementTypeEnum {
     dark = 6
 }
 
+declare const enum ArmsAbilityCategory {
+    NONE = 0,
+    /** 计数型 */
+    COUNT = 1,
+    /** 范围型 */
+    AOE = 2,
+    /** 持续型伤害 */
+    DOT = 4,
+    /** 直接类伤害 */
+    DMG = 8,
+    /** 召唤类伤害 */
+    SUMMON = 16,
+
+}
 /** 按键移动方向 */
 type CMoveDirection = "UP" | "DOWN" | "LEFT" | "RIGHT";
 

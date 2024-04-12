@@ -56,4 +56,72 @@
 			}
 		}
 	}
+
+	"custom_datadriven_hero"
+	{
+		"BaseClass"	"ability_datadriven"
+		"AbilityTextureName"	"axe/mantle_of_the_cinder_baron/axe_battle_hunger"
+		"AbilityBehavior"	"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+		"Disable" "0"
+		"AbilityValues" {
+
+		}
+
+		
+		"Modifiers"
+		{
+
+			"modifier_custom_datadriven_hero"
+			{
+				"IsHidden" "1"
+				"Passive"	"1"
+				"Attributes"	"MODIFIER_ATTRIBUTE_PERMANENT"
+
+				"OnCreated"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_hero"
+						"Function"	"OnCreated"
+					}
+				}
+
+                "OnDeath"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_hero"
+						"Function"	"OnDeath"
+					}
+				}
+
+				"OnAttack"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_hero"
+						"Function"	"OnAttack"
+					}
+				}
+
+				"OnAttackStart"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_hero"
+						"Function"	"OnAttackStart"
+					}
+				}
+
+				"OnAttacked"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_hero"
+						"Function"	"OnAttacked"
+					}
+				}
+			}
+		}
+	}
 }

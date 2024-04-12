@@ -19,4 +19,12 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     drop_resource_type: PlayerResourceTyps;
     drop_resource_amount: number;
+
+    buff_queue: string[];
+
+    //KillOnAnyList: CDOTABaseAbility[];
+    KillOnMdfList: CDOTA_Buff[];
+    //KillOnAbilityList: CDOTABaseAbility[];
+
+    ArmsExecutedList: CDOTABaseAbility[]
 }

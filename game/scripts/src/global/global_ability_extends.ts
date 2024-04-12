@@ -1,5 +1,4 @@
-
-
+/** @noSelfInFile */
 /**
  * 创建一个傀儡召唤物 [此单位为傀儡]
  * @param vPos 

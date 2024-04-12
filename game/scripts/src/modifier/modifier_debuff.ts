@@ -187,7 +187,7 @@ export class modifier_debuff_stunned extends modifier_debuff_debuff_template {
 
 // 减速
 @registerModifier()
-class modifier_debuff_slow extends modifier_debuff_debuff_template {
+export class modifier_debuff_slow extends modifier_debuff_debuff_template {
 
     slow: number;
 

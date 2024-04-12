@@ -1,47 +1,68 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { render, useGameEvent } from 'react-panorama-x';
 
+import { default as ArmsCombo } from "./../../json/config/game/arms_combo.json";
 import { default as NpcAbilityCustom } from "./../../json/npc_abilities_custom.json";
-import { SetAbilityDescription } from '../../utils/ability_description';
+import { default as AbilitiesArms } from "./../../json/abilities/arms.json";
+
+import { SetAbilityDescription, GetAbilityRarity } from '../../utils/ability_description';
+import { ConvertAttributeValues, GetAbilityAttribute } from '../../utils/attribute_method';
 
 
-const BehaviorEmunList: { [behavior: string]: number; } = {
-    "DOTA_ABILITY_BEHAVIOR_NONE": 0,
-    "DOTA_ABILITY_BEHAVIOR_HIDDEN": 1,
-    "DOTA_ABILITY_BEHAVIOR_PASSIVE": 2,
-    "DOTA_ABILITY_BEHAVIOR_NO_TARGET": 4,
-    "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET": 8,
-    "DOTA_ABILITY_BEHAVIOR_POINT": 16,
-    "DOTA_ABILITY_BEHAVIOR_TOGGLE": 512,
-    "DOTA_ABILITY_BEHAVIOR_DIRECTIONAL": 1024,
-    "DOTA_ABILITY_BEHAVIOR_AUTOCAST": 4096,
-};
-const BehaviorList_Ability = {
-    "DOTA_ToolTip_Ability_Attack": 131072,
-    "DOTA_ToolTip_Ability_Aura": 65536,
-    "DOTA_ToolTip_Ability_Autocast": 4096,
-    "DOTA_ToolTip_Ability_Toggle": 512,
-    "DOTA_ToolTip_Ability_Channeled": 128,
-    "DOTA_ToolTip_Ability_Point": 16,
-    "DOTA_ToolTip_Ability_Target": 8,
-    "DOTA_ToolTip_Ability_NoTarget": 4,
-    "DOTA_ToolTip_Ability_Passive": 2,
 
-};
 
-const BehaviorList_Targettype = {
-    128: 'DOTA_UNIT_TARGET_CUSTOM',
-    64: 'DOTA_UNIT_TARGET_TREE',
-    55: 'DOTA_UNIT_TARGET_ALL',
-    32: 'DOTA_UNIT_TARGET_OTHER',
-    18: 'DOTA_UNIT_TARGET_BASIC',
-    16: 'DOTA_UNIT_TARGET_COURIER',
-    4: 'DOTA_UNIT_TARGET_BUILDING',
-    2: 'DOTA_UNIT_TARGET_CREEP',
-    // 1: 'DOTA_UNIT_TARGET_HERO',
-    // 0: 'DOTA_UNIT_TARGET_NONE',
-};
 
+export function InitAbilityCombo() {
+    let ComboTable: { [comb_key: string]: string[] } = {};
+    for (let name in AbilitiesArms) {
+        let row_data = AbilitiesArms[name as "arms_t0_1"];
+        if (row_data && row_data.Combo) {
+            let row_Combo = `${row_data.Combo}`.split(" ");
+            for (let Combo of row_Combo) {
+                let combe_key = Combo.split(",")
+                for (let key of combe_key) {
+                    if (ComboTable[key] == null) {
+                        ComboTable[key] = []
+                    }
+                    ComboTable[key].push(name)
+                }
+            }
+        }
+    }
+    return ComboTable
+}
+
+const ComboTable = InitAbilityCombo();
+
+export function GetAbilityCombo(ability_name: string) {
+    let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
+    if (abilityData && abilityData.Combo) {
+        return `${abilityData.Combo}`.split(",");
+    }
+    return []
+}
+
+const ArmsCombieRows = ({ combe_key }: { combe_key: string }) => {
+
+    let ability_list = ComboTable[combe_key] ?? [];
+    // $.Msg(["ability_list", ability_list])
+    return (
+        <Panel className='ArmsCombieRows'>
+            <Panel className='Header'>
+                <Label className='Title' text={$.Localize("#CustomText_Combo_" + combe_key)} />
+                <Label className='Desc' text={$.Localize("#CustomText_Combo_" + combe_key + "_Description")} />
+            </Panel>
+            <Panel className='CombieAbility'>
+                {
+                    ability_list.map((v, k) => {
+                        return <Label text={$.Localize("#DOTA_Tooltip_Ability_" + v)} key={k} />
+                    })
+                }
+            </Panel>
+        </Panel>
+    )
+}
+// export function 
 /**
  * 格式化伤害公式
  * @param Formula 
@@ -88,52 +109,21 @@ export function FormatDamageFormula(Formula: string) {
     }
 }
 
-/**
- * 返回施法类型
- * @param cast_behavior 
- * @returns 
- */
-function GetAbilityCastType(cast_behavior: number) {
-    let behavior_str: string[] = []; //"DOTA_ToolTip_Ability_Passive";
-    let is_auto = (cast_behavior & 4096) == 4096;
-    let is_vector = (cast_behavior & 1073741824) == 1073741824;
-    for (let k in BehaviorList_Ability) {
-        let emun = BehaviorList_Ability[k as keyof typeof BehaviorList_Ability];
-        if ((cast_behavior & emun) == emun) {
-            behavior_str.push(k);
-        }
-    }
-
-    //  施法类型,是否是自动,矢量
-    return { behavior_str, is_auto, is_vector };
-}
-
-
-function GetAbilityBehavior(name: string) {
-    let abilityData = NpcAbilityCustom[name as "public_phase_move"];
-    let BehaviorList = abilityData.AbilityBehavior;
-    let behavior_sum = 0;
-    for (let behavior of BehaviorList) {
-        let behavior_int = BehaviorEmunList[behavior] ?? 0;
-        behavior_sum += behavior_int;
-    }
-    return behavior_sum;
-}
-
-
-
 
 export function App() {
 
+    const [Rarity, setRarity] = useState(0);
     const [index, setIndex] = useState(0 as AbilityEntityIndex);
     const [AbilityName, setAbilityName] = useState("")
     const [name, setName] = useState("Loading...");
     const [description, setDescription] = useState("");
     const [level, setLevel] = useState(1);
-    const [casttype, setCasttype] = useState("无目标");
+    const [attributes, setAttributes] = useState("");
+    // const [casttype, setCasttype] = useState("无目标");
     const [cooldown, setCooldown] = useState(0);
     const [mana, setMana] = useState(0);
 
+    const [ComboList, setComboList] = useState<string[]>([])
 
     const UpdateAbilityFromName = (ext_int: number) => {
         const name = $.GetContextPanel().GetAttributeString("name", "");
@@ -142,6 +132,7 @@ export function App() {
         setName($.Localize(`#DOTA_Tooltip_Ability_${name}`));
         const description = SetAbilityDescription(name, undefined, level);
         setDescription(description);
+
         // 冷却
         // $.Msg(abilityData.AbilityCooldown);
         let AbilityCooldown = abilityData.AbilityCooldown as string | number;
@@ -158,15 +149,13 @@ export function App() {
             setCooldown(0);
         }
 
+        let AttributeObject = GetAbilityAttribute(name);
+        let attr_list = ConvertAttributeValues(AttributeObject);
+        setAttributes(attr_list);
+
         setLevel(level);
-        // 行为
-        const cast_behavior = GetAbilityBehavior(name);
-        let casttype_object = GetAbilityCastType(cast_behavior);
-        let casttype_str_list: string[] = [];
-        for (let type_str of casttype_object.behavior_str) {
-            casttype_str_list.push($.Localize("#" + type_str));
-        }
-        setCasttype(casttype_str_list.join(" / "));
+        setRarity(GetAbilityRarity(name))
+        setComboList(GetAbilityCombo(name))
         setAbilityName(name)
     };
 
@@ -176,27 +165,19 @@ export function App() {
         const level = Abilities.GetLevel(entityIndex);
         const description = SetAbilityDescription(null, entityIndex, 1);
         setDescription(description);
-
-        // const cooldown = Abilities.GetCooldown(entityIndex);
-        const cooldown = Abilities.GetCooldownLength(entityIndex);
+        const cooldown = Abilities.GetCooldown(entityIndex);
+        // const cooldown = Abilities.GetCooldownLength(entityIndex);
+        // $.Msg(["cooldown",cooldown])
         const cd_str = cooldown.toFixed(1);
         setCooldown(parseFloat(cd_str));
-
         const mana = Abilities.GetManaCost(entityIndex);
         setMana(mana);
-
-
         setLevel(level);
-
-        const cast_behavior = Abilities.GetBehavior(entityIndex);
-        let casttype_object = GetAbilityCastType(cast_behavior);
-        let casttype_str_list: string[] = [];
-        for (let type_str of casttype_object.behavior_str) {
-            casttype_str_list.push($.Localize("#" + type_str));
-        }
-        // $.Msg(["casttype_str_list",casttype_str_list])
-        setCasttype(casttype_str_list.join(" / "));
-
+        setRarity(GetAbilityRarity(name))
+        setComboList(GetAbilityCombo(name))
+        let AttributeObject = GetAbilityAttribute(name);
+        let attr_list = ConvertAttributeValues(AttributeObject);
+        setAttributes(attr_list);
         setAbilityName(name)
     };
 
@@ -217,8 +198,18 @@ export function App() {
         }
     });
 
-    return (
-        <Panel id="CustomTooltipAbility" className="tooltip-row" >
+    return useMemo(() => (
+        <Panel
+            id="CustomTooltipAbility"
+            className={`tooltip-row rarity_${Rarity}`}
+            onload={(e) => {
+                let m_TooltipPanel = $.GetContextPanel().GetParent()!.GetParent()!;
+                $.GetContextPanel().GetParent()!.FindChild('LeftArrow')!.visible = false;
+                $.GetContextPanel().GetParent()!.FindChild('RightArrow')!.visible = false;
+                m_TooltipPanel.FindChild('TopArrow')!.visible = false;
+                m_TooltipPanel.FindChild('BottomArrow')!.visible = false;
+            }}
+        >
             <Panel id="AbilityHeader" className="flow-right">
                 <Panel className='AbilityImage'>
                     <DOTAAbilityImage id='AbilityImage' hittest={false} abilityname={AbilityName} />
@@ -242,26 +233,27 @@ export function App() {
 
             <Panel id="AbilityTarget" className="flow-down" visible={false}>
                 <Panel id="AbilityTopRowContainer" className="flow-right">
-                    <Label id="AbilityCastType" dialogVariables={{ casttype: casttype }} localizedText="#DOTA_AbilityTooltip_CastType" html={true} />
+                    {/* <Label id="AbilityCastType" dialogVariables={{ casttype: casttype }} localizedText="#DOTA_AbilityTooltip_CastType" html={true} /> */}
                 </Panel>
                 {/* <Label id="AbilityTargetType" localizedText="#DOTA_AbilityTooltip_TargetType" html={true} className='Hidden' /> */}
                 {/* <Label id="AbilityDamageType" localizedText="#DOTA_AbilityTooltip_DamageType" html={true} className='Hidden' /> */}
             </Panel>
 
             <Panel id="AbilityCoreDetails" className="flow-down">
+                <Label className={`Attribute ${attributes && "show"}`} text={attributes} html={true} />
                 <Panel id="DescriptionContainer" className="flow-down">
                     <Label className="DescriptionLabel" text={description} html={true} />
-                    <Panel className='DamageFormula'>
-
-                    </Panel>
                 </Panel>
-
+                <Panel id='ComboContainer' visible={ComboList.length > 0}>
+                    {
+                        ComboList.map((v, k) => {
+                            return <ArmsCombieRows combe_key={v} key={k} />
+                        })
+                    }
+                </Panel>
             </Panel>
-
-
-
         </Panel>
-    );
+    ), [AbilityName]);
 }
 
 render(<App />, $.GetContextPanel());

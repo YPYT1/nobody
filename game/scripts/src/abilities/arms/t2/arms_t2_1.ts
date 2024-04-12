@@ -15,27 +15,25 @@ export class arms_t2_1 extends BaseArmsAbility {
 
     mdf_name = "modifier_arms_t2_1";
     particleName = "particles/units/heroes/hero_shadowshaman/shadowshaman_ether_shock.vpcf";
-    search_radius: number;
+    // search_radius: number;
 
     Precache(context: CScriptPrecacheContext): void {
         PrecacheResource("particle", "particles/units/heroes/hero_shadowshaman/shadowshaman_ether_shock.vpcf", context);
     }
 
     _OnUpdateKeyValue(): void {
-        this.search_radius = this.GetSpecialValueFor("search_radius");
-
         this.ArmsAdd();
     }
 
     ArmsEffectStart(): void {
         const ability_damage = this.GetAbilityDamage()
         const vPoint = this.caster.GetOrigin();
-        const radius = 800;
+        const aoe_radius = this.GetSpecialValueFor("aoe_radius")
         let targets = FindUnitsInRadius(
             this.caster.GetTeam(),
             vPoint,
             null,
-            radius,
+            this.trigger_distance,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE,
@@ -70,7 +68,7 @@ export class arms_t2_1 extends BaseArmsAbility {
                 this.caster.GetTeam(),
                 main_target.GetAbsOrigin(),
                 null,
-                this.search_radius,
+                aoe_radius,
                 UnitTargetTeam.ENEMY,
                 UnitTargetType.BASIC + UnitTargetType.HERO,
                 UnitTargetFlags.NONE,
