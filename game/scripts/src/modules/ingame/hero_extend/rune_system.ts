@@ -12,17 +12,17 @@ export class RuneSystem extends UIEventRegisterClass {
     PlayerUpgradePool : { [player: number]: { key: string[], pro: number[]; }} = {};
     //选择数据
     PlayerSelectData : PlayerRuneSelectServerData[] = [];
-    //技能刷新次数
+    //符文刷新次数
     PlayerRefreshCount: number[] = [];
     //可选最大值
     PlayerRuneSelectMax: number[] = [];
     //玩家单次最大随机数量
-    PlayerSelectAmount: number[] = [];
+    PlayerSelectCount: number[] = [];
     
     PointCount : number[] = [] //点数
 
     ConsumePointCount : number[] = [] //已使用的点数
-    //高级符文列表结果列表
+    //高级符文列表结果列表'
     AdvRuneUnlockConfig : {
         [key: string]: { //解锁条件
            key : string, //所需符文
@@ -35,8 +35,8 @@ export class RuneSystem extends UIEventRegisterClass {
         //配置初始化
         for (let index = 0; index < 6; index++) {
                 this.PlayerRefreshCount.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_REFRESH_COUNT)
-                this.PlayerSelectAmount.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_SELECT_MAX)
-                this.PlayerRuneSelectMax.push(999);
+                this.PlayerSelectCount.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_SELECT_MAX)
+                this.PlayerRuneSelectMax.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_SELECT_MAX);
                 this.PlayerSelectData.push({
                     "rune_list" : {},
                     "is_select" :  0
@@ -49,7 +49,7 @@ export class RuneSystem extends UIEventRegisterClass {
                 let UnlockCondition = RowData.UnlockCondition;
                 let UnlockConfig : { 
                     key : string, //所需符文
-                    val : number, //所需数量
+                    val : number, //所需数量    
                  }[] = [];
                 let ConditionList = UnlockCondition.split(",");
                 for (const iterator of ConditionList) {
@@ -69,12 +69,10 @@ export class RuneSystem extends UIEventRegisterClass {
      * 1.默认是3个,如果其他则可以多选
      * 2.符合条件后会出现特殊升级
      */
-    CreatArmssSelectData(player_id: PlayerID , param : CGED["RuneSystem"]["CreatRuneSelectData"]) {
-        if (this.PlayerSelectData[player_id].is_select == 1) {
-            //修改为已刷新
-            this.PlayerSelectData[player_id].is_select = 1;
+    CreatRuneSelectData(player_id: PlayerID , param : CGED["RuneSystem"]["CreatRuneSelectData"]) {
+        if (this.PlayerSelectData[player_id].is_select == 0) {
             //最多几样物品
-            let amount = this.PlayerRuneSelectMax[player_id];
+            let amount = this.PlayerSelectCount[player_id];
             //循环计数器
             let amount_count = 0;
             let amount_max = 50;
@@ -91,14 +89,14 @@ export class RuneSystem extends UIEventRegisterClass {
                 let key_list = this.PlayerUpgradePool[player_id].key;
                 let pro_list = this.PlayerUpgradePool[player_id].pro;
                 let rune_key = key_list[GetCommonProbability(pro_list)];
-                print("rune_key :" ,rune_key )
+                print("rune_key :" ,rune_key )                                                                                                                                                                                                                                                          
                 let RuneSystem = RuneSystemJson[rune_key as keyof typeof RuneSystemJson];
                 //重复物品跳过
                 if (shop_wp_list.includes(rune_key)) {
                     //跳过本次 
                     index--;
                     continue;
-                }
+                } 
                 //获取当前数量
                 if(PlayerRuneData.hasOwnProperty(rune_key)){
                     rune_count = PlayerRuneData[rune_key];
@@ -115,13 +113,15 @@ export class RuneSystem extends UIEventRegisterClass {
                 shop_wp_list.push(rune_key);
             }
             this.PlayerSelectData[player_id].rune_list = ret_data;
+            //修改为已刷新
+            this.PlayerSelectData[player_id].is_select = 1;
             
         }
         if(GameRules.PUBLIC_CONST.IS_AUTO_SELECT_RUNE == 1 && this.PointCount[player_id] > 0){
             //自动选第一个
-            this.PostSelectArms(player_id , { index : 1})
+            this.PostSelectRune(player_id , { index : 1})
         }else{
-            this.GetArmssSelectData(player_id, param);
+            this.GetRuneSelectData(player_id, param);
         }
         
     }
@@ -129,11 +129,12 @@ export class RuneSystem extends UIEventRegisterClass {
     /**
      * 选择列表
      */
-    PostSelectArms(player_id: PlayerID, params: CGED["RuneSystem"]["PostSelectArms"]) {
+    PostSelectRune(player_id: PlayerID, params: CGED["RuneSystem"]["PostSelectRune"]) {
         let index = params.index;
         if (this.PointCount[player_id] > 0) {
             
             let PlayerSelectDataInfo = this.PlayerSelectData[player_id];
+            DeepPrintTable(PlayerSelectDataInfo)
             if (!PlayerSelectDataInfo.rune_list.hasOwnProperty(index)) {
                 print("没有此选项！！！");
                 return;
@@ -157,14 +158,19 @@ export class RuneSystem extends UIEventRegisterClass {
             }else{
                 this.PlayerRuneData[player_id][rune_key] = 1
             }
+            print("获得符文 : " , rune_key)
             //解锁其他技能 并移除自身可选
             for (const key in this.AdvRuneUnlockConfig) {
                 const unconfig = this.AdvRuneUnlockConfig[key];
                 let unlock = true;
                 for (const iterator of unconfig) {
-                    let playerrunecount = this.PlayerRuneData[player_id][iterator.key]
-                    if(playerrunecount < iterator.val){
-                        unlock = false;
+                    if(this.PlayerRuneData[player_id].hasOwnProperty(iterator.key)){
+                        let playerrunecount = this.PlayerRuneData[player_id][iterator.key]
+                        if(playerrunecount < iterator.val){
+                            unlock = false;
+                            break
+                        }
+                    }else{
                         break
                     }
                 }
@@ -174,7 +180,7 @@ export class RuneSystem extends UIEventRegisterClass {
                 }
             }
             this.PlayerSelectData[player_id].is_select = 0;
-            this.CreatArmssSelectData(player_id , {});
+            this.CreatRuneSelectData(player_id , {});
         } else {
             // GameRules.Cmsg();
             print("没有点")
@@ -205,7 +211,7 @@ export class RuneSystem extends UIEventRegisterClass {
     /**
      * 获取物品信息初始化信息
      */
-    GetArmssSelectData(player_id: PlayerID, params: CGED["RuneSystem"]["GetRuneSelectData"]) {
+    GetRuneSelectData(player_id: PlayerID, params: CGED["RuneSystem"]["GetRuneSelectData"]) {
         //商店组成 1未刷新 2未挑战
         let data : PlayerRuneSelectRetData = {
             Data: this.PlayerSelectData[player_id] , //列表
@@ -214,24 +220,40 @@ export class RuneSystem extends UIEventRegisterClass {
         };
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
-            "RuneSystem_GetArmssSelectData",
+            "RuneSystem_GetRuneSelectData",
             {
                 data
             }
         );
     }
     /**
-     * 增加技能点
+     * 增加点数
      */
-    AddEvolutionPoint(player_id: PlayerID , count : number ){
+    AddPointCount(player_id: PlayerID , count : number ){
         this.PointCount[player_id] += count;
-        this.GetArmssSelectData(player_id , {});
+        this.GetRuneSelectData(player_id , {});
     }
 
 
-    /** 初始化玩家的升级树所有数据 */
+    /** 初始化玩家的符文所有数据 */
     InitPlayerUpgradeStatus(player_id: PlayerID) {
-        
+        this.PlayerRuneData[player_id] = {};
+
+        this.PlayerSelectData[player_id] = {
+            "rune_list" : {},
+            "is_select" :  0
+        };
+        this.PointCount[player_id] = 0;
+        this.ConsumePointCount[player_id] = 0;
+
+        this.PlayerUpgradePool[player_id] = {
+            key : [],
+            pro : [],
+        }
+        for (let [key, RowData] of pairs(RuneSystemJson)) {
+            this.PlayerUpgradePool[player_id].key.push(key);
+            this.PlayerUpgradePool[player_id].pro.push(RowData.Weight);
+        }
     }
 
     /**
@@ -252,26 +274,29 @@ export class RuneSystem extends UIEventRegisterClass {
 
 
     
-
+ 
 
     __Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-sevo") {
         }
-        if (cmd == "-arms_getup" || cmd == "-ag") {
-            this.GetArmssSelectData(player_id, {});
+        if (cmd == "-rune_getup" || cmd == "-rg") {
+            this.GetRuneSelectData(player_id, {});
         }
-        if (cmd == "-arms_creat") {
-            this.CreatArmssSelectData(player_id, {});
+        if (cmd == "-rune_creat" || cmd == "-rc") {
+            this.CreatRuneSelectData(player_id, {});
         }
-        if(cmd == "-arms_add"){
+        if(cmd == "-rune_add"){
              let count = parseInt(args[0]) ?? 1;
-             this.AddEvolutionPoint(player_id , count);
+             this.AddPointCount(player_id , count);
         }
-        if(cmd == "-arms_select" || cmd == "-as"){
+        if(cmd == "-rune_select" || cmd == "-rs"){
             let index = parseInt(args[0]) ?? 1;
-            this.PostSelectArms(player_id , {
+            this.PostSelectRune(player_id , {
                 index : index,
             });
-       }
+        }
+        if(cmd == "-rune_init" ){
+            this.InitPlayerUpgradeStatus(player_id)
+        }
     }
 }

@@ -25,7 +25,7 @@ declare interface CGED {
         GetRuneSelectData : {//直接获取选列表
 
         }
-        PostSelectArms : { //选择列表
+        PostSelectRune : { //选择列表
             index : number //选择的下标
         }
     }

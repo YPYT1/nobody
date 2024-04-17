@@ -5,7 +5,7 @@ declare interface CustomGameEventDeclarations {
         data: PlayerUpgradeSelectRetData;
     };
 
-    RuneSystem_GetArmssSelectData: {
+    RuneSystem_GetRuneSelectData: {
         data: PlayerRuneSelectRetData;
     };
 }
