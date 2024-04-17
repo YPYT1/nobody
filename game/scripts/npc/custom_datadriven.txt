@@ -5,7 +5,7 @@
 		"BaseClass"	"ability_datadriven"
 		"AbilityTextureName"	"ability_capture"
 		"AbilityBehavior"	"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
-		"Disable" "0"
+		"Disable" "1"
 		"AbilityValues" {
 
 		}
@@ -45,6 +45,15 @@
 					}
 				}
 
+				"OnKill"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_units"
+						"Function"	"OnKill"
+					}
+				}
+
 				"OnAbilityExecuted"
 				{
 					"RunScript"
@@ -62,7 +71,7 @@
 		"BaseClass"	"ability_datadriven"
 		"AbilityTextureName"	"axe/mantle_of_the_cinder_baron/axe_battle_hunger"
 		"AbilityBehavior"	"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
-		"Disable" "0"
+		"Disable" "1"
 		"AbilityValues" {
 
 		}
@@ -92,6 +101,15 @@
 					{
 						"ScriptFile"	"abilities/datadriven/custom_datadriven_hero"
 						"Function"	"OnDeath"
+					}
+				}
+
+				"OnKill"
+				{
+					"RunScript"
+					{
+						"ScriptFile"	"abilities/datadriven/custom_datadriven_hero"
+						"Function"	"OnKill"
 					}
 				}
 

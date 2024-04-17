@@ -82,51 +82,19 @@ export function SetAbilityDescription(
     let abilityData = NpcAbilityCustom[ability_name as "public_template"];
     let AbilityValues: AbilityValuesProps = abilityData.AbilityValues;
     let original_description_txt = FormatDescription(ability_name, AbilityValues, level, undefined, entityIndex);
-    // $.Msg(["original_description_txt",original_description_txt])
     if (original_description_txt.search("#") == 0) { return ""; }
-    // 解锁
-    // $.Msg(["abilityData.DamageFormula", abilityData.DamageFormula])
+
+    original_description_txt = original_description_txt.replaceAll(
+        "%AbilityCooldown%", 
+        `<span class="GameplayVariable">${abilityData.AbilityCooldown ?? 0}</span>`
+    );
     if (abilityData.DamageFormula || abilityData.DamageFormula == "0") {
         $("#AbilityDamageType")?.SetHasClass("Hidden", false);
         let damage_formula = abilityData.DamageFormula;
         if (damage_formula) {
             let damageFormula_desc = HeroPassiveDamageFormula(ability_name, `${damage_formula}`, level, abilityData.Element ?? "0");
-            original_description_txt = original_description_txt.replace("%DamageFormula%", damageFormula_desc);
+            original_description_txt = original_description_txt.replaceAll("%DamageFormula%", damageFormula_desc);
         }
-        // if (abilityData.Element) {
-        //     const ElementType = abilityData.Element;
-        //     // $.Msg(["ElementType", ElementType]);
-        //     $("#CustomTooltipItem").SetDialogVariable("damagetype", DamageTypeLabel[ElementType] ?? "无");
-        // } else {
-        //     $("#CustomTooltipItem").SetDialogVariable("damagetype", "无");
-        // }
-
-        // let formula_text = ``;
-        // if (abilityData.AbilityType == "DOTA_ABILITY_TYPE_ULTIMATE") {
-        //     IsUltimate = true;
-        //     formula_text += `<br><br><span class="">${$.Localize("#custom_text_upgrade_ultimate")}</span>`;
-        // } else {
-        //     formula_text += `<br><br><span class="">${$.Localize("#custom_text_upgrade_passive")}</span>`;
-        // }
-
-        // for (let order of [0, 1]) {
-        //     let awaken = "awaken_" + (order + 1);
-        //     let awaken_text = FormatLocalize(`#DOTA_Tooltip_Ability_${name}_${awaken}`, AbilityValues);
-        //     const normal_lv = [2, 6];
-        //     const ultimate_lv = [2, 4];
-        //     let ability_lv = 0;
-        //     if (abilityData.AbilityType == "DOTA_ABILITY_TYPE_ULTIMATE") {
-        //         ability_lv = ultimate_lv[order];
-        //     } else {
-        //         ability_lv = normal_lv[order];
-        //     }
-        //     let state_class = level >= ability_lv ? "enable" : "disable";
-        //     // $.Msg(awaken_text)
-        //     if (awaken_text.search("#") != 0) {
-        //         formula_text += `<br><br><span class="${state_class}"> Lv.${ability_lv}解锁 :${awaken_text}</span>`;
-        //     }
-        // }
-        // original_description_txt += formula_text;
     }
 
     return original_description_txt;

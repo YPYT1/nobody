@@ -22,9 +22,13 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     buff_queue: string[];
 
+    summoned_damage:number;
     //KillOnAnyList: CDOTABaseAbility[];
     KillOnMdfList: CDOTA_Buff[];
     //KillOnAbilityList: CDOTABaseAbility[];
 
-    ArmsExecutedList: CDOTABaseAbility[]
+    ArmsExecutedList: CDOTABaseAbility[];
+
+    OnAttackList: CDOTABaseAbility[];
+    OnKillList: CDOTABaseAbility[];
 }

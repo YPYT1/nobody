@@ -1,8 +1,8 @@
 import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
 import { ArmsComboModifier } from "./arms_combo";
 
-/** 认知失调 
- * 
+/** 
+ * 认知失调 
 */
 @registerModifier()
 export class modifier_arms_combo_1 extends ArmsComboModifier {

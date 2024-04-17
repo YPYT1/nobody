@@ -121,7 +121,8 @@ export class ArmsCombo {
 
     AddComboModifier(hUnit: CDOTA_BaseNPC, combo_key: string) {
         const mdf_name = "modifier_arms_combo_" + combo_key
-        GameRules.BuffManager.AddPermanentMdf(hUnit, hUnit, null, mdf_name, {})
+        const hAbility = hUnit.FindAbilityByName("public_arms");
+        GameRules.BuffManager.AddPermanentMdf(hUnit, hUnit, hAbility, mdf_name, {})
     }
 
     RemoveComboModifier(hUnit: CDOTA_BaseNPC, combo_key: string) {

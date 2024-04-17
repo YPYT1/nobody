@@ -35,7 +35,6 @@ export class ArmsModifier_DOT extends BaseModifier {
     C_OnCreated(params: any): void { }
 
     OnIntervalThink(): void {
-
         ApplyCustomDamage({
             victim: this.parent,
             attacker: this.caster,
@@ -45,7 +44,7 @@ export class ArmsModifier_DOT extends BaseModifier {
             element_type: this.dot_element
         });
         this.total_damage -= this.dot_damage
-        print("last damage", this.total_damage)
+        // print("last damage", this.total_damage)
     }
 
     /** 引爆DOT,直接造成剩余DOT伤害 */

@@ -222,13 +222,16 @@
 
 
     #ComboContainer {
+        width: 100%;
         margin-top: 18px;
         flow-children: down;
 
         .ArmsCombieRows {
+            width: 100%;
             margin-top: 4px;
-            border-bottom: 1px solid #ffffff;
-            padding: 4px;
+            margin-bottom: 4px;
+            // border-bottom: 1px solid #ffffff;
+            // padding: 4px;
             flow-children: down;
 
             .Header {
@@ -249,13 +252,17 @@
             }
 
             .CombieAbility {
+                // width: 100%;
                 // margin-left: 8px;
-                flow-children: right;
+                flow-children: right-wrap;
 
                 Label {
                     color: #5f5f5f;
                     font-size: 18px;
-                    margin-left: 4px;
+                    // margin-left: 4px;
+                    margin-right: 4px;
+                    margin-top: 2px;
+                    margin-bottom: 2px;
                 }
             }
         }

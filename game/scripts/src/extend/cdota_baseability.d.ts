@@ -12,7 +12,9 @@ declare interface CDOTABaseAbility extends CBaseEntity {
     /** 受击 */
     // AffectedEffectStart(event: ModifierAttackEvent): void;
     GetAbilityDamage(): number;
-    // _OnEquip(): void;
-    // _OnUnequip(): void;
 
+    OnAttackStart(hTarget?: CDOTA_BaseNPC): void;
+    OnKill(hTarget?: CDOTA_BaseNPC): void;
+    // 自身死亡
+    OnDeath(): void;
 }

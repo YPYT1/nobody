@@ -17,6 +17,7 @@ export class BaseArmsAbility extends BaseAbility {
     // search_radius: number;
     /** 附近单位最近多少码可触发 */
     trigger_distance: number;
+    buff: CDOTA_Buff;
 
     // OverrideKyes
     projectile_speed: number
@@ -32,6 +33,8 @@ export class BaseArmsAbility extends BaseAbility {
     shield_amplify: number
     health_amplify: number
 
+    SetLinkBuff(hBuff: CDOTA_Buff) { this.buff = hBuff }
+
     OnUpgrade() {
         this.element_type = 0;
         this.dmg_formula = "0";
@@ -41,7 +44,7 @@ export class BaseArmsAbility extends BaseAbility {
         this.team = this.caster.GetTeamNumber();
         this.key = this.GetAbilityName();
         this.trigger_distance = this.GetCastRange(this.caster.GetAbsOrigin(), this.caster);
-        if (this.arms_cd <= 0) { this.arms_cd = 1 }
+        // if (this.arms_cd <= 0) { this.arms_cd = 0 }
         this.ArmsActTime = GameRules.GetDOTATime(false, false) + 1;
         GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
         this.UpdateDamageFormula()
@@ -62,12 +65,18 @@ export class BaseArmsAbility extends BaseAbility {
         const public_arms = hCaster.FindAbilityByName("public_arms") as public_arms;
         public_arms.AffectedRemove(this);
         public_arms.ArmsRemove(this);
-        // public_arms.KillOnAnyRemove(this);
-        // public_arms.KillOnAbilityRemove(this);
 
-        // 移除
+        // 移除该技能的施法事件
         let index = hCaster.ArmsExecutedList.indexOf(this);
         if (index != -1) { hCaster.ArmsExecutedList.splice(index, 1) }
+
+        // 移除onattack事件
+        let attack_index = hCaster.OnAttackList.indexOf(this);
+        if (attack_index != -1) { hCaster.OnAttackList.splice(attack_index, 1) }
+
+        // 移除onkill
+        let kill_index = hCaster.OnKillList.indexOf(this);
+        if (kill_index != -1) { hCaster.OnKillList.splice(kill_index, 1) }
 
         GameRules.ArmsCombo.RemoveCheckComboSets(hCaster, this)
         this._RemoveSelf();
@@ -90,11 +99,9 @@ export class BaseArmsAbility extends BaseAbility {
         if (this.trigger_distance == 0 || min_distance <= this.trigger_distance) {
             this.ArmsActTime = GameRules.GetDOTATime(false, false) + this.arms_cd;
             this.ArmsEffectStart();
-
             for (let arms_ability of this.caster.ArmsExecutedList) {
                 (arms_ability as this).OnArmsExecuted();
             }
-            // this.ArmsEffectStart_After()
         }
     }
 
@@ -127,20 +134,6 @@ export class BaseArmsAbility extends BaseAbility {
         public_arms.AffectedInsert(this)
     }
 
-
-    KilledOnAny(hTarget: CDOTA_BaseNPC) { }
-    KilledOnAbility(hTarget: CDOTA_BaseNPC) { }
-
-    // KilledOnAnyAdd() {
-    //     const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
-    //     public_arms.KillOnAnyInsert(this)
-    // }
-
-    // KilledOnAbilityAdd() {
-    //     const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
-    //     public_arms.KillOnAbilityInster(this)
-    // }
-
     /** 注册 */
     RegisterArmsExecuted() {
         let index = this.caster.ArmsExecutedList.indexOf(this);
@@ -148,9 +141,15 @@ export class BaseArmsAbility extends BaseAbility {
     }
 
     /** 当有火力技触发时 */
-    OnArmsExecuted() {
+    OnArmsExecuted() { }
 
+    RegisterOnKill() {
+        let index = this.caster.OnKillList.indexOf(this);
+        if (index == -1) { this.caster.OnKillList.push(this) }
     }
+
+    OnKill(hTarget: CDOTA_BaseNPC) { }
+    OnKillOfAbility(hTarget: CDOTA_BaseNPC) { }
 
     GetAbilityDamage() {
         if (this.dmg_formula == null) {
@@ -167,7 +166,14 @@ export class BaseArmsAbility extends BaseAbility {
         return res_number;
     }
 
+    RegisterEvent_OnAttackStart() {
+        let index = this.caster.OnAttackList.indexOf(this);
+        if (index == -1) { this.caster.OnAttackList.push(this) }
+    }
 
+    OnAttackStart(hTarget: CDOTA_BaseNPC): void { }
+
+    OnDeath(){}
 }
 
 @registerModifier()
@@ -175,6 +181,7 @@ export class BaseArmsModifier extends BaseModifier {
 
     caster: CDOTA_BaseNPC;
     item_key: string;
+    buff_key: string;
     ability: CDOTABaseAbility;
     player_id: PlayerID;
 
@@ -187,17 +194,20 @@ export class BaseArmsModifier extends BaseModifier {
     }
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return }
         this.caster = this.GetCaster();
         this.ability = this.GetAbility();
         this.player_id = this.caster.GetPlayerOwnerID();
         this.item_key = "item_" + this.GetAbility().entindex();
-        // print("[BaseArmsModifier OnCreated]:", this.GetName(), this.item_key)
+        this.buff_key = DoUniqueString("buff_" + this.GetAbility().GetAbilityName());
         this.C_OnCreatedBefore(params);
-        let ability_attr = GameRules.CustomAttribute.GetAbilityAttribute(this.GetAbility().GetAbilityName());
-        GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.item_key, ability_attr);
-        // 技能羁绊检查
-        this.C_OnCreated(params)
+        if (IsServer()) {
+            let hAbility = this.GetAbility() as BaseArmsAbility;
+            hAbility.SetLinkBuff(this);
+            let ability_attr = GameRules.CustomAttribute.GetAbilityAttribute(this.GetAbility().GetAbilityName());
+            GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.item_key, ability_attr);
+            this.C_OnCreated(params)
+        }
+
     }
 
     C_OnCreatedBefore(params: any) { }
@@ -229,16 +239,16 @@ export class BaseArmsModifier extends BaseModifier {
     C_OnKilled(hTarget: CDOTA_BaseNPC) { }
 
 
-    C_RegisterOnAttack(){
+    C_RegisterOnAttack() {
 
     }
 
-    C_RegisterOnAttackStart(){
-        
+    C_RegisterOnAttackStart() {
+
     }
 
-    C_RegisterOnAttacked(){
-        
+    C_RegisterOnAttacked() {
+
     }
 }
 
@@ -263,8 +273,9 @@ export class public_arms extends BaseAbility {
             this.ArmsList = [];
             this.AffectedList = [];
             this.caster.ArmsExecutedList = [];
-        }
+            this.caster.OnKillList = [];
 
+        }
     }
 
     ArmsInsert(hAbility: CDOTABaseAbility) {
@@ -287,25 +298,7 @@ export class public_arms extends BaseAbility {
         if (iIndex != -1) { this.AffectedList.splice(iIndex, 1); }
     }
 
-    // KillOnAnyInsert(hAbility: CDOTABaseAbility) {
-    //     let iIndex = this.caster.KillOnAnyList.indexOf(hAbility);
-    //     if (iIndex == -1) { this.caster.KillOnAnyList.push(hAbility) }
-    // }
 
-    // KillOnAnyRemove(hAbility: CDOTABaseAbility) {
-    //     let iIndex = this.caster.KillOnAnyList.indexOf(hAbility);
-    //     if (iIndex != -1) { this.caster.KillOnAnyList.splice(iIndex, 1); }
-    // }
-
-    // KillOnAbilityInster(hAbility: CDOTABaseAbility) {
-    //     let iIndex = this.caster.KillOnAbilityList.indexOf(hAbility);
-    //     if (iIndex == -1) { this.caster.KillOnAbilityList.push(hAbility) }
-    // }
-
-    // KillOnAbilityRemove(hAbility: CDOTABaseAbility) {
-    //     let ability_index = this.caster.KillOnAbilityList.indexOf(this);
-    //     if (ability_index != -1) { this.caster.KillOnAbilityList.splice(ability_index, 1); }
-    // }
 
 }
 
@@ -325,6 +318,7 @@ export class modifier_public_arms extends BaseModifier {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         if (this.caster.KillOnMdfList == null) { this.caster.KillOnMdfList = [] }
+        if (this.caster.OnAttackList == null) { this.caster.OnAttackList = [] }
         this.player_id = this.caster.GetPlayerOwnerID();
         this.team = this.caster.GetTeam();
         this.hAbility = this.GetAbility() as public_arms;

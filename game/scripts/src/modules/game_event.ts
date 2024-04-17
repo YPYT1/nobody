@@ -11,6 +11,7 @@ import { ItemEvolution } from './ingame/hero_extend/item_evolution';
 import { ResourceSystem } from './ingame/system/resource_system';
 import { ArmsCombo } from './ingame/hero_extend/arms_combo';
 import { SummonedSystem } from './ingame/system/summoned_system';
+import { CustomMechanics } from './ingame/hero_extend/custom_mechanics';
 
 declare global {
 
@@ -31,6 +32,7 @@ declare global {
         ArmsCombo: ArmsCombo;
 
         SummonedSystem: SummonedSystem;
+        CustomMechanics:CustomMechanics;
     }
 }
 
@@ -68,7 +70,7 @@ export class GameEvent {
             GameRules.ArmsCombo = new ArmsCombo();
             GameRules.SummonedSystem = new SummonedSystem();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
-
+            GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
 
         } else if (State_Get == GameState.TEAM_SHOWCASE) { //队伍展示阶段
@@ -80,7 +82,7 @@ export class GameEvent {
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段
 
         } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段
-
+            
         } else if (State_Get == GameState.POST_GAME) { //推送结果阶段
 
         } else if (State_Get == GameState.DISCONNECT) { //断开阶段
