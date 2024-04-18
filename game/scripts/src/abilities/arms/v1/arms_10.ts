@@ -15,10 +15,11 @@ export class arms_10 extends BaseArmsAbility {
         this.bonus_soul = this.GetSpecialValueFor("bonus_soul")
         this.bonus_exp = this.GetSpecialValueFor("bonus_exp")
         this.check_radius = this.GetSpecialValueFor("check_radius")
-        this.ArmsAdd()
+        
+        this.RegisterEvent(["OnArmsStart"])
     }
 
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         const vPoint = this.caster.GetAbsOrigin();
         const friends = FindUnitsInRadius(
             this.team,

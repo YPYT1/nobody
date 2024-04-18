@@ -154,13 +154,13 @@ export class CustomAttribute {
                 * (1 + SubAttr["TotalPercent"] * 0.01)
                 + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                 + (SubAttr["Fixed"]);
-            hUnit.custom_attribute_value[main_key] = MainAttrValue
+            hUnit.custom_attribute_value[main_key] = math.floor(MainAttrValue)
         }
 
         let extra_attribute_table = this.ConversionCalculate(hUnit)
         let extra_attribute_value = this.AttributeCalculateExtra(hUnit, extra_attribute_table)
         for (let extra_key in extra_attribute_value) {
-            hUnit.custom_attribute_value[extra_key] += extra_attribute_value[extra_key]
+            hUnit.custom_attribute_value[extra_key] += math.floor(extra_attribute_value[extra_key])
         }
         // 属性更新
         const update_state = GameRules.GetDOTATime(false, false) > hUnit.last_attribute_update;

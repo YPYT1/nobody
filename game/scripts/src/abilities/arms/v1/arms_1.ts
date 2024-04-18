@@ -11,10 +11,10 @@ export class arms_1 extends BaseArmsAbility {
     _OnUpdateKeyValue(): void {
         this.spirit_limit = this.GetSpecialValueFor("spirit_limit");
         if (this.spirit_list == null) { this.spirit_list = [] }
-        this.ArmsAdd()
+        this.RegisterEvent(["OnArmsStart"])
     }
 
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         if (this.spirit_list.length < this.spirit_limit) {
             let summoned_duration = this.GetSpecialValueFor("summoned_duration");
             let hSpirit = GameRules.SummonedSystem.CreatedUnit(

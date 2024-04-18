@@ -17,10 +17,10 @@ export class arms_5 extends BaseArmsAbility {
     }
 
     _OnUpdateKeyValue(): void {
-        this.ArmsAdd();
+        this.RegisterEvent(["OnArmsStart"])
     }
     
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         // print("ArmsEffectStart")
         const vPoint = this.caster.GetOrigin();
         const projectile_distance = 600;

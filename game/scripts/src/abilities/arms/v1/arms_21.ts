@@ -12,10 +12,10 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 export class arms_21 extends BaseArmsAbility {
 
     _OnUpdateKeyValue(): void {
-        this.AffectedAdd()
+        this.RegisterEvent(["OnAffected"])
     }
 
-    AffectedEffectStart(event: ModifierAttackEvent): void {
+    OnAffected(event: ModifierAttackEvent): void {
         let vLoc = this.caster.GetAbsOrigin();
         let time_duration = this.GetSpecialValueFor("time_duration")
         let buff_duration = this.GetSpecialValueFor("buff_duration")

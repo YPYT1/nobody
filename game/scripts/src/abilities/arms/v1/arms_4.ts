@@ -10,10 +10,10 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 export class arms_4 extends BaseArmsAbility {
 
     _OnUpdateKeyValue(): void {
-        this.ArmsAdd();
+        this.RegisterEvent(["OnArmsStart"])
     }
 
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         let count = 0;
         this.debuff_duration = this.GetSpecialValueFor("debuff_duration");
         this.ability_damage = this.GetAbilityDamage();

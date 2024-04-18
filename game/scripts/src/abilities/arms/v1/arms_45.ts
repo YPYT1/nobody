@@ -14,10 +14,10 @@ export class arms_45 extends BaseArmsAbility {
     burn_duration: number;
 
     _OnUpdateKeyValue(): void {
-        this.ArmsAdd();
+        this.RegisterEvent(["OnArmsStart"])
     }
 
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         let count = 0;
         this.ability_damage = this.GetAbilityDamage();
         const projectile_speed = this.GetSpecialValueFor("projectile_speed");

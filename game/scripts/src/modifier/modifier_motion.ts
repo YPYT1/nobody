@@ -43,12 +43,12 @@ export class modifier_pick_animation2 extends BaseModifierMotionBoth {
         if (IsValid(this.target)) { this.Destroy(); }
         this.fCount += dt * 1;
         const distance = (this.GetCaster().GetAbsOrigin() - this.GetParent().GetAbsOrigin() as Vector).Length2D();
-        print("distance", distance)
+        // print("distance", distance)
         if (distance < 36) {
             this.Destroy();
             return;
         }
-        print("this.fCount", this.fCount)
+        // print("this.fCount", this.fCount)
         let b1 = GetQuadraticVector(this.GetParent().GetOrigin(), this.target.GetOrigin(), this.vBezier, this.fCount);
         this.GetParent().SetOrigin(b1);
 
@@ -97,11 +97,11 @@ export class modifier_motion_bezier extends BaseModifierMotionBoth {
         this._pre_speed = (params.movespeed / 25) / this._init_distance;
         this._value = 0;
         this.C_OnCreated(params);
-        DebugDrawCircle(this._origin, Vector(255, 0, 0), 1, 100, true, 1);
-        DebugDrawCircle(mid_point, Vector(255, 0, 0), 1, 100, true, 1);
-        DebugDrawCircle(this._end_point, Vector(0, 250, 0), 1, 100, true, 1);
-        DebugDrawCircle(this._mid_point, Vector(0, 0, 250), 1, 100, true, 1);
-        DebugDrawCircle(this._mid_point2, Vector(0, 0, 250), 1, 100, true, 1);
+        // DebugDrawCircle(this._origin, Vector(255, 0, 0), 1, 100, true, 1);
+        // DebugDrawCircle(mid_point, Vector(255, 0, 0), 1, 100, true, 1);
+        // DebugDrawCircle(this._end_point, Vector(0, 250, 0), 1, 100, true, 1);
+        // DebugDrawCircle(this._mid_point, Vector(0, 0, 250), 1, 100, true, 1);
+        // DebugDrawCircle(this._mid_point2, Vector(0, 0, 250), 1, 100, true, 1);
         if (this.ApplyHorizontalMotionController() == false || this.ApplyVerticalMotionController() == false) {
             this.Destroy();
             return;

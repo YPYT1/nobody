@@ -16,6 +16,7 @@ export class modifier_arms_39 extends BaseArmsModifier {
     bonus_mv_pct: number;
 
     C_OnCreatedBefore(params: any): void {
+        print("C_OnCreatedBefore", IsServer())
         this.bonus_ad_pct = this.ability.GetSpecialValueFor("bonus_ad_pct");
         this.bonus_mv_pct = this.ability.GetSpecialValueFor("bonus_mv_pct");
     }
@@ -28,11 +29,11 @@ export class modifier_arms_39 extends BaseArmsModifier {
     }
 
     GetModifierBaseDamageOutgoing_Percentage(event: ModifierAttackEvent): number {
-        return this.bonus_ad_pct * (this.caster.GetHealthPercent()) * 0.01
+        return this.bonus_ad_pct * (this.caster.GetHealthPercent())
     }
 
     GetModifierMoveSpeedBonus_Percentage(): number {
-        return this.bonus_mv_pct * (this.caster.GetHealthPercent()) * 0.01
+        return this.bonus_mv_pct * (this.caster.GetHealthPercent())
     }
 
 }

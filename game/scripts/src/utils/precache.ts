@@ -4,9 +4,8 @@ export default function Precache(context: CScriptPrecacheContext) {
     // 需要预载的所有资源
     precacheResource(
         [
-            // '***.vpcf',
             'soundevents/game_sounds_heroes/game_sounds_zuus.vsndevts',
-            // '***.vmdl',
+            'soundevents/game_sounds_heroes/game_sounds_hoodwink.vsndevts',
         ],
         context
     );

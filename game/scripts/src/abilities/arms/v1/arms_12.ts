@@ -7,8 +7,6 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 @registerAbility()
 export class arms_12 extends BaseArmsAbility {
 
-    mdf_name = "modifier_arms_12";
-
     check_radius: number;
     bonus_attackdamage: number;
     bonus_movespeed: number;
@@ -17,10 +15,10 @@ export class arms_12 extends BaseArmsAbility {
         this.bonus_attackdamage = this.GetSpecialValueFor("bonus_attackdamage")
         this.bonus_movespeed = this.GetSpecialValueFor("bonus_movespeed")
         this.check_radius = this.GetSpecialValueFor("check_radius")
-        this.ArmsAdd()
+        this.RegisterEvent(["OnArmsStart"])
     }
 
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         const vPoint = this.caster.GetAbsOrigin();
         const friends = FindUnitsInRadius(
             this.team,

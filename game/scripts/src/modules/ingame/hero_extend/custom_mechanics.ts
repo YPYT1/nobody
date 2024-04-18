@@ -13,4 +13,18 @@ export class CustomMechanics {
     Heal(hUnit: CDOTA_BaseNPC, iHealth: number, hAbility: CDOTABaseAbility) {
         hUnit.Heal(iHealth, hAbility)
     }
+
+    RemoveArmsAbility(hAbility: CDOTABaseAbility) {
+        const hUnit = hAbility.GetCaster();
+        for (let i = 0; i < 6; i++) {
+            let RowAbility = hUnit.GetAbilityByIndex(i);
+            if (RowAbility == hAbility) {
+                hAbility.RemoveSelf()
+                hUnit.RemoveAbilityByHandle(hAbility);
+                if (i < 6) {
+                    hUnit.AddAbility("arms_passive_" + i)
+                }
+            }
+        }
+    }
 }

@@ -1,7 +1,14 @@
 import { BaseAbility, BaseItem, BaseModifier, registerAbility, registerModifier } from '../../utils/dota_ts_adapter';
 
 
-type MdfEventTyps = "Kill" | "AbilityKill"
+type MdfEventTyps =
+    | "OnAbilityKill"
+    | "OnArmsStart"
+    | "OnAffected"
+    | "OnKill"
+    | "OnArmsExecuted"
+    | "OnAttackStart"
+
 
 @registerAbility()
 export class BaseArmsAbility extends BaseAbility {
@@ -18,6 +25,7 @@ export class BaseArmsAbility extends BaseAbility {
     /** 附近单位最近多少码可触发 */
     trigger_distance: number;
     buff: CDOTA_Buff;
+    unit_list: CDOTA_BaseNPC[];
 
     // OverrideKyes
     projectile_speed: number
@@ -32,6 +40,10 @@ export class BaseArmsAbility extends BaseAbility {
     debuff_duration: number
     shield_amplify: number
     health_amplify: number
+
+    // Precache(context: CScriptPrecacheContext): void {
+    //     PrecacheResource("particle", "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova.vpcf", context);
+    // }
 
     SetLinkBuff(hBuff: CDOTA_Buff) { this.buff = hBuff }
 
@@ -59,6 +71,8 @@ export class BaseArmsAbility extends BaseAbility {
     }
 
     _OnUpdateKeyValue() { }
+
+
 
     RemoveSelf(): void {
         const hCaster = this.GetCaster();
@@ -98,58 +112,67 @@ export class BaseArmsAbility extends BaseAbility {
         // print("attack_range", this.caster.GetBaseAttackRange())
         if (this.trigger_distance == 0 || min_distance <= this.trigger_distance) {
             this.ArmsActTime = GameRules.GetDOTATime(false, false) + this.arms_cd;
-            this.ArmsEffectStart();
+            this.OnArmsStart();
             for (let arms_ability of this.caster.ArmsExecutedList) {
                 (arms_ability as this).OnArmsExecuted();
             }
         }
     }
 
-    ArmsEffectStart() { }
+    // ArmsEffectStart() { }
+    // OnArmsStart(event: ModifierAttackEvent){}
     // ArmsEffectStart_After() { }
 
     _AffectedEffectStart(event: ModifierAttackEvent) {
-        this.AffectedEffectStart_Before()
-        this.AffectedEffectStart(event)
-        this.AffectedEffectStart_After()
+        this._AffectedEffectStart_Before()
+        this.OnAffected(event)
+        this._AffectedEffectStart_After()
     }
-
-    AffectedEffectStart(event: ModifierAttackEvent) { }
-    AffectedEffectStart_Before() {
+    _AffectedEffectStart_Before() {
         this.ArmsActTime = GameRules.GetDOTATime(false, false) + this.arms_cd;
-
     }
-    AffectedEffectStart_After() { }
+    _AffectedEffectStart_After() { }
 
 
-    /** 火力技注册 */
-    ArmsAdd() {
-        const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
-        public_arms.ArmsInsert(this)
+
+    RegisterEvent(event_list: MdfEventTyps[]) {
+        if (event_list.indexOf("OnArmsStart") != -1) {
+            const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
+            public_arms.ArmsInsert(this)
+        }
+
+        if (event_list.indexOf("OnAffected") != -1) {
+            const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
+            public_arms.AffectedInsert(this)
+        }
+
+        if (event_list.indexOf("OnArmsExecuted") != -1) {
+            let index = this.caster.ArmsExecutedList.indexOf(this);
+            if (index == -1) { this.caster.ArmsExecutedList.push(this) }
+        }
+        //onkill
+        if (event_list.indexOf("OnKill") != -1) {
+            let index = this.caster.OnKillList.indexOf(this);
+            if (index == -1) { this.caster.OnKillList.push(this) }
+        }
+
+        // onatt
+        if (event_list.indexOf("OnAttackStart") != -1) {
+            let index = this.caster.OnAttackList.indexOf(this);
+            if (index == -1) { this.caster.OnAttackList.push(this) }
+        }
     }
 
-    /** 受击技注册 */
-    AffectedAdd() {
-        const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
-        public_arms.AffectedInsert(this)
-    }
-
-    /** 注册 */
-    RegisterArmsExecuted() {
-        let index = this.caster.ArmsExecutedList.indexOf(this);
-        if (index == -1) { this.caster.ArmsExecutedList.push(this) }
-    }
-
+    /** 火力技触发 */
+    OnArmsStart() { }
+    /** 受到伤害 */
+    OnAffected(event: ModifierAttackEvent) { }
     /** 当有火力技触发时 */
     OnArmsExecuted() { }
-
-    RegisterOnKill() {
-        let index = this.caster.OnKillList.indexOf(this);
-        if (index == -1) { this.caster.OnKillList.push(this) }
-    }
-
     OnKill(hTarget: CDOTA_BaseNPC) { }
     OnKillOfAbility(hTarget: CDOTA_BaseNPC) { }
+    OnAttackStart(hTarget: CDOTA_BaseNPC): void { }
+    OnDeath() { }
 
     GetAbilityDamage() {
         if (this.dmg_formula == null) {
@@ -166,14 +189,6 @@ export class BaseArmsAbility extends BaseAbility {
         return res_number;
     }
 
-    RegisterEvent_OnAttackStart() {
-        let index = this.caster.OnAttackList.indexOf(this);
-        if (index == -1) { this.caster.OnAttackList.push(this) }
-    }
-
-    OnAttackStart(hTarget: CDOTA_BaseNPC): void { }
-
-    OnDeath(){}
 }
 
 @registerModifier()

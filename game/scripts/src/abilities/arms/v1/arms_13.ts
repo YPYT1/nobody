@@ -15,10 +15,10 @@ export class arms_13 extends BaseArmsAbility {
     }
 
     _OnUpdateKeyValue(): void {
-        this.ArmsAdd();
+        this.RegisterEvent(["OnArmsStart"])
     }
 
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         const vCaster = this.caster.GetOrigin();
         let targets = FindUnitsInRadius(
             this.team,

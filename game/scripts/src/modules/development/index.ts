@@ -51,12 +51,6 @@ export class Development extends UIEventRegisterClass {
         const hUnit = EntIndexToHScript(queryUnit) as CDOTA_BaseNPC;
         const ability_name = params.ability_name;
         const order = params.order;
-        print("ability_name", ability_name)
-        // if (hUnit.HasAbility(ability_name)) {
-        //     print("已有该技能,现在进行位置替换")
-        //     return
-        // }
-
         let order_ability = hUnit.GetAbilityByIndex(order);
         if (order_ability) {
             order_ability.RemoveSelf()

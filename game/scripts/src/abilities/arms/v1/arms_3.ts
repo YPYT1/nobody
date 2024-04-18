@@ -16,9 +16,7 @@ export class modifier_arms_3 extends BaseArmsModifier {
     lost_amount: number;
     income_mul: number;
 
-    IsHidden(): boolean {
-        return false
-    }
+    IsHidden(): boolean { return false }
 
     C_OnCreated(params: any): void {
         this.lost_amount = 0;

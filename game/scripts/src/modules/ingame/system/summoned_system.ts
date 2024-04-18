@@ -12,6 +12,17 @@ export class SummonedSystem {
 
     }
 
+    CreateBullet(vPos: Vector, hCaster: CDOTA_BaseNPC) {
+        let hBullet = CreateUnitByName(
+            "npc_dota_beastmaster_axe",
+            vPos,
+            true,
+            hCaster,
+            hCaster,
+            hCaster.GetTeam()
+        );
+        return hBullet;
+    }
     CreatedUnit(
         unitName: SummonedUnitsType,
         location: Vector,

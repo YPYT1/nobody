@@ -15,10 +15,10 @@ export class arms_26 extends BaseArmsAbility {
 
     _OnUpdateKeyValue(): void {
         this.splash_radius = 150;
-        this.ArmsAdd()
+        this.RegisterEvent(["OnArmsStart"])
     }
 
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         this.ability_damage = this.GetAbilityDamage();
         let summoned_duration = this.GetSpecialValueFor("summoned_duration")
         let vLoc = this.caster.GetAbsOrigin() + RandomVector(200) as Vector;

@@ -17,6 +17,10 @@ export class modifier_arms_33 extends BaseArmsModifier {
     deduct_hp: number;
     income_pct: number;
 
+    IsHidden(): boolean {
+        return false
+    }
+
     C_OnCreated(params: any): void {
         let lowering_pct = this.ability.GetSpecialValueFor("lowering_pct") * 0.01;
         this.timer = 0;
@@ -25,6 +29,8 @@ export class modifier_arms_33 extends BaseArmsModifier {
         this.deduct_ad = this.caster.custom_attribute_table["AttackDamage"]["Base"] * lowering_pct;
         this.deduct_hp = this.caster.custom_attribute_table["HealthPoints"]["Base"] * lowering_pct;
 
+        DeepPrintTable(this.caster.custom_attribute_table)
+        print("modifier_arms_33 ", this.deduct_ad, this.deduct_hp, lowering_pct)
         GameRules.CustomAttribute.ModifyAttribute(this.caster, {
             "AttackDamage": {
                 "Base": this.deduct_ad
@@ -32,7 +38,7 @@ export class modifier_arms_33 extends BaseArmsModifier {
             "HealthPoints": {
                 "Base": this.deduct_hp
             }
-        }, -1)
+        })
 
         this.StartIntervalThink(1)
     }
@@ -41,7 +47,9 @@ export class modifier_arms_33 extends BaseArmsModifier {
         this.timer += 1;
         this.SetStackCount(this.timer)
         if (this.timer >= this.limit_timer) {
-            this.StartIntervalThink(-1)
+            // 移除该技能
+            this.StartIntervalThink(-1);
+            GameRules.CustomMechanics.RemoveArmsAbility(this.ability)
         }
     }
 
@@ -50,10 +58,10 @@ export class modifier_arms_33 extends BaseArmsModifier {
         if (state) {
             GameRules.CustomAttribute.ModifyAttribute(this.caster, {
                 "AttackDamage": {
-                    "Base": this.deduct_ad * this.income_pct
+                    "Base": this.deduct_ad * this.income_pct * -1
                 },
                 "HealthPoints": {
-                    "Base": this.deduct_hp * this.income_pct
+                    "Base": this.deduct_hp * this.income_pct * -1
                 }
             })
         }

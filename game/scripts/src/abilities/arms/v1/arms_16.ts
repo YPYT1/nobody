@@ -18,7 +18,7 @@ export class arms_16 extends BaseArmsAbility {
     _OnUpdateKeyValue() {
         this.activate_time = 0
         this.stack_limit = this.GetSpecialValueFor("stack_limit");
-        this.RegisterArmsExecuted()
+        this.RegisterEvent(["OnArmsExecuted"])
     }
 
     OnArmsExecuted(): void {

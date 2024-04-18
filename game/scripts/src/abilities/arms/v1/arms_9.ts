@@ -12,10 +12,10 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 export class arms_9 extends BaseArmsAbility {
 
     _OnUpdateKeyValue(): void {
-        this.AffectedAdd()
+        this.RegisterEvent(["OnAffected"])
     }
 
-    AffectedEffectStart(event: ModifierAttackEvent): void {
+    OnAffected(event: ModifierAttackEvent): void {
         const aoe_radius = this.GetSpecialValueFor("aoe_radius");
         const vPoint = this.caster.GetAbsOrigin();
         let ability_damage = this.GetAbilityDamage();

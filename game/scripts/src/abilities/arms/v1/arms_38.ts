@@ -29,11 +29,11 @@ export class modifier_arms_ extends BaseArmsModifier {
     }
 
     GetModifierBaseDamageOutgoing_Percentage(event: ModifierAttackEvent): number {
-        return this.bonus_ad_pct * (100 - this.caster.GetHealthPercent()) * 0.01
+        return this.bonus_ad_pct * (100 - this.caster.GetHealthPercent())
     }
 
     GetModifierMoveSpeedBonus_Percentage(): number {
-        return this.bonus_mv_pct * (100 - this.caster.GetHealthPercent()) * 0.01
+        return this.bonus_mv_pct * (100 - this.caster.GetHealthPercent())
     }
     // C_OnCreated(params: any): void {
     //     this.StartIntervalThink(0.5)

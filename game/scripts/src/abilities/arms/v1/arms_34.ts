@@ -14,7 +14,7 @@ export class arms_34 extends BaseArmsAbility {
     _OnUpdateKeyValue(): void {
         this.killed_ad = this.GetSpecialValueFor("killed_ad")
         this.limit_kill = this.GetSpecialValueFor("limit_kill")
-        this.RegisterOnKill()
+        this.RegisterEvent(["OnKill"])
     }
 
     OnKill(hTarget: CDOTA_BaseNPC): void {

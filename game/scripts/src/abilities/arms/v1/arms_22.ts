@@ -11,7 +11,7 @@ export class arms_22 extends BaseArmsAbility {
 
     _OnUpdateKeyValue(): void {
         this.steal_soul = this.GetSpecialValueFor("steal_soul")
-        this.RegisterEvent_OnAttackStart()
+        this.RegisterEvent(["OnAttackStart"])
     }
 
     OnAttackStart(hTarget: CDOTA_BaseNPC): void {

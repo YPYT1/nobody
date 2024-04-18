@@ -15,10 +15,10 @@ export class arms_15 extends BaseArmsAbility {
     }
 
     _OnUpdateKeyValue(): void {
-        this.ArmsAdd();
+        this.RegisterEvent(["OnArmsStart"])
     }
 
-    ArmsEffectStart(): void {
+    OnArmsStart(): void {
         const vCaster = this.caster.GetOrigin();
         let ability_damage = this.GetAbilityDamage();
         let aoe_radius = this.GetSpecialValueFor("aoe_radius");

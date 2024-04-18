@@ -4,7 +4,6 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 /**
  * 负重训练	移动速度降低50%，但替换技能之后，根据训练的时间每一秒获得5经验值2灵魂。（至多不超过200秒）
-
  */
 @registerAbility()
 export class arms_32 extends BaseArmsAbility { }

@@ -32,7 +32,9 @@ declare interface ApplyCustomDamageOptions {
     damage_type: DAMAGE_TYPES;
     damage_flags?: DOTADamageFlag_t;
     ability?: CDOTABaseAbility;
-    
+
+    /** 伤害来源点 */
+    damage_vect?: Vector;
     /** 禁止暴击 */
     disable_critical?: boolean;
     /** 必定暴击 */
