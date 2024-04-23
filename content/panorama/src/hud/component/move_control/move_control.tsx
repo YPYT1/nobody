@@ -52,10 +52,11 @@ function Onkey_Backspace_Up() {
 }
 function OnInitMoveHotkey() {
     GameUI.SetCameraTarget(-1 as EntityIndex);
-    // SetHotKey("key_up", OnKey_Down_W, OnKey_Up_W);
-    // SetHotKey("key_LEFT", OnKey_Down_A, OnKey_Up_A);
-    // SetHotKey("key_DOWN", OnKey_Down_S, OnKey_Up_S);
-    // SetHotKey("key_RIGHT", OnKey_Down_D, OnKey_Up_D);
+    // UPARROW
+    SetHotKey("UPARROW", OnKey_Down_W, OnKey_Up_W);
+    SetHotKey("LEFTARROW", OnKey_Down_A, OnKey_Up_A);
+    SetHotKey("DOWNARROW", OnKey_Down_S, OnKey_Up_S);
+    SetHotKey("RIGHTARROW", OnKey_Down_D, OnKey_Up_D);
     SetHotKey("space", Onkey_Backspace_Down, Onkey_Backspace_Up);
     // SetHotKey("S1_UP", OnKey_Down_W, OnKey_Up_W);
     // SetHotKey("S1_LEFT", OnKey_Down_A, OnKey_Up_A);

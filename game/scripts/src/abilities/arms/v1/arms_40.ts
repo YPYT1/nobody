@@ -12,7 +12,40 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 export class arms_40 extends BaseArmsAbility {
 
     OnDeath(): void {
-        print("arms_40 OnDeath")
+        const ability_damage = this.GetAbilityDamage();
+        const aoe_radius = this.GetSpecialValueFor("aoe_radius")
+        let enemies = FindUnitsInRadius(
+            this.team,
+            this.caster.GetAbsOrigin(),
+            null,
+            aoe_radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+
+        for (let enemy of enemies) {
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.caster,
+                damage: ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: ElementTypeEnum.fire
+            });
+        }
+        // particles/units/heroes/hero_techies/techies_remote_cart_explode.vpcf
+        let nFXIndex = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_techies/techies_blast_off.vpcf",
+            ParticleAttachment.WORLDORIGIN,
+            null
+        )
+        ParticleManager.SetParticleControl(nFXIndex, 0, this.caster.GetAbsOrigin());
+        ParticleManager.ReleaseParticleIndex(nFXIndex);
+
+
     }
 }
 

@@ -1,6 +1,7 @@
 import { useGameEvent } from "react-panorama-x";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { CAbilityImage } from "../../../components/ability_image";
 
 export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: boolean }) => {
 
@@ -18,7 +19,7 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
     const [barPct, setBarPct] = useState(0);
     const [isPassive, setIsPassive] = useState(false);
     const [Charges, setCharges] = useState(0);
-
+    const [abilityname, setAbilityname] = useState("")
     const UpdateLocalPlayer = useCallback(() => {
         const queryUnit = Players.GetLocalPlayerPortraitUnit();
         const m_Ability = Entities.GetAbility(queryUnit, order);
@@ -28,14 +29,11 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
             const cooldownLength = Abilities.GetCooldownLength(m_Ability);
             const cooldownRemaining = Abilities.GetCooldownTimeRemaining(m_Ability);
             const isHidden = Abilities.IsHidden(m_Ability);
-
             const ability_name = Abilities.GetAbilityName(m_Ability);
             const ability_level = Abilities.GetLevel(m_Ability);
-
             const have_nmana = Entities.GetMana(queryUnit);
-
+            setAbilityname(abilityname)
             setIsHidden(Abilities.IsHidden(m_Ability));
-
             setDeg(deg);
             setAbilityShow(m_Ability != -1 && isHidden == false);
 
@@ -109,7 +107,7 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
     useGameEvent("dota_ability_changed", UpdateLocalPlayer, []);
     useGameEvent("dota_hero_ability_points_changed", UpdateLocalPlayer, []);
 
- 
+
     return (
         <Panel
             className={`AbilityButtonItem ${!abilityShow ? " hide" : ""}`}
@@ -158,7 +156,7 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
                             }}
 
                         >
-                            <DOTAAbilityImage id='AbilityImage' hittest={false} contextEntityIndex={m_Ability} />
+                            <CAbilityImage id='AbilityImage' abilityname={abilityname} />
                             <Panel id="Cooldown" hittest={false}>
                                 <Panel id="CooldownOverlay" style={{ clip: `radial( 50.0% 50.0%, 0.0deg, ${deg}deg)` }} hittest={false} />
                                 <Label id="CooldownTimer" text={cdValue} hittest={false} />

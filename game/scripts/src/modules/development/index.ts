@@ -100,7 +100,7 @@ export class Development extends UIEventRegisterClass {
     AddDummy(player_id: PlayerID, params: CGED["Development"]["AddDummy"]) {
         let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
         let origin = hHeroUnit.GetAbsOrigin() + RandomVector(150) as Vector;
-        let Dummy = CreateUnitByName("npc_dota_hero_target_dummy", origin, true, null, null, DotaTeam.BADGUYS);
+        let Dummy = CreateUnitByName("npc_public_dummy", origin, true, null, null, DotaTeam.BADGUYS);
         Dummy.CDResp = {};
         Dummy.SetControllableByPlayer(player_id, false)
     }

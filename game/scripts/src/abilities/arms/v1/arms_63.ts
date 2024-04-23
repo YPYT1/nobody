@@ -2,44 +2,44 @@ import { BaseModifier, registerAbility, registerModifier } from "../../../utils/
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 /**
- * 穿刺	"岩石尖刺在地上沿一条直线穿刺而出。敌方
-单位受到伤害，然后被抛向空中，落地时被眩晕1秒。
-特效：小强1技能
-cd：4秒
-伤害系数：攻击力150%·风元素伤害
-作用范围：宽100码，长750码，尖刺移动速度每秒1600."
+ * 龙破斩	"引导龙的吐息，放出一波火焰，烧焦所有
+波及的敌人，并且持续烧灼他们3秒。
+特效：火女1技能
+cd：3秒
+伤害系数：攻击力200%·火元素伤害，
+灼烧伤害为攻击力25%·火元素伤害
+作用范围：宽200码，长1200码。"
 
  */
 @registerAbility()
-export class arms_61 extends BaseArmsAbility {
+export class arms_63 extends BaseArmsAbility {
 
-    impale_width: number;
-    impale_speed: number;
+    projectile_width: number;
+
 
     Precache(context: CScriptPrecacheContext): void {
-        PrecacheResource("particle", "particles/units/heroes/hero_nyx_assassin/nyx_assassin_impale.vpcf", context);
+        PrecacheResource("particle", "particles/units/heroes/hero_lina/lina_spell_dragon_slave.vpcf", context);
     }
 
     _OnUpdateKeyValue(): void {
-        this.impale_speed = this.GetSpecialValueFor("impale_speed")
-        this.impale_width = this.GetSpecialValueFor("impale_width")
+        this.projectile_width = this.GetSpecialValueFor("projectile_width")
+        this.projectile_speed = this.GetSpecialValueFor("projectile_speed")
         this.RegisterEvent(["OnArmsStart"])
     }
 
     OnArmsStart(): void {
         this.ability_damage = this.GetAbilityDamage();
         let vPoint = this.FindRandomEnemyVect();
-
         let direction = vPoint - this.caster.GetOrigin() as Vector;
         direction.z = 0;
         direction = direction.Normalized();
-        let vVelocity = (direction * this.impale_speed) as Vector;
+        let vVelocity = (direction * this.projectile_speed) as Vector;
         ProjectileManager.CreateLinearProjectile({
-            EffectName: "particles/units/heroes/hero_nyx_assassin/nyx_assassin_impale.vpcf",
+            EffectName: "particles/units/heroes/hero_lina/lina_spell_dragon_slave.vpcf",
             Ability: this,
             vSpawnOrigin: this.caster.GetAbsOrigin(),
-            fStartRadius: this.impale_width,
-            fEndRadius: this.impale_width,
+            fStartRadius: this.projectile_width,
+            fEndRadius: this.projectile_width,
             vVelocity: vVelocity,
             fDistance: this.trigger_distance,
             Source: this.caster,
@@ -58,22 +58,13 @@ export class arms_61 extends BaseArmsAbility {
                 damage: this.ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 ability: this,
-                element_type: ElementTypeEnum.wind
+                element_type: ElementTypeEnum.fire
             });
-            
-            // 击飞,
-            target.AddNewModifier(this.caster, this, "modifier_knockback_lua", {
-                center_x: location.x,
-                center_y: location.y,
-                duration: 0.5,
-                knockback_distance: 0,
-                knockback_duration: 0.5,
-                knockback_height: 300,
-            })
+
 
         }
     }
 }
 
 @registerModifier()
-export class modifier_arms_61 extends BaseArmsModifier { }
+export class modifier_arms_63 extends BaseArmsModifier { }

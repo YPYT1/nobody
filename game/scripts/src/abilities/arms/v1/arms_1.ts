@@ -8,6 +8,10 @@ export class arms_1 extends BaseArmsAbility {
     spirit_list: CDOTA_BaseNPC[];
     spirit_limit: number;
 
+    Precache(context: CScriptPrecacheContext): void {
+        PrecacheResource("particle", "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf", context);
+    }
+    
     _OnUpdateKeyValue(): void {
         this.spirit_limit = this.GetSpecialValueFor("spirit_limit");
         if (this.spirit_list == null) { this.spirit_list = [] }

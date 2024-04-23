@@ -7,6 +7,7 @@ import { default as AbilitiesArms } from "./../../json/abilities/arms.json";
 
 import { SetAbilityDescription, GetAbilityRarity } from '../../utils/ability_description';
 import { ConvertAttributeValues, GetAbilityAttribute } from '../../utils/attribute_method';
+import { CAbilityImage } from '../../components/ability_image';
 
 
 
@@ -212,7 +213,8 @@ export function App() {
         >
             <Panel id="AbilityHeader" className="flow-right">
                 <Panel className='AbilityImage'>
-                    <DOTAAbilityImage id='AbilityImage' hittest={false} abilityname={AbilityName} />
+                    <CAbilityImage id='AbilityImage' abilityname={AbilityName} />
+                    {/* <DOTAAbilityImage id='AbilityImage' hittest={false} abilityname={AbilityName} /> */}
                 </Panel>
                 <Panel className='AbilityLabel'>
                     <Panel className='NameAndCost'>

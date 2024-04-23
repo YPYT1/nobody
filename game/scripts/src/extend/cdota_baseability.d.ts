@@ -1,9 +1,11 @@
 declare interface CDOTABaseAbility extends CBaseEntity {
 
-    element_type: ElementTypeEnum
     ArmsActTime: number;
-    unit_list:CDOTA_BaseNPC[];
-    ability_damage:number;
+    AffectedActTime: number;
+
+    element_type: ElementTypeEnum
+    unit_list: CDOTA_BaseNPC[];
+    ability_damage: number;
 
     GetAbilityDamage(): number;
     OnAttackStart(hTarget?: CDOTA_BaseNPC): void;

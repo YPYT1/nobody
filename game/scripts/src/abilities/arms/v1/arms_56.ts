@@ -14,7 +14,7 @@ export class arms_56 extends BaseArmsAbility {
     travel_speed: number;
 
     _OnUpdateKeyValue(): void {
-        this.travel_speed = 900;//this.GetSpecialValueFor("travel_speed")
+        this.travel_speed = this.GetSpecialValueFor("travel_speed")
     }
 
     OnDeath(): void {
@@ -25,10 +25,10 @@ export class arms_56 extends BaseArmsAbility {
         let qangle_rotation_rate = 360 / extra_count;
 
         let line_position = (vCaster + this.caster.GetForwardVector() * origin_radius) as Vector;
-        print("line_position", line_position)
+        // print("line_position", line_position)
 
         let max_distance_time = origin_radius / this.travel_speed;
-        print("max_distance_time", origin_radius, this.travel_speed, max_distance_time)
+        // print("max_distance_time", origin_radius, this.travel_speed, max_distance_time)
         for (let i = 0; i < extra_count; i++) {
             // 角度
             let qangle = QAngle(0, qangle_rotation_rate, 0);
@@ -44,20 +44,6 @@ export class arms_56 extends BaseArmsAbility {
             ParticleManager.SetParticleControl(particle_lines_fx, 1, (velocity * this.travel_speed) as Vector);
             ParticleManager.SetParticleControl(particle_lines_fx, 2, Vector(0, max_distance_time, 0));
             ParticleManager.ReleaseParticleIndex(particle_lines_fx);
-
-            // ProjectileManager.CreateLinearProjectile({
-            //     Ability: this,
-            //     EffectName: "particles/units/heroes/hero_nevermore/nevermore_requiemofsouls_line.vpcf",
-            //     vSpawnOrigin: vCaster,
-            //     fDistance: origin_radius,
-            //     fStartRadius: 96,
-            //     fEndRadius: 96,
-            //     Source: this.caster,
-            //     vVelocity: (velocity * this.travel_speed) as Vector,
-            //     iUnitTargetTeam: UnitTargetTeam.ENEMY,
-            //     iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
-            //     iUnitTargetFlags: UnitTargetFlags.NONE,
-            // });
         }
     }
 

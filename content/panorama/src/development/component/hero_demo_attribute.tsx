@@ -5,6 +5,7 @@ import { default as NpcAbilitiesCustom } from "./../../json/npc_abilities_custom
 import { default as attribute_const } from "./../../json/config/game/attribute_const.json"
 import { default as special_keyvalue } from "./../../json/config/game/special_keyvalue.json"
 
+const LocalPlayerID = Players.GetLocalPlayer();
 const attr_sub_key_list = Object.keys(Object.values(attribute_const)[0].AbilityValues);
 
 /** 属性表头 */
@@ -196,18 +197,27 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: OverrideSpecialKeyTypes }) =>
     const [value, setValue] = useState(0)
     const [AttrSubKey, setAttrSubKey] = useState<OverrideSpecialBonusTypes>("Base");
 
+    // unit_special_value
+    const netdata = CustomNetTables.GetTableValue("unit_special_value", `${LocalPlayerID}`) ?? {};
+    let kv_data = netdata[kv_key];
+    let KvValue = 0
+    if (kv_data) {
+        $.Msg(["kv_data", kv_data])
+        KvValue = kv_data.cache_value ?? 0;
+    }
+    $.Msg(["KvValue", KvValue])
     return (
         <Panel className='AbilityKvRowEditor flow-right'>
             <Label className='KvKey'
                 text={kv_key}
                 onmouseover={(e) => {
-                    ShowCustomTextTooltip(e, "#custom_special_key_"+kv_key, kv_key)
+                    ShowCustomTextTooltip(e, "#custom_special_key_" + kv_key, kv_key)
                 }}
                 onmouseout={() => {
                     HideCustomTooltip()
                 }}
             />
-            <Label className='KvValue' text={0} />
+            <Label className='KvValue' text={KvValue} />
             <TextEntry
                 className='TextEntry'
                 textmode="numeric"

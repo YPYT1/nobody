@@ -39,8 +39,8 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
         this.interrupted = false;
         this.vCenter = Vector(params.center_x, params.center_y, params.center_z ?? 0);
         this.fMovedDistance = 0;
-        const knockback_distance = params.knockback_distance as number;
-        const knockback_duration = params.knockback_duration as number;
+        const knockback_distance = params.knockback_distance as number ?? 0;
+        const knockback_duration = params.knockback_duration as number ?? 1;
 
         const knockback_cross = params.knockback_cross as number;
         const knockback_activity = params.knockback_activity ?? 0;
@@ -104,6 +104,7 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
         this.interrupted = true;
         this.Destroy();
     }
+    
     InitVerticalArc(height_start: number, height_max: number, height_end: number, duration: number) {
         height_end = height_end - height_start;
         height_max = height_max - height_start;

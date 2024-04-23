@@ -92,8 +92,11 @@ export function SetAbilityDescription(
         $("#AbilityDamageType")?.SetHasClass("Hidden", false);
         let damage_formula = abilityData.DamageFormula;
         if (damage_formula) {
+            // $.Msg(["damage_formula",damage_formula])
             let damageFormula_desc = HeroPassiveDamageFormula(ability_name, `${damage_formula}`, level, abilityData.Element ?? "0");
             original_description_txt = original_description_txt.replaceAll("%DamageFormula%", damageFormula_desc);
+        } else {
+            original_description_txt = original_description_txt.replaceAll("%DamageFormula%", "0");
         }
     }
 

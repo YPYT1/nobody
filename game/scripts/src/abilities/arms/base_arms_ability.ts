@@ -10,8 +10,11 @@ type MdfEventTyps =
     | "OnAttackStart"
 
 
-@registerAbility()
 export class BaseArmsAbility extends BaseAbility {
+
+    // Precache(context: CScriptPrecacheContext): void {
+    //     PrecacheResource("particle", "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova.vpcf", context);
+    // }
 
     // mdf_name: string;
     key: string;
@@ -41,9 +44,48 @@ export class BaseArmsAbility extends BaseAbility {
     shield_amplify: number
     health_amplify: number
 
-    // Precache(context: CScriptPrecacheContext): void {
-    //     PrecacheResource("particle", "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova.vpcf", context);
-    // }
+    FindRandomEnemyTarget() {
+        const vCaster = this.caster.GetOrigin();
+        let targets = FindUnitsInRadius(
+            this.team,
+            vCaster,
+            null,
+            this.trigger_distance,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+        if (targets.length > 0) {
+            return targets[0]
+        } else {
+            return null
+        }
+    }
+    FindRandomEnemyVect() {
+        const vCaster = this.caster.GetOrigin();
+        let targets = FindUnitsInRadius(
+            this.team,
+            vCaster,
+            null,
+            this.trigger_distance,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+
+        let vTarget: Vector;
+        if (targets.length > 0) {
+            vTarget = targets[0].GetAbsOrigin()
+        } else {
+            vTarget = vCaster + RandomVector(RandomInt(100, this.trigger_distance)) as Vector
+        }
+
+        return vTarget
+    }
 
     SetLinkBuff(hBuff: CDOTA_Buff) { this.buff = hBuff }
 
@@ -58,6 +100,7 @@ export class BaseArmsAbility extends BaseAbility {
         this.trigger_distance = this.GetCastRange(this.caster.GetAbsOrigin(), this.caster);
         // if (this.arms_cd <= 0) { this.arms_cd = 0 }
         this.ArmsActTime = GameRules.GetDOTATime(false, false) + 1;
+        this.AffectedActTime = GameRules.GetDOTATime(false, false) + 1;
         GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
         this.UpdateDamageFormula()
         this._OnUpdateKeyValue()
@@ -129,7 +172,7 @@ export class BaseArmsAbility extends BaseAbility {
         this._AffectedEffectStart_After()
     }
     _AffectedEffectStart_Before() {
-        this.ArmsActTime = GameRules.GetDOTATime(false, false) + this.arms_cd;
+        this.AffectedActTime = GameRules.GetDOTATime(false, false) + this.arms_cd;
     }
     _AffectedEffectStart_After() { }
 
@@ -191,7 +234,6 @@ export class BaseArmsAbility extends BaseAbility {
 
 }
 
-@registerModifier()
 export class BaseArmsModifier extends BaseModifier {
 
     caster: CDOTA_BaseNPC;
@@ -382,7 +424,7 @@ export class modifier_public_arms extends BaseModifier {
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
         let fGameTime = GameRules.GetDOTATime(false, false);
         for (let hAffectedAbility of this.hAbility.AffectedList) {
-            if ((hAffectedAbility.ArmsActTime ?? 0) <= fGameTime) {
+            if ((hAffectedAbility.AffectedActTime ?? 0) <= fGameTime) {
                 (hAffectedAbility as BaseArmsAbility)._AffectedEffectStart(event)
             }
         }

@@ -4,6 +4,8 @@ export default function Precache(context: CScriptPrecacheContext) {
     // 需要预载的所有资源
     precacheResource(
         [
+            'particles/econ/items/zeus/zeus_ti8_immortal_arms/zeus_ti8_immortal_arc.vpcf',
+            'particles/diy/pick_item_fx2.vpcf',
             'soundevents/game_sounds_heroes/game_sounds_zuus.vsndevts',
             'soundevents/game_sounds_heroes/game_sounds_hoodwink.vsndevts',
         ],
@@ -21,7 +23,8 @@ export default function Precache(context: CScriptPrecacheContext) {
     precacheUnits(
         [
             // 单位名称
-            // 'npc_dota_hero_***',
+            'npc_dota_hero_wisp',
+            'npc_dota_hero_zuus',
         ],
         context
     );
