@@ -42,14 +42,18 @@ const ke = {
     key_DOWN: "DOWN",
 };
 
+let lock_camera = false;
 function Onkey_Backspace_Down() {
-    let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    GameUI.SetCameraTarget(hero_entity);
+    if (lock_camera) {
+        GameUI.SetCameraTarget(-1 as EntityIndex);
+    } else {
+        let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+        GameUI.SetCameraTarget(hero_entity);
+    }
+    lock_camera = !lock_camera
 }
 
-function Onkey_Backspace_Up() {
-
-}
+function Onkey_Backspace_Up() { }
 function OnInitMoveHotkey() {
     GameUI.SetCameraTarget(-1 as EntityIndex);
     // UPARROW
@@ -69,7 +73,7 @@ function OnInitMoveHotkey() {
 
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
     let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    GameUI.SetCameraTarget(hero_entity);
+    // GameUI.SetCameraTarget(hero_entity);
     GameEvents.SendCustomGameEventToServer("BasicRules", {
         event_name: "MoveState",
         params: eventData

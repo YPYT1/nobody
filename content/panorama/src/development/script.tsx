@@ -5,8 +5,53 @@ import { AbilityPick } from './component/_ability_pick';
 import { ItemListPick } from './component/_items_list';
 import { HeroEditor } from './component/hero_demo_attribute';
 
+
+
 let current_action = "";
 
+
+const WarpPanel = () => {
+
+    const [ScreenX, setScreenX] = useState(0);
+    const [ScreenY, setScreenY] = useState(0);
+
+    const Update = useCallback(() => {
+        let ScreenPos = GameUI.GetCameraPosition();
+        if (ScreenPos) {
+            setScreenX(Math.floor(ScreenPos[0]))
+            setScreenY(Math.floor(ScreenPos[1]))
+        }
+    }, [])
+
+    useEffect(() => {
+        const interval = setInterval(() => { Update(); }, 100);
+        return () => clearInterval(interval);
+    }, []);
+
+
+    return (
+        <Panel className="fc-tool-content">
+            <Panel className="fc-tool-row">
+                <Label className="fc-tool-row-title" text={`当前坐标: ${ScreenX}:${ScreenY}`} />
+            </Panel>
+            <Panel className="fc-tool-row">
+                <Button className="fc-tool-button" onactivate={() => {
+                    GameEvents.SendCustomGameEventToServer("Development", {
+                        event_name: "WarpUnit",
+                        params: {
+                            queryUnit: Players.GetLocalPlayerPortraitUnit(),
+                            x: ScreenX,
+                            y: ScreenY,
+                        }
+                    })
+                }}>
+                    <Label text="传送至屏幕位置" />
+                </Button>
+
+            </Panel>
+        </Panel>
+    )
+}
 const HandleLevelUp = (uplv: number) => {
     const queryUnit = Players.GetLocalPlayerPortraitUnit();
     GameEvents.SendCustomGameEventToServer("Development", {
@@ -80,25 +125,13 @@ export const HeroDemo = () => {
         <>
             <Panel className={`fc-tool ${show ? "" : "minimized"}`} >
                 <Panel className="fc-tool-head">
-                    <Label text="开发工具" />
+                    <Panel className='flow-right'>
+                        <Label text="开发工具" />
+                        <UnitCountsPanel />
+                    </Panel>
                     <Button onactivate={ToggleHandle} />
                 </Panel>
-                <Panel className="fc-tool-content">
-                    <Panel className="fc-tool-row">
-                        <Label className="fc-tool-row-title" text={PopupsViews} />
-
-                    </Panel>
-                    <UnitCountsPanel />
-                    <Panel className="fc-tool-row">
-                        <Button className="fc-tool-button" onactivate={() => {
-                            TogglePopupsViews("Items", true)
-                        }}
-                        >
-                            <Label text="物品栏" />
-                        </Button>
-
-                    </Panel>
-                </Panel>
+                <WarpPanel />
                 <Panel className="fc-tool-content">
                     <Panel className="fc-tool-row">
                         <Label className="fc-tool-row-title" text="当前单位" />
@@ -133,6 +166,9 @@ export const HeroDemo = () => {
                     </Panel>
 
                     <Panel className="fc-tool-row">
+                        <Button className="fc-tool-button" onactivate={() => { TogglePopupsViews("Items", true) }}>
+                            <Label text="物品栏" />
+                        </Button>
                         <Button className="fc-tool-button" id="ReplaceAbility" onactivate={() => { TogglePopupsViews("Ability", true) }}>
                             <Label text="变更技能" />
                         </Button>
@@ -156,7 +192,7 @@ export const HeroDemo = () => {
             </Panel>
 
             <Panel id='DevelopmentPopups' className={`Popups ${PopupsViews}`} hittest={false}>
-                <HeroPick closedHandle={()=>setPopupsViews("None")}/>
+                <HeroPick closedHandle={() => setPopupsViews("None")} />
                 <AbilityPick />
                 <ItemListPick />
             </Panel >

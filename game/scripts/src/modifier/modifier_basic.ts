@@ -69,3 +69,25 @@ export class modifier_basic_move extends BaseModifier {
         })
     }
 }
+
+@registerModifier()
+export class modifier_basic_debug extends BaseModifier {
+
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            // [ModifierState.ALLOW_PATHING_THROUGH_CLIFFS]:true,
+            [ModifierState.NO_UNIT_COLLISION]: true,
+            [ModifierState.FLYING_FOR_PATHING_PURPOSES_ONLY]: true,
+        }
+    }
+
+    DeclareFunctions(): ModifierFunction[] {
+        return [
+            ModifierFunction.IGNORE_MOVESPEED_LIMIT
+        ]
+    }
+
+    GetModifierIgnoreMovespeedLimit(): 0 | 1 {
+        return 1
+    }
+}

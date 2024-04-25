@@ -24,6 +24,9 @@ export class Debug {
         if (cmd === '-debug') {
             if (this.OnlineDebugWhiteList.includes(steamid)) {
                 this.DebugEnabled = !this.DebugEnabled;
+
+                const hHero = PlayerResource.GetSelectedHeroEntity(keys.playerid);
+                hHero.AddNewModifier(hHero, null, "modifier_basic_debug", {})
             }
         }
 

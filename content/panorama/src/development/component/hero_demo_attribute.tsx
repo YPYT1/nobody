@@ -201,11 +201,8 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: OverrideSpecialKeyTypes }) =>
     const netdata = CustomNetTables.GetTableValue("unit_special_value", `${LocalPlayerID}`) ?? {};
     let kv_data = netdata[kv_key];
     let KvValue = 0
-    if (kv_data) {
-        $.Msg(["kv_data", kv_data])
-        KvValue = kv_data.cache_value ?? 0;
-    }
-    $.Msg(["KvValue", KvValue])
+    if (kv_data) { KvValue = kv_data.cache_value ?? 0; }
+
     return (
         <Panel className='AbilityKvRowEditor flow-right'>
             <Label className='KvKey'

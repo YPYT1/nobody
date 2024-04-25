@@ -126,7 +126,6 @@ export class Development extends UIEventRegisterClass {
     }
 
     ModiyOverrideSpecialValue(player_id: PlayerID, params: CGED["Development"]["ModiyOverrideSpecialValue"]) {
-        DeepPrintTable(params)
         let special_key = params.special_key;
         let special_type = params.special_type;
         let special_value = params.special_value;
@@ -137,6 +136,12 @@ export class Development extends UIEventRegisterClass {
         })
     }
 
+    WarpUnit(player_id: PlayerID, params: CGED["Development"]["WarpUnit"]) {
+        let hUnit = EntIndexToHScript(params.queryUnit) as CDOTA_BaseNPC;
+        let vOrigin = hUnit.GetAbsOrigin();
+        hUnit.SetAbsOrigin(Vector(params.x, params.y, vOrigin.z));
+    }
+    
     /** Debug命令 */
     DebugChat(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-reset") {

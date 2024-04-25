@@ -77,6 +77,7 @@ export class GameEvent {
 
         } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段
             new Filter(); // 加载过滤器
+            GameRules.MapChapter.InitChapterMap();
         } else if (State_Get == GameState.PRE_GAME) { //赛前阶段
 
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段

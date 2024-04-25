@@ -25,7 +25,12 @@ declare interface CGED {
             special_key: OverrideSpecialKeyTypes;
             special_type: OverrideSpecialBonusTypes;
             special_value: number;
-        }
+        },
+        WarpUnit: {
+            x: number,
+            y: number,
+            queryUnit: EntityIndex,
+        },
     }
 
     BasicRules: {
