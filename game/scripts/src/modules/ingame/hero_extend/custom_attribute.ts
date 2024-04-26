@@ -36,8 +36,6 @@ export class CustomAttribute {
         hUnit.last_attribute_update = 0;
 
         GameRules.CustomOverrideAbility.InitOverrideSpecialTable(player_id, hUnit);
-
-        // GameRules.ItemEvolution.InitPlayerUpgradeStatus(player_id , hUnit);
         for (let i = 0; i < 32; i++) {
             let hAbility = hUnit.GetAbilityByIndex(i);
             if (hAbility) { hAbility.RemoveSelf() }
@@ -85,7 +83,7 @@ export class CustomAttribute {
 
 
         } else {
-            print("没有该英雄数据:", heroname);
+            print("no hero data:", heroname);
             hUnit.SetContextThink("delay_init_attr", () => {
                 /** 属性表 */
                 let attribute_table: CustomAttributeTableType = {};
@@ -95,17 +93,10 @@ export class CustomAttribute {
                     let attr_key = key as keyof typeof AttributeConst;
                     hUnit.custom_attribute_value[attr_key] = 0
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
-                    let AttributeRows = {}
                     for (let key2 in AttributeConst[attr_key]["AbilityValues"]) {
                         let sub_key = key2 as AttributeSubKey
                         if (attribute_table[attr_key][sub_key] == null) {
-                            let value: number;
-                            if (AttributeRows) {
-                                value = AttributeRows[key2 as keyof typeof AttributeRows] ?? 0;
-                            } else {
-                                value = 0;
-                            }
-                            attribute_table[attr_key][key2] = value
+                            attribute_table[attr_key][key2] = 0
                         }
                     }
                     // 属性转换表加载

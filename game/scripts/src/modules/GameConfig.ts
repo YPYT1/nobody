@@ -28,7 +28,7 @@ export class GameConfig {
         // game.SetDaynightCycleDisabled(true); // 是否禁用白天黑夜循环
         // game.SetForceRightClickAttackDisabled(true); // 是否禁用右键攻击
         // game.SetHudCombatEventsDisabled(true); // 是否禁用战斗事件（左下角的战斗消息）
-        // game.SetCustomGameForceHero(`npc_dota_hero_phoenix`); // 设置强制英雄（会直接跳过英雄选择阶段并直接为所有玩家选择这个英雄）
+        // game.SetCustomGameForceHero(`npc_dota_hero_wisp`); // 设置强制英雄（会直接跳过英雄选择阶段并直接为所有玩家选择这个英雄）
         // game.SetUseCustomHeroLevels(true); // 是否启用自定义英雄等级
         // game.SetCustomHeroMaxLevel(1); // 设置自定义英雄最大等级
         // game.SetCustomXPRequiredToReachNextLevel({
@@ -47,7 +47,7 @@ export class GameConfig {
 
         let gameEntity = GameRules.GetGameModeEntity();
         // gameEntity.SetCustomGameForceHero("npc_dota_hero_wisp");
-        GameRules.SetCustomGameTeamMaxPlayers(DotaTeam.GOODGUYS, 6);
+        GameRules.SetCustomGameTeamMaxPlayers(DotaTeam.GOODGUYS, 4);
         GameRules.SetCustomGameTeamMaxPlayers(DotaTeam.BADGUYS, 0);
         // GameRules.SetEnableAlternateHeroGrids(true);
         GameRules.SetTimeOfDay(0.5); //白天时间
@@ -92,18 +92,18 @@ export class GameConfig {
         gameEntity.SetDaynightCycleDisabled(true);
         // gameEntity.SetTPScrollSlotItemOverride("item_backpack");
         // 平衡性
-        // gameEntity.SetCustomGameForceHero("npc_dota_hero_drow_ranger");
-        gameEntity.SetMinimumAttackSpeed(10);
+        gameEntity.SetCustomGameForceHero("npc_dota_hero_wisp");
+        gameEntity.SetMinimumAttackSpeed(1);
         gameEntity.SetMaximumAttackSpeed(9999);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.STRENGTH_DAMAGE, 0);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.STRENGTH_HP, 0);
-        gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.STRENGTH_HP_REGEN, 0.001);
+        gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.STRENGTH_HP_REGEN, 0.00001);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.AGILITY_DAMAGE, 0);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.AGILITY_ARMOR, 0);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.AGILITY_ATTACK_SPEED, 0);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.INTELLIGENCE_DAMAGE, 0);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.INTELLIGENCE_MANA, 0);
-        gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.INTELLIGENCE_MANA_REGEN, 0.001);
+        gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.INTELLIGENCE_MANA_REGEN, 0.00001);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.INTELLIGENCE_MAGIC_RESIST, 0);
         
         gameEntity.SetForcedHUDSkin("aghanims_labyrinth_2021");

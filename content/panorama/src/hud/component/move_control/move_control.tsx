@@ -42,6 +42,50 @@ const ke = {
     key_DOWN: "DOWN",
 };
 
+const InputButton = () => {
+
+    return (
+        <Button
+            id="InputButton"
+            className='HotkeyInput LabelFXContainer'
+            // maxchars={1}
+            visible={false}
+            style={{ width: "200px", height: "120px" }}
+            onload={(e) => {
+                e.SetDialogVariable("input_key", "");
+                // $.DispatchEvent("DropInputFocus", e);
+                for (let n in ke) {
+                    const r = ke[n as keyof typeof ke];
+                    $.RegisterKeyBind(e, n, (source, presses, panel) => {
+                        $.Msg(["RegisterKeyBind", source, presses, r, n])
+                        e.SetDialogVariable("input_key", r);
+                    });
+                }
+                for (let n = 65; n < 91; n++) {
+                    let r = String.fromCharCode(n);
+                    $.RegisterKeyBind(e, `key_${r}`, () => {
+                        e.SetDialogVariable("input_key", r);
+                    });
+                }
+            }}
+
+            onactivate={(e) => {
+                $.DispatchEvent("SetInputFocus", e);
+            }}
+
+            onfocus={(e) => {
+                e.AddClass("focus");
+            }}
+
+            onblur={(e) => {
+                e.RemoveClass("focus");
+            }}
+        >
+            <Label localizedText='{s:input_key}' />
+        </Button>
+    )
+}
+
 let lock_camera = false;
 function Onkey_Backspace_Down() {
     if (lock_camera) {
@@ -177,48 +221,40 @@ export function SetArrowKey(key: string, down_func: Function, up_func: Function)
         0
     );
 }
+// dota_camera_edgemove
+let camrea_state_top = true;
+const StartCameraEdgemove = () => {
+    // LoopCamera_Edgemove()
+}
+
+const LoopCamera_Edgemove = () => {
+    let ScreenPos = GameUI.GetCameraPosition();
+    if (ScreenPos) {
+        let ScreenX = ScreenPos[0];
+        let ScreenY = ScreenPos[1];
+        let CursorPosition = GameUI.GetCursorPosition();
+        let CursorX = CursorPosition[0];
+        let CursorY = CursorPosition[1];
+        if (ScreenX > 10000){
+            if (CursorX > 1400){
+                GameUI.SetCameraTerrainAdjustmentEnabled(false)
+            }
+        }
+    }
+    $.Schedule(0.1, LoopCamera_Edgemove)
+}
+
 export const MoveControll = () => {
 
     return (
-        <Panel id="MoveControll">
-            <Button
-                id="InputButton"
-                className='HotkeyInput LabelFXContainer'
-                // maxchars={1}
-                style={{ width: "200px", height: "120px" }}
-                onload={(e) => {
-                    OnInitMoveHotkey();
-                    e.SetDialogVariable("input_key", "");
-                    // $.DispatchEvent("DropInputFocus", e);
-                    for (let n in ke) {
-                        const r = ke[n as keyof typeof ke];
-                        $.RegisterKeyBind(e, n, (source, presses, panel) => {
-                            $.Msg(["RegisterKeyBind", source, presses, r, n])
-                            e.SetDialogVariable("input_key", r);
-                        });
-                    }
-                    for (let n = 65; n < 91; n++) {
-                        let r = String.fromCharCode(n);
-                        $.RegisterKeyBind(e, `key_${r}`, () => {
-                            e.SetDialogVariable("input_key", r);
-                        });
-                    }
-                }}
-
-                onactivate={(e) => {
-                    $.DispatchEvent("SetInputFocus", e);
-                }}
-
-                onfocus={(e) => {
-                    e.AddClass("focus");
-                }}
-
-                onblur={(e) => {
-                    e.RemoveClass("focus");
-                }}
-            >
-                <Label localizedText='{s:input_key}' />
-            </Button>
+        <Panel
+            id="MoveControll"
+            onload={() => {
+                StartCameraEdgemove();
+                OnInitMoveHotkey();
+            }}
+        >
+            <InputButton />
             <CameraSetting />
         </Panel>
     )
