@@ -1,17 +1,26 @@
 import { reloadable } from "../../utils/tstl-utils";
+import * as MapInfo from "../../json/config/map_info.json"
+import * as MapInfoDifficulty from "../../json/config/map_info_difficulty.json"
+import * as NpcHeroesCustom from "../../json/npc_heroes_custom.json"
 
-const CHAPTER_MAP_LIST = {
-    "1": { name: "wuren", x: -11008, y: 12000 },
-    "2": { name: "wuren", x: 0, y: 12000 },
-    "3": { name: "wuren", x: 11008, y: 12000 },
-}
+
+
+//营地信息
 
 @reloadable
 export class MapChapter {
 
     CampMapHandle: SpawnGroupHandle;
-    // MapGroupHandle: SpawnGroupHandle
-    ChapterMapHandle: SpawnGroupHandle
+
+    ChapterMapHandle: SpawnGroupHandle;
+
+    GameDifficulty : keyof typeof MapInfoDifficulty = "101";
+
+    MapIndex : keyof typeof MapInfo = "m1" ;
+
+    MAP_CAMP = { name: "camp", x: -6144, y: -6144 }
+
+    hero_list : { [key : number] : string} = {}
 
     constructor() {
         print("[MapChapter]:constructor")
@@ -21,63 +30,20 @@ export class MapChapter {
         print("InitChapterMap")
         let current_map = GetMapName();
         if (current_map != "main") { return }
-        // this.MapGroupHandle = DOTA_SpawnMapAtPosition(
-        //     "camp",
-        //     Vector(0, -64 * 64, 0),
-        //     true,
-        //     this.OnRoomReadyToSpawn,
-        //     this.OnSpawnRoomComplete,
-        //     this
-        // );
-    }
+        //加载营地
+        GameRules.MapChapter.OnCreatedCampMap();
 
-    OnRoomReadyToSpawn(spawnGroupHandle: SpawnGroupHandle) {
-        print("OnRoomReadyToSpawn", spawnGroupHandle);
-        ManuallyTriggerSpawnGroupCompletion(spawnGroupHandle)
-    }
-
-    OnSpawnRoomComplete(spawnGroupHandle: SpawnGroupHandle) {
-        print("OnSpawnRoomComplete", spawnGroupHandle);
-        // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
-        for (let hHero of HeroList.GetAllHeroes()) {
-            let vect = hHero.GetAbsOrigin();
-            vect.z += 128;
-            hHero.SetOrigin(vect)
+        for (let [key, RowData] of pairs(NpcHeroesCustom)) {
+            if(RowData.Enable == 1){
+                GameRules.MapChapter.hero_list[RowData.sort] = key;
+            }
         }
-    }
-
-
-    OnLoadChapterMap(chapter: keyof typeof CHAPTER_MAP_LIST) {
-        let ChapterData = CHAPTER_MAP_LIST[chapter]
-        if (ChapterData == null) { return };
-        if (this.ChapterMapHandle) {
-            UnloadSpawnGroupByHandle(this.ChapterMapHandle)
-            this.ChapterMapHandle = null
-        }
-        let vLocation = Vector(6144, 6144, 0);
-        for (let hHero of HeroList.GetAllHeroes()) {
-            let vect = hHero.GetAbsOrigin();
-            hHero.SetOrigin(vLocation)
-        }
-
-        this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
-            ChapterData.name,
-            vLocation,
-            false,
-            this.OnRoomReadyToSpawn,
-            this.OnSpawnRoomComplete,
-            this
-        );
-    }
-
-    OnRemoveChapterMap() {
-
     }
 
     /** 生成营地 */
     OnCreatedCampMap() {
         if (this.CampMapHandle == null) {
-            let vLocation = Vector(-6144, -6144, 0);
+            let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
             for (let hHero of HeroList.GetAllHeroes()) {
                 let vect = hHero.GetAbsOrigin();
                 hHero.SetOrigin(vLocation)
@@ -86,60 +52,139 @@ export class MapChapter {
                 "camp",
                 vLocation,
                 false,
-                this.OnRoomReadyToSpawn,
-                this.OnSpawnRoomComplete,
+                this.OnCampReadyToSpawn,
+                this.OnSpawnCampComplete,
                 this
             );
-
         }
+    }
+
+    //营地创建前置
+    OnCampReadyToSpawn(spawnGroupHandle: SpawnGroupHandle) {
+        print("OnCampReadyToSpawn", spawnGroupHandle);
+        ManuallyTriggerSpawnGroupCompletion(spawnGroupHandle)
+    }
+
+    //营地创建后置
+    OnSpawnCampComplete(spawnGroupHandle: SpawnGroupHandle) {
+        print("OnSpawnCampComplete", spawnGroupHandle);
+        // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
+        // for (let hHero of HeroList.GetAllHeroes()) {
+        //     let vect = hHero.GetAbsOrigin();
+        //     vect.z += 128;
+        //     hHero.SetOrigin(vect)
+        // }
+    }
+
+    //根据选择刷出地图
+    OnLoadChapterMap(map_index : keyof typeof MapInfo , difficulty :  keyof typeof MapInfoDifficulty) {
+        this.MapIndex = map_index;
+        this.GameDifficulty = difficulty;
+    }
+
+    //游戏地图创建前置
+    OnRoomReadyToSpawn(spawnGroupHandle: SpawnGroupHandle) {
+        print("OnCampReadyToSpawn", spawnGroupHandle);
+        ManuallyTriggerSpawnGroupCompletion(spawnGroupHandle)
+    }
+    //游戏地图创建后置
+    OnSpawnRoomComplete(spawnGroupHandle: SpawnGroupHandle) {
+        print("OnSpawnRoomComplete", spawnGroupHandle);
+        GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
+        let ChapterData = MapInfo[this.MapIndex];
+        let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
+        for (let hHero of HeroList.GetAllHeroes()) {
+            hHero.SetOrigin(vLocation);
+        }
+        //开始刷怪
+        GameRules.Spawn.Init(ChapterData.map_centre_x, ChapterData.map_centre_y)
+
+        GameRules.GetGameModeEntity().SetContextThink(
+            "StartSpawn",
+            () => {
+                GameRules.Spawn._game_start = true;
+                GameRules.Spawn.StartSpawn(1)
+                return null;
+            },
+            5
+        );
+    }
+    
+
+
+    OnRemoveChapterMap() {
 
     }
 
+    
+    //返回到营地
     ReturntoCamp() {
-        let vLocation = Vector(-6144, -6144, 0);
+        if(GameRules.Spawn._game_start == false){
+            let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
+            for (let hHero of HeroList.GetAllHeroes()) {
+                if(hHero.IsAlive()){
+                    hHero.SetRespawnPosition(hHero.GetAbsOrigin());
+                    hHero.RespawnHero(false, false);
+                }
+                hHero.SetOrigin(vLocation)
+                PlayerResource.ReplaceHeroWithNoTransfer(
+                    hHero.GetPlayerOwnerID(),
+                    "npc_dota_hero_wisp",
+                    0,
+                    0
+                );
+            }
+            if (this.ChapterMapHandle) {
+                UnloadSpawnGroupByHandle(this.ChapterMapHandle)
+                this.ChapterMapHandle = null
+            }
+        }
+    }
+    /**
+     * 英雄选择
+     */
+    SelectHero(index : number){
+        let hname = GameRules.MapChapter.hero_list[index];
+        let ChapterData = MapInfo[this.MapIndex];
+        if (ChapterData == null) { return };
+        if (this.ChapterMapHandle) {
+            UnloadSpawnGroupByHandle(this.ChapterMapHandle)
+            this.ChapterMapHandle = null
+        }
+
         for (let hHero of HeroList.GetAllHeroes()) {
-            hHero.SetOrigin(vLocation)
             PlayerResource.ReplaceHeroWithNoTransfer(
                 hHero.GetPlayerOwnerID(),
-                "npc_dota_hero_wisp",
+                hname,
                 0,
                 0
             );
-
         }
+
+        let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
+        this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
+            ChapterData.map_name,
+            vLocation,
+            false,
+            this.OnRoomReadyToSpawn,
+            this.OnSpawnRoomComplete,
+            this
+        );
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
-        let arg_1 = (args[0] ?? "1") as keyof typeof CHAPTER_MAP_LIST;
-        if (cmd == "-removemap") {
-            // print("remove map")
-            // UnloadSpawnGroupByHandle(this.CampMapHandle)
-            // this.CampMapHandle = null;
-        }
 
-        if (cmd == "-r2camp") {
+        if (cmd == "-fh") {
             this.ReturntoCamp()
         }
-
-        if (cmd == "-camp") {
-            this.OnCreatedCampMap()
-            // ManuallyTriggerSpawnGroupCompletion(this.MapGroupHandle)
-            // if (this.MapGroupHandle == null) {
-            //     this.MapGroupHandle = DOTA_SpawnMapAtPosition(
-            //         "camp",
-            //         Vector(0, 0, 0),
-            //         true,
-            //         this.OnRoomReadyToSpawn,
-            //         this.OnSpawnRoomComplete,
-            //         this
-            //     );
-            // } else {
-            //     print("已存在营地")
-            // }
-
+        if (cmd == "-di") {
+            let map_index = (args[0] ?? "m1") as keyof typeof MapInfo;
+            let difficulty = (args[0] ?? "101") as keyof typeof MapInfoDifficulty;
+            this.OnLoadChapterMap(map_index , difficulty)
         }
-        if (cmd == "-chapter") {
-            this.OnLoadChapterMap(arg_1)
+        if (cmd == "-sh") {
+            let hero_index = args[0] ?? "0" ;
+            this.SelectHero(parseInt(hero_index))
         }
     }
 }

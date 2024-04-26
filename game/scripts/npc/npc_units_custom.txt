@@ -1,2 +1,4 @@
 #base "units/public.txt"
 #base "units/summoned.txt"
+#base "units/monster/normal.txt"
+#base "units/monster/boss.txt"

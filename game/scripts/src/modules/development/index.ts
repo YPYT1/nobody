@@ -148,28 +148,28 @@ export class Development extends UIEventRegisterClass {
             // let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
             PlayerResource.ReplaceHeroWith(player_id, "npc_dota_hero_sniper", 0, 0)
         }
-        if (cmd == "-sg" || cmd == "-xg") {
-            const count = tonumber(args[0] ?? "1");
-            let amount = 0;
-            const unit_name_list = [
-                "npc_public_test",
-                // "npc_public_test2",
-                // "npc_public_test3",
-            ]
-            const vCenter = Vector(0, 0, 0)
-            GameRules.GetGameModeEntity().SetContextThink("devxg", () => {
-                amount += 1
-                for (let unit_name of unit_name_list) {
-                    let unit = GameRules.Spawns.CreateNormal(unit_name, vCenter + RandomVector(3800) as Vector)
-                    unit.SetControllableByPlayer(0, true)
-                    // unit.SetHullRadius(36);
-                }
-                if (amount >= count) {
-                    return null
-                }
-                return 0.25
-            }, 0.25)
-        }
+        // if (cmd == "-sg" || cmd == "-xg") {
+        //     const count = tonumber(args[0] ?? "1");
+        //     let amount = 0;
+        //     const unit_name_list = [
+        //         "npc_public_test",
+        //         // "npc_public_test2",
+        //         // "npc_public_test3",
+        //     ]
+        //     const vCenter = Vector(0, 0, 0)
+        //     GameRules.GetGameModeEntity().SetContextThink("devxg", () => {
+        //         amount += 1
+        //         for (let unit_name of unit_name_list) {
+        //             let unit = GameRules.Spawns.CreateNormal(unit_name, vCenter + RandomVector(3800) as Vector)
+        //             unit.SetControllableByPlayer(0, true)
+        //             // unit.SetHullRadius(36);
+        //         }
+        //         if (amount >= count) {
+        //             return null
+        //         }
+        //         return 0.25
+        //     }, 0.25)
+        // }
 
         if (cmd == "-vis") {
             print("add vis")

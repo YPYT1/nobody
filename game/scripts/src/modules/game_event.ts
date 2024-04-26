@@ -12,6 +12,8 @@ import { ResourceSystem } from './ingame/system/resource_system';
 import { ArmsCombo } from './ingame/hero_extend/arms_combo';
 import { SummonedSystem } from './ingame/system/summoned_system';
 import { CustomMechanics } from './ingame/hero_extend/custom_mechanics';
+import { Spawn } from './ingame/spawns/spawn';
+import { CMsg } from './ingame/spawns/cmsg';
 
 declare global {
 
@@ -28,8 +30,9 @@ declare global {
         EntityKilled: EntityKilled;
         ResourceSystem: ResourceSystem;
         ItemArmsSystem: ItemArmsSystem;
-        Spawns: Spawns;
+        Spawn: Spawn;
         ArmsCombo: ArmsCombo;
+        CMsg : CMsg;
 
         SummonedSystem: SummonedSystem;
         CustomMechanics:CustomMechanics;
@@ -65,10 +68,11 @@ export class GameEvent {
             GameRules.BuffManager = new BuffManager();
             GameRules.EntityKilled = new EntityKilled();
             GameRules.ItemArmsSystem = new ItemArmsSystem();
-            GameRules.Spawns = new Spawns();
+            GameRules.Spawn = new Spawn();
             GameRules.ResourceSystem = new ResourceSystem();
             GameRules.ArmsCombo = new ArmsCombo();
             GameRules.SummonedSystem = new SummonedSystem();
+            GameRules.CMsg = new CMsg();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
@@ -78,6 +82,7 @@ export class GameEvent {
         } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段
             new Filter(); // 加载过滤器
             GameRules.MapChapter.InitChapterMap();
+
         } else if (State_Get == GameState.PRE_GAME) { //赛前阶段
 
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段
@@ -93,6 +98,9 @@ export class GameEvent {
 
     OnEntityKilled(event: GameEventProvidedProperties & EntityKilledEvent) {
         GameRules.EntityKilled.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)
+        //单位死亡后续处理
+        GameRules.Spawn.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)
+
     }
 
     OnEntityDotaOnHeroFinishSpawn(event: GameEventProvidedProperties & DotaOnHeroFinishSpawnEvent) {
@@ -102,6 +110,8 @@ export class GameEvent {
             hUnit.isSpawned = true;
             GameRules.CustomAttribute.InitHeroAttribute(hUnit)
 
+            let vect =  Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
+            hUnit.SetOrigin(vect)
             // 刷新完成之后发送至前端
         }
     }

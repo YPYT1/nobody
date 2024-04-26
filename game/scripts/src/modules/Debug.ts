@@ -74,5 +74,6 @@ export class Debug {
         GameRules.MapChapter.Debug(cmd, args, keys.playerid)
         GameRules.ItemEvolution.Debug(cmd, args, keys.playerid)
         GameRules.ArmsCombo.DebugChat(cmd, args, keys.playerid)
+        GameRules.Spawn.DebugChat(cmd, args, keys.playerid)
     }
 }

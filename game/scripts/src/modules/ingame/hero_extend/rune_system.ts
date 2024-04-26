@@ -34,15 +34,15 @@ export class RuneSystem extends UIEventRegisterClass {
         super("RuneSystem")
         //配置初始化
         for (let index = 0; index < 6; index++) {
-                this.PlayerRefreshCount.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_REFRESH_COUNT)
-                this.PlayerSelectCount.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_SELECT_MAX)
-                this.PlayerRuneSelectMax.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_SELECT_MAX);
-                this.PlayerSelectData.push({
-                    "rune_list" : {},
-                    "is_select" :  0
-                });
-                this.PointCount.push(0);
-                this.ConsumePointCount.push(0);
+            this.PlayerRefreshCount.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_REFRESH_COUNT)
+            this.PlayerSelectCount.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_SELECT_MAX)
+            this.PlayerRuneSelectMax.push(GameRules.PUBLIC_CONST.PLAYER_RUNE_SELECT_MAX);
+            this.PlayerSelectData.push({
+                "rune_list" : {},
+                "is_select" :  0
+            });
+            this.PointCount.push(0);
+            this.ConsumePointCount.push(0);
         }
         for (let [key, RowData] of pairs(RuneSystemJson)) {
             if(RowData.IsAdv == 1){
@@ -147,7 +147,7 @@ export class RuneSystem extends UIEventRegisterClass {
             //技能点减少
             this.PointCount[player_id] --;
             //已使用的技能点
-            this.ConsumePointCount[player_id] ++;
+            this.ConsumePointCount[player_id] ++;   
             let rune_key = PlayerSelectDataInfo.rune_list[index].key;
             // let RuneData = RuneSystemJson[rune_key as keyof typeof RuneSystemJson];
             // let RuneCount = 0; //符文数量
