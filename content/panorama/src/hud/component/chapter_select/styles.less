@@ -1,0 +1,60 @@
+#ChapterSelect {
+    horizontal-align: center;
+    vertical-align: middle;
+
+    width: 600px;
+    height: 400px;
+
+
+    &.StageSelect #CurrentStageSelect {
+        visibility: visible;
+    }
+
+    #CurrentStageSelect {
+        width: 100%;
+        height: 100%;
+        visibility: collapse;
+        background-color: #d8cc27;
+        flow-children: right;
+
+
+        #SelectStageList {
+            width: 50%;
+            height: 100%;
+            flow-children: down;
+        }
+
+        #StageDifficultyList {
+            width: 50%;
+            height: 100%;
+            // flow-children: none;
+        }
+
+        .SelectStage {
+            width: 100%;
+            // height: 100%;
+            padding: 4px;
+            border: 1px solid #a09d6e;
+            background-color: #1b1b19;
+
+            Label {
+                font-size: 24px;
+            }
+        }
+
+        .StageDifficulty {
+            flow-children: down;
+
+            .StageDifficultyRows {
+                width: 120px;
+                padding: 4px;
+                border: 1px solid #464431;
+                background-color: #30302f;
+
+                Label {
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+}
