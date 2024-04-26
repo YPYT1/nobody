@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react"
 
 
 const PlayerHeroSelect = () => {
@@ -25,10 +26,12 @@ const StageDifficulty = ({ stage }: { stage: number }) => {
         </Panel>
     )
 }
-const SelectStage = ({ stage }: { stage: number }) => {
+const SelectStage = ({ stage, handle }: { stage: number, handle: (stage: number) => void }) => {
 
     return (
-        <Button className="SelectStage">
+        <Button className="SelectStage" onactivate={() => {
+            handle(stage)
+        }}>
             <Label text={`STAGE ${stage}`} />
         </Button>
     )
@@ -39,12 +42,18 @@ const SelectStage = ({ stage }: { stage: number }) => {
  */
 const CurrentStageSelect = () => {
 
+    const [Stage, setStage] = useState(1);
+
+    const select_stage = useCallback((stage: number) => {
+
+    }, []);
+
     return (
-        <Panel id="CurrentStageSelect">
+        <Panel id="CurrentStageSelect" className={`Stage_${Stage}`}>
             <Panel id="SelectStageList">
                 {
                     [1, 2, 3, 4].map((v, k) => {
-                        return <SelectStage key={k} stage={v} />
+                        return <SelectStage key={k} stage={v} handle={select_stage} />
                     })
                 }
             </Panel>
@@ -63,7 +72,7 @@ const CurrentStageSelect = () => {
 export const ChapterSelect = () => {
 
     return (
-        <Panel id='ChapterSelect' className="am2-container StageSelect" hittest={false}>
+        <Panel id='ChapterSelect' className="am2-container StageSelect" hittest={false} visible={false}>
             <CurrentStageSelect />
         </Panel>
     );
