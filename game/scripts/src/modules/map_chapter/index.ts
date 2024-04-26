@@ -14,13 +14,13 @@ export class MapChapter {
 
     ChapterMapHandle: SpawnGroupHandle;
 
-    GameDifficulty : keyof typeof MapInfoDifficulty = "101";
+    GameDifficulty: keyof typeof MapInfoDifficulty = "101";
 
-    MapIndex : keyof typeof MapInfo = "m1" ;
+    MapIndex: keyof typeof MapInfo = "m1";
 
     MAP_CAMP = { name: "camp", x: -6144, y: -6144 }
 
-    hero_list : { [key : number] : string} = {}
+    hero_list: { [key: number]: string } = {}
 
     constructor() {
         print("[MapChapter]:constructor")
@@ -34,7 +34,7 @@ export class MapChapter {
         GameRules.MapChapter.OnCreatedCampMap();
 
         for (let [key, RowData] of pairs(NpcHeroesCustom)) {
-            if(RowData.Enable == 1){
+            if (RowData.Enable == 1) {
                 GameRules.MapChapter.hero_list[RowData.sort] = key;
             }
         }
@@ -77,7 +77,7 @@ export class MapChapter {
     }
 
     //根据选择刷出地图
-    OnLoadChapterMap(map_index : keyof typeof MapInfo , difficulty :  keyof typeof MapInfoDifficulty) {
+    OnLoadChapterMap(map_index: keyof typeof MapInfo, difficulty: keyof typeof MapInfoDifficulty) {
         this.MapIndex = map_index;
         this.GameDifficulty = difficulty;
     }
@@ -109,23 +109,23 @@ export class MapChapter {
             5
         );
     }
-    
+
 
 
     OnRemoveChapterMap() {
 
     }
 
-    
+
     //返回到营地
     ReturntoCamp() {
-        if(GameRules.Spawn._game_start == false){
+        if (GameRules.Spawn._game_start == false) {
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
             for (let hHero of HeroList.GetAllHeroes()) {
-                if(hHero.IsAlive()){
-                    hHero.SetRespawnPosition(hHero.GetAbsOrigin());
-                    hHero.RespawnHero(false, false);
-                }
+                // if (!hHero.IsAlive()) {
+                //     // hHero.SetRespawnPosition(hHero.GetAbsOrigin());
+                //     hHero.RespawnHero(false, false);
+                // }
                 hHero.SetOrigin(vLocation)
                 PlayerResource.ReplaceHeroWithNoTransfer(
                     hHero.GetPlayerOwnerID(),
@@ -136,14 +136,31 @@ export class MapChapter {
             }
             if (this.ChapterMapHandle) {
                 UnloadSpawnGroupByHandle(this.ChapterMapHandle)
-                this.ChapterMapHandle = null
+                this.ChapterMapHandle = null;
+                // 销毁当前地图上的一些东西
+                let ChapterData = MapInfo[this.MapIndex];
+                let vPos = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0)
+                let ExpItems = FindUnitsInRadius(
+                    DotaTeam.GOODGUYS,
+                    vPos,
+                    null,
+                    9999,
+                    UnitTargetTeam.FRIENDLY,
+                    UnitTargetType.OTHER,
+                    UnitTargetFlags.INVULNERABLE,
+                    FindOrder.ANY,
+                    false
+                );
+                for (let hItem of ExpItems) {
+                    UTIL_Remove(hItem)
+                }
             }
         }
     }
     /**
      * 英雄选择
      */
-    SelectHero(index : number){
+    SelectHero(index: number) {
         let hname = GameRules.MapChapter.hero_list[index];
         let ChapterData = MapInfo[this.MapIndex];
         if (ChapterData == null) { return };
@@ -180,10 +197,10 @@ export class MapChapter {
         if (cmd == "-di") {
             let map_index = (args[0] ?? "m1") as keyof typeof MapInfo;
             let difficulty = (args[0] ?? "101") as keyof typeof MapInfoDifficulty;
-            this.OnLoadChapterMap(map_index , difficulty)
+            this.OnLoadChapterMap(map_index, difficulty)
         }
         if (cmd == "-sh") {
-            let hero_index = args[0] ?? "0" ;
+            let hero_index = args[0] ?? "0";
             this.SelectHero(parseInt(hero_index))
         }
     }

@@ -1,11 +1,12 @@
 #ChapterSelect {
     horizontal-align: center;
-    vertical-align: middle;
+    // vertical-align: middle;
 
     width: 600px;
     height: 400px;
 
 
+    &.HeroSelect #StageHeroSelect,
     &.StageSelect #CurrentStageSelect {
         visibility: visible;
     }
@@ -15,18 +16,34 @@
         height: 100%;
         visibility: collapse;
         background-color: #d8cc27;
-        flow-children: right;
+        flow-children: down;
 
+        #StageAction {
+            width: 100%;
+            flow-children: right;
+        }
+
+        #StageBtnGroup {
+            horizontal-align: right;
+            vertical-align: bottom;
+        }
+
+        &.Stage_4 #StageDifficulty_4,
+        &.Stage_3 #StageDifficulty_3,
+        &.Stage_2 #StageDifficulty_2,
+        &.Stage_1 #StageDifficulty_1 {
+            visibility: visible;
+        }
 
         #SelectStageList {
             width: 50%;
-            height: 100%;
+            // height: 100%;
             flow-children: down;
         }
 
         #StageDifficultyList {
             width: 50%;
-            height: 100%;
+            // height: 100%;
             // flow-children: none;
         }
 
@@ -44,17 +61,26 @@
 
         .StageDifficulty {
             flow-children: down;
+            visibility: collapse;
 
             .StageDifficultyRows {
                 width: 120px;
-                padding: 4px;
-                border: 1px solid #464431;
-                background-color: #30302f;
+                // padding: 4px;
+                // border: 1px solid #464431;
+                // background-color: #30302f;
 
-                Label {
-                    font-size: 18px;
-                }
+                // Label {
+                //     font-size: 18px;
+                // }
             }
         }
+    }
+
+    #StageHeroSelect {
+        width: 100%;
+        height: 100%;
+        visibility: collapse;
+        background-color: #136063;
+
     }
 }

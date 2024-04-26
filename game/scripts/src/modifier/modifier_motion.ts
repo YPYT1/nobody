@@ -268,6 +268,7 @@ export class modifier_pick_animation extends modifier_motion_bezier {
     OnDestroy(): void {
         if (!IsServer()) { return; }
         let hParent = this.GetParent();
+        if (hParent == null) { return }
         let hCaster = this.GetCaster();
         let resource_type = hParent.drop_resource_type;
         let resource_amount = hParent.drop_resource_amount

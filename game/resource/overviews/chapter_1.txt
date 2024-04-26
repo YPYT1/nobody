@@ -1,8 +1,8 @@
 chapter_1
 {
 	material materials/overviews/chapter_1.vmat
-	pos_x -4096
-	pos_y 4096
-	scale 8.000
+	pos_x -5120
+	pos_y 5120
+	scale 10.000
 }
 
