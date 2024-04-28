@@ -29,5 +29,36 @@ declare interface CGED {
             index : number //选择的下标
         }
     }
+    //地图选择
+    MapChapter : {
+        //获取可选最高难度
+        GetDifficultyMax : {
+
+        }
+        //选择地图
+        SelectDifficulty : {
+            difficulty: string;
+        },
+        //确认地图
+        SelectDifficultyAffirm : {
+
+        }
+        //获取可用英雄列表
+        GetPlayerHeroList : {
+
+        }
+        //获取所有玩家选择英雄列表
+        GetPlayerSelectHeroList : {
+
+        }
+        //选择英雄
+        SelectHero : {
+            hero_id : number;
+        }
+        //确认英雄
+        SelectHeroAffirm : {
+
+        }
+    }
 }
 
