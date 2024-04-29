@@ -2,13 +2,14 @@ import { reloadable } from "../../utils/tstl-utils";
 import * as MapInfo from "../../json/config/map_info.json"
 import * as MapInfoDifficulty from "../../json/config/map_info_difficulty.json"
 import * as NpcHeroesCustom from "../../json/npc_heroes_custom.json"
+import { UIEventRegisterClass } from "../class_extends/ui_event_register_class";
 
 
 
 //营地信息
 
 @reloadable
-export class MapChapter {
+export class MapChapter  extends UIEventRegisterClass {
 
     CampMapHandle: SpawnGroupHandle;
 
@@ -37,6 +38,7 @@ export class MapChapter {
 
 
     constructor() {
+        super("MapChapter")
         print("[MapChapter]:constructor")
         for (let index = 0; index < this.player_count; index++) {
             this.player_hero_available.push([1,2,3]);
