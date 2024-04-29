@@ -25,12 +25,7 @@ export class MapChapter {
     // 1 选择地图难度 2选择英雄 3游戏开始了
     _game_select_phase: number = 0; //
     //根据等级可用地图
-    _map_list: {
-        is_unlock: number,
-        user_difficulty: number,
-        difficulty_max: number,
-        map_index: string,
-    }[] = [];
+    _map_list: UserMapSelectDifficulty[] = [];
     //玩家已通关的难度
     level_difficulty : string[] = [];
     //玩家可用英雄列表
@@ -43,7 +38,7 @@ export class MapChapter {
 
     constructor() {
         print("[MapChapter]:constructor")
-        for (let index = 0; index < GameRules.MapChapter.player_count; index++) {
+        for (let index = 0; index < this.player_count; index++) {
             this.player_hero_available.push([1,2,3]);
             this.player_select_hero.push({
                 hero_id : 1,
@@ -64,6 +59,37 @@ export class MapChapter {
                 GameRules.MapChapter.hero_list[RowData.sort] = key;
             }
         }
+
+        this._map_list.push({
+            is_unlock: 0, // 是否锁定
+            user_difficulty: 103, // 玩家最高可选难度
+            difficulty_max: 105, // 地图最高难度
+            chapter_key: "z1", //地图编号 m1 m2 
+        })
+        this._map_list.push({
+            is_unlock: 0, // 是否锁定
+            user_difficulty: 202, // 玩家最高可选难度
+            difficulty_max: 205, // 地图最高难度
+            chapter_key: "z2", //地图编号 m1 m2 
+        })
+        this._map_list.push({
+            is_unlock: 0, // 是否锁定
+            user_difficulty: 302, // 玩家最高可选难度
+            difficulty_max: 305, // 地图最高难度
+            chapter_key: "z3", //地图编号 m1 m2 
+        })
+        this._map_list.push({
+            is_unlock: 1, // 是否锁定
+            user_difficulty: 401, // 玩家最高可选难度
+            difficulty_max: 405, // 地图最高难度
+            chapter_key: "z4", //地图编号 m1 m2 
+        })
+        this._map_list.push({
+            is_unlock: 1, // 是否锁定
+            user_difficulty: 501, // 玩家最高可选难度
+            difficulty_max: 505, // 地图最高难度
+            chapter_key: "z5", //地图编号 m1 m2 
+        })
         
     }
 
@@ -126,7 +152,7 @@ export class MapChapter {
 
         if(this._game_select_phase == 0){
             this.GameDifficulty = params.difficulty as keyof typeof MapInfoDifficulty;
-            this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_index as keyof typeof MapInfo;
+            this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
         }
         CustomGameEventManager.Send_ServerToAllClients(
             "MapChapter_SelectDifficulty",

@@ -16,12 +16,7 @@ declare interface CustomGameEventDeclarations {
             game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始刷怪---> 3游戏开始了 ----返回营地---> 0处于营地
             select_map: string, //当前选择的章节
             select_difficulty: string, //当前选中的难度
-            map_difficulty: { //地图详细信息
-                is_unlock: number, // 是否锁定
-                user_difficulty: number, // 玩家最高可选难度
-                difficulty_max: number, // 地图最高难度
-                map_index: string, //地图编号 m1 m2 
-            }[];
+            map_difficulty: UserMapSelectDifficulty[];
             level_difficulty: string[]; //玩家所通关的难度
         };
     };
@@ -60,4 +55,12 @@ declare interface CustomGameEventDeclarations {
 declare interface MapSelectHeroList {
     hero_id : number,
     state : number, //是否确认 0 未确认 1 确认
+}
+
+
+declare interface UserMapSelectDifficulty { //地图详细信息
+    is_unlock: number, // 是否锁定
+    user_difficulty: number, // 玩家最高可选难度
+    difficulty_max: number, // 地图最高难度
+    chapter_key: string, //地图编号 m1 m2 
 }
