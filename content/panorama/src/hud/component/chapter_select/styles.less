@@ -2,7 +2,7 @@
     margin-top: 12px;
     horizontal-align: center;
     width: 600px;
-    height: 300px;
+    min-height: 300px;
 
 
     &.GameSelectPhase_1 #StageHeroSelect,
@@ -66,7 +66,7 @@
 
     #StageHeroSelect {
         width: 100%;
-        height: 100%;
+        // height: 100%;
         visibility: collapse;
         background-color: #263028;
 
@@ -86,7 +86,7 @@
                 &:hover {
                     border-color: #a09d6e;
                 };
-                
+
                 &:selected {
                     // border-color: #a09d6e;
                     box-shadow: rgba(255, 250, 201, 0.849) 0px 0px 4px;
@@ -111,5 +111,156 @@
             }
 
         }
+    }
+
+    .PlayerReadyStateItem {
+        width: 420px;
+        height: 80px;
+        background-repeat: no-repeat;
+        // select_hero_layder
+        // 
+        background-img-opacity: 0.5;
+        padding-left: 12px;
+        // border-radius: 4px;
+        // // height: 66px;
+        // background-color: #292929;
+        // border: 2px solid #898989;
+        margin-top: 8px;
+        flow-children: right;
+
+        .MasterVoteCount {
+            width: 58px;
+            height: 58px;
+            vertical-align: middle;
+            background-image: url("file://{images}/custom_game/selection/hero/master/vote_bg.png");
+
+            Label {
+                font-size: 22px;
+                color: #ffeccc;
+                align: center center;
+            }
+
+            margin-right: 8px;
+        }
+
+        &.is_ready {
+            background-image: url("file://{images}/custom_game/selection/hero/select_hero_layder.png");
+        }
+
+        .AvatarImage {
+            vertical-align: middle;
+            width: 56px;
+            height: 56px;
+            border: 2px solid #757575;
+            border-radius: 0px 12px 0px 12px;
+        }
+
+
+
+        .SelectHero {
+            width: 64px;
+            height: 64px;
+            horizontal-align: right;
+            vertical-align: middle;
+
+            // transform: skew(-30deg) translateX(16px);
+            // border-left: 2.5px solid #000000;
+            background-color: #000000;
+            border-radius: 50%;
+
+            // padding: 4px;
+            // 
+            .HeroImage {
+                width: 62px;
+                height: 62px;
+                margin: 2px;
+                vertical-align: middle;
+                horizontal-align: center;
+                overflow: clip;
+                border-radius: 50%;
+            }
+
+            Image {
+                width: 151px * 0.36;
+                height: 200px * 0.36;
+                vertical-align: middle;
+                horizontal-align: center;
+                // transform: skew(30deg) translateY(-10px);
+            }
+
+            .HeroBorder {
+                width: 100%;
+                height: 100%;
+                background-image: url("file://{images}/custom_game/selection/hero/select_hero_border1.png");
+                background-size: 100%;
+            }
+        }
+
+        .PlayerInfo {
+            margin-left: 6px;
+            vertical-align: middle;
+            flow-children: down;
+
+            #PlayerName {
+                color: #c7c7c7;
+                text-shadow: 0px 0px 2px 2.0;
+                vertical-align: middle;
+                font-size: 14px;
+            }
+        }
+
+        #AvatarImage {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ffffff;
+        }
+
+        DOTAAvatarImage {
+            z-index: 99;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ffffff;
+            horizontal-align: right;
+            vertical-align: bottom;
+            opacity: 1;
+
+            // DOTAAvatarImage {
+            //     width: 100%;
+            //     height: 100%;
+            // }
+
+            &.Ready {
+                opacity: 1;
+            }
+        }
+
+        #ReadyState {
+
+            // horizontal-align: center;
+            vertical-align: middle;
+
+            Label {
+                font-size: 20px;
+                // text-align: center;
+                // background-color: #4ce3f7;
+                // box-shadow: 0px 0px 4px rgba(72, 234, 255, 0.627);
+                border-radius: 4px;
+                margin-top: 2px;
+                padding: 2px 5px;
+                color: #ebc803;
+                text-shadow: #000000 0px 0px 1px 1;
+                font-family: FZLanTingHei-R-GBK;
+                // horizontal-align: center;
+                vertical-align: bottom;
+                // opacity: 0;
+            }
+
+            .IsReady {
+                color: #fff09c;
+            }
+        }
+
+
+        
     }
 }

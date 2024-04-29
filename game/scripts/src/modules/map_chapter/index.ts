@@ -192,15 +192,29 @@ export class MapChapter  extends UIEventRegisterClass {
     }
     //获取玩家已选英雄列表
     GetPlayerSelectHeroList(player_id: PlayerID, params: CGED["MapChapter"]["GetPlayerSelectHeroList"]){
-        CustomGameEventManager.Send_ServerToAllClients(
-            "MapChapter_GetPlayerSelectHeroList",
-            {
-                data: {
-                    game_select_phase: this._game_select_phase,
-                    hero_ids: this.player_select_hero,
+        if(player_id == -1){
+            CustomGameEventManager.Send_ServerToAllClients(
+                "MapChapter_GetPlayerSelectHeroList",
+                {
+                    data: {
+                        game_select_phase: this._game_select_phase,
+                        hero_ids: this.player_select_hero,
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "MapChapter_GetPlayerSelectHeroList",
+                {
+                    data: {
+                        game_select_phase: this._game_select_phase,
+                        hero_ids: this.player_select_hero,
+                    }
+                }
+            )
+        }
+        
     }
     //选择英雄
     SelectHero(player_id: PlayerID, params: CGED["MapChapter"]["SelectHero"]) {
@@ -215,10 +229,9 @@ export class MapChapter  extends UIEventRegisterClass {
     }
     //确认英雄
     SelectHeroAffirm(player_id: PlayerID, params: CGED["MapChapter"]["SelectHeroAffirm"]) {
-
         if(this._game_select_phase == 1 && this.player_select_hero[player_id].state == 0){
-            this.player_select_hero[player_id].state == 1;
-            GameRules.MapChapter.GetPlayerSelectHeroList(player_id , {})
+            this.player_select_hero[player_id].state = 1;
+            GameRules.MapChapter.GetPlayerSelectHeroList(-1 , {})
         }
 
         for (const date of this.player_select_hero) {
@@ -227,7 +240,7 @@ export class MapChapter  extends UIEventRegisterClass {
             }
         }
         //修改流程
-        this._game_select_phase == 2;
+        this._game_select_phase = 2;
 
         let ChapterData = MapInfo[this.MapIndex];
         
@@ -240,7 +253,7 @@ export class MapChapter  extends UIEventRegisterClass {
                 0
             );
         }
-
+        GameRules.MapChapter.GetPlayerSelectHeroList(-1 , {})
         let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
         this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
             ChapterData.map_name,
@@ -314,6 +327,19 @@ export class MapChapter  extends UIEventRegisterClass {
                 UnloadSpawnGroupByHandle(this.ChapterMapHandle)
                 this.ChapterMapHandle = null
             }
+
+            CustomGameEventManager.Send_ServerToAllClients(
+                "MapChapter_SelectDifficulty",
+                {
+                    data: {
+                        game_select_phase: this._game_select_phase,
+                        select_map: this.MapIndex,
+                        select_difficulty: this.GameDifficulty,
+                    }
+                }
+            );
+
+            GameRules.ResourceSystem.InitAllPlayer();
         }
     }
 

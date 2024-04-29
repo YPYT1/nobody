@@ -25,7 +25,12 @@ export class ResourceSystem extends UIEventRegisterClass {
         this.InitAllPlayer()
     }
 
-    InitAllPlayer(player_counts: number = 6) {
+    /** 初始化资源 */
+    InitAllPlayer(player_counts: number = 4) {
+        this.player_resource = [];
+        this.player_acquisition_rate = [];
+        this.player_cost_rate = [];
+        this.last_updatetime = [];
         for (let i = 0 as PlayerID; i < player_counts; i++) {
             this.player_resource.push({
                 Gold: 0,
@@ -48,8 +53,10 @@ export class ResourceSystem extends UIEventRegisterClass {
                 TeamExp: 100,
                 SingleExp: 100,
             })
-            this.last_updatetime.push(0)
+            this.last_updatetime.push(0);
+            this.SendPlayerResource(i)
         }
+
     }
 
     /**
@@ -149,7 +156,7 @@ export class ResourceSystem extends UIEventRegisterClass {
     ModifyCostRate(player_id: PlayerID, resource: PlayerResourceTyps, value: number) {
         this.player_cost_rate[player_id][resource] += value
     }
-    
+
     DropResourceItem(resource: PlayerResourceTyps, vPos: Vector, iCount: number) {
         let exp_unit = CreateUnitByName("npc_exp", vPos, false, null, null, DotaTeam.GOODGUYS)
         EmitSoundOn("Custom.ItemDrop", exp_unit)

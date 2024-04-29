@@ -18,16 +18,23 @@ const OnLoad = (e: Panel) => {
 export const ChapterSelect = () => {
 
     const [GameSelectPhase, setGameSelectPhase] = useState(0);
-
+    const [Difficulty, setDifficulty] = useState("101")
     useGameEvent("MapChapter_GetDifficultyMax", event => {
         let data = event.data;
-        // $.Msg(["MapChapter_GetDifficultyMax", data])
-        setGameSelectPhase(data.game_select_phase)
+        setGameSelectPhase(data.game_select_phase);
+
     }, [])
 
     useGameEvent("MapChapter_GetPlayerHeroList", event => {
         let data = event.data;
         setGameSelectPhase(data.game_select_phase)
+    })
+
+    useGameEvent("MapChapter_SelectDifficulty", event => {
+        let data = event.data;
+        let difficulty = data.select_difficulty;
+        $.Msg(["MapChapter_SelectDifficulty", data])
+        setDifficulty(difficulty)
     })
 
     return (
@@ -37,8 +44,8 @@ export const ChapterSelect = () => {
             hittest={false}
             onload={OnLoad}
         >
-            <CurrentStageSelect />
-            <StageHeroSelect />
+            <CurrentStageSelect difficulty={Difficulty} />
+            <StageHeroSelect difficulty={Difficulty}/>
         </Panel>
     );
 };

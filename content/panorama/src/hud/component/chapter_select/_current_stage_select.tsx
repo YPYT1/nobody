@@ -47,7 +47,7 @@ const SelectStage = ({ stage, handle }: { stage: number, handle: (stage: number)
 /**
  * 关卡难度选择 current_stage_select
  */
-export const CurrentStageSelect = () => {
+export const CurrentStageSelect = ({difficulty}:{difficulty:string}) => {
 
     const [Stage, setStage] = useState(1);
     const [Difficulty, setDifficulty] = useState("101");
@@ -56,13 +56,7 @@ export const CurrentStageSelect = () => {
         setStage(stage)
     }, []);
 
-    useGameEvent("MapChapter_SelectDifficulty", event => {
-        // 当前难度
-        let data = event.data;
-        let difficulty = data.select_difficulty;
-        // $.Msg(["MapChapter_SelectDifficulty", data])
-        setDifficulty(difficulty)
-    })
+
 
     return (
         <Panel id="CurrentStageSelect" className={`container Stage_${Stage}`}>
