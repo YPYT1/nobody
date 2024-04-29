@@ -48,7 +48,7 @@ const AttributeRows = (
     const [AttrSubKey, setAttrSubKey] = useState<AttributeSubKey>("Base")
 
     return (
-        <Panel className='AttributeRows'>
+        <Panel className='table-row AttributeRows'>
             <Label className='AttrName' text={$.Localize("#custom_attribute_" + attr_key)} />
             <Label className='AttrTotal' text={attr_value[attr_key] ?? 0} />
             <Panel className='AttrList'>
@@ -84,7 +84,7 @@ const AttributeRows = (
                 />
                 <Panel style={{ width: "80px" }}>
                     <Button
-                        className='fc-tool-button'
+                        className='btn'
                         onactivate={() => {
                             const queryUnit = Players.GetLocalPlayerPortraitUnit();
                             GameEvents.SendCustomGameEventToServer("Development", {
@@ -163,9 +163,20 @@ const HeroDemoAttribute = () => {
 
     return (
         <>
-            <Panel id="HeroDemoAttribute">
-                <AttributeRowsHeader />
-                <Panel className='AttributeRowList'>
+            <Panel id="HeroDemoAttribute" className='table'>
+                <Panel
+                    className='table-head AttributeRows'
+                    onmouseover={(e) => {
+                        ShowCustomTextTooltip(e, "属性加成说明", `(白字 * (1 + 白字加成) + 绿字 ) * (1 + 总加成 ) + ( 绿字 * 绿字加成 ) + 固定值`)
+                    }}
+                    onmouseout={() => {
+                        HideCustomTooltip()
+                    }}
+                >
+                    <Label className='AttrName' text={"属性名"} />
+                    <Label className='AttrTotal' text={"总值"} />
+                </Panel>
+                <Panel className='table-body AttributeRowList'>
                     <AttributeRows attr_key="AttackDamage" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="ArmorCommon" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackRange" attr_value={AttributeValue} attr_table={AttributeTable} />
@@ -243,7 +254,7 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: OverrideSpecialKeyTypes }) =>
             </Panel>
 
             <Button
-                className='fc-tool-button'
+                className='btn'
                 onactivate={() => {
                     GameEvents.SendCustomGameEventToServer("Development", {
                         event_name: "ModiyOverrideSpecialValue",
@@ -313,25 +324,25 @@ export const HeroEditor = () => {
     const [ToolRadioGroup, setToolRadioGroup] = useState(0);
 
     return (
-        <>
-            <Panel className="fc-tool-row">
+        <Panel className='content'>
+            <Panel className="row btn-group">
                 <RadioButton
-                    className='fc-tool-button'
+                    className='btn'
                     group='tool_radio_group'
                     selected={true}
                     onactivate={() => { setToolRadioGroup(0) }}
                 >
                     <Label text="属性操作" />
                 </RadioButton>
-                <RadioButton className='fc-tool-button' group='tool_radio_group' onactivate={() => { setToolRadioGroup(1) }}>
+                <RadioButton className='btn' group='tool_radio_group' onactivate={() => { setToolRadioGroup(1) }}>
                     <Label text="技能KV调整" />
                 </RadioButton>
             </Panel>
-            <Panel id='HeroEditor' className={"fc-tool-row group_" + ToolRadioGroup}>
+            <Panel id='HeroEditor' className={"row group_" + ToolRadioGroup}>
                 <HeroDemoAttribute />
                 <HeroEditorAbility />
             </Panel>
-        </>
+        </Panel>
     )
 
 } 

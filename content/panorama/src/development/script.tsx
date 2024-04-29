@@ -30,12 +30,12 @@ const WarpPanel = () => {
 
 
     return (
-        <Panel className="fc-tool-content">
-            <Panel className="fc-tool-row">
-                <Label className="fc-tool-row-title" text={`当前坐标: ${ScreenX}:${ScreenY}`} />
+        <Panel className="grid flow-down">
+            <Panel className="title">
+                <Label text={`当前坐标: ${ScreenX}:${ScreenY}`} />
             </Panel>
-            <Panel className="fc-tool-row">
-                <Button className="fc-tool-button" onactivate={() => {
+            <Panel className="row btn-group">
+                <Button className="btn" onactivate={() => {
                     GameEvents.SendCustomGameEventToServer("Development", {
                         event_name: "WarpUnit",
                         params: {
@@ -47,7 +47,6 @@ const WarpPanel = () => {
                 }}>
                     <Label text="传送至屏幕位置" />
                 </Button>
-
             </Panel>
         </Panel>
     )
@@ -123,28 +122,28 @@ export const HeroDemo = () => {
 
     return (
         <>
-            <Panel className={`fc-tool ${show ? "" : "minimized"}`} >
-                <Panel className="fc-tool-head">
+            <Panel id='DevelopmentContainer' className={`container flow-down ${show ? "" : "off"}`} >
+                <Panel className="head">
                     <Panel className='flow-right'>
                         <Label text="开发工具" />
                         <UnitCountsPanel />
                     </Panel>
-                    <Button onactivate={ToggleHandle} />
+                    <Button className='btn-close' onactivate={ToggleHandle} />
                 </Panel>
                 <WarpPanel />
-                <Panel className="fc-tool-content">
-                    <Panel className="fc-tool-row">
-                        <Label className="fc-tool-row-title" text="当前单位" />
+                <Panel className="content">
+                    <Panel className="title">
+                        <Label text="当前单位" />
                     </Panel>
 
-                    <Panel className="fc-tool-row">
-                        <Button className="fc-tool-button" onactivate={() => UnitOperation("KillUnit")}>
+                    <Panel className="row btn-group">
+                        <Button className="btn" onactivate={() => UnitOperation("KillUnit")}>
                             <Label text="自杀" />
                         </Button>
-                        <Button className="fc-tool-button" onactivate={() => UnitOperation("RespawnHero")}>
+                        <Button className="btn" onactivate={() => UnitOperation("RespawnHero")}>
                             <Label text="复活" />
                         </Button>
-                        <Button className="fc-tool-button" onactivate={() => {
+                        <Button className="btn" onactivate={() => {
                             current_action = "PickHero"
                             // setHeroesView(v => !v)
                             TogglePopupsViews("Heroes", true)
@@ -153,38 +152,38 @@ export const HeroDemo = () => {
                             <Label text="更换英雄" />
                         </Button>
                     </Panel>
-                    <Panel className="fc-tool-row">
-                        <Button className="fc-tool-button" onactivate={() => { HandleLevelUp(1) }}>
+                    <Panel className="row btn-group">
+                        <Button className="btn" onactivate={() => { HandleLevelUp(1) }}>
                             <Label text="升1级" />
                         </Button>
-                        <Button className="fc-tool-button" onactivate={() => { HandleLevelUp(5) }}>
+                        <Button className="btn" onactivate={() => { HandleLevelUp(5) }}>
                             <Label text="升5级" />
                         </Button>
-                        <Button className="fc-tool-button" onactivate={() => { HandleLevelUp(10) }}>
+                        <Button className="btn" onactivate={() => { HandleLevelUp(10) }}>
                             <Label text="升10级" />
                         </Button>
                     </Panel>
 
-                    <Panel className="fc-tool-row">
-                        <Button className="fc-tool-button" onactivate={() => { TogglePopupsViews("Items", true) }}>
+                    <Panel className="row btn-group">
+                        <Button className="btn" onactivate={() => { TogglePopupsViews("Items", true) }}>
                             <Label text="物品栏" />
                         </Button>
-                        <Button className="fc-tool-button" id="ReplaceAbility" onactivate={() => { TogglePopupsViews("Ability", true) }}>
+                        <Button className="btn" id="ReplaceAbility" onactivate={() => { TogglePopupsViews("Ability", true) }}>
                             <Label text="变更技能" />
                         </Button>
                     </Panel>
-                    <HeroEditor />
+                    
                 </Panel>
-
-                <Panel className="fc-tool-content">
-                    <Panel className="fc-tool-row">
-                        <Label className="fc-tool-row-title" text="敌对单位操作" />
+                <HeroEditor />
+                <Panel className="content">
+                    <Panel className="title">
+                        <Label className="" text="敌对单位操作" />
                     </Panel>
-                    <Panel className="fc-tool-row">
-                        <Button className="fc-tool-button" onactivate={() => { UnitOperation("AddDummy") }}>
+                    <Panel className="row btn-group">
+                        <Button className="btn" onactivate={() => { UnitOperation("AddDummy") }}>
                             <Label text="创建傀儡" />
                         </Button>
-                        <Button className="fc-tool-button" onactivate={() => { RemoveUnitSendServer() }}>
+                        <Button className="btn" onactivate={() => { RemoveUnitSendServer() }}>
                             <Label text="移除所选单位" />
                         </Button>
                     </Panel>

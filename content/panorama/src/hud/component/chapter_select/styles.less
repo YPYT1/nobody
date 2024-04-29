@@ -1,13 +1,12 @@
 #ChapterSelect {
+    margin-top: 12px;
     horizontal-align: center;
-    // vertical-align: middle;
-
     width: 600px;
-    height: 400px;
+    height: 300px;
 
 
-    &.HeroSelect #StageHeroSelect,
-    &.StageSelect #CurrentStageSelect {
+    &.GameSelectPhase_1 #StageHeroSelect,
+    &.GameSelectPhase_0 #CurrentStageSelect {
         visibility: visible;
     }
 
@@ -15,7 +14,7 @@
         width: 100%;
         height: 100%;
         visibility: collapse;
-        background-color: #d8cc27;
+        // background-color: #d8cc27;
         flow-children: down;
 
         #StageAction {
@@ -60,19 +59,8 @@
         }
 
         .StageDifficulty {
-            flow-children: down;
             visibility: collapse;
 
-            .StageDifficultyRows {
-                width: 120px;
-                // padding: 4px;
-                // border: 1px solid #464431;
-                // background-color: #30302f;
-
-                // Label {
-                //     font-size: 18px;
-                // }
-            }
         }
     }
 
@@ -80,7 +68,48 @@
         width: 100%;
         height: 100%;
         visibility: collapse;
-        background-color: #136063;
+        background-color: #263028;
 
+        #PickHeroList {
+            flow-children: right-wrap;
+
+            .HeroCardButton {
+                width: 100px;
+                height: 100px;
+                border: 1px solid #1b1b19;
+                box-shadow: rgba(0, 0, 0, 0.856) 0px 0px 4px;
+                margin: 4px;
+                transition-property: transform, height, box-shadow, saturation , border-color;
+                transition-duration: 0.2s;
+                transform-origin: 0% 100%;
+                
+                &:hover {
+                    border-color: #a09d6e;
+                };
+                
+                &:selected {
+                    // border-color: #a09d6e;
+                    box-shadow: rgba(255, 250, 201, 0.849) 0px 0px 4px;
+                }
+
+                .HeroImage {
+                    width: 100%;
+                    height: 100%;
+                    overflow: clip;
+                }
+
+                .HeroIcon,
+                DOTAHeroMovie {
+                    width: 151px * 0.7;
+                    height: 200px * 0.7;
+                    overflow: clip;
+                    horizontal-align: center;
+                    vertical-align: middle;
+                    // border: 1px solid #0d4470;
+
+                }
+            }
+
+        }
     }
 }

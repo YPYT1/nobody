@@ -1,0 +1,49 @@
+@import "./../variables/_variables.less";
+
+.btn-group {
+    >.btn {
+        width: fill-parent-flow(1.0);
+    }
+}
+
+.btn-close {
+    width: 24px;
+    height: 24px;
+    wash-color: #888888;
+    horizontal-align: right;
+    background-image: url("s2r://panorama/images/control_icons/x_close_grey_psd.vtex");
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    margin: 4px;
+    transition-property: wash-color, pre-transform-scale2d, background-color;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in;
+}
+
+.btn {
+    background-color: @btn-color-bg;
+    border: 1px solid @btn-color-border;
+    transition-property: background-color, border, color;
+    transition-duration: 0.15s;
+    transition-timing-function: linear;
+    margin: 4px;
+    padding: 4px;
+
+    &:hover {
+        background-color: @btn-color-bg-hover;
+        border: 1px solid @btn-color-border-hover;
+    }
+
+    Label {
+        horizontal-align: center;
+        vertical-align: middle;
+        color: @btn-color-text;
+        font-size: @btn-font-size;
+        text-transform: uppercase;
+        // font-family: defaultFont;
+        font-weight: normal;
+        text-overflow: shrink;
+        letter-spacing: 1px;
+    }
+}

@@ -1,0 +1,123 @@
+@import "./variables/_variables.less";
+
+@import "./components/button.less";
+@import "./components/ability_image.less";
+@import "./components/item_image.less";
+
+@contextmenu_zindex: 10000100;
+@mousepanningcursorsize: 64px;
+@colorHomeStatLineText: #ffffff;
+@colorHomeStatLineTextBright: #ffffff;
+@defaultFont: Radiance, FZLanTingHei-R-GBK, TH Sarabun New, YDYGO 540, Gulim;
+@monospaceNumbersFont: RadianceM, Radiance, FZLanTingHei-R-GBK, TH Sarabun New, YDYGO 540, Gulim, MingLiU;
+@titleFont: Reaver, Goudy Trajan Medium, FZKai-Z03, TH Sarabun New, YDYGO 540;
+@baseColor :#adadad;
+
+
+Label {
+    font-family: @defaultFont ;
+    color: @baseColor;
+}
+
+.root {
+    width: 100%;
+    height: 100%;
+}
+
+.grid {
+    width: 100%;
+}
+
+.flow-down {
+    flow-children: down;
+}
+
+.flow-right {
+    flow-children: right;
+}
+
+.hor-right {
+    horizontal-align: right;
+}
+
+.hor-center {
+    horizontal-align: center;
+}
+
+.vert-bot {
+    vertical-align: bottom;
+}
+
+.table {
+    margin: 4px;
+    width: 100%;
+}
+
+// 容器
+.container {
+    // border: 2px solid @white;
+    // padding: 2px;
+    // font-size: 16;
+    background-color: #181818dd;
+    border: 2px solid #222222;
+    box-shadow: #000000aa 0px 0px 8px 0px;
+    opacity: 1;
+    transition-property: opacity, transform;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-in-out;
+
+    .head {
+        width: 100%;
+        background-color: #181818;
+        padding: 4px;
+        // border: 2px solid #111111;
+
+        Label {
+            vertical-align: middle;
+            font-size: 18px;
+            color: #666666;
+            // margin: 6px;
+        }
+    }
+
+    .title {
+        min-width: 100%;
+
+        Label {
+            margin: 5px;
+            font-size: 17px;
+            color: #888888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: left;
+
+        }
+
+        // flow-children: down;
+        // horizontal-align: left;
+
+    }
+
+    .content {
+        width: 100%;
+        flow-children: down;
+    }
+
+    .grid {
+        width: 100%;
+        flow-children: down;
+    }
+
+    .row {
+        width: 100%;
+        flow-children: right;
+
+        &.wrap {
+            flow-children: right-wrap;
+        }
+    }
+
+    .col {
+        width: fill-parent-flow(1);
+    }
+}

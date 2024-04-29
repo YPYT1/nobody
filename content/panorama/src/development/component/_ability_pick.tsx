@@ -173,23 +173,17 @@ const UnitAbilityImage = ({ order }: { order: number }) => {
                     <Label text={`Lv.${AbilityLevel}`} />
                 </Panel>
                 <Panel className="ImageRight">
-                    <Panel className="w100 flow-right">
-                        <Button className="fc-tool-button" onactivate={UpgradeAbility}>
-                            <Label text="升级" />
-                        </Button>
-
-                    </Panel>
-                    <Panel className="w100 flow-right">
-                        <Button className="fc-tool-button" onactivate={DeleteAbility}>
-                            <Label text="删除" />
-                        </Button>
-                    </Panel>
-
+                    <Button className="btn" onactivate={UpgradeAbility}>
+                        <Label text="升级" />
+                    </Button>
+                    <Button className="btn" onactivate={DeleteAbility}>
+                        <Label text="删除" />
+                    </Button>
                 </Panel>
             </Panel>
 
 
-            <Label text={AbilityName} />
+            <Label className="AbilityName" text={AbilityName} />
         </Panel>
     )
 }
