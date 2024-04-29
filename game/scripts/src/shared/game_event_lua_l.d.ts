@@ -10,9 +10,16 @@ declare interface CGED {
             index : number //选择的下标
         }
     }
-    //物品升级系统
-    ItemEvolution : {
-        //升级物品
+    //技能升级
+    NewArmsEvolution : {
+        //升级技能的位置
+        ArmsUpgrade : {
+            index : number // 物品位置  从0开始
+        }
+    }
+    // 物品升级 弃用
+    ItemEvolution  : {
+        //升级技能的位置
         ItemUpgrade : {
             index : number // 物品位置  从0开始
         }

@@ -7,19 +7,19 @@ import { CustomOverrideAbility } from './ingame/hero_extend/custom_override_abil
 import { EntityKilled } from './ingame/public/entity_killed';
 import { Spawns } from './ingame/spawns';
 import { ItemArmsSystem } from './ingame/item_arms_system';
-import { ItemEvolution } from './ingame/hero_extend/item_evolution';
 import { ResourceSystem } from './ingame/system/resource_system';
 import { ArmsCombo } from './ingame/hero_extend/arms_combo';
 import { SummonedSystem } from './ingame/system/summoned_system';
 import { CustomMechanics } from './ingame/hero_extend/custom_mechanics';
 import { Spawn } from './ingame/spawns/spawn';
 import { CMsg } from './ingame/spawns/cmsg';
+import { NewArmsEvolution } from './ingame/hero_extend/new_arms_evolution';
 
 declare global {
 
     interface CDOTAGameRules {
         // 声明所有的GameRules模块，这个主要是为了方便其他地方的引用（保证单例模式）
-        ItemEvolution: ItemEvolution;
+        NewArmsEvolution: NewArmsEvolution;
 
         BasicRules: BasicRules;
         BuffManager: BuffManager;
@@ -61,7 +61,7 @@ export class GameEvent {
         } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) { //加载阶段
 
         } else if (State_Get == GameState.CUSTOM_GAME_SETUP) { //游戏设置阶段
-            GameRules.ItemEvolution = new ItemEvolution();
+            GameRules.NewArmsEvolution = new NewArmsEvolution();
             GameRules.BasicRules = new BasicRules();
             GameRules.CustomAttribute = new CustomAttribute();
             GameRules.CustomOverrideAbility = new CustomOverrideAbility()
@@ -106,9 +106,12 @@ export class GameEvent {
     OnEntityDotaOnHeroFinishSpawn(event: GameEventProvidedProperties & DotaOnHeroFinishSpawnEvent) {
         let hUnit = EntIndexToHScript(event.heroindex as EntityIndex) as CDOTA_BaseNPC_Hero;
         if (hUnit.isSpawned != true) {
+            let player_id = hUnit.GetPlayerOwnerID()
             // 英雄重新配置
             hUnit.isSpawned = true;
             GameRules.CustomAttribute.InitHeroAttribute(hUnit)
+            //初始化可选技能
+            GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id)
 
             let vect =  Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
             hUnit.SetOrigin(vect)

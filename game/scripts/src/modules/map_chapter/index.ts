@@ -41,9 +41,9 @@ export class MapChapter  extends UIEventRegisterClass {
         super("MapChapter")
         print("[MapChapter]:constructor")
         for (let index = 0; index < this.player_count; index++) {
-            this.player_hero_available.push([1,2,3]);
+            this.player_hero_available.push([57,102,22]);
             this.player_select_hero.push({
-                hero_id : 1,
+                hero_id : 57,
                 state : 0, //是否确认
             });
         }
@@ -58,7 +58,7 @@ export class MapChapter  extends UIEventRegisterClass {
 
         for (let [key, RowData] of pairs(NpcHeroesCustom)) {
             if(RowData.Enable == 1){
-                GameRules.MapChapter.hero_list[RowData.sort] = key;
+                GameRules.MapChapter.hero_list[RowData.HeroID] = key;
             }
         }
 
@@ -100,7 +100,6 @@ export class MapChapter  extends UIEventRegisterClass {
         if (this.CampMapHandle == null) {
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
             for (let hHero of HeroList.GetAllHeroes()) {
-                let vect = hHero.GetAbsOrigin();
                 hHero.SetOrigin(vLocation)
             }
             this.CampMapHandle = DOTA_SpawnMapAtPosition(
@@ -227,16 +226,15 @@ export class MapChapter  extends UIEventRegisterClass {
                 return 
             }
         }
-
+        //修改流程
         this._game_select_phase == 2;
 
         let ChapterData = MapInfo[this.MapIndex];
         
         for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
             let hname = GameRules.MapChapter.hero_list[this.player_select_hero[player_id].hero_id];
-            let hHero = PlayerResource.GetSelectedHeroEntity(index)
             PlayerResource.ReplaceHeroWithNoTransfer(
-                hHero.GetPlayerOwnerID(),
+                index,
                 hname,
                 0,
                 0
