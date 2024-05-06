@@ -12,13 +12,18 @@
     wash-color: #888888;
     horizontal-align: right;
     background-image: url("s2r://panorama/images/control_icons/x_close_grey_psd.vtex");
-    background-size: 24px 24px;
+    background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: 50% 50%;
-    margin: 4px;
+    border: 1px solid @btn-color-border;
+    margin: 2px;
     transition-property: wash-color, pre-transform-scale2d, background-color;
     transition-duration: 0.1s;
     transition-timing-function: ease-in;
+
+    &:hover {
+        background-color: @btn-color-bg-hover;
+    }
 }
 
 .btn {

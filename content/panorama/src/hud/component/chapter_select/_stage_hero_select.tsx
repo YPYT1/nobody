@@ -141,7 +141,6 @@ export const StageHeroSelect = ({ difficulty }: { difficulty: string }) => {
 
     useGameEvent("MapChapter_GetPlayerSelectHeroList", event => {
         let data = event.data;
-        $.Msg(["data", data])
         let player_state = Object.values(data.hero_ids);
         setPlayerState(player_state)
     }, [])

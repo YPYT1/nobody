@@ -54,9 +54,7 @@ const StageDifficulty = ({ chapter, default_max }: { chapter: number, default_ma
 const SelectChapter = ({ chapter, handle }: { chapter: number, handle: (chapter: number) => void }) => {
 
     return (
-        <Button className="btn" onactivate={() => {
-            handle(chapter)
-        }}>
+        <Button className="btn" onactivate={() => { handle(chapter) }}>
             <Label text={`chapter ${chapter}`} />
         </Button>
     )
@@ -77,29 +75,29 @@ export const CurrentStageSelect = ({ difficulty }: { difficulty: string }) => {
 
 
     return (
-        <Panel id="CurrentStageSelect" className={`container Stage_${Stage}`}>
-            <Panel className="content">
-                <Panel className="title">
-                    <Label text="章节选择" />
-                </Panel>
-                <Panel className="row btn-group">
+        <Panel id="CurrentStageSelect" className={`Stage_${Stage}`}>
 
-                    {
-                        Object.values(ChapterInfo).map((v, k) => {
-                            return <SelectChapter key={k} chapter={v.name} handle={select_stage} />
-                        })
-                    }
+            <Panel className="title">
+                <Label text="章节选择" />
+            </Panel>
+            <Panel id="ChapterList" className="row btn-group">
 
-                </Panel>
-                <Panel className="row btn-group">
-                    {
-                        Object.values(ChapterInfo).map((v, k) => {
-                            return <StageDifficulty key={k} chapter={v.name} default_max={v.default_max} />
-                        })
-                    }
-                </Panel>
+                {
+                    Object.values(ChapterInfo).map((v, k) => {
+                        return <SelectChapter key={k} chapter={v.name} handle={select_stage} />
+                    })
+                }
 
             </Panel>
+            <Panel id="ChapterForDiff" className="row btn-group">
+                {
+                    Object.values(ChapterInfo).map((v, k) => {
+                        return <StageDifficulty key={k} chapter={v.name} default_max={v.default_max} />
+                    })
+                }
+            </Panel>
+
+
 
 
             <Panel id="StageBtnGroup">

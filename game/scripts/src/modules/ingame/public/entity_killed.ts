@@ -21,13 +21,13 @@ export class EntityKilled {
             GameRules.ResourceSystem.ModifyResource(hAttacker.GetPlayerOwnerID(), {
                 "Soul": 10
             })
-            let vAttacker = hAttacker.GetAbsOrigin();
-            let vDir = (vect - vAttacker as Vector).Normalized()
-            vDir.z = 0;
+            // let vAttacker = hAttacker.GetAbsOrigin();
+            // let vDir = (vect - vAttacker as Vector).Normalized()
+            // vDir.z = 0;
 
 
             // hKilled.text
-            hKilled.SetSingleMeshGroup("textures/dev/ggx_integrate_brdf_lut_schlick.vtex")
+            // hKilled.SetSingleMeshGroup("textures/dev/ggx_integrate_brdf_lut_schlick.vtex")
             hKilled.SetContextThink("death_play", () => {
                 hKilled.RemoveSelf()
                 return null

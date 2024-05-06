@@ -8,9 +8,12 @@ const OnLoad = (e: Panel) => {
     // $.Msg(["ChapterSelect", "OnLoad"])
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetDifficultyMax",
-        params: {
+        params: {}
+    })
 
-        }
+    GameEvents.SendCustomGameEventToServer("MapChapter", {
+        event_name: "GetGameSelectPhase",
+        params: {}
     })
 }
 
@@ -18,16 +21,22 @@ const OnLoad = (e: Panel) => {
 export const ChapterSelect = () => {
 
     const [GameSelectPhase, setGameSelectPhase] = useState(0);
-    const [Difficulty, setDifficulty] = useState("101")
+    const [Difficulty, setDifficulty] = useState("101");
+    const [Show, setShow] = useState(true);
+
+    const ToggleHandle = useCallback((b: boolean) => {
+        setShow(!b);
+    }, [])
+
     useGameEvent("MapChapter_GetDifficultyMax", event => {
         let data = event.data;
-        setGameSelectPhase(data.game_select_phase);
+        // setGameSelectPhase(data.game_select_phase);
 
     }, [])
 
     useGameEvent("MapChapter_GetPlayerHeroList", event => {
         let data = event.data;
-        setGameSelectPhase(data.game_select_phase)
+        // setGameSelectPhase(data.game_select_phase)
     })
 
     useGameEvent("MapChapter_SelectDifficulty", event => {
@@ -37,15 +46,33 @@ export const ChapterSelect = () => {
         setDifficulty(difficulty)
     })
 
+    useGameEvent("MapChapter_GetGameSelectPhase", event => {
+        let data = event.data;
+        setGameSelectPhase(data.game_select_phase)
+    })
+
     return (
         <Panel
             id='ChapterSelect'
-            className={`GameSelectPhase_${GameSelectPhase}`}
+            className={`container GameSelectPhase_${GameSelectPhase} ${Show ? "Open" : ""}`}
             hittest={false}
             onload={OnLoad}
         >
-            <CurrentStageSelect difficulty={Difficulty} />
-            <StageHeroSelect difficulty={Difficulty}/>
+            <Panel className="content">
+                <Panel className="head">
+                    <Panel className="title">
+                        <Label text="chapter_select" />
+                    </Panel>
+                    <Panel className="head-btn">
+                        <Button className="btn-close" onactivate={() => { ToggleHandle(Show) }} />
+                    </Panel>
+                </Panel>
+            </Panel>
+            <Panel id="ChapterContent" className="content">
+                <CurrentStageSelect difficulty={Difficulty} />
+                <StageHeroSelect difficulty={Difficulty} />
+            </Panel>
+
         </Panel>
     );
 };
