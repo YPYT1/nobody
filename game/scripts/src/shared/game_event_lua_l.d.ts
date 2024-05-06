@@ -58,6 +58,10 @@ declare interface CGED {
         GetPlayerHeroList : {
 
         }
+        //获取游戏阶段
+        GetGameSelectPhase : {
+
+        }
         //获取所有玩家选择英雄列表
         GetPlayerSelectHeroList : {
 

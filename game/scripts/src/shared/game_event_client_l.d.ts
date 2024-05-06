@@ -13,7 +13,6 @@ declare interface CustomGameEventDeclarations {
      */
     MapChapter_GetDifficultyMax: {
         data: {
-            game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始刷怪---> 3游戏开始了 ----返回营地---> 0处于营地
             select_map: string, //当前选择的章节
             select_difficulty: string, //当前选中的难度
             map_difficulty: UserMapSelectDifficulty[];
@@ -26,7 +25,6 @@ declare interface CustomGameEventDeclarations {
      */
     MapChapter_SelectDifficulty: {
         data: {
-            game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3游戏开始了 ----结束---> 0处于营地
             select_map: string, //已选地图编号
             select_difficulty: string, //已选地图难度
         };
@@ -36,7 +34,6 @@ declare interface CustomGameEventDeclarations {
      */
     MapChapter_GetPlayerSelectHeroList : {
         data: {
-            game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3游戏开始了 ----结束---> 0处于营地
             hero_ids : MapSelectHeroList[],
         };
     }
@@ -45,8 +42,13 @@ declare interface CustomGameEventDeclarations {
      */
     MapChapter_GetPlayerHeroList : {
         data: {
-            game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3游戏开始了 ----结束---> 0处于营地
             hero_id : number[],
+        };
+    }
+
+    MapChapter_GetGameSelectPhase : {
+        data: {
+            game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3游戏开始了 ----结束---> 0处于营地
         };
     }
 }
