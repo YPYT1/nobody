@@ -1,0 +1,19 @@
+@import "./../variables/_variables.less";
+
+
+.table {
+    margin: 4px;
+    flow-children: down;
+
+    .table-row {
+        flow-children: right;
+
+        .table-col {
+            width: fill-parent-flow(1.0);
+        }
+
+        .table-col-1 {
+            width: @col-1;
+        }
+    }
+}

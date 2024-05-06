@@ -34,8 +34,8 @@
 "PreLvBase" "2"
 }
 			"AttackRange" {
-"Base" "600"
-"PreLvBase" "1"
+"Base" "150"
+
 }
 			"AttackRate" {
 "Base" "1.7"
@@ -62,7 +62,6 @@
 		"AttackDamageMin" "0"
 		"AttackDamageMax" "0"
 		"AttackRate" "1.7000"
-		"AttackRange" "150"
 		"MagicalResistance" "0"
 		"AbilityLayout" "6"
 		"Creature" {
@@ -110,8 +109,8 @@
 "PreLvBase" "2"
 }
 			"AttackRange" {
-"Base" "600"
-"PreLvBase" "1"
+"Base" "150"
+
 }
 			"AttackRate" {
 "Base" "1.7"
@@ -138,7 +137,6 @@
 		"AttackDamageMin" "0"
 		"AttackDamageMax" "0"
 		"AttackRate" "1.7000"
-		"AttackRange" "150"
 		"MagicalResistance" "0"
 		"AbilityLayout" "6"
 		"Creature" {
@@ -186,8 +184,7 @@
 "PreLvBase" "2"
 }
 			"AttackRange" {
-"Base" "600"
-"PreLvBase" "1"
+"Base" "400"
 }
 			"AttackRate" {
 "Base" "1.7"
@@ -214,7 +211,6 @@
 		"AttackDamageMin" "0"
 		"AttackDamageMax" "0"
 		"AttackRate" "1.7000"
-		"AttackRange" "400"
 		"MagicalResistance" "0"
 		"AbilityLayout" "6"
 		"Creature" {

@@ -78,6 +78,7 @@ export class ResourceSystem extends UIEventRegisterClass {
         bIgnoring: boolean = false, // 无视条件,为真则能把资源扣成负数
         // bIsSell: boolean = false, // 是否为出售
     ) {
+        if (player_id == -1) { return { status: false, msg: "player = -1", } }
         let ret: { status: boolean, msg: string } = { status: true, msg: "", };
         for (let [resource, amount] of pairs(resource_input)) {
             amount = math.ceil(amount);
@@ -104,6 +105,9 @@ export class ResourceSystem extends UIEventRegisterClass {
         for (let [resource, amount] of pairs(resource_input)) {
             if (bFixed == false) {
                 if (amount > 0) {
+                    // DeepPrintTable(this.player_acquisition_rate)
+                    // print("amount", amount, "resource", resource, "player_id", player_id)
+                    // DeepPrintTable(this.player_acquisition_rate[player_id])
                     amount = amount * this.player_acquisition_rate[player_id][resource] * 0.01
                 } else {
                     amount = amount * this.player_cost_rate[player_id][resource] * 0.01

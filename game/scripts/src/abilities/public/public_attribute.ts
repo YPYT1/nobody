@@ -53,9 +53,11 @@ export class modifier_public_attribute extends BaseModifier {
     OnRefresh(params: any): void {
         if (!IsServer()) { return; }
         this._UpdateAttribute();
+        // this.StartIntervalThink(0.1)
     }
 
     OnIntervalThink(): void {
+        if (!this.hParent.IsAlive()) { return }
         let vPos = this.hParent.GetAbsOrigin();
         let ExpItems = FindUnitsInRadius(
             DotaTeam.GOODGUYS,

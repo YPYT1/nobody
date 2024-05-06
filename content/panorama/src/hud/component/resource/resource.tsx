@@ -5,9 +5,11 @@ import { useGameEvent } from 'react-panorama-x';
 const ResourceTypePanel = ({ resour_type, amount }: { resour_type: PlayerResourceTyps, amount: number }) => {
 
     return (
-        <Panel className='ResourceTypePanel'>
-            <Panel className={'ResourceIcon ' + resour_type} />
-            <Label text={amount} />
+        <Panel className='forms-row'>
+            <Panel className={'forms-title'} >
+                <Label text={resour_type.substring(0,2)}/>
+            </Panel>
+            <Label className='forms-label' text={amount} />
         </Panel>
     )
 }
@@ -31,8 +33,9 @@ export const ResourceComponent = () => {
     }, [])
 
     return (
-        <Panel 
+        <Panel
             id='ResourceComponent'
+            className='forms'
             hittest={false}
             onload={(e) => {
                 GameEvents.SendCustomGameEventToServer("ResourceSystem", {

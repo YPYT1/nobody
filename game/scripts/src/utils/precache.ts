@@ -25,6 +25,9 @@ export default function Precache(context: CScriptPrecacheContext) {
             // 单位名称
             'npc_dota_hero_wisp',
             'npc_dota_hero_zuus',
+            'npc_dota_hero_omniknight',
+            'npc_dota_hero_abaddon',
+
         ],
         context
     );
@@ -70,7 +73,7 @@ function precacheUnits(unitNamesList: string[], context?: CScriptPrecacheContext
         });
     } else {
         unitNamesList.forEach(unitName => {
-            PrecacheUnitByNameAsync(unitName, () => {});
+            PrecacheUnitByNameAsync(unitName, () => { });
         });
     }
 }

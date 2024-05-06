@@ -40,6 +40,9 @@ export class CustomAttribute {
             let hAbility = hUnit.GetAbilityByIndex(i);
             if (hAbility) { hAbility.RemoveSelf() }
         }
+
+        //PrecacheUnitByNameAsync(heroname, () => {
+
         if (hHeroKvData) {
             // 延迟1帧之后加载
             hUnit.SetContextThink("delay_init_attr", () => {
@@ -73,6 +76,7 @@ export class CustomAttribute {
                     }
                 }
 
+                // DeepPrintTable(attribute_table)
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
@@ -118,7 +122,7 @@ export class CustomAttribute {
             }, 0.1)
         }
 
-
+        //});
     }
 
     InitHeroAbility(hUnit: CDOTA_BaseNPC) {

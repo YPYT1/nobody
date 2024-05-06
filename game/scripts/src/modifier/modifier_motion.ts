@@ -270,8 +270,10 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         let hParent = this.GetParent();
         if (hParent == null) { return }
         let hCaster = this.GetCaster();
+        if (hCaster == null) { return }
         let resource_type = hParent.drop_resource_type;
-        let resource_amount = hParent.drop_resource_amount
+        let resource_amount = hParent.drop_resource_amount;
+        // print("resource_type", resource_type, "resource_amount", resource_amount)
         GameRules.ResourceSystem.ModifyResource(hCaster.GetPlayerOwnerID(), {
             [resource_type]: resource_amount
         }, hCaster, true)

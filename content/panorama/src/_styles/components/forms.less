@@ -1,0 +1,35 @@
+@import "./../variables/_variables.less";
+
+.forms {
+    flow-children: down;
+    
+
+    .forms-row {
+        width: 100%;
+        flow-children: right;
+        border: 1px solid @gray-400;
+        background-color: @gray-900;
+        border-radius: 6px;
+        margin-bottom: 4px;
+        // padding: 4px;
+
+        .forms-title {
+            padding: 4px;
+            border-right: 1px solid @gray-400;
+            background-color: @gray-700;
+            min-width: 36px;
+
+            Label {
+                horizontal-align: center;
+                vertical-align: middle;
+                font-size: 18px;
+            }
+        }
+
+        .forms-label {
+            vertical-align: middle;
+            padding: 4px;
+            font-size: 16px;
+        }
+    }
+}
