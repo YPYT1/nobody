@@ -1,14 +1,31 @@
 import { useCallback, useState } from "react";
-
-import { default as MapInfoDifficulty } from "../../../json/config/map_info_difficulty.json"
 import { useGameEvent } from "react-panorama-x";
 
-const StageDifficultyRows = ({ stage, difficulty }: { stage: number, difficulty: number }) => {
+import { default as ChapterInfo } from "../../../json/config/chapter_info.json"
+import { default as MapInfoDifficulty } from "../../../json/config/map_info_difficulty.json"
+
+type DifficultyType = keyof typeof MapInfoDifficulty;
+type DifficultyRowData = typeof MapInfoDifficulty[DifficultyType]
+
+const InitChapterMapData = () => {
+    let map_data: { [chapter: string]: { [diff: string]: DifficultyRowData } } = {};
+    for (let diff in MapInfoDifficulty) {
+        let row_data = MapInfoDifficulty[diff as keyof typeof MapInfoDifficulty];
+        let chapter_key = row_data.chapter_key;
+        if (map_data[chapter_key] == null) { map_data[chapter_key] = {} }
+        map_data[chapter_key][diff] = row_data
+    }
+    return map_data
+}
+
+const ChapterMapData = InitChapterMapData();
+
+
+const StageDifficultyRows = ({ chapter, difficulty }: { chapter: number, difficulty: number }) => {
 
     return (
         <Button className="btn" style={{ width: "120px" }} onactivate={() => {
-            // handle(stage * 100 + difficulty);
-            let diff = `${stage * 100 + difficulty}`
+            let diff = `${chapter * 100 + difficulty}`
             GameEvents.SendCustomGameEventToServer("MapChapter", {
                 event_name: "SelectDifficulty",
                 params: {
@@ -16,30 +33,31 @@ const StageDifficultyRows = ({ stage, difficulty }: { stage: number, difficulty:
                 }
             })
         }}>
-            <Label text={`${stage}- ${difficulty}`} />
+            <Label text={`${chapter}- ${difficulty}`} />
         </Button>
     )
 }
 
-const StageDifficulty = ({ stage }: { stage: number }) => {
+const StageDifficulty = ({ chapter, default_max }: { chapter: number, default_max: number }) => {
+
 
     return (
-        <Panel id={`StageDifficulty_${stage}`} className="StageDifficulty row wrap">
+        <Panel id={`StageDifficulty_${chapter}`} className="StageDifficulty row wrap">
             {
-                [1, 2, 3, 4, 5, 6, 7, 8].map((v, k) => {
-                    return <StageDifficultyRows key={k} stage={stage} difficulty={v} />
+                Array(default_max).fill(0).map((v, k) => {
+                    return <StageDifficultyRows key={k} chapter={chapter} difficulty={k + 1} />
                 })
             }
         </Panel>
     )
 }
-const SelectStage = ({ stage, handle }: { stage: number, handle: (stage: number) => void }) => {
+const SelectChapter = ({ chapter, handle }: { chapter: number, handle: (chapter: number) => void }) => {
 
     return (
         <Button className="btn" onactivate={() => {
-            handle(stage)
+            handle(chapter)
         }}>
-            <Label text={`STAGE ${stage}`} />
+            <Label text={`chapter ${chapter}`} />
         </Button>
     )
 }
@@ -47,7 +65,7 @@ const SelectStage = ({ stage, handle }: { stage: number, handle: (stage: number)
 /**
  * 关卡难度选择 current_stage_select
  */
-export const CurrentStageSelect = ({difficulty}:{difficulty:string}) => {
+export const CurrentStageSelect = ({ difficulty }: { difficulty: string }) => {
 
     const [Stage, setStage] = useState(1);
     const [Difficulty, setDifficulty] = useState("101");
@@ -67,16 +85,16 @@ export const CurrentStageSelect = ({difficulty}:{difficulty:string}) => {
                 <Panel className="row btn-group">
 
                     {
-                        [1, 2, 3, 4].map((v, k) => {
-                            return <SelectStage key={k} stage={v} handle={select_stage} />
+                        Object.values(ChapterInfo).map((v, k) => {
+                            return <SelectChapter key={k} chapter={v.name} handle={select_stage} />
                         })
                     }
 
                 </Panel>
                 <Panel className="row btn-group">
                     {
-                        [1, 2, 3, 4].map((v, k) => {
-                            return <StageDifficulty key={k} stage={v} />
+                        Object.values(ChapterInfo).map((v, k) => {
+                            return <StageDifficulty key={k} chapter={v.name} default_max={v.default_max} />
                         })
                     }
                 </Panel>
