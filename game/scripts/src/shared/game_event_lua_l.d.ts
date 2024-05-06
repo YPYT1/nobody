@@ -42,12 +42,16 @@ declare interface CGED {
         GetDifficultyMax : {
 
         }
-        //选择地图
+        //选择难度
         SelectDifficulty : {
             difficulty: string;
         },
-        //确认地图
+        //确认难度
         SelectDifficultyAffirm : {
+
+        }
+        //返回到选择难度
+        ReturnSelectDifficulty : {
 
         }
         //获取可用英雄列表

@@ -48,7 +48,6 @@ export class Debug {
                 if (entity.GetClassname() == "npc_dota_thinker") {
                     DebugDrawCircle(entity.GetAbsOrigin(), Vector(255, 0, 0), 10, 64, true, 20);
                 }
-
             }
             print("entity count", all_entities.length);
         }

@@ -150,7 +150,6 @@ export class MapChapter  extends UIEventRegisterClass {
 
     //选择游戏难度
     SelectDifficulty(player_id: PlayerID, params: CGED["MapChapter"]["SelectDifficulty"]) {
-
         if(this._game_select_phase == 0){
             this.GameDifficulty = params.difficulty as keyof typeof MapInfoDifficulty;
             this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
@@ -177,6 +176,32 @@ export class MapChapter  extends UIEventRegisterClass {
             }
         }
     }
+
+    /**
+     * 从选择英雄返回到选择难度
+     * @param player_id 
+     * @param params 
+     */
+    ReturnSelectDifficulty(player_id: PlayerID, params: CGED["MapChapter"]["ReturnSelectDifficulty"]) {
+        if(this._game_select_phase == 1 && player_id == 0){
+            this._game_select_phase = 0; //返回到选择难度
+            for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
+                //清空玩家选择状态
+                this.player_select_hero[index].state = 0;
+            }
+            CustomGameEventManager.Send_ServerToAllClients(
+                "MapChapter_SelectDifficulty",
+                {
+                    data: {
+                        game_select_phase: this._game_select_phase,
+                        select_map: this.MapIndex,
+                        select_difficulty: this.GameDifficulty,
+                    }
+                }
+            );
+        }
+    }
+
     //获取玩家可用英雄列表
     GetPlayerHeroList(player_id: PlayerID, params: CGED["MapChapter"]["GetPlayerHeroList"]){
         CustomGameEventManager.Send_ServerToPlayer(
@@ -214,15 +239,15 @@ export class MapChapter  extends UIEventRegisterClass {
                 }
             )
         }
-        
     }
+
     //选择英雄
     SelectHero(player_id: PlayerID, params: CGED["MapChapter"]["SelectHero"]) {
         if(this._game_select_phase == 1){
             if(this.player_select_hero[player_id].state == 0){
                 let hero_id = params.hero_id
                 this.player_select_hero[player_id].hero_id = hero_id;
-                GameRules.MapChapter.GetPlayerSelectHeroList(player_id , {})
+                GameRules.MapChapter.GetPlayerSelectHeroList(-1 , {})
             }
         }
         
