@@ -4,6 +4,7 @@ import { HeroPick } from './component/_hero_pick';
 import { AbilityPick } from './component/_ability_pick';
 import { ItemListPick } from './component/_items_list';
 import { HeroEditor } from './component/hero_demo_attribute';
+import { WorkshopVoteTreadmil } from './workshop_vote_treadmil';
 
 
 
@@ -172,7 +173,7 @@ export const HeroDemo = () => {
                             <Label text="变更技能" />
                         </Button>
                     </Panel>
-                    
+
                 </Panel>
                 <HeroEditor />
                 <Panel className="content">
@@ -212,6 +213,8 @@ export const App = () => {
                 Game.IsInToolsMode() &&
                 <>
                     <HeroDemo />
+                    {/* <WorkshopVoteTreadmil /> */}
+                    {/* <Label id='LabelTest' text={"测试字体 LabelTest"} /> */}
                 </>
             }
         </>

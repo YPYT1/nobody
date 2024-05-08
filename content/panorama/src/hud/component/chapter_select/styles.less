@@ -1,3 +1,8 @@
+.GameSelectPhase_1 #ChapterSelect #StageHeroSelect,
+.GameSelectPhase_0 #ChapterSelect #CurrentStageSelect {
+    visibility: visible;
+}
+
 #ChapterSelect {
     margin-top: 12px;
     horizontal-align: center;
@@ -6,15 +11,13 @@
     flow-children: down;
 
 
-    
+
 
     #ChapterContent {
         visibility: collapse;
     }
 
-    &.Open #ChapterContent,
-    &.GameSelectPhase_1 #StageHeroSelect,
-    &.GameSelectPhase_0 #CurrentStageSelect {
+    &.Open #ChapterContent {
         visibility: visible;
     }
 
@@ -92,13 +95,15 @@
                 border: 1px solid #1b1b19;
                 box-shadow: rgba(0, 0, 0, 0.856) 0px 0px 4px;
                 margin: 4px;
-                transition-property: transform, height, box-shadow, saturation , border-color;
+                transition-property: transform, height, box-shadow, saturation, border-color;
                 transition-duration: 0.2s;
                 transform-origin: 0% 100%;
-                
+
                 &:hover {
                     border-color: #a09d6e;
-                };
+                }
+
+                ;
 
                 &:selected {
                     // border-color: #a09d6e;
@@ -274,6 +279,6 @@
         }
 
 
-        
+
     }
 }

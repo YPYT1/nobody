@@ -1,19 +1,21 @@
 import 'panorama-polyfill-x/lib/console';
 import 'panorama-polyfill-x/lib/timers';
 
-import { render } from 'react-panorama-x';
+import { render, useGameEvent } from 'react-panorama-x';
 
 import { MoveControll } from './component/move_control/move_control';
 import { MessageContainer } from './component/message';
 import { ResourceComponent } from './component/resource/resource';
 import { CenterStatsContainer } from './component/center_stats/_center_stats';
 import { ChapterSelect } from './component/chapter_select';
+import { useState } from 'react';
+import { ArmsSelector } from './component/arms/arms_selector';
 
 
 const HideOfficialLayoutUI = () => {
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_TIMEOFDAY, false);
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_HEROES, false);
-    GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_PANEL, true);
+    GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_PANEL, false);
     // 小地图
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_MINIMAP, false);
     // 击杀
@@ -30,9 +32,17 @@ const HideOfficialLayoutUI = () => {
 
 const App = () => {
 
+    const [GameSelectPhase, setGameSelectPhase] = useState(0);
+
+    useGameEvent("MapChapter_GetGameSelectPhase", event => {
+        let data = event.data;
+        setGameSelectPhase(data.game_select_phase)
+    })
+
     return (
         <Panel
-            className='root'
+            id='HUD'
+            className={`GameSelectPhase_${GameSelectPhase}`}
             hittest={false}
             onload={HideOfficialLayoutUI}
         >
@@ -42,6 +52,13 @@ const App = () => {
             <ResourceComponent />
 
             <ChapterSelect />
+
+            <ArmsSelector />
+
+
+
+
+            <Label id='GamePhase' text={`GamePhase: ${GameSelectPhase}`} />
         </Panel>
     )
 };

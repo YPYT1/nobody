@@ -20,7 +20,7 @@ const OnLoad = (e: Panel) => {
 /** 章节选择 */
 export const ChapterSelect = () => {
 
-    const [GameSelectPhase, setGameSelectPhase] = useState(0);
+
     const [Difficulty, setDifficulty] = useState("101");
     const [Show, setShow] = useState(true);
 
@@ -31,7 +31,6 @@ export const ChapterSelect = () => {
     useGameEvent("MapChapter_GetDifficultyMax", event => {
         let data = event.data;
         // setGameSelectPhase(data.game_select_phase);
-
     }, [])
 
     useGameEvent("MapChapter_GetPlayerHeroList", event => {
@@ -46,15 +45,10 @@ export const ChapterSelect = () => {
         setDifficulty(difficulty)
     })
 
-    useGameEvent("MapChapter_GetGameSelectPhase", event => {
-        let data = event.data;
-        setGameSelectPhase(data.game_select_phase)
-    })
-
     return (
         <Panel
             id='ChapterSelect'
-            className={`container GameSelectPhase_${GameSelectPhase} ${Show ? "Open" : ""}`}
+            className={`container ${Show ? "Open" : ""}`}
             hittest={false}
             onload={OnLoad}
         >

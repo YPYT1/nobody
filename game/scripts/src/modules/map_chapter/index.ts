@@ -9,46 +9,46 @@ import { UIEventRegisterClass } from "../class_extends/ui_event_register_class";
 //营地信息
 
 @reloadable
-export class MapChapter  extends UIEventRegisterClass {
+export class MapChapter extends UIEventRegisterClass {
 
     CampMapHandle: SpawnGroupHandle;
 
     ChapterMapHandle: SpawnGroupHandle;
 
-    GameDifficulty : keyof typeof MapInfoDifficulty = "101";
+    GameDifficulty: keyof typeof MapInfoDifficulty = "101";
 
-    MapIndex : keyof typeof MapInfo = "m1" ;
+    MapIndex: keyof typeof MapInfo = "m1";
 
     MAP_CAMP = { name: "camp", x: -6144, y: -6144 }
 
-    hero_list : { [key : number] : string} = {}
+    hero_list: { [key: number]: string } = {}
 
     // 1 选择地图难度 2选择英雄 3游戏开始了
     _game_select_phase: number = 0; //
     //根据等级可用地图
     _map_list: UserMapSelectDifficulty[] = [];
     //玩家已通关的难度
-    level_difficulty : string[] = [];
+    level_difficulty: string[] = [];
     //玩家可用英雄列表
-    player_hero_available : number[][] = [];
+    player_hero_available: number[][] = [];
     //玩家选择英雄记录
-    player_select_hero : MapSelectHeroList[] = [];
+    player_select_hero: MapSelectHeroList[] = [];
     //玩家数量
-    player_count : number = 1;
+    player_count: number = 1;
 
 
     constructor() {
         super("MapChapter")
         print("[MapChapter]:constructor")
         for (let index = 0; index < this.player_count; index++) {
-            this.player_hero_available.push([57,102,22]);
+            this.player_hero_available.push([57, 102, 22]);
             this.player_select_hero.push({
-                hero_id : 57,
-                state : 0, //是否确认
+                hero_id: 57,
+                state: 0, //是否确认
             });
         }
     }
-    
+
     InitChapterMap() {
         print("InitChapterMap")
         let current_map = GetMapName();
@@ -57,7 +57,7 @@ export class MapChapter  extends UIEventRegisterClass {
         GameRules.MapChapter.OnCreatedCampMap();
 
         for (let [key, RowData] of pairs(NpcHeroesCustom)) {
-            if(RowData.Enable == 1){
+            if (RowData.Enable == 1) {
                 GameRules.MapChapter.hero_list[RowData.HeroID] = key;
             }
         }
@@ -92,7 +92,7 @@ export class MapChapter  extends UIEventRegisterClass {
             difficulty_max: 505, // 地图最高难度
             chapter_key: "z5", //地图编号 m1 m2 
         })
-        
+
     }
 
     /** 生成营地 */
@@ -141,7 +141,7 @@ export class MapChapter  extends UIEventRegisterClass {
                     select_map: this.MapIndex,
                     select_difficulty: this.GameDifficulty,
                     map_difficulty: this._map_list,
-                    level_difficulty : this.level_difficulty,
+                    level_difficulty: this.level_difficulty,
                 }
             }
         );
@@ -149,7 +149,7 @@ export class MapChapter  extends UIEventRegisterClass {
 
     //选择游戏难度
     SelectDifficulty(player_id: PlayerID, params: CGED["MapChapter"]["SelectDifficulty"]) {
-        if(this._game_select_phase == 0 && player_id == 0){
+        if (this._game_select_phase == 0 && player_id == 0) {
             this.GameDifficulty = params.difficulty as keyof typeof MapInfoDifficulty;
             this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
         }
@@ -166,12 +166,12 @@ export class MapChapter  extends UIEventRegisterClass {
 
     //确认难度
     SelectDifficultyAffirm(player_id: PlayerID, params: CGED["MapChapter"]["SelectDifficultyAffirm"]) {
-        if(this._game_select_phase == 0){
+        if (this._game_select_phase == 0) {
             this._game_select_phase = 1; //修改游戏进程
-            this.GetGameSelectPhase(-1 , {})
+            this.GetGameSelectPhase(-1, {})
             //发送选择英雄信息
             for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
-                GameRules.MapChapter.GetPlayerHeroList(index , {})
+                GameRules.MapChapter.GetPlayerHeroList(index, {})
             }
         }
     }
@@ -182,9 +182,9 @@ export class MapChapter  extends UIEventRegisterClass {
      * @param params 
      */
     ReturnSelectDifficulty(player_id: PlayerID, params: CGED["MapChapter"]["ReturnSelectDifficulty"]) {
-        if(this._game_select_phase == 1 && player_id == 0){
+        if (this._game_select_phase == 1 && player_id == 0) {
             this._game_select_phase = 0; //返回到选择难度
-            this.GetGameSelectPhase(-1 , {})
+            this.GetGameSelectPhase(-1, {})
             for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
                 //清空玩家选择状态
                 this.player_select_hero[index].state = 0;
@@ -202,7 +202,7 @@ export class MapChapter  extends UIEventRegisterClass {
     }
 
     //获取玩家可用英雄列表
-    GetPlayerHeroList(player_id: PlayerID, params: CGED["MapChapter"]["GetPlayerHeroList"]){
+    GetPlayerHeroList(player_id: PlayerID, params: CGED["MapChapter"]["GetPlayerHeroList"]) {
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "MapChapter_GetPlayerHeroList",
@@ -214,8 +214,8 @@ export class MapChapter  extends UIEventRegisterClass {
         );
     }
     //获取玩家已选英雄列表
-    GetPlayerSelectHeroList(player_id: PlayerID, params: CGED["MapChapter"]["GetPlayerSelectHeroList"]){
-        if(player_id == -1){
+    GetPlayerSelectHeroList(player_id: PlayerID, params: CGED["MapChapter"]["GetPlayerSelectHeroList"]) {
+        if (player_id == -1) {
             CustomGameEventManager.Send_ServerToAllClients(
                 "MapChapter_GetPlayerSelectHeroList",
                 {
@@ -238,8 +238,8 @@ export class MapChapter  extends UIEventRegisterClass {
     }
 
     //获取当前游戏流程
-    GetGameSelectPhase(player_id: PlayerID, params: CGED["MapChapter"]["GetGameSelectPhase"]){
-        if(player_id == -1){
+    GetGameSelectPhase(player_id: PlayerID, params: CGED["MapChapter"]["GetGameSelectPhase"]) {
+        if (player_id == -1) {
             CustomGameEventManager.Send_ServerToAllClients(
                 "MapChapter_GetGameSelectPhase",
                 {
@@ -263,43 +263,43 @@ export class MapChapter  extends UIEventRegisterClass {
 
     //选择英雄
     SelectHero(player_id: PlayerID, params: CGED["MapChapter"]["SelectHero"]) {
-        if(this._game_select_phase == 1){
-            if(this.player_select_hero[player_id].state == 0){
+        if (this._game_select_phase == 1) {
+            if (this.player_select_hero[player_id].state == 0) {
                 let hero_id = params.hero_id
                 this.player_select_hero[player_id].hero_id = hero_id;
-                GameRules.MapChapter.GetPlayerSelectHeroList(-1 , {})
+                GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
             }
         }
-        
+
     }
     //确认英雄
     SelectHeroAffirm(player_id: PlayerID, params: CGED["MapChapter"]["SelectHeroAffirm"]) {
-        if(this._game_select_phase == 1 && this.player_select_hero[player_id].state == 0){
+        if (this._game_select_phase == 1 && this.player_select_hero[player_id].state == 0) {
             this.player_select_hero[player_id].state = 1;
-            GameRules.MapChapter.GetPlayerSelectHeroList(-1 , {})
+            GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
         }
 
         for (const date of this.player_select_hero) {
             if (date.state != 1) {
-                return 
+                return
             }
         }
         //修改流程
         this._game_select_phase = 2;
-        this.GetGameSelectPhase(-1 , {})
+        this.GetGameSelectPhase(-1, {})
 
         let ChapterData = MapInfo[this.MapIndex];
-        
+
         for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
             let hname = GameRules.MapChapter.hero_list[this.player_select_hero[player_id].hero_id];
-            PlayerResource.ReplaceHeroWithNoTransfer(
+            PlayerResource.ReplaceHeroWith(
                 index,
                 hname,
                 0,
                 0
             );
         }
-        GameRules.MapChapter.GetPlayerSelectHeroList(-1 , {})
+        GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
         let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
         this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
             ChapterData.map_name,
@@ -312,7 +312,7 @@ export class MapChapter  extends UIEventRegisterClass {
     }
 
     //根据选择刷出地图
-    OnLoadChapterMap(map_index : keyof typeof MapInfo , difficulty :  keyof typeof MapInfoDifficulty) {
+    OnLoadChapterMap(map_index: keyof typeof MapInfo, difficulty: keyof typeof MapInfoDifficulty) {
         this.MapIndex = map_index;
         this.GameDifficulty = difficulty;
     }
@@ -332,7 +332,7 @@ export class MapChapter  extends UIEventRegisterClass {
             hHero.SetOrigin(vLocation);
         }
         this._game_select_phase = 3
-        this.GetGameSelectPhase(-1 , {})
+        this.GetGameSelectPhase(-1, {})
         //开始刷怪
         GameRules.Spawn.Init(ChapterData.map_centre_x, ChapterData.map_centre_y)
 
@@ -352,19 +352,36 @@ export class MapChapter  extends UIEventRegisterClass {
 
     }
 
-    
+
     //返回到营地
     ReturntoCamp() {
-        if(GameRules.Spawn._game_start == false){
+        let hDropItemList = FindUnitsInRadius(
+            DotaTeam.GOODGUYS,
+            Vector(0,0,0),
+            null,
+            9999,
+            UnitTargetTeam.FRIENDLY,
+            UnitTargetType.OTHER,
+            UnitTargetFlags.INVULNERABLE,
+            FindOrder.ANY,
+            false
+        )
+        for(let hItem of hDropItemList){
+            hItem.RemoveSelf()
+        }
+        // let unitlist = Entities.FindAllByClassname("npc_exp");
+        // print("unitlist", unitlist.length)
+        if (GameRules.Spawn._game_start == false) {
+
             this._game_select_phase = 0;
-            this.GetGameSelectPhase(-1 , {})
+            this.GetGameSelectPhase(-1, {})
             for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
                 this.player_select_hero[index].state = 0;
             }
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
             for (let hHero of HeroList.GetAllHeroes()) {
                 hHero.SetOrigin(vLocation)
-                PlayerResource.ReplaceHeroWithNoTransfer(
+                PlayerResource.ReplaceHeroWith(
                     hHero.GetPlayerOwnerID(),
                     "npc_dota_hero_wisp",
                     0,
@@ -387,6 +404,8 @@ export class MapChapter  extends UIEventRegisterClass {
             );
 
             GameRules.ResourceSystem.InitAllPlayer();
+
+
         }
     }
 
@@ -398,17 +417,17 @@ export class MapChapter  extends UIEventRegisterClass {
         if (cmd == "-di") {
             let map_index = (args[0] ?? "m1") as keyof typeof MapInfo;
             let difficulty = (args[0] ?? "101") as keyof typeof MapInfoDifficulty;
-            this.OnLoadChapterMap(map_index , difficulty)
+            this.OnLoadChapterMap(map_index, difficulty)
         }
         if (cmd == "-sh") {
-            let hero_index = args[0] ?? "0" ;
-            this.SelectHero(player_id , { hero_id : parseInt(hero_index)})
+            let hero_index = args[0] ?? "0";
+            this.SelectHero(player_id, { hero_id: parseInt(hero_index) })
         }
-        if(cmd == "-mapinfo"){
-            print("GameRules.Spawn._game_start" , GameRules.Spawn._game_start)
-            print("this._game_select_phase" , this._game_select_phase)
-            this.ReturnSelectDifficulty(player_id,{})
+        if (cmd == "-mapinfo") {
+            print("GameRules.Spawn._game_start", GameRules.Spawn._game_start)
+            print("this._game_select_phase", this._game_select_phase)
+            this.ReturnSelectDifficulty(player_id, {})
         }
-        
+
     }
 }

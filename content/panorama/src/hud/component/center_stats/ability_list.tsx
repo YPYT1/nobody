@@ -20,6 +20,7 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
     const [isPassive, setIsPassive] = useState(false);
     const [Charges, setCharges] = useState(0);
     const [abilityname, setAbilityname] = useState("")
+
     const UpdateLocalPlayer = useCallback(() => {
         const queryUnit = Players.GetLocalPlayerPortraitUnit();
         const m_Ability = Entities.GetAbility(queryUnit, order);
@@ -113,7 +114,17 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
             className={`AbilityButtonItem ${!abilityShow ? " hide" : ""}`}
             ref={e => refPanel.current = e}
         >
-            <Button className="AbilityReselect" />
+            <Button
+                className="AbilityReselect"
+                onactivate={() => {
+                    GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
+                        event_name: "CreatArmssSelectData",
+                        params: {
+                            index: order
+                        }
+                    })
+                }}
+            />
             <Panel className="AbilityContainer">
                 <Panel className='AbilityCharges' hittest={false} hittestchildren={false}>
                     {/* <Panel className='AbilityChargesBorder'></Panel> */}
@@ -194,9 +205,17 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
 
 export const AbilityList = () => {
 
+    useGameEvent("NewArmsEvolution_GetArmssSelectData", event => {
+        let data = event.data.Data;
+        $.Msg(["data", data])
+    }, [])
+
     return (
 
-        <Panel id='AbilityList' >
+        <Panel
+            id='AbilityList'
+
+        >
             <AbilityButtonItem order={0} is_main={true} />
             <AbilityButtonItem order={1} is_main={true} />
             <AbilityButtonItem order={2} is_main={true} />
