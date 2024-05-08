@@ -120,7 +120,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             //如果为第一次刷新则改为特定刷新
             if(this.PlayerFirstState[player_id]){
                 this.PlayerFirstState[player_id] = false;
-                for (let index = 1; index <= amount; index++) {
+                for (let i = 0; i < amount; i++) {
                     amount_count ++;
                     if(amount_count > amount_max ){
                         break;
@@ -234,14 +234,11 @@ export class NewArmsEvolution extends UIEventRegisterClass {
 
             GameRules.NewArmsEvolution.ReplaceAbility( ability_name , Index , MyHero )
             //技能点减少
-            // this.EvolutionPoint[player_id] --;
             this.AddEvolutionPoint(player_id , -1)
             PlayerSelectDataInfo.is_select = 0;
             PlayerSelectDataInfo.index = -1;
             PlayerSelectDataInfo.arms_list = {};
-
             this.GetArmssSelectData(player_id, {});
-
         } else {
             // GameRules.Cmsg();
             print("技能点不足")
@@ -265,7 +262,6 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             }
         );
     }
-
     /**
      * 获取物品信息初始化信息
      */

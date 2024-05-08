@@ -290,15 +290,6 @@ export class MapChapter extends UIEventRegisterClass {
 
         let ChapterData = MapInfo[this.MapIndex];
 
-        for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
-            let hname = GameRules.MapChapter.hero_list[this.player_select_hero[player_id].hero_id];
-            PlayerResource.ReplaceHeroWith(
-                index,
-                hname,
-                0,
-                0
-            );
-        }
         GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
         let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
         this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
@@ -330,7 +321,19 @@ export class MapChapter extends UIEventRegisterClass {
         let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
         for (let hHero of HeroList.GetAllHeroes()) {
             hHero.SetOrigin(vLocation);
+            hHero.RemoveSelf();
         }
+
+        for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
+            let hname = GameRules.MapChapter.hero_list[this.player_select_hero[index].hero_id];
+            PlayerResource.ReplaceHeroWith(
+                index,
+                hname,
+                0,
+                0
+            );
+        }
+
         this._game_select_phase = 3
         this.GetGameSelectPhase(-1, {})
         //开始刷怪
@@ -371,7 +374,7 @@ export class MapChapter extends UIEventRegisterClass {
         }
         // let unitlist = Entities.FindAllByClassname("npc_exp");
         // print("unitlist", unitlist.length)
-        if (GameRules.Spawn._game_start == false) {
+        if (GameRules.Spawn._game_start == false && this._game_select_phase == 999) {
 
             this._game_select_phase = 0;
             this.GetGameSelectPhase(-1, {})
@@ -381,6 +384,9 @@ export class MapChapter extends UIEventRegisterClass {
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
             for (let hHero of HeroList.GetAllHeroes()) {
                 hHero.SetOrigin(vLocation)
+                
+                hHero.RemoveSelf();
+
                 PlayerResource.ReplaceHeroWith(
                     hHero.GetPlayerOwnerID(),
                     "npc_dota_hero_wisp",
