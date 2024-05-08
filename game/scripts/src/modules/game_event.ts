@@ -14,6 +14,7 @@ import { CustomMechanics } from './ingame/hero_extend/custom_mechanics';
 import { Spawn } from './ingame/spawns/spawn';
 import { CMsg } from './ingame/spawns/cmsg';
 import { NewArmsEvolution } from './ingame/hero_extend/new_arms_evolution';
+import { RuneSystem } from './ingame/hero_extend/rune_system';
 
 declare global {
 
@@ -36,6 +37,7 @@ declare global {
 
         SummonedSystem: SummonedSystem;
         CustomMechanics:CustomMechanics;
+        RuneSystem : RuneSystem;
     }
 }
 
@@ -73,6 +75,7 @@ export class GameEvent {
             GameRules.ArmsCombo = new ArmsCombo();
             GameRules.SummonedSystem = new SummonedSystem();
             GameRules.CMsg = new CMsg();
+            GameRules.RuneSystem = new RuneSystem();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
@@ -112,6 +115,9 @@ export class GameEvent {
             GameRules.CustomAttribute.InitHeroAttribute(hUnit)
             //初始化可选技能
             GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id)
+            //初始化可用符文
+            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id)
+            
 
             let vect =  Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
             hUnit.SetOrigin(vect)

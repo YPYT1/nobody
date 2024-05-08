@@ -116,7 +116,7 @@ export class Spawn extends UIEventRegisterClass {
     _map_boss_unit : CDOTA_BaseNPC;
 
     _map_boss_refresh : boolean = false;
-
+    
     _game_start : boolean = false;
 
     constructor() {
@@ -201,7 +201,7 @@ export class Spawn extends UIEventRegisterClass {
     
     OnSpawnLoadCoord() {
         for (let index = 0; index < 200; index++) {
-            let _Vector = Vector(this._Vector.x + RandomInt(300, 3700), this._Vector.y, 128);
+            let _Vector = Vector(this._Vector.x + RandomInt(3300, 3800), this._Vector.y, 128);
             let RandomQAngle = 0;
             if (this._map_coord.length % 4 == 0) {
                 RandomQAngle = RandomInt(0, 89);
@@ -274,7 +274,7 @@ export class Spawn extends UIEventRegisterClass {
                     if (GameRules.Spawn._spawn_count < _unit_limit) {
                         let _Vector = Vector()
 
-                        if (5 == 5) {
+                        if (5 == round_index) {
                             //怪潮模式    
                             //轮到第几个玩家身边刷怪
                             let h_i = GameRules.Spawn._spawn_num_count % Heros.length;
@@ -282,7 +282,7 @@ export class Spawn extends UIEventRegisterClass {
                             //活着
                             if (player_hero.IsAlive()) {
                                 let h_Vector = player_hero.GetOrigin();
-                                let new_Vector = Vector(h_Vector.x + RandomInt(1100, 1300), h_Vector.y, 128);
+                                let new_Vector = Vector(h_Vector.x + RandomInt(3000, 3500), h_Vector.y, 128);
                                 let target_Vector = Vector();
                                 let GridNavBool = false;
                                 let QAngleRandomInt = RandomInt(0, 359);
@@ -403,7 +403,7 @@ export class Spawn extends UIEventRegisterClass {
     }
     //刷新小怪
     CreateMonster(bs_spawn_name: string, _Vector: Vector, round_index: number, is_mine_spawn: boolean = false, is_test: boolean = false): CDOTA_BaseNPC {
-        print("_Vector :" , _Vector )
+        // print("_Vector :" , _Vector )
         let unit = GameRules.Spawn.CreepNormalCreate(bs_spawn_name, _Vector);
         //属性修改
         this.MonsterAmend(unit, "normal", 1, round_index);
@@ -695,7 +695,7 @@ export class Spawn extends UIEventRegisterClass {
     /**
      * debug 命令
      */
-    DebugChat(cmd: string, args: string[], player_id: PlayerID) {
+    Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-ss") {
             let round = parseInt(args[0])
             GameRules.Spawn.StartSpawn(round)
@@ -751,11 +751,9 @@ export class Spawn extends UIEventRegisterClass {
     MapUnitKilledCalculate(killer: CDOTA_BaseNPC, hattacker: CDOTA_BaseNPC) {
         let player_id = hattacker.GetPlayerOwnerID();
         let unit_label = killer.GetUnitLabel();
-        print("unit_label  :"  , unit_label)
         //普通怪处理
         if (unit_label == "creatur_normal") {
             //击杀普通怪数量减少
-            print("GameRules.Spawn._spawn_count  :"  , GameRules.Spawn._spawn_count)
             GameRules.Spawn._spawn_count--;
         } 
         //计数器 用于计算每个玩家击杀怪物数量

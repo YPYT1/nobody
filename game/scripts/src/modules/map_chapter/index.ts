@@ -407,6 +407,8 @@ export class MapChapter  extends UIEventRegisterClass {
         if(cmd == "-mapinfo"){
             print("GameRules.Spawn._game_start" , GameRules.Spawn._game_start)
             print("this._game_select_phase" , this._game_select_phase)
+            this.ReturnSelectDifficulty(player_id,{})
         }
+        
     }
 }

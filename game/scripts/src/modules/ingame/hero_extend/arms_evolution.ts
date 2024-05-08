@@ -44,7 +44,8 @@ export class ArmsEvolution extends UIEventRegisterClass {
             this.PlayerArmsSelectMax.push(999);
             this.PlayerSelectData.push({
                 "arms_list" : {},
-                "is_select" :  0
+                "is_select" :  0 ,
+                "index" : 0,
             });
             this.EvolutionPoint.push(0);
             this.ConsumeEvolutionPoint.push(0);
@@ -128,7 +129,6 @@ export class ArmsEvolution extends UIEventRegisterClass {
                 }
                 ret_data[index] = { 
                     key: arms_key, 
-                    lv: arms_level,  
                 };
                 shop_wp_list.push(arms_key);
             }
@@ -285,8 +285,6 @@ export class ArmsEvolution extends UIEventRegisterClass {
         //商店组成 1未刷新 2未挑战
         let data : PlayerUpgradeSelectRetData = {
             Data: this.PlayerSelectData[player_id] , //列表
-            EvolutionPoint : this.EvolutionPoint[player_id], //技能点
-            ConsumeEvolutionPoint : this.ConsumeEvolutionPoint[player_id] //已使用的技能点
         };
         DeepPrintTable(data);
         DeepPrintTable(this.PlayerUpgradePool)
@@ -351,7 +349,7 @@ export class ArmsEvolution extends UIEventRegisterClass {
     
 
 
-    __Debug(cmd: string, args: string[], player_id: PlayerID) {
+    Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-sevo") {
             DeepPrintTable(this.EvolutionTable)
         }

@@ -4,10 +4,28 @@ declare interface CustomGameEventDeclarations {
     TreasureSystem_GetShopsData: {
         data: PlayerUpgradeSelectRetData;
     };
-
+    //技能选择功能
+    NewArmsEvolution_GetArmssSelectData : {
+        data: PlayerUpgradeSelectRetData;
+    }
+    //获取技能点
+    NewArmsEvolution_GetEvolutionPoint : {
+        data : {
+            EvolutionPoint : number //技能点
+        }
+    }
+    //选择符文数据
     RuneSystem_GetRuneSelectData: {
         data: PlayerRuneSelectRetData;
     };
+    //符文数据
+    RuneSystem_GetRuneData : {
+        data :  PlayerRuneDataProps 
+    }
+    //获得随机符文的信息 (用于播放动画) 
+    RuneSystem_GetRuneRandomData : {
+        data : string 
+    }
     /**
      * 选择地图初始化数据
      */

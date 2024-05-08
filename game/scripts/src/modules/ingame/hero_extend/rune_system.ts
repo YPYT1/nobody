@@ -22,7 +22,7 @@ export class RuneSystem extends UIEventRegisterClass {
     PointCount : number[] = [] //点数
 
     ConsumePointCount : number[] = [] //已使用的点数
-    //高级符文列表结果列表'
+    //高级符文列表结果列表
     AdvRuneUnlockConfig : {
         [key: string]: { //解锁条件
            key : string, //所需符文
@@ -115,7 +115,6 @@ export class RuneSystem extends UIEventRegisterClass {
             this.PlayerSelectData[player_id].rune_list = ret_data;
             //修改为已刷新
             this.PlayerSelectData[player_id].is_select = 1;
-            
         }
         if(GameRules.PUBLIC_CONST.IS_AUTO_SELECT_RUNE == 1 && this.PointCount[player_id] > 0){
             //自动选第一个
@@ -209,7 +208,7 @@ export class RuneSystem extends UIEventRegisterClass {
 
 
     /**
-     * 获取物品信息初始化信息
+     * 获取符文点数等
      */
     GetRuneSelectData(player_id: PlayerID, params: CGED["RuneSystem"]["GetRuneSelectData"]) {
         //商店组成 1未刷新 2未挑战
@@ -226,6 +225,32 @@ export class RuneSystem extends UIEventRegisterClass {
             }
         );
     }
+
+    /**
+     * 获取玩家符文数据
+     */
+    GetRuneData(player_id: PlayerID, params: CGED["RuneSystem"]["GetRuneData"]) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "RuneSystem_GetRuneData",
+            {
+                data : this.PlayerRuneData[player_id]
+            }
+        );
+    }
+
+    /**
+     * 获得随机符文的信息
+     */
+    GetRuneRandomData(player_id: PlayerID , rune_key : string) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "RuneSystem_GetRuneRandomData",
+            {
+                data : rune_key
+            }
+        );
+    }
     /**
      * 增加点数
      */
@@ -237,6 +262,7 @@ export class RuneSystem extends UIEventRegisterClass {
 
     /** 初始化玩家的符文所有数据 */
     InitPlayerUpgradeStatus(player_id: PlayerID) {
+
         this.PlayerRuneData[player_id] = {};
 
         this.PlayerSelectData[player_id] = {
@@ -244,6 +270,7 @@ export class RuneSystem extends UIEventRegisterClass {
             "is_select" :  0
         };
         this.PointCount[player_id] = 0;
+
         this.ConsumePointCount[player_id] = 0;
 
         this.PlayerUpgradePool[player_id] = {
@@ -254,6 +281,80 @@ export class RuneSystem extends UIEventRegisterClass {
             this.PlayerUpgradePool[player_id].key.push(key);
             this.PlayerUpgradePool[player_id].pro.push(RowData.Weight);
         }
+    }
+
+
+    /**
+     * 随机获得一个符文
+     */
+    RuneRandom(player_id: PlayerID) {
+        //记录获得的次数
+        this.ConsumePointCount[player_id] ++;   
+
+        //循环计数器
+        let amount_count = 0;
+        let amount_max = 50;
+        let rune_key = "";
+        //返回数据
+        let PlayerRuneData = this.PlayerRuneData[player_id];
+        for (let index = 1; index <= 1; index++) {
+            amount_count ++;
+            if(amount_count > amount_max ){
+                print("已经没有可获得的符文了....")
+                return
+            }
+            let rune_level = 0;
+            let key_list = this.PlayerUpgradePool[player_id].key;
+            let pro_list = this.PlayerUpgradePool[player_id].pro;
+            rune_key = key_list[GetCommonProbability(pro_list)];
+            let RuneSystem = RuneSystemJson[rune_key as keyof typeof RuneSystemJson];
+            //重复物品跳过
+            //获取当前等级
+            if(PlayerRuneData.hasOwnProperty(rune_key)){
+                rune_level = PlayerRuneData[rune_key];
+            }
+            // 超过等级跳过本次循环
+            if (rune_level >= RuneSystem.CountMax) {
+                //跳过本次 
+                index--;
+                continue;
+            }
+            print("rune_key :" ,rune_key )  
+        }
+
+        // let RuneData = RuneSystemJson[rune_key as keyof typeof RuneSystemJson];
+        // let RuneCount = 0; //符文数量
+        //初始化技能
+        if(this.PlayerRuneData[player_id].hasOwnProperty(rune_key)){
+            this.PlayerRuneData[player_id][rune_key] += 1;
+            // RuneCount = this.PlayerRuneData[player_id][rune_key];
+        }else{
+            this.PlayerRuneData[player_id][rune_key] = 1
+        }
+        print("获得符文 : " , rune_key)
+        //解锁其他技能 并移除自身可选
+        for (const key in this.AdvRuneUnlockConfig) {
+            const unconfig = this.AdvRuneUnlockConfig[key];
+            let unlock = true;
+            for (const iterator of unconfig) {
+                if(this.PlayerRuneData[player_id].hasOwnProperty(iterator.key)){
+                    let playerrunecount = this.PlayerRuneData[player_id][iterator.key]
+                    if(playerrunecount < iterator.val){
+                        unlock = false;
+                        break
+                    }
+                }else{
+                    break
+                }
+            }
+            let RuneWeight = RuneSystemJson[rune_key as keyof typeof RuneSystemJson].Weight;
+            //如果存在可以解锁的符文 则调用解锁方法
+            if(unlock == true){
+                this.PassRuneKeySetWeight(player_id , key , RuneWeight);
+            }
+        }
+        this.GetRuneRandomData(player_id , rune_key)
+        this.GetRuneData(player_id, {});
     }
 
     /**
@@ -271,12 +372,9 @@ export class RuneSystem extends UIEventRegisterClass {
     ArmsRefund(player_id: PlayerID, ability_name: string) {
 
     }
-
-
-    
  
 
-    __Debug(cmd: string, args: string[], player_id: PlayerID) {
+    Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-sevo") {
         }
         if (cmd == "-rune_getup" || cmd == "-rg") {
@@ -297,6 +395,25 @@ export class RuneSystem extends UIEventRegisterClass {
         }
         if(cmd == "-rune_init" ){
             this.InitPlayerUpgradeStatus(player_id)
+        }
+        if(cmd == "-RR"){
+            this.RuneRandom(player_id)
+        }
+
+        if(cmd == "-wd"){
+            print("-wudi!!!!!!!!!!!!!!")
+            let hero = PlayerResource.GetSelectedHeroEntity(player_id);
+            GameRules.CustomAttribute.ModifyAttribute(hero , {
+                "AttackDamage" : {
+                    "Base" : 10000,
+                },
+                "AttackSpeed" : {
+                    "Base" : 1000
+                },
+                "HealthPoints" : {
+                    "Base" : 100000,
+                }
+            })
         }
     }
 }

@@ -55,7 +55,6 @@ export class ItemEvolution extends UIEventRegisterClass {
         for (let index = 0; index < 6; index++) {
             let new_item = this.GetNewItem(GameRules.PUBLIC_CONST.HREO_INIT_ITEM_NAME);
             hUnit.AddItem(new_item);
-            
         }
     }
 

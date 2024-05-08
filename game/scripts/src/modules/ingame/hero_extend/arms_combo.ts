@@ -130,7 +130,7 @@ export class ArmsCombo {
         hUnit.RemoveModifierByName(mdf_name)
     }
 
-    DebugChat(cmd: string, args: string[], player_id: PlayerID) {
+    Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-combo") {
             DeepPrintTable(this.PlayerComboState[player_id])
         }

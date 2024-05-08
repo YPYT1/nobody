@@ -12,7 +12,7 @@ interface PlayerUpgradeStatusProps {
 
 
 interface PlayerRuneDataProps {
-    [key: string]: number,
+    [key: string]: number, // key 符文名字 val 符文等级
 }
 
 /**
@@ -20,7 +20,8 @@ interface PlayerRuneDataProps {
  */
 declare interface PlayerUpgradeSelectServerData {
     arms_list: { [index: number ]: PlayerUpgradeSelectServer; },  //可选技能列表
-    is_select : number , //是否可以选择 用于是否显示
+    is_select : number , //是否已随机选择情况
+    index : number , //第几个技能正在发生选择
 }
 
 
@@ -28,7 +29,6 @@ declare interface PlayerUpgradeSelectServerData {
  * PlayerUpgradeSelectServer
  */
 declare interface PlayerUpgradeSelectServer {
-    lv : number , //技能当前等级
     key: string;  //技能下标
 }
 
@@ -37,8 +37,6 @@ declare interface PlayerUpgradeSelectServer {
  */
 declare interface PlayerUpgradeSelectRetData {
     Data: PlayerUpgradeSelectServerData ; //可选列表
-    EvolutionPoint : number //技能点
-    ConsumeEvolutionPoint : number //已使用的技能点
 }
 
 
