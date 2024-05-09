@@ -55,6 +55,9 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     * @param player_id 
     */
    InitPlayerUpgradeStatus(player_id: PlayerID) {
+
+        //重置生命
+        GameRules.Spawn.player_life_list[player_id] = 2
         this.PlayerUpgradePool[player_id] = {};
         this.EvolutionPoint[player_id] = 0;
         this.AddEvolutionPoint(player_id , 1)
