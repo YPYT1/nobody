@@ -369,11 +369,11 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("ProcessCreateBoss", () => {
             GameRules.Spawn.CreateBoss();
             return null;
-        }, 30);
+        }, 900);
         GameRules.GetGameModeEntity().SetContextThink("GameOverTime", () => {
             GameRules.Spawn.StopAllSpawnAndMonster();
             return null;
-        }, 60);
+        }, 960);
     }
     /**
      * 获取玩家怪物数量
@@ -390,16 +390,19 @@ export class Spawn extends UIEventRegisterClass {
     // }
     //刷新游戏boss
     CreateBoss(): CDOTA_BaseNPC {
-        let unit = GameRules.Spawn.CreepNormalCreate("npc_creature_boss_1", this.StageBossVector);
-        this.MonsterAmend(unit, "boss", 1, 1);
-        this._map_boss_unit = unit;
-        this._map_boss_refresh = true;
-        GameRules.CMsg.SendCommonMsgToPlayer(
-            -1 as PlayerID,
-            "boss刷新 :",
-            {}
-        );
-        return unit;
+        if(this._map_boss_refresh == false){
+            let unit = GameRules.Spawn.CreepNormalCreate("npc_creature_boss_1", this.StageBossVector);
+            this.MonsterAmend(unit, "boss", 1, 1);
+            this._map_boss_unit = unit;
+            this._map_boss_refresh = true;
+            GameRules.CMsg.SendCommonMsgToPlayer(
+                -1 as PlayerID,
+                "boss刷新 :",
+                {}
+            );
+            GameRules.GetGameModeEntity().StopThink("ProcessCreateBoss");
+            return unit;
+        }
     }
     //刷新小怪
     CreateMonster(bs_spawn_name: string, _Vector: Vector, round_index: number, is_mine_spawn: boolean = false, is_test: boolean = false): CDOTA_BaseNPC {
@@ -661,16 +664,20 @@ export class Spawn extends UIEventRegisterClass {
     }
     //游戏停止刷新单位
     GameStop() {
-        //停止收益
-        // GameRules.InvestSystem.StopEarnings();
+            //停止收益
+            // GameRules.InvestSystem.StopEarnings();
         // this.StopAllSpawnAndMonster(true);
     }
     
     //通过游戏胜利 或失败 清空所有怪物
-    StopAllSpawnAndMonster(GameOver: Boolean = false, iskillboss: Boolean = false) {
+    StopAllSpawnAndMonster(GameWin: Boolean = false, iskillboss: Boolean = false) {
         GameRules.GetGameModeEntity().SetContextThink("StopAllSpawnAndMonster", () => {
             GameRules.Spawn._game_start = false;
+
             GameRules.MapChapter._game_select_phase = 999;
+            //移除物品
+            GameRules.ResourceSystem.RemoveAllDropItem()
+
             GameRules.MapChapter.GetGameSelectPhase(-1, {})
             //游戏结束
             GameRules.GetGameModeEntity().StopThink("MapCommonSpawnTimers");
@@ -707,6 +714,12 @@ export class Spawn extends UIEventRegisterClass {
         }
         if(cmd == "-sms"){
             GameRules.Spawn.StopMonsterSpawn()
+        }
+        if(cmd == "-boss"){
+            GameRules.Spawn.CreateBoss();
+        }
+        if(cmd == "-win"){
+            GameRules.Spawn.StopAllSpawnAndMonster(true)
         }
     }
 
@@ -841,6 +854,7 @@ export class Spawn extends UIEventRegisterClass {
         );
         //击杀boss奖励
         this._map_boss_unit = null;
+        this._map_boss_refresh = false;
         GameRules.Spawn.StopAllSpawnAndMonster()
     }
 
