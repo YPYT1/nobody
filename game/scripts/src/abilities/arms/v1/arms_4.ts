@@ -51,6 +51,15 @@ export class arms_4 extends BaseArmsAbility {
 
     OnProjectileHit(target: CDOTA_BaseNPC, location: Vector): boolean | void {
         if (target) {
+            ApplyCustomDamage({
+                victim: target,
+                attacker: this.caster,
+                damage: this.ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: this.element_type
+            });
+            
             target.AddNewModifier(this.caster, this, "modifier_arms_4_dot", {
                 dot_damage: this.ability_damage,
                 dot_interval: 1,

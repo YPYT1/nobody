@@ -5,7 +5,42 @@
     min-height: @AbilitySize;
     flow-children: right;
     vertical-align: bottom;
-    background-color: #2929299d;
+    background-color: #0a52489d;
+
+    &.HasPoint .AbilityButtonItem .AbilityReselect {
+        visibility: visible;
+    }
+
+    &.IsSelecting {
+
+        &.HasPoint {
+            .AbilityReselect {
+                visibility: collapse;
+            }
+        }
+
+        // .AbilityReselect {
+        //     visibility: collapse;
+        // }
+
+        &.SetIndex_5 .Ability5,
+        &.SetIndex_4 .Ability4,
+        &.SetIndex_3 .Ability3,
+        &.SetIndex_2 .Ability2,
+        &.SetIndex_1 .Ability1,
+        &.SetIndex_0 .Ability0 {
+
+            animation-name: flash;
+            animation-duration: 0.4s ;
+            animation-iteration-count: infinite;
+
+            // .AbilityReselect {
+            //     visibility: visible;
+            // }
+
+        }
+    }
+
 }
 
 .AbilityButtonItem {
@@ -20,10 +55,16 @@
     .AbilityReselect {
         width: 100%;
         height: 24px;
-        background-color: #000000;
+        background-color: #cfa122;
+        border-top: 1px solid #000000;
+        visibility: collapse;
+
+        animation-name: flash;
+        animation-duration: 0.8s ;
+        animation-iteration-count: infinite;
 
         &:hover {
-            background-color: #999999;
+            background-color: #ffe8a8;
         }
     }
 
@@ -34,8 +75,12 @@
     }
 
     &.no_learn {
-        saturation: 0.2;
-        brightness: 0.2;
+
+        .AbilityContainer {
+            saturation: 0.2;
+            brightness: 0.2;
+        }
+
         // wash-color: #414141;
     }
 

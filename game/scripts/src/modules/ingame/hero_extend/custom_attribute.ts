@@ -172,6 +172,8 @@ export class CustomAttribute {
      */
     UpdateAttributeInGame(hUnit: CDOTA_BaseNPC) {
         // print("UpdateAttributeInGame")
+        print("hUnit", hUnit, hUnit.IsNull())
+        if (hUnit == null || hUnit.IsNull()) { return }
         hUnit.last_attribute_update = GameRules.GetDOTATime(false, false) + this.update_delay
         let buff = hUnit.FindModifierByName("modifier_public_attribute");
         if (buff) { buff.ForceRefresh(); }

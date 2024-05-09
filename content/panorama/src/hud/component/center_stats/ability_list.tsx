@@ -111,7 +111,7 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
 
     return (
         <Panel
-            className={`AbilityButtonItem ${!abilityShow ? " hide" : ""}`}
+            className={`AbilityButtonItem Ability${order} ${!abilityShow ? " hide" : ""}`}
             ref={e => refPanel.current = e}
         >
             <Button
@@ -205,16 +205,32 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
 
 export const AbilityList = () => {
 
+    const [HasPoint, setHasPoint] = useState(false)
+    const [SelectIndex, setSelectIndex] = useState(-1);
+    const [IsSelecting, setIsSelecting] = useState(false);
+
+    useGameEvent("NewArmsEvolution_GetEvolutionPoint", event => {
+        let data = event.data;
+        setHasPoint(data.EvolutionPoint > 0);
+    }, [])
+
     useGameEvent("NewArmsEvolution_GetArmssSelectData", event => {
         let data = event.data.Data;
-        $.Msg(["data", data])
+        setSelectIndex(data.index);
+        setIsSelecting(data.is_select == 1)
     }, [])
 
     return (
 
         <Panel
             id='AbilityList'
-
+            className={`SetIndex_${SelectIndex} ${HasPoint ? "HasPoint" : ""} ${IsSelecting ? "IsSelecting" : ""}`}
+            onload={(e) => {
+                GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
+                    event_name: "GetEvolutionPoint",
+                    params: {}
+                })
+            }}
         >
             <AbilityButtonItem order={0} is_main={true} />
             <AbilityButtonItem order={1} is_main={true} />

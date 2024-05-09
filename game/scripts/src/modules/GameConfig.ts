@@ -105,7 +105,30 @@ export class GameConfig {
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.INTELLIGENCE_MANA, 0);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.INTELLIGENCE_MANA_REGEN, 0.00001);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.INTELLIGENCE_MAGIC_RESIST, 0);
-        
+
         gameEntity.SetForcedHUDSkin("aghanims_labyrinth_2021");
+
+        const exp_level_list = GetHeroLevelTable();
+        gameEntity.SetUseCustomHeroLevels(true);
+        gameEntity.SetCustomXPRequiredToReachNextLevel(exp_level_list)
     }
+}
+
+
+function GetHeroLevelTable(max_level: number = 80) {
+    let hero_xp_table: { [index: number]: number } = {};
+    let param = { LEVEL: 1 };
+    for (let i = 0; i < 80; i++) {
+        let xp = 0;
+        if (i > 0 && i < max_level) {
+            param.LEVEL = i;
+            xp = eval(GameRules.PUBLIC_CONST.EXP_EQUATION, param) + hero_xp_table[i - 1];
+        } else if (i == 0) {
+            xp = 0;
+        } else {
+            return hero_xp_table;
+        }
+        hero_xp_table[i] = xp;
+    }
+    return hero_xp_table;
 }

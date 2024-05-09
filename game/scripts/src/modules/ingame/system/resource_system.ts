@@ -105,15 +105,21 @@ export class ResourceSystem extends UIEventRegisterClass {
         for (let [resource, amount] of pairs(resource_input)) {
             if (bFixed == false) {
                 if (amount > 0) {
-                    // DeepPrintTable(this.player_acquisition_rate)
-                    // print("amount", amount, "resource", resource, "player_id", player_id)
-                    // DeepPrintTable(this.player_acquisition_rate[player_id])
                     amount = amount * this.player_acquisition_rate[player_id][resource] * 0.01
                 } else {
                     amount = amount * this.player_cost_rate[player_id][resource] * 0.01
                 }
             }
             this.player_resource[player_id][resource] += math.ceil(amount);
+            if (resource == "SingleExp") {
+                // 增加个人英雄经验
+                this.AddExperience(player_id, math.ceil(amount))
+            } else if (resource == "TeamExp") {
+                // 团队经验
+                for (let hHero of HeroList.GetAllHeroes()) {
+                    this.AddExperience(hHero.GetPlayerID(), math.ceil(amount))
+                }
+            }
         }
 
         let update_status = GameRules.GetDOTATime(false, false) > this.last_updatetime[player_id];
@@ -129,6 +135,11 @@ export class ResourceSystem extends UIEventRegisterClass {
         }
 
         return ret
+    }
+
+    AddExperience(player_id: PlayerID, base_exp: number) {
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        hHero.AddExperience(base_exp, ModifyXpReason.CREEP_KILL, false, false)
     }
 
     SendPlayerResource(player_id: PlayerID) {
@@ -178,6 +189,22 @@ export class ResourceSystem extends UIEventRegisterClass {
         exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_exp", {})
     }
 
+    RemoveAllDropItem() {
+        let hDropItemList = FindUnitsInRadius(
+            DotaTeam.GOODGUYS,
+            Vector(0, 0, 0),
+            null,
+            9999,
+            UnitTargetTeam.FRIENDLY,
+            UnitTargetType.OTHER,
+            UnitTargetFlags.INVULNERABLE,
+            FindOrder.ANY,
+            false
+        )
+        for (let hItem of hDropItemList) {
+            UTIL_Remove(hItem)
+        }
+    }
     GetPlayerResource(player_id: PlayerID) {
         this.SendPlayerResource(player_id)
     }

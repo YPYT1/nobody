@@ -33,11 +33,11 @@ declare global {
         ItemArmsSystem: ItemArmsSystem;
         Spawn: Spawn;
         ArmsCombo: ArmsCombo;
-        CMsg : CMsg;
+        CMsg: CMsg;
 
         SummonedSystem: SummonedSystem;
-        CustomMechanics:CustomMechanics;
-        RuneSystem : RuneSystem;
+        CustomMechanics: CustomMechanics;
+        RuneSystem: RuneSystem;
     }
 }
 
@@ -48,11 +48,10 @@ export class GameEvent {
         ListenToGameEvent("entity_killed", event => this.OnEntityKilled(event), this);
         ListenToGameEvent("game_rules_state_change", event => this.OnGameRulesStateChange(), this);
         ListenToGameEvent("dota_on_hero_finish_spawn", event => this.OnEntityDotaOnHeroFinishSpawn(event), this);
-        // ListenToGameEvent("dota_player_gained_level", this.OnEntityDotaPlayerGainedLevel);
         ListenToGameEvent("player_disconnect", event => this.OnPlayerDisconnect(event), this)
         ListenToGameEvent("player_connect", event => this.OnPlayerConnect(event), this)
         ListenToGameEvent("player_connect_full", event => this.OnPlayerConnectFull(event), this)
-
+        ListenToGameEvent("dota_player_gained_level", event => this.OnPlayerGainedLevel(event), this)
     }
 
     OnGameRulesStateChange() {
@@ -91,7 +90,7 @@ export class GameEvent {
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段
 
         } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段
-            
+
         } else if (State_Get == GameState.POST_GAME) { //推送结果阶段
 
         } else if (State_Get == GameState.DISCONNECT) { //断开阶段
@@ -117,9 +116,9 @@ export class GameEvent {
             GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id)
             //初始化可用符文
             GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id)
-            
 
-            let vect =  Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
+
+            let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
             hUnit.SetOrigin(vect)
             // 刷新完成之后发送至前端
         }
@@ -138,5 +137,10 @@ export class GameEvent {
     OnPlayerConnectFull(event: GameEventProvidedProperties & PlayerConnectFullEvent) {
         print("[OnPlayerDisconnect Full]");
         DeepPrintTable(event)
+    }
+
+    OnPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
+        // DeepPrintTable(event)
+        GameRules.NewArmsEvolution.AddEvolutionPoint(event.player_id, 1)
     }
 }

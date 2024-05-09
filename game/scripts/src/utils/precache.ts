@@ -28,6 +28,8 @@ export default function Precache(context: CScriptPrecacheContext) {
             'npc_dota_hero_omniknight',
             'npc_dota_hero_abaddon',
 
+            'npc_dota_hero_sniper',
+
         ],
         context
     );

@@ -276,6 +276,7 @@ export class BaseArmsModifier extends BaseModifier {
     }
 
     C_OnRemovedBefore() {
+        if(this.caster.IsNull()){ return }
         GameRules.CustomAttribute.DelAttributeInKey(this.caster, this.item_key);
         this.C_UnRegisterOnKilled();
         this.C_OnRemoved();
