@@ -319,12 +319,10 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
         let ChapterData = MapInfo[this.MapIndex];
         let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
-        for (let hHero of HeroList.GetAllHeroes()) {
-            hHero.SetOrigin(vLocation);
-            hHero.RemoveSelf();
-        }
 
         for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
+            let hHero = PlayerResource.GetSelectedHeroEntity(index)
+            hHero.SetOrigin(vLocation);
             let hname = GameRules.MapChapter.hero_list[this.player_select_hero[index].hero_id];
             PlayerResource.ReplaceHeroWith(
                 index,
@@ -332,6 +330,8 @@ export class MapChapter extends UIEventRegisterClass {
                 0,
                 0
             );
+
+            UTIL_Remove(hHero)
         }
 
         this._game_select_phase = 3
@@ -382,18 +382,20 @@ export class MapChapter extends UIEventRegisterClass {
                 this.player_select_hero[index].state = 0;
             }
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
-            for (let hHero of HeroList.GetAllHeroes()) {
-                hHero.SetOrigin(vLocation)
+            for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
+                let hHero = PlayerResource.GetSelectedHeroEntity(index)
+                hHero.SetOrigin(vLocation);
+                let hname = GameRules.MapChapter.hero_list[this.player_select_hero[index].hero_id];
                 
-                hHero.RemoveSelf();
-
                 PlayerResource.ReplaceHeroWith(
-                    hHero.GetPlayerOwnerID(),
+                    index,
                     "npc_dota_hero_wisp",
                     0,
                     0
                 );
+                UTIL_Remove(hHero)
             }
+    
             if (this.ChapterMapHandle) {
                 UnloadSpawnGroupByHandle(this.ChapterMapHandle)
                 this.ChapterMapHandle = null

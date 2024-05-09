@@ -671,6 +671,7 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("StopAllSpawnAndMonster", () => {
             GameRules.Spawn._game_start = false;
             GameRules.MapChapter._game_select_phase = 999;
+            GameRules.MapChapter.GetGameSelectPhase(-1, {})
             //游戏结束
             GameRules.GetGameModeEntity().StopThink("MapCommonSpawnTimers");
             GameRules.GetGameModeEntity().StopThink("ProcessCreateBoss");

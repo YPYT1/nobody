@@ -56,7 +56,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     */
    InitPlayerUpgradeStatus(player_id: PlayerID) {
         this.PlayerUpgradePool[player_id] = {};
-        // this.EvolutionPoint[player_id] = 1;
+        this.EvolutionPoint[player_id] = 0;
         this.AddEvolutionPoint(player_id , 1)
         this.PlayerFirstState[player_id] = true;
         this.PlayerSelectData[player_id] = {
@@ -93,6 +93,11 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * 2.符合条件后会出现特殊升级
      */
     CreatArmssSelectData(player_id: PlayerID , param : CGED["NewArmsEvolution"]["CreatArmssSelectData"]) {
+        //阶段2之前不可用
+        if(GameRules.MapChapter._game_select_phase <= 2){
+            return
+        }
+
         if (this.PlayerSelectData[player_id].is_select == 0) {
             //验证是否满足条件
             if(this.EvolutionPoint[player_id] <= 0){
@@ -133,17 +138,17 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                     //重复物品跳过
                     if (shop_wp_list.includes(arms_key)) {
                         //跳过本次 
-                        index--;
+                        i--;
                         continue;
                     }
-                    ret_data[index] = { 
+                    ret_data[i] = { 
                         key: arms_key, 
                     };
                     shop_wp_list.push(arms_key);
                 }
 
             }else{
-                for (let index = 1; index <= amount; index++) {
+                for (let i = 0; i < amount; i++) {
                     amount_count ++;
                     if(amount_count > amount_max ){
                         break;
@@ -154,10 +159,10 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                     //重复物品跳过
                     if (shop_wp_list.includes(arms_key)) {
                         //跳过本次 
-                        index--;
+                        i--;
                         continue;
                     }
-                    ret_data[index] = { 
+                    ret_data[i] = { 
                         key: arms_key, 
                     };
                     shop_wp_list.push(arms_key);
@@ -253,7 +258,6 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         let data : PlayerUpgradeSelectRetData = {
             Data: this.PlayerSelectData[player_id] , //列表
         };
-        DeepPrintTable(data);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "NewArmsEvolution_GetArmssSelectData",
@@ -286,7 +290,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     }
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         if(cmd == "-arms_add"){
-             let count = parseInt(args[0]) ?? 1;
+             let count = args[0] ? parseInt(args[0]) : 1;
              this.AddEvolutionPoint(player_id , count);
         }
         if(cmd == "-iu"){
