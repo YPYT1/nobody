@@ -195,10 +195,8 @@ export class RuneSystem extends UIEventRegisterClass {
     PassRuneKeySetWeight(PlayerId : PlayerID, RuneKey : string , Weight : number){
         let index = this.PlayerUpgradePool[PlayerId].key.indexOf(RuneKey);
         if(index != -1){
+            print("RuneKey :" ,RuneKey)
             this.PlayerUpgradePool[PlayerId].pro[index] = Weight;
-            // if(this.PlayerArmsKeyList[PlayerId].indexOf(ArmsKey) == -1){
-            //     this.PlayerUpgradePool[PlayerId].pro[index] = 0;
-            // }
         }else{
             print("arms_evolution 表配置错误")
         }
@@ -319,7 +317,6 @@ export class RuneSystem extends UIEventRegisterClass {
                 index--;
                 continue;
             }
-            print("rune_key :" ,rune_key )  
         }
 
         // let RuneData = RuneSystemJson[rune_key as keyof typeof RuneSystemJson];
@@ -331,19 +328,22 @@ export class RuneSystem extends UIEventRegisterClass {
         }else{
             this.PlayerRuneData[player_id][rune_key] = 1
         }
-        print("获得符文 : " , rune_key)
         //解锁其他技能 并移除自身可选
         for (const key in this.AdvRuneUnlockConfig) {
             const unconfig = this.AdvRuneUnlockConfig[key];
+            DeepPrintTable(unconfig);
             let unlock = true;
             for (const iterator of unconfig) {
+
                 if(this.PlayerRuneData[player_id].hasOwnProperty(iterator.key)){
                     let playerrunecount = this.PlayerRuneData[player_id][iterator.key]
+
                     if(playerrunecount < iterator.val){
                         unlock = false;
                         break
                     }
                 }else{
+                    unlock = false;
                     break
                 }
             }
@@ -376,6 +376,7 @@ export class RuneSystem extends UIEventRegisterClass {
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-sevo") {
+            this.AddPointCount(player_id , 10);
         }
         if (cmd == "-rune_getup" || cmd == "-rg") {
             this.GetRuneSelectData(player_id, {});

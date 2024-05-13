@@ -14,6 +14,9 @@ declare interface CustomGameEventDeclarations {
             EvolutionPoint : number //技能点
         }
     }
+    NewArmsEvolution_GetArmssElementBondDateList : {
+        data : ElementBondDateList
+    }
     //选择符文数据
     RuneSystem_GetRuneSelectData: {
         data: PlayerRuneSelectRetData;
@@ -31,8 +34,6 @@ declare interface CustomGameEventDeclarations {
      */
     MapChapter_GetDifficultyMax: {
         data: {
-            select_map: string, //当前选择的章节
-            select_difficulty: string, //当前选中的难度
             map_difficulty: UserMapSelectDifficulty[];
             level_difficulty: string[]; //玩家所通关的难度
         };
@@ -84,3 +85,16 @@ declare interface UserMapSelectDifficulty { //地图详细信息
     difficulty_max: number, // 地图最高难度
     chapter_key: string, //地图编号 m1 m2 
 }
+
+
+
+declare interface ElementBondDate { //羁绊信息
+    count : number,//羁绊数量
+    type : number , //羁绊类型
+}
+declare interface ElementBondDateList { //羁绊信息
+    Element: { //元素数据
+        [key in ElementTypeEnum]: number
+    };
+}
+

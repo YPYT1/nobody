@@ -138,8 +138,6 @@ export class MapChapter extends UIEventRegisterClass {
             "MapChapter_GetDifficultyMax",
             {
                 data: {
-                    select_map: this.MapIndex,
-                    select_difficulty: this.GameDifficulty,
                     map_difficulty: this._map_list,
                     level_difficulty: this.level_difficulty,
                 }
@@ -149,7 +147,7 @@ export class MapChapter extends UIEventRegisterClass {
 
     //选择游戏难度
     SelectDifficulty(player_id: PlayerID, params: CGED["MapChapter"]["SelectDifficulty"]) {
-        if (this._game_select_phase == 0 && player_id == 0) {
+        if (this._game_select_phase == 0 && player_id == 0 && params.difficulty != "-1") {
             this.GameDifficulty = params.difficulty as keyof typeof MapInfoDifficulty;
             this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
         }
@@ -189,15 +187,7 @@ export class MapChapter extends UIEventRegisterClass {
                 //清空玩家选择状态
                 this.player_select_hero[index].state = 0;
             }
-            CustomGameEventManager.Send_ServerToAllClients(
-                "MapChapter_SelectDifficulty",
-                {
-                    data: {
-                        select_map: this.MapIndex,
-                        select_difficulty: this.GameDifficulty,
-                    }
-                }
-            );
+            GameRules.MapChapter.SelectDifficulty( -1 , { difficulty : "-1"})
         }
     }
 
@@ -400,16 +390,7 @@ export class MapChapter extends UIEventRegisterClass {
                 UnloadSpawnGroupByHandle(this.ChapterMapHandle)
                 this.ChapterMapHandle = null
             }
-
-            CustomGameEventManager.Send_ServerToAllClients(
-                "MapChapter_SelectDifficulty",
-                {
-                    data: {
-                        select_map: this.MapIndex,
-                        select_difficulty: this.GameDifficulty,
-                    }
-                }
-            );
+            GameRules.MapChapter.SelectDifficulty( -1 , { difficulty : "-1"})
 
             GameRules.ResourceSystem.InitAllPlayer();
 

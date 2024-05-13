@@ -9,7 +9,7 @@ declare interface CGED {
             index : number //选择的下标
         }
     }
-    //技能升级
+    //技能相关
     NewArmsEvolution : {
         //弃用
         ArmsUpgrade : {
@@ -27,6 +27,10 @@ declare interface CGED {
         //获取当前玩家技能点数量
         GetEvolutionPoint : {
 
+        }
+        //获取玩家元素羁绊
+        GetArmssElementBondDateList : {
+            
         }
     }
     // 物品升级 弃用

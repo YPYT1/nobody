@@ -721,6 +721,10 @@ export class Spawn extends UIEventRegisterClass {
         if(cmd == "-win"){
             GameRules.Spawn.StopAllSpawnAndMonster(true)
         }
+        if(cmd == "--_player_sum_kill"){
+            print("_player_sum_kill :")
+            DeepPrintTable(this._player_sum_kill)
+        }
     }
 
 

@@ -33,6 +33,10 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     //第一次选择的技能
     PlayerUpgradePoolFirstData : string[][] = [];
 
+    //玩家羁绊数据
+    ElementBondDateList : ElementBondDateList[] = [];
+
+
     constructor() {
         super("NewArmsEvolution")
         for (let index = 0; index < GameRules.PUBLIC_CONST.PLAYER_COUNT; index++) {
@@ -42,6 +46,18 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             this.PlayerSelectAmount.push(GameRules.PUBLIC_CONST.PLAYER_ARMS_SELECT_MAX)
             this.PlayerFirstState.push(false)
             this.PlayerUpgradePoolFirstData.push([])
+
+            this.ElementBondDateList.push({
+                "Element" : {
+                    [ElementTypeEnum.null] : 0,
+                    [ElementTypeEnum.fire] : 0,
+                    [ElementTypeEnum.ice] : 0,
+                    [ElementTypeEnum.thunder] : 0,
+                    [ElementTypeEnum.wind]: 0,
+                    [ElementTypeEnum.light] : 0,
+                    [ElementTypeEnum.dark] : 0
+                }
+            })
 
             this.PlayerSelectData.push({
                 "arms_list" : {},
@@ -59,7 +75,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         //重置生命
         GameRules.Spawn.player_life_list[player_id] = 2
         this.PlayerUpgradePool[player_id] = {};
-        this.EvolutionPoint[player_id] = 0;
+        this.EvolutionPoint[player_id] = 0; 
         this.AddEvolutionPoint(player_id , 1)
         this.PlayerFirstState[player_id] = true;
         this.PlayerSelectData[player_id] = {
@@ -67,6 +83,20 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             "is_select" :  0 ,
             "index" : -1,
         };
+        this.ElementBondDateList[player_id] = {
+            "Element" : {
+                [ElementTypeEnum.null] : 0,
+                [ElementTypeEnum.fire] : 0,
+                [ElementTypeEnum.ice] : 0,
+                [ElementTypeEnum.thunder] : 0,
+                [ElementTypeEnum.wind]: 0,
+                [ElementTypeEnum.light] : 0,
+                [ElementTypeEnum.dark] : 0
+            }
+        }
+
+        this.GetArmssElementBondDateList(player_id, {})
+
         this.PlayerUpgradePoolFirstData[player_id] = [];
         
         for (const [key, val] of pairs(ArmsJson)) {
@@ -191,7 +221,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             print("技能点不足！")
             return
         }
-        let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
+        let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;    
         if(this.ItemQmax == Quality){
             print("已经是最高品质了！")
             return 
@@ -240,6 +270,19 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             let Index = PlayerSelectDataInfo.index
             let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
+            //减少原来的元素羁绊
+            let Ability = MyHero.GetAbilityByIndex(Index);
+            let Key = Ability.GetAbilityName();
+            let OldElement = ArmsJson[Key as keyof typeof ArmsJson].Element;
+            if(this.ElementBondDateList[player_id].Element[OldElement] > 0){
+                this.ElementBondDateList[player_id].Element[OldElement] --;
+            }
+            let Element = ArmsJson[ability_name as keyof typeof ArmsJson].Element;
+            //更新元素羁绊信息
+            this.ElementBondDateList[player_id].Element[Element]++;
+            this.GetArmssElementBondDateList(player_id, {})
+
+
             GameRules.NewArmsEvolution.ReplaceAbility( ability_name , Index , MyHero )
             //技能点减少
             this.AddEvolutionPoint(player_id , -1)
@@ -247,6 +290,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             PlayerSelectDataInfo.index = -1;
             PlayerSelectDataInfo.arms_list = {};
             this.GetArmssSelectData(player_id, {});
+
         } else {
             // GameRules.Cmsg();
             print("技能点不足")
@@ -266,6 +310,19 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             "NewArmsEvolution_GetArmssSelectData",
             {
                 data
+            }
+        );
+    }
+
+     /**
+     * 获取物品信息初始化信息
+     */
+     GetArmssElementBondDateList(player_id: PlayerID, params: CGED["NewArmsEvolution"]["GetArmssElementBondDateList"]) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "NewArmsEvolution_GetArmssElementBondDateList",
+            {
+                data : this.ElementBondDateList[player_id]
             }
         );
     }
