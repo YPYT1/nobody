@@ -14,4 +14,12 @@ export class modifier_pickitem_exp extends BaseModifier {
         }
     }
 
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        let hParent = this.GetParent();
+        if (hParent && hParent.is_picking == false) {
+            UTIL_Remove(this.GetParent())
+        }
+
+    }
 }

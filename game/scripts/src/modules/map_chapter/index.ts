@@ -362,7 +362,7 @@ export class MapChapter extends UIEventRegisterClass {
             DotaTeam.GOODGUYS,
             Vector(0,0,0),
             null,
-            9999,
+            99999,
             UnitTargetTeam.FRIENDLY,
             UnitTargetType.OTHER,
             UnitTargetFlags.INVULNERABLE,

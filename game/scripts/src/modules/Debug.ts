@@ -41,10 +41,11 @@ export class Debug {
                     entity.GetEntityIndex(),
                     entity.GetName() ?? "No Name",
                     entity.GetClassname() ?? "No Classmame",
+                  
                 );
-                if (entity.IsBaseNPC()) {
-                    entity.GetUnitName();
-                }
+                // if (entity.IsBaseNPC()) {
+                //     print(entity.GetUnitName());
+                // }
                 if (entity.GetClassname() == "npc_dota_thinker") {
                     DebugDrawCircle(entity.GetAbsOrigin(), Vector(255, 0, 0), 10, 64, true, 20);
                 }

@@ -17,7 +17,9 @@ const WarpPanel = () => {
     const [ScreenY, setScreenY] = useState(0);
 
     const Update = useCallback(() => {
-        let ScreenPos = GameUI.GetCameraPosition();
+        let width = Game.GetScreenWidth();
+        let height = Game.GetScreenHeight();
+        let ScreenPos = GameUI.GetScreenWorldPosition([width / 2, height / 2]);
         if (ScreenPos) {
             setScreenX(Math.floor(ScreenPos[0]))
             setScreenY(Math.floor(ScreenPos[1]))
@@ -86,10 +88,14 @@ const RemoveUnitSendServer = () => {
 const UnitCountsPanel = () => {
 
     const [Counts, setCounts] = useState(0);
+    const [Counts2, setCounts2] = useState(0);
 
     const Update = useCallback(() => {
         let entity = Entities.GetAllEntitiesByClassname("npc_dota_creature");
-        setCounts(entity.length)
+        // let exp_entity = Entities.GetAllEntitiesByClassname("npc_dota_base_additive");
+        // $.Msg(exp_entity.length)
+        setCounts(entity.length);
+        // setCounts2(exp_entity.length)
     }, [])
 
     useEffect(() => {
@@ -98,7 +104,11 @@ const UnitCountsPanel = () => {
     }, []);
 
     return (
-        <Label text={Counts} />
+        <Panel className='flow-right'>
+            <Label text={Counts} />
+            {/* <Label text={Counts2} /> */}
+        </Panel>
+
     )
 }
 type PopupsViewsType = "None" | "Heroes" | "Ability" | "Items";

@@ -14,8 +14,8 @@ export class arms_60 extends BaseArmsAbility {
 @registerModifier()
 export class modifier_arms_60 extends BaseArmsModifier {
 
-    stun_duration:number;
-    
+    stun_duration: number;
+
     DeclareFunctions(): ModifierFunction[] {
         return [
             ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
@@ -29,7 +29,16 @@ export class modifier_arms_60 extends BaseArmsModifier {
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
         if (event.attacker.FindModifierByNameAndCaster("modifier_arms_60_marker", event.target) == null) {
             event.attacker.AddNewModifier(this.caster, this.ability, "modifier_arms_60_marker", {});
-            GameRules.BuffManager.AddGeneralDebuff(this.caster, event.attacker, DebuffTypes.stunned, this.stun_duration)
+            GameRules.BuffManager.AddGeneralDebuff(this.caster, event.attacker, DebuffTypes.stunned, this.stun_duration);
+            let damage = event.original_damage;
+            ApplyCustomDamage({
+                victim: event.attacker,
+                attacker: this.caster,
+                damage: damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this.GetAbility(),
+                element_type: ElementTypeEnum.wind
+            });
             return -99999
         }
         return 0

@@ -150,6 +150,7 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         if (!IsServer()) { return; }
         const movespeed = params.movespeed ?? 450;
         this.parent = this.GetParent();
+        this.parent.is_picking = true;
         this.launch_acceleration = movespeed * 2;
         this._to_return = false;
         this.base_distance = 450;

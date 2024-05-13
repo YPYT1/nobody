@@ -34,7 +34,7 @@ export class modifier_arms_14 extends BaseArmsModifier {
     C_OnKilled(hTarget: CDOTA_BaseNPC): void {
         this.current_kills += 1;
         this.SetStackCount(this.current_kills)
-        print("modifier_arms_14 OnKilled", this.current_kills)
+        // print("modifier_arms_14 OnKilled", this.current_kills)
         if (this.current_kills % this.every_kills == 0) {
             GameRules.CustomAttribute.ModifyAttribute(this.caster, {
                 "HealthPoints": {

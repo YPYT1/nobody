@@ -44,7 +44,7 @@ const App = () => {
             <Panel className='Header' visible={text != ""}>
                 <Label text={text} html={true} />
             </Panel>
-            {(description != "" && description != "undefined") && <Label className='Description' text={description} html={true} />}
+            {/* {(description != "" && description != "undefined") && <Label className='Description' text={description} html={true} />} */}
         </Panel>
     );
 };

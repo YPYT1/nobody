@@ -14,6 +14,7 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     /** 肉鸽专用词条词条 */
     OverrideSpecial: OverrideSpecialValueProps;
 
+    is_picking:boolean;
     /** 所有技能的内置冷却相应 */
     CDResp: { [key: string]: number }
 
