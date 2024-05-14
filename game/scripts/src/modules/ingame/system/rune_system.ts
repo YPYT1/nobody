@@ -357,6 +357,62 @@ export class RuneSystem extends UIEventRegisterClass {
         this.GetRuneData(player_id, {});
     }
 
+
+    /**
+     * 获取一个指定符文
+     */
+    GetRuneByName(player_id: PlayerID , rune_name : string) {
+        //记录获得的次数
+        this.ConsumePointCount[player_id] ++;   
+
+        let rune_key  = rune_name;
+
+        if(rune_key == ""){
+            print("不能为空")
+            return 
+        }
+        if(!RuneSystemJson.hasOwnProperty(rune_key)){
+            print("符文不存在")
+            return 
+        }
+        
+        // let RuneData = RuneSystemJson[rune_key as keyof typeof RuneSystemJson];
+        // let RuneCount = 0; //符文数量
+        //初始化技能
+        if(this.PlayerRuneData[player_id].hasOwnProperty(rune_key)){
+            this.PlayerRuneData[player_id][rune_key] += 1;
+            // RuneCount = this.PlayerRuneData[player_id][rune_key];
+        }else{
+            this.PlayerRuneData[player_id][rune_key] = 1
+        }
+        //解锁其他技能 并移除自身可选
+        for (const key in this.AdvRuneUnlockConfig) {
+            const unconfig = this.AdvRuneUnlockConfig[key];
+            let unlock = true;
+            for (const iterator of unconfig) {
+
+                if(this.PlayerRuneData[player_id].hasOwnProperty(iterator.key)){
+                    let playerrunecount = this.PlayerRuneData[player_id][iterator.key]
+
+                    if(playerrunecount < iterator.val){
+                        unlock = false;
+                        break
+                    }
+                }else{
+                    unlock = false;
+                    break
+                }
+            }
+            let RuneWeight = RuneSystemJson[rune_key as keyof typeof RuneSystemJson].Weight;
+            //如果存在可以解锁的符文 则调用解锁方法
+            if(unlock == true){
+                this.PassRuneKeySetWeight(player_id , key , RuneWeight);
+            }
+        }
+        this.GetRuneRandomData(player_id , rune_key)
+        this.GetRuneData(player_id, {});
+    }
+
     /**
      * 火力技升级 加入池子
      * @param player_id 
@@ -394,11 +450,18 @@ export class RuneSystem extends UIEventRegisterClass {
                 index : index,
             });
         }
+
         if(cmd == "-rune_init" ){
             this.InitPlayerUpgradeStatus(player_id)
         }
+
         if(cmd == "-RR"){
             this.RuneRandom(player_id)
+        }
+
+        if(cmd == "-RN"){
+            let runename = args[0] ?? "";
+            this.GetRuneByName(player_id , runename)
         }
 
         if(cmd == "-wd"){
