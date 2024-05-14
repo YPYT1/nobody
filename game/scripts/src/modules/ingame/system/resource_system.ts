@@ -188,7 +188,7 @@ export class ResourceSystem extends UIEventRegisterClass {
         exp_unit.drop_resource_type = resource;
         exp_unit.drop_resource_amount = iCount;
         exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_exp", {
-            duration: 10
+            duration: 30
         })
     }
 

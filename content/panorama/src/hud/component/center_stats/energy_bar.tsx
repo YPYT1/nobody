@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FormatIntToString } from "../../../utils/method";
 import { useGameEvent } from "react-panorama-x";
 
@@ -8,14 +8,13 @@ interface ValueBarProps {
 
 export const ValueBarComponent = ({ type }: ValueBarProps) => {
 
-    const [value, setValue] = useState(1);
-    const [maxValue, setMaxValue] = useState(1);
-    const [regen, setRegen] = useState(0);
-    const [barValue, setBarValue] = useState(100);
-    const [IsEnemy, setIsEnemy] = useState(false);
+    let MainPanel: Panel;
+    let ValueProgressBar: ProgressBar;
 
     const UpdateLocalPlayer = useCallback(() => {
         const queryUnit = Players.GetLocalPlayerPortraitUnit();
+        // $.Msg(["queryUnit",queryUnit])
+        if(queryUnit == -1){ return }
         // const queryUnit = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer()) 
         if (type == "Hp") {
             const health_mul = 1;// GetUnitModifierStack(queryUnit, "modifier_common_mul_health");
@@ -23,23 +22,31 @@ export const ValueBarComponent = ({ type }: ValueBarProps) => {
             const max = Entities.GetMaxHealth(queryUnit) * health_mul;
             const reg = Entities.GetHealthThinkRegen(queryUnit);
 
-
             const local_team = Entities.GetTeamNumber(Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer()));
             const unit_team = Entities.GetTeamNumber(queryUnit);
-            setIsEnemy(local_team != unit_team);
-            setBarValue(val / (Math.max(1, max)) * 100);
-            setValue(val);
-            setMaxValue(max);
-            setRegen(reg);
+            // setIsEnemy(local_team != unit_team);
 
+            ValueProgressBar.value = val / (Math.max(1, max)) * 100
+            MainPanel.SetHasClass("is_enemy", local_team != unit_team)
+
+            MainPanel.SetDialogVariable("value", FormatIntToString(val))
+            MainPanel.SetDialogVariable("max_value", FormatIntToString(max))
+            MainPanel.SetDialogVariable("reg", reg.toFixed(1))
         } else if (type == "Mp") {
             const val = Entities.GetMana(queryUnit);
             const max = Entities.GetMaxMana(queryUnit);
             const reg = Entities.GetManaThinkRegen(queryUnit);
-            setBarValue(val / (Math.max(1, max)) * 100);
-            setValue(val);
-            setMaxValue(max);
-            setRegen(reg);
+
+            // {`${} / ${FormatIntToString(maxValue)}`}
+
+            // setBarValue(val / (Math.max(1, max)) * 100);
+            // setValue(val);
+            // setMaxValue(max);
+            // setRegen(reg);
+            ValueProgressBar.value = val / (Math.max(1, max)) * 100
+            MainPanel.SetDialogVariable("value", FormatIntToString(val))
+            MainPanel.SetDialogVariable("max_value", FormatIntToString(max))
+            MainPanel.SetDialogVariable("reg", reg.toFixed(1))
         }
     }, []);
 
@@ -54,18 +61,26 @@ export const ValueBarComponent = ({ type }: ValueBarProps) => {
     useGameEvent("dota_ability_changed", UpdateLocalPlayer, []);
     useGameEvent("dota_hero_ability_points_changed", UpdateLocalPlayer, []);
 
-    return React.useMemo(() =>
-        <Panel className={`ValueBarComponent ${type} ${IsEnemy ? "is_enemy" : ""}`} hittest={false} onload={() => { UpdateLocalPlayer; }}>
-
+    $.Msg(["Update Page", type]);
+    return (
+        <Panel
+            className={`ValueBarComponent ${type}`}
+            hittest={false}
+            onload={(e) => {
+                MainPanel = e;
+                UpdateLocalPlayer();
+            }}
+        >
             <Panel className='ProgressBarPanel'>
                 <Panel id="ValueProgressBarBackground" />
                 <ProgressBar
                     id="ValueProgressBar"
                     className='ProgressBar'
-                    value={barValue}
+                    value={0}
                     min={1} max={100} hittest={false}
                     onload={(e) => {
-                        let left_bar = e.GetChild(0);
+                        ValueProgressBar = e;
+                        // let left_bar = e.GetChild(0);
                         // if (left_bar) {
                         //     let hud_bar = $.CreatePanel("DOTAScenePanel", e, "HealthBurner", {
                         //         map: "scenes/hud/healthbarburner",
@@ -78,12 +93,12 @@ export const ValueBarComponent = ({ type }: ValueBarProps) => {
             </Panel>
 
             <Panel className='BarLabel' hittest={false}>
-                <Label className="Label" text={`${FormatIntToString(value)} / ${FormatIntToString(maxValue)}`} hittest={false} />
-                <Label className="RegenLabel" text={regen.toFixed(1)} hittest={false} />
+                <Label className="Label" localizedText="{s:value} / {s:max_value}" hittest={false} />
+                <Label className="RegenLabel" localizedText="{s:reg}" hittest={false} />
             </Panel>
             {/* <TestRenderPanel text={`ValueBarComponent ${type}`} /> */}
         </Panel>
-        , [value, maxValue, regen]);
+    );
 };
 
 export const EnergyBar = () => {

@@ -24,6 +24,7 @@ const ArmsAbilityRow = ({ ability_name, order }: { ability_name: string, order: 
 
 export const ArmsSelector = () => {
 
+    let ArmsSelectorPanel:Panel;
     const [ArmsList, setArmsList] = useState<PlayerUpgradeSelectServer[]>([])
     const [Hide, setHide] = useState(true);
     const [Minimize, setMinimize] = useState(false);
@@ -41,12 +42,13 @@ export const ArmsSelector = () => {
     const TogglePanelHandle = useCallback((v: boolean) => {
         setMinimize(!v)
     }, [])
+    
     return (
         <Panel
             id="ArmsSelector"
             className={`container ${Hide ? "Hide" : ""} ${Minimize ? "Minimize" : ""}`}
-            onload={() => {
-
+            onload={(e) => {
+                ArmsSelectorPanel = e;
                 GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
                     event_name: "GetArmssSelectData",
                     params: {}

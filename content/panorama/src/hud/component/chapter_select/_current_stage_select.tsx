@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useGameEvent } from "react-panorama-x";
 
 import { default as ChapterInfo } from "../../../json/config/chapter_info.json"
@@ -63,31 +63,49 @@ const SelectChapter = ({ chapter, handle }: { chapter: number, handle: (chapter:
 /**
  * 关卡难度选择 current_stage_select
  */
-export const CurrentStageSelect = ({ difficulty }: { difficulty: string }) => {
+export const CurrentStageSelect = () => {
 
-    const [Stage, setStage] = useState(1);
-    const [Difficulty, setDifficulty] = useState("101");
+    let MainPanel: Panel;
 
-    const select_stage = useCallback((stage: number) => {
-        setStage(stage)
-    }, []);
+    // const [Stage, setStage] = useState(1);
+
+    const select_stage = (stage: number) => {
+        // setStage(stage)
+        // $.Msg(["select_stage", stage])
+        for (let i = 1; i <= 5; i++) {
+            // $.Msg([`Stage_${stage}`, stage == i])
+            MainPanel.SetHasClass(`Stage_${i}`, stage == i);
+        }
+    };
+
+
+    useGameEvent("MapChapter_GetDifficultyMax", event => {
+        let data = event.data;
+        // setGameSelectPhase(data.game_select_phase);
+        // djksdkljsa
+    }, [])
 
 
 
     return (
-        <Panel id="CurrentStageSelect" className={`Stage_${Stage}`}>
+        <Panel
+            id="CurrentStageSelect"
+            // className={`Stage_${Stage}`}
+            onload={(e) => {
+                MainPanel = e;
+                MainPanel.SetHasClass("Stage_1", true)
+            }}
+        >
 
             <Panel className="title">
                 <Label text="章节选择" />
             </Panel>
             <Panel id="ChapterList" className="row btn-group">
-
                 {
                     Object.values(ChapterInfo).map((v, k) => {
                         return <SelectChapter key={k} chapter={v.name} handle={select_stage} />
                     })
                 }
-
             </Panel>
             <Panel id="ChapterForDiff" className="row btn-group">
                 {
@@ -97,9 +115,6 @@ export const CurrentStageSelect = ({ difficulty }: { difficulty: string }) => {
                 }
             </Panel>
 
-
-
-
             <Panel id="StageBtnGroup">
                 <Button className="btn" onactivate={() => {
                     GameEvents.SendCustomGameEventToServer("MapChapter", {
@@ -107,7 +122,7 @@ export const CurrentStageSelect = ({ difficulty }: { difficulty: string }) => {
                         params: {}
                     })
                 }}>
-                    <Label text={`START==> ${Difficulty}`} />
+                    <Label localizedText="START==> {s:difficulty}" />
                 </Button>
             </Panel>
         </Panel >

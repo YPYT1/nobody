@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useGameEvent } from 'react-panorama-x';
 
+let ResourcePanel: { [key in PlayerResourceTyps]?: Panel } = {}
 
-const ResourceTypePanel = ({ resour_type, amount }: { resour_type: PlayerResourceTyps, amount: number }) => {
+const ResourceTypePanel = ({ resour_type }: { resour_type: PlayerResourceTyps }) => {
 
     return (
-        <Panel className='forms-row'>
+        <Panel className='forms-row' onload={(e) => {
+            ResourcePanel[resour_type] = e;
+        }}>
             <Panel className={'forms-title'} >
-                <Label text={resour_type.substring(0,2)}/>
+                <Label text={resour_type.substring(0, 4)} />
             </Panel>
-            <Label className='forms-label' text={amount} />
+            <Label className='forms-label' localizedText='{s:amount}' />
         </Panel>
     )
 }
@@ -17,19 +20,13 @@ const ResourceTypePanel = ({ resour_type, amount }: { resour_type: PlayerResourc
 /** 资源组件 */
 export const ResourceComponent = () => {
 
-    const [Gold, setGold] = useState(0);
-    const [Soul, setSoul] = useState(0);
-    const [Kills, setKills] = useState(0);
-    const [SingleExp, setSingleExp] = useState(0);
-    const [TeamExp, setTeamExp] = useState(0);
-
     useGameEvent("ResourceSystem_SendPlayerResources", event => {
         let data = event.data;
-        setGold(data.Gold);
-        setSoul(data.Soul)
-        setKills(data.Kills)
-        setSingleExp(data.SingleExp)
-        setTeamExp(data.TeamExp)
+        ResourcePanel["Gold"]?.SetDialogVariable("amount", `${data.Gold}`)
+        ResourcePanel["Soul"]?.SetDialogVariable("amount", `${data.Soul}`)
+        ResourcePanel["Kills"]?.SetDialogVariable("amount", `${data.Kills}`)
+        ResourcePanel["SingleExp"]?.SetDialogVariable("amount", `${data.SingleExp}`)
+        ResourcePanel["TeamExp"]?.SetDialogVariable("amount", `${data.TeamExp}`)
     }, [])
 
     return (
@@ -43,11 +40,11 @@ export const ResourceComponent = () => {
                     params: {}
                 })
             }}>
-            <ResourceTypePanel resour_type="Gold" amount={Gold} />
-            <ResourceTypePanel resour_type="Soul" amount={Soul} />
-            <ResourceTypePanel resour_type="Kills" amount={Kills} />
-            <ResourceTypePanel resour_type="SingleExp" amount={SingleExp} />
-            <ResourceTypePanel resour_type="TeamExp" amount={TeamExp} />
+            <ResourceTypePanel resour_type="Gold" />
+            <ResourceTypePanel resour_type="Soul" />
+            <ResourceTypePanel resour_type="Kills" />
+            <ResourceTypePanel resour_type="SingleExp" />
+            <ResourceTypePanel resour_type="TeamExp" />
         </Panel>
     );
 };

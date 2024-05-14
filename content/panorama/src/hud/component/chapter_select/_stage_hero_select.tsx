@@ -23,42 +23,18 @@ function InitHeroes() {
 const heroes_key = InitHeroes();
 
 
-const usePlayerState = () => {
-    let readystate: MapSelectHeroList[] = [];
-
-    let AllPlayerId = Game.GetAllPlayerIDs();
-    for (let pid of AllPlayerId) {
-        let playerinfo = Game.GetPlayerInfo(pid);
-        readystate.push({
-            // steamid: playerinfo.player_steamid,
-            hero_id: 57,
-            state: 0,
-            // vote_count: 0,
-            // vote_action: 0,
-            // player_id: pid,
-        });
-
-    }
-    return readystate;
-};
-
-const PlayerReadyStateItem = ({ ready_state, hero_id, player, }:
-    { ready_state: number; hero_id: number; player: PlayerID; }
-) => {
+const PlayerReadyStateItem = ({ player, }: { player: PlayerID; }) => {
     // $.Msg(["steamid", steamid]);
     const playerinfo = Game.GetPlayerInfo(player);
     const steamid = playerinfo.player_steamid;
-    const heroname = heroes_key[hero_id]
+    // const heroname = heroes_key[hero_id]
     const PlayerInfo = Game.GetPlayerInfo(player as PlayerID);
     const isLocal = Players.GetLocalPlayer() == player;
-    const bIsReady = ready_state == 1;
+    const bIsReady = false;
     // const bCanVote = vote_action == 1 && !isLocal;
-
+    // 
     return (
-        <Panel className={`PlayerReadyStateItem ${bIsReady && "is_ready"} ${isLocal && "Local"}`}>
-            {/* <Panel className='MasterVoteCount'>
-                <Label text={vote_count} />
-            </Panel> */}
+        <Panel className={`PlayerReadyStateItem ${isLocal && "is_local"}`} visible={false}>
             <Panel className='AvatarImage' visible={false} >
                 <DOTAAvatarImage
                     style={{ width: "64px", height: "64px", verticalAlign: "middle" }}
@@ -69,40 +45,17 @@ const PlayerReadyStateItem = ({ ready_state, hero_id, player, }:
             </Panel>
             <Panel className="SelectHero">
                 <Panel className='HeroImage'>
-                    <Image src={`file://{images}/heroes/selection/${heroname}.png`} />
+                    <Image id="HeroIcon" src={``} />
                 </Panel>
                 <Panel className='HeroBorder' />
             </Panel>
             <Panel className='PlayerInfo'>
                 <Panel id="ReadyState">
-                    <Label className='NotReady' visible={ready_state == 0} text={"正在选择..."} />
-                    <Label className='IsReady' visible={ready_state == 1} text={"已选择"} />
+                    <Label className='NotReady' text={"正在选择..."} />
+                    <Label className='IsReady' text={"已选择"} />
                 </Panel>
                 <Label id='PlayerName' text={PlayerInfo.player_name} />
             </Panel>
-            {/* <Panel className='MasterVoteAction'>
-                <Button
-                    className='VoteButton'
-                    // visible={!isLocal}
-                    enabled={bCanVote}
-                    onmouseover={(e) => {
-                        ShowCustomTextTooltip(e, "#custom_text_master_vote");
-                    }}
-
-                    onmouseout={() => {
-                        HideCustomTextTooltip();
-                    }}
-                    onactivate={(e) => {
-                        e.enabled = false;
-                        GameEvents.SendCustomGameEventToServer("GamePlayer", {
-                            event_name: "MasterVote",
-                            params: {
-                                vote_player: player
-                            }
-                        }, "MasterVote");
-                    }}>
-                </Button>
-            </Panel> */}
         </Panel>
 
     );
@@ -135,14 +88,33 @@ const HeroCardButton = ({ heroname, hero_id }: { heroname: string, hero_id: numb
     )
 }
 
-export const StageHeroSelect = ({ difficulty }: { difficulty: string }) => {
+export const StageHeroSelect = () => {
 
-    const [PlayerState, setPlayerState] = useState(usePlayerState());
+    let PlayerList: Panel;
+    // const [PlayerState, setPlayerState] = useState(usePlayerState());
 
     useGameEvent("MapChapter_GetPlayerSelectHeroList", event => {
         let data = event.data;
-        let player_state = Object.values(data.hero_ids);
-        setPlayerState(player_state)
+        let hero_ids = data.hero_ids
+        // let player_state = Object.values(data.hero_ids);
+        // $.Msg(["player_state", player_state])
+        // setPlayerState(player_state)
+        for (let k in hero_ids) {
+            let index = parseInt(k) - 1;
+            let info = hero_ids[k];
+            // $.Msg(["k",k])
+            let StatePanel = PlayerList.GetChild(index);
+            // $.Msg(StatePanel)
+            if (StatePanel) {
+                StatePanel.visible = true;
+                let HeroIcon = StatePanel.FindChildTraverse("HeroIcon") as ImagePanel;
+                const heroname = heroes_key[info.hero_id]
+                HeroIcon.SetImage(`file://{images}/heroes/selection/${heroname}.png`)
+                StatePanel.SetHasClass("is_ready", info.state == 1)
+            }
+        }
+
+
     }, [])
 
     return (
@@ -159,7 +131,7 @@ export const StageHeroSelect = ({ difficulty }: { difficulty: string }) => {
             <Panel className="content">
                 <Panel className="grid">
                     <Panel className="head">
-                        <Label text={`当前关卡 ${difficulty}`} />
+                        <Label localizedText="当前关卡 {s:difficulty}" />
                     </Panel>
                 </Panel>
                 <Panel className="grid">
@@ -181,19 +153,15 @@ export const StageHeroSelect = ({ difficulty }: { difficulty: string }) => {
                         <Label text="玩家列表" />
                     </Panel>
                     <Panel className="grid">
-                        <Panel id="PlayerList">
+                        <Panel id="PlayerList" onload={(e) => { PlayerList = e; }}>
                             {
-                                PlayerState.map((v, k) => {
+                                Game.GetAllPlayerIDs().map((v, k) => {
                                     return <PlayerReadyStateItem
                                         key={k}
-                                        player={k as PlayerID}
-                                        // steamid={v.steamid}
-                                        ready_state={v.state}
-                                        hero_id={v.hero_id}
-                                    // vote_count={v.vote_count}
-                                    // vote_action={VoteState}
+                                        player={v}
                                     />
                                 })
+
                             }
                         </Panel>
 

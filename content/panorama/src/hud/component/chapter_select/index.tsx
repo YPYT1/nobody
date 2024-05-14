@@ -1,11 +1,15 @@
-import { useCallback, useState } from "react"
+import { useCallback } from "react"
 import { CurrentStageSelect } from "./_current_stage_select";
 import { StageHeroSelect } from "./_stage_hero_select";
 import { useGameEvent } from "react-panorama-x";
 
+let MainPanel: Panel;
 
 const OnLoad = (e: Panel) => {
-    // $.Msg(["ChapterSelect", "OnLoad"])
+    MainPanel = e;
+    MainPanel.Data<PanelDataObject>()["difficulty"] = "101"
+    // MainPanel.SetDialogVariable("difficulty", "101");
+
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetDifficultyMax",
         params: {}
@@ -15,40 +19,38 @@ const OnLoad = (e: Panel) => {
         event_name: "GetGameSelectPhase",
         params: {}
     })
+
 }
 
 /** 章节选择 */
 export const ChapterSelect = () => {
 
+    // const [Difficulty, setDifficulty] = useState("101");
 
-    const [Difficulty, setDifficulty] = useState("101");
-    const [Show, setShow] = useState(true);
+    const ToggleHandle = () => {
+        let state = MainPanel.BHasClass("Open");
+        MainPanel.SetHasClass("Open", !state)
+    }
 
-    const ToggleHandle = useCallback((b: boolean) => {
-        setShow(!b);
-    }, [])
 
-    useGameEvent("MapChapter_GetDifficultyMax", event => {
-        let data = event.data;
-        // setGameSelectPhase(data.game_select_phase);
-    }, [])
-
-    useGameEvent("MapChapter_GetPlayerHeroList", event => {
-        let data = event.data;
-        // setGameSelectPhase(data.game_select_phase)
-    })
+    // useGameEvent("MapChapter_GetPlayerHeroList", event => {
+    //     let data = event.data;
+    //     // setGameSelectPhase(data.game_select_phase)
+    // })
 
     useGameEvent("MapChapter_SelectDifficulty", event => {
         let data = event.data;
+        // $.Msg(["MapChapter_SelectDifficulty1", data])
         let difficulty = data.select_difficulty;
-        $.Msg(["MapChapter_SelectDifficulty", data])
-        setDifficulty(difficulty)
+        MainPanel.Data<PanelDataObject>()["difficulty"] = difficulty;
+        MainPanel.SetDialogVariable("difficulty", difficulty)
+        // setDifficulty(difficulty)
     })
 
     return (
         <Panel
             id='ChapterSelect'
-            className={`container ${Show ? "Open" : ""}`}
+            className={`container Open`}
             hittest={false}
             onload={OnLoad}
         >
@@ -58,13 +60,13 @@ export const ChapterSelect = () => {
                         <Label text="chapter_select" />
                     </Panel>
                     <Panel className="head-btn">
-                        <Button className="btn-close" onactivate={() => { ToggleHandle(Show) }} />
+                        <Button className="btn-close" onactivate={() => { ToggleHandle() }} />
                     </Panel>
                 </Panel>
             </Panel>
             <Panel id="ChapterContent" className="content">
-                <CurrentStageSelect difficulty={Difficulty} />
-                <StageHeroSelect difficulty={Difficulty} />
+                <CurrentStageSelect />
+                <StageHeroSelect />
             </Panel>
 
         </Panel>

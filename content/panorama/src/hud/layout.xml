@@ -7,5 +7,12 @@
         <include src="./../_styles/styles.less" />
         <include src="./styles.less" />
     </styles>
+    <snippets>
+        <snippet name="SnippetName">
+            <Panel class="SnippetPanelClass">
+                
+            </Panel>
+        </snippet>
+    </snippets>
     <Panel class="root" hittest="false" />
 </root>

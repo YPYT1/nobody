@@ -103,17 +103,26 @@
                     border-color: #a09d6e;
                 }
 
-                ;
+
 
                 &:selected {
                     // border-color: #a09d6e;
                     box-shadow: rgba(255, 250, 201, 0.849) 0px 0px 4px;
+
+                    DOTAHeroMovie {
+                        // visibility: visible;
+                        opacity: 1;
+                    }
                 }
 
                 .HeroImage {
                     width: 100%;
                     height: 100%;
                     overflow: clip;
+                }
+
+                DOTAHeroMovie {
+                    opacity: 0;
                 }
 
                 .HeroIcon,
@@ -123,6 +132,8 @@
                     overflow: clip;
                     horizontal-align: center;
                     vertical-align: middle;
+                    transition-property: opacity;
+                    transition-duration: 0.2s;
                     // border: 1px solid #0d4470;
 
                 }
@@ -131,8 +142,13 @@
         }
     }
 
+    #PlayerList {
+        width: 100%;
+        flow-children: down;
+    }
+
     .PlayerReadyStateItem {
-        width: 420px;
+        width: 100%;
         height: 80px;
         background-repeat: no-repeat;
         // select_hero_layder
@@ -163,6 +179,18 @@
 
         &.is_ready {
             background-image: url("file://{images}/custom_game/selection/hero/select_hero_layder.png");
+
+            .NotReady {
+                visibility: collapse;
+            }
+
+            .IsReady {
+                visibility: visible;
+            }
+        }
+
+        &.is_local {
+            background-color: #d35029;
         }
 
         .AvatarImage {
@@ -215,6 +243,7 @@
         }
 
         .PlayerInfo {
+            width: 240px;
             margin-left: 6px;
             vertical-align: middle;
             flow-children: down;
@@ -276,9 +305,17 @@
             .IsReady {
                 color: #fff09c;
             }
+
+
         }
 
+        .NotReady {
+            visibility: visible;
+        }
 
+        .IsReady {
+            visibility: collapse;
+        }
 
     }
 }

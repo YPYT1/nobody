@@ -12,7 +12,6 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
     const [isHidden, setIsHidden] = useState(Abilities.IsHidden(m_Ability));
     const [abilityShow, setAbilityShow] = useState(m_Ability != -1 && isHidden == false);
     const [isReady, setIsReady] = useState(true);
-    const [screenPos, setScreenPos] = useState<[number, number, number]>([0, 0, 0]);
     const [cdValue, setCdValue] = useState(0);
     const [manaCost, setManaCost] = useState(0);
     const [deg, setDeg] = useState(-360);
@@ -38,13 +37,6 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
             setDeg(deg);
             setAbilityShow(m_Ability != -1 && isHidden == false);
 
-            // 充能
-
-            // let cool = Abilities.getrest
-            // $.Msg(["abilityname", abilityname, charges, ability_charges]);
-            // let is_chargs = Abilities.IsActivatedChanging(m_Ability);
-            // let current_charges = Abilities.GetCurrentCharges(m_Ability);
-            // $.Msg([is_chargs, current_charges]);
             if (refPanel.current) {
                 const is_charges = Abilities.UsesAbilityCharges(m_Ability);
                 const need_mana = Abilities.GetManaCost(m_Ability);
