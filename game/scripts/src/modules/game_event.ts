@@ -12,9 +12,9 @@ import { ArmsCombo } from './ingame/hero_extend/arms_combo';
 import { SummonedSystem } from './ingame/system/summoned_system';
 import { CustomMechanics } from './ingame/hero_extend/custom_mechanics';
 import { Spawn } from './ingame/spawns/spawn';
-import { CMsg } from './ingame/spawns/cmsg';
+import { CMsg } from './ingame/system/cmsg';
 import { NewArmsEvolution } from './ingame/hero_extend/new_arms_evolution';
-import { RuneSystem } from './ingame/hero_extend/rune_system';
+import { RuneSystem } from './ingame/system/rune_system';
 
 declare global {
 
@@ -102,7 +102,6 @@ export class GameEvent {
         GameRules.EntityKilled.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)
         //单位死亡后续处理
         GameRules.Spawn.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)
-
     }
 
     OnEntityDotaOnHeroFinishSpawn(event: GameEventProvidedProperties & DotaOnHeroFinishSpawnEvent) {
