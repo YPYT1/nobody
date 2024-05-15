@@ -365,11 +365,15 @@ export class MapChapter extends UIEventRegisterClass {
         // let unitlist = Entities.FindAllByClassname("npc_exp");
         // print("unitlist", unitlist.length)
         if (GameRules.Spawn._game_start == false && this._game_select_phase == 999) {
-
             this._game_select_phase = 0;
             this.GetGameSelectPhase(-1, {})
             for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
                 this.player_select_hero[index].state = 0;
+                //初始化可选技能 == 清理
+                GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(index)
+                //初始化可用符文 == 清理
+                GameRules.RuneSystem.InitPlayerUpgradeStatus(index)
+
             }
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
             for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {

@@ -229,7 +229,7 @@ export class Spawn extends UIEventRegisterClass {
         this._map_time = 0;
         //如果为第一波 则需要修改第一波刷出地雷怪的时间 因为内部时间重新计时了
 
-        if (round_index == 1) {
+        if (this._round_index == 1) {
             // for (let index = 0; index < this._mine_monster_count; index++) {
             //     this._mine_monster_list[index].refresh_time = this._mine_start_time + GameRules.TwiceGameProcess.game_time + 0.2 * index;
             // }
@@ -243,13 +243,13 @@ export class Spawn extends UIEventRegisterClass {
         this._monster_count = 0;
         this._monster_count_interval = {}
         //普通怪总和
-        for (let index = 1; index <= Object.keys(this.map_info_round[round_index].monster_count_list).length; index++) {
-            this._monster_count += tonumber(this.map_info_round[round_index].monster_count_list[index.toString()])
+        for (let index = 1; index <= Object.keys(this.map_info_round[this._round_index].monster_count_list).length; index++) {
+            this._monster_count += tonumber(this.map_info_round[this._round_index].monster_count_list[index.toString()])
             this._monster_count_interval[index.toString()] = this._monster_count
         }
         // 使用完毕 进入冷却 
-        let monster_t_time = this.map_info_round[round_index].t_time / this._monster_count;
-        let interval_time = this.map_info_round[round_index].interval_time;
+        let monster_t_time = this.map_info_round[this._round_index].t_time / this._monster_count;
+        let interval_time = this.map_info_round[this._round_index].interval_time;
 
         let BossTime = GameRules.GetDOTATime(false,false) + 30;
         let BossRageTime = GameRules.GetDOTATime(false,false) + 60;
@@ -257,8 +257,8 @@ export class Spawn extends UIEventRegisterClass {
         let refresh_type = 1; // 1正在刷怪 2处于间隔冷却
         let monster_refresh_count = 0;
         //普通怪物模式
-        if ([1, 3, 4, 5, 6, 8, 9].includes(this.map_info_round[round_index].monster_type)) {
-            let monster_type = this.map_info_round[round_index].monster_type;
+        if ([1, 3, 4, 5, 6, 8, 9].includes(this.map_info_round[this._round_index].monster_type)) {
+            let monster_type = this.map_info_round[this._round_index].monster_type;
             if (monster_type == 5) {
                 
             }
@@ -268,13 +268,13 @@ export class Spawn extends UIEventRegisterClass {
                 //基础怪
                 if (refresh_type == 1) {  //只有刷怪阶段才出怪
                     let _unit_limit = 60
-                    if (round_index > 5) {
+                    if (this._round_index > 100) {
                         _unit_limit = GameRules.Spawn._unit_limit
                     }
                     if (GameRules.Spawn._spawn_count < _unit_limit) {
                         let _Vector = Vector()
 
-                        if (5 == round_index) {
+                        if (5 == this._round_index) {
                             //怪潮模式    
                             //轮到第几个玩家身边刷怪
                             let h_i = GameRules.Spawn._spawn_num_count % Heros.length;
@@ -326,9 +326,9 @@ export class Spawn extends UIEventRegisterClass {
                         monster_refresh_count++;
                         let bs_spawn_name = "npc_creature_normal_1";
                         //判断该出什么怪物
-                        for (let index = 1; index <= Object.keys(GameRules.Spawn.map_info_round[round_index].monster_list).length; index++) {
+                        for (let index = 1; index <= Object.keys(GameRules.Spawn.map_info_round[this._round_index].monster_list).length; index++) {
                             if (monster_refresh_count <= GameRules.Spawn._monster_count_interval[index.toString()]) {
-                                bs_spawn_name = GameRules.Spawn.map_info_round[round_index].monster_list[index.toString()]
+                                bs_spawn_name = GameRules.Spawn.map_info_round[this._round_index].monster_list[index.toString()]
                                 break;
                             }
                         }
@@ -374,6 +374,20 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn.StopAllSpawnAndMonster();
             return null;
         }, 960);
+        GameRules.GetGameModeEntity().SetContextThink("spawn_round_index", () => {
+            if(this._round_index >= 20){
+                return null
+            }else{
+                this._round_index ++
+                for (let index = 1; index <= Object.keys(this.map_info_round[this._round_index].monster_count_list).length; index++) {
+                    this._monster_count += tonumber(this.map_info_round[this._round_index].monster_count_list[index.toString()])
+                    this._monster_count_interval[index.toString()] = this._monster_count
+                }
+                return 30
+            }
+           
+        }, 30);
+        
     }
     /**
      * 获取玩家怪物数量
