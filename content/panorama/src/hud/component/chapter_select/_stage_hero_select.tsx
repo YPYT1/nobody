@@ -99,20 +99,23 @@ export const StageHeroSelect = () => {
         // let player_state = Object.values(data.hero_ids);
         // $.Msg(["player_state", player_state])
         // setPlayerState(player_state)
-        for (let k in hero_ids) {
-            let index = parseInt(k) - 1;
-            let info = hero_ids[k];
-            // $.Msg(["k",k])
-            let StatePanel = PlayerList.GetChild(index);
-            // $.Msg(StatePanel)
-            if (StatePanel) {
-                StatePanel.visible = true;
-                let HeroIcon = StatePanel.FindChildTraverse("HeroIcon") as ImagePanel;
-                const heroname = heroes_key[info.hero_id]
-                HeroIcon.SetImage(`file://{images}/heroes/selection/${heroname}.png`)
-                StatePanel.SetHasClass("is_ready", info.state == 1)
+        if (PlayerList) {
+            for (let k in hero_ids) {
+                let index = parseInt(k) - 1;
+                let info = hero_ids[k];
+                // $.Msg(["k",k])
+                let StatePanel = PlayerList.GetChild(index);
+                // $.Msg(StatePanel)
+                if (StatePanel) {
+                    StatePanel.visible = true;
+                    let HeroIcon = StatePanel.FindChildTraverse("HeroIcon") as ImagePanel;
+                    const heroname = heroes_key[info.hero_id]
+                    HeroIcon.SetImage(`file://{images}/heroes/selection/${heroname}.png`)
+                    StatePanel.SetHasClass("is_ready", info.state == 1)
+                }
             }
         }
+
 
 
     }, [])

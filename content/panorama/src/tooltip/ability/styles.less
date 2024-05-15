@@ -92,17 +92,26 @@
                 flow-children: right;
                 vertical-align: middle;
 
-                .AbilityName {
+                #AbilityName {
                     vertical-align: middle;
-
+                    // border: 1px solid #000000;
                 }
 
                 .AbilityNameLabel {
-                    vertical-align: middle;
-                    font-size: 23px;
-                    text-overflow: clip;
+                    vertical-align: bottom;
+                    font-size: 22px;
+                    // text-overflow: clip;
                     font-family: defaultFont;
                     text-shadow: 0px 0px 2px 3.0 #000000;
+                }
+
+                .AbilityElement {
+                    margin-right: 4px;
+                    vertical-align: bottom;
+                    font-size: 22px;
+                    text-overflow: clip;
+                    // font-family: defaultFont;
+
                 }
             }
 
@@ -161,9 +170,9 @@
         // border-radius: 8px;
         // padding: 4px;
 
-        Label {
-            color: #ffffff;
-        }
+        // Label {
+        //     color: #ffffff;
+        // }
     }
 
     #AbilityCoreDetails {
@@ -322,5 +331,39 @@
         }
     }
 
+    &.elementkey_0 .AbilityElement {
+        color: #535252;
+        text-shadow: 0px 0px 2px 3.0 #000000;
+    }
     
+    &.elementkey_1 .AbilityElement {
+        color: #ff0000;
+        text-shadow: 0px 0px 2px 3.0 #b40000;
+    }
+    
+    &.elementkey_2 .AbilityElement {
+        color: #00b7ff;
+        text-shadow: 0px 0px 2px 3.0 #005791;
+    }
+
+    &.elementkey_3 .AbilityElement {
+        color: #ffd900;
+        text-shadow: 0px 0px 2px 3.0 #967f00;
+    }
+
+    &.elementkey_4 .AbilityElement {
+        color: #2bff00;
+        text-shadow: 0px 0px 2px 3.0 #188f00;
+    }
+
+    &.elementkey_5 .AbilityElement {
+        color: #fdff9f;
+        text-shadow: 0px 0px 2px 3.0 #919259;
+    }
+
+    &.elementkey_6 .AbilityElement {
+        color: #9d0aff;
+        text-shadow: 0px 0px 2px 3.0 #450086;
+    }
 }
+

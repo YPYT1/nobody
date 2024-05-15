@@ -9,6 +9,7 @@ import { ResourceComponent } from './component/resource/resource';
 import { CenterStatsContainer } from './component/center_stats/_center_stats';
 import { ChapterSelect } from './component/chapter_select';
 import { ArmsSelector } from './component/arms/arms_selector';
+import { RuneSystemContainer } from './component/rune/rune_system';
 
 let HudPanel: Panel;
 let GamePhase: LabelPanel;
@@ -41,14 +42,16 @@ const App = () => {
         let data = event.data;
         let game_select_phase = data.game_select_phase;
         // $.Msg(["MapChapter_GetGameSelectPhase",data])
-        GamePhase.text = `GamePhase: ${game_select_phase}`;
+        if (GamePhase) { GamePhase.text = `GamePhase: ${game_select_phase}`; }
+        if (HudPanel) {
+            HudPanel.SetHasClass("GameSelectPhase_0", game_select_phase == 0);
+            HudPanel.SetHasClass("GameSelectPhase_1", game_select_phase == 1);
+            HudPanel.SetHasClass("GameSelectPhase_2", game_select_phase == 2);
+            HudPanel.SetHasClass("GameSelectPhase_3", game_select_phase == 3);
+            HudPanel.SetHasClass("GameSelectPhase_4", game_select_phase == 4);
+            HudPanel.SetHasClass("GameSelectPhase_999", game_select_phase == 999);
+        }
 
-        HudPanel.SetHasClass("GameSelectPhase_0", game_select_phase == 0);
-        HudPanel.SetHasClass("GameSelectPhase_1", game_select_phase == 1);
-        HudPanel.SetHasClass("GameSelectPhase_2", game_select_phase == 2);
-        HudPanel.SetHasClass("GameSelectPhase_3", game_select_phase == 3);
-        HudPanel.SetHasClass("GameSelectPhase_4", game_select_phase == 4);
-        HudPanel.SetHasClass("GameSelectPhase_999", game_select_phase == 999);
         // setGameSelectPhase(data.game_select_phase)
     })
 
@@ -65,6 +68,14 @@ const App = () => {
             <ResourceComponent />
             <ChapterSelect />
             <ArmsSelector />
+
+            <RuneSystemContainer />
+
+
+
+
+
+
 
             <Label id='GamePhase' text={`GamePhase: 0`} onload={(e) => { GamePhase = e; }} />
         </Panel>

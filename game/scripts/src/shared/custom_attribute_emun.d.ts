@@ -79,20 +79,23 @@ declare type CustomAttributeConversionType = {
 }
 
 
-declare type OverrideSpecialKeyTypes = "projectile_speed"
-    | "bounce_count"
-    | "projectile_count"
-    | "aoe_radius"
-    | "damage_interval_cut"
-    | "cooldown_cut"
-    | "summoned_duration"
-    | "summoned_damage"
-    | "buff_duration"
-    | "debuff_duration"
-    | "shield_amplify"
-    | "health_amplify"
-    | "extra_count"
-
+declare type OverrideSpecialKeyTypes = "skv_count"
+    | "skv_radius"
+    | "skv_duration"
+    | "skv_growth"
+    | "skv_damage"
+    | "skv_financing"
+    | "skv_defense"
+    | "skv_summoned_duration"
+    | "skv_income"
+    | "skv_haste"
+    | "skv_fire"
+    | "skv_thunder"
+    | "skv_ice"
+    | "skv_wind"
+    | "skv_light"
+    | "skv_dark"
+    
 declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Correct";
 
 

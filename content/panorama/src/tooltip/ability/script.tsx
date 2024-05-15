@@ -5,7 +5,7 @@ import { default as ArmsCombo } from "./../../json/config/game/arms_combo.json";
 import { default as NpcAbilityCustom } from "./../../json/npc_abilities_custom.json";
 import { default as AbilitiesArms } from "./../../json/abilities/arms.json";
 
-import { SetAbilityDescription, GetAbilityRarity } from '../../utils/ability_description';
+import { SetAbilityDescription, GetAbilityRarity, GetAbilityTypeCategory, GetAbilityElementLabel } from '../../utils/ability_description';
 import { ConvertAttributeValues, GetAbilityAttribute } from '../../utils/attribute_method';
 import { CAbilityImage } from '../../components/ability_image';
 
@@ -113,96 +113,88 @@ export function FormatDamageFormula(Formula: string) {
 
 export function App() {
 
+    const [ElementKey, setElementKey] = useState(0);
     const [Rarity, setRarity] = useState(0);
     const [index, setIndex] = useState(0 as AbilityEntityIndex);
     const [AbilityName, setAbilityName] = useState("")
+    const [ElementLabel, setElementLabel] = useState("")
     const [name, setName] = useState("Loading...");
     const [description, setDescription] = useState("");
     const [level, setLevel] = useState(1);
     const [attributes, setAttributes] = useState("");
-    // const [casttype, setCasttype] = useState("无目标");
     const [cooldown, setCooldown] = useState(0);
     const [mana, setMana] = useState(0);
-
+    const [TypeCategory, setTypeCategory] = useState("")
     const [ComboList, setComboList] = useState<string[]>([])
 
-    const UpdateAbilityFromName = (ext_int: number) => {
-        const name = $.GetContextPanel().GetAttributeString("name", "");
-        const level = $.GetContextPanel().GetAttributeInt("item_level", 1);
-        const abilityData = NpcAbilityCustom[name as "public_phase_move"];
-        setName($.Localize(`#DOTA_Tooltip_Ability_${name}`));
-        const description = SetAbilityDescription(name, undefined, level);
-        setDescription(description);
+    const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
+        let ability_name: string;
+        let ability_level = 1;
+        let ability_cooldown = 0;
+        let ability_mana = 0;
 
-        // 冷却
-        // $.Msg(abilityData.AbilityCooldown);
-        let AbilityCooldown = abilityData.AbilityCooldown as string | number;
-        if (AbilityCooldown != null) {
-            let cd_num = 0;
-            if (typeof (AbilityCooldown) == "string") {
-                cd_num = parseFloat(AbilityCooldown.split(" ")[0]);
-
-            } else {
-                cd_num = AbilityCooldown;
-            }
-            setCooldown(cd_num);
+        if (entityIndex != -1) {
+            ability_name = Abilities.GetAbilityName(entityIndex);
+            ability_level = Abilities.GetLevel(entityIndex)
+            ability_cooldown = Abilities.GetCooldown(entityIndex);
+            ability_mana = Abilities.GetManaCost(entityIndex);
         } else {
-            setCooldown(0);
+            ability_name = name;
         }
 
-        let AttributeObject = GetAbilityAttribute(name);
+        const abilityData = NpcAbilityCustom[ability_name as "public_phase_move"];
+        if (entityIndex == -1) {
+            // cooldown
+            let AbilityCooldown = abilityData.AbilityCooldown as string | number;
+            if (AbilityCooldown != null) {
+                let cd_num = 0;
+                if (typeof (AbilityCooldown) == "string") {
+                    cd_num = parseFloat(AbilityCooldown.split(" ")[0]);
+                } else {
+                    cd_num = AbilityCooldown;
+                }
+                ability_cooldown = cd_num
+            } else {
+                ability_cooldown = 0
+            }
+
+            // mana
+        }
+
+        let type_category = GetAbilityTypeCategory(ability_name);
+        let element = GetAbilityElementLabel(ability_name)
+
+        let AttributeObject = GetAbilityAttribute(ability_name);
         let attr_list = ConvertAttributeValues(AttributeObject);
+        let description = SetAbilityDescription(ability_name, undefined, ability_level);
+
+        setElementKey(element)
+        setElementLabel($.Localize(`#custom_text_element_title_${element}`))
+        setTypeCategory(type_category.join(","))
+        setRarity(GetAbilityRarity(ability_name))
+        setComboList(GetAbilityCombo(ability_name))
+
+        setLevel(ability_level);
+        setCooldown(ability_cooldown);
         setAttributes(attr_list);
-
-        setLevel(level);
-        setRarity(GetAbilityRarity(name))
-        setComboList(GetAbilityCombo(name))
-        setAbilityName(name)
-    };
-
-    const UpdateAbilityFromEntity = (entityIndex: AbilityEntityIndex, ext_int: number) => {
-        const name = Abilities.GetAbilityName(entityIndex);
-        setName($.Localize(`#DOTA_Tooltip_Ability_${name}`));
-        const level = Abilities.GetLevel(entityIndex);
-        const description = SetAbilityDescription(null, entityIndex, 1);
         setDescription(description);
-        const cooldown = Abilities.GetCooldown(entityIndex);
-        // const cooldown = Abilities.GetCooldownLength(entityIndex);
-        // $.Msg(["cooldown",cooldown])
-        const cd_str = cooldown.toFixed(1);
-        setCooldown(parseFloat(cd_str));
-        const mana = Abilities.GetManaCost(entityIndex);
-        setMana(mana);
-        setLevel(level);
-        setRarity(GetAbilityRarity(name))
-        setComboList(GetAbilityCombo(name))
-        let AttributeObject = GetAbilityAttribute(name);
-        let attr_list = ConvertAttributeValues(AttributeObject);
-        setAttributes(attr_list);
-        setAbilityName(name)
-    };
+        setName($.Localize(`#DOTA_Tooltip_Ability_${ability_name}`));
+        setAbilityName(ability_name)
+    }
 
     // 更新面板
     $.GetContextPanel().SetPanelEvent("ontooltiploaded", () => {
         let ContextPanel = $.GetContextPanel();
         let entityIndex = $.GetContextPanel().GetAttributeInt("entityIndex", 0) as AbilityEntityIndex;
-        let ext_int = $.GetContextPanel().GetAttributeInt("ext_int", 0);
         let name = $.GetContextPanel().GetAttributeString("name", "");
-        // setIndex(entityIndex);
-        // $.Msg(["ontooltiploaded",entityIndex])
-        // $.Msg(["ext_int", ext_int]);
-        if (entityIndex < 1) {
-
-            UpdateAbilityFromName(ext_int);
-        } else {
-            UpdateAbilityFromEntity(entityIndex, ext_int);
-        }
+        let ext_int = $.GetContextPanel().GetAttributeInt("ext_int", 0);
+        SetAbilityBaseInfo(name, entityIndex)
     });
 
     return useMemo(() => (
         <Panel
             id="CustomTooltipAbility"
-            className={`tooltip-row rarity_${Rarity}`}
+            className={`tooltip-row rarity_${Rarity} elementkey_${ElementKey}`}
             onload={(e) => {
                 let m_TooltipPanel = $.GetContextPanel().GetParent()!.GetParent()!;
                 $.GetContextPanel().GetParent()!.FindChild('LeftArrow')!.visible = false;
@@ -219,8 +211,9 @@ export function App() {
                 <Panel className='AbilityLabel'>
                     <Panel className='NameAndCost'>
                         <Panel id="AbilityName" className="flow-right">
+                            <Label className='AbilityElement' text={ElementLabel} />
                             <Label className='AbilityNameLabel' html={true} text={name} />
-                            {/* <Label html={true} dialogVariables={{ level: `${level}` }} localizedText="#DOTA_AbilityTooltip_Level" /> */}
+
                         </Panel>
                         <Panel id="CurrentItemCosts" className="flow-right">
                             <Label id="Cooldown" visible={cooldown > 0} text={cooldown} html={true} />
@@ -228,7 +221,7 @@ export function App() {
                         </Panel>
                     </Panel>
                     <Panel className='Category'>
-                        <Label text={"范围型"} />
+                        <Label text={TypeCategory} />
                     </Panel>
                 </Panel>
             </Panel>

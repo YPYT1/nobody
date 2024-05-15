@@ -8,9 +8,21 @@
         <include src="./styles.less" />
     </styles>
     <snippets>
-        <snippet name="SnippetName">
-            <Panel class="SnippetPanelClass">
-                
+        <snippet name="ItemRune">
+            <Panel class="ItemRune">
+                <Panel id="RuneImage">
+                    <Image id="RuneIcon" />
+                    <Panel id="RuneCount" >
+                        <Label text="{s:rune_count}"/>
+                    </Panel>
+                    
+                </Panel>
+                <Panel id="RuneName">
+                    <Label text="{s:rune_name}"/>
+                </Panel>
+                <Panel id="RuneDesc">
+                    <Label text="{s:rune_desc}"/>
+                </Panel>
             </Panel>
         </snippet>
     </snippets>

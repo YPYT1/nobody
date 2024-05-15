@@ -7,7 +7,7 @@
  * 5.光
  * 6.暗
 */
-type CElementType = "null" | "fire" | "ice" | "thunder" | "wind" | "light" | "dark" | "null";
+type CElementType = "null" | "fire" | "ice" | "thunder" | "wind" | "light" | "dark" ;
 
 declare const enum ElementTypeEnum {
     null = 0,

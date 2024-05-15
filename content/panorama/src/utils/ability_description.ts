@@ -78,18 +78,18 @@ export function SetAbilityDescription(
     if (entityIndex) {
         level = Abilities.GetLevel(entityIndex);
     }
-    $("#AbilityDamageType")?.SetHasClass("Hidden", true);
+    // $("#AbilityDamageType")?.SetHasClass("Hidden", true);
     let abilityData = NpcAbilityCustom[ability_name as "public_template"];
     let AbilityValues: AbilityValuesProps = abilityData.AbilityValues;
     let original_description_txt = FormatDescription(ability_name, AbilityValues, level, undefined, entityIndex);
     if (original_description_txt.search("#") == 0) { return ""; }
 
     original_description_txt = original_description_txt.replaceAll(
-        "%AbilityCooldown%", 
+        "%AbilityCooldown%",
         `<span class="GameplayVariable">${abilityData.AbilityCooldown ?? 0}</span>`
     );
     if (abilityData.DamageFormula || abilityData.DamageFormula == "0") {
-        $("#AbilityDamageType")?.SetHasClass("Hidden", false);
+        // $("#AbilityDamageType")?.SetHasClass("Hidden", false);
         let damage_formula = abilityData.DamageFormula;
         if (damage_formula) {
             // $.Msg(["damage_formula",damage_formula])
@@ -103,6 +103,16 @@ export function SetAbilityDescription(
     return original_description_txt;
 }
 
+export const GetAbilityInfoData = (ability_name: string) => {
+
+    let ability_info = {
+        "Element": 0,
+        "Category": ["null"],
+        "Rarity": 0,
+    }
+}
+
+
 /** 获取技能品质 
  *  1白2绿3蓝4紫5金6橙7红8黑9彩
 */
@@ -110,6 +120,34 @@ export const GetAbilityRarity = (ability_name: string) => {
     let abilityData = NpcAbilityCustom[ability_name as "public_template"];
     if (abilityData != null) {
         return abilityData.Rarity
+    } else {
+        return 0
+    }
+}
+
+export const GetAbilityTypeCategory = (ability_name: string) => {
+    let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
+    if (abilityData != null && abilityData.Category) {
+        let category_str = `${abilityData.Category}`;
+        let cate_list = category_str.split(",");
+        let cate_label: string[] = [];
+        cate_list.map((v, k) => {
+            cate_label.push(v)
+        })
+        return cate_label
+    } else {
+        return ["null"]
+    }
+}
+
+export const GetAbilityElementLabel = (ability_name: string) => {
+    let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
+    if (abilityData != null && abilityData.Element) {
+        if (abilityData.Element != 0){
+           return abilityData.Element
+        } else {
+            return 0
+        }
     } else {
         return 0
     }
