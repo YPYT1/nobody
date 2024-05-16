@@ -326,6 +326,20 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             }
         );
     }
+
+    /**
+     * 修改元素属性
+     * @param player_id 玩家id
+     * @param Element 元素
+     * @param count 数量
+     */
+    SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number){
+        this.ElementBondDateList[player_id].Element[Element] += count;
+        this.GetArmssElementBondDateList(player_id, {})
+    }
+
+
+
     /**
      * 获取物品信息初始化信息
      */
