@@ -16,6 +16,7 @@ export class BaseArmsAbility extends BaseAbility {
     //     PrecacheResource("particle", "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova.vpcf", context);
     // }
 
+    is_init: boolean;
     // mdf_name: string;
     key: string;
     arms_cd: number;
@@ -90,6 +91,7 @@ export class BaseArmsAbility extends BaseAbility {
     SetLinkBuff(hBuff: CDOTA_Buff) { this.buff = hBuff }
 
     OnUpgrade() {
+
         this.element_type = 0;
         this.dmg_formula = "0";
         this.caster = this.GetCaster();
@@ -103,13 +105,20 @@ export class BaseArmsAbility extends BaseAbility {
         this.AffectedActTime = GameRules.GetDOTATime(false, false) + 1;
         GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
         this.UpdateDamageFormula()
-        this._OnUpdateKeyValue()
+        this._OnUpdateKeyValue();
+
+
     }
 
     UpdateDamageFormula() {
         let KeyValues = this.GetAbilityKeyValues() as any;
         if (KeyValues.DamageFormula) { this.dmg_formula = KeyValues.DamageFormula; }
-        if (KeyValues.element_type) { this.element_type = tonumber(KeyValues.element_type) }
+        if (KeyValues.Element) { this.element_type = tonumber(KeyValues.Element) }
+        if (this.is_init == null) {
+            this.is_init = true;
+            print("init", this.player_id, this.element_type, 1)
+            GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, 1)
+        }
 
     }
 
@@ -135,7 +144,12 @@ export class BaseArmsAbility extends BaseAbility {
         let kill_index = hCaster.OnKillList.indexOf(this);
         if (kill_index != -1) { hCaster.OnKillList.splice(kill_index, 1) }
 
-        GameRules.ArmsCombo.RemoveCheckComboSets(hCaster, this)
+        GameRules.ArmsCombo.RemoveCheckComboSets(hCaster, this);
+        print("element_type",this.element_type)
+        if (this.element_type && this.element_type > 0) {
+            GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, -1)
+        }
+
         this._RemoveSelf();
     }
 

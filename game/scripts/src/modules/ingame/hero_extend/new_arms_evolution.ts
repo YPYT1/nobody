@@ -334,6 +334,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * @param count 数量
      */
     SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number){
+        print("SetElementBondDate",player_id,Element,count)
         this.ElementBondDateList[player_id].Element[Element] += count;
         this.GetArmssElementBondDateList(player_id, {})
     }

@@ -25,6 +25,13 @@
                 </Panel>
             </Panel>
         </snippet>
+        <snippet name="BuffBorder">
+            <Button class="BuffBorder">
+                <Image id="BuffImage" scaling='stretch-to-fit-y-preserve-aspect'/>
+                <Label id="StackCount" text="{s:stack_count}" />
+                <Panel id="CircularDuration" />
+            </Button>
+        </snippet>
     </snippets>
     <Panel class="root" hittest="false" />
 </root>

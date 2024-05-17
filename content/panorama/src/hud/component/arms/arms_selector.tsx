@@ -25,13 +25,14 @@ const ArmsAbilityRow = ({ ability_name, order }: { ability_name: string, order: 
 export const ArmsSelector = () => {
 
     let ArmsSelectorPanel:Panel;
+    
     const [ArmsList, setArmsList] = useState<PlayerUpgradeSelectServer[]>([])
     const [Hide, setHide] = useState(true);
     const [Minimize, setMinimize] = useState(false);
 
     useGameEvent("NewArmsEvolution_GetArmssSelectData", event => {
         let data = event.data.Data;
-        $.Msg(["data", data])
+        // $.Msg(["data", data])
         let arms_list = Object.values(data.arms_list);
         setArmsList(arms_list);
 

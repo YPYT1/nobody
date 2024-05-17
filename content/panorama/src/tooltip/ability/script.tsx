@@ -128,12 +128,12 @@ export function App() {
     const [ComboList, setComboList] = useState<string[]>([])
 
     const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
+        // $.Msg(["name",name,"entityIndex",entityIndex])
         let ability_name: string;
         let ability_level = 1;
         let ability_cooldown = 0;
         let ability_mana = 0;
-
-        if (entityIndex != -1) {
+        if (entityIndex > 0) {
             ability_name = Abilities.GetAbilityName(entityIndex);
             ability_level = Abilities.GetLevel(entityIndex)
             ability_cooldown = Abilities.GetCooldown(entityIndex);

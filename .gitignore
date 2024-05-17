@@ -49,3 +49,4 @@ materials
 /game/scripts/npc/items
 /game/scripts/npc/units
 /game/resource/kv_generated.csv
+/game/scripts/npc/localize

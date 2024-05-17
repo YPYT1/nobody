@@ -10,6 +10,8 @@ import { CenterStatsContainer } from './component/center_stats/_center_stats';
 import { ChapterSelect } from './component/chapter_select';
 import { ArmsSelector } from './component/arms/arms_selector';
 import { RuneSystemContainer } from './component/rune/rune_system';
+import { ElementBondContainer } from './component/element_bond/element_bond';
+import { BuffListContainer } from './component/center_stats/buff_list';
 
 let HudPanel: Panel;
 let GamePhase: LabelPanel;
@@ -18,7 +20,7 @@ let GameSelectPhase = 0;
 const HideOfficialLayoutUI = (e: Panel) => {
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_TIMEOFDAY, false);
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_HEROES, false);
-    GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_PANEL, false);
+    GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_PANEL, true);
     // 小地图
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_MINIMAP, false);
     // 击杀
@@ -70,8 +72,9 @@ const App = () => {
             <ArmsSelector />
 
             <RuneSystemContainer />
+            <ElementBondContainer />
 
-
+            <BuffListContainer />
 
 
 
