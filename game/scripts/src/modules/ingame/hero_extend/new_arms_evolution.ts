@@ -273,13 +273,13 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             //减少原来的元素羁绊
             let Ability = MyHero.GetAbilityByIndex(Index);
             let Key = Ability.GetAbilityName();
-            let OldElement = ArmsJson[Key as keyof typeof ArmsJson].Element;
-            if(this.ElementBondDateList[player_id].Element[OldElement] > 0){
-                this.ElementBondDateList[player_id].Element[OldElement] --;
-            }
-            let Element = ArmsJson[ability_name as keyof typeof ArmsJson].Element;
-            //更新元素羁绊信息
-            this.ElementBondDateList[player_id].Element[Element]++;
+            // let OldElement = ArmsJson[Key as keyof typeof ArmsJson].Element;
+            // if(this.ElementBondDateList[player_id].Element[OldElement] > 0){
+            //     this.ElementBondDateList[player_id].Element[OldElement] --;
+            // }
+            // let Element = ArmsJson[ability_name as keyof typeof ArmsJson].Element;
+            // //更新元素羁绊信息
+            // this.ElementBondDateList[player_id].Element[Element]++;
             this.GetArmssElementBondDateList(player_id, {})
 
 
