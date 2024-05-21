@@ -328,12 +328,11 @@ export class MapChapter extends UIEventRegisterClass {
         this.GetGameSelectPhase(-1, {})
         //开始刷怪
         GameRules.Spawn.Init(ChapterData.map_centre_x, ChapterData.map_centre_y)
-
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawn",
             () => {
                 GameRules.Spawn._game_start = true;
-                GameRules.Spawn.StartSpawn(1)
+                GameRules.Spawn.StartSpawn()
                 return null;
             },
             5
@@ -373,6 +372,8 @@ export class MapChapter extends UIEventRegisterClass {
                 GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(index)
                 //初始化可用符文 == 清理
                 GameRules.RuneSystem.InitPlayerUpgradeStatus(index)
+                //初始化神秘商店
+                GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(index)
 
             }
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
@@ -405,6 +406,11 @@ export class MapChapter extends UIEventRegisterClass {
     Debug(cmd: string, args: string[], player_id: PlayerID) {
 
         if (cmd == "-fh") {
+            this.ReturntoCamp()
+        }
+        if (cmd == "-qzfh") {
+            GameRules.Spawn._game_start = false
+            this._game_select_phase = 999
             this.ReturntoCamp()
         }
         if (cmd == "-di") {

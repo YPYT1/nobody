@@ -119,6 +119,8 @@ export class Spawn extends UIEventRegisterClass {
     
     _game_start : boolean = false;
 
+    _game_player_ds : number = 0;
+
     constructor() {
         super("Spawn")  
     }
@@ -195,8 +197,10 @@ export class Spawn extends UIEventRegisterClass {
 
         //根据玩家数量修改上线
         this._unit_limit = math.floor(this._unit_limit + GameRules.PUBLIC_CONST.PLAYER_COUNT_MONSTER_MAX[this.player_count - 1]);
-
+        //初始化刷怪
         GameRules.Spawn.OnSpawnLoadCoord();
+        //初始化流程怪物
+        GameRules.Spawn.SpawnInit();
     }
     
     OnSpawnLoadCoord() {
@@ -222,11 +226,18 @@ export class Spawn extends UIEventRegisterClass {
         }
         return null
     }
+    /**
+     *  怪物初始化
+     */
+    SpawnInit(){
+        this._round_index = 1;
+        this._game_player_ds = 0;
+    }
 
     //开始刷怪
-    StartSpawn(round_index: number) {
-        this._round_index = round_index;
+    StartSpawn() {
         this._map_time = 0;
+        this._game_player_ds++;
         //如果为第一波 则需要修改第一波刷出地雷怪的时间 因为内部时间重新计时了
 
         if (this._round_index == 1) {
@@ -257,6 +268,7 @@ export class Spawn extends UIEventRegisterClass {
         let refresh_type = 1; // 1正在刷怪 2处于间隔冷却
         let monster_refresh_count = 0;
         //普通怪物模式
+
         if ([1, 3, 4, 5, 6, 8, 9].includes(this.map_info_round[this._round_index].monster_type)) {
             let monster_type = this.map_info_round[this._round_index].monster_type;
             if (monster_type == 5) {
@@ -365,17 +377,16 @@ export class Spawn extends UIEventRegisterClass {
                 return 1;
             }, 0)
         }
-
         GameRules.GetGameModeEntity().SetContextThink("ProcessCreateBoss", () => {
             GameRules.Spawn.CreateBoss();
             return null;
-        }, 900);
+        }, 60 );
         GameRules.GetGameModeEntity().SetContextThink("GameOverTime", () => {
             GameRules.Spawn.StopAllSpawnAndMonster();
             return null;
-        }, 960);
+        }, 90);
         GameRules.GetGameModeEntity().SetContextThink("spawn_round_index", () => {
-            if(this._round_index >= 20){
+            if(this._round_index >= 5 * this._game_player_ds){
                 return null
             }else{
                 this._round_index ++
@@ -383,10 +394,9 @@ export class Spawn extends UIEventRegisterClass {
                     this._monster_count += tonumber(this.map_info_round[this._round_index].monster_count_list[index.toString()])
                     this._monster_count_interval[index.toString()] = this._monster_count
                 }
-                return 30
+                return 60
             }
-           
-        }, 30);
+        }, 60);
         
     }
     /**
@@ -682,6 +692,30 @@ export class Spawn extends UIEventRegisterClass {
             // GameRules.InvestSystem.StopEarnings();
         // this.StopAllSpawnAndMonster(true);
     }
+    /**
+     * 暂时停止游戏 并开启商店
+     */
+    TemporarilyStopTheGame(){
+        GameRules.GetGameModeEntity().SetContextThink("StopAllSpawnAndMonster", () => {
+            
+            GameRules.GetGameModeEntity().StopThink("MapCommonSpawnTimers");
+            GameRules.GetGameModeEntity().StopThink("ProcessCreateBoss");
+            GameRules.GetGameModeEntity().StopThink("GameOverTime");
+            // 清理小怪
+            for (let unit of this._map_Spawn_list) {
+                if (unit.IsNull() == false) {
+                    //是通过击杀boss    
+                    GameRules.Spawn.CreepNormalRemoveSelf(unit, 0.1);
+                    this._spawn_count = 0;
+                    this._map_Spawn_list = [];
+                }
+            }
+            GameRules.MysticalShopSystem.RefreshMysticalShopItem();
+            return null
+        }, 0)
+
+    }
+
     
     //通过游戏胜利 或失败 清空所有怪物
     StopAllSpawnAndMonster(GameWin: Boolean = false, iskillboss: Boolean = false) {
@@ -721,7 +755,7 @@ export class Spawn extends UIEventRegisterClass {
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-ss") {
             let round = parseInt(args[0])
-            GameRules.Spawn.StartSpawn(round)
+            GameRules.Spawn.StartSpawn()
         }
         if (cmd == "-ssi") {
             GameRules.Spawn.Init(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y)
@@ -873,7 +907,12 @@ export class Spawn extends UIEventRegisterClass {
         //击杀boss奖励
         this._map_boss_unit = null;
         this._map_boss_refresh = false;
-        GameRules.Spawn.StopAllSpawnAndMonster()
+        if(GameRules.Spawn._game_player_ds <= 3){
+            GameRules.Spawn.TemporarilyStopTheGame(); 
+        }else{
+            GameRules.Spawn.StopAllSpawnAndMonster()
+        }
+        
     }
 
     //移除单位

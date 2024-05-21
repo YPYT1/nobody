@@ -15,6 +15,7 @@ import { Spawn } from './ingame/spawns/spawn';
 import { CMsg } from './ingame/system/cmsg';
 import { NewArmsEvolution } from './ingame/hero_extend/new_arms_evolution';
 import { RuneSystem } from './ingame/system/rune_system';
+import { MysticalShopSystem } from './ingame/system/mystical_shop_system';
 
 declare global {
 
@@ -38,6 +39,7 @@ declare global {
         SummonedSystem: SummonedSystem;
         CustomMechanics: CustomMechanics;
         RuneSystem: RuneSystem;
+        MysticalShopSystem : MysticalShopSystem;
     }
 }
 
@@ -75,6 +77,7 @@ export class GameEvent {
             GameRules.SummonedSystem = new SummonedSystem();
             GameRules.CMsg = new CMsg();
             GameRules.RuneSystem = new RuneSystem();
+            GameRules.MysticalShopSystem = new MysticalShopSystem();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
@@ -115,6 +118,8 @@ export class GameEvent {
             GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id)
             //初始化可用符文
             GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id)
+            //初始化神秘商店
+            GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id)
 
 
             let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);

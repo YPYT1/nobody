@@ -541,3 +541,9 @@ function FindUnitsInRing(
 
     return _targets
 }
+/**
+ * 获取玩家数量
+ */
+function GetPlayerCount() :  number{
+    return PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS)
+}

@@ -70,6 +70,27 @@ declare interface CustomGameEventDeclarations {
             game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3游戏开始了 ----结束---> 0处于营地
         };
     }
+
+     /**
+     * 获取神秘商店信息
+     */
+     MysticalShopSystem_GetShopData: {
+        data: {
+            shop_field_list: ShopFieldList[], //玩家商店信息
+            player_refresh_data: PlayerRefreshData; //玩家刷新信息
+        };
+    };
+
+    /**
+     * 获取神秘商店准备状态等
+     */
+    MysticalShopSystem_GetShopState: {
+        data: {
+            shop_state_data: ShopStateData[], //每个玩家的准备状态
+            start_buy_state: number ; //是否显示商店
+            countdown_timer : number ; //倒计时时间
+        };
+    };
 }
 
 
@@ -98,3 +119,21 @@ declare interface ElementBondDateList { //羁绊信息
     };
 }
 
+declare interface ShopFieldList {
+    key : string, //物品key
+    soul : number, // 需要灵魂
+    is_discount: number, //折扣 1为折扣 0为没打折
+    discount_rate: number, // 80%  20% 10 % 1% ----不低于1%
+    rarity: number, // 稀有度 1 2 3 4 5
+    is_buy: number, // 0 未购买 1 已购买
+    is_lock : number , //是否锁定
+}
+//商店刷新信息
+declare interface PlayerRefreshData {
+    refresh_count: number, //刷新次数
+    soul: number, //刷新灵魂
+}
+//商店状态信息
+declare interface ShopStateData {
+    is_ready : number, // 是否准备好了 0 未准备好 1准备好了
+}

@@ -16,7 +16,7 @@ declare const enum ElementTypeEnum {
     thunder = 3,
     wind = 4,
     light = 5,
-    dark = 6
+    dark = 6    
 }
 
 declare const enum ArmsAbilityCategory {
@@ -50,7 +50,7 @@ declare const enum DebuffTypes {
     rooted = 4,
     /** 缴械 [无法攻击]*/
     disarmed = 5,
-    /**魅惑 [缓慢靠近施法者]*/
+    /**魅惑 [缓慢靠近施法者]*/  
     charm = 6,
     /** 破坏 [被动失效]*/
     break = 7,

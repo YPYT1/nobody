@@ -76,5 +76,6 @@ export class Debug {
         GameRules.ArmsCombo.Debug(cmd, args, keys.playerid)
         GameRules.Spawn.Debug(cmd, args, keys.playerid)
         GameRules.RuneSystem.Debug(cmd, args, keys.playerid)
+        GameRules.MysticalShopSystem.Debug(cmd, args, keys.playerid)
     }
 }

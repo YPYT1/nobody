@@ -1,4 +1,32 @@
 declare interface CGED {
+    //神秘商店
+    MysticalShopSystem : {
+        //购买物品
+        BuyItem : {
+            index : number // 购买位置 从0开始
+        }
+        //单物锁定
+        ShopLock : {
+            index : number // 锁定位置 从0开始
+        }
+        //玩家准备
+        PlayerReady : {
+
+        }
+        //刷新商店
+        RefreshShopByGold : {
+
+        }
+        //获取商店状态 是否可以购买等
+        GetShopState : {
+
+        }
+        //获取商店出售数据
+        GetShopData : {
+
+        }
+    }
+
     ArmsEvolution : {
         CreatArmssSelectData: {//当有技能点时可刷新选技能列表
         },
