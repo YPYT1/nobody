@@ -35,11 +35,5 @@ export class modifier_arms_ extends BaseArmsModifier {
     GetModifierMoveSpeedBonus_Percentage(): number {
         return this.bonus_mv_pct * (100 - this.caster.GetHealthPercent())
     }
-    // C_OnCreated(params: any): void {
-    //     this.StartIntervalThink(0.5)
-    // }
 
-    // OnIntervalThink(): void {
-    //     let health_lost_pct = 100 - this.caster.GetHealthPercent();
-    // }
 }

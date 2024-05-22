@@ -17,9 +17,11 @@ export function HideCustomTooltip() {
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_text");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_ability");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_item");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_element_syenrgy");
+    
 }
 
-declare type TooltipType = "ability" | "item";
+declare type TooltipType = "ability" | "item" | "element_syenrgy";
 
 export function ShowCustomTooltip(
     panel: Panel,
@@ -50,6 +52,15 @@ export function ShowCustomTooltip(
             "name=" + name
             + "&item_level=" + item_level
             + "&entityIndex=" + entityIndex
+        );
+    } else if (type == "element_syenrgy"){
+        $.DispatchEvent(
+            "UIShowCustomLayoutParametersTooltip",
+            panel,
+            "custom_tooltip_element_syenrgy",
+            "file://{resources}/layout/custom_game/tooltip/element_syenrgy/layout.xml",
+            "element_type=" + item_level
+            + "&element_count=" + value
         );
     }
 }

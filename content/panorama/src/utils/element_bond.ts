@@ -1,0 +1,24 @@
+import { default as ElementBondConst } from "../json/config/game/element_bond.json";
+
+
+type ElementBondTypeKey = keyof typeof ElementBondConst;
+type ElementBondTypeRowData = typeof ElementBondConst[ElementBondTypeKey]
+
+interface ElementBondProps {
+    [element: string]: number[]
+}
+
+
+export const GetElementBondTable = () => {
+    let element_table: { [element: string]: number[] } = {};
+
+    for (let k in ElementBondConst) {
+        let row_data = ElementBondConst[k as keyof typeof ElementBondConst];
+        let CElementType = row_data.CElementType;
+        let activate_count = row_data.activate_count;
+        if (element_table[CElementType] == null) { element_table[CElementType] = [] }
+        element_table[CElementType].push(activate_count)
+    }
+
+    return element_table
+}

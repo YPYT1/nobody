@@ -403,6 +403,11 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         this.EvolutionPoint[player_id] += count;
         this.GetEvolutionPoint(player_id , {});
     }
+
+    GetArmsElementType(hAbility:CDOTABaseAbility){
+        let ability_name = hAbility.GetAbilityName();
+        
+    }
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         if(cmd == "-arms_add"){
              let count = args[0] ? parseInt(args[0]) : 1;

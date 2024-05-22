@@ -5,6 +5,7 @@ export class modifier_custom_override extends BaseModifier {
 
     bDirty: boolean;
     player_id: PlayerID;
+    hParent: CDOTA_BaseNPC;
 
     IsHidden(): boolean {
         return true
@@ -20,6 +21,7 @@ export class modifier_custom_override extends BaseModifier {
 
     OnCreated(params: object): void {
         this.bDirty = true;
+        this.hParent = this.GetParent();
         this.player_id = this.GetParent().GetPlayerOwnerID();
         if (IsServer()) {
             CustomNetTables.SetTableValue("unit_special_value", tostring(this.player_id), this.GetParent().OverrideSpecial);
@@ -51,6 +53,7 @@ export class modifier_custom_override extends BaseModifier {
         return [
             ModifierFunction.OVERRIDE_ABILITY_SPECIAL,
             ModifierFunction.OVERRIDE_ABILITY_SPECIAL_VALUE,
+            ModifierFunction.COOLDOWN_PERCENTAGE,
         ]
     }
 
@@ -102,5 +105,13 @@ export class modifier_custom_override extends BaseModifier {
             return flResult
         }
 
+    }
+
+    GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
+        if (this.hParent == null || event.ability == null) { return 0; }
+        let hAbility = event.ability;
+        let skv_haste = GameRules.CustomOverrideAbility.GetOverrideKeyValue(this.player_id, "skv_haste");
+
+        return 100
     }
 }

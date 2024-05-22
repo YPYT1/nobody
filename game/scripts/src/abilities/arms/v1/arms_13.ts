@@ -129,6 +129,7 @@ export class modifier_arms_13_thinker extends BaseModifier {
                     damage_type: DamageTypes.MAGICAL,
                     ability: this.GetAbility(),
                     element_type: ElementTypeEnum.fire,
+                    is_direct: true,
                 })
             }
 

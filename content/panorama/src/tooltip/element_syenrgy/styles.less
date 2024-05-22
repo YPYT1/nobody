@@ -1,0 +1,102 @@
+@import url("./../../_styles/variables/_rare.less");
+
+#Contents {
+    padding: 0px;
+    border: 0px solid #00000000;
+    background-color: #00000000;
+    box-shadow: none;
+
+    &.Tooltip {
+        background-color: #00000000;
+        background-repeat: no-repeat;
+        background-position: left top;
+        padding: 0px;
+    }
+}
+
+#CustomTooltip {
+    width: 320px;
+    border: 1.5px solid #000000;
+    // border-radius: 6px;
+    // background-image: url("file://{images}/custom_game/hero_choose/border_background.png");
+    background-color: #1b1b1bf8;
+    flow-children: down;
+    // background-color: #000000e1;
+    padding: 8px;
+
+    .SyenrgyImage {
+        width: 48px;
+        height: 48px;
+        border: 1px solid #ffffff;
+    }
+
+    .SyenrgyInfo {
+        flow-children: down;
+    }
+
+    .SyenrgyTitle {
+        font-size: 20px;
+    }
+
+    #BaseDescription {
+        margin-top: 4px;
+        // padding: 4px;
+        font-size: 17px;
+    }
+
+    #BonusDescription {
+        flow-children: down;
+
+        .SyenrgyRow {
+            margin-top: 4px;
+            flow-children: right;
+
+
+            &.On {
+                // wash-color: #ffffff;
+
+                .SyenrgyAmount {
+                    color:#45d801;
+                    background-color: #235a18;
+                    border: 1px solid #96ff50;
+                }
+
+                .SyenrgyDesc {
+                    color:#45d801;
+                }
+            }
+
+            .SyenrgyAmount {
+                width: 24px;
+                height: 24px;
+
+                font-size: 20px;
+                font-weight: bold;
+                background-color: #505050;
+                border: 1px solid #292929;
+                text-align: center;
+            }
+
+            .SyenrgyDesc {
+                font-size: 18px;
+                margin-left: 8px;
+                vertical-align: middle;
+                color:#797979;
+            }
+        }
+    }
+
+    #ElementArmsList {
+        margin-top: 8px;
+        width: 100%;
+        flow-children: right-wrap;
+        // background-color: #0f0;
+
+        .ArmsAbility {
+            margin: 4px;
+            width: 48px;
+            height: 48px;
+            border: 1px solid #ffffff;
+        }
+    }
+}

@@ -1,35 +1,48 @@
-import { BaseModifier } from "../../utils/dota_ts_adapter";
+import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
+
 
 /**
- * DOT类
+ * 灼烧效果
  */
-export class ArmsModifier_DOT extends BaseModifier {
+@registerModifier()
+export class modifier_element_bond_fire extends BaseModifier {
 
     dot_damage: number
     dot_interval: number
-    dot_element: ElementTypeEnum
+    element_type: ElementTypeEnum
 
     total_damage: number;
 
     parent: CDOTA_BaseNPC;
     caster: CDOTA_BaseNPC;
+    playerid: PlayerID;
+
+    GetAttributes(): ModifierAttribute {
+        return ModifierAttribute.MULTIPLE
+    }
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
-        this.dot_element = params.dot_element;
+        this.caster = this.GetCaster();
+        this.parent = this.GetParent();
+        this.playerid = this.caster.GetPlayerOwnerID();
+        this.element_type = ElementTypeEnum.fire;
         this.OnRefresh(params)
-        
         this.C_OnCreated(params);
+        this.dot_interval = 1;
+        this.StartIntervalThink(this.dot_interval)
     }
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
-        this.caster = this.GetCaster();
-        this.parent = this.GetParent();
-        this.dot_damage = params.dot_damage;
-        this.dot_interval = params.dot_interval;
-        this.total_damage = this.dot_damage * (this.dot_interval / 1) * this.GetDuration();
-        this.StartIntervalThink(this.dot_interval)
+        let duration = 3;
+        let bond_count = GameRules.NewArmsEvolution.ElementBondDateList[this.playerid].Element["1"];
+        let caster_damage = this.caster.GetAverageTrueAttackDamage(null)
+        this.dot_damage = caster_damage * 0.25;
+        if (bond_count >= 4) { this.dot_damage += caster_damage * 0.25; }
+        if (bond_count >= 6) { duration = 6 }
+        this.total_damage = this.dot_damage * (this.dot_interval / 1) * duration;
+        this.SetDuration(duration, true)
     }
 
     C_OnCreated(params: any): void { }
@@ -41,7 +54,9 @@ export class ArmsModifier_DOT extends BaseModifier {
             damage: this.dot_damage,
             damage_type: DamageTypes.MAGICAL,
             ability: this.GetAbility(),
-            element_type: this.dot_element
+            element_type: this.element_type,
+            is_direct: false,
+            special_effect: true,
         });
         this.total_damage -= this.dot_damage
         // print("last damage", this.total_damage)
@@ -51,4 +66,54 @@ export class ArmsModifier_DOT extends BaseModifier {
     Detonate() {
 
     }
+}
+
+/** 冰冻效果 */
+@registerModifier()
+export class modifier_element_bond_ice extends BaseModifier {
+
+    IsDebuff(): boolean {
+        return false
+    }
+
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            [ModifierState.STUNNED]: true,
+            [ModifierState.FROZEN]: true,
+        }
+    }
+
+
+}
+
+/** 雷:麻痹 */
+@registerModifier()
+export class modifier_element_bond_thunder extends BaseModifier {
+
+    IsDebuff(): boolean {
+        return false
+    }
+
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            [ModifierState.STUNNED]: true,
+        }
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        let hParent = this.GetParent();
+        hParent.AddNewModifier(hParent, null, "modifier_element_bond_thunder_immune", {
+            duration: 10
+        })
+    }
+}
+
+@registerModifier()
+export class modifier_element_bond_thunder_immune extends BaseModifier {
+
+    IsHidden(): boolean {
+        return true
+    }
+
 }

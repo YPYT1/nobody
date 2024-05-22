@@ -45,6 +45,7 @@ export class arms_9 extends BaseArmsAbility {
                 damage_type: DamageTypes.MAGICAL,
                 ability: this,
                 element_type: this.element_type,
+                is_direct: true,
             })
         }
 

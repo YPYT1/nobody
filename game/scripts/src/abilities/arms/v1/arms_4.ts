@@ -1,5 +1,4 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { ArmsModifier_DOT } from "../arms_modifier";
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 /**
@@ -60,12 +59,12 @@ export class arms_4 extends BaseArmsAbility {
                 element_type: this.element_type
             });
             
-            target.AddNewModifier(this.caster, this, "modifier_arms_4_dot", {
-                dot_damage: this.ability_damage,
-                dot_interval: 1,
-                dot_element: ElementTypeEnum.fire,
-                duration: this.debuff_duration,
-            })
+            // target.AddNewModifier(this.caster, this, "modifier_arms_4_dot", {
+            //     dot_damage: this.ability_damage,
+            //     dot_interval: 1,
+            //     dot_element: ElementTypeEnum.fire,
+            //     duration: this.debuff_duration,
+            // })
             return true
         }
     }
@@ -73,11 +72,5 @@ export class arms_4 extends BaseArmsAbility {
 
 @registerModifier()
 export class modifier_arms_4 extends BaseArmsModifier {
-
-}
-
-@registerModifier()
-export class modifier_arms_4_dot extends ArmsModifier_DOT {
-
 
 }

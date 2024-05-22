@@ -1,17 +1,28 @@
 import { useGameEvent } from "react-panorama-x"
+import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 
 const element_enum_label: CElementType[] = ["null", "fire", "ice", "thunder", "wind", "light", "dark"];
 let MainPanel: Panel;
 
-const ElementSynergy = ({ element_type }: { element_type: CElementType }) => {
+const ElementSynergy = ({ element_type }: { element_type: ElementTypeEnum }) => {
 
+    const element_id = element_enum_label[element_type]
     return (
         <Panel
-            id={element_type}
+            id={element_id}
             className="ElementSynergy"
             visible={false}
             onload={(e) => {
+                e.Data<PanelDataObject>().element_count = 0;
                 e.SetDialogVariable("current_count", "0");
+            }}
+
+            onmouseover={(e) => {
+                let element_count = e.Data<PanelDataObject>().element_count as number;
+                ShowCustomTooltip(e, "element_syenrgy", "", -1, element_type, element_count)
+            }}
+            onmouseout={() => {
+                HideCustomTooltip()
             }}
         >
             <Panel className="SynergyIcon">
@@ -22,7 +33,7 @@ const ElementSynergy = ({ element_type }: { element_type: CElementType }) => {
             </Panel>
             <Panel className="SynergyInfo">
                 <Panel className="SynergyTitle">
-                    <Label text={element_type} />
+                    <Label text={element_id} />
                 </Panel>
                 <Panel className="EffectList" >
                     <Label className="CurrentCountLabel Count_2" text={2} />
@@ -59,9 +70,9 @@ const ElementBondOnload = (e: Panel) => {
 export const ElementBondContainer = () => {
 
     useGameEvent("NewArmsEvolution_GetArmssElementBondDateList", event => {
+        if (MainPanel == null) { return }
         let data = event.data;
         let element_obj = data.Element;
-        // $.Msg(["MainPanel", MainPanel])
         for (let key in element_obj) {
             if (key == "0") { continue }
             let index = parseInt(key)
@@ -70,18 +81,19 @@ export const ElementBondContainer = () => {
             let elementPanel = MainPanel.FindChildTraverse(element_id)!;
             elementPanel.visible = element_count > 0;
             elementPanel.SetDialogVariable("current_count", `${element_count}`);
+            elementPanel.Data<PanelDataObject>().element_count = element_count
         }
-
     })
 
+    // $.Msg(["ElementTypeEnum",ElementTypeEnum])
     return (
         <Panel id="ElementBondContainer" className="container" onload={ElementBondOnload}>
-            <ElementSynergy element_type={"fire"} />
-            <ElementSynergy element_type={"ice"} />
-            <ElementSynergy element_type={"thunder"} />
-            <ElementSynergy element_type={"wind"} />
-            <ElementSynergy element_type={"light"} />
-            <ElementSynergy element_type={"dark"} />
+            <ElementSynergy element_type={1} />
+            <ElementSynergy element_type={2} />
+            <ElementSynergy element_type={3} />
+            <ElementSynergy element_type={4} />
+            <ElementSynergy element_type={5} />
+            <ElementSynergy element_type={6} />
         </Panel>
     )
 }

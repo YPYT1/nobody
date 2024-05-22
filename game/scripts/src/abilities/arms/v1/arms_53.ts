@@ -53,42 +53,6 @@ export class arms_53 extends BaseArmsAbility {
 @registerModifier()
 export class modifier_arms_53 extends BaseArmsModifier {
 
-    // extra_count: number;
-    // search_radius: number;
-    // pre_value: number;
-
-    // C_OnCreatedBefore(params: any): void {
-    //     this.extra_count = this.ability.GetSpecialValueFor("extra_count");
-    //     this.search_radius = this.ability.GetSpecialValueFor("search_radius");
-    //     this.pre_value = this.ability.GetSpecialValueFor("pre_value");
-    // }
-
-    // C_OnCreated(params: any): void {
-    //     this.OnIntervalThink()
-    //     this.StartIntervalThink(6)
-    // }
-
-    // OnRefresh(params: object): void {
-    //     this.extra_count = this.ability.GetSpecialValueFor("extra_count");
-    //     this.search_radius = this.ability.GetSpecialValueFor("search_radius");
-    //     this.pre_value = this.ability.GetSpecialValueFor("pre_value");
-    // }
-
-    // OnIntervalThink(): void {
-    //     let hAbility = this.GetAbility() as arms_53
-    //     let vParent = this.caster.GetAbsOrigin();
-    //     if (hAbility.unit_list) {
-    //         for (let [index, unit] of ipairs(hAbility.unit_list)) {
-    //             if (index <= this.extra_count) {
-    //                 let buff = unit.FindModifierByNameAndCaster("modifier_arms_53_life_drain", this.caster)
-    //                 if (buff == null) {
-    //                     unit.AddNewModifier(this.caster, this.ability, "modifier_arms_53_life_drain", {})
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    // }
 }
 
 @registerModifier()

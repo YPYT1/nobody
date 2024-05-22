@@ -33,12 +33,14 @@ declare interface ApplyCustomDamageOptions {
     damage_flags?: DOTADamageFlag_t;
     ability?: CDOTABaseAbility;
 
+    /** 主技能 */
+    is_direct?: boolean;
+    /** 特效伤害 为True时部分效果不会触发避免套娃 */
+    special_effect?: boolean;
     /** 伤害来源点 */
     damage_vect?: Vector;
-    /** 禁止暴击 */
-    disable_critical?: boolean;
-    /** 必定暴击 */
-    must_crit?: boolean;
+    /** 暴击判定 -1不暴击 0默认 1必定暴击  */
+    critical_flasg?: -1 | 0 | 1;
     /** 额外伤害`整数` 后续会转为百分比小数  */
     extra_percent?: number;
     /** 元素 */
@@ -47,4 +49,6 @@ declare interface ApplyCustomDamageOptions {
     ability_category?: ArmsAbilityCategory;
     /** 是否为固定值,不吃任何加成 */
     fixed?: boolean;
+    crit_chance?: number;
+    crit_bonus_dmg?: number;
 }

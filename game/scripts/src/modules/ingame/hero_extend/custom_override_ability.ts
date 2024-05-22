@@ -1,4 +1,6 @@
 import { reloadable } from "../../../utils/tstl-utils";
+import * as SpecialKeyvalueJson from "./../../../json/config/game/special_keyvalue.json"
+
 
 
 declare type OverrideSpecialInputProps = {
@@ -78,6 +80,10 @@ export class CustomOverrideAbility {
         if (KvBuff) {
             KvBuff.ForceRefresh()
         }
+    }
+
+    GetOverrideKeyValue(player_id: PlayerID, override_key: OverrideSpecialKeyTypes) {
+        return this.OverrideSpecialValue[player_id][override_key].cache_value
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {

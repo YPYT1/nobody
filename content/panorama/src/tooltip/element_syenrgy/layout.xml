@@ -1,0 +1,19 @@
+<root>
+    <scripts>
+        <include src="./script.tsx" />
+    </scripts>
+    <styles>
+        <include src="./../../_styles/keyframes.less" />
+        <include src="./../../_styles/styles.less" />
+        <include src="./styles.less" />
+    </styles>
+    <snippets>
+        <snippet name="SyenrgyRow">
+            <Panel class="SyenrgyRow">
+                <Label class='SyenrgyAmount' text="{d:syenrgy_amount}" />
+                <Label class='SyenrgyDesc' text="{s:syenrgy_desc}" />
+            </Panel>
+        </snippet>
+    </snippets>
+    <Panel class="tooltip_element_syenrgy" hittest="false"/>
+</root>
