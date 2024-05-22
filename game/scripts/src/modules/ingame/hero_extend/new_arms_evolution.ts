@@ -334,8 +334,48 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * @param count 数量
      */
     SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number){
-        print("SetElementBondDate",player_id,Element,count)
+        //先处理光暗特殊情况
+        if(Element == ElementTypeEnum.dark || Element == ElementTypeEnum.light){
+            let max = ElementTypeEnum.dark;
+            //寻找最高元素的值
+            let HighestElement = 0;
+            for (let index = 1; index <= max ; index++) {
+                if(HighestElement < this.ElementBondDateList[player_id].Element[index]){
+                    HighestElement = this.ElementBondDateList[player_id].Element[index]
+                }
+            }
+            if(HighestElement != 0){
+                //处理暗
+                if(Element == ElementTypeEnum.dark){
+                    for (let index = 1; index <= max ; index++) {
+                        if(index != ElementTypeEnum.dark){
+                            if(HighestElement == this.ElementBondDateList[player_id].Element[index]){
+                                if(this.ElementBondDateList[player_id].Element[index] > 0){
+                                    this.ElementBondDateList[player_id].Element[index] -= count;
+                                }else{
+                                    this.ElementBondDateList[player_id].Element[index] = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+                //处理光
+                if(Element == ElementTypeEnum.light){
+                    for (let index = 1; index <= max ; index++) {
+                        if(index != ElementTypeEnum.light){
+                            if(HighestElement == this.ElementBondDateList[player_id].Element[index]){
+                                if(this.ElementBondDateList[player_id].Element[index] > 0){
+                                    this.ElementBondDateList[player_id].Element[index] += count;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //再添加元素
         this.ElementBondDateList[player_id].Element[Element] += count;
+
         this.GetArmssElementBondDateList(player_id, {})
     }
 
@@ -381,6 +421,11 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         if(cmd == "--PostSelectArms"){
             let index = args[0] ? parseInt(args[0]) : 0;
             this.PostSelectArms(player_id , { index : index})
+        }
+        if(cmd == "--SetElementBondDate"){
+            let Element = args[0] ? parseInt(args[0]) : 1;
+            let count = args[1] ? parseInt(args[1]) : 1;
+            this.SetElementBondDate(player_id , Element , count)
         }
     }
 }
