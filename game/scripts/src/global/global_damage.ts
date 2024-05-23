@@ -81,10 +81,10 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
         let bond_count_wind = BondElement["4"];
         /**
          * 3风元素伤害+10%
-4击退效果+50%
-5风元素造成伤害之后3秒内，增伤+15%
-6风元素抗性穿透+30%
-7风元素暴击概率+25%，增伤持续时间改为5秒，增伤+35%
+            4击退效果+50%
+            5风元素造成伤害之后3秒内，增伤+15%
+            6风元素抗性穿透+30%
+            7风元素暴击概率+25%，增伤持续时间改为5秒，增伤+35%
          */
         if (bond_count_wind >= 3) {
             increased_injury += 10

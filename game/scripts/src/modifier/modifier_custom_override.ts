@@ -95,23 +95,16 @@ export class modifier_custom_override extends BaseModifier {
             let flResult = math.floor((flBaseValue + flAddResult) * flMulResult * flCorrResult)
             SpecialValueUpgrades.cache_value = flResult;
             this.bDirty = false;
-            // print(
-            //     "[GetModifierOverrideAbilitySpecialValue]:", IsServer(),
-            //     event.ability.GetAbilityName(),
-            //     event.ability_special_value,
-            //     event.ability_special_level,
-            //     flResult,
-            // )
             return flResult
         }
 
     }
 
-    GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
-        if (this.hParent == null || event.ability == null) { return 0; }
-        let hAbility = event.ability;
-        let skv_haste = GameRules.CustomOverrideAbility.GetOverrideKeyValue(this.player_id, "skv_haste");
+    // GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
+    //     if (this.hParent == null || event.ability == null) { return 0; }
+    //     // let hAbility = event.ability;
+    //     // let skv_haste = GameRules.CustomOverrideAbility.GetOverrideKeyValue(this.player_id, "skv_haste");
 
-        return 100
-    }
+    //     return 100
+    // }
 }
