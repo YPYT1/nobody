@@ -325,7 +325,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param params 
      * @param callback 
      */
-    GetShopData(player_id: PlayerID, params: {}, callback?: string) {
+    GetShopData(player_id: PlayerID, params: CGED["MysticalShopSystem"]["GetShopData"], callback?: string) {
         print("=========== GetShopData ===========")
         DeepPrintTable({
             shop_field_list: this.shop_field_list[player_id],
@@ -348,7 +348,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param params 
      * @param callback 
      */
-    GetShopState(player_id: PlayerID, params: {}, callback?: string) {
+    GetShopState(player_id: PlayerID, params: CGED["MysticalShopSystem"]["GetShopState"], callback?: string) {
         print("=========== GetShopState ===========")
         DeepPrintTable({
             shop_state_data : this.shop_state_data,

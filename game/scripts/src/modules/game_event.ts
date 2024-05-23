@@ -16,6 +16,9 @@ import { CMsg } from './ingame/system/cmsg';
 import { NewArmsEvolution } from './ingame/hero_extend/new_arms_evolution';
 import { RuneSystem } from './ingame/system/rune_system';
 import { MysticalShopSystem } from './ingame/system/mystical_shop_system';
+import { ArchiveService } from '../server/https/archive_service';
+import { ServiceData } from '../server/https/service_data';
+import { ServiceInterface } from '../server/https/service_interface';
 
 declare global {
 
@@ -40,6 +43,12 @@ declare global {
         CustomMechanics: CustomMechanics;
         RuneSystem: RuneSystem;
         MysticalShopSystem : MysticalShopSystem;
+
+
+        //服务器相关功能
+        ArchiveService : ArchiveService;
+        ServiceData : ServiceData;
+        ServiceInterface : ServiceInterface;
     }
 }
 
@@ -64,6 +73,7 @@ export class GameEvent {
         } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) { //加载阶段
 
         } else if (State_Get == GameState.CUSTOM_GAME_SETUP) { //游戏设置阶段
+            GameRules.ArchiveService = new ArchiveService();
             GameRules.NewArmsEvolution = new NewArmsEvolution();
             GameRules.BasicRules = new BasicRules();
             GameRules.CustomAttribute = new CustomAttribute();
@@ -78,6 +88,7 @@ export class GameEvent {
             GameRules.CMsg = new CMsg();
             GameRules.RuneSystem = new RuneSystem();
             GameRules.MysticalShopSystem = new MysticalShopSystem();
+            GameRules.ServiceInterface = new ServiceInterface();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段

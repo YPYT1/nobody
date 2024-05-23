@@ -91,6 +91,17 @@ declare interface CustomGameEventDeclarations {
             countdown_timer : number ; //倒计时时间
         };
     };
+
+    //服务器相关
+    /**
+     * 游戏激活状态
+     */
+    ServiceInterface_GetGameActivate: {
+        data: {
+            Activate: number, //激活状态 0 未激活 1已激活
+            Msg?: string,
+        };
+    };
 }
 
 

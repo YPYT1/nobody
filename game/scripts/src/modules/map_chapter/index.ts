@@ -122,6 +122,8 @@ export class MapChapter extends UIEventRegisterClass {
     //营地创建后置
     OnSpawnCampComplete(spawnGroupHandle: SpawnGroupHandle) {
         print("OnSpawnCampComplete", spawnGroupHandle);
+        //营地生产后 创建游戏
+        GameRules.ArchiveService.CreateGame();
         // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
         // for (let hHero of HeroList.GetAllHeroes()) {
         //     let vect = hHero.GetAbsOrigin();
@@ -260,7 +262,6 @@ export class MapChapter extends UIEventRegisterClass {
                 GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
             }
         }
-
     }
     //确认英雄
     SelectHeroAffirm(player_id: PlayerID, params: CGED["MapChapter"]["SelectHeroAffirm"]) {
@@ -268,7 +269,6 @@ export class MapChapter extends UIEventRegisterClass {
             this.player_select_hero[player_id].state = 1;
             GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
         }
-
         for (const date of this.player_select_hero) {
             if (date.state != 1) {
                 return
@@ -279,6 +279,10 @@ export class MapChapter extends UIEventRegisterClass {
         this.GetGameSelectPhase(-1, {})
 
         let ChapterData = MapInfo[this.MapIndex];
+
+        //调用确认游戏开始
+        GameRules.ArchiveService.ConfirmDifficulty();
+        //todo 需要修改成流程中
 
         GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
         let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);

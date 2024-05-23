@@ -746,6 +746,11 @@ export class Spawn extends UIEventRegisterClass {
                 this._map_boss_unit = null;
                 this._map_boss_refresh = false;
             }
+
+            //调用确认游戏失败
+            GameRules.ArchiveService.GameOver();
+
+
             return null;
         }, 0)
     }
