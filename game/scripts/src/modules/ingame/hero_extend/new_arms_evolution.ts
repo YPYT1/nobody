@@ -39,6 +39,9 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     //玩家羁绊数据
     ElementBondDateList: ElementBondDateList[] = [];
 
+     //玩家羁绊记录数据
+     ElementBondDateRecord : ElementBondDateList[][] = [];
+
     // 羁绊表
     ElementBondTable: { [element: string]: number[] };
 
@@ -63,6 +66,22 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                     [ElementTypeEnum.dark]: 0
                 }
             })
+            //6个位置的记录状态
+            this.ElementBondDateRecord.push([]);
+            for (let i = 0; i < 6; i++) {
+                this.ElementBondDateRecord[index].push({
+                    "Element" : {
+                        [ElementTypeEnum.null] : 0,
+                        [ElementTypeEnum.fire] : 0,
+                        [ElementTypeEnum.ice] : 0,
+                        [ElementTypeEnum.thunder] : 0,
+                        [ElementTypeEnum.wind]: 0,
+                        [ElementTypeEnum.light] : 0,
+                        [ElementTypeEnum.dark] : 0
+                    }
+                })
+                
+            }
 
             this.PlayerSelectData.push({
                 "arms_list": {},
@@ -110,6 +129,21 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 [ElementTypeEnum.light]: 0,
                 [ElementTypeEnum.dark]: 0
             }
+        }
+
+        for (let index = 0; index < 6; index++) {
+            this.ElementBondDateRecord[player_id][index] = {
+                "Element" : {
+                    [ElementTypeEnum.null] : 0,
+                    [ElementTypeEnum.fire] : 0,
+                    [ElementTypeEnum.ice] : 0,
+                    [ElementTypeEnum.thunder] : 0,
+                    [ElementTypeEnum.wind]: 0,
+                    [ElementTypeEnum.light] : 0,
+                    [ElementTypeEnum.dark] : 0
+                }
+            }
+            
         }
 
         this.GetArmssElementBondDateList(player_id, {})
@@ -349,40 +383,59 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * @param player_id 玩家id
      * @param Element 元素
      * @param count 数量
+     * @param SkillIndex 技能位置
      */
-    SetElementBondDate(player_id: PlayerID, Element: ElementTypeEnum, count: number) {
-        //先处理光暗特殊情况
-        if (Element == ElementTypeEnum.dark || Element == ElementTypeEnum.light) {
-            let max = ElementTypeEnum.dark;
-            //寻找最高元素的值
-            let HighestElement = 0;
-            for (let index = 1; index <= max; index++) {
-                if (HighestElement < this.ElementBondDateList[player_id].Element[index]) {
-                    HighestElement = this.ElementBondDateList[player_id].Element[index]
-                }
+    SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number , SkillIndex : number = 0 ){
+
+        //还原当前位置被替换的量
+        for (let index = 0; index < Object.keys(this.ElementBondDateRecord[player_id][SkillIndex].Element).length; index++) {
+            const element = this.ElementBondDateRecord[player_id][SkillIndex].Element[index];
+            if(element != 0){
+                this.ElementBondDateList[player_id].Element[index] -= element;
+                this.ElementBondDateRecord[player_id][SkillIndex].Element[index] = 0;
             }
-            if (HighestElement != 0) {
-                //处理暗
-                if (Element == ElementTypeEnum.dark) {
-                    for (let index = 1; index <= max; index++) {
-                        if (index != ElementTypeEnum.dark) {
-                            if (HighestElement == this.ElementBondDateList[player_id].Element[index]) {
-                                if (this.ElementBondDateList[player_id].Element[index] > 0) {
-                                    this.ElementBondDateList[player_id].Element[index] -= count;
-                                } else {
-                                    this.ElementBondDateList[player_id].Element[index] = 0;
+        }
+        
+        //先处理光暗特殊情况
+        if(Element == ElementTypeEnum.dark || Element == ElementTypeEnum.light){
+            if(count > 0){ //处理增加的情况
+                let max = ElementTypeEnum.dark;
+                //寻找最高元素的值
+                let HighestElement = 0;
+                for (let index = 1; index <= max ; index++) {
+                    if(HighestElement < this.ElementBondDateList[player_id].Element[index]){
+                        HighestElement = this.ElementBondDateList[player_id].Element[index]
+                    }
+                }
+                if(HighestElement != 0){
+                    //处理暗
+                    if(Element == ElementTypeEnum.dark){
+                        for (let index = 1; index <= max ; index++) {
+                            if(index != ElementTypeEnum.dark){
+                                if(HighestElement == this.ElementBondDateList[player_id].Element[index]){
+                                    if(this.ElementBondDateList[player_id].Element[index] > 0){
+                                        this.ElementBondDateList[player_id].Element[index] -= count;
+                                    }else{
+                                        this.ElementBondDateList[player_id].Element[index] -= count;
+                                    }
+                                    //记录被减少的量
+                                    this.ElementBondDateRecord[player_id][SkillIndex].Element[index] -= count;
                                 }
                             }
                         }
                     }
-                }
-                //处理光
-                if (Element == ElementTypeEnum.light) {
-                    for (let index = 1; index <= max; index++) {
-                        if (index != ElementTypeEnum.light) {
-                            if (HighestElement == this.ElementBondDateList[player_id].Element[index]) {
-                                if (this.ElementBondDateList[player_id].Element[index] > 0) {
-                                    this.ElementBondDateList[player_id].Element[index] += count;
+                    //处理光
+                    if(Element == ElementTypeEnum.light){
+                        for (let index = 1; index <= max ; index++) {
+                            if(index != ElementTypeEnum.light){
+                                if(HighestElement == this.ElementBondDateList[player_id].Element[index]){
+                                    if(this.ElementBondDateList[player_id].Element[index] > 0){
+                                        this.ElementBondDateList[player_id].Element[index] += count;
+                                    }else{
+                                        this.ElementBondDateList[player_id].Element[index] += count;
+                                    }
+                                    //记录增加的量
+                                    this.ElementBondDateRecord[player_id][SkillIndex].Element[index] += count;
                                 }
                             }
                         }
@@ -390,10 +443,12 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 }
             }
         }
+
         //再添加元素
         this.ElementBondDateList[player_id].Element[Element] += count;
 
-        this.UpdateElementBondEffect(player_id)
+        this.UpdateElementBondEffect(player_id);
+
         this.GetArmssElementBondDateList(player_id, {})
     }
 
@@ -402,11 +457,13 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         const element_bond = this.ElementBondDateList[player_id].Element;
         for (let k in element_bond) {
-            if (k == "0") { continue }
+            let kint = parseInt(k);
+            if (kint == 0) { continue }
             let key_index = parseInt(k) as keyof typeof element_bond;
             let element_key = element_label[key_index];
             let element_count = element_bond[key_index];
             let RowElementBondTable = this.ElementBondTable[element_key]
+            
             for (let count of RowElementBondTable) {
                 let bond_key = element_label[key_index] + "_" + count;
                 if (element_count >= count) {

@@ -29,7 +29,8 @@ const ACTION_VERIFICATION_CODE = "/setjhm";
 const ACTION_CONFIRM_DIFFICULTY = "/confirm_difficulty";
 // 1.4 游戏结束
 const ACTION_GAME_OVER = "/game_over";
-
+// 2.1 兑换码领取
+const ACTION_GAME_DHM = "/gamedhm";
 
 
 

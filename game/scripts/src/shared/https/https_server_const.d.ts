@@ -86,3 +86,32 @@ declare interface GameOverReturn {
         }
     }
 }
+
+
+
+/**
+ * 游戏兑换码
+ */
+declare interface GameDhmParam {
+	gid : string, //游戏id
+	sid : string , //steamid
+    keys : string , //兑换码
+}
+/**
+ * 游戏结束返回
+ */
+declare interface GameDhmReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        add_items : { //通关获得的物品
+            id : number, //道具唯一id
+            item_id: number, //物品唯一id
+            count: string, //数量
+            class: number, //类型
+            type: number, //类型
+            lv: number , //等级
+            customs :  string , //额外数据
+        }[]
+    }
+}
