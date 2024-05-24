@@ -244,6 +244,8 @@ export class CustomAttribute {
      * @param mode `0`为增加 `-1`为减
      */
     ModifyAttribute(hUnit: CDOTA_BaseNPC, Attr: CustomAttributeTableType, mode: number = 0) {
+        // print("ModifyAttribute")
+        // DeepPrintTable(Attr)
         if (mode == 0) {
             for (let k1 in Attr) {
                 for (let k2 in Attr[k1]) {

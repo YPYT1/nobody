@@ -178,7 +178,7 @@ const HeroDemoAttribute = () => {
                 </Panel>
                 <Panel className='table-body AttributeRowList'>
                     <AttributeRows attr_key="AttackDamage" attr_value={AttributeValue} attr_table={AttributeTable} />
-                    <AttributeRows attr_key="ArmorCommon" attr_value={AttributeValue} attr_table={AttributeTable} />
+                    {/* <AttributeRows attr_key="ArmorCommon" attr_value={AttributeValue} attr_table={AttributeTable} /> */}
                     <AttributeRows attr_key="AttackRange" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="MoveSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
@@ -187,6 +187,11 @@ const HeroDemoAttribute = () => {
                     <AttributeRows attr_key="ManaPoints" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="ManaRegen" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="PickItemRadius" attr_value={AttributeValue} attr_table={AttributeTable} />
+                   
+                    <AttributeRows attr_key="Fire_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
+                    <AttributeRows attr_key="Ice_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
+                    <AttributeRows attr_key="Thunder_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
+                    <AttributeRows attr_key="Wind_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
                 </Panel>
             </Panel>
         </>

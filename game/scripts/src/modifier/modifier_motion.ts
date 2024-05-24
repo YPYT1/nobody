@@ -274,18 +274,19 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         if (hCaster == null) { return }
         let resource_type = hParent.drop_resource_type;
         let resource_amount = hParent.drop_resource_amount;
-        print("resource_type", resource_type, "resource_amount", resource_amount)
+        UTIL_Remove(this.GetParent());
+        if (resource_type == null || resource_amount == null) { return }
+        // print("resource_type", resource_type, "resource_amount", resource_amount)
         GameRules.ResourceSystem.ModifyResource(hCaster.GetPlayerOwnerID(), {
             [resource_type]: resource_amount
         }, hCaster, true)
-
         let effect_fx = ParticleManager.CreateParticle(
             "particles/diy/pick_item_fx2.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
             hCaster
         )
         ParticleManager.ReleaseParticleIndex(effect_fx)
-        UTIL_RemoveImmediate(this.GetParent());
+
     }
 
     DeclareFunctions(): ModifierFunction[] {

@@ -2,6 +2,9 @@
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 import * as ArmsJson from "../../../json/abilities/arms.json";
+import * as ElementBondJson from "../../../json/config/game/element_bond.json";
+
+const element_label: CElementType[] = ["null", "fire", "ice", "thunder", "wind", "light", "dark"];
 
 /** 技能升级相关 */
 @reloadable
@@ -36,6 +39,8 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     //玩家羁绊数据
     ElementBondDateList: ElementBondDateList[] = [];
 
+    // 羁绊表
+    ElementBondTable: { [element: string]: number[] };
 
     constructor() {
         super("NewArmsEvolution")
@@ -65,6 +70,18 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 "index": 0,
             });
         }
+        // 构造一个羁绊表
+        this.ElementBondTable = {};
+        for (let k in ElementBondJson) {
+            let row_data = ElementBondJson[k as keyof typeof ElementBondJson];
+            let element_key = element_label[row_data.CElementType];
+            let activate_count = row_data.activate_count;
+            if (this.ElementBondTable[element_key] == null) {
+                this.ElementBondTable[element_key] = []
+            }
+            this.ElementBondTable[element_key].push(activate_count)
+        }
+        DeepPrintTable(this.ElementBondTable)
     }
     /**
      * 初始化玩家可选物品概率(可重复调用)
@@ -380,14 +397,31 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         this.GetArmssElementBondDateList(player_id, {})
     }
 
+    /** 更新元素羁绊效果 */
     UpdateElementBondEffect(player_id: PlayerID) {
+        const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         const element_bond = this.ElementBondDateList[player_id].Element;
         for (let k in element_bond) {
-            let element_key = k;
-            let element_count = element_bond[k];
-            print(element_key, element_count)
+            if (k == "0") { continue }
+            let key_index = parseInt(k) as keyof typeof element_bond;
+            let element_key = element_label[key_index];
+            let element_count = element_bond[key_index];
+            let RowElementBondTable = this.ElementBondTable[element_key]
+            for (let count of RowElementBondTable) {
+                let bond_key = element_label[key_index] + "_" + count;
+                if (element_count >= count) {
+                    let row_element_bond = ElementBondJson[bond_key as keyof typeof ElementBondJson];
+                    let row_kv_data = row_element_bond.AbilityValues as CustomAttributeTableType;
+                    if (row_kv_data) {
+                        GameRules.CustomAttribute.SetAttributeInKey(hHero, bond_key, row_kv_data)
+                    }
+                } else {
+                    GameRules.CustomAttribute.DelAttributeInKey(hHero, bond_key)
+                }
+            }
         }
     }
+
     /**
      * 获取物品信息初始化信息
      */
