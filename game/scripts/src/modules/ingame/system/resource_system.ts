@@ -134,7 +134,27 @@ export class ResourceSystem extends UIEventRegisterClass {
             }, 0.2);
         }
 
+
         return ret
+    }
+
+    /**
+     * 资源验证
+     * @param player_id 
+     * @param resource_input 
+     * @param bCostRate 消耗加成
+     */
+    ResourceValidation(player_id: PlayerID, resource_input: PlayerResourceInput, bCostRate: boolean = true) {
+        for (let [resource, amount] of pairs(resource_input)) {
+            amount = math.ceil(amount);
+            if (bCostRate) {
+                amount = amount * this.player_cost_rate[player_id][resource] * 0.01
+            }
+            if (math.abs(amount) <= this.player_resource[player_id][resource] == false) {
+                return false
+            }
+        }
+        return true
     }
 
     AddExperience(player_id: PlayerID, base_exp: number) {
@@ -177,6 +197,7 @@ export class ResourceSystem extends UIEventRegisterClass {
         // EmitSoundOn("Custom.ItemDrop", exp_unit)
         exp_unit.SetMaterialGroup(`${RandomInt(0, 2)}`)
         exp_unit.is_picking = false;
+        exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_state", {})
         exp_unit.AddNewModifier(exp_unit, null, "modifier_generic_arc_lua", {
             speed: 250,
             distance: 0,

@@ -1,5 +1,6 @@
 #base "abilities/public.txt"
 #base "abilities/arms.txt"
+#base "abilities/hero_innate.txt"
 #base "custom_datadriven.txt"
 
 "DOTAAbilities"

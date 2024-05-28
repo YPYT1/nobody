@@ -15,7 +15,7 @@ export class BaseArmsAbility extends BaseAbility {
     // Precache(context: CScriptPrecacheContext): void {
     //     PrecacheResource("particle", "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova.vpcf", context);
     // }
-
+    slot_index: number;
     is_init: boolean;
     // mdf_name: string;
     key: string;
@@ -64,6 +64,7 @@ export class BaseArmsAbility extends BaseAbility {
             return null
         }
     }
+
     FindRandomEnemyVect() {
         const vCaster = this.caster.GetOrigin();
         let targets = FindUnitsInRadius(
@@ -116,8 +117,15 @@ export class BaseArmsAbility extends BaseAbility {
         if (KeyValues.Element) { this.element_type = tonumber(KeyValues.Element) }
         if (this.is_init == null) {
             this.is_init = true;
-            print("init", this.player_id, this.element_type, 1)
-            GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, 1)
+            for (let i = 0; i < 6; i++) {
+                let hAbility = this.caster.GetAbilityByIndex(i);
+                if (hAbility == this) {
+                    this.slot_index = i;
+                    break
+                }
+            }
+            print("init", this.player_id, this.element_type, "slot_index:", this.slot_index)
+            GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, 1, this.slot_index)
         }
 
     }
@@ -145,9 +153,9 @@ export class BaseArmsAbility extends BaseAbility {
         if (kill_index != -1) { hCaster.OnKillList.splice(kill_index, 1) }
 
         GameRules.ArmsCombo.RemoveCheckComboSets(hCaster, this);
-        print("element_type",this.element_type)
+        // print("element_type",this.element_type)
         if (this.element_type && this.element_type > 0) {
-            GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, -1)
+            GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, -1, this.slot_index)
         }
 
         this._RemoveSelf();

@@ -36,14 +36,15 @@ export class CustomAttribute {
         hUnit.last_attribute_update = 0;
 
         GameRules.CustomOverrideAbility.InitOverrideSpecialTable(player_id, hUnit);
+
         for (let i = 0; i < 32; i++) {
             let hAbility = hUnit.GetAbilityByIndex(i);
             if (hAbility) { hAbility.RemoveSelf() }
         }
-
         //PrecacheUnitByNameAsync(heroname, () => {
-
+        print("InitHeroAttribute", hHeroKvData)
         if (hHeroKvData) {
+            print("has herodata")
             // 延迟1帧之后加载
             hUnit.SetContextThink("delay_init_attr", () => {
                 /** 属性表 */
@@ -80,7 +81,7 @@ export class CustomAttribute {
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
-                this.InitHeroAbility(hUnit);
+                this.InitHeroAbility(hUnit, true);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
                 return null
             }, 0.1)
@@ -88,6 +89,7 @@ export class CustomAttribute {
 
         } else {
             print("no hero data:", heroname);
+
             hUnit.SetContextThink("delay_init_attr", () => {
                 /** 属性表 */
                 let attribute_table: CustomAttributeTableType = {};
@@ -115,7 +117,7 @@ export class CustomAttribute {
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
-                this.InitHeroAbility(hUnit);
+                this.InitHeroAbility(hUnit, false);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
 
                 return null
@@ -125,13 +127,22 @@ export class CustomAttribute {
         //});
     }
 
-    InitHeroAbility(hUnit: CDOTA_BaseNPC) {
+    InitHeroAbility(hUnit: CDOTA_BaseNPC, has_innate: boolean = false) {
         hUnit.AddAbility("arms_passive_0");
         hUnit.AddAbility("arms_passive_1");
         hUnit.AddAbility("arms_passive_2");
         hUnit.AddAbility("arms_passive_3");
         hUnit.AddAbility("arms_passive_4");
         hUnit.AddAbility("arms_passive_5");
+        // 先天技能
+        if (has_innate) {
+            let hero_name = hUnit.GetName().replace("npc_dota_hero_","")
+            let innate_ability = `innate_${hero_name}`;
+            print("innate_ability",innate_ability)
+            hUnit.AddAbility(innate_ability);//.SetLevel(1);
+        } else {
+            hUnit.AddAbility("generic_hidden")
+        }
         hUnit.AddAbility("public_arms").SetLevel(1);
         hUnit.AddAbility("public_attribute").SetLevel(1);
         hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);

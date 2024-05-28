@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { FormatIntToString } from "../../../utils/method";
 import { useGameEvent } from "react-panorama-x";
 
@@ -11,7 +11,7 @@ export const ValueBarComponent = ({ type }: ValueBarProps) => {
     let MainPanel: Panel;
     let ValueProgressBar: ProgressBar;
 
-    const UpdateLocalPlayer = useCallback(() => {
+    const UpdateLocalPlayer = () => {
         const queryUnit = Players.GetLocalPlayerPortraitUnit();
         // $.Msg(["queryUnit",queryUnit])
         if(queryUnit == -1){ return }
@@ -48,7 +48,7 @@ export const ValueBarComponent = ({ type }: ValueBarProps) => {
             MainPanel.SetDialogVariable("max_value", FormatIntToString(max))
             MainPanel.SetDialogVariable("reg", reg.toFixed(1))
         }
-    }, []);
+    };
 
     useEffect(() => {
         const interval = setInterval(() => { UpdateLocalPlayer(); }, 100);

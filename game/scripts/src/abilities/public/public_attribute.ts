@@ -32,6 +32,7 @@ export class modifier_public_attribute extends BaseModifier {
     AttributeData: CustomAttributeValueType;
     PickItemFx: ParticleID;
     hParent: CDOTA_BaseNPC;
+    hAbility: CDOTABaseAbility;
 
     // timer: number;
     IsHidden(): boolean { return true }
@@ -41,6 +42,7 @@ export class modifier_public_attribute extends BaseModifier {
     /** 初始化属性 */
     OnCreated(params: any): void {
         this.AttributeData = {}
+        this.hAbility = this.GetAbility();
         this.BaseKvHp = this.GetParent().GetMaxHealth();
         this.SetHasCustomTransmitterData(true);
         if (!IsServer()) { return; }
@@ -77,7 +79,7 @@ export class modifier_public_attribute extends BaseModifier {
                 && !ExpItem.HasModifier("modifier_pick_animation")
                 && !ExpItem.HasModifier("modifier_generic_arc_lua")
             ) {
-                ExpItem.AddNewModifier(this.hParent, null, "modifier_pick_animation", {})
+                ExpItem.AddNewModifier(this.hParent, this.hAbility, "modifier_pick_animation", {})
             }
         }
 

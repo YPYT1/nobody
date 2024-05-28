@@ -143,7 +143,7 @@ export function App() {
         }
 
         const abilityData = NpcAbilityCustom[ability_name as "public_phase_move"];
-        if (entityIndex == -1) {
+        if (entityIndex <= 0) {
             // cooldown
             let AbilityCooldown = abilityData.AbilityCooldown as string | number;
             if (AbilityCooldown != null) {
@@ -187,7 +187,8 @@ export function App() {
         let ContextPanel = $.GetContextPanel();
         let entityIndex = $.GetContextPanel().GetAttributeInt("entityIndex", 0) as AbilityEntityIndex;
         let name = $.GetContextPanel().GetAttributeString("name", "");
-        let ext_int = $.GetContextPanel().GetAttributeInt("ext_int", 0);
+        // let ext_int = $.GetContextPanel().GetAttributeInt("ext_int", 0);
+        // $.Msg(["ontooltiploaded",name,entityIndex])
         SetAbilityBaseInfo(name, entityIndex)
     });
 

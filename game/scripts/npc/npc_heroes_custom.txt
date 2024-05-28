@@ -7,10 +7,6 @@
 		"Enable" "1"
 		"HeroID" "57"
 		"sort" "0"
-		"Ability1" ""
-		"Ability2" ""
-		"Ability3" ""
-		"Ability4" ""
 		"AttributeValues" {
 			"HealthPoints" {
 "Base" "100"
@@ -82,10 +78,6 @@
 		"Enable" "1"
 		"HeroID" "102"
 		"sort" "1"
-		"Ability1" ""
-		"Ability2" ""
-		"Ability3" ""
-		"Ability4" ""
 		"AttributeValues" {
 			"HealthPoints" {
 "Base" "100"
@@ -157,10 +149,6 @@
 		"Enable" "1"
 		"HeroID" "22"
 		"sort" "2"
-		"Ability1" ""
-		"Ability2" ""
-		"Ability3" ""
-		"Ability4" ""
 		"AttributeValues" {
 			"HealthPoints" {
 "Base" "100"
