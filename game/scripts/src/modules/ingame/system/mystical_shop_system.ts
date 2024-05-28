@@ -210,7 +210,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             this.shop_field_list[index] = [];
             //重新更新商店
             for (let i = 0; i < this.player_shop_field_count[index]; i++) {
-                this.shop_field_list[i].push({
+                this.shop_field_list[index].push({
                     key: "null",
                     soul: 0,
                     is_discount: 0,
@@ -220,7 +220,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                     is_lock : 0,
                 });
             }
-            
             GameRules.MysticalShopSystem.player_refresh_data[index].refresh_count = 0;
             let eval_param = {
                 count: this.player_refresh_data[index].refresh_count,
