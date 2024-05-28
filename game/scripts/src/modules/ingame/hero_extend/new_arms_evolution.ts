@@ -19,7 +19,20 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         }
     } = {};
 
-    ItemQmax: number = 7; //物品最高品质
+    kill_list : number[] = [ 50 , 50 , 100 , 200 , 400 , 600 , 800 , 1000 , 1000 , 1000 , 1000];
+
+    /**
+     * 全局限购记录
+     */
+    arms_global_count: {
+        [key: string]: {
+            count: number,
+            max: number,
+        },
+    } = {};
+
+
+    ItemQmax: number = 7; //物品最高品质    
     //技能点
     EvolutionPoint: number[] = []
     //已使用的技能点
@@ -33,7 +46,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     PlayerSelectData: PlayerUpgradeSelectServerData[] = [];
     //是否第一次选择
     PlayerFirstState: boolean[] = [];
-    //第一次选择的技能
+    //第一次选择的技能                
     PlayerUpgradePoolFirstData: string[][] = [];
 
     //玩家羁绊数据
@@ -100,7 +113,22 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             }
             this.ElementBondTable[element_key].push(activate_count)
         }
+
         DeepPrintTable(this.ElementBondTable)
+    }
+    /**
+     * 重新初始化全局限购
+     */
+    ArmsGlobalInit(){
+        let playercount = GetPlayerCount();
+        for (const [key, val] of pairs(ArmsJson)) {
+            if (val.Rarity > 0 && val.Disable) {
+                this.arms_global_count[key] = {
+                    count : 0,
+                    max : playercount,
+                };
+            }
+        }
     }
     /**
      * 初始化玩家可选物品概率(可重复调用)
@@ -130,7 +158,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 [ElementTypeEnum.dark]: 0
             }
         }
-
+                   
         for (let index = 0; index < 6; index++) {
             this.ElementBondDateRecord[player_id][index] = {
                 "Element" : {
@@ -227,7 +255,10 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                     }
                     ret_data[i] = {
                         key: arms_key,
+                        killcount : this.kill_list[1] , //杀敌数
+                        skillcount : 1 , //所需技能点
                     };
+                    this.arms_global_count[arms_key].count +=1;
                     shop_wp_list.push(arms_key);
                 }
 
@@ -246,9 +277,20 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                         i--;
                         continue;
                     }
+                    //全局唯一数量验证
+                    if(this.arms_global_count.hasOwnProperty(arms_key)){
+                        if(this.arms_global_count[arms_key].count >= this.arms_global_count[arms_key].max){
+                            //跳过本次 
+                            i--;
+                            continue;
+                        }
+                    }
                     ret_data[i] = {
                         key: arms_key,
+                        killcount : this.kill_list[1] , //杀敌数
+                        skillcount : 1 , //所需技能点
                     };
+                    this.arms_global_count[arms_key].count +=1;
                     shop_wp_list.push(arms_key);
                 }
             }
@@ -287,7 +329,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     /**
      * 替换技能
      * @param player_id 
-     * @param params 
+     * @param params    
      */
     ReplaceAbility(ability_name: string, order: number, queryUnit: CDOTA_BaseNPC_Hero) {
         const hUnit = queryUnit;
@@ -317,14 +359,19 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 print("没有刷新技能！！");
                 return;
             }
-            let ability_name = PlayerSelectDataInfo.arms_list[index].key
-            let Index = PlayerSelectDataInfo.index
+            let ability_name = PlayerSelectDataInfo.arms_list[index].key;
+            let Index = PlayerSelectDataInfo.index;
             let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
             //减少原来的元素羁绊
             let Ability = MyHero.GetAbilityByIndex(Index);
             let Key = Ability.GetAbilityName();
-            // let OldElement = ArmsJson[Key as keyof typeof ArmsJson].Element;
+            let Rarity = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
+            //被替换的技能回归池子
+            if(Rarity != 0){
+                this.arms_global_count[Key].count --;
+            }
+            
             // if(this.ElementBondDateList[player_id].Element[OldElement] > 0){
             //     this.ElementBondDateList[player_id].Element[OldElement] --;
             // }
@@ -340,6 +387,17 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             PlayerSelectDataInfo.is_select = 0;
             PlayerSelectDataInfo.index = -1;
             PlayerSelectDataInfo.arms_list = {};
+            //其他未选中的回归池子
+            for( let k in PlayerSelectDataInfo.arms_list){
+                let kint = parseInt(k);
+                if(index != kint){
+                    //回归池子
+                    let arms_key = PlayerSelectDataInfo.arms_list[k].key
+                    this.arms_global_count[arms_key].count --;
+                }
+                
+            }
+            
             this.GetArmssSelectData(player_id, {});
 
         } else {
@@ -462,7 +520,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             let key_index = parseInt(k) as keyof typeof element_bond;
             let element_key = element_label[key_index];
             let element_count = element_bond[key_index];
-            let RowElementBondTable = this.ElementBondTable[element_key]
+            let RowElementBondTable = this.ElementBondTable[element_key];
             
             for (let count of RowElementBondTable) {
                 let bond_key = element_label[key_index] + "_" + count;

@@ -129,6 +129,9 @@ export class ArmsEvolution extends UIEventRegisterClass {
                 }
                 ret_data[index] = { 
                     key: arms_key, 
+                    killcount : 50 , //杀敌数
+                    skillcount : 1 , //所需技能点
+                    
                 };
                 shop_wp_list.push(arms_key);
             }

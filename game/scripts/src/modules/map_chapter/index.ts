@@ -284,6 +284,9 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.ArchiveService.ConfirmDifficulty();
         //todo 需要修改成流程中
 
+        //初始化技能全局可用数量
+        GameRules.NewArmsEvolution.ArmsGlobalInit();
+
         GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
         let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
         this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
