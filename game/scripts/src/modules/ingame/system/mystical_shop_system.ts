@@ -1,6 +1,6 @@
 ﻿import { reloadable } from '../../../utils/tstl-utils';
 import { UIEventRegisterClass } from '../../class_extends/ui_event_register_class';
-import * as MysteriousShopConfig from "../../../json/config/shop/mysterious_shop_config.json";
+import * as MysteriousShopConfig from "../../../json/config/game/shop/mysterious_shop_config.json";
 // import * as ItemsCustom from "../../../json/npc_items_custom.json";
 // import * as ItemBlueprint from "../../../json/items/item_blueprint.json";
 // import * as ItemEquipOriginConfig from "../../../json/Items/item_equip_origin.json";
