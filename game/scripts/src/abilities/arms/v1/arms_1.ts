@@ -19,6 +19,7 @@ export class arms_1 extends BaseArmsAbility {
     }
 
     OnArmsStart(): void {
+        print("this.spirit_list.length",this.spirit_list.length)
         if (this.spirit_list.length < this.spirit_limit) {
             let summoned_duration = this.GetSpecialValueFor("summoned_duration");
             let hSpirit = GameRules.SummonedSystem.CreatedUnit(
@@ -28,6 +29,7 @@ export class arms_1 extends BaseArmsAbility {
                 summoned_duration,
                 true
             )
+            this.spirit_list.push(hSpirit)
             hSpirit.AddNewModifier(this.caster, this, "modifier_arms_1_summoned", {
                 duration: summoned_duration,
                 surround_distance: 300,
@@ -35,7 +37,7 @@ export class arms_1 extends BaseArmsAbility {
                 surround_speed: 900,
                 surround_entity: this.caster.entindex(),
             });
-            this.spirit_list.push(hSpirit)
+            
         }
     }
 

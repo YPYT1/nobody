@@ -28,7 +28,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     let crit_bonus_dmg = (params.crit_bonus_dmg ?? 0) + 150;
     let extra_percent = params.extra_percent ?? 0;
     let special_effect = params.special_effect ?? true;
-    PlayElementHitEffect(params.victim, element_type);
+    // PlayElementHitEffect(params.victim, element_type);
 
     let increased_injury = 0;// 增伤乘区
     let BondElement = GameRules.NewArmsEvolution.ElementBondDateList[iPlayerID].Element

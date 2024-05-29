@@ -16,9 +16,9 @@ export const GetItemAttribute = (item_name: string) => {
 }
 
 export const GetAbilityAttribute = (name: string) => {
-    let item_data = NpcAbilitiesCustom[name as "arms_t0_1"];
-    if (item_data.AttributeValues) {
-        let AttributeValues = item_data.AttributeValues as CustomAttributeTableType
+    let ability_data = NpcAbilitiesCustom[name as "arms_t0_1"];
+    if (ability_data != null && ability_data.AttributeValues) {
+        let AttributeValues = ability_data.AttributeValues as CustomAttributeTableType
         return AttributeValues
     } else {
         return {}

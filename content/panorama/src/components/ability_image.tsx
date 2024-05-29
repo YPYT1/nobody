@@ -3,7 +3,7 @@ import { GetTextureSrc } from "../common/custom_kv_method";
 import { default as NpcAbilityCustom } from "./../json/npc_abilities_custom.json";
 import { HideCustomTooltip, ShowCustomTooltip } from '../utils/custom_tooltip';
 
-export const CAbilityImage = ({ id, abilityname, showtooltip }: { id: string, abilityname: string; showtooltip?: boolean }) => {
+export const CAbilityImage = ({ id, abilityname, showtooltip }: { id?: string, abilityname: string; showtooltip?: boolean }) => {
 
     let image_src = "";
     let ability_data = NpcAbilityCustom[abilityname as keyof typeof NpcAbilityCustom];

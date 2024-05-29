@@ -80,6 +80,7 @@ export function SetAbilityDescription(
     }
     // $("#AbilityDamageType")?.SetHasClass("Hidden", true);
     let abilityData = NpcAbilityCustom[ability_name as "public_template"];
+    if (abilityData == null) { return "" }
     let AbilityValues: AbilityValuesProps = abilityData.AbilityValues;
     let original_description_txt = FormatDescription(ability_name, AbilityValues, level, undefined, entityIndex);
     if (original_description_txt.search("#") == 0) { return ""; }
@@ -143,8 +144,8 @@ export const GetAbilityTypeCategory = (ability_name: string) => {
 export const GetAbilityElementLabel = (ability_name: string) => {
     let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
     if (abilityData != null && abilityData.Element) {
-        if (abilityData.Element != 0){
-           return abilityData.Element
+        if (abilityData.Element != 0) {
+            return abilityData.Element
         } else {
             return 0
         }

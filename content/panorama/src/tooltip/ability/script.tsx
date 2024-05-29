@@ -163,14 +163,15 @@ export function App() {
 
         let type_category = GetAbilityTypeCategory(ability_name);
         let element = GetAbilityElementLabel(ability_name)
-
         let AttributeObject = GetAbilityAttribute(ability_name);
         let attr_list = ConvertAttributeValues(AttributeObject);
         let description = SetAbilityDescription(ability_name, undefined, ability_level);
 
         setElementKey(element)
         setElementLabel($.Localize(`#custom_text_element_title_${element}`))
-        setTypeCategory(type_category.join(","))
+        let type_category_class = "";
+        type_category.forEach((v, k) => { type_category_class += `act_${v} ` });
+        setTypeCategory(type_category_class)
         setRarity(GetAbilityRarity(ability_name))
         setComboList(GetAbilityCombo(ability_name))
 
@@ -214,15 +215,18 @@ export function App() {
                         <Panel id="AbilityName" className="flow-right">
                             <Label className='AbilityElement' text={ElementLabel} />
                             <Label className='AbilityNameLabel' html={true} text={name} />
-
                         </Panel>
                         <Panel id="CurrentItemCosts" className="flow-right">
                             <Label id="Cooldown" visible={cooldown > 0} text={cooldown} html={true} />
                             <Label id="ManaCost" visible={mana > 0} text={mana} html={true} />
                         </Panel>
                     </Panel>
-                    <Panel className='Category'>
-                        <Label text={TypeCategory} />
+                    <Panel id='AbilityCategoryType' className={TypeCategory}>
+                        {
+                            Array(14).fill(0).map((v, k) => {
+                                return <Label key={k} className={'act_' + k} text={$.Localize(`#custom_text_type_category_${k}`)} />
+                            })
+                        }
                     </Panel>
                 </Panel>
             </Panel>

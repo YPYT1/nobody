@@ -4,6 +4,7 @@ import { CreateDragPanelImage } from "../../common/panel_operaton";
 import { GetAbilityImageSrc } from "../../common/custom_kv_method";
 import { useGameEvent } from "react-panorama-x";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../utils/custom_tooltip";
+import { CAbilityImage } from "../../components/ability_image";
 
 
 const CustomAbilityPanel = ({ abilityname }: { abilityname: string }) => {
@@ -166,11 +167,21 @@ const UnitAbilityImage = ({ order }: { order: number }) => {
                             // $.RegisterEventHandler('DragLeave', e, OnDragLeave);
                             // $.RegisterEventHandler('DragEnd', e, OnDragEnd);
                         }}
+
+                        onmouseover={(e) => {
+                            // $.Msg(["AbilityEnti",AbilityEnti])
+                            if(AbilityEnti < 1){ return }
+                            ShowCustomTooltip(e, "ability", "", AbilityEnti)
+                        }}
+                        onmouseout={() => {
+                            HideCustomTooltip()
+                        }}
                     >
                         {/* <DOTAItemImage src={image_src} scaling='stretch-to-fit-y-preserve-aspect' /> */}
-                        <DOTAAbilityImage abilityname={AbilityName} />
+                        <CAbilityImage abilityname={AbilityName} />
+                        <Label text={`Lv.${AbilityLevel}`} />
                     </Panel>
-                    <Label text={`Lv.${AbilityLevel}`} />
+
                 </Panel>
                 <Panel className="ImageRight">
                     <Button className="btn" onactivate={UpgradeAbility}>
