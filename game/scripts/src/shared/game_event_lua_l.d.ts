@@ -46,6 +46,10 @@ declare interface CGED {
         CreatArmssSelectData: {//当有技能点时可刷新选技能列表
             index : number , //选择的技能位置
         },
+
+        CreatArmssWeightData : { //当有技能点时可重新随机当前技能
+            index : number , //选择的技能位置
+        }
         GetArmssSelectData : {//直接获取选技能列表
 
         }

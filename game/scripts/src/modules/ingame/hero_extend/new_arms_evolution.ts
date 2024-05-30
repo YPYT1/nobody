@@ -93,7 +93,6 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                         [ElementTypeEnum.dark] : 0
                     }
                 })
-                
             }
 
             this.PlayerSelectData.push({
@@ -303,6 +302,78 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     }
 
     /**
+     * 获取重随数据
+     * 1.默认是3个,如果其他则可以多选
+     * 2.符合条件后会出现特殊升级
+     */
+    CreatArmssWeightData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssSelectData"]) {
+        //阶段2之前不可用
+        if (GameRules.MapChapter._game_select_phase <= 2) {
+            return
+        }
+        if (this.PlayerSelectData[player_id].is_select == 0) {
+            //验证是否满足条件
+            if (this.EvolutionPoint[player_id] <= 0) {
+                print("技能点不足！")
+                return
+            }
+            let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
+            let Index = param.index;
+            let Ability = MyHero.GetAbilityByIndex(Index);
+            let Key = Ability.GetAbilityName();
+            let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
+            if (this.ItemQmax == Quality) {
+                print("已经是最高品质了！")
+                return
+            }
+            //最多几样物品
+            let amount = this.PlayerSelectAmount[player_id];
+            //循环计数器
+            let amount_count = 0;
+            let amount_max = 50;
+            //返回数据
+            let ret_data: { [key: string]: PlayerUpgradeSelectServer; } = {};
+            let shop_wp_list: string[] = [];
+            //如果为第一次刷新则改为特定刷新
+            for (let i = 0; i < amount; i++) {
+                amount_count++;
+                if (amount_count > amount_max) {
+                    break;
+                }
+                let key_list = this.PlayerUpgradePool[player_id][Quality].key;
+                let pro_list = this.PlayerUpgradePool[player_id][Quality].pro;
+                let arms_key = key_list[GetCommonProbability(pro_list)];
+                //重复物品跳过
+                if (shop_wp_list.includes(arms_key)) {
+                    //跳过本次 
+                    i--;
+                    continue;
+                }
+                //全局唯一数量验证
+                if(this.arms_global_count.hasOwnProperty(arms_key)){
+                    if(this.arms_global_count[arms_key].count >= this.arms_global_count[arms_key].max){
+                        //跳过本次 
+                        i--;
+                        continue;
+                    }
+                }
+                ret_data[i] = {
+                    key: arms_key,
+                    killcount : 0, //杀敌数
+                    skillcount : 1 , //所需技能点
+                };
+                this.arms_global_count[arms_key].count +=1;
+                shop_wp_list.push(arms_key);
+            }
+            //修改为已刷新
+            this.PlayerSelectData[player_id].is_select = 1;
+            this.PlayerSelectData[player_id].arms_list = ret_data;
+            this.PlayerSelectData[player_id].index = Index;
+        }
+        this.GetArmssSelectData(player_id, {});
+    }
+
+    /**
      * 升级
      */
     ArmsUpgrade(player_id: PlayerID, param: CGED["NewArmsEvolution"]["ArmsUpgrade"]) {
@@ -360,6 +431,19 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 return;
             }
             let ability_name = PlayerSelectDataInfo.arms_list[index].key;
+            let killcount = PlayerSelectDataInfo.arms_list[index].killcount;
+            let skillcount = PlayerSelectDataInfo.arms_list[index].skillcount;
+
+            if(killcount > 0){
+                let Validation = GameRules.ResourceSystem.ResourceValidation(player_id , {
+                    "Kills" : killcount
+                })
+                if(Validation == false){
+                    print("资源不足！！！");
+                    return;
+                }
+            }
+
             let Index = PlayerSelectDataInfo.index;
             let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
@@ -380,13 +464,22 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             // this.ElementBondDateList[player_id].Element[Element]++;
             this.GetArmssElementBondDateList(player_id, {})
 
-
             GameRules.NewArmsEvolution.ReplaceAbility(ability_name, Index, MyHero)
-            //技能点减少
-            this.AddEvolutionPoint(player_id, -1)
+
+            if(killcount > 0){
+                GameRules.ResourceSystem.ModifyResource(player_id , {
+                    "Kills" : - killcount
+                })
+            }
+            if(skillcount > 0){
+                //技能点减少
+                this.AddEvolutionPoint(player_id, - skillcount)
+            }
+            
             PlayerSelectDataInfo.is_select = 0;
             PlayerSelectDataInfo.index = -1;
             PlayerSelectDataInfo.arms_list = {};
+
             //其他未选中的回归池子
             for( let k in PlayerSelectDataInfo.arms_list){
                 let kint = parseInt(k);
@@ -397,7 +490,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 }
                 
             }
-            
+            DeepPrintTable(this.arms_global_count);
             this.GetArmssSelectData(player_id, {});
 
         } else {
@@ -427,6 +520,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     * 获取物品信息初始化信息
     */
     GetArmssElementBondDateList(player_id: PlayerID, params: CGED["NewArmsEvolution"]["GetArmssElementBondDateList"]) {
+        DeepPrintTable(this.ElementBondDateList[player_id])
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "NewArmsEvolution_GetArmssElementBondDateList",
@@ -443,7 +537,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * @param count 数量
      * @param SkillIndex 技能位置
      */
-    SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number , SkillIndex : number = 0 ){
+    SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number , SkillIndex : number ){
 
         //还原当前位置被替换的量
         for (let index = 0; index < Object.keys(this.ElementBondDateRecord[player_id][SkillIndex].Element).length; index++) {
@@ -460,12 +554,21 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 let max = ElementTypeEnum.dark;
                 //寻找最高元素的值
                 let HighestElement = 0;
+                //唯一标识
+                let only_status = false;
                 for (let index = 1; index <= max ; index++) {
+                    //下一个元素如果等于了此数量则不唯一
+                    if(HighestElement == this.ElementBondDateList[player_id].Element[index]){
+                        only_status = false;
+                    }
+
                     if(HighestElement < this.ElementBondDateList[player_id].Element[index]){
                         HighestElement = this.ElementBondDateList[player_id].Element[index]
+                        only_status = true;
                     }
+                    
                 }
-                if(HighestElement != 0){
+                if(HighestElement != 0 && only_status == true){
                     //处理暗
                     if(Element == ElementTypeEnum.dark){
                         for (let index = 1; index <= max ; index++) {
@@ -586,7 +689,26 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         if (cmd == "--SetElementBondDate") {
             let Element = args[0] ? parseInt(args[0]) : 1;
             let count = args[1] ? parseInt(args[1]) : 1;
-            this.SetElementBondDate(player_id, Element, count)
+            this.SetElementBondDate(player_id, Element, count , 0)
+        }
+        if(cmd == "--addResource"){
+            let Type = args[0] ? parseInt(args[0]) : 1;
+            let count = args[1] ? parseInt(args[1]) : 1;
+            let key = "Gold";
+            if(Type == 1){
+                key == "Gold"
+            }else if(Type == 2){
+                key == "Soul"
+            }else if(Type == 3){
+                key == "Kills"
+            }else if(Type == 4){
+                key == "TeamExp"
+            }else if(Type == 5){
+                key == "SingleExp"
+            }
+            GameRules.ResourceSystem.ModifyResource(player_id , {
+                [key] : count
+            })
         }
     }
 }
