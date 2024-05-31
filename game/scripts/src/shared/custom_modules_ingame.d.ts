@@ -30,8 +30,6 @@ declare interface PlayerUpgradeSelectServerData {
  */
 declare interface PlayerUpgradeSelectServer {
     key: string;  //技能下标
-    killcount : number ; //杀敌数
-    skillcount : number ; //所需技能点
 }
 
 /**
