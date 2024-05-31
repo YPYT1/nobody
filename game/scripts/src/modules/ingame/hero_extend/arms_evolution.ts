@@ -107,7 +107,6 @@ export class ArmsEvolution extends UIEventRegisterClass {
                 let key_list = this.PlayerUpgradePool[player_id].key;
                 let pro_list = this.PlayerUpgradePool[player_id].pro;
                 let arms_key = key_list[GetCommonProbability(pro_list)];
-                print("arms_key :" ,arms_key )
                 let ArmsEvolutionData = ArmsEvolutionJson[arms_key as keyof typeof ArmsEvolutionJson];
                 //重复物品跳过
                 if (shop_wp_list.includes(arms_key)) {
@@ -129,8 +128,6 @@ export class ArmsEvolution extends UIEventRegisterClass {
                 }
                 ret_data[index] = { 
                     key: arms_key, 
-                    killcount : 50 , //杀敌数
-                    skillcount : 1 , //所需技能点
                     
                 };
                 shop_wp_list.push(arms_key);
