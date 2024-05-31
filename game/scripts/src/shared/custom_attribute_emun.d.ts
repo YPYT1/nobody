@@ -113,7 +113,7 @@ declare type OverrideSpecialKeyTypes = "skv_count"
     | "skv_light"
     | "skv_dark"
 
-declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Correct";
+declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Multiple" |"Correct";
 
 
 interface OverrideSpecialObjectProps {
@@ -127,9 +127,11 @@ interface OverrideSpecialValueProps {
     [special_key: string]: {
         /** 基础值 */
         base_value: number;
-        /** 倍率 */
+        /** 百分比加成 */
+        percent_value:number;
+        /** 乘区倍率 */
         mul_value: number;
-        /** 修正值.默认为0即100% 最小[-100%]*/
+        /** 修正值. 最终乘区 默认为0即100% 最小[-100%]*/
         correct_value: number;
         /** 结果 (基础*倍率)*修正 */
         // result_value: number;

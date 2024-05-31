@@ -21,7 +21,8 @@ export class EntityKilled {
             let vect = hKilled.GetAbsOrigin();
             GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, 100);
             GameRules.ResourceSystem.ModifyResource(iPlayerID, {
-                "Soul": 10
+                "Soul": 10,
+                "Kills": 1,
             })
 
             hKilled.SetContextThink("death_play", () => {

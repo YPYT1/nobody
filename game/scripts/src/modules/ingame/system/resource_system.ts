@@ -232,4 +232,18 @@ export class ResourceSystem extends UIEventRegisterClass {
     GetPlayerResource(player_id: PlayerID) {
         this.SendPlayerResource(player_id)
     }
+
+    Debug(cmd: string, args: string[], player_id: PlayerID): void {
+        if (cmd == "-gold" || cmd == "-soul" || cmd == "-kills" || cmd == "-texp" || cmd == "-sexp") {
+            let count = args[0] ? parseInt(args[1]) : 1;
+            let key = "Gold";
+            if (cmd == "-soul") { key = "Soul" }
+            if (cmd == "-kills") { key = "Kills" }
+            if (cmd == "-texp") { key = "TeamExp" }
+            if (cmd == "-sexp") { key = "SingleExp" }
+            this.ModifyResource(player_id, {
+                [key]: count
+            })
+        }
+    }
 }

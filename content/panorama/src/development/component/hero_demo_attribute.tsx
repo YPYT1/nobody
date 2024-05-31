@@ -187,7 +187,7 @@ const HeroDemoAttribute = () => {
                     <AttributeRows attr_key="ManaPoints" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="ManaRegen" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="PickItemRadius" attr_value={AttributeValue} attr_table={AttributeTable} />
-                   
+
                     <AttributeRows attr_key="Fire_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="Ice_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="Thunder_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
@@ -254,6 +254,7 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: OverrideSpecialKeyTypes }) =>
                 >
                     <Label id={"Base"} text={"Base"} />
                     <Label id={"Percent"} text={"Percent"} />
+                    <Label id={"Multiple"} text={"Multiple"} />
                     <Label id={"Correct"} text={"Correct"} />
                 </DropDown>
             </Panel>

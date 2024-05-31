@@ -23,4 +23,8 @@ export class UIEventRegisterClass {
             GameRules[this.constructor.name][event_name](player_id, params);
         }
     }
+
+    Debug(cmd: string, args: string[], player_id: PlayerID) {
+        
+    }
 }

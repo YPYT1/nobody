@@ -353,10 +353,16 @@ export class RuneSystem extends UIEventRegisterClass {
                 this.PassRuneKeySetWeight(player_id , key , RuneWeight);
             }
         }
+        //初始化符文给对应玩家
+        this.InitRune(player_id , rune_key)
+
         this.GetRuneRandomData(player_id , rune_key)
         this.GetRuneData(player_id, {});
     }
+    
+    InitRune(player_id: PlayerID , rune_name : string){
 
+    }
 
     /**
      * 获取一个指定符文
@@ -409,6 +415,10 @@ export class RuneSystem extends UIEventRegisterClass {
                 this.PassRuneKeySetWeight(player_id , key , RuneWeight);
             }
         }
+
+        this.InitRune(player_id , rune_key)
+
+
         this.GetRuneRandomData(player_id , rune_key)
         this.GetRuneData(player_id, {});
     }

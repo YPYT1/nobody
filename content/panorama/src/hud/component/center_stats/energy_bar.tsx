@@ -13,8 +13,8 @@ export const ValueBarComponent = ({ type }: ValueBarProps) => {
 
     const UpdateLocalPlayer = () => {
         const queryUnit = Players.GetLocalPlayerPortraitUnit();
-        // $.Msg(["queryUnit",queryUnit])
-        if(queryUnit == -1){ return }
+        // $.Msg(["queryUnit", queryUnit])
+        if (queryUnit <= 0) { return }
         // const queryUnit = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer()) 
         if (type == "Hp") {
             const health_mul = 1;// GetUnitModifierStack(queryUnit, "modifier_common_mul_health");

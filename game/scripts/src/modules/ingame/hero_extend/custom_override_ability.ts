@@ -43,15 +43,19 @@ export class CustomOverrideAbility {
                 this.OverrideSpecialValue[player_id][override_key] = {
                     base_value: 0,
                     mul_value: 1,
+                    percent_value: 100,
                     // result_value: 0,
                     correct_value: 100,
                 }
             }
 
-            let RowInput = special_input[override_key];
+            let RowInput = special_input[override_key as keyof typeof special_input];
             if (RowInput.Base) { this.OverrideSpecialValue[player_id][override_key].base_value += RowInput.Base }
             if (RowInput.Percent) {
-                let mul_input = (100 + RowInput.Percent) * 0.01
+                this.OverrideSpecialValue[player_id][override_key].percent_value += RowInput.Percent
+            }
+            if (RowInput.Multiple) {
+                let mul_input = (100 + RowInput.Multiple) * 0.01
                 this.OverrideSpecialMul[player_id][override_key].mul_list.push(mul_input)
                 let mul_value = 1;
                 for (let row_value of this.OverrideSpecialMul[player_id][override_key].mul_list) {
@@ -60,7 +64,7 @@ export class CustomOverrideAbility {
                 this.OverrideSpecialValue[player_id][override_key].mul_value = mul_value
             }
             if (RowInput.Correct) {
-                this.OverrideSpecialValue[player_id][override_key].cache_value += RowInput.Correct
+                this.OverrideSpecialValue[player_id][override_key].correct_value += RowInput.Correct
             }
 
         }
@@ -88,11 +92,11 @@ export class CustomOverrideAbility {
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-amrs2") {
-            // this.ModifyOverrideSpecialValue(0, {
-            //     "summoned_duration":{
-            //         Base:
-            //     }
-            // })
+            this.ModifyOverrideSpecialValue(player_id, {
+                "skv_summoned_duration": {
+                    "Percent": 10,
+                }
+            })
         }
     }
 }

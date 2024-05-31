@@ -32,18 +32,18 @@ export class BaseArmsAbility extends BaseAbility {
     unit_list: CDOTA_BaseNPC[];
 
     // OverrideKyes
-    projectile_speed: number
-    bounce_count: number
-    projectile_count: number
-    aoe_radius: number
-    damage_interval_cut: number
-    cooldown_cut: number
-    summoned_duration: number
-    summoned_damage: number
-    buff_duration: number
-    debuff_duration: number
-    shield_amplify: number
-    health_amplify: number
+    projectile_speed: number;
+    bounce_count: number;
+    projectile_count: number;
+    aoe_radius: number;
+    damage_interval_cut: number;
+    cooldown_cut: number;
+    summoned_duration: number;
+    summoned_damage: number;
+    buff_duration: number;
+    debuff_duration: number;
+    shield_amplify: number;
+    health_amplify: number;
 
     FindRandomEnemyTarget() {
         const vCaster = this.caster.GetOrigin();

@@ -91,8 +91,9 @@ export class modifier_custom_override extends BaseModifier {
             }
             let flAddResult = SpecialValueUpgrades.base_value;
             let flMulResult = SpecialValueUpgrades.mul_value;
+            let flPercentResult = SpecialValueUpgrades.percent_value * 0.01;
             let flCorrResult = math.max(0, SpecialValueUpgrades.correct_value * 0.01);
-            let flResult = math.floor((flBaseValue + flAddResult) * flMulResult * flCorrResult)
+            let flResult = math.floor((flBaseValue + flAddResult) * flPercentResult * flMulResult * flCorrResult)
             SpecialValueUpgrades.cache_value = flResult;
             this.bDirty = false;
             return flResult
