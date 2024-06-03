@@ -380,11 +380,11 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("ProcessCreateBoss", () => {
             GameRules.Spawn.CreateBoss();
             return null;
-        }, 60 );
+        }, 300 );
         GameRules.GetGameModeEntity().SetContextThink("GameOverTime", () => {
             GameRules.Spawn.StopAllSpawnAndMonster();
             return null;
-        }, 90);
+        }, 360);
         GameRules.GetGameModeEntity().SetContextThink("spawn_round_index", () => {
             if(this._round_index >= 5 * this._game_player_ds){
                 return null
