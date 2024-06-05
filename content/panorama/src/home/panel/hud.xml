@@ -3,12 +3,15 @@
 		<!-- <include src="file://{resources}/styles/dotastyles.css" />
 		<include src="file://{resources}/styles/custom_game/action_bar.css" />
 		<include src="file://{resources}/styles/custom_game/ability_shared.css" /> -->
+		<include src="./hud.less" />
 	</styles>
 	<scripts>
 		<include src="./hud.tsx" />
 	</scripts>
 	<Panel class="hud">
-		<Panel id="ActionAbility"></Panel>
+		<Panel id="ActionAbility">
+		
+		</Panel>
 	</Panel>
 </root>
 

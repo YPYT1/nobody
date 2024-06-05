@@ -133,7 +133,7 @@ const App = () => {
     )
 };
 
-render(<App />, $.GetContextPanel());
+// render(<App />, $.GetContextPanel());
 
 
 // import { onMount } from 'solid-js';

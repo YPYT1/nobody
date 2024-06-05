@@ -1,20 +1,16 @@
+import "./panel/hud";
+
 let hudPanel: Panel;
 
 
-// const TestPanel = ()=>{
-
-//     return (
-//         <Panel id="TestPanel">
-
-//         </Panel>
-//     )
-// }
-
 const Initialize = () => {
+    $.Msg("Initialize 2");
+    hudPanel = $("#hud");
+    hudPanel.RemoveAndDeleteChildren();
     hudPanel.BLoadLayout("file://{resources}/layout/custom_game/home/panel/hud.xml", false, false)
 }
 
-
-hudPanel = $("#hud");
-hudPanel.RemoveAndDeleteChildren();
-// Initialize()
+$.Msg(["MSG"]);
+(function () {
+    Initialize();
+})();

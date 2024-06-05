@@ -2,6 +2,10 @@ declare interface PanelDataObject {
     [key: string]: any;
 }
 
+declare interface PanelDataFunction {
+    [key: string]: any;
+}
+
 interface Panel {
     displayPanel: Panel;
     offsetX: number;

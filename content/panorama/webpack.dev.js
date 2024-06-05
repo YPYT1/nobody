@@ -19,10 +19,12 @@ const GetImportPathFileList = (path_dir) => {
 
             if (stats.isFile()) {
                 if (filePath.endsWith("xml")) {
-                    console.log(directoryPath, file, __dirname)
                     let dir_path = directoryPath.replace(__dirname + "\\src\\", "./") + "/"
                     let import_file = (dir_path + "/" + file).replaceAll("\\", "/").replaceAll("//", "/")
-                    xml_list.push({ import: import_file, type: 'Hud' })
+                    if (dir_path == './' + path_dir + "/" == false) {
+                        xml_list.push({ import: import_file, filename: import_file.replace("./", "") })
+                    }
+
                 }
 
             } else if (stats.isDirectory()) {
@@ -138,6 +140,7 @@ module.exports = {
 
                 // if filename is not set, it will use the name of the entry
                 { import: './hud/layout.xml', type: 'Hud' },
+                { import: './home/layout.xml', type: 'Hud' },
                 { import: './dashboard/layout.xml', type: 'Hud' },
                 { import: './development/layout.xml', type: 'Hud' },
 
@@ -146,6 +149,7 @@ module.exports = {
                 { import: './tooltip/item/layout.xml', filename: 'tooltip/item/layout.xml' },
                 { import: './tooltip/ability/layout.xml', filename: 'tooltip/ability/layout.xml' },
                 { import: './tooltip/element_syenrgy/layout.xml', filename: 'tooltip/element_syenrgy/layout.xml' },
+
 
                 ...ImportHome,
             ],
