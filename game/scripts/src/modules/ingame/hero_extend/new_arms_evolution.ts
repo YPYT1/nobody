@@ -138,6 +138,8 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         GameRules.Spawn.player_life_list[player_id] = 2
         this.PlayerUpgradePool[player_id] = {};
         this.EvolutionPoint[player_id] = 0;
+        //初始给与一点技能点 且不消耗灵魂
+        this.AddEvolutionPoint(player_id, 1);
         this.PlayerFirstState[player_id] = true;
         this.PlayerSelectData[player_id] = {
             "arms_list": {},
@@ -218,33 +220,12 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             let Ability = MyHero.GetAbilityByIndex(Index);
             let Key = Ability.GetAbilityName();
             let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
-            print("Quality :", Quality)
             if (this.ItemQmax == Quality) {
                 print("已经是最高品质了！")
                 return
             }
-
             let killcount = this.kill_list[Quality+1] ;
             let skillcount = 1;
-    
-            if(killcount > 0){
-                let Validation = GameRules.ResourceSystem.ResourceValidation(player_id , {
-                    "Kills" : killcount
-                })
-                if(Validation == false){
-                    print("资源不足！！！");
-                    return;
-                }
-            }
-            if(killcount > 0){
-                GameRules.ResourceSystem.ModifyResource(player_id , {
-                    "Kills" : - killcount
-                })
-            }
-            if(skillcount > 0){
-                //技能点减少
-                this.AddEvolutionPoint(player_id, - skillcount)
-            }
             //最多几样物品
             let amount = this.PlayerSelectAmount[player_id];
             //循环计数器
@@ -255,6 +236,11 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             let shop_wp_list: string[] = [];
             //如果为第一次刷新则改为特定刷新
             if (this.PlayerFirstState[player_id]) {
+                if(skillcount > 0){
+                    //技能点减少
+                    this.AddEvolutionPoint(player_id, - skillcount)
+                }
+
                 this.PlayerFirstState[player_id] = false;
                 for (let i = 0; i < amount; i++) {
                     amount_count++;
@@ -278,8 +264,25 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                     this.arms_global_count[arms_key].count +=1;
                     shop_wp_list.push(arms_key);
                 }
-
             } else {
+                if(killcount > 0){
+                    let Validation = GameRules.ResourceSystem.ResourceValidation(player_id , {
+                        "Kills" : killcount
+                    })
+                    if(Validation == false){
+                        print("资源不足！！！");
+                        return;
+                    }
+                }
+                if(killcount > 0){
+                    GameRules.ResourceSystem.ModifyResource(player_id , {
+                        "Kills" : - killcount
+                    })
+                }
+                if(skillcount > 0){
+                    //技能点减少
+                    this.AddEvolutionPoint(player_id, - skillcount)
+                }
                 for (let i = 0; i < amount; i++) {
                     amount_count++;
                     if (amount_count > amount_max) {
