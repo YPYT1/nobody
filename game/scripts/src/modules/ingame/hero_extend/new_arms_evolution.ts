@@ -138,7 +138,8 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         GameRules.Spawn.player_life_list[player_id] = 2
         this.PlayerUpgradePool[player_id] = {};
         this.EvolutionPoint[player_id] = 0;
-        this.AddEvolutionPoint(player_id, 1)
+        //初始给与一点技能点 且不消耗灵魂
+        this.AddEvolutionPoint(player_id, 1);
         this.PlayerFirstState[player_id] = true;
         this.PlayerSelectData[player_id] = {
             "arms_list": {},
@@ -219,35 +220,12 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             let Ability = MyHero.GetAbilityByIndex(Index);
             let Key = Ability.GetAbilityName();
             let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
-            print("Quality :", Quality)
             if (this.ItemQmax == Quality) {
                 print("已经是最高品质了！")
                 return
             }
-
             let killcount = this.kill_list[Quality+1] ;
             let skillcount = 1;
-    
-            if(killcount > 0){
-                let Validation = GameRules.ResourceSystem.ResourceValidation(player_id , {
-                    "Kills" : killcount
-                })
-                if(Validation == false){
-                    print("资源不足！！！");
-                    return;
-                }
-            }
-            if(killcount > 0){
-                GameRules.ResourceSystem.ModifyResource(player_id , {
-                    "Kills" : - killcount
-                })
-            }
-            if(skillcount > 0){
-                //技能点减少
-                this.AddEvolutionPoint(player_id, - skillcount)
-            }
-
-            
             //最多几样物品
             let amount = this.PlayerSelectAmount[player_id];
             //循环计数器
@@ -258,6 +236,11 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             let shop_wp_list: string[] = [];
             //如果为第一次刷新则改为特定刷新
             if (this.PlayerFirstState[player_id]) {
+                if(skillcount > 0){
+                    //技能点减少
+                    this.AddEvolutionPoint(player_id, - skillcount)
+                }
+
                 this.PlayerFirstState[player_id] = false;
                 for (let i = 0; i < amount; i++) {
                     amount_count++;
@@ -281,8 +264,25 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                     this.arms_global_count[arms_key].count +=1;
                     shop_wp_list.push(arms_key);
                 }
-
             } else {
+                if(killcount > 0){
+                    let Validation = GameRules.ResourceSystem.ResourceValidation(player_id , {
+                        "Kills" : killcount
+                    })
+                    if(Validation == false){
+                        print("资源不足！！！");
+                        return;
+                    }
+                }
+                if(killcount > 0){
+                    GameRules.ResourceSystem.ModifyResource(player_id , {
+                        "Kills" : - killcount
+                    })
+                }
+                if(skillcount > 0){
+                    //技能点减少
+                    this.AddEvolutionPoint(player_id, - skillcount)
+                }
                 for (let i = 0; i < amount; i++) {
                     amount_count++;
                     if (amount_count > amount_max) {
@@ -442,61 +442,48 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      */
     PostSelectArms(player_id: PlayerID, params: CGED["NewArmsEvolution"]["PostSelectArms"]) {
         let index = params.index;
-        if (this.EvolutionPoint[player_id] > 0) {
+        let PlayerSelectDataInfo = this.PlayerSelectData[player_id];
+        if (!PlayerSelectDataInfo.arms_list.hasOwnProperty(index)) {
+            print("没有此选项！！！");
+            return;
+        }
+        if (PlayerSelectDataInfo.is_select == 0) {
+            print("没有刷新技能！！");
+            return;
+        }
+        let ability_name = PlayerSelectDataInfo.arms_list[index].key;
 
-            let PlayerSelectDataInfo = this.PlayerSelectData[player_id];
-            if (!PlayerSelectDataInfo.arms_list.hasOwnProperty(index)) {
-                print("没有此选项！！！");
-                return;
-            }
-            if (PlayerSelectDataInfo.is_select == 0) {
-                print("没有刷新技能！！");
-                return;
-            }
-            let ability_name = PlayerSelectDataInfo.arms_list[index].key;
+        let Index = PlayerSelectDataInfo.index;
+        let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
-            let Index = PlayerSelectDataInfo.index;
-            let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        //减少原来的元素羁绊
+        let Ability = MyHero.GetAbilityByIndex(Index);
+        let Key = Ability.GetAbilityName();
+        let Rarity = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
+        //被替换的技能回归池子
+        if(Rarity != 0){
+            this.arms_global_count[Key].count --;
+        }
+        
+        this.GetArmssElementBondDateList(player_id, {})
 
-            //减少原来的元素羁绊
-            let Ability = MyHero.GetAbilityByIndex(Index);
-            let Key = Ability.GetAbilityName();
-            let Rarity = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
-            //被替换的技能回归池子
-            if(Rarity != 0){
-                this.arms_global_count[Key].count --;
+        GameRules.NewArmsEvolution.ReplaceAbility(ability_name, Index, MyHero)
+
+        PlayerSelectDataInfo.is_select = 0;
+        PlayerSelectDataInfo.index = -1;
+        PlayerSelectDataInfo.arms_list = {};
+
+        //其他未选中的回归池子
+        for( let k in PlayerSelectDataInfo.arms_list){
+            let kint = parseInt(k);
+            if(index != kint){
+                //回归池子
+                let arms_key = PlayerSelectDataInfo.arms_list[k].key
+                this.arms_global_count[arms_key].count --;
             }
             
-            // if(this.ElementBondDateList[player_id].Element[OldElement] > 0){
-            //     this.ElementBondDateList[player_id].Element[OldElement] --;
-            // }
-            // let Element = ArmsJson[ability_name as keyof typeof ArmsJson].Element;
-            // //更新元素羁绊信息
-            // this.ElementBondDateList[player_id].Element[Element]++;
-            this.GetArmssElementBondDateList(player_id, {})
-
-            GameRules.NewArmsEvolution.ReplaceAbility(ability_name, Index, MyHero)
-
-            PlayerSelectDataInfo.is_select = 0;
-            PlayerSelectDataInfo.index = -1;
-            PlayerSelectDataInfo.arms_list = {};
-
-            //其他未选中的回归池子
-            for( let k in PlayerSelectDataInfo.arms_list){
-                let kint = parseInt(k);
-                if(index != kint){
-                    //回归池子
-                    let arms_key = PlayerSelectDataInfo.arms_list[k].key
-                    this.arms_global_count[arms_key].count --;
-                }
-                
-            }
-            this.GetArmssSelectData(player_id, {});
-
-        } else {
-            // GameRules.Cmsg();
-            print("技能点不足")
         }
+        this.GetArmssSelectData(player_id, {});
     }
 
     /**
