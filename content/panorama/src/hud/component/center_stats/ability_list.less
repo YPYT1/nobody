@@ -1,27 +1,43 @@
 @AbilitySize: 56px;
 
 #AbilityList {
-    width: (@AbilitySize + 4px)* 6;
-    min-height: @AbilitySize;
+    // width: (@AbilitySize + 4px)* 6;
+    // min-height: @AbilitySize;
     flow-children: right;
     vertical-align: bottom;
-    background-color: #0a52489d;
+    // background-color: #0a52489d;
+    // border: 1px solid #ffffff;
+    horizontal-align: center;
+    margin-bottom: 28px;
 
-    &.HasPoint .AbilityButtonItem .AbilityReselect {
-        visibility: visible;
+    .Right,
+    .Left {
+        flow-children: right;
     }
+
+    .Right {
+        margin-left: 80px;
+    }
+
+    .Left {
+        margin-right: 80px;
+    }
+
+    // &.HasPoint .AbilityButtonItem .AbilityHoverTip {
+    //     animation-name: flash;
+    //     animation-duration: 0.4s;
+    //     animation-iteration-count: infinite;
+    // }
 
     &.IsSelecting {
 
         &.HasPoint {
-            .AbilityReselect {
-                visibility: collapse;
+            .AbilityHoverTip {
+                animation-name: none;
+                // animation-duration: 0.4s;
+                // animation-iteration-count: infinite;
             }
         }
-
-        // .AbilityReselect {
-        //     visibility: collapse;
-        // }
 
         &.SetIndex_5 .Ability5,
         &.SetIndex_4 .Ability4,
@@ -30,13 +46,11 @@
         &.SetIndex_1 .Ability1,
         &.SetIndex_0 .Ability0 {
 
-            animation-name: flash;
-            animation-duration: 0.4s ;
-            animation-iteration-count: infinite;
-
-            // .AbilityReselect {
-            //     visibility: visible;
-            // }
+            .AbilityHoverTip {
+                animation-name: flash;
+                animation-duration: 0.4s;
+                animation-iteration-count: infinite;
+            }
 
         }
     }
@@ -45,12 +59,15 @@
 
 .AbilityButtonItem {
     width: @AbilitySize;
+    margin-left: 6px;
+    margin-right: 6px;
     // height: @AbilitySize + 12px;
     vertical-align: bottom;
-    margin: 1px;
+    // margin: 1px;
     background-size: 100%;
     background-repeat: no-repeat;
     flow-children: down;
+
 
     .AbilityReselect {
         width: 100%;
@@ -60,7 +77,7 @@
         visibility: collapse;
 
         animation-name: flash;
-        animation-duration: 0.8s ;
+        animation-duration: 0.8s;
         animation-iteration-count: infinite;
 
         &:hover {
@@ -94,12 +111,57 @@
         }
     }
 
+    .AbilityHoverTip {
+        width: 100%;
+        height: 100%;
+    }
+
+    .AbilityRarityBorder {
+        width: 100%;
+        height: 100%;
+        background-image: url("file://{images}/custom_game/icon/rarity/ability/rare_1.png");
+        background-size: 100%;
+    }
+
+    &.is_innate {
+        border: 1px solid #ffffff;
+        border-radius: 50%;
+        .AbilityRarityBorder {
+            visibility: collapse;
+        }
+    }
+
+    &.Rarity2 .AbilityRarityBorder {
+        background-image: url("file://{images}/custom_game/icon/rarity/ability/rare_2.png");
+    }
+
+    &.Rarity3 .AbilityRarityBorder {
+        background-image: url("file://{images}/custom_game/icon/rarity/ability/rare_3.png");
+    }
+
+    &.Rarity4 .AbilityRarityBorder {
+        background-image: url("file://{images}/custom_game/icon/rarity/ability/rare_4.png");
+    }
+
+    &.Rarity5 .AbilityRarityBorder {
+        background-image: url("file://{images}/custom_game/icon/rarity/ability/rare_5.png");
+    }
+
+    &.Rarity6 .AbilityRarityBorder {
+        background-image: url("file://{images}/custom_game/icon/rarity/ability/rare_6.png");
+    }
+
+    &.Rarity7 .AbilityRarityBorder {
+        background-image: url("file://{images}/custom_game/icon/rarity/ability/rare_7.png");
+    }
+
     .ButtonAndLevel {
         width: @AbilitySize;
         height: @AbilitySize;
         // 品质颜色
-        background-color: #000000;
-        padding: 1px;
+        // background-color: #000000;
+        // 
+        // padding: 1px;
         horizontal-align: center;
         vertical-align: top;
 
@@ -527,4 +589,9 @@
         wash-color: #1569be;
         contrast: .7;
     }
+}
+
+#HeroInnateAbility {
+    horizontal-align: center;
+    vertical-align: bottom;
 }

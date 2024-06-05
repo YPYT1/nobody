@@ -235,7 +235,7 @@ export class ResourceSystem extends UIEventRegisterClass {
 
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         if (cmd == "-gold" || cmd == "-soul" || cmd == "-kills" || cmd == "-texp" || cmd == "-sexp") {
-            let count = args[0] ? parseInt(args[1]) : 1;
+            let count = args[0] ? parseInt(args[0]) : 1;
             let key = "Gold";
             if (cmd == "-soul") { key = "Soul" }
             if (cmd == "-kills") { key = "Kills" }

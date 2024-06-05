@@ -2,29 +2,35 @@
 
 
 #EnergyBar {
-    width: 320px;
+    // width: 320px;
+    width: 701px;
+    height: 54px;
+    horizontal-align: center;
     vertical-align: bottom;
-    flow-children: down;
+    flow-children: right;
+    background-image: url("file://{images}/custom_game/hud/control/bar_base.png");
+
+    // margin-bottom: 32px;
+
+    .BarContent {
+        horizontal-align: center;
+        flow-children: right;
+        vertical-align: bottom;
+    }
 }
 
 .ValueBarComponent {
     margin-top: 1px;
     margin-bottom: 1px;
-    width: 100%;
-    height: 32px;
-    // padding: 0px 2px;
-    // overflow: noclip;
-    border: 2px solid #000000;
+    width: 331px;
+    height: 22px;
+    // opacity: 0.1;
+    vertical-align: bottom;
 
     .ProgressBarPanel {
         width: 100%;
         height: 100%;
-        // margin: 0px 2px;
-        // #ValueProgressBarBackground {
-        //     width: 100%;
-        //     height: 100%;
-        //     background-image: url("file://{images}/custom_game/hud/operation/life_bar/hp_bar_background.png");
-        // }
+
     }
 
     .ProgressBar {
@@ -35,20 +41,16 @@
         background-size: 100%;
         background-repeat: no-repeat;
         // overflow: noclip;
-        background-color: #252729;
+        // background-color: #c2e1ff;
         // border-radius: 16px;
+        opacity-mask: url("file://{images}/custom_game/hud/control/bar_hp.png");
 
-        .ProgressBarLeft {
-            background-color: #36df0b;
-        }
-        
-        .ProgressBarRight {
-            background-color: #292929;
-        }
+       
 
-        .ProgressBarRight {
-            wash-color: #666;
-        }
+        background-image: url("file://{images}/custom_game/hud/control/bar_hp.png");
+
+        // .ProgressBarRight {}
+
 
         #HealthBurner {
             z-index: -1;
@@ -57,48 +59,25 @@
         }
     }
 
-    &.is_enemy {
 
-
-        .ProgressBar {
-
-            .ProgressBarLeft {
-                background-color: #a70606;
-            }
-
-            .ProgressBarRight {
-                wash-color: #770505;
-            }
-        }
-
-        .BarLabel .RegenLabel {
-            color: #ff2a2a;
-
-        }
-
-        #HealthBurner {
-            hue-rotation: 240deg;
-            opacity: 0.7;
-        }
-    }
 
     .BarLabel {
-        margin-top: 1px;
-        margin-bottom: 2px;
+        // margin-top: 1px;
+        // margin-bottom: 2px;
         vertical-align: middle;
-        width: 100%;
+        // width: 100%;
         z-index: 3;
-        
+
         .Label {
             vertical-align: middle;
-            horizontal-align: center;
+            // horizontal-align: center;
             color: #ffffff;
             font-size: 17px;
             // overflow: noclip;
             font-weight: bold;
-            width: 100%;
+            // width: 100%;
             text-align: center;
-            text-shadow: 1px 1px 0px 2 #000000;
+            text-shadow: 0px 0px 2px 2 #000000;
             font-family: @monospaceNumbersFont;
         }
 
@@ -117,20 +96,43 @@
     }
 
 
-
-    &.Mp {
-        // .ProgressBar {
-        //     // background-image: url("file://{images}/custom_game/hud/operation/life_bar/energy_bar_overlay.png");
-        // }
+    &.Hp {
+        .BarLabel {
+            horizontal-align: right;
+            margin-right: 48px;
+        }
 
         .ProgressBarLeft {
-            background-color: #2065c4;
+            background-color: #111111;
+        }
+
+        .ProgressBarRight {
+            background-image: url("file://{images}/custom_game/hud/control/bar_hp_glow.png");
+            background-repeat: no-repeat;
+            background-position: 0% 50%;
+        }
+    }
+
+    &.Mp {
+
+        horizontal-align: right;
+
+
+        .ProgressBar {
+            opacity-mask: url("file://{images}/custom_game/hud/control/bar_mp.png");
+            background-image: url("file://{images}/custom_game/hud/control/bar_mp.png");
+        }
+
+        .ProgressBarRight {
+            background-color: #000000;
         }
 
         // height: 14px;
 
 
         .BarLabel {
+            margin-left:48px;
+
             .RegenLabel {
                 // color: #83C2FE;
                 color: #8bbbff;

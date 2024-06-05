@@ -6,6 +6,7 @@
 		"AbilityTextureName"	"ability_capture"
 		"AbilityBehavior"	"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
 		"Disable" "1"
+		"Rarity"	"1"
 		"AbilityValues" {
 
 		}
@@ -72,6 +73,7 @@
 		"AbilityTextureName"	"axe/mantle_of_the_cinder_baron/axe_battle_hunger"
 		"AbilityBehavior"	"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
 		"Disable" "1"
+		"Rarity"	"1"
 		"AbilityValues" {
 
 		}

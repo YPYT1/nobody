@@ -1,7 +1,45 @@
 const path = require('path');
+const fs = require('fs');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { PanoramaManifestPlugin, PanoramaTargetPlugin } = require('webpack-panorama-x');
 const { WatchIgnorePlugin } = require('webpack');
+
+
+
+const GetImportPathFileList = (path_dir) => {
+    let context = path.resolve(__dirname, 'src/' + path_dir);
+    let xml_list = [];
+
+    function readFilesInDirectory(directoryPath) {
+        const files = fs.readdirSync(directoryPath);
+
+        files.forEach(file => {
+            const filePath = path.join(directoryPath, file);
+            const stats = fs.statSync(filePath);
+
+            if (stats.isFile()) {
+                if (filePath.endsWith("xml")) {
+                    console.log(directoryPath, file, __dirname)
+                    let dir_path = directoryPath.replace(__dirname + "\\src\\", "./") + "/"
+                    let import_file = (dir_path + "/" + file).replaceAll("\\", "/").replaceAll("//", "/")
+                    xml_list.push({ import: import_file, type: 'Hud' })
+                }
+
+            } else if (stats.isDirectory()) {
+                readFilesInDirectory(filePath);
+            }
+        });
+    }
+    readFilesInDirectory(context)
+
+    return xml_list
+
+};
+
+GetImportPathFileList("home");
+
+const ImportHome = GetImportPathFileList("home")
+
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
@@ -100,6 +138,7 @@ module.exports = {
 
                 // if filename is not set, it will use the name of the entry
                 { import: './hud/layout.xml', type: 'Hud' },
+                { import: './dashboard/layout.xml', type: 'Hud' },
                 { import: './development/layout.xml', type: 'Hud' },
 
                 // tooltips
@@ -108,10 +147,12 @@ module.exports = {
                 { import: './tooltip/ability/layout.xml', filename: 'tooltip/ability/layout.xml' },
                 { import: './tooltip/element_syenrgy/layout.xml', filename: 'tooltip/element_syenrgy/layout.xml' },
 
-                
+                ...ImportHome,
             ],
         }),
         // use ignore plugin to ignore less files changes
         new WatchIgnorePlugin({ paths: [/\.less$/] }),
     ],
 };
+
+

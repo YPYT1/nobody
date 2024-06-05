@@ -210,7 +210,7 @@ export const AbilityPick = () => {
 
     return (
         <Panel id="AbilityPick" className={`fc-heropick`}>
-            <Panel id="AbilityList">
+            <Panel id="AbilityList" hittest={false}>
                 {
                     Object.entries(NpcAbilitiesCustom).map((v, k) => {
                         if (v[1].Disable == 0) {

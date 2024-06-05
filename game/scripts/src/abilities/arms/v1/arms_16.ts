@@ -50,6 +50,7 @@ export class modifier_arms_16_stack extends BaseModifier {
     stack_mv_pct: number;
     stack_count: number;
     ability: arms_16;
+    buff_key: string;
 
     GetAttributes(): ModifierAttribute {
         return ModifierAttribute.MULTIPLE
@@ -60,30 +61,41 @@ export class modifier_arms_16_stack extends BaseModifier {
         this.ability = this.GetAbility() as arms_16;
         this.stack_mv_pct = this.ability.GetSpecialValueFor("stack_mv_pct");
         this.stack_ad_pct = this.ability.GetSpecialValueFor("stack_ad_pct");
+        this.buff_key = "buff_key_" + this.ability.GetEntityIndex();
     }
 
 
     OnStackCountChanged(stackCount: number): void {
         this.stack_count = this.GetStackCount();
+        if (!IsServer()) { return }
+        GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
+            "AttackDamage": {
+                "BasePercent": this.stack_ad_pct * this.stack_count,
+            },
+            "MoveSpeed": {
+                "BasePercent": this.stack_mv_pct * this.stack_count,
+            }
+        })
     }
 
-    DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.BASEDAMAGEOUTGOING_PERCENTAGE,
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
-        ]
-    }
+    // DeclareFunctions(): ModifierFunction[] {
+    //     return [
+    //         ModifierFunction.BASEDAMAGEOUTGOING_PERCENTAGE,
+    //         ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
+    //     ]
+    // }
 
-    GetModifierBaseDamageOutgoing_Percentage(event: ModifierAttackEvent): number {
-        return this.stack_ad_pct * this.stack_count;
-    }
+    // GetModifierBaseDamageOutgoing_Percentage(event: ModifierAttackEvent): number {
+    //     return this.stack_ad_pct * this.stack_count;
+    // }
 
-    GetModifierMoveSpeedBonus_Percentage(): number {
-        return this.stack_mv_pct * this.stack_count;
-    }
+    // GetModifierMoveSpeedBonus_Percentage(): number {
+    //     return this.stack_mv_pct * this.stack_count;
+    // }
 
     OnDestroy(): void {
         if (!IsServer()) { return }
+        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
         this.ability.stack_buff = null;
     }
 }

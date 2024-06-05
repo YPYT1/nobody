@@ -11,7 +11,7 @@ export class arms_1 extends BaseArmsAbility {
     Precache(context: CScriptPrecacheContext): void {
         PrecacheResource("particle", "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf", context);
     }
-    
+
     _OnUpdateKeyValue(): void {
         this.spirit_limit = this.GetSpecialValueFor("spirit_limit");
         if (this.spirit_list == null) { this.spirit_list = [] }
@@ -19,9 +19,10 @@ export class arms_1 extends BaseArmsAbility {
     }
 
     OnArmsStart(): void {
-        print("this.spirit_list.length",this.spirit_list.length)
+        print("this.spirit_list.length", this.spirit_list.length)
         if (this.spirit_list.length < this.spirit_limit) {
-            let summoned_duration = this.GetSpecialValueFor("summoned_duration");
+            this.caster.SpendMana(10, this);
+            let summoned_duration = this.GetSpecialValueFor("skv_summoned_duration");
             let hSpirit = GameRules.SummonedSystem.CreatedUnit(
                 "npc_summoned_dummy",
                 this.caster.GetAbsOrigin() + Vector(0, 300, 0) as Vector,
@@ -37,7 +38,7 @@ export class arms_1 extends BaseArmsAbility {
                 surround_speed: 900,
                 surround_entity: this.caster.entindex(),
             });
-            
+
         }
     }
 
@@ -124,7 +125,7 @@ export class modifier_arms_1_summoned_collision extends BaseModifier {
             DotaTeam.GOODGUYS,
             vPoint,
             null,
-            300,
+            120,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE,

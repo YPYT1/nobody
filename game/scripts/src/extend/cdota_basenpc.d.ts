@@ -3,6 +3,8 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     last_attribute_update: number;
     /** 自定义属性总值 */
     custom_attribute_value: CustomAttributeValueType;
+    /** 显示属性的白绿字 */
+    custom_attribute_show: CustomAttributeShowType;
     /** 自定义属性表 */
     custom_attribute_table: CustomAttributeTableType;
     /** 自定义属性表 */
@@ -14,7 +16,7 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     /** 肉鸽专用词条词条 */
     OverrideSpecial: OverrideSpecialValueProps;
 
-    is_picking:boolean;
+    is_picking: boolean;
     /** 所有技能的内置冷却相应 */
     CDResp: { [key: string]: number }
 
@@ -23,7 +25,7 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     buff_queue: string[];
 
-    summoned_damage:number;
+    summoned_damage: number;
     //KillOnAnyList: CDOTABaseAbility[];
     KillOnMdfList: CDOTA_Buff[];
     //KillOnAbilityList: CDOTABaseAbility[];

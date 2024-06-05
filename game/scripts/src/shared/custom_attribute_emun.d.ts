@@ -78,7 +78,11 @@ declare type AttributeSubKey = "Base"
     ;
 
 declare type CustomAttributeValueType = {
-    [key1 in AttributeMainKey]?: number
+    [key1 in AttributeMainKey]?: number;
+}
+
+declare type CustomAttributeShowType = {
+    [key1 in AttributeMainKey]?: Record<number, number>;
 }
 
 declare type CustomAttributeTableType = {
@@ -113,7 +117,7 @@ declare type OverrideSpecialKeyTypes = "skv_count"
     | "skv_light"
     | "skv_dark"
 
-declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Multiple" |"Correct";
+declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Multiple" | "Correct";
 
 
 interface OverrideSpecialObjectProps {
@@ -128,7 +132,7 @@ interface OverrideSpecialValueProps {
         /** 基础值 */
         base_value: number;
         /** 百分比加成 */
-        percent_value:number;
+        percent_value: number;
         /** 乘区倍率 */
         mul_value: number;
         /** 修正值. 最终乘区 默认为0即100% 最小[-100%]*/

@@ -120,9 +120,9 @@ export const GetAbilityInfoData = (ability_name: string) => {
 export const GetAbilityRarity = (ability_name: string) => {
     let abilityData = NpcAbilityCustom[ability_name as "public_template"];
     if (abilityData != null) {
-        return abilityData.Rarity
+        return abilityData.Rarity ?? 1
     } else {
-        return 0
+        return 1
     }
 }
 

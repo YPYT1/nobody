@@ -26,6 +26,7 @@ export class modifier_arms_7 extends BaseArmsModifier {
     }
 
     OnIntervalThink(): void {
+        if (!this.caster.IsAlive()) { return }
         if (this.count < this.total_sec) {
             this.count += 1;
             GameRules.ResourceSystem.ModifyResource(this.player_id, {

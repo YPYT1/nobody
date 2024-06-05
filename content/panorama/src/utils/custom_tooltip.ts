@@ -31,7 +31,7 @@ export function ShowCustomTooltip(
     item_level: number = 1,
     value: number = 0,
 ) {
-    if (entityIndex && entityIndex != -1) {
+    if (entityIndex && entityIndex <= 0) {
         name = Abilities.GetAbilityName(entityIndex as AbilityEntityIndex);
     }
 

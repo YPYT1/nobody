@@ -51,7 +51,7 @@ const ArmsCombieRows = ({ combe_key }: { combe_key: string }) => {
         <Panel className='ArmsCombieRows'>
             <Panel className='Header'>
                 <Label className='Title' text={$.Localize("#CustomText_Combo_" + combe_key)} />
-                <Label className='Desc' text={$.Localize("#CustomText_Combo_" + combe_key + "_Description")} />
+                {/* <Label className='Desc' text={$.Localize("#CustomText_Combo_" + combe_key + "_Description")} /> */}
             </Panel>
             <Panel className='CombieAbility'>
                 {
@@ -189,7 +189,7 @@ export function App() {
         let entityIndex = $.GetContextPanel().GetAttributeInt("entityIndex", 0) as AbilityEntityIndex;
         let name = $.GetContextPanel().GetAttributeString("name", "");
         // let ext_int = $.GetContextPanel().GetAttributeInt("ext_int", 0);
-        // $.Msg(["ontooltiploaded",name,entityIndex])
+        $.Msg(["ontooltiploaded",name,entityIndex])
         SetAbilityBaseInfo(name, entityIndex)
     });
 
@@ -205,53 +205,56 @@ export function App() {
                 m_TooltipPanel.FindChild('BottomArrow')!.visible = false;
             }}
         >
-            <Panel id="AbilityHeader" className="flow-right">
-                <Panel className='AbilityImage'>
-                    <CAbilityImage id='AbilityImage' abilityname={AbilityName} />
-                    {/* <DOTAAbilityImage id='AbilityImage' hittest={false} abilityname={AbilityName} /> */}
-                </Panel>
-                <Panel className='AbilityLabel'>
-                    <Panel className='NameAndCost'>
-                        <Panel id="AbilityName" className="flow-right">
-                            <Label className='AbilityElement' text={ElementLabel} />
-                            <Label className='AbilityNameLabel' html={true} text={name} />
+            <Panel className='TooltipBorder'>
+                <Panel id="AbilityHeader" className="flow-right">
+                    <Panel className='AbilityImage'>
+                        <CAbilityImage id='AbilityImage' abilityname={AbilityName} />
+                        {/* <DOTAAbilityImage id='AbilityImage' hittest={false} abilityname={AbilityName} /> */}
+                    </Panel>
+                    <Panel className='AbilityLabel'>
+                        <Panel className='NameAndCost'>
+                            <Panel id="AbilityName" className="flow-right">
+                                <Label className='AbilityNameLabel' html={true} text={name} />
+                                <Label className='AbilityElement' text={ElementLabel} />
+                            </Panel>
+                            <Panel id="CurrentItemCosts" className="flow-right">
+                                <Label id="Cooldown" visible={cooldown > 0} text={cooldown} html={true} />
+                                <Label id="ManaCost" visible={mana > 0} text={mana} html={true} />
+                            </Panel>
                         </Panel>
-                        <Panel id="CurrentItemCosts" className="flow-right">
-                            <Label id="Cooldown" visible={cooldown > 0} text={cooldown} html={true} />
-                            <Label id="ManaCost" visible={mana > 0} text={mana} html={true} />
+                        <Panel id='AbilityCategoryType' className={TypeCategory}>
+                            {
+                                Array(14).fill(0).map((v, k) => {
+                                    return <Label key={k} className={'act_' + k} text={$.Localize(`#custom_text_type_category_${k}`)} />
+                                })
+                            }
                         </Panel>
                     </Panel>
-                    <Panel id='AbilityCategoryType' className={TypeCategory}>
+                </Panel>
+
+                <Panel id="AbilityTarget" className="flow-down" visible={false}>
+                    <Panel id="AbilityTopRowContainer" className="flow-right">
+                        {/* <Label id="AbilityCastType" dialogVariables={{ casttype: casttype }} localizedText="#DOTA_AbilityTooltip_CastType" html={true} /> */}
+                    </Panel>
+                    {/* <Label id="AbilityTargetType" localizedText="#DOTA_AbilityTooltip_TargetType" html={true} className='Hidden' /> */}
+                    {/* <Label id="AbilityDamageType" localizedText="#DOTA_AbilityTooltip_DamageType" html={true} className='Hidden' /> */}
+                </Panel>
+
+                <Panel id="AbilityCoreDetails" className="flow-down">
+                    <Label className={`Attribute ${attributes && "show"}`} text={attributes} html={true} />
+                    <Panel id="DescriptionContainer" className="flow-down">
+                        <Label className="DescriptionLabel" text={description} html={true} />
+                    </Panel>
+                    <Panel id='ComboContainer' visible={ComboList.length > 0}>
                         {
-                            Array(14).fill(0).map((v, k) => {
-                                return <Label key={k} className={'act_' + k} text={$.Localize(`#custom_text_type_category_${k}`)} />
+                            ComboList.map((v, k) => {
+                                return <ArmsCombieRows combe_key={v} key={k} />
                             })
                         }
                     </Panel>
                 </Panel>
             </Panel>
 
-            <Panel id="AbilityTarget" className="flow-down" visible={false}>
-                <Panel id="AbilityTopRowContainer" className="flow-right">
-                    {/* <Label id="AbilityCastType" dialogVariables={{ casttype: casttype }} localizedText="#DOTA_AbilityTooltip_CastType" html={true} /> */}
-                </Panel>
-                {/* <Label id="AbilityTargetType" localizedText="#DOTA_AbilityTooltip_TargetType" html={true} className='Hidden' /> */}
-                {/* <Label id="AbilityDamageType" localizedText="#DOTA_AbilityTooltip_DamageType" html={true} className='Hidden' /> */}
-            </Panel>
-
-            <Panel id="AbilityCoreDetails" className="flow-down">
-                <Label className={`Attribute ${attributes && "show"}`} text={attributes} html={true} />
-                <Panel id="DescriptionContainer" className="flow-down">
-                    <Label className="DescriptionLabel" text={description} html={true} />
-                </Panel>
-                <Panel id='ComboContainer' visible={ComboList.length > 0}>
-                    {
-                        ComboList.map((v, k) => {
-                            return <ArmsCombieRows combe_key={v} key={k} />
-                        })
-                    }
-                </Panel>
-            </Panel>
         </Panel>
     ), [AbilityName]);
 }

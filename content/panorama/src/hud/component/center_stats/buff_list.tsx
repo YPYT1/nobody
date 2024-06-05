@@ -112,8 +112,8 @@ const UnitBuffList = ({ buff_type }: BuffTypeProps) => {
         return () => clearInterval(interval);
     }, []);
 
-    useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
-    useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);
+    // useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
+    // useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);
 
     return (
         <Panel className="UnitBuffList" onload={(e) => { buffsListPanel = e; }} />

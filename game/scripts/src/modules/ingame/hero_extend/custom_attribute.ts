@@ -19,7 +19,7 @@ export class CustomAttribute {
 
     /** 升级事件 */
     OnEntityDotaPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
-        print("OnEntityDotaPlayerGainedLevel")
+        // print("OnEntityDotaPlayerGainedLevel")
         const hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
         this.AttributeInLevelUp(hHero)
     }
@@ -31,6 +31,7 @@ export class CustomAttribute {
         let player_id = hUnit.GetPlayerOwnerID()
         hUnit.custom_attribute_value = {};
         hUnit.custom_attribute_table = {};
+        hUnit.custom_attribute_show = {};
         hUnit.custom_attribute_key_table = {};
         hUnit.custom_attribute_conversion = {};
         hUnit.last_attribute_update = 0;
@@ -53,7 +54,8 @@ export class CustomAttribute {
                 let attribute_conversion: CustomAttributeConversionType = {};
                 for (let key in AttributeConst) {
                     let attr_key = key as keyof typeof AttributeConst;
-                    hUnit.custom_attribute_value[attr_key] = 0
+                    hUnit.custom_attribute_value[attr_key] = 0;
+                    hUnit.custom_attribute_show[attr_key] = [0, 0]
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
                     let AttributeRows = hHeroKvData.AttributeValues[key as keyof typeof hHeroKvData.AttributeValues];
                     for (let key2 in AttributeConst[attr_key]["AbilityValues"]) {
@@ -97,7 +99,8 @@ export class CustomAttribute {
                 let attribute_conversion: CustomAttributeConversionType = {};
                 for (let key in AttributeConst) {
                     let attr_key = key as keyof typeof AttributeConst;
-                    hUnit.custom_attribute_value[attr_key] = 0
+                    hUnit.custom_attribute_value[attr_key] = 0;
+                    hUnit.custom_attribute_show[attr_key] = [0, 0]
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
                     for (let key2 in AttributeConst[attr_key]["AbilityValues"]) {
                         let sub_key = key2 as AttributeSubKey
@@ -128,18 +131,18 @@ export class CustomAttribute {
     }
 
     InitHeroAbility(hUnit: CDOTA_BaseNPC, has_innate: boolean = false) {
-        hUnit.AddAbility("arms_passive_0");
-        hUnit.AddAbility("arms_passive_1");
-        hUnit.AddAbility("arms_passive_2");
-        hUnit.AddAbility("arms_passive_3");
-        hUnit.AddAbility("arms_passive_4");
-        hUnit.AddAbility("arms_passive_5");
+        hUnit.AddAbility("arms_passive_0").SetLevel(1);
+        hUnit.AddAbility("arms_passive_1").SetLevel(1);
+        hUnit.AddAbility("arms_passive_2").SetLevel(1);
+        hUnit.AddAbility("arms_passive_3").SetLevel(1);
+        hUnit.AddAbility("arms_passive_4").SetLevel(1);
+        hUnit.AddAbility("arms_passive_5").SetLevel(1);
         // 先天技能
         if (has_innate) {
-            let hero_name = hUnit.GetName().replace("npc_dota_hero_","")
+            let hero_name = hUnit.GetName().replace("npc_dota_hero_", "")
             let innate_ability = `innate_${hero_name}`;
-            print("innate_ability",innate_ability)
-            hUnit.AddAbility(innate_ability);//.SetLevel(1);
+            print("innate_ability", innate_ability)
+            hUnit.AddAbility(innate_ability).SetLevel(1);//.SetLevel(1);
         } else {
             hUnit.AddAbility("generic_hidden")
         }
@@ -157,13 +160,16 @@ export class CustomAttribute {
                 * (1 + SubAttr["TotalPercent"] * 0.01)
                 + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                 + (SubAttr["Fixed"]);
-            hUnit.custom_attribute_value[main_key] = math.floor(MainAttrValue)
+            hUnit.custom_attribute_value[main_key] = math.floor(MainAttrValue);
+            hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
+            hUnit.custom_attribute_show[main_key][1] = MainAttrValue - SubAttr["Base"]
         }
 
         let extra_attribute_table = this.ConversionCalculate(hUnit)
         let extra_attribute_value = this.AttributeCalculateExtra(hUnit, extra_attribute_table)
         for (let extra_key in extra_attribute_value) {
             hUnit.custom_attribute_value[extra_key] += math.floor(extra_attribute_value[extra_key])
+            hUnit.custom_attribute_show[extra_key][1] += math.floor(extra_attribute_value[extra_key])
         }
         // 属性更新
         const update_state = GameRules.GetDOTATime(false, false) > hUnit.last_attribute_update;
@@ -239,11 +245,14 @@ export class CustomAttribute {
         for (let MainKey in hUnit.custom_attribute_table) {
             let main_key = MainKey as AttributeMainKey;
             let SubAttr = hUnit.custom_attribute_table[MainKey as keyof typeof hUnit.custom_attribute_table];
-            Attr[main_key] = {
-                "Base": SubAttr["PreLvBase"],
-                "Bonus": SubAttr["PreLvBonus"],
-                "Fixed": SubAttr["PreLvFixed"],
+            if (SubAttr["PreLvBase"] > 0 || SubAttr["PreLvBonus"] > 0 || SubAttr["PreLvFixed"] > 0) {
+                Attr[main_key] = {
+                    "Base": SubAttr["PreLvBase"],
+                    "Bonus": SubAttr["PreLvBonus"],
+                    "Fixed": SubAttr["PreLvFixed"],
+                }
             }
+
         }
         this.ModifyAttribute(hUnit, Attr)
     }
@@ -256,7 +265,7 @@ export class CustomAttribute {
      */
     ModifyAttribute(hUnit: CDOTA_BaseNPC, Attr: CustomAttributeTableType, mode: number = 0) {
         // print("ModifyAttribute")
-        // DeepPrintTable(Attr)
+        DeepPrintTable(Attr)
         if (mode == 0) {
             for (let k1 in Attr) {
                 for (let k2 in Attr[k1]) {

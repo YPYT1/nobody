@@ -97,11 +97,15 @@ export class modifier_public_attribute extends BaseModifier {
             }
         }
         this.SendBuffRefreshToClients();
+        hUnit.SetBaseDamageMin(hUnit.custom_attribute_value.AttackDamage);
+        hUnit.SetBaseDamageMax(hUnit.custom_attribute_value.AttackDamage);
         hUnit.CalculateStatBonus(true);
         // 写入网表
+        // DeepPrintTable(hUnit.custom_attribute_value)
         CustomNetTables.SetTableValue("unit_attribute", `${hUnit.GetEntityIndex()}`, {
             table: hUnit.custom_attribute_table,
             value: hUnit.custom_attribute_value,
+            show: hUnit.custom_attribute_show,
         })
     }
 
@@ -128,7 +132,6 @@ export class modifier_public_attribute extends BaseModifier {
 
     DeclareFunctions(): ModifierFunction[] {
         return [
-            ModifierFunction.BASEATTACK_BONUSDAMAGE,
             ModifierFunction.ATTACK_RANGE_BASE_OVERRIDE,
             ModifierFunction.BASE_ATTACK_TIME_CONSTANT,
             ModifierFunction.ATTACKSPEED_BONUS_CONSTANT,
@@ -144,9 +147,9 @@ export class modifier_public_attribute extends BaseModifier {
         return this.AttributeData.AttackRange
     }
 
-    GetModifierBaseAttack_BonusDamage(): number {
-        return this.AttributeData.AttackDamage
-    }
+    // GetModifierBaseAttack_BonusDamage(): number {
+    //     return this.AttributeData.AttackDamage
+    // }
 
     GetModifierBaseAttackTimeConstant(): number {
         return this.AttributeData.AttackRate

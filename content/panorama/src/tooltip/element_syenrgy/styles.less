@@ -12,6 +12,7 @@
         background-position: left top;
         padding: 0px;
     }
+
 }
 
 #CustomTooltip {
@@ -22,12 +23,21 @@
     background-color: #1b1b1bf8;
     flow-children: down;
     // background-color: #000000e1;
-    padding: 8px;
+    // padding: 8px;
+
+    #Header {
+        width: 100%;
+        background-color: #702917;
+        height: 36px;
+
+    }
 
     .SyenrgyImage {
-        width: 48px;
-        height: 48px;
+        width: 45px;
+        height: 45px;
         border: 1px solid #ffffff;
+
+        // transform: translateX(-30px);
     }
 
     .SyenrgyInfo {
@@ -38,6 +48,11 @@
         font-size: 20px;
     }
 
+    #BaseDescription,
+    #BonusDescription {
+        padding: 8px;
+    }
+    
     #BaseDescription {
         margin-top: 4px;
         // padding: 4px;
@@ -46,6 +61,7 @@
 
     #BonusDescription {
         flow-children: down;
+        
 
         .SyenrgyRow {
             margin-top: 4px;

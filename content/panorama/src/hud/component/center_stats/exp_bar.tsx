@@ -18,33 +18,12 @@ function GetHeroLevelTable(HERO_MAX_LEVEL: number) {
     return hero_xp_table;
 }
 
-// function GetHeroLevelTable(max_level: number = 80) {
-//     let hero_xp_table: { [index: number]: number } = {};
-//     let level = 1;
-//     for (let i = 0; i < 80; i++) {
-//         let xp = 0;
-//         if (i > 0 && i < max_level) {
-//             level = i;
-//             // 600+LEVEL*100+5*LEVEL^2
-//             xp = 600 + level * 100 + 5 * Math.pow(level, 2) + hero_xp_table[i - 1];
-//             // xp = eval(PUBLIC_CONST.EXP_EQUATION, param)
-//         } else if (i == 0) {
-//             xp = 0;
-//         } else {
-//             return hero_xp_table;
-//         }
-//         hero_xp_table[i] = xp;
-//     }
-//     return hero_xp_table;
-// }
-
 const HeroExpLevelTable = GetHeroLevelTable(100);
 
 const GetLevelExpInfo = (unit_level: number, curr_exp: number, next_up_exp: number) => {
     let CurrentLevelUpXP = HeroExpLevelTable[unit_level] - HeroExpLevelTable[unit_level - 1];
     let CurrentLevelXP = CurrentLevelUpXP - (next_up_exp - curr_exp);
     return { CurrentLevelXP, CurrentLevelUpXP };
-    // $.Msg(data)
 };
 
 export const ExpBar = () => {
@@ -84,7 +63,7 @@ export const ExpBar = () => {
                 <Panel className="Line" />
                 <Panel className="Line" />
             </Panel>
-            <Label className="ExpLabel" localizedText="{s:CurrentLevelXP} / {s:CurrentLevelUpXP}" />
+            {/* <Label className="ExpLabel" localizedText="{s:CurrentLevelXP} / {s:CurrentLevelUpXP}" /> */}
         </ProgressBar>
     );
 

@@ -41,7 +41,7 @@ export class Debug {
                     entity.GetEntityIndex(),
                     entity.GetName() ?? "No Name",
                     entity.GetClassname() ?? "No Classmame",
-                  
+
                 );
                 // if (entity.IsBaseNPC()) {
                 //     print(entity.GetUnitName());
@@ -78,5 +78,6 @@ export class Debug {
         GameRules.RuneSystem.Debug(cmd, args, keys.playerid)
         GameRules.MysticalShopSystem.Debug(cmd, args, keys.playerid)
         GameRules.ArchiveService.Debug(cmd, args, keys.playerid)
+        GameRules.ResourceSystem.Debug(cmd, args, keys.playerid)
     }
 }

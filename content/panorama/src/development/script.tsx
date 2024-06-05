@@ -219,17 +219,10 @@ export const App = () => {
 
     return (
         <>
-            {
-                Game.IsInToolsMode() &&
-                <>
-                    <HeroDemo />
-                    {/* <WorkshopVoteTreadmil /> */}
-                    {/* <Label id='LabelTest' text={"测试字体 LabelTest"} /> */}
-                </>
-            }
+            <HeroDemo />
         </>
     );
 };
 
-render(<App />, $.GetContextPanel());
+Game.IsInToolsMode() && render(<App />, $.GetContextPanel());
 

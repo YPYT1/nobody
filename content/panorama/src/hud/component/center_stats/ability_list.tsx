@@ -2,8 +2,9 @@ import { useGameEvent } from "react-panorama-x";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CAbilityImage } from "../../../components/ability_image";
+import { GetAbilityRarity } from "../../../utils/ability_description";
 
-export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: boolean }) => {
+export const AbilityButtonItem = ({ order, innate }: { order: number; innate: boolean }) => {
 
     const queryUnit = Players.GetLocalPlayerPortraitUnit();
     const refPanel = useRef<Panel | null>();
@@ -19,24 +20,25 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
     const [isPassive, setIsPassive] = useState(false);
     const [Charges, setCharges] = useState(0);
     const [abilityname, setAbilityname] = useState("")
+    const [Rarity, setRarity] = useState(1);
 
     const UpdateLocalPlayer = useCallback(() => {
         const queryUnit = Players.GetLocalPlayerPortraitUnit();
         const m_Ability = Entities.GetAbility(queryUnit, order);
         setMAbility(m_Ability);
         if (m_Ability != -1) {
-            const abilityname = Abilities.GetAbilityName(m_Ability);
             const cooldownLength = Abilities.GetCooldownLength(m_Ability);
             const cooldownRemaining = Abilities.GetCooldownTimeRemaining(m_Ability);
             const isHidden = Abilities.IsHidden(m_Ability);
             const ability_name = Abilities.GetAbilityName(m_Ability);
             const ability_level = Abilities.GetLevel(m_Ability);
             const have_nmana = Entities.GetMana(queryUnit);
-            setAbilityname(abilityname)
+            const rarity = GetAbilityRarity(ability_name)
+            setAbilityname(ability_name)
             setIsHidden(Abilities.IsHidden(m_Ability));
             setDeg(deg);
             setAbilityShow(m_Ability != -1 && isHidden == false);
-
+            setRarity(rarity)
             if (refPanel.current) {
                 const is_charges = Abilities.UsesAbilityCharges(m_Ability);
                 const need_mana = Abilities.GetManaCost(m_Ability);
@@ -89,10 +91,6 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
 
     }, []);
 
-    // useEffect(() => {
-    //     const interval = setInterval(() => { UpdateLocalPlayer(); }, 100);
-    //     return () => clearInterval(interval);
-    // }, []);
 
     useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
     useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);
@@ -100,21 +98,26 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
     useGameEvent("dota_ability_changed", UpdateLocalPlayer, []);
     useGameEvent("dota_hero_ability_points_changed", UpdateLocalPlayer, []);
 
+    useEffect(() => {
+        const interval = setInterval(() => { UpdateLocalPlayer(); }, 100);
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <Panel
-            className={`AbilityButtonItem Ability${order} ${!abilityShow ? " hide" : ""}`}
+            className={`
+            AbilityButtonItem 
+            Ability${order} 
+            Rarity${Rarity} 
+            ${!abilityShow ? " hide" : ""} 
+            ${innate ? "is_innate" : ""}`
+            }
             ref={e => refPanel.current = e}
         >
             <Button
                 className="AbilityReselect"
                 onactivate={() => {
-                    GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
-                        event_name: "CreatArmssSelectData",
-                        params: {
-                            index: order
-                        }
-                    })
+
                 }}
             />
             <Panel className="AbilityContainer">
@@ -136,20 +139,28 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
                     <Panel className='ButtonSize'>
                         <Button
                             className='AbilityButton'
+
                             onactivate={(e) => {
-                                if (GameUI.IsAltDown()) {
-                                    Abilities.PingAbility(m_Ability);
-                                } else {
-                                    Abilities.ExecuteAbility(m_Ability, queryUnit, false);
-                                }
+                                GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
+                                    event_name: "CreatArmssSelectData",
+                                    params: {
+                                        index: order
+                                    }
+                                })
+                                // if (GameUI.IsAltDown()) {
+                                //     Abilities.PingAbility(m_Ability);
+                                // } else {
+                                //     Abilities.ExecuteAbility(m_Ability, queryUnit, false);
+                                // }
                             }}
+
                             oncontextmenu={(e) => {
-                                if (Abilities.IsAutocast(m_Ability)) {
-                                    Game.PrepareUnitOrders({
-                                        OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TOGGLE_AUTO,
-                                        AbilityIndex: m_Ability
-                                    });
-                                }
+                                // if (Abilities.IsAutocast(m_Ability)) {
+                                //     Game.PrepareUnitOrders({
+                                //         OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_TOGGLE_AUTO,
+                                //         AbilityIndex: m_Ability
+                                //     });
+                                // }
                             }}
                             onmouseout={(e) => {
                                 HideCustomTooltip();
@@ -190,6 +201,10 @@ export const AbilityButtonItem = ({ order, is_main }: { order: number; is_main: 
                         />
                     </Panel>
                 </Panel>
+                <Panel className="AbilityHoverTip" hittest={false}>
+                    <Panel className="AbilityRarityBorder" hittest={false} />
+                </Panel>
+                
             </Panel>
         </Panel>
     );
@@ -217,6 +232,7 @@ export const AbilityList = () => {
         <Panel
             id='AbilityList'
             className={`SetIndex_${SelectIndex} ${HasPoint ? "HasPoint" : ""} ${IsSelecting ? "IsSelecting" : ""}`}
+            hittest={false}
             onload={(e) => {
                 GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
                     event_name: "GetEvolutionPoint",
@@ -224,15 +240,37 @@ export const AbilityList = () => {
                 })
             }}
         >
-            <AbilityButtonItem order={0} is_main={true} />
-            <AbilityButtonItem order={1} is_main={true} />
-            <AbilityButtonItem order={2} is_main={true} />
-            <AbilityButtonItem order={3} is_main={true} />
-            <AbilityButtonItem order={4} is_main={true} />
-            <AbilityButtonItem order={5} is_main={true} />
+            <Panel className="Left">
+                <AbilityButtonItem order={0} innate={false} />
+                <AbilityButtonItem order={1} innate={false} />
+                <AbilityButtonItem order={2} innate={false} />
+            </Panel>
+            <Panel className="Right">
+                <AbilityButtonItem order={3} innate={false} />
+                <AbilityButtonItem order={4} innate={false} />
+                <AbilityButtonItem order={5} innate={false} />
+            </Panel>
+
             {/* <AbilityButtonItem order={6} /> */}
         </Panel>
 
 
     );
 };
+
+
+export const HeroInnateAbility = () => {
+
+    return (
+        <Panel 
+            id="HeroInnateAbility"
+            onload={(e)=>{
+                // $.CreatePanel("dotabi")
+            }}
+        >
+            {/* <GenericPanel id="ability6" type="DOTAAbilityPanel"/> */}
+            <AbilityButtonItem order={6} innate={true} />
+        </Panel>
+
+    )
+}

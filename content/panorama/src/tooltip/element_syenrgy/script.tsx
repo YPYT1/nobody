@@ -56,9 +56,9 @@ export function App() {
             }}
         >
             <Panel id="Header" className="flow-right">
-                <Panel className='SyenrgyImage'>
+                {/* <Panel className='SyenrgyImage'>
                     <Image id='Icon' />
-                </Panel>
+                </Panel> */}
                 <Panel className='SyenrgyInfo'>
                     <Label className='SyenrgyTitle' localizedText='{s:syenrgy_title}' />
                     <Label className='SyenrgyCount' localizedText='{s:syenrgy_count}' />

@@ -159,8 +159,6 @@ const HeroDemoAttribute = () => {
     useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
     useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);
 
-
-
     return (
         <>
             <Panel id="HeroDemoAttribute" className='table'>
@@ -178,7 +176,7 @@ const HeroDemoAttribute = () => {
                 </Panel>
                 <Panel className='table-body AttributeRowList'>
                     <AttributeRows attr_key="AttackDamage" attr_value={AttributeValue} attr_table={AttributeTable} />
-                    {/* <AttributeRows attr_key="ArmorCommon" attr_value={AttributeValue} attr_table={AttributeTable} /> */}
+                    <AttributeRows attr_key="PhyicalArmor" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackRange" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="MoveSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
