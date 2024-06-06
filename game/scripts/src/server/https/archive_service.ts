@@ -144,8 +144,38 @@ export class ArchiveService {
             }
         )
     }
+    
+
 
     
+    /**
+     * 添加装备到服务器
+     * @param player_id 
+     * @param equipdata
+     */
+    AddEquip(player_id : PlayerID , equipdata : ServerEquip[]){
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <AddEquipParam>{
+            gid: this._game_id,
+            sid: steam_id.toString(),
+            equipdata : equipdata,
+        }
+        HttpRequest.AM2Post(ACTION_ADD_EQUIP,
+            {
+                param: param_data
+            },
+            (data: AddEquipReturn) => {
+                print("==============获得返回数据================")
+                if (data.code == 200) {
+
+                }
+            },
+            (code: number, body: string) => {
+            }
+        )
+    }
+
+
     Debug( cmd: string, args: string[], player_id: PlayerID){
         //游戏结束提交数据
         if (cmd == "-CreateGame") {

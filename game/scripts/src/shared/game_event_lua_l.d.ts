@@ -131,5 +131,19 @@ declare interface CGED {
 
         }
     }
+
+    /**
+     * 局内信息
+     */
+    GameInformation : {
+        //获取生命数
+        GetPlayerLifeData : {
+
+        }
+        //获取局内开始时间
+        GetPlayGameTime : {
+
+        }
+    }
 }
 

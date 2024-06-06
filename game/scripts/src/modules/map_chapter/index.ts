@@ -284,6 +284,9 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.ArchiveService.ConfirmDifficulty();
         //todo 需要修改成流程中
 
+        //重新设置时间
+        GameRules.GameInformation.SetPlayGameTime(GameRules.GetDOTATime(false, false))
+
         //初始化技能全局可用数量
         GameRules.NewArmsEvolution.ArmsGlobalInit();
 

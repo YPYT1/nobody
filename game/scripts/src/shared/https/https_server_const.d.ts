@@ -115,3 +115,23 @@ declare interface GameDhmReturn {
         }[]
     }
 }
+
+
+
+/**
+ * 新增装备
+ */
+declare interface AddEquipParam {
+	gid : string, //游戏id
+	sid : string , //steamid
+    equipdata : ServerEquip[] , //装备信息
+}
+/**
+ * 新增装备返回
+ */
+declare interface AddEquipReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+    }
+}

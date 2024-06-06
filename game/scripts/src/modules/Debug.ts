@@ -79,5 +79,6 @@ export class Debug {
         GameRules.MysticalShopSystem.Debug(cmd, args, keys.playerid)
         GameRules.ArchiveService.Debug(cmd, args, keys.playerid)
         GameRules.ResourceSystem.Debug(cmd, args, keys.playerid)
+        GameRules.ServiceEquipment.Debug(cmd, args, keys.playerid)
     }
 }

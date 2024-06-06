@@ -15,7 +15,7 @@ declare interface CustomGameEventDeclarations {
         }
     }
     NewArmsEvolution_GetArmssElementBondDateList : {
-        data : ElementBondDateList
+        data : ElementBondDateList;
     }
     //选择符文数据
     RuneSystem_GetRuneSelectData: {
@@ -102,6 +102,17 @@ declare interface CustomGameEventDeclarations {
             Msg?: string,
         };
     };
+
+    //玩家生命数
+    GameInformation_GetPlayerLifeData : {
+        data: {
+            player_life : number
+        }
+    }
+    //局内游戏时间
+    GameInformation_GetPlayGameTime : {
+        data : number
+    }
 }
 
 
@@ -147,4 +158,49 @@ declare interface PlayerRefreshData {
 //商店状态信息
 declare interface ShopStateData {
     is_ready : number, // 是否准备好了 0 未准备好 1准备好了
+}
+
+
+declare interface CGEDGetEquipListInfo {
+    id: string, //唯一id
+    n: string, //装备key
+    r: number, //稀有度 0 1 2 3 => n,r,sr,ssr
+    zl: number, //装备等级
+    t : number , //装备部位
+    ma: { //主attr属性
+        k: string, //键
+        v: number, //值
+    }[],
+    pa: { //拼图属性
+        k: string, //键
+        v: number, //值
+        l:number ,//拼图等级
+    }[],
+    s: { //套装
+        k: string, //键;
+    }[],
+    is_new?: number, //没有就是老的  有就是新装备
+    lk? : number , //装备锁
+}
+
+declare interface ServerEquip {
+    id?: string, //唯一id
+    n: string, //装备key
+    r: number, //稀有度 0 1 2 3 => n,r,sr,ssr
+    zl: number, //装备等级
+    ma : string, //装备主属性
+    pa : string, // 装备拼图属性
+    s : string, //套装数据
+    lk? : number , //装备锁
+    created_at ? : number , //创建时间
+    t : number , //装备部位
+}
+
+
+
+declare interface CGEDEquipConfigInfo {
+    public: string[][],
+    hero: {
+        [hero_name: string]: string[][],
+    };
 }

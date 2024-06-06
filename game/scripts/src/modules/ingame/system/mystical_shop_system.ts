@@ -6,6 +6,7 @@ import * as MysteriousShopConfig from "../../../json/config/game/shop/mysterious
 // import * as ItemEquipOriginConfig from "../../../json/Items/item_equip_origin.json";
 
 // ItemCost
+/**商店 */
 @reloadable
 export class MysticalShopSystem extends UIEventRegisterClass {
 

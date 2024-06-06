@@ -8,6 +8,8 @@ import "./global/__init__";
 
 
 import "./server/https/https_server_const";
+import "./server/https/https_server_api";
+
 Object.assign(getfenv(), {
     Activate: () => {
         ActivateModules();

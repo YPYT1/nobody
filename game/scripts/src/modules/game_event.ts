@@ -5,7 +5,6 @@ import { BuffManager } from './ingame/public/buff_manager';
 import { CustomAttribute } from './ingame/hero_extend/custom_attribute';
 import { CustomOverrideAbility } from './ingame/hero_extend/custom_override_ability';
 import { EntityKilled } from './ingame/public/entity_killed';
-import { Spawns } from './ingame/spawns';
 import { ItemArmsSystem } from './ingame/item_arms_system';
 import { ResourceSystem } from './ingame/system/resource_system';
 import { ArmsCombo } from './ingame/hero_extend/arms_combo';
@@ -19,6 +18,8 @@ import { MysticalShopSystem } from './ingame/system/mystical_shop_system';
 import { ArchiveService } from '../server/https/archive_service';
 import { ServiceData } from '../server/https/service_data';
 import { ServiceInterface } from '../server/https/service_interface';
+import { ServiceEquipment } from '../server/https/service_equipment';
+import { GameInformation } from './ingame/public/game_information';
 
 declare global {
 
@@ -31,13 +32,14 @@ declare global {
 
         CustomAttribute: CustomAttribute;
         CustomOverrideAbility: CustomOverrideAbility;
-
+        //局内相关
         EntityKilled: EntityKilled;
         ResourceSystem: ResourceSystem;
         ItemArmsSystem: ItemArmsSystem;
         Spawn: Spawn;
         ArmsCombo: ArmsCombo;
         CMsg: CMsg;
+        GameInformation : GameInformation;
 
         SummonedSystem: SummonedSystem;
         CustomMechanics: CustomMechanics;
@@ -45,10 +47,12 @@ declare global {
         MysticalShopSystem : MysticalShopSystem;
 
 
+
         //服务器相关功能
         ArchiveService : ArchiveService;
         ServiceData : ServiceData;
         ServiceInterface : ServiceInterface;
+        ServiceEquipment : ServiceEquipment;
     }
 }
 
@@ -89,6 +93,8 @@ export class GameEvent {
             GameRules.RuneSystem = new RuneSystem();
             GameRules.MysticalShopSystem = new MysticalShopSystem();
             GameRules.ServiceInterface = new ServiceInterface();
+            GameRules.ServiceEquipment = new ServiceEquipment();
+            GameRules.GameInformation = new GameInformation();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段

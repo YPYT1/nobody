@@ -784,7 +784,7 @@ export class Spawn extends UIEventRegisterClass {
     CreepNormalCreate(unit_name: string, vPos: Vector, is_mine_spawn: boolean = false) {
         let unit = CreateUnitByName(
             unit_name,
-            vPos,
+            vPos,   
             true,
             null,
             null,
@@ -811,7 +811,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn.MapUnitKilled(hKilled, hattacker);
         }else if(hKilled.IsHero()){
             //英雄单位死亡处理
-            GameRules.Spawn.HeroDie(hKilled);
+            GameRules.GameInformation.HeroDie(hKilled);
         }
     }
 
@@ -852,56 +852,7 @@ export class Spawn extends UIEventRegisterClass {
         // GameRules.Spawn.CreepNormalRecovery(killed_unit);
     }
 
-    player_life_list : number[] = [ 2 , 2 , 2 , 2 , 2 , 2];
-
-    HeroDie( unit : CDOTA_BaseNPC_Hero) {
-        let player_id = unit.GetPlayerOwnerID();
-        let game_over = true;
-        //检查全部英雄是否还有剩余生命
-        let player_count = 1;
-        for (let index  = 0 as PlayerID; index < player_count; index++) {
-            const ps_life = this.player_life_list[index];
-            let hHero = PlayerResource.GetSelectedHeroEntity(index);
-            if(ps_life > 0 || hHero.IsAlive()){
-                game_over = false
-                break;
-            }
-        }
-        //游戏结束
-        if(game_over == true){
-            GameRules.Spawn.StopAllSpawnAndMonster()
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                player_id,
-                "游戏结束",
-                {}
-            );
-            return ;
-        }
-        if(this.player_life_list[player_id] > 0){
-            //测试模式下死亡会增加生命
-            // if(IsInToolsMode()){
-            //     this.player_life_list[player_id] += 2;
-            // }
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                player_id,
-                "你还剩【" + (this.player_life_list[player_id] - 1) + "】条生命,3秒后复活",
-                {}
-            );
-            Timers.CreateTimer(3, () => {
-                this.player_life_list[player_id] --;
-                unit.SetRespawnPosition(unit.GetAbsOrigin());
-                unit.RespawnHero(false, false);
-                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
-            });
-        }else{
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                player_id,
-                "你没有剩余生命，等待其他玩家通过此关就会复活。",
-                {}
-            );
-        }
-    }
-
+    
     //击杀boss
     BossKill(killed_unit: CDOTA_BaseNPC) {
         GameRules.CMsg.SendCommonMsgToPlayer(

@@ -135,7 +135,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     InitPlayerUpgradeStatus(player_id: PlayerID) {
 
         //重置生命
-        GameRules.Spawn.player_life_list[player_id] = 2
+        GameRules.GameInformation.SetPlayerLife(player_id , 2)
         this.PlayerUpgradePool[player_id] = {};
         this.EvolutionPoint[player_id] = 0;
         //初始给与一点技能点 且不消耗灵魂
