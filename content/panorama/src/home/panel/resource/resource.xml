@@ -1,0 +1,19 @@
+<root>
+	<styles>
+		<include src="./resource.less" />
+	</styles>
+	<scripts>
+		<include src="./resource.tsx" />
+	</scripts>
+    <snippets>
+        <snippet name="ResourceTypePanel">
+            <Panel className='ResourceTypePanel'>
+            <Panel id="ResourceIcon" className='ResourceIcon' />
+            <Label className='ResourceAmount' text='{d:amount}' />
+        </Panel>
+        </snippet>
+    </snippets>
+	<Panel class="resource">
+		
+	</Panel>
+</root>

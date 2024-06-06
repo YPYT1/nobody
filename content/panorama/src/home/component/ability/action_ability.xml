@@ -1,0 +1,68 @@
+<root>
+	<styles>
+		<!-- <include src="file://{resources}/styles/dotastyles.css" />
+		<include src="file://{resources}/styles/custom_game/action_bar.css" />
+		<include src="file://{resources}/styles/custom_game/ability_shared.css" /> -->
+		<include src="./action_ability.less" />
+		<include src="./../../../_styles/keyframes.less" />
+	</styles>
+	<scripts>
+		<include src="./action_ability.tsx" />
+	</scripts>
+	<Panel class="AbilityPanel">
+		<Button class="AbilityReselect"/>
+		<Panel class="AbilityContainer">
+			<Panel class='AbilityCharges' hittest="false" hittestchildren="false">
+				<CircularProgressBar id="AbilityChargesBorder" value="0" max="100" min="0" />
+				<Label text="{s:Charges}" />
+			</Panel>
+			<!-- <Panel class='Hotkey' hittest="false" hittestchildren="false">
+				<Label text='{s:hotkey}' />
+			</Panel> -->
+			<Panel id='CostContainer' hittest="false">
+				<Label id='ManaCost' hittest="false" text="{s:manaCost}"  />
+			</Panel>
+			<Panel class='ButtonAndLevel'>
+				<CircularProgressBar id="CooldownProgress" value="0" max="100" min="0" />
+				<CircularProgressBar id="CooldownProgressBlur" value="0" max="100" min="0" />
+				<Panel id="AutocastableAbilityBorder" />
+				<Panel class='ButtonSize'>
+					<Button class='AbilityButton'>
+						<DOTAAbilityImage id='AbilityImage' />
+						<Panel id="Cooldown" hittest="false">
+							<Panel id="CooldownOverlay" hittest="false" />
+							<Label id="CooldownTimer" text="{s:cooldown_timer}" hittest="false" />
+						</Panel>
+						<Panel id='ActiveAbility' />
+						<Panel id="PassiveAbilityBorder" />
+						<Panel id="ActiveAbilityBorder" />
+
+						<Panel id="SilencedOverlay" />
+						<Panel hittest="false" id="ShineContainer" class=''>
+							<Panel hittest="false" id="Shine" class="do_shine" />
+						</Panel>
+					</Button>
+					<Panel hittest="false" id="ShineContainer" class=''>
+						<Panel hittest="false" id="Shine" class="do_shine" />
+					</Panel>
+				</Panel>
+				<Panel id='AutoCastingContainer' hittest="false">
+					<DOTAScenePanel
+						id="AutoCasting"
+						map="scenes/hud/autocasting"
+						renderdeferred="false"
+						rendershadows="false"
+						camera="camera_1"
+						hittest="false"
+						particleonly="true"
+					/>
+				</Panel>
+			</Panel>
+			<Panel class="AbilityHoverTip" hittest="false">
+				<Panel class="AbilityRarityBorder" hittest="false" />
+			</Panel>
+		</Panel>
+	</Panel>
+</root>
+
+

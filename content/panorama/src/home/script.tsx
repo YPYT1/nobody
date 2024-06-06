@@ -1,16 +1,27 @@
-import "./panel/hud";
-
-let hudPanel: Panel;
-
+import { render } from "react-panorama-x";
+// import "./panel/control/control";
 
 const Initialize = () => {
-    $.Msg("Initialize 2");
-    hudPanel = $("#hud");
-    hudPanel.RemoveAndDeleteChildren();
-    hudPanel.BLoadLayout("file://{resources}/layout/custom_game/home/panel/hud.xml", false, false)
+    let controlPanel = $("#control");
+    controlPanel.RemoveAndDeleteChildren();
+    let state = controlPanel.BLoadLayout("file://{resources}/layout/custom_game/home/panel/control/control.xml", true, true);
+    $.Msg(["state",state]);
 }
 
-$.Msg(["MSG"]);
+// const App = () => {
+
+//     return (
+//         <Panel id="App"
+//             onload={() => {
+//                 Initialize();
+//             }}
+//         />
+//     )
+// }
+
+// render(<App />, $.GetContextPanel());
+
 (function () {
     Initialize();
 })();
+

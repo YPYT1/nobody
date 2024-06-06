@@ -1,0 +1,11 @@
+<root>
+	<styles>
+		<include src="./top_info.less" />
+	</styles>
+	<scripts>
+		<include src="./top_info.tsx" />
+	</scripts>
+	<Panel class="top_info">
+		
+	</Panel>
+</root>

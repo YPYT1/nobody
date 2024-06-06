@@ -1,0 +1,176 @@
+@import "./_exp_bar.less";
+@import "./_hp_bar.less";
+
+.control {
+    width: 100%;
+    height: 100%;
+}
+
+#ActionAbility {
+    flow-children: right;
+    border: 1px solid #ffffff;
+
+    .AbilityPanel {
+        width: 64px;
+        height: 64px;
+    }
+}
+
+#CenterStatsContainer {
+    width: 100%;
+    // flow-children: down;
+    vertical-align: bottom;
+    // border: 1px solid #fff;
+    margin-bottom: 200px;
+
+    // visibility: collapse;
+    #CenterPanel {
+        width: 731px;
+        // border: 1px solid #f00;
+        height: 225px;
+        // background-color: #302f3b;
+        horizontal-align: center;
+        // flow-children: down;
+        background-image: url("file://{images}/custom_game/hud/control/baseplate.png");
+        background-repeat: no-repeat;
+        background-position: 0% 100%;
+        margin-bottom: 12px;
+    }
+
+}
+
+#AbilityList {
+    // width: (@AbilitySize + 4px)* 6;
+    // min-height: @AbilitySize;
+    flow-children: right;
+    vertical-align: bottom;
+    // background-color: #0a52489d;
+    // border: 1px solid #ffffff;
+    horizontal-align: center;
+    margin-bottom: 28px;
+
+    #Right,
+    #Left {
+        flow-children: right;
+    }
+
+    #Right {
+        margin-left: 80px;
+    }
+
+    #Left {
+        margin-right: 80px;
+    }
+
+    // &.HasPoint .AbilityButtonItem .AbilityHoverTip {
+    //     animation-name: flash;
+    //     animation-duration: 0.4s;
+    //     animation-iteration-count: infinite;
+    // }
+
+    &.IsSelecting {
+
+        &.HasPoint {
+            .AbilityHoverTip {
+                animation-name: none;
+                // animation-duration: 0.4s;
+                // animation-iteration-count: infinite;
+            }
+        }
+
+        &.SetIndex_5 .Ability5,
+        &.SetIndex_4 .Ability4,
+        &.SetIndex_3 .Ability3,
+        &.SetIndex_2 .Ability2,
+        &.SetIndex_1 .Ability1,
+        &.SetIndex_0 .Ability0 {
+
+            .AbilityHoverTip {
+                // animation-name: flash;
+                animation-duration: 0.4s;
+                // animation-iteration-count: infinite;
+            }
+
+        }
+    }
+
+}
+
+
+#AttributeState {
+    margin-left: 16px;
+    // width: 114px * 4;
+    // height: 120px;
+    vertical-align: bottom;
+    // background-color: #5f5f5f;
+    // border: 1px solid #000000;
+    margin-bottom: 12px;
+
+    flow-children: right;
+
+    #UnitLevel {
+        width: 54px;
+        flow-children: right;
+        vertical-align: bottom;
+
+        .LevelTitle {
+            color: #fec752;
+            font-size: 16px;
+            vertical-align: bottom;
+            margin-bottom: 4px;
+        }
+
+        .LevelLabel {
+            vertical-align: bottom;
+            font-weight: bold;
+            font-size: 30px;
+            color: #fec752;
+            text-shadow: 0px 0px 2px 3.0 #000000;
+        }
+    }
+
+    #UnitAttribute {
+        flow-children: right;
+        vertical-align: bottom;
+        margin-bottom: 4px;
+        margin-left: 8px;
+    }
+
+    .AttributeRows {
+        margin-left: 4px;
+        // border: 1px solid #000000;
+        // width: 100px;
+        // margin: 2px;
+        flow-children: right;
+        tooltip-position: top;
+
+        .AttributeIcon {
+            width: 20px;
+            height: 20px;
+            vertical-align: bottom;
+            // background-color: #000000;
+            background-image: url("file://{images}/custom_game/icon/attribute/attack_damage.png");
+
+
+        }
+
+        &.PhyicalArmor .AttributeIcon {
+            background-image: url("file://{images}/custom_game/icon/attribute/phyical_armor.png");
+        }
+
+        &.MoveSpeed .AttributeIcon {
+            background-image: url("file://{images}/custom_game/icon/attribute/move_speed.png");
+        }
+
+        .AttributeValue {
+            vertical-align: bottom;
+            margin-left: 6px;
+            width: 60px;
+            // background-color: #00001a;
+            // padding: 1px;
+            font-size: 18px;
+            color: #ffffff;
+            text-shadow: 0px 0px 2px 3.0 #000000;
+        }
+    }
+}

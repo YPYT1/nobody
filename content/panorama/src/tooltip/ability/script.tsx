@@ -135,17 +135,20 @@ export function App() {
         let ability_mana = 0;
         if (entityIndex > 0) {
             ability_name = Abilities.GetAbilityName(entityIndex);
+            // $.Msg(["ability_name",ability_name])
             ability_level = Abilities.GetLevel(entityIndex)
             ability_cooldown = Abilities.GetCooldown(entityIndex);
             ability_mana = Abilities.GetManaCost(entityIndex);
         } else {
             ability_name = name;
         }
-
+        // $.Msg([ability_name,entityIndex])
         const abilityData = NpcAbilityCustom[ability_name as "public_phase_move"];
         if (entityIndex <= 0) {
             // cooldown
-            let AbilityCooldown = (abilityData.AbilityCooldown ?? 0) as string | number;
+            // $.Msg(["abilityData",abilityData])
+            let AbilityCooldown = (abilityData ? abilityData.AbilityCooldown : 0) as string | number;
+            // $.Msg(AbilityCooldown)
             if (AbilityCooldown != null) {
                 let cd_num = 0;
                 if (typeof (AbilityCooldown) == "string") {
@@ -188,8 +191,6 @@ export function App() {
         let ContextPanel = $.GetContextPanel();
         let entityIndex = $.GetContextPanel().GetAttributeInt("entityIndex", 0) as AbilityEntityIndex;
         let name = $.GetContextPanel().GetAttributeString("name", "");
-        // let ext_int = $.GetContextPanel().GetAttributeInt("ext_int", 0);
-        if (entityIndex < 1){ return }
         // $.Msg(["ontooltiploaded",name,entityIndex])
         SetAbilityBaseInfo(name, entityIndex)
     });

@@ -393,6 +393,7 @@ export class modifier_public_arms extends BaseModifier {
     timer: number;
     hAbility: public_arms;
 
+    IsHidden(): boolean { return true }
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }

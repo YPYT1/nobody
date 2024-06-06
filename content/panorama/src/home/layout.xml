@@ -3,11 +3,12 @@
         <include src="./script.tsx" />
     </scripts>
     <styles>
-        <include src="./../_styles/keyframes.less" />
-        <include src="./../_styles/styles.less" />
+        <!-- <include src="./../_styles/keyframes.less" />
+        <include src="./../_styles/styles.less" /> -->
         <include src="./styles.less" />
     </styles>
-    <Panel class="home root" hittest="false">
-        <Panel id="hud" hittest="true" />
+    <Panel class="home" hittest="false">
+        <Panel id="control" class="full" hittest="false" />
+        <Panel id="top_info" class="full" hittest="false" />
     </Panel>
 </root>

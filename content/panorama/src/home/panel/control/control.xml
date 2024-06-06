@@ -1,0 +1,74 @@
+<root>
+	<styles>
+		<include src="./control.less" />
+	</styles>
+	<scripts>
+		<include src="./control.tsx" />
+	</scripts>
+	<snippets>
+		<snippet name="AttributeRows">
+			<Panel class='AttributeRows'>
+				<Panel class='AttributeIcon' />
+				<Label class='AttributeValue' text="{s:attr_value}" />
+			</Panel>
+		</snippet>
+		<snippet name="ValueBarComponent">
+			<Panel class="ValueBarComponent" hittest="false">
+				<Panel class='ProgressBarPanel'>
+					<Panel id="ValueProgressBarBackground" />
+					<ProgressBar id="ValueProgressBar" class='ProgressBar' value="0" min="0" max="100" hittest="false"/>
+				</Panel>
+				<Panel class='BarLabel' hittest="false">
+					<Label class="Label" text="{s:value}/{s:max_value}" hittest="false" />
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="control">
+		<Panel id='CenterStatsContainer' hittest="false" >
+            <Panel id="AttributeState">
+				<Panel id="UnitLevel">
+					<Label class="LevelTitle" text="Lv." />
+					<Label class="LevelLabel" text="{d:level}" />
+				</Panel>
+				<Panel id="UnitAttribute">
+					
+				</Panel>
+			</Panel>
+            <Panel id="CenterPanel" hittest="true">
+                <!-- <PortraitContainer /> -->
+                <Panel id="HpBar">
+					<Panel id="BarContent">
+						
+					</Panel>
+				</Panel>
+                
+                <Panel id='AbilityList'>
+					<Panel id="Left"></Panel>
+					<Panel id="Right"></Panel>
+				</Panel>
+                <!-- <HeroInnateAbility /> -->
+                
+            </Panel>
+
+			<Panel id="ExpStatusPanel">
+				<ProgressBar id='ExpBar' value="0" min="0" max="100">
+					<Panel id="DivisionLine">
+						<Panel class="Line" />
+						<Panel class="Line" />
+						<Panel class="Line" />
+						<Panel class="Line" />
+						<Panel class="Line" />
+						<Panel class="Line" />
+						<Panel class="Line" />
+						<Panel class="Line" />
+						<Panel class="Line" />
+					</Panel>
+				</ProgressBar>
+			</Panel>
+            
+        </Panel>
+	</Panel>
+</root>
+
+

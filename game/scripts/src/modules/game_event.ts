@@ -162,6 +162,8 @@ export class GameEvent {
 
     OnPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
         // DeepPrintTable(event)
+        let hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
+        hHero.SetAbilityPoints(0);
         GameRules.NewArmsEvolution.AddEvolutionPoint(event.player_id, 1)
     }
 }
