@@ -49,6 +49,15 @@ declare interface CustomGameEventDeclarations {
         };
     };
     /**
+     * 获取难度信息
+     */
+    MapChapter_GetDifficulty : {
+        data: {
+            select_map: string, //已选地图编号
+            select_difficulty: string, //已选地图难度
+        };
+    }
+    /**
      * 玩家选择所有英雄列表
      */
     MapChapter_GetPlayerSelectHeroList : {
@@ -111,6 +120,11 @@ declare interface CustomGameEventDeclarations {
     }
     //局内游戏时间
     GameInformation_GetPlayGameTime : {
+        data : number
+    }
+
+    //局内难度
+    GameInformation_GetGameDifficulty : {
         data : number
     }
 }

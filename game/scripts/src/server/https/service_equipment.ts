@@ -137,7 +137,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
                 }[] = this.MainAttrNumber(main_attr_count , equip_data.main_attr_random_key);
 
                 let puzzle_attr_count = this.AttrCountFunc(equip_r , equip_data.puzzle_attr_random_initial , equip_data.puzzle_attr_random_initial_pro );
-                print("puzzle_attr_count" , puzzle_attr_count)
                 let puzzle_attr_list: { //拼图词条信息
                     k: string, //键
                     v: number, //值

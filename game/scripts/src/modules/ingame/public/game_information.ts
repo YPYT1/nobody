@@ -124,6 +124,38 @@ export class GameInformation extends UIEventRegisterClass {
                 }
             );
         }
-        
+    }
+
+
+    /**
+     *  局内时间
+     */
+    play_game_difficulty : string  = "101";
+
+    SetGameDifficulty(game_difficulty : string){
+        GameRules.GameInformation.play_game_difficulty = game_difficulty;
+        GameRules.GameInformation.GetPlayGameTime( -1 , {})
+    }
+
+    /**
+    * 获取局内游戏开始时间
+    */
+    GetGameDifficulty(player_id: PlayerID, params: CGED["GameInformation"]["GetGameDifficulty"]) {
+        if(player_id  == -1){
+            CustomGameEventManager.Send_ServerToAllClients(
+                "GameInformation_GetPlayGameTime",
+                {
+                    data: GameRules.GameInformation.play_game_time
+                }
+            );
+        }else{
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "GameInformation_GetPlayGameTime",
+                {
+                    data: GameRules.GameInformation.play_game_time
+                }
+            );
+        }
     }
 }   

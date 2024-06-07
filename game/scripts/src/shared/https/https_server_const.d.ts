@@ -132,6 +132,44 @@ declare interface AddEquipParam {
 declare interface AddEquipReturn {
     code : number, //状态码
     msg : string, //服务器消息
-    data :  {
-    }
+    data :  { [equip_id : string] : ServerEquip}
 }
+
+
+/**
+ * 获取装备信息
+ */
+declare interface GetEquipParam {
+	gid : string, //游戏id
+	sid : string , //steamid
+    limit ? : number , //获取数量
+}
+/**
+ * 获取装备信息返回
+ */
+declare interface GetEquipReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  { [equip_id : string] : ServerEquip}
+}
+
+
+
+/**
+ * 更新装备信息
+ */
+declare interface UpdateEquipParam {
+	gid : string, //游戏id
+	sid : string , //steamid
+    equipdata : ServerEquip , //装备信息
+}
+/**
+ * 更新装备信息返回
+ */
+declare interface UpdateEquipReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  ServerEquip
+}
+
+

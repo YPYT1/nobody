@@ -31,7 +31,7 @@ export class ArchiveService {
     }
 
     //创建游戏
-    CreateGame() {
+    CreateGame() {  
         let param_data = <CreateGameParam>{
             steamids: []
         }
@@ -144,7 +144,7 @@ export class ArchiveService {
             }
         )
     }
-    
+        
 
 
     
@@ -175,6 +175,63 @@ export class ArchiveService {
         )
     }
 
+    /**
+     * 获取自身装备
+     * @param player_id 
+     * @param equipdata
+     */
+    GetEquip(player_id : PlayerID){
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <GetEquipParam>{
+            gid: this._game_id,
+            sid: steam_id.toString(),
+            limit : 50 ,
+        }
+        HttpRequest.AM2Post(ACTION_GET_EQUIP,
+            {
+                param: param_data
+            },
+            (data: GetEquipReturn) => {
+                print("==============获得返回数据================")
+                if (data.code == 200) {
+
+                }
+            },
+            (code: number, body: string) => {
+            }
+        )
+    }
+
+    /**
+     * 修改装备到服务器
+     * @param player_id 
+     * @param equipdata
+     */
+    UpdateEquip(player_id : PlayerID , equipdata : ServerEquip){
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <UpdateEquipParam>{
+            gid: this._game_id,
+            sid: steam_id.toString(),
+            equipdata : equipdata,
+        }
+        HttpRequest.AM2Post(ACTION_UPDATE_EQUIP,
+            {
+                param: param_data
+            },
+            (data: UpdateEquipReturn) => {
+                print("==============获得返回数据================")
+                if (data.code == 200) {
+
+                }
+            },  
+            (code: number, body: string) => {
+            }
+        )
+    }
+
+
+    
+
 
     Debug( cmd: string, args: string[], player_id: PlayerID){
         //游戏结束提交数据
@@ -183,6 +240,10 @@ export class ArchiveService {
         }
         if(cmd == "-VerificationCode"){
             GameRules.ArchiveService.VerificationCode(player_id , "code");
+        }
+        if(cmd == "!GE"){
+            this.GetEquip(player_id)
+
         }
     }
     

@@ -102,6 +102,10 @@ declare interface CGED {
         SelectDifficulty : {
             difficulty: string;
         },
+        //获取难度 
+        GetDifficulty : {
+            difficulty: string;
+        }
         //确认难度
         SelectDifficultyAffirm : {
 
@@ -142,6 +146,10 @@ declare interface CGED {
         }
         //获取局内开始时间
         GetPlayGameTime : {
+
+        }
+        //获取当前局内难度信息 
+        GetGameDifficulty: {
 
         }
     }

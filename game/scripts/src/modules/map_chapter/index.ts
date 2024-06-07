@@ -163,6 +163,35 @@ export class MapChapter extends UIEventRegisterClass {
             }
         );
     }
+    //获取游戏难度
+    GetDifficulty(player_id: PlayerID, params: CGED["MapChapter"]["GetDifficulty"]){
+        //获取游戏难度
+        if(player_id == -1){
+            CustomGameEventManager.Send_ServerToAllClients(
+                "MapChapter_GetDifficulty",
+                {
+                    data: {
+                        select_map : this.MapIndex,
+                        select_difficulty: this.GameDifficulty,
+                    }
+                }
+            );
+        }else{
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "MapChapter_GetDifficulty",
+                {
+                    data: {
+                        select_map : this.MapIndex,
+                        select_difficulty: this.GameDifficulty,
+                    }
+                }
+            );
+        }
+       
+    }
+
+    
 
     //确认难度
     SelectDifficultyAffirm(player_id: PlayerID, params: CGED["MapChapter"]["SelectDifficultyAffirm"]) {

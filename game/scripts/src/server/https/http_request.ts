@@ -1,6 +1,7 @@
 /**
  * dota2 http请求
  */
+
 export class HttpRequest{
     //调试模式
     static is_debug = true; 
