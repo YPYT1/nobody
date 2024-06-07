@@ -8,7 +8,11 @@
         <include src="./styles.less" />
     </styles>
     <Panel class="home" hittest="false">
-        <Panel id="control" class="full" hittest="false" />
-        <Panel id="top_info" class="full" hittest="false" />
+        <Panel id="control" hittest="false" />
+        <Panel id="resource" hittest="false" />
+        <Panel id="top_info" hittest="false" />
+        <Panel id="chapter" hittest="false" />
+
+        <Label id="GamePhase" text="GamePhase:{d:game_phase}"/>
     </Panel>
 </root>

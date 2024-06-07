@@ -77,9 +77,24 @@ function SetAbilityRarity(rarity: number) {
     }
 }
 
+function RegisterArmsEvent() {
+    // let order = 
+    let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
+    MainPanel.SetPanelEvent("onactivate", () => {
+        GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
+            event_name: "CreatArmssSelectData",
+            params: {
+                index: m_SlotIndex
+            }
+        })
+    })
+
+}
 (function () {
     $.GetContextPanel().Data<PanelDataObject>().SetAbility = SetAbility;
     $.GetContextPanel().Data<PanelDataObject>().UpdateAbilityVar = UpdateAbilityVar;
+    $.GetContextPanel().Data<PanelDataObject>().RegisterArmsEvent = RegisterArmsEvent;
+
     MainPanel = $.GetContextPanel()
     AutoUpdateAbility();
     MainPanel.SetDialogVariable("manaCost", "0")

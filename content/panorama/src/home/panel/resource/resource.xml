@@ -1,5 +1,6 @@
 <root>
 	<styles>
+        <include src="./../../../_styles/styles.less" /> 
 		<include src="./resource.less" />
 	</styles>
 	<scripts>
@@ -7,13 +8,13 @@
 	</scripts>
     <snippets>
         <snippet name="ResourceTypePanel">
-            <Panel className='ResourceTypePanel'>
-            <Panel id="ResourceIcon" className='ResourceIcon' />
-            <Label className='ResourceAmount' text='{d:amount}' />
-        </Panel>
+            <Panel class='ResourceTypePanel'>
+                <Panel id="ResourceIcon" class='ResourceIcon' />
+                <Label class='ResourceAmount' text='{d:amount}' />
+            </Panel>
         </snippet>
     </snippets>
-	<Panel class="resource">
+	<Panel class="resource_panel">
 		
 	</Panel>
 </root>

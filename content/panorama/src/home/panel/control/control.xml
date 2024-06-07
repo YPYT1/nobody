@@ -1,6 +1,7 @@
 <root>
 	<styles>
 		<include src="./control.less" />
+		<include src="./../../../_styles/styles.less" />
 	</styles>
 	<scripts>
 		<include src="./control.tsx" />
@@ -23,6 +24,11 @@
 				</Panel>
 			</Panel>
 		</snippet>
+		<snippet name="ArmsAbilityRow">
+			<Button class="ArmsAbilityRow">
+				<DOTAAbilityImage id="ImageIcon" showtooltip="true"/>
+			</Button>
+		</snippet>
 	</snippets>
 	<Panel class="control">
 		<Panel id='CenterStatsContainer' hittest="false" >
@@ -36,11 +42,16 @@
 				</Panel>
 			</Panel>
             <Panel id="CenterPanel" hittest="true">
-                <!-- <PortraitContainer /> -->
-                <Panel id="HpBar">
-					<Panel id="BarContent">
+                <Panel id="PortraitContainer" hittest="fasle">
+					<Panel id='PortraitGround' hittest="fasle" />
+					<Panel id='PortraitBorder' hittest="fasle">
+						<Panel id="UnitPortrait">
 						
+						</Panel>
 					</Panel>
+				</Panel>
+                <Panel id="HpBar" hittest="fasle">
+					<Panel id="BarContent" / >
 				</Panel>
                 
                 <Panel id='AbilityList'>
@@ -66,8 +77,15 @@
 					</Panel>
 				</ProgressBar>
 			</Panel>
-            
         </Panel>
+		<Panel id="ArmsSelector" class="container">
+			<Panel id="ArmsList"></Panel>
+            <Panel id="ArmsOption">
+                <Button id="ArmsToggleButton" class="btn">
+                    <Label text="切换" />
+                </Button>
+            </Panel>
+		</Panel>
 	</Panel>
 </root>
 

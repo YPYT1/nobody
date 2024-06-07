@@ -11,13 +11,15 @@ export const UpdataAttributeData = () => {
     let MainPanel = $.GetContextPanel()
     let AttributeState = MainPanel.FindChildTraverse("AttributeState");
     const queryUnit = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());//Players.GetLocalPlayerPortraitUnit();
-    AttributeRowsList["AttackDamage"]?.SetDialogVariable("attr_value", `${Entities.GetDamageMin(queryUnit)}`)
-    AttributeRowsList["MoveSpeed"]?.SetDialogVariable("attr_value", `${Entities.GetMoveSpeedModifier(queryUnit, Entities.GetBaseMoveSpeed(queryUnit))}`)
-
+    
     if (AttributeState) {
         AttributeState.SetDialogVariableInt("level", Entities.GetLevel(queryUnit))
     }
 
+    AttributeRowsList["AttackDamage"]?.SetDialogVariable("attr_value", `${Entities.GetDamageMin(queryUnit)}`)
+    AttributeRowsList["MoveSpeed"]?.SetDialogVariable("attr_value", `${Entities.GetMoveSpeedModifier(queryUnit, Entities.GetBaseMoveSpeed(queryUnit))}`)
+
+    
     const netdata = CustomNetTables.GetTableValue("unit_attribute", `${queryUnit}`)
     if (netdata == null) { return }
     // 扩展数据

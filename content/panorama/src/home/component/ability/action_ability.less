@@ -69,6 +69,7 @@
     &.is_innate {
         border: 1px solid #ffffff;
         border-radius: 50%;
+
         .AbilityRarityBorder {
             visibility: collapse;
         }
@@ -532,5 +533,37 @@
         saturation: 0;
         wash-color: #1569be;
         contrast: .7;
+    }
+}
+
+.HasPoint .AbilityPanel .AbilityHoverTip {
+    animation-name: flash;
+    animation-duration: 0.4s;
+    animation-iteration-count: infinite;
+}
+
+.IsSelecting {
+
+    &.HasPoint {
+        .AbilityHoverTip {
+            animation-name: none;
+            // animation-duration: 0.4s;
+            // animation-iteration-count: infinite;
+        }
+    }
+
+    &.SetIndex_5 .Ability5,
+    &.SetIndex_4 .Ability4,
+    &.SetIndex_3 .Ability3,
+    &.SetIndex_2 .Ability2,
+    &.SetIndex_1 .Ability1,
+    &.SetIndex_0 .Ability0 {
+
+        .AbilityHoverTip {
+            // animation-name: flash;
+            animation-duration: 0.4s;
+            // animation-iteration-count: infinite;
+        }
+
     }
 }

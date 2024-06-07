@@ -1,9 +1,5 @@
 import { FormatIntToString } from "../../../utils/method";
 
-interface ValueBarProps {
-    type: "Hp" | "Mp" | "Ep";
-}
-
 export const BarTypeList = ["Hp", "Mp"];
 export let bar_panel_list: { [key: string]: Panel } = {};
 
@@ -12,7 +8,6 @@ export const CreatePanel_HpBar = () => {
     let BarContent = HpBarPanel.FindChildTraverse("BarContent");
     if (BarContent == null) { return };
     BarContent.RemoveAndDeleteChildren();
-
     for (let bar_type of BarTypeList) {
         let row_bar_panel = $.CreatePanel("Panel", BarContent, "");
         row_bar_panel.BLoadLayoutSnippet("ValueBarComponent");
@@ -20,8 +15,9 @@ export const CreatePanel_HpBar = () => {
         bar_panel_list[bar_type] = row_bar_panel;
     }
 
-    StartLoop()
+    $.Schedule(0.1, StartLoop)
 }
+
 export const StartLoop = () => {
     UpdateLocalPlayer();
     $.Schedule(0.1, StartLoop)

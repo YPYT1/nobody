@@ -33,6 +33,7 @@ export const StartLoop = () => {
 }
 
 export const UpdateLocalPlayer = () => {
+    // $.Msg(["ExpBarPanel",ExpBarPanel])
     if (ExpBarPanel == null) { return }
     let queryUnit = Players.GetPlayerHeroEntityIndex(localPlayerID);
     let unit_level = Entities.GetLevel(queryUnit);

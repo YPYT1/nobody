@@ -191,7 +191,7 @@ export function App() {
         let ContextPanel = $.GetContextPanel();
         let entityIndex = $.GetContextPanel().GetAttributeInt("entityIndex", 0) as AbilityEntityIndex;
         let name = $.GetContextPanel().GetAttributeString("name", "");
-        // $.Msg(["ontooltiploaded",name,entityIndex])
+        $.Msg(["ontooltiploaded",name,entityIndex])
         SetAbilityBaseInfo(name, entityIndex)
     });
 

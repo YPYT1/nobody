@@ -1,5 +1,7 @@
 @import "./_exp_bar.less";
 @import "./_hp_bar.less";
+@import "./_portrait.less";
+@import "./_arms_selector.less";
 
 .control {
     width: 100%;
@@ -21,7 +23,7 @@
     // flow-children: down;
     vertical-align: bottom;
     // border: 1px solid #fff;
-    margin-bottom: 200px;
+    // margin-bottom: 200px;
 
     // visibility: collapse;
     #CenterPanel {
@@ -62,11 +64,11 @@
         margin-right: 80px;
     }
 
-    // &.HasPoint .AbilityButtonItem .AbilityHoverTip {
-    //     animation-name: flash;
-    //     animation-duration: 0.4s;
-    //     animation-iteration-count: infinite;
-    // }
+    &.HasPoint .AbilityPanel .AbilityHoverTip {
+        animation-name: flash;
+        animation-duration: 0.4s;
+        animation-iteration-count: infinite;
+    }
 
     &.IsSelecting {
 

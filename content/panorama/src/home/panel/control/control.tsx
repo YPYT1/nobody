@@ -1,8 +1,10 @@
 import "./_exp_bar";
 import "./_hp_bar";
 import "./_attribute_state";
+import "./_portrait";
+import "./_arms_selector";
 
-const CreatePanel_ActionAbility = () => {
+export const CreatePanel_ActionAbility = () => {
     let MainPanel = $.GetContextPanel()
     let CenterStatsContainer = MainPanel.FindChildTraverse("CenterStatsContainer");
     if (CenterStatsContainer == null) {
@@ -10,7 +12,6 @@ const CreatePanel_ActionAbility = () => {
         return
     }
     let LeftPanel = CenterStatsContainer.FindChildTraverse("Left")!;
-    LeftPanel.RemoveAndDeleteChildren();
     for (var i = 0; i < 3; i++) {
         var AbilityPanel = $.CreatePanel("Panel", LeftPanel, "");
         AbilityPanel.BLoadLayout(
@@ -18,10 +19,11 @@ const CreatePanel_ActionAbility = () => {
             true, false
         );
         AbilityPanel.Data<PanelDataObject>().SetAbility(i);
+        AbilityPanel.Data<PanelDataObject>().RegisterArmsEvent()
+
     }
 
     let RightPanel = CenterStatsContainer.FindChildTraverse("Right")!;
-    RightPanel.RemoveAndDeleteChildren();
     for (var i = 0; i < 3; i++) {
         var AbilityPanel = $.CreatePanel("Panel", RightPanel, "");
         AbilityPanel.BLoadLayout(
@@ -29,10 +31,13 @@ const CreatePanel_ActionAbility = () => {
             true, false
         );
         AbilityPanel.Data<PanelDataObject>().SetAbility(i + 3);
+        AbilityPanel.Data<PanelDataObject>().RegisterArmsEvent()
     }
+
+    InitAbilityAction()
 }
 
-const UpdateAbilityList = () => {
+export const UpdateAbilityList = () => {
     let MainPanel = $.GetContextPanel()
     let LeftPanel = MainPanel.FindChildTraverse("Left");
     if (LeftPanel != null) {
@@ -51,7 +56,26 @@ const UpdateAbilityList = () => {
     }
 }
 
+const InitAbilityAction = () => {
 
+    let AbilityList = $("#AbilityList")
+
+    GameEvents.Subscribe("NewArmsEvolution_GetEvolutionPoint", event => {
+        let data = event.data;
+        AbilityList.SetHasClass("HasPoint", data.EvolutionPoint > 0)
+    })
+
+    GameEvents.Subscribe("NewArmsEvolution_GetArmssSelectData", event => {
+        let data = event.data.Data;
+        // setSelectIndex(data.index);
+        // setIsSelecting(data.is_select == 1)
+    })
+
+    GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
+        event_name: "GetEvolutionPoint",
+        params: {}
+    })
+}
 
 (function () {
     CreatePanel_ActionAbility();

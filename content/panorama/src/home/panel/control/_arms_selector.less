@@ -1,0 +1,55 @@
+#ArmsSelector {
+    horizontal-align: center;
+    vertical-align: bottom;
+    flow-children: down;
+    transform: translateY(-300px);
+
+    transition-property: height, transform, box-shadow;
+    transition-duration: 0.15s;
+    transition-timing-function: linear;
+    visibility: collapse;
+    
+    &.Hide {
+        visibility: collapse;
+    }
+
+    &.Minimize {
+        background-color: #00000000;
+        transform: translateY(-150px);
+        border-width: 0px;
+        box-shadow: #00000000 0px 0px 0px 0px;
+
+        #ArmsList {
+            height: 1px;
+            overflow: clip;
+        }
+    }
+
+    #ArmsList {
+        height: 200px;
+        transition-property: height;
+        transition-duration: 0.15s;
+        transition-timing-function: linear;
+        flow-children: right;
+        padding: 12px;
+    }
+
+    #ArmsOption {
+        horizontal-align: center;
+    }
+
+    .ArmsAbilityRow {
+        width: 200px;
+        height: 100%;
+        margin-right: 12px;
+        margin-left: 12px;
+        border: 1px solid #fff000;
+
+        #ImageIcon {
+            width: 64px;
+            height: 64px;
+            border: 1px solid #000000;
+            align: center center;
+        }
+    }
+}

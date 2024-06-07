@@ -1,0 +1,115 @@
+<root>
+	<styles>
+		<include src="./chapter.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./chapter.tsx" />
+	</scripts>
+	<snippets>
+		<snippet name="SelectChapter">
+			<Button class="btn">
+				<Label text="{s:chapter}" />
+			</Button>
+		</snippet>
+		<snippet name="StageDifficulty">
+			<Panel class="StageDifficulty row wrap"></Panel>
+		</snippet>
+		<snippet name="StageDifficultyRows">
+			<Button class="btn diff_btn">
+				<Label text="{s:chapter}- {s:difficulty}"/>
+			</Button>
+		</snippet>
+		<snippet name="PlayerReadyStateItem">
+			<Panel class="PlayerReadyStateItem">
+				<Panel class='AvatarImage'>
+					<DOTAAvatarImage id="DOTAAvatarImage" onactivate="" />
+				</Panel>
+				<Panel class="SelectHero">
+					<Panel class='HeroImage'>
+						<Image id="HeroIcon" />
+					</Panel>
+					<Panel class='HeroBorder' />
+				</Panel>
+				<Panel class='PlayerInfo'>
+					<Panel id="ReadyState">
+						<Label class='NotReady' text="正在选择..." />
+						<Label class='IsReady' text="已选择" />
+					</Panel>
+					<Label id='PlayerName' text="{s:player_name}" />
+				</Panel>
+			</Panel>
+		</snippet>
+		<snippet name="HeroCardButton">
+			<RadioButton class="HeroCardButton" group="HeroCardButtonGroup" >
+				<Panel class="HeroImage">
+					<Image id="HeroIcon" />
+					<DOTAHeroMovie id="HeroMovie"  />
+				</Panel>
+			</RadioButton>
+		</snippet>
+	</snippets>
+	<Panel class="Open container">
+		<Panel class="content">
+			<Panel class="head">
+				<Panel class="title">
+					<Label text="chapter_select" />
+				</Panel>
+				<Panel class="head-btn">
+					<Button id="ChapterClosedButton" class="btn-close" />
+				</Panel>
+			</Panel>
+		</Panel>
+		<Panel id="ChapterContent" class="content">
+			<Panel id="CurrentStageSelect">
+				<Panel class="title">
+					<Label text="章节选择" />
+				</Panel>
+				<Panel id="ChapterList" class="row btn-group"></Panel>
+				<Panel id="ChapterForDiff" class="row btn-group"></Panel>
+				<Panel id="StageBtnGroup">
+					<Button id="StartGameButton" class="btn">
+						<Label text="START==> {s:difficulty}" />
+					</Button>
+				</Panel>
+			</Panel>
+
+			<Panel id="StageHeroSelect" class="container">
+				<Panel class="content">
+					<Panel class="grid">
+						<Panel class="head">
+							<Label text="当前关卡:{s:difficulty}" />
+						</Panel>
+					</Panel>
+					<Panel class="grid">
+						<Panel class="title">
+							<Label text="英雄选择" />
+						</Panel>
+						<Panel class="grid">
+							<Panel id="PickHeroList">
+							
+							</Panel>
+						</Panel>
+					</Panel>
+					<Panel class="grid">
+						<Panel class="title">
+							<Label text="玩家列表" />
+						</Panel>
+						<Panel class="grid">
+							<Panel id="PlayerList" >
+								
+							</Panel>
+						</Panel>
+					</Panel>
+					<Panel class="vert-bot grid">
+						<Button id="HeroConfirmButton" class="btn hor-center">
+							<Label text="确认" />
+						</Button>
+					</Panel>
+				</Panel>
+			</Panel>
+		</Panel>
+
+
+	</Panel>
+</root>
