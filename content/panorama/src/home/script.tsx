@@ -93,7 +93,9 @@ export const Initialize = () => {
     $("#resource").BLoadLayout("file://{resources}/layout/custom_game/home/panel/resource/resource.xml", true, false);
     $("#top_info").BLoadLayout("file://{resources}/layout/custom_game/home/panel/top_info/top_info.xml", true, false);
     $("#chapter").BLoadLayout("file://{resources}/layout/custom_game/home/panel/chapter/chapter.xml", true, false);
+    // $("#arms_selector").BLoadLayout("file://{resources}/layout/custom_game/home/panel/arms_selector/arms_selector.xml", true, false);
 
+    
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
         let data = event.data;
         let game_select_phase = data.game_select_phase;

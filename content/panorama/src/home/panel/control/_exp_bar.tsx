@@ -41,6 +41,7 @@ export const UpdateLocalPlayer = () => {
     let up_exp = Entities.GetNeededXPToLevel(queryUnit);
     const { CurrentLevelXP, CurrentLevelUpXP } = GetLevelExpInfo(unit_level, current_exp, up_exp);
 
+    // $.Msg(ExpBarPanel)
     ExpBarPanel.SetDialogVariable("CurrentLevelXP", `${CurrentLevelXP}`)
     ExpBarPanel.SetDialogVariable("CurrentLevelUpXP", `${CurrentLevelUpXP}`)
     ExpBarPanel.value = 100 * CurrentLevelXP / CurrentLevelUpXP

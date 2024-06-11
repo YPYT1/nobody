@@ -65,12 +65,6 @@ const InitAbilityAction = () => {
         AbilityList.SetHasClass("HasPoint", data.EvolutionPoint > 0)
     })
 
-    GameEvents.Subscribe("NewArmsEvolution_GetArmssSelectData", event => {
-        let data = event.data.Data;
-        // setSelectIndex(data.index);
-        // setIsSelecting(data.is_select == 1)
-    })
-
     GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
         event_name: "GetEvolutionPoint",
         params: {}

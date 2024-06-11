@@ -4,6 +4,7 @@ import { default as NpcAbilityCustom } from "../../../json/npc_abilities_custom.
 import { GetAbilityRarity } from "../../../utils/ability_description";
 
 let MainPanel = $.GetContextPanel();
+let AbilityContainer = MainPanel.GetChild(1) as Panel;
 let m_Ability = -1 as AbilityEntityIndex;
 let m_QueryUnit = -1 as EntityIndex;
 // let m_SlotIndex = 0;
@@ -28,7 +29,7 @@ function UpdateAbility() {
 
 function AbilityShowTooltip() {
     // $.Msg(["AbilityShowTooltip", m_Ability])
-    ShowCustomTooltip(MainPanel, "ability", "", m_Ability)
+    ShowCustomTooltip(AbilityContainer, "ability", "", m_Ability)
 }
 
 function AbilityHideTooltip() {
@@ -39,19 +40,16 @@ function ActivateAbility() {
 
 }
 
-function DoubleClickAbility() {
 
-}
 
-function RightClickAbility() {
+function SetAbility(slot: number, innate: boolean = false) {
 
-}
-
-function SetAbility(slot: number) {
     MainPanel.Data<PanelDataObject>().m_SlotIndex = slot
     UpdateAbilityVar();
-    MainPanel.SetPanelEvent("onmouseover", AbilityShowTooltip)
-    MainPanel.SetPanelEvent("onmouseout", AbilityHideTooltip)
+    AbilityContainer.SetPanelEvent("onmouseover", AbilityShowTooltip)
+    AbilityContainer.SetPanelEvent("onmouseout", AbilityHideTooltip)
+    MainPanel.SetHasClass("Innate", innate)
+    MainPanel.AddClass("Ability" + slot)
 
 }
 
@@ -67,7 +65,9 @@ function UpdateAbilityVar() {
 
     // 变更品质
     const rarity = GetAbilityRarity(ability_name);
-    SetAbilityRarity(rarity)
+    SetAbilityRarity(rarity);
+
+
 }
 
 function SetAbilityRarity(rarity: number) {
@@ -75,6 +75,8 @@ function SetAbilityRarity(rarity: number) {
     for (let i = 0; i < 9; i++) {
         $.GetContextPanel().SetHasClass("Rarity" + i, rarity == i)
     }
+
+    $.GetContextPanel().SetHasClass("is_null", rarity < 1)
 }
 
 function RegisterArmsEvent() {
