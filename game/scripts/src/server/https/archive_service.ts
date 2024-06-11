@@ -167,7 +167,10 @@ export class ArchiveService {
             (data: AddEquipReturn) => {
                 print("==============获得返回数据================")
                 if (data.code == 200) {
-
+                    let equip_obj = data.data;
+                    for (const key in equip_obj) {
+                        GameRules.ServiceEquipment.player_equip_list[player_id][key] = GameRules.ServiceEquipment.EquipTEncode(equip_obj[key]);
+                    }
                 }
             },
             (code: number, body: string) => {
@@ -194,10 +197,15 @@ export class ArchiveService {
             (data: GetEquipReturn) => {
                 print("==============获得返回数据================")
                 if (data.code == 200) {
-
+                    let equip_obj = data.data;
+                    for (const key in equip_obj) {
+                        GameRules.ServiceEquipment.player_equip_list[player_id][key] = GameRules.ServiceEquipment.EquipTEncode(equip_obj[key]);
+                    }
                 }
             },
             (code: number, body: string) => {
+
+
             }
         )
     }
@@ -221,7 +229,7 @@ export class ArchiveService {
             (data: UpdateEquipReturn) => {
                 print("==============获得返回数据================")
                 if (data.code == 200) {
-
+                    GameRules.ServiceEquipment.player_equip_list[player_id][data.data.id] = GameRules.ServiceEquipment.EquipTEncode(data.data);
                 }
             },  
             (code: number, body: string) => {

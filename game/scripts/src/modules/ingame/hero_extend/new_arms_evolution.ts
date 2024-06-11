@@ -207,7 +207,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         //阶段2之前不可用
         if (GameRules.MapChapter._game_select_phase <= 2) {
             return
-        }
+        } 
 
         if (this.PlayerSelectData[player_id].is_select == 0) {
             //验证是否满足条件
@@ -284,6 +284,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                     this.AddEvolutionPoint(player_id, - skillcount)
                 }
                 for (let i = 0; i < amount; i++) {
+                    DeepPrintTable(this.arms_global_count)
                     amount_count++;
                     if (amount_count > amount_max) {
                         break;
@@ -325,7 +326,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * 1.默认是3个,如果其他则可以多选
      * 2.符合条件后会出现特殊升级
      */
-    CreatArmssWeightData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssSelectData"]) {
+    CreatArmssWeightData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssWeightData"]) {
         //阶段2之前不可用
         if (GameRules.MapChapter._game_select_phase <= 2) {
             return
@@ -469,9 +470,6 @@ export class NewArmsEvolution extends UIEventRegisterClass {
 
         GameRules.NewArmsEvolution.ReplaceAbility(ability_name, Index, MyHero)
 
-        PlayerSelectDataInfo.is_select = 0;
-        PlayerSelectDataInfo.index = -1;
-        PlayerSelectDataInfo.arms_list = {};
 
         //其他未选中的回归池子
         for( let k in PlayerSelectDataInfo.arms_list){
@@ -481,8 +479,14 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 let arms_key = PlayerSelectDataInfo.arms_list[k].key
                 this.arms_global_count[arms_key].count --;
             }
-            
         }
+
+        
+        PlayerSelectDataInfo.is_select = 0;
+        PlayerSelectDataInfo.index = -1;
+        PlayerSelectDataInfo.arms_list = {};
+
+        
         this.GetArmssSelectData(player_id, {});
     }
 

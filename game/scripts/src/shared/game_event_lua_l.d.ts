@@ -153,5 +153,21 @@ declare interface CGED {
 
         }
     }
+
+    //存档装备相关
+    ServiceEquipment : {
+        //拼图升级
+        PuzzleUpgrade : {
+            equip_id : string, 
+            index : number,
+        }
+        //拼图降级
+        PuzzleLower : {
+            equip_id : string, 
+            index : number,
+        }
+
+    }
+
 }
 

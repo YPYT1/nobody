@@ -4,7 +4,7 @@
 
 export class HttpRequest{
     //调试模式
-    static is_debug = true; 
+    static is_debug = false; 
     //
     static is_official = IsInToolsMode() ? true : true;
     /**

@@ -39,4 +39,35 @@ export class CMsg extends UIEventRegisterClass {
             );
         }
     }
+
+    /**
+     * 发送错误信息文字 弹框到游戏屏幕中间
+     * @param player_id 
+     * @param message 
+     * @param data 
+     */
+    SendErrorMsgToPlayer(player_id: PlayerID, message: string, data?: object) {
+        if (player_id == -1) {
+            CustomGameEventManager.Send_ServerToAllClients(
+                "CMsg_SendErrorMsgToPlayer",
+                {
+                    data: {
+                        message: message,
+                        data: data,
+                    }
+                }
+            );
+        } else {
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "CMsg_SendErrorMsgToPlayer",
+                {
+                    data: {
+                        message: message,
+                        data: data,
+                    }
+                }
+            );
+        }
+    }
 }

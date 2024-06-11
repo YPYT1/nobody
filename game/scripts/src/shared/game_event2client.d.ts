@@ -8,6 +8,14 @@ declare interface CustomGameEventDeclarations {
         };
     };
 
+    CMsg_SendErrorMsgToPlayer: {
+        data: {
+            message: string;
+            data?: object;
+        };
+    };
+
+
     CMsg_PopupNumbersToClients: {
         data: {
             // 值
