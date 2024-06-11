@@ -1,0 +1,26 @@
+<root>
+	<styles>
+		<include src="./message.less" />
+	</styles>
+	<scripts>
+		<include src="./message.tsx" />
+	</scripts>
+    <snippets>
+        <snippet name="MessageEventItem">
+            <Panel class="MessageEventItem" hittest="false">
+                <Panel id="EventIcon" hittest="false" />
+                <Panel id="EventType" hittest="false">
+                    <Label text="{s:event_type}"/>
+                </Panel>
+                <Panel id="EventLabel" hittest="false">
+                    <Label text="{s:event_label}" html="true" hittest="false"/>
+                </Panel>
+            </Panel>
+        </snippet>
+    </snippets>
+	<Panel class="message" hittest="false">
+		<Panel id="CommonMessage" class='BottomToTopMessagePanel' hittest="false">
+            <Panel id="CommonManager" class='ManagerList' hittest="false" />
+        </Panel>
+	</Panel>
+</root>

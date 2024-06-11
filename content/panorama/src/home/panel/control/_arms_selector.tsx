@@ -43,9 +43,9 @@ export const InitArmsSelector = () => {
         }
         let AbilityList = $("#AbilityList");
         // data.index
-        AbilityList.SetHasClass("IsSelecting",data.is_select == 1);
+        AbilityList.SetHasClass("IsSelecting", data.is_select == 1);
         for (let i = 0; i < 6; i++) {
-            AbilityList.SetHasClass("SetIndex_" + i, i == data.index)
+            AbilityList.SetHasClass("SetIndex_" + i, i == data.index);
         }
     })
 })();

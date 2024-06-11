@@ -89,13 +89,15 @@ export const RegisterCustomTooltip = () => {
 }
 
 export const Initialize = () => {
-    $("#control").BLoadLayout("file://{resources}/layout/custom_game/home/panel/control/control.xml", true, false);
-    $("#resource").BLoadLayout("file://{resources}/layout/custom_game/home/panel/resource/resource.xml", true, false);
-    $("#top_info").BLoadLayout("file://{resources}/layout/custom_game/home/panel/top_info/top_info.xml", true, false);
-    $("#chapter").BLoadLayout("file://{resources}/layout/custom_game/home/panel/chapter/chapter.xml", true, false);
+    const layout_path = "file://{resources}/layout/custom_game/home/panel"
+    $("#control").BLoadLayout(layout_path + "/control/control.xml", true, false);
+    $("#resource").BLoadLayout(layout_path + "/resource/resource.xml", true, false);
+    $("#top_info").BLoadLayout(layout_path + "/top_info/top_info.xml", true, false);
+    $("#chapter").BLoadLayout(layout_path + "/chapter/chapter.xml", true, false);
+    $("#message").BLoadLayout(layout_path + "/message/message.xml", true, false);
     // $("#arms_selector").BLoadLayout("file://{resources}/layout/custom_game/home/panel/arms_selector/arms_selector.xml", true, false);
 
-    
+
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
         let data = event.data;
         let game_select_phase = data.game_select_phase;

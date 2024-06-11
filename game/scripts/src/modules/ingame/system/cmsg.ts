@@ -15,7 +15,7 @@ export class CMsg extends UIEventRegisterClass {
      * @param message 
      * @param data 
      */
-    SendCommonMsgToPlayer(player_id: PlayerID, message: string, data?: object) {
+    SendCommonMsgToPlayer(player_id: PlayerID, message: string, data?: MessageObjectDataProps) {
         if (player_id == -1) {
             CustomGameEventManager.Send_ServerToAllClients(
                 "CMsg_SendCommonMsgToPlayer",
@@ -46,7 +46,7 @@ export class CMsg extends UIEventRegisterClass {
      * @param message 
      * @param data 
      */
-    SendErrorMsgToPlayer(player_id: PlayerID, message: string, data?: object) {
+    SendErrorMsgToPlayer(player_id: PlayerID, message: string, data?: MessageObjectDataProps) {
         if (player_id == -1) {
             CustomGameEventManager.Send_ServerToAllClients(
                 "CMsg_SendErrorMsgToPlayer",
@@ -65,6 +65,21 @@ export class CMsg extends UIEventRegisterClass {
                     data: {
                         message: message,
                         data: data,
+                    }
+                }
+            );
+        }
+    }
+
+    Debug(cmd: string, args: string[], player_id: PlayerID): void {
+        if(cmd == "-msg"){
+            let message = args[0];
+            CustomGameEventManager.Send_ServerToAllClients(
+                "CMsg_SendCommonMsgToPlayer",
+                {
+                    data: {
+                        message: message,
+                        // data: data,
                     }
                 }
             );

@@ -11,28 +11,11 @@
     background-repeat: no-repeat;
     flow-children: down;
 
-
-    .AbilityReselect {
-        width: 33px;
-        height: 32px;
-        horizontal-align: center;
-        // background-color: #cfa122;
-        // border-top: 1px solid #000000;
-        // visibility: collapse;
-        background-image: url("file://{images}/custom_game/hud/control/re_select_d.png");
-
-        // animation-name: flash;
-        // animation-duration: 0.8s;
-        // animation-iteration-count: infinite;
-
-        // &:hover {
-        //     background-color: #ffe8a8;
-        // }
+    &.is_hidden {
+        opacity: 0;
     }
 
-    &.Innate .AbilityReselect {
-        visibility: collapse;
-    }
+
 
     .AbilityContainer {
         margin-top: 2px;
@@ -295,7 +278,7 @@
         // margin-bottom: 12px;
         width: 100%;
         z-index: 10;
-
+        visibility: collapse;
     }
 
     #ManaCost {
@@ -542,11 +525,47 @@
     }
 }
 
-.HasPoint .AbilityPanel .AbilityHoverTip {
+// .is_local {
+
+// }
+.is_local {
+
+    #AbilityReselect {
+        width: 33px;
+        height: 32px;
+        horizontal-align: center;
+        visibility: visible;
+        background-image: url("file://{images}/custom_game/hud/control/re_select_d.png");
+
+        // &:disabled {
+        //     background-image: url("file://{images}/custom_game/hud/control/re_select_d.png");
+        // }
+
+        // &:enabled {
+        //     background-image: url("file://{images}/custom_game/hud/control/re_select_h.png");
+        // }
+    }
+
+    &.Innate #AbilityReselect {
+        visibility: collapse;
+    }
+
+    &.HasPoint .is_ability #AbilityReselect{
+        background-image: url("file://{images}/custom_game/hud/control/re_select_h.png");
+    }
+}
+
+#AbilityReselect {
+    visibility: collapse;
+}
+
+.is_local.HasPoint .AbilityPanel .AbilityHoverTip {
     animation-name: flash;
     animation-duration: 0.4s;
     animation-iteration-count: infinite;
 }
+
+
 
 .IsSelecting {
 
@@ -565,11 +584,16 @@
     &.SetIndex_1 .Ability1,
     &.SetIndex_0 .Ability0 {
 
-        .AbilityHoverTip {
-            // animation-name: flash;
-            animation-duration: 0.4s;
-            // animation-iteration-count: infinite;
+        .AbilityContainer {
+            brightness: 2;
+            wash-color: #ffbe82;
+            animation-name: flash;
+            animation-duration: 1.4s;
+            animation-iteration-count: infinite;
         }
+
+
+
 
     }
 }

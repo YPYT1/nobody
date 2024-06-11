@@ -3,6 +3,7 @@ import "./_hp_bar";
 import "./_attribute_state";
 import "./_portrait";
 import "./_arms_selector";
+import "./_buff_list";
 
 export const CreatePanel_ActionAbility = () => {
     let MainPanel = $.GetContextPanel()
@@ -34,6 +35,12 @@ export const CreatePanel_ActionAbility = () => {
         AbilityPanel.Data<PanelDataObject>().RegisterArmsEvent()
     }
 
+    let HeroInnateAbility = $("#HeroInnateAbility");
+    HeroInnateAbility.BLoadLayout(
+        "file://{resources}/layout/custom_game/home/component/ability/action_ability.xml",
+        true, false
+    );
+    HeroInnateAbility.Data<PanelDataObject>().SetAbility(6, true);
     InitAbilityAction()
 }
 
@@ -54,15 +61,21 @@ export const UpdateAbilityList = () => {
             AbilityPanel.Data<PanelDataObject>().UpdateAbilityVar();
         }
     }
+    let HeroInnateAbility = $("#HeroInnateAbility");
+    HeroInnateAbility.Data<PanelDataObject>().UpdateAbilityVar();
+    let AbilityList = $("#AbilityList");
+    let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
+    let is_local = Entities.GetPlayerOwnerID(m_QueryUnit) == Players.GetLocalPlayer();
+    AbilityList.SetHasClass("is_local", is_local)
 }
 
 const InitAbilityAction = () => {
 
-    let AbilityList = $("#AbilityList")
+    let AbilityList = $("#AbilityList");
 
     GameEvents.Subscribe("NewArmsEvolution_GetEvolutionPoint", event => {
         let data = event.data;
-        AbilityList.SetHasClass("HasPoint", data.EvolutionPoint > 0)
+        AbilityList.SetHasClass("HasPoint", data.EvolutionPoint > 0);
     })
 
     GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {

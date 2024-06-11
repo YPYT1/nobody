@@ -26,3 +26,33 @@ export class arms_passive_6 extends BaseArmsAbility { }
 export class modifier_arms_passive_null extends BaseArmsModifier {
 
 }
+
+@registerModifier()
+export class modifier_arms_passive_0 extends BaseArmsModifier {
+
+}
+
+@registerModifier()
+export class modifier_arms_passive_1 extends BaseArmsModifier {
+
+}
+
+@registerModifier()
+export class modifier_arms_passive_2 extends BaseArmsModifier {
+
+}
+
+@registerModifier()
+export class modifier_arms_passive_3 extends BaseArmsModifier {
+
+}
+
+@registerModifier()
+export class modifier_arms_passive_4 extends BaseArmsModifier {
+
+}
+
+@registerModifier()
+export class modifier_arms_passive_5 extends BaseArmsModifier {
+
+}

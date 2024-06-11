@@ -1,5 +1,5 @@
 "use strict";
-import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
+import { HideCustomTooltip, ShowCustomTextTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 import { default as NpcAbilityCustom } from "../../../json/npc_abilities_custom.json";
 import { GetAbilityRarity } from "../../../utils/ability_description";
 
@@ -56,10 +56,12 @@ function SetAbility(slot: number, innate: boolean = false) {
 function UpdateAbilityVar() {
     let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex
     let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
+    
     m_Ability = Entities.GetAbility(m_QueryUnit, m_SlotIndex);
     let is_hidden = m_Ability < 1 || Abilities.IsHidden(m_Ability)
     let ability_name = Abilities.GetAbilityName(m_Ability)
-    MainPanel.visible = !is_hidden;
+    // MainPanel.visible = !is_hidden;
+    MainPanel.SetHasClass("is_hidden",is_hidden)
     let AbilityImage = $("#AbilityImage") as AbilityImage;
     AbilityImage.abilityname = ability_name;
 
@@ -76,7 +78,7 @@ function SetAbilityRarity(rarity: number) {
         $.GetContextPanel().SetHasClass("Rarity" + i, rarity == i)
     }
 
-    $.GetContextPanel().SetHasClass("is_null", rarity < 1)
+    $.GetContextPanel().SetHasClass("is_ability", rarity > 0)
 }
 
 function RegisterArmsEvent() {
@@ -89,6 +91,25 @@ function RegisterArmsEvent() {
                 index: m_SlotIndex
             }
         })
+    })
+
+    const AbilityReselect = MainPanel.FindChildTraverse("AbilityReselect") as Button;
+    // AbilityReselect.enabled = false;
+    AbilityReselect.SetPanelEvent("onactivate", () => {
+        // $.Msg(["CreatArmssWeightData",m_SlotIndex])
+        GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
+            event_name: "CreatArmssWeightData",
+            params: {
+                index: m_SlotIndex
+            }
+        })
+    })
+    AbilityReselect.SetPanelEvent("onmouseover", () => {
+        ShowCustomTextTooltip(AbilityReselect, "", "重新随机技能")
+    })
+
+    AbilityReselect.SetPanelEvent("onmouseout", () => {
+        HideCustomTooltip()
     })
 
 }

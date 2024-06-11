@@ -29,8 +29,19 @@
 				<DOTAAbilityImage id="ImageIcon" showtooltip="true"/>
 			</Button>
 		</snippet>
+		<snippet name="BuffBorder">
+            <Button class="BuffBorder">
+                <Image id="BuffImage" scaling='stretch-to-fit-y-preserve-aspect'/>
+                <Label id="StackCount" text="{s:stack_count}" />
+                <Panel id="CircularDuration" />
+            </Button>
+        </snippet>
 	</snippets>
 	<Panel class="control">
+		<Panel id="BuffContainer">
+			<Panel id="DeBuffList" />
+			<Panel id="BuffList" />
+		</Panel>
 		<Panel id='CenterStatsContainer' hittest="false" >
             <Panel id="AttributeState">
 				<Panel id="UnitLevel">
@@ -41,7 +52,7 @@
 					
 				</Panel>
 			</Panel>
-            <Panel id="CenterPanel" hittest="true">
+            <Panel id="CenterPanel" hittest="false">
                 <Panel id="PortraitContainer" hittest="fasle">
 					<Panel id='PortraitGround' hittest="fasle" />
 					<Panel id='PortraitBorder' hittest="fasle">
@@ -54,11 +65,11 @@
 					<Panel id="BarContent" / >
 				</Panel>
                 
-                <Panel id='AbilityList'>
+                <Panel id='AbilityList' hittest="false">
 					<Panel id="Left"></Panel>
 					<Panel id="Right"></Panel>
 				</Panel>
-                <!-- <HeroInnateAbility /> -->
+                <Panel id="HeroInnateAbility" />
                 
             </Panel>
 

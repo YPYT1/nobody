@@ -1,0 +1,112 @@
+#message {
+    width: 100%;
+    height: 100%;
+    // background-color: #f0f;
+}
+
+.BottomToTopMessagePanel {
+    margin-bottom: 260px;
+    vertical-align: bottom;
+    transform: scaleY(-1.0);
+    overflow: noclip noclip;
+
+    .ManagerList {
+        flow-children: down;
+        overflow: noclip noclip;
+        transform: scaleY(-1.0);
+        width: 100%;
+    }
+}
+
+#CommonMessage {
+    width: 1000px;
+    height: 250px;
+    margin-bottom: 250px;
+    // margin-left: 280px;
+    vertical-align: bottom;
+
+    .MessageEventItem {
+        margin-top: 4px;
+
+        padding-left: 8px;
+        padding-right: 24px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        flow-children: right;
+        background-color: gradient(linear, 0% 0%, 100% 0%, from(#000000d0), color-stop(0.5, #000000d0), to(#00000000));
+
+        transition-property: opacity, pre-transform-scale2d, width, transform;
+        transition-duration: 0.2s;
+        transition-timing-function: ease-in-out;
+        pre-transform-scale2d: 0.8;
+        transform: translateX(-120px) translateY(0px);
+
+        &.hide {
+            opacity: 0;
+            transform: translateX(-120px) translateY(0px);
+            //width: 0px;
+        }
+
+        &.show {
+            opacity: 1;
+            transform: translateX(0px) translateY(0px);
+            pre-transform-scale2d: 1;
+        }
+
+        #EventIcon {
+            width: 12px;
+            height: 100%;
+            background-color: #eeeeee;
+            visibility: collapse;
+        }
+
+        #EventType {
+            margin-left: 4px;
+
+            Label {
+                vertical-align: middle;
+                color: #fad711;
+                text-shadow: 2px 1px 0px 2.0 #000000;
+                font-size: 18px;
+                font-weight: bold;
+            }
+        }
+
+        #EventLabel {
+            margin-left: 4px;
+
+            Label {
+                vertical-align: middle;
+                color: #ffffff;
+                text-shadow: 2px 1px 0px 2.0 #000000;
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .ability_name {
+                color: #ff0000;
+            }
+        }
+
+        .ability_name {
+            color: #ff0000;
+        }
+
+        .treasure_name {
+            color: #e83dff;
+        }
+
+        .combination {
+            color: gradient(linear, 0% 0%, 0% 100%, from(#17f7ff), to(#bd00c4));
+
+            &.treasure_name {
+                color: gradient(linear, 0% 0%, 50% 50%, from(#ff0000),
+                        color-stop(0.2, #ffee00),
+                        color-stop(0.7, #3cff00),
+                        to(#ae00ff));
+                // background-color: #300136e7;
+                // font-size: 20px;
+            }
+        }
+    }
+}

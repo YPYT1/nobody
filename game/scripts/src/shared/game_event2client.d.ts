@@ -1,17 +1,21 @@
 
+interface MessageObjectDataProps {
+    [key: string]: string | number
+}
+
 declare interface CustomGameEventDeclarations {
 
     CMsg_SendCommonMsgToPlayer: {
         data: {
             message: string;
-            data?: object;
+            data?: MessageObjectDataProps;
         };
     };
 
     CMsg_SendErrorMsgToPlayer: {
         data: {
             message: string;
-            data?: object;
+            data?: MessageObjectDataProps;
         };
     };
 
