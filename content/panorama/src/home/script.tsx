@@ -95,7 +95,12 @@ export const Initialize = () => {
     $("#top_info").BLoadLayout(layout_path + "/top_info/top_info.xml", true, false);
     $("#chapter").BLoadLayout(layout_path + "/chapter/chapter.xml", true, false);
     $("#message").BLoadLayout(layout_path + "/message/message.xml", true, false);
-    // $("#arms_selector").BLoadLayout("file://{resources}/layout/custom_game/home/panel/arms_selector/arms_selector.xml", true, false);
+
+    if (Game.IsInToolsMode()) {
+        $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
+        $.GetContextPanel().SetHasClass("IsInToolsMode", true);
+    }
+
 
 
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
@@ -105,15 +110,11 @@ export const Initialize = () => {
         // if (GamePhase) { GamePhase.text = `GamePhase: ${game_select_phase}`; }
         let HudPanel = $.GetContextPanel();
         if (HudPanel) {
-            HudPanel.SetHasClass("GameSelectPhase_0", game_select_phase == 0);
-            HudPanel.SetHasClass("GameSelectPhase_1", game_select_phase == 1);
-            HudPanel.SetHasClass("GameSelectPhase_2", game_select_phase == 2);
-            HudPanel.SetHasClass("GameSelectPhase_3", game_select_phase == 3);
-            HudPanel.SetHasClass("GameSelectPhase_4", game_select_phase == 4);
+            for (let phase = 0; phase < 10; phase++) {
+                HudPanel.SetHasClass("GameSelectPhase_" + phase, game_select_phase == phase);
+            }
             HudPanel.SetHasClass("GameSelectPhase_999", game_select_phase == 999);
         }
-        HudPanel.SetDialogVariableInt("game_phase", data.game_select_phase)
-        // setGameSelectPhase(data.game_select_phase)
     })
 
     GameEvents.SendCustomGameEventToServer("MapChapter", {
@@ -125,6 +126,8 @@ export const Initialize = () => {
         event_name: "GetGameSelectPhase",
         params: {}
     })
+
+
 }
 
 (function () {

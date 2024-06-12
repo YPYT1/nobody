@@ -14,6 +14,6 @@
         <Panel id="chapter" hittest="false" />
         <Panel id="arms_selector" hittest="false" />
         <Panel id="message" hittest="true" />
-        <Label id="GamePhase" text="GamePhase:{d:game_phase}"/>
+        <Panel id="development" />
     </Panel>
 </root>

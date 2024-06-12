@@ -1,0 +1,12 @@
+<root>
+	<styles>
+		<include src="./development.less" />
+	</styles>
+	<scripts>
+		<include src="./development.tsx" />
+	</scripts>
+	<Panel class="development">
+        <Label id="GamePhase" text="GamePhase:{d:game_phase}"/>
+        <Label id="DotaGameTime" text="DotaTime:<span class='time'>{s:dota_time}</span>" html="true"/>
+	</Panel>
+</root>
