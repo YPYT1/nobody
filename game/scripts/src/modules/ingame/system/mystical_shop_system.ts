@@ -80,6 +80,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     countdown_timer : number = 0 ;
     //玩家购买时间
     MYSTICAL_SHOP_BUY_ITEM : number = 60;
+    
+    //玩家灵魂消耗率
 
     /**
      * 玩家神秘商店栏位数量
@@ -197,8 +199,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             this.player_refresh_data[player_id].soul = refresh_soul;
             this.PlayerShopItem(player_id);
         } else {
-            // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 灵魂不足");
-            print("神秘商店 : 灵魂不足")
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 灵魂不足");
         }
     }
     /**
@@ -407,11 +408,11 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                     this.shop_field_list[player_id][item_index].is_lock = 0;
                 }
             } else {
-                // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "此物已经被购买");
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "此物已经被购买");
             }
 
         } else {
-            // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "物品不存在");
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "物品不存在");
         }
         this.GetShopData(player_id, {});
     }

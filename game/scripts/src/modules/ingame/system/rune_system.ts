@@ -89,7 +89,6 @@ export class RuneSystem extends UIEventRegisterClass {
                 let key_list = this.PlayerUpgradePool[player_id].key;
                 let pro_list = this.PlayerUpgradePool[player_id].pro;
                 let rune_key = key_list[GetCommonProbability(pro_list)];
-                print("rune_key :" ,rune_key )                                                                                                                                                                                                                                                          
                 let RuneSystem = RuneSystemJson[rune_key as keyof typeof RuneSystemJson];
                 //重复物品跳过
                 if (shop_wp_list.includes(rune_key)) {
@@ -133,13 +132,12 @@ export class RuneSystem extends UIEventRegisterClass {
         if (this.PointCount[player_id] > 0) {
             
             let PlayerSelectDataInfo = this.PlayerSelectData[player_id];
-            DeepPrintTable(PlayerSelectDataInfo)
             if (!PlayerSelectDataInfo.rune_list.hasOwnProperty(index)) {
-                print("没有此选项！！！");
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "没有此选项！！！");
                 return;
             }
             if (PlayerSelectDataInfo.is_select == 0) {
-                print("已被选择！！！！");
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已选择！！！！");
                 return;
             }
 
@@ -157,7 +155,6 @@ export class RuneSystem extends UIEventRegisterClass {
             }else{
                 this.PlayerRuneData[player_id][rune_key] = 1
             }
-            print("获得符文 : " , rune_key)
             //解锁其他技能 并移除自身可选
             for (const key in this.AdvRuneUnlockConfig) {
                 const unconfig = this.AdvRuneUnlockConfig[key];
@@ -182,7 +179,7 @@ export class RuneSystem extends UIEventRegisterClass {
             this.CreatRuneSelectData(player_id , {});
         } else {
             // GameRules.Cmsg();
-            print("没有点")
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "缺少技能点");
         }
     }
 
@@ -299,6 +296,7 @@ export class RuneSystem extends UIEventRegisterClass {
             amount_count ++;
             if(amount_count > amount_max ){
                 print("已经没有可获得的符文了....")
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "符文系统:错误....");
                 return
             }
             let rune_level = 0;
@@ -375,10 +373,12 @@ export class RuneSystem extends UIEventRegisterClass {
 
         if(rune_key == ""){
             print("不能为空")
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "符文系统:错误....");
             return 
         }
         if(!RuneSystemJson.hasOwnProperty(rune_key)){
             print("符文不存在")
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "符文系统:错误....");
             return 
         }
         

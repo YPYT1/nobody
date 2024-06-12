@@ -144,12 +144,8 @@ declare interface CGED {
         GetPlayerLifeData : {
 
         }
-        //获取局内开始时间
-        GetPlayGameTime : {
-
-        }
-        //获取当前局内难度信息 
-        GetGameDifficulty: {
+        //获取局内头部信息
+        GetPlayGameHeadData : {
 
         }
     }

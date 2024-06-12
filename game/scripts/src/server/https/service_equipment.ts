@@ -369,7 +369,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
             let Attr_SEAEP: number[] = []; //概率
             let Attr_SEAEKEY: string[] = [];   
             //主词条融合 追加数据
-            print("puzzle_attr_random_key : " , puzzle_attr_random_key)
             if (puzzle_attr_random_key.includes(",")) {
                 let puzzle_attr_random_key_list = puzzle_attr_random_key.split(",");
                 for (const random_key of puzzle_attr_random_key_list) {
@@ -425,7 +424,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
                             continue;
                         }
                         let SEAE_data = ServerEquipPuzzleAttr[attr_key as keyof typeof ServerEquipPuzzleAttr];
-                        DeepPrintTable(SEAE_data);
                         let attr_value = this.ZoomNumber(SEAE_data.value , SEAE_data.float);
                         if (attr_value > 0) {
                             p_ct_list.push({
@@ -483,7 +481,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
         let index = params.index;
         if( GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(equip_id)){
             let equipobj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][equip_id]) as CGEDGetEquipListInfo;
-            DeepPrintTable(equipobj);
             if(equipobj.pa[index]){
                 if(equipobj.pa[index].l < 20){ //最大等级
                     let value = equipobj.pa[index].v;
@@ -528,7 +525,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id , "装备达到最大等级,请升级后重试...")    
                 }
             }else{
-                print("词条位置错误...")
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "词条位置错误...")    
             }
             

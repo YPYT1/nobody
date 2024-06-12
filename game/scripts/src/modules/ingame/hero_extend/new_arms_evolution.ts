@@ -212,7 +212,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         if (this.PlayerSelectData[player_id].is_select == 0) {
             //验证是否满足条件
             if (this.EvolutionPoint[player_id] <= 0) {
-                print("技能点不足！")
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
                 return
             }
             let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
@@ -221,7 +221,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             let Key = Ability.GetAbilityName();
             let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
             if (this.ItemQmax == Quality) {
-                print("已经是最高品质了！")
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
                 return
             }
             let killcount = this.kill_list[Quality+1] ;
@@ -270,7 +270,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                         "Kills" : killcount
                     })
                     if(Validation == false){
-                        print("资源不足！！！");
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "杀敌数不足！！！");
                         return;
                     }
                 }
@@ -284,7 +284,6 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                     this.AddEvolutionPoint(player_id, - skillcount)
                 }
                 for (let i = 0; i < amount; i++) {
-                    DeepPrintTable(this.arms_global_count)
                     amount_count++;
                     if (amount_count > amount_max) {
                         break;
@@ -322,9 +321,8 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     }
 
     /**
-     * 获取重随数据
-     * 1.默认是3个,如果其他则可以多选
-     * 2.符合条件后会出现特殊升级
+     * 技能重随
+     * 1.默认是三选一
      */
     CreatArmssWeightData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssWeightData"]) {
         //阶段2之前不可用
@@ -334,7 +332,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         if (this.PlayerSelectData[player_id].is_select == 0) {
             //验证是否满足条件
             if (this.EvolutionPoint[player_id] <= 0) {
-                print("技能点不足！")
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
                 return
             }
             let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
@@ -343,7 +341,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             let Key = Ability.GetAbilityName();
             let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
             if (this.ItemQmax == Quality) {
-                print("已经是最高品质了！")
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
                 return
             }
             //技能点减少
@@ -406,12 +404,12 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         let Ability = MyHero.GetAbilityByIndex(Index);
         let Key = Ability.GetAbilityName();
         if (this.EvolutionPoint[player_id] <= 0) {
-            print("技能点不足！")
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
             return
         }
         let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
         if (this.ItemQmax == Quality) {
-            print("已经是最高品质了！")
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
             return
         }
         let key_list = this.PlayerUpgradePool[player_id][Quality + 1].key;
@@ -445,11 +443,11 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         let index = params.index;
         let PlayerSelectDataInfo = this.PlayerSelectData[player_id];
         if (!PlayerSelectDataInfo.arms_list.hasOwnProperty(index)) {
-            print("没有此选项！！！");
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "没有此选项！！！");
             return;
         }
         if (PlayerSelectDataInfo.is_select == 0) {
-            print("没有刷新技能！！");
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "没有刷新技能！！");
             return;
         }
         let ability_name = PlayerSelectDataInfo.arms_list[index].key;
@@ -480,7 +478,6 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 this.arms_global_count[arms_key].count --;
             }
         }
-
         
         PlayerSelectDataInfo.is_select = 0;
         PlayerSelectDataInfo.index = -1;

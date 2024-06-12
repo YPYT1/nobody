@@ -147,6 +147,7 @@ export class ArmsEvolution extends UIEventRegisterClass {
             
             let PlayerSelectDataInfo = this.PlayerSelectData[player_id];
             if (!PlayerSelectDataInfo.arms_list.hasOwnProperty(index)) {
+                
                 print("没有此选项！！！");
                 return;
             }

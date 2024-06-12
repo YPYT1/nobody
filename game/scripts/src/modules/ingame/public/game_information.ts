@@ -95,65 +95,37 @@ export class GameInformation extends UIEventRegisterClass {
     }
 
     /**
-     *  局内时间
+     *  头部信息
      */
     play_game_time : number  = 0;
 
     SetPlayGameTime(time : number){
         GameRules.GameInformation.play_game_time = time;
-        GameRules.GameInformation.GetPlayGameTime( -1 , {})
+        GameRules.GameInformation.GetPlayGameHeadData( -1 , {})
     }
 
     /**
-    * 获取局内游戏开始时间
+    * 获取局内头部信息
     */
-    GetPlayGameTime(player_id: PlayerID, params: CGED["GameInformation"]["GetPlayGameTime"]) {
+    GetPlayGameHeadData(player_id: PlayerID, params: CGED["GameInformation"]["GetPlayGameHeadData"]) {
         if(player_id  == -1){
             CustomGameEventManager.Send_ServerToAllClients(
-                "GameInformation_GetPlayGameTime",
+                "GameInformation_GetPlayGameHeadData",
                 {
-                    data: GameRules.GameInformation.play_game_time
+                    data: {
+                        time : GameRules.GameInformation.play_game_time,
+                        difficulty : GameRules.MapChapter.GameDifficulty
+                    }
                 }
             );
         }else{
-            CustomGameEventManager.Send_ServerToPlayer(
-                PlayerResource.GetPlayer(player_id),
-                "GameInformation_GetPlayGameTime",
-                {
-                    data: GameRules.GameInformation.play_game_time
-                }
-            );
-        }
-    }
-
-
-    /**
-     *  局内时间
-     */
-    play_game_difficulty : string  = "101";
-
-    SetGameDifficulty(game_difficulty : string){
-        GameRules.GameInformation.play_game_difficulty = game_difficulty;
-        GameRules.GameInformation.GetPlayGameTime( -1 , {})
-    }
-
-    /**
-    * 获取局内游戏开始时间
-    */
-    GetGameDifficulty(player_id: PlayerID, params: CGED["GameInformation"]["GetGameDifficulty"]) {
-        if(player_id  == -1){
             CustomGameEventManager.Send_ServerToAllClients(
-                "GameInformation_GetPlayGameTime",
+                "GameInformation_GetPlayGameHeadData",
                 {
-                    data: GameRules.GameInformation.play_game_time
-                }
-            );
-        }else{
-            CustomGameEventManager.Send_ServerToPlayer(
-                PlayerResource.GetPlayer(player_id),
-                "GameInformation_GetPlayGameTime",
-                {
-                    data: GameRules.GameInformation.play_game_time
+                    data: {
+                        time : GameRules.GameInformation.play_game_time,
+                        difficulty : GameRules.MapChapter.GameDifficulty
+                    }
                 }
             );
         }

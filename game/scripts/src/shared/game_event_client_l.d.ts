@@ -119,13 +119,11 @@ declare interface CustomGameEventDeclarations {
         }
     }
     //局内游戏时间
-    GameInformation_GetPlayGameTime : {
-        data : number
-    }
-
-    //局内难度
-    GameInformation_GetGameDifficulty : {
-        data : number
+    GameInformation_GetPlayGameHeadData : {
+        data : {
+            time : number , 
+            difficulty : string ,
+        }
     }
 }
 
