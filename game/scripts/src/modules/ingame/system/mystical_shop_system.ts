@@ -179,7 +179,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("MYSTICAL_SHOP_BUY_ITEM", () => {
             GameRules.MysticalShopSystem.StopShopSystem();
             return null;
-        }, 30);
+        }, this.MYSTICAL_SHOP_BUY_ITEM);
     }
     /**
      * 使用灵魂刷新商店
@@ -327,11 +327,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     GetShopData(player_id: PlayerID, params: CGED["MysticalShopSystem"]["GetShopData"], callback?: string) {
-        print("=========== GetShopData ===========")
-        DeepPrintTable({
-            shop_field_list: this.shop_field_list[player_id],
-            player_refresh_data: this.player_refresh_data[player_id],
-        })
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "MysticalShopSystem_GetShopData",
@@ -351,11 +346,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     GetShopState(player_id: PlayerID, params: CGED["MysticalShopSystem"]["GetShopState"], callback?: string) {
         print("=========== GetShopState ===========")
-        DeepPrintTable({
-            shop_state_data : this.shop_state_data,
-            start_buy_state : this.start_buy_state,
-            countdown_timer : this.countdown_timer,
-        })
         if(player_id == -1){
             CustomGameEventManager.Send_ServerToAllClients(
                 "MysticalShopSystem_GetShopState",
@@ -463,25 +453,27 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         if(cmd == "-RefreshMysticalShopItem"){
             this.RefreshMysticalShopItem();
         }
-        //没有条件的刷新商店
+        //没有条件的刷新整个商店 
         if(cmd == "-PlayerShopItem"){
             this.PlayerShopItem(player_id);
         }
+        //购买第1个位置的物品
         if(cmd == "-BuyItem"){
             this.BuyItem(player_id,{index : 0})
         }
-
+        //锁住第一个商店的物品
         if(cmd == "-ShopLock"){
             this.ShopLock(player_id,{index : 0})
         }
-
+        //神秘商店初始化
         if(cmd == "-InitPlayerUpgradeStatus" ){
             this.InitPlayerUpgradeStatus(player_id)
         }
-
+        
         if(cmd == "-RefreshShopByGold"){
             this.RefreshShopByGold(player_id , {})
         }
+        //直接停止神秘商店
         if(cmd == "-StopShopSystem"){
             this.StopShopSystem()
         }
