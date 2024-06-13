@@ -66,7 +66,7 @@ export const CreateCommonMessage = (event: CommonMessageProps) => {
         }
     }
 
-    if (event.message.search("#") == -1) { event.message = "#" + event.message; }
+    // if (event.message.search("#") == -1) { event.message = "#" + event.message; }
     let sMessage = $.Localize(event.message, MessagePanel);
     MessagePanel.SetHasClass("show", true);
     MessagePanel.SetDialogVariable("event_type", "消息:");
@@ -97,7 +97,7 @@ export function MessageTimer() {
 }
 
 export const SendErrorMessage = (params: CustomGameEventDeclarations["CMsg_SendErrorMsgToPlayer"]) => {
-    $.Msg(params)
+
     let MessagePanel = $.GetContextPanel();
     let msg = params.data;
     let message = msg.message;
@@ -127,12 +127,12 @@ export const SendErrorMessage = (params: CustomGameEventDeclarations["CMsg_SendE
         }
     }
 
-    let sMessage = "";
-    if (message.substr(0, 1) == "#") {
-        sMessage = $.Localize(message, MessagePanel);
-    } else {
-        sMessage = $.Localize("#" + message, MessagePanel);
-    }
+    let sMessage = $.Localize(message, MessagePanel);
+    // if (message.substr(0, 1) == "#") {
+    //     sMessage = $.Localize(message, MessagePanel);
+    // } else {
+    //     sMessage = $.Localize("#" + message, MessagePanel);
+    // }
     //let sMessage = $.Localize("#"+message, MessagePanel);
     let eventData = { reason: 80, message: sMessage, sequenceNumber: 0 };
     GameEvents.SendEventClientSide("dota_hud_error_message", eventData);

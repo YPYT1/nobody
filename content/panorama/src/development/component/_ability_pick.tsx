@@ -143,10 +143,10 @@ const UnitAbilityImage = ({ order }: { order: number }) => {
         setAbilityLevel(Abilities.GetLevel(AbilityEnti))
     }
 
-    useEffect(() => {
-        const interval = setInterval(() => { UpdateLocalPlayer(); }, 100);
-        return () => clearInterval(interval);
-    }, []);
+    // useEffect(() => {
+    //     const interval = setInterval(() => { UpdateLocalPlayer(); }, 100);
+    //     return () => clearInterval(interval);
+    // }, []);
 
     useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
     useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);

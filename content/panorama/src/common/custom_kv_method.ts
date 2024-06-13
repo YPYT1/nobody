@@ -1,3 +1,6 @@
+/**
+ * Kv相关数据操作
+ */
 import { default as CustomItemsTable } from "./../json/npc_items_custom.json";
 import { default as CustomAbilitiesTable } from "./../json/npc_abilities_custom.json";
 

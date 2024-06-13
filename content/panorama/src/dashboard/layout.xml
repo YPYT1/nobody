@@ -5,5 +5,23 @@
     <styles>
         <include src="./styles.less" />
     </styles>
-    <Panel class="dashboard" hittest="false" />
+    <snippets>
+        <snippet name="DashboardButton">
+            <Button class="DashboardButton">
+                
+            </Button>
+        </snippet>
+    </snippets>
+    <Panel class="dashboard" hittest="false">
+        <Panel id="DashboardMainPage" hittest="false">
+            <Panel id="DashboardButtonList">
+                <Panel id="ReturnButtonPanel">
+                    <Button id="ReturnButton" class="TooltipButton"/>
+                </Panel>
+                <Panel id="MenuButtonsPanel" />
+            </Panel>
+            <Panel id="DashboardList" />
+        </Panel>
+        <Button id="GenericPopups" class="PopupsBackground" />
+    </Panel>
 </root>

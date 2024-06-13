@@ -1,12 +1,10 @@
-import React from 'react';
-
 // 菜单列表
 export const DASHBOARD_NAVBAR = {
 
-    // 存档系统
+    // 个人档案
     "Archive": {
-        "Show": false,
-        "Sub": {
+        "Show": true,
+        "Sub": { // 子菜单
             "Equip": true,
             "Rune": true,
         }
@@ -14,57 +12,54 @@ export const DASHBOARD_NAVBAR = {
 
     // 商城
     "Mall": {
-        "Store": true, // 商城
+        "Show": true,
+        "Sub": {
+            "Store": true, // 商城
+        }
+
     },
 
     // 抽奖
     "Gacha": {
-        "Main": true,
+        "Show": false,
+        "Sub": {
+            "Main": true, // 
+        }
     },
 
-    "Novice": {
-        "Main": true,
-    },
 
-    "Ranking": {
-        "Main": true,
-    },
-
-    "Handbook": {
-        "Main": true,
-    },
 
 };
 
 
-export function NavbarButton<
-    T extends keyof typeof DASHBOARD_NAVBAR,
-    N1 extends keyof typeof DASHBOARD_NAVBAR[T]
->({ dashboard, nav, selected, show }: { dashboard: T; nav: N1; selected: boolean; show: boolean; }) {
-    const nav_str = nav as string;
-    return (
-        <RadioButton
-            className='NavbarButton'
-            group={dashboard + "group"}
-            selected={selected}
-            visible={show}
-            onload={(e) => {
-                e.Data<PanelDataObject>().route = `${dashboard}_${nav_str}`;
-                // if (selected) {
-                //     const select_id = dashboard + "_" + nav_str;
-                //     const NavDashboard = $("#" + dashboard);
-                //     const DashboardContainers = NavDashboard.FindChildTraverse("DashboardContainers")!;
-                // }
-            }}
-            onactivate={() => {
-                DashboardRoute(dashboard, nav);
-            }}
-        >
-            <Panel className='Selected' />
-            <Label localizedText={`#dashboard_nav_${nav_str}`} />
-        </RadioButton>
-    );
-};
+// export function NavbarButton<
+//     T extends keyof typeof DASHBOARD_NAVBAR,
+//     N1 extends keyof typeof DASHBOARD_NAVBAR[T]
+// >({ dashboard, nav, selected, show }: { dashboard: T; nav: N1; selected: boolean; show: boolean; }) {
+//     const nav_str = nav as string;
+//     return (
+//         <RadioButton
+//             className='NavbarButton'
+//             group={dashboard + "group"}
+//             selected={selected}
+//             visible={show}
+//             onload={(e) => {
+//                 e.Data<PanelDataObject>().route = `${dashboard}_${nav_str}`;
+//                 // if (selected) {
+//                 //     const select_id = dashboard + "_" + nav_str;
+//                 //     const NavDashboard = $("#" + dashboard);
+//                 //     const DashboardContainers = NavDashboard.FindChildTraverse("DashboardContainers")!;
+//                 // }
+//             }}
+//             onactivate={() => {
+//                 DashboardRoute(dashboard, nav);
+//             }}
+//         >
+//             <Panel className='Selected' />
+//             <Label localizedText={`#dashboard_nav_${nav_str}`} />
+//         </RadioButton>
+//     );
+// };
 
 /** 跳转到指定路由 */
 export function DashboardRoute<

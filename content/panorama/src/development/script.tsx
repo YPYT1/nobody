@@ -26,14 +26,22 @@ const WarpPanel = () => {
         }
     }, [])
 
-    useEffect(() => {
-        const interval = setInterval(() => { Update(); }, 100);
-        return () => clearInterval(interval);
-    }, []);
+    const StartInterval = useCallback(() => {
+        Update()
+        $.Schedule(0.1, StartInterval)
+    }, [])
+
+    // $.Msg(["StartInterval"])
+    // useEffect(() => {
+    //     const interval = setInterval(() => { Update(); }, 100);
+    //     return () => clearInterval(interval);
+    // }, []);
 
 
     return (
-        <Panel className="grid flow-down">
+        <Panel className="grid flow-down" onload={() => {
+            StartInterval();
+        }}>
             <Panel className="title">
                 <Label text={`当前坐标: ${ScreenX}:${ScreenY}`} />
             </Panel>
@@ -98,10 +106,10 @@ const UnitCountsPanel = () => {
         // setCounts2(exp_entity.length)
     }, [])
 
-    useEffect(() => {
-        const interval = setInterval(() => { Update(); }, 250);
-        return () => clearInterval(interval);
-    }, []);
+    // useEffect(() => {
+    //     const interval = setInterval(() => { Update(); }, 250);
+    //     return () => clearInterval(interval);
+    // }, []);
 
     return (
         <Panel className='flow-right'>
@@ -139,7 +147,7 @@ export const HeroDemo = () => {
                         <Label text="开发工具" />
                         <UnitCountsPanel />
                     </Panel>
-                    <Button className='btn-close' onactivate={ToggleHandle} />
+                    {/* <Button className='btn-close' onactivate={ToggleHandle} /> */}
                 </Panel>
                 <WarpPanel />
                 <Panel className="content">
@@ -200,7 +208,9 @@ export const HeroDemo = () => {
                     </Panel>
                 </Panel>
             </Panel>
-
+            <Button id='DevelopmentButton' className='btn' onactivate={ToggleHandle} >
+                <Label text={"开发工具切换"} />
+            </Button>
             <Panel id='DevelopmentPopups' className={`Popups ${PopupsViews}`} hittest={false}>
                 <HeroPick closedHandle={() => setPopupsViews("None")} />
                 <AbilityPick />

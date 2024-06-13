@@ -1,0 +1,29 @@
+<root>
+	<styles>
+		<include src="./mystical_shop.less" />
+	</styles>
+	<scripts>
+		<include src="./mystical_shop.tsx" />
+	</scripts>
+	<snippets>
+		<snippet name="SellShopItem">
+			<Panel class="SellShopItem">
+				<Panel id="ShopItemInfo"></Panel>
+				<Button id="RefreshButton"></Button>
+				<Button id="LockingButton"></Button>
+			</Panel>
+		</snippet>
+		<snippet name="PlayerShopState">
+			<Panel class="PlayerShopState">
+				
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="mystical_shop">
+		<Button id="ToggleButton"></Button>
+		<Panel id="SellItemList"></Panel>
+
+		<Panel id="PlayerReadyStateList"></Panel>
+		<Label id="CountdownTimer" text="{s:countdown_timer}"/>
+	</Panel>
+</root>

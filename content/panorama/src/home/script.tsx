@@ -89,12 +89,13 @@ export const RegisterCustomTooltip = () => {
 }
 
 export const Initialize = () => {
-    const layout_path = "file://{resources}/layout/custom_game/home/panel"
+    const layout_path = "file://{resources}/layout/custom_game/home/panel";
     $("#control").BLoadLayout(layout_path + "/control/control.xml", true, false);
     $("#resource").BLoadLayout(layout_path + "/resource/resource.xml", true, false);
     $("#top_info").BLoadLayout(layout_path + "/top_info/top_info.xml", true, false);
     $("#chapter").BLoadLayout(layout_path + "/chapter/chapter.xml", true, false);
     $("#message").BLoadLayout(layout_path + "/message/message.xml", true, false);
+    $("#mystical_shop").BLoadLayout(layout_path + "/mystical_shop/mystical_shop.xml", true, false);
 
     if (Game.IsInToolsMode()) {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
@@ -106,8 +107,7 @@ export const Initialize = () => {
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
         let data = event.data;
         let game_select_phase = data.game_select_phase;
-        // $.Msg(["MapChapter_GetGameSelectPhase",data])
-        // if (GamePhase) { GamePhase.text = `GamePhase: ${game_select_phase}`; }
+        $("#top_info").Data<PanelDataObject>().GameSelectPhase = game_select_phase
         let HudPanel = $.GetContextPanel();
         if (HudPanel) {
             for (let phase = 0; phase < 10; phase++) {
@@ -122,6 +122,7 @@ export const Initialize = () => {
         params: {}
     })
 
+    $.Msg(["GetGameSelectPhase Start"])
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetGameSelectPhase",
         params: {}
@@ -131,6 +132,11 @@ export const Initialize = () => {
 }
 
 (function () {
+    let MainPanel = $.GetContextPanel();
+    // for(let i = 0;i<MainPanel.GetChildCount();i++){
+    //     let rowPanel = MainPanel.GetChild(i)!;
+    //     rowPanel.RemoveAndDeleteChildren();
+    // }
     Initialize();
     HideOfficialLayoutUI();
     RegisterCustomTooltip();

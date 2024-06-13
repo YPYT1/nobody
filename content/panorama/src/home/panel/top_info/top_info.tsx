@@ -1,22 +1,27 @@
-export const MainPanel = $.GetContextPanel();
-export let RoundGameStartTime = 0;
-export let RoundGameDifficulty = "101"
-export let GameSelectPhase = -1;
-export const StartLoop = () => {
+const MainPanel = $.GetContextPanel();
+
+let RoundGameStartTime = 0;
+let RoundGameDifficulty = "101"
+// let GameSelectPhase = -1;
+
+const StartLoop = () => {
     UpdateTopInfoTime()
     $.Schedule(0.5, StartLoop)
 }
 
-export function FormatNumberToTime(time: number) {
+function FormatNumberToTime(time: number) {
     let min = Math.floor(time / 60);
     let sec_num = Math.floor(time % 60);
     let sec = sec_num < 10 ? `0${sec_num}` : `${sec_num}`;
     return [min, sec];
 }
 
-export const UpdateTopInfoTime = () => {
-    if (GameSelectPhase <= 0) {
-        MainPanel.SetDialogVariable("time_label", "REST");
+const UpdateTopInfoTime = () => {
+    let GameSelectPhase = MainPanel.Data<PanelDataObject>().GameSelectPhase as number;
+
+    if (GameSelectPhase <= 2) {
+        MainPanel.SetDialogVariable("stage", "rest");
+        MainPanel.SetDialogVariable("time_label", "-");
         return
     } else if (GameSelectPhase == 999) {
         return
@@ -28,6 +33,8 @@ export const UpdateTopInfoTime = () => {
 }
 
 export const Init = () => {
+    MainPanel.Data<PanelDataObject>().timer_loop = false;
+    MainPanel.Data<PanelDataObject>().GameSelectPhase = -1;
     MainPanel.SetDialogVariable("stage", "101");
     MainPanel.SetDialogVariableInt("life", 0);
     MainPanel.SetDialogVariable("time_label", "0:0");
@@ -44,14 +51,20 @@ export const Init = () => {
         params: {}
     });
 
-    GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
-        let data = event.data;
-        GameSelectPhase = data.game_select_phase;
-    });
+    // GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
+    //     $.Msg(["MapChapter_GetGameSelectPhase"])
+    //     let data = event.data;
+    //     GameSelectPhase = data.game_select_phase;
+    // });
 
-    StartLoop();
+    $.Schedule(1, () => {
+        MainPanel.Data<PanelDataObject>().timer_loop = true;
+        StartLoop();
+    })
+
 }
 
 (function () {
+
     Init()
 })();
