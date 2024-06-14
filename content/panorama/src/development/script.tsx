@@ -234,5 +234,5 @@ export const App = () => {
     );
 };
 
-// Game.IsInToolsMode() && render(<App />, $.GetContextPanel());
+Game.IsInToolsMode() && render(<App />, $.GetContextPanel());
 

@@ -1,17 +1,32 @@
 <root>
 	<styles>
+		<include src="./../../../_styles/styles.less" /> 
 		<include src="./mystical_shop.less" />
 	</styles>
 	<scripts>
 		<include src="./mystical_shop.tsx" />
 	</scripts>
 	<snippets>
-		<snippet name="SellShopItem">
-			<Panel class="SellShopItem">
-				<Panel id="ShopItemInfo"></Panel>
-				<Button id="RefreshButton"></Button>
-				<Button id="LockingButton"></Button>
-			</Panel>
+		<snippet name="ShopItem">
+			<Button class="ShopItem" hittest="false">
+				<Panel class="ShopItemCard">
+					<Panel class="ShopItemInfo">
+						<Panel id="ItemIcon" />
+						<Label class="ItemDesc" text="{s:item_desc}"/>
+						<Label class="ItemName" text="{s:item_name}"/>
+					</Panel>
+					<Panel class="PrivilegeLock" />
+				</Panel>
+				
+				<Button id="PurchaseBtn">
+					<Panel class="Info">
+						<Panel class="Icon Soul" />
+						<Label class="Price" text="{d:cost}"/>
+					</Panel>
+					
+				</Button>
+			
+			</Button>
 		</snippet>
 		<snippet name="PlayerShopState">
 			<Panel class="PlayerShopState">
@@ -19,11 +34,20 @@
 			</Panel>
 		</snippet>
 	</snippets>
-	<Panel class="mystical_shop">
-		<Button id="ToggleButton"></Button>
-		<Panel id="SellItemList"></Panel>
-
-		<Panel id="PlayerReadyStateList"></Panel>
-		<Label id="CountdownTimer" text="{s:countdown_timer}"/>
+	<Panel class="mystical_shop" hittest="false">
+		<Button id="OpenButton" class="btn"></Button>
+		<Panel id="MysticalShop" class="" >
+			<Panel class="Header">
+				<Button id="ToggleButton"></Button>
+			</Panel>
+			<Panel class="Container">
+				<Panel id="ShopItemList" />
+			</Panel>
+			<Panel class="Footer">
+				<Label id="CountdownTimer" text="{s:countdown_timer}"/>
+				<Panel id="PlayerReadyStateList"></Panel>
+			</Panel>
+		</Panel>
+		
 	</Panel>
 </root>

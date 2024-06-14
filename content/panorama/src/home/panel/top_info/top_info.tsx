@@ -65,6 +65,5 @@ export const Init = () => {
 }
 
 (function () {
-
     Init()
 })();

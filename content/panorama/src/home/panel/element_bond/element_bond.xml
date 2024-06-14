@@ -1,0 +1,20 @@
+<root>
+	<styles>
+		<include src="./element_bond.less" />
+	</styles>
+	<scripts>
+		<include src="./element_bond.tsx" />
+	</scripts>
+    <snippets>
+        <snippet name="ElementSynergy">
+            <Panel class="ElementSynergy">
+                <Panel class="ElementIcon" />
+                <Panel class="ElementTitle"/>
+                <Label class="ElementCount" text="{d:current_count}" />
+            </Panel>
+        </snippet>
+    </snippets>
+	<Panel class="element_bond">
+
+	</Panel>
+</root>

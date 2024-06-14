@@ -1,16 +1,221 @@
 .mystical_shop {
-
-    width: 800px;
-    height: 400px;
-    border: 1px solid #ffffff;
-
-    horizontal-align: center;
-
-    visibility: collapse;
+    width: 100%;
+    height: 100%;
 
     &.Show {
-        visibility: visible;
+
+        #MysticalShop,
+        #OpenButton {
+            visibility: visible;
+        }
+        
     }
-    
 }
 
+#OpenButton {
+    width: 64px;
+    height: 32px;
+    horizontal-align: center;
+    // border: 1px solid #ffffff;
+    margin-top: 64px;
+    visibility: collapse;
+}
+
+#MysticalShop {
+    width: 1308px;
+    height: 828px;
+    background-image: url("file://{images}/custom_game/hud/mystical_shop/bg.png");
+    horizontal-align: center;
+    // vertical-align: middle;
+    flow-children: down;
+    margin-top: 100px;
+    visibility: collapse;
+    transition-property: pre-transform-scale2d, opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+
+    opacity: 0;
+    pre-transform-scale2d: 0.5;
+
+    &.Open {
+        opacity: 1;
+        pre-transform-scale2d: 1;
+    }
+
+    
+
+
+    .Header {
+        width: 100%;
+        border: 1px solid #f00;
+        height: 64px;
+        overflow: noclip;
+        // background-color: #000000;
+    }
+
+    .Container {
+        width: 100%;
+        min-height: 240px;
+        // height: 100%;
+        flow-children: down;
+        border: 1px solid #0f0;
+    }
+
+    .Footer {
+        width: 100%;
+        // vertical-align: bottom;
+        border: 1px solid #00f;
+    }
+
+
+
+    #ToggleButton {
+        width: 64px;
+        height: 81px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/closed_btn.png");
+        horizontal-align: right;
+        wash-color: #aaaaaa;
+        transition-property: wash-color;
+        transition-duration: 0.1s;
+        transition-timing-function: ease-in-out;
+
+        &:hover {
+            wash-color: #ffffff;
+        }
+    }
+}
+
+#ShopItemList {
+    width: (182px + 68px) * 3;
+    horizontal-align: center;
+    // border: 1px solid #f00;
+    flow-children: right-wrap;
+
+    .ShopItem {
+        flow-children: down;
+        margin-left: 32px;
+        margin-right: 32px;
+        margin-top: 12px;
+        margin-bottom: 12px;
+
+
+        .ShopItemCard {
+            width: 182px;
+            height: 279px;
+            background-image: url("file://{images}/custom_game/hud/mystical_shop/shop_item_card.png");
+        }
+
+        .ShopItemInfo {
+            flow-children: down;
+            // border: 1px solid #f00;
+            horizontal-align: center;
+            height: 100%;
+
+            #ItemIcon {
+                margin-top: 44px;
+                width: 64px;
+                height: 64px;
+                border: 1px solid #ffffff;
+                background-color: #000000;
+                horizontal-align: center;
+            }
+
+            .ItemDesc {
+                margin-top: 8px;
+                width: 150px;
+                height: 100px;
+                color: #c0c0c0;
+                font-size: 14px;
+                // border: 1px solid #ffffff;
+            }
+
+            .ItemName {
+                horizontal-align: center;
+                font-size: 18px;
+                color: #dbe4e8;
+                text-shadow: 0px 0px 2px 2.0 #000000;
+                vertical-align: bottom;
+                margin-bottom: 20px;
+
+            }
+        }
+
+        .PrivilegeLock {
+            //
+            width: 186px;
+            height: 266px;
+            horizontal-align: center;
+            vertical-align: middle;
+            background-image: url("file://{images}/custom_game/hud/mystical_shop/privilege_lock.png");
+            visibility: collapse;
+        }
+
+
+        #PurchaseBtn {
+            width: 124px;
+            height: 38px;
+            horizontal-align: center;
+            background-image: url("file://{images}/custom_game/hud/mystical_shop/purchase_btn.png");
+            wash-color: #ccc;
+
+            &:enabled:hover {
+                wash-color: #fff;
+            }
+
+            .Info {
+                vertical-align: middle;
+                horizontal-align: center;
+                flow-children: right;
+                margin-bottom: 4px;
+
+                .Icon {
+                    width: 20px;
+                    height: 20px;
+                    background-size: 100%;
+                    brightness: 2.0;
+
+                }
+
+                Label {
+                    margin-left: 4px;
+                    font-size: 18px;
+                    color: #ffffff;
+                    text-shadow: 0px 0px 2px 2.0 #000000;
+                }
+            }
+
+        }
+
+        &:disabled {
+            .PrivilegeLock {
+                visibility: visible;
+            }
+
+            brightness: 0.5;
+            saturation: 0.1;
+
+        }
+
+        &:enabled {
+            .ShopItemCard {
+                &:hover {
+                    brightness: 1.5;
+                }
+            }
+        }
+        // &:enabled {
+        //     #PurchaseBtn {
+
+        //     }
+        // }
+    }
+}
+
+.Footer {
+    
+    #CountdownTimer {
+        font-size: 36px;
+        color:#ff6944;
+        text-shadow: 0px 0px 1px 3.0 #1b416d;
+    }
+}

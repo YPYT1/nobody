@@ -179,7 +179,7 @@ export const Init = () => {
 
     GameEvents.Subscribe("MapChapter_SelectDifficulty", event => {
         let data = event.data;
-        $.Msg(["MapChapter_SelectDifficulty1", data])
+        // $.Msg(["MapChapter_SelectDifficulty1", data])
         let difficulty = data.select_difficulty;
         MainPanel.Data<PanelDataObject>()["difficulty"] = difficulty;
         MainPanel.SetDialogVariable("difficulty", difficulty)

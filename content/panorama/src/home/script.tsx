@@ -96,7 +96,8 @@ export const Initialize = () => {
     $("#chapter").BLoadLayout(layout_path + "/chapter/chapter.xml", true, false);
     $("#message").BLoadLayout(layout_path + "/message/message.xml", true, false);
     $("#mystical_shop").BLoadLayout(layout_path + "/mystical_shop/mystical_shop.xml", true, false);
-
+    $("#element_bond").BLoadLayout(layout_path + "/element_bond/element_bond.xml", true, false);
+    
     if (Game.IsInToolsMode()) {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
         $.GetContextPanel().SetHasClass("IsInToolsMode", true);

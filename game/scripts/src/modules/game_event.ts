@@ -20,6 +20,7 @@ import { ServiceData } from '../server/https/service_data';
 import { ServiceInterface } from '../server/https/service_interface';
 import { ServiceEquipment } from '../server/https/service_equipment';
 import { GameInformation } from './ingame/public/game_information';
+import { WarningMarker } from './ingame/system/warning_marker';
 
 declare global {
 
@@ -39,20 +40,22 @@ declare global {
         Spawn: Spawn;
         ArmsCombo: ArmsCombo;
         CMsg: CMsg;
-        GameInformation : GameInformation;
+        GameInformation: GameInformation;
 
         SummonedSystem: SummonedSystem;
         CustomMechanics: CustomMechanics;
         RuneSystem: RuneSystem;
-        MysticalShopSystem : MysticalShopSystem;
+        MysticalShopSystem: MysticalShopSystem;
 
 
 
         //服务器相关功能
-        ArchiveService : ArchiveService;
-        ServiceData : ServiceData;
-        ServiceInterface : ServiceInterface;
-        ServiceEquipment : ServiceEquipment;
+        ArchiveService: ArchiveService;
+        ServiceData: ServiceData;
+        ServiceInterface: ServiceInterface;
+        ServiceEquipment: ServiceEquipment;
+
+        WarningMarker: WarningMarker;
     }
 }
 
@@ -95,6 +98,7 @@ export class GameEvent {
             GameRules.ServiceInterface = new ServiceInterface();
             GameRules.ServiceEquipment = new ServiceEquipment();
             GameRules.GameInformation = new GameInformation();
+            GameRules.WarningMarker = new WarningMarker();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
