@@ -13,9 +13,9 @@ declare interface CGED {
         PlayerReady : {
 
         }
-        //刷新商店
-        RefreshShopByGold : {
-
+        //刷新单个物品
+        RefreshOneItemBySoul : {
+            index : number , //物品位置
         }
         //获取商店状态 是否可以购买等
         GetShopState : {
@@ -24,6 +24,10 @@ declare interface CGED {
         //获取商店出售数据
         GetShopData : {
 
+        }
+        //获取玩家购买数据
+        GetPlayerShopBuyData : {
+            
         }
     }
 
