@@ -100,6 +100,15 @@ declare interface CustomGameEventDeclarations {
             countdown_timer : number ; //倒计时时间
         };
     };
+    /**
+     * 神秘商店购买流程
+     */
+    MysticalShopSystem_GetPlayerShopBuyData : {
+
+    }
+    /**
+     *  神秘商店
+     */
 
     //服务器相关
     /**
@@ -161,11 +170,20 @@ declare interface ShopFieldList {
     rarity: number, // 稀有度 1 2 3 4 5
     is_buy: number, // 0 未购买 1 已购买
     is_lock : number , //是否锁定
+    is_vip : number , //是否为vip栏位
+    refresh_count : number , //刷新次数
+    refresh_soul : number , //刷新价格
 }
 //商店刷新信息
 declare interface PlayerRefreshData {
     refresh_count: number, //刷新次数
     soul: number, //刷新灵魂
+}
+
+//玩家购买记录
+declare interface PlayerShopBuyData {
+    item_name : number,
+    
 }
 //商店状态信息
 declare interface ShopStateData {
