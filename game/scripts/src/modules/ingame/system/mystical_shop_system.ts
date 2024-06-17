@@ -70,6 +70,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     shop_state_data : ShopStateData[] = [];
     //售卖状态
     start_buy_state : number = 0;
+    //玩家vip状态
+    player_vip_status : number[] = [];
 
     STORE_REFRESHES_SOUL_FORMULA: string = "100+200*count";
     //购买结束时间
@@ -115,6 +117,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             this.player_get_soul_double_pro.push(0);
             //玩家商店已购买的数据  
             this.player_shop_buy_data.push({});
+            //玩家vip状态
+            this.player_vip_status.push(0);
         }
         //灵魂
         this.STORE_REFRESHES_SOUL_FORMULA = GameRules.PUBLIC_CONST.STORE_REFRESHES_SOUL_FORMULA;
@@ -429,6 +433,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 data: {
                     shop_field_list: this.shop_field_list[player_id],
                     player_refresh_data: this.player_refresh_data[player_id],
+                    player_vip_status : this.player_vip_status[player_id]
                 }
             }
         );

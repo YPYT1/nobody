@@ -87,6 +87,7 @@ declare interface CustomGameEventDeclarations {
         data: {
             shop_field_list: ShopFieldList[], //玩家商店信息
             player_refresh_data: PlayerRefreshData; //玩家刷新信息
+            player_vip_status : number ; //玩家vip状态 0 不是 1是
         };
     };
 
