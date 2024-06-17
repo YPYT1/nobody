@@ -524,16 +524,19 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * @param count 数量
      * @param SkillIndex 技能位置
      */
-    SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number , SkillIndex : number ){
+    SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number , SkillIndex : number , no_index = false ){
 
         //还原当前位置被替换的量
-        for (let index = 0; index < Object.keys(this.ElementBondDateRecord[player_id][SkillIndex].Element).length; index++) {
-            const element = this.ElementBondDateRecord[player_id][SkillIndex].Element[index];
-            if(element != 0){
-                this.ElementBondDateList[player_id].Element[index] -= element;
-                this.ElementBondDateRecord[player_id][SkillIndex].Element[index] = 0;
+        if(no_index == false){
+            for (let index = 0; index < Object.keys(this.ElementBondDateRecord[player_id][SkillIndex].Element).length; index++) {
+                const element = this.ElementBondDateRecord[player_id][SkillIndex].Element[index];
+                if(element != 0){
+                    this.ElementBondDateList[player_id].Element[index] -= element;
+                    this.ElementBondDateRecord[player_id][SkillIndex].Element[index] = 0;
+                }
             }
         }
+       
         
         //先处理光暗特殊情况
         if(Element == ElementTypeEnum.dark || Element == ElementTypeEnum.light){

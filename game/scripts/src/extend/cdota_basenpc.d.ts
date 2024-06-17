@@ -34,4 +34,8 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     OnAttackList: CDOTABaseAbility[];
     OnKillList: CDOTABaseAbility[];
+
+
+    //英雄定时器
+    CustomVariables: { [key: string]: number; };
 }

@@ -77,6 +77,11 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     //玩家购买时间
     MYSTICAL_SHOP_BUY_ITEM : number = 60;
 
+    //玩家折扣率
+    player_shop_discount : number[] = [];
+    //获得灵魂概率 双倍产出概率
+    player_get_soul_double_pro : number[] = [];
+
     /**
      * 玩家购买记录
      */
@@ -106,6 +111,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             this.shop_state_data.push({
                 is_ready : 0,
             });
+            this.player_shop_discount.push(100);
+            this.player_get_soul_double_pro.push(0);
             //玩家商店已购买的数据  
             this.player_shop_buy_data.push({});
         }
@@ -134,6 +141,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         print("MysticalShopSystem InitPlayerUpgradeStatus")
         this.shop_field_list[player_id] = [];
         this.player_shop_buy_data[player_id] = {};
+        this.player_shop_discount[player_id] = 100;
+        this.player_get_soul_double_pro[player_id] = 0;
         this.player_shop_field_count[player_id] = this.shop_field_max + this.shop_field_max_vip;
         this.player_shop_field_count_lock[player_id] = this.shop_field_lock;
         this.item_player_count[player_id] = {};
@@ -311,8 +320,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (item_name && item_name != "") {
                 //是否全局唯一
                 let ItemsCustomInfo = MysteriousShopConfig[item_name as "prop_1"];
+                let  buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id] ) / 100);
                 this.shop_field_list[player_id][index].key = item_name;
-                this.shop_field_list[player_id][index].soul = ItemsCustomInfo.soul;
+                this.shop_field_list[player_id][index].soul = buysoul;
                 this.shop_field_list[player_id][index].rarity = ItemsCustomInfo.rarity;
                 this.shop_field_list[player_id][index].is_buy = 0;
                 this.shop_field_list[player_id][index].is_lock = 0;
@@ -383,8 +393,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (item_name && item_name != "") {
                 //是否全局唯一
                 let ItemsCustomInfo = MysteriousShopConfig[item_name as "prop_1"];
+                let buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id] ) / 100);
                 this.shop_field_list[player_id][index].key = item_name;
-                this.shop_field_list[player_id][index].soul = ItemsCustomInfo.soul;
+                this.shop_field_list[player_id][index].soul = buysoul;
                 this.shop_field_list[player_id][index].rarity = ItemsCustomInfo.rarity;
                 this.shop_field_list[player_id][index].is_buy = 0;
                 this.shop_field_list[player_id][index].is_lock = 0;
@@ -485,6 +496,13 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                     }else{
                         this.player_shop_buy_data[player_id][name] = 1;
                     }
+
+                    let ItemData = MysteriousShopConfig[name as keyof typeof MysteriousShopConfig];
+                    let ret_action_string = ItemData.ret_action;
+                    let param = ItemData.AbilityValues;
+                    
+                    //执行后续处理....
+                    GameRules.MysticalShopSystem[ret_action_string](player_id, param , name);
                 }
             } else {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "此物已经被购买");
@@ -532,6 +550,108 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         this.GetShopData(player_id, {});
     }
     /**
+     * 【常客优惠I】 【常客优惠II】
+     * @param player_id  //玩家名字
+     * @param buffname  //buff名字
+     * @param player_id  //参数
+     */
+    LowerConsume(player_id: PlayerID, param : { value : number} , key : string) {
+        //更新数值
+        GameRules.MysticalShopSystem.player_shop_discount[player_id] -= param.value;
+        //更新商店正在售卖物品的价格
+        let length = this.shop_field_list[player_id].length;
+        for (let index = 0; index < length; index++) {
+            //没有被卖出的物品都更新价格
+            if(GameRules.MysticalShopSystem.shop_field_list[player_id][index].is_buy == 0){
+                let ItemsCustomInfo = MysteriousShopConfig[GameRules.MysticalShopSystem.shop_field_list[player_id][index].key as "prop_1"];
+                let  buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id] ) / 100);
+                GameRules.MysticalShopSystem.shop_field_list[player_id][index].soul = buysoul;
+            }
+            
+        }
+        this.GetShopData(player_id, {});
+    }
+
+    /**
+     * 【双倍灵魂】
+     * @param player_id  //玩家名字
+     * @param buffname  //buff名字
+     * @param player_id  //参数
+     */
+    GetDoubleSoulPro(player_id: PlayerID , param : { value : number , max : number} , key : string) {
+        //更新数值
+        if(GameRules.MysticalShopSystem.player_get_soul_double_pro[player_id] < param.max){
+            GameRules.MysticalShopSystem.player_get_soul_double_pro[player_id] += param.value;
+        }
+    }
+
+    /**
+     * 【火元素·I】 【雷元素·I】 【冰元素·I】 【风元素·I】
+     * @param player_id  //玩家名字
+     * @param buffname  //buff名字
+     * @param player_id  //参数
+     */
+    AddElement(player_id: PlayerID , param : { element_number : ElementTypeEnum , count : number} , key : string) {
+        //更新数值
+        GameRules.NewArmsEvolution.SetElementBondDate(player_id , param.element_number , param.count , 0 , true)
+    }
+    /**
+     * 增加具体buff
+     * @param player_id 
+     * @param buffname 
+     * @param param 
+     */
+    AddBuff(player_id: PlayerID, param : { [ key : string] : string | number} , key : string) {
+        let unit = PlayerResource.GetSelectedHeroEntity(player_id);
+        let shopdata = MysteriousShopConfig[key as keyof typeof MysteriousShopConfig]
+        if (unit) {
+            // 技能
+            GameRules.CustomAttribute.AddHeroModifier(
+                unit , 
+                "custom_datadriven_ability", 
+                shopdata.BuffName , 
+                shopdata.Drive as "Driven" | "Script",
+            )
+        }
+    }
+    /**
+     * 增加属性
+     * @param player_id 
+     * @param buffname 
+     * @param param 
+     */
+    AddAttr(player_id: PlayerID, param : { [ key : string] : number} , key : string) {
+        let unit = PlayerResource.GetSelectedHeroEntity(player_id);
+        if (unit) {
+            let attr_list : CustomAttributeTableType = {};
+            for (const key in param) {
+                if(key.includes("|")){
+                    let attrnamelist = key.split("|");
+                    if(!attr_list.hasOwnProperty(attrnamelist[0])){
+                        attr_list[attrnamelist[0]] = {};
+                    }
+                    if(!attr_list[attrnamelist[0]].hasOwnProperty(attrnamelist[1])){
+                        attr_list[attrnamelist[0]][attrnamelist[1]] = param[key];
+                    }else{
+                        attr_list[attrnamelist[0]][attrnamelist[1]] += param[key];
+                    }
+                }
+            }
+            // 技能
+            GameRules.CustomAttribute.ModifyAttribute(unit , attr_list)
+        }
+    }
+
+    /**
+     * 增加玩家生命数
+     * @param player_id 
+     * @param buffname 
+     * @param param 
+     */
+    AddPlayerLife(player_id: PlayerID, param : { count : number} , key : string) {
+        GameRules.GameInformation.AddPlayerLife( player_id , param.count)
+    }
+    /**
      * 玩家准备
      * @param cmd 
      * @param args 
@@ -556,7 +676,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             GameRules.MysticalShopSystem.GetShopState(-1 , {})
         }
     }
-
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         //开始售卖
         if(cmd == "-RefreshMysticalShopItem"){

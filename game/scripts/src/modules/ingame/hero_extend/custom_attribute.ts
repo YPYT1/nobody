@@ -367,6 +367,100 @@ export class CustomAttribute {
     }
 
 
+    //技能相关
+
+    ModifierList: {
+        [EntityIndexList: EntityIndex]: {
+            AbilityName: string,
+            modifierName: string,
+            add_type: "Driven" | "Script",
+            modifierTable: object,
+            hUnit: CDOTA_BaseNPC,
+        }[];
+    } = {};
+
+    /**
+     * 为目标添加延迟buff 死亡有效
+     * @param hUnit 
+     * @param UpdateTable 
+     */
+    AddHeroModifier(
+        hUnit: CDOTA_BaseNPC, //来源
+        AbilityName: string, //技能名
+        modifierName: string, //modifier名字
+        add_type: "Driven" | "Script" = "Driven", //驱动方式
+        modifierTable: object = {}, //额外参数
+        target: CDOTA_BaseNPC = null, //目标
+    ) {
+        if (hUnit.IsAlive()) { //没有死亡立即添加
+            // 技能
+            if (target == null) {
+                target = hUnit;
+            }
+            let ability = hUnit.FindAbilityByName(AbilityName) as CDOTA_Ability_DataDriven;
+            if (ability) {
+                if (add_type == "Driven") {
+                    // 数据驱动
+                    ability.ApplyDataDrivenModifier(hUnit, target, modifierName, modifierTable);
+                } else if (add_type == "Script") {
+                    // 脚本技能
+                    let buff = target.AddNewModifier(hUnit, ability, modifierName, modifierTable);
+                }   
+            }
+        } else {
+            if (target == null) {
+                target = hUnit;
+            }
+            let ModifierUpdata = target.CustomVariables["ModifierUpdataThink"] ?? 0; //是否启动Think
+            let HEntityIndex = target.GetEntityIndex();
+            if (this.ModifierList.hasOwnProperty(HEntityIndex)) {
+                this.ModifierList[HEntityIndex].push({
+                    AbilityName: AbilityName,
+                    modifierName: modifierName,
+                    add_type: add_type,
+                    modifierTable: modifierTable,
+                    hUnit: hUnit,
+                });
+            } else {
+                this.ModifierList[HEntityIndex] = [];
+                this.ModifierList[HEntityIndex].push({
+                    AbilityName: AbilityName,
+                    modifierName: modifierName,
+                    add_type: add_type,
+                    modifierTable: modifierTable,
+                    hUnit: hUnit,
+                });
+            }
+            if (ModifierUpdata == 0) {
+                target.CustomVariables["ModifierUpdataThink"] = 1;
+                target.SetContextThink("hero_modifier_update", () => {
+                    if (target.IsAlive()) { //活着就更新
+                        if (this.ModifierList.hasOwnProperty(HEntityIndex)) {
+                            for (const moddata of this.ModifierList[HEntityIndex]) {
+                                // 技能
+                                let ability = hUnit.FindAbilityByName(moddata.AbilityName) as CDOTA_Ability_DataDriven;
+                                if (ability) {
+                                    if (add_type == "Driven") {
+                                        // 数据驱动
+                                        ability.ApplyDataDrivenModifier(hUnit, target, moddata.modifierName, moddata.modifierTable);
+                                    } else if (add_type == "Script") {
+                                        // 脚本技能
+                                        let buff = target.AddNewModifier(hUnit, ability, moddata.modifierName, moddata.modifierTable);
+                                    }
+                                }
+                            }
+                        }
+                        target.CustomVariables["ModifierUpdataThink"] = 0;
+                        return null;
+                    } else {//死亡继续等待
+                        return 1;
+                    }
+                }, 0);
+            }
+        }
+    }
+
+
     // 修改SpecialValue
 
 
