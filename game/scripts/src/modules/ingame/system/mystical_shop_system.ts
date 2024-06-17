@@ -531,7 +531,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             "MysticalShopSystem_GetPlayerShopBuyData",
             {
                 data: {
-                    shop_field_list: this.shop_field_list[player_id],
+                    player_shop_buy_data: this.player_shop_buy_data[player_id],
                 }
             }
         );

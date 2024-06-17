@@ -105,7 +105,9 @@ declare interface CustomGameEventDeclarations {
      * 神秘商店购买流程
      */
     MysticalShopSystem_GetPlayerShopBuyData : {
-
+        data : {
+            player_shop_buy_data : { [key : string ] : number }
+        }
     }
     /**
      *  神秘商店
