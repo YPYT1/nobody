@@ -21,6 +21,7 @@ import { ServiceInterface } from '../server/https/service_interface';
 import { ServiceEquipment } from '../server/https/service_equipment';
 import { GameInformation } from './ingame/public/game_information';
 import { WarningMarker } from './ingame/system/warning_marker';
+import { DamageReduction } from './ingame/system/damage_reduction';
 
 declare global {
 
@@ -46,8 +47,8 @@ declare global {
         CustomMechanics: CustomMechanics;
         RuneSystem: RuneSystem;
         MysticalShopSystem: MysticalShopSystem;
-
-
+        // 自定义系统
+        DamageReduction:DamageReduction;
 
         //服务器相关功能
         ArchiveService: ArchiveService;
@@ -99,6 +100,7 @@ export class GameEvent {
             GameRules.ServiceEquipment = new ServiceEquipment();
             GameRules.GameInformation = new GameInformation();
             GameRules.WarningMarker = new WarningMarker();
+            GameRules.DamageReduction = new DamageReduction();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
@@ -167,7 +169,7 @@ export class GameEvent {
     OnPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
         // DeepPrintTable(event)
         let hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
-        hHero.SetAbilityPoints(0);
+        // hHero.SetAbilityPoints(0);
         GameRules.NewArmsEvolution.AddEvolutionPoint(event.player_id, 1)
     }
 }

@@ -146,17 +146,13 @@ interface OverrideSpecialValueProps {
 /** 资源类型 */
 type PlayerResourceTyps = "Gold" | "Soul" | "Kills" | "TeamExp" | "SingleExp";
 
-/** 物品类型 */
-type ArmsItemCategory = "book" // 书籍
-    | "strengthen" // 强化
-    | "zhaohuan"// 召唤
-    | "resource"// 理财
-    | "scavenger" // 拾荒
-    | "spell"// 咒术
-    | "projectile"//投射
-    | "growth"//成长
-    | "consume"//消耗
-    | "aoe"//范围
-    | "health"//治疗
-    | "orb"//法球
-    | "bounce"//弹射
+/** 技能类型 */
+declare type ArmsTypeCategory = "Aoe" // 范围
+    | "Buff" // 强化
+    | "Dot" // 持续
+    | "Grow" // 成长
+    | "Missile" // 弹道
+    | "Orb" // 法球
+    | "Resource" // 理财
+    | "Summon" // 召唤
+    | "Surround" // 环绕

@@ -611,9 +611,10 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         let shopdata = MysteriousShopConfig[key as keyof typeof MysteriousShopConfig]
         if (unit) {
             // 技能
+            let custom_datadriven_ability = unit.FindAbilityByName("custom_datadriven_ability")
             GameRules.CustomAttribute.AddHeroModifier(
                 unit , 
-                "custom_datadriven_ability", 
+                custom_datadriven_ability, 
                 shopdata.BuffName , 
                 shopdata.Drive as "Driven" | "Script",
             )

@@ -86,7 +86,7 @@
 }
 
 #ShopItemList {
-    width: (182px + 68px) * 3;
+    width: (182px + 68px) * 4;
     horizontal-align: center;
     // border: 1px solid #f00;
     flow-children: right-wrap;
@@ -150,6 +150,11 @@
             visibility: collapse;
         }
 
+        .ButtonGroup {
+            flow-children: right;
+            horizontal-align: center;
+            // horizontal-align: cneter;
+        }
 
         #PurchaseBtn {
             width: 124px;
@@ -160,6 +165,12 @@
 
             &:enabled:hover {
                 wash-color: #fff;
+            }
+
+            &:disabled {
+                // wash-color: #5e5e5e;
+                saturation: 0.5;
+                brightness: 0.5;
             }
 
             .Info {
@@ -186,6 +197,54 @@
 
         }
 
+        #RefreshBtn {
+            width: 96px;
+            // height: 38px;
+            horizontal-align: center;
+            background-color:#2f352f;
+            padding: 4px;
+            // background-image: url("file://{images}/custom_game/hud/mystical_shop/purchase_btn.png");
+            // wash-color: rgb(160, 115, 115);
+            // visibility: collapse;
+
+            .Info {
+                vertical-align: middle;
+                horizontal-align: center;
+                flow-children: right;
+                // margin-bottom: 4px;
+
+                .Icon {
+                    width: 20px;
+                    height: 20px;
+                    background-size: 100%;
+                    brightness: 2.0;
+
+                }
+
+                Label {
+                    margin-left: 4px;
+                    font-size: 18px;
+                    color: #ffffff;
+                    text-shadow: 0px 0px 2px 2.0 #000000;
+                }
+            }
+        }
+
+        &.IsBuy {
+            // #PurchaseBtn {
+            //     visibility: collapse;
+            // }
+
+            // #RefreshBtn {
+            //     visibility: visible;
+            // }
+
+            .ShopItemCard {
+                brightness: 0.5;
+                saturation: 0.1;
+            }
+        }
+
         &:disabled {
             .PrivilegeLock {
                 visibility: visible;
@@ -196,13 +255,15 @@
 
         }
 
-        &:enabled {
-            .ShopItemCard {
-                &:hover {
-                    brightness: 1.5;
-                }
-            }
-        }
+        // &:enabled {
+        //     .ShopItemCard {
+        //         &:hover {
+        //             brightness: 1.5;
+        //         }
+        //     }
+        // }
+
+
         // &:enabled {
         //     #PurchaseBtn {
 

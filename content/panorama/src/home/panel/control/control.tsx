@@ -12,7 +12,9 @@ export const CreatePanel_ActionAbility = () => {
         $.Schedule(0.3, CreatePanel_ActionAbility)
         return
     }
+
     let LeftPanel = CenterStatsContainer.FindChildTraverse("Left")!;
+    LeftPanel.RemoveAndDeleteChildren();
     for (var i = 0; i < 3; i++) {
         var AbilityPanel = $.CreatePanel("Panel", LeftPanel, "");
         AbilityPanel.BLoadLayout(

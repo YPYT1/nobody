@@ -1,6 +1,8 @@
 @import url("./../../_styles/variables/_rare.less");
 @import url("./../../_styles/variables/_variables.less");
 
+@width: 345px;
+
 #Contents {
     padding: 0px;
     border: 0px solid #00000000;
@@ -15,452 +17,369 @@
     }
 }
 
-#CustomTooltipAbility {
-    width: 324px;
+.TooltipContent {
+    width: 100%;
+    min-height: 290px;
+    // height: 420px;
     flow-children: down;
-    border: 2px solid rgb(114,99,74);
-    // border-radius: 6px;
-    // background-image: url("file://{images}/custom_game/hero_choose/border_background.png");
-    // background-image: url("file://{images}/custom_game/tooltip/text_tooltip_body.png");
-    background-size: 100%;
-    background-color: #0e1013fb;
-    box-shadow: #000000aa 0px 0px 8px 0px;
-    padding: 1px;
-    // border: 1px solid #3a3a3a;
-    // padding: 8px;
-    .TooltipBorder {
+    // padding-bottom: 64px;
+    // border: 1px solid #ffffff;
+}
+
+.tooltip_ability {
+    width: @width;
+
+    .Background {
         width: 100%;
+        height: 100%;
         flow-children: down;
-        border: 1px solid #000000;
+        // padding-bottom: 130px;
     }
 
-    Label {
-        font-size: 18px;
-        color: #ffffff;
-        // text-shadow: 0px 1px 1px 2.0 #000000;
-    }
-
-    &.rarity_2 #AbilityHeader {
-        // background-color: gradient(linear, -100% 0%, 100% 50%, from(@rarity_color_2), to(#00000000));
-        background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_2.png");
-    }
-
-    &.rarity_3 #AbilityHeader {
-        // background-color: gradient(linear, -100% 0%, 100% 50%, from(@rarity_color_3), to(#00000000));
-        background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_3.png");
-    }
-
-    &.rarity_4 #AbilityHeader {
-        // background-color: gradient(linear, -100% 0%, 100% 50%, from(@rarity_color_4), to(#00000000));
-        background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_4.png");
-    }
-
-    &.rarity_5 #AbilityHeader {
-        // background-color: gradient(linear, 0% 0%, 100% 0%, from(@rarity_color_5), to(#00000000));
-        background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_5.png");
-    }
-
-    &.rarity_6 #AbilityHeader {
-        // background-color: gradient(linear, 0% 0%, 100% 0%, from(@rarity_color_6), to(#00000000));
-        background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_6.png");
-    }
-
-    &.rarity_7 #AbilityHeader {
-        // background-color: gradient(linear, 0% 0%, 100% 0%, from(@rarity_color_7), to(#00000000));
-        background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_7.png");
-    }
-
-    &.rarity_8 #AbilityHeader {
-        // background-color: gradient(linear, 0% 0%, 100% 0%, from(@rarity_color_8), to(#00000000));
-        background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_8.png");
-    }
-
-    #AbilityHeader {
+    .Header {
         width: 100%;
-        padding: 8px;
-        // background-image: url("file://{images}/custom_game/tooltip/text_tooltip_header.png");
+        height: 100%;
+        flow-children: down;
+
+
+
+        .Mid {
+            width: @width;
+            height: 100%;
+            background-image: url("file://{images}/custom_game/tooltip/ability/tips_bg.png");
+            // border: 1px solid #7c94ff;
+            margin-bottom: 12px;
+        }
+    }
+
+    .Top {
+        width: @width;
+        height: 155px;
         background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_1.png");
-        background-size: 100%;
-        // background-color: @rare1_background;
-        // border-bottom: 1px solid @rare1_border;
-        // background-color: #36af26;
-        // background-color: gradient(linear, -100% 0%, 100% 50%, from(@rarity_color_1), to(#00000000));
-        // background-image: url("file://{images}/custom_game/tooltip/text_tooltip_body.png");
+        // border: 1px solid #bcffaf;
+    }
 
+    .Bot {
+        width: @width;
+        height: 132px;
+        background-image: url("file://{images}/custom_game/tooltip/ability/tips_bot.png");
+        vertical-align: bottom;
+        // border: 1px solid #ff1919;
+    }
 
-        .AbilityImage {
-            width: 60px;
-            height: 60px;
-            border: 2px solid #000000;
+    .AbilityElement {
+        margin-left: 6px;
+        width: 22px;
+        height: 22px;
+        background-image: url("file://{images}/custom_game/icon/element/sm_1.png");
+        vertical-align: middle;
+    }
+
+    .AbilityNameLabel {
+        font-size: 22px;
+        color: @rarity_color_1;
+        text-shadow: 0px 0px 2px 2.0 #000000;
+        vertical-align: middle;
+    }
+
+    &.rarity_2 {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_2.png");
         }
 
-        .AbilityLabel {
-            width: 100%;
-            // background-color: #5f5f5f;
-            margin-left: 6px;
-            vertical-align: middle;
-            // height: 64px;
-            flow-children: down;
-
-            .NameAndCost {
-                width: 100%;
-                height: 26px;
-                flow-children: right;
-                vertical-align: middle;
-
-                #AbilityName {
-                    vertical-align: middle;
-                    // border: 1px solid #000000;
-                }
-
-                .AbilityNameLabel {
-                    vertical-align: bottom;
-                    font-size: 22px;
-                    // text-overflow: clip;
-                    font-family: defaultFont;
-                    text-shadow: 0px 0px 2px 3.0 #000000;
-                }
-
-                .AbilityElement {
-                    margin-right: 4px;
-                    vertical-align: bottom;
-                    font-size: 22px;
-                    text-overflow: clip;
-                    // font-family: defaultFont;
-
-                }
-            }
-
-
-        }
-
-
-        #AbilityCategoryType {
-            min-height: 28px;
-            flow-children: right-wrap;
-
-            Label {
-                border-radius: 2px;
-                margin: 2px;
-                padding: 4px;
-                // background-color: #999999;
-                text-shadow: 0px 0px 3px 4.0 #000000;
-                visibility: collapse;
-                border: 1px solid #000000;
-            }
-
-            &.act_14 .act_14,
-            &.act_13 .act_13,
-            &.act_12 .act_12,
-            &.act_11 .act_11,
-            &.act_10 .act_10,
-            &.act_9 .act_9,
-            &.act_8 .act_8,
-            &.act_7 .act_7,
-            &.act_6 .act_6,
-            &.act_5 .act_5,
-            &.act_4 .act_4,
-            &.act_3 .act_3,
-            &.act_2 .act_2,
-            &.act_1 .act_1 {
-                visibility: visible;
-            }
-
-            .act_1 {
-                background-color: #918700;
-            }
-
-            .act_2 {
-                background-color: #5e9100;
-            }
-
-            .act_3 {
-                background-color: #009107;
-            }
-
-            .act_4 {
-                background-color: #009185;
-            }
-
-            .act_5 {
-                background-color: #003a91;
-            }
-
-            .act_6 {
-                background-color: #380091;
-            }
-
-            .act_7 {
-                background-color: #570091;
-            }
-
-            .act_8 {
-                background-color: #96558b;
-            }
-
-            .act_9 {
-                background-color: #e01976;
-            }
-
-            .act_10 {
-                background-color: #ac0000;
-            }
-
-            .act_11 {
-                background-color: #6b5447;
-            }
-        }
-
-        #AbilityLevel {
-            min-width: 56px;
-            vertical-align: middle;
-            horizontal-align: right;
-
-            Label {
-                text-shadow: 0px 0px 2px 2.0 #000000;
-            }
-
+        .AbilityNameLabel {
+            color: @rarity_color_2;
         }
     }
 
-    #CurrentItemCosts {
-        horizontal-align: right;
-
-        //margin-top: 6px;
-        // padding-top: 8px;
-        // padding-bottom: 0px;
-        Label {
-            text-overflow: shrink;
-            text-shadow: 2px 2px 0px 1.0 #00000088;
-            color: #ffffff;
-            background-repeat: no-repeat;
-            background-position: 0% 50%;
-            font-size: 16px;
-            font-weight: semi-bold;
-            padding-left: 25px;
-            margin-right: 20px;
+    &.rarity_3 {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_3.png");
         }
 
-        #Cooldown {
-            // width: 16px;
-            // height: 16px;
-            background-size: 20px 20px;
-            background-image: url("s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex");
-        }
-
-        #ManaCost {
-            background-size: 20px 20px;
-            background-image: url("s2r://panorama/images/status_icons/ability_manacost_icon_psd.vtex");
+        .AbilityNameLabel {
+            color: @rarity_color_3;
         }
     }
 
-    #AbilityTarget {
-        width: 100%;
-        margin-top: 8px;
-        margin-left: 8px;
-        margin-right: 8px;
-        padding-bottom: 8px;
-        border-bottom: 2px solid #5f5f5f;
-        // background-color: #1f1f1f;
-        // border: 2px solid #000000;
-        // border-radius: 8px;
-        // padding: 4px;
-
-        // Label {
-        //     color: #ffffff;
-        // }
-    }
-
-    #AbilityCoreDetails {
-        width: 100%;
-        padding: 8px;
-        // background-color: #000000;
-
-        .DescriptionLabel {
-            color: #78949b;
-
-            .negative {
-                color: #ff0000;
-            }
-
-            .FormulaKey {
-                color: #ffab2d;
-            }
-
-            .FormulaValue {
-                color: #ffffff;
-            }
-
-            .key {
-                color: #e4e4e4;
-            }
-
-            .disable {
-                color: #838383;
-            }
-
-            .enable {
-                color: #00fc00;
-            }
-
-            .LevelUpTips {
-                color: #f0a80d;
-            }
-
-            .off {
-                color: #5f5f5f;
-            }
-
-            .on {
-                color: #ecca0d;
-            }
-
+    &.rarity_4 {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_4.png");
         }
 
-        .Variable,
-        .GameplayVariable {
-            font-size: 22px;
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-
-    }
-
-
-    #ComboContainer {
-        width: 100%;
-        margin-top: 18px;
-        flow-children: down;
-
-        .ArmsCombieRows {
-            width: 100%;
-            margin-top: 4px;
-            margin-bottom: 4px;
-            // border-bottom: 1px solid #ffffff;
-            // padding: 4px;
-            flow-children: down;
-
-            .Header {
-                flow-children: down;
-
-                .Title {
-                    color: #0de26d;
-                }
-
-                .Desc {
-                    color: #d8d8d8;
-                }
-
-                Label {
-                    font-size: 18px;
-
-                }
-            }
-
-            .CombieAbility {
-                // width: 100%;
-                // margin-left: 8px;
-                flow-children: right-wrap;
-
-                Label {
-                    color: #5f5f5f;
-                    font-size: 18px;
-                    // margin-left: 4px;
-                    margin-right: 4px;
-                    margin-top: 2px;
-                    margin-bottom: 2px;
-                }
-            }
+        .AbilityNameLabel {
+            color: @rarity_color_4;
         }
     }
 
-
-
-    .fire {
-        color: #ff0000;
-    }
-
-    .water {
-        color: #00c3ff;
-    }
-
-    .wind {
-        color: #12ee0b;
-    }
-
-    .thunder {
-        color: #e4b229;
-    }
-
-    .light {
-        color: #fff3b1;
-    }
-
-    .dark {
-        color: #741281;
-    }
-
-    .Attribute {
-        // background-color: #ffffff;
-        visibility: collapse;
-        font-size: 20px;
-        padding-bottom: 12px;
-        color: #535252;
-        ;
-
-        &.show {
-            visibility: visible;
+    &.rarity_5 {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_5.png");
         }
 
-        .key {
-            color: #dfdfdf;
-        }
-
-        .val {
-            font-weight: bold;
-            color: #7fff94;
-            text-shadow: 0px 0px 2px 3.0 #000000;
-
-            &.negative {
-                color: #ff0000;
-            }
+        .AbilityNameLabel {
+            color: @rarity_color_5;
         }
     }
 
-    &.elementkey_0 .AbilityElement {
-        color: #535252;
-        text-shadow: 0px 0px 2px 3.0 #000000;
-    }
-    
-    &.elementkey_1 .AbilityElement {
-        color: #ff0000;
-        text-shadow: 0px 0px 2px 3.0 #b40000;
-    }
-    
-    &.elementkey_2 .AbilityElement {
-        color: #00b7ff;
-        text-shadow: 0px 0px 2px 3.0 #005791;
+    &.rarity_6 {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_6.png");
+        }
+
+        .AbilityNameLabel {
+            color: @rarity_color_6;
+        }
     }
 
-    &.elementkey_3 .AbilityElement {
-        color: #ffd900;
-        text-shadow: 0px 0px 2px 3.0 #967f00;
+    &.rarity_7 {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/ability/header/rare_7.png");
+        }
+
+        .AbilityNameLabel {
+            color: @rarity_color_7;
+        }
     }
 
-    &.elementkey_4 .AbilityElement {
-        color: #2bff00;
-        text-shadow: 0px 0px 2px 3.0 #188f00;
+    &.element_2 .AbilityElement {
+        background-image: url("file://{images}/custom_game/icon/element/sm_2.png");
     }
 
-    &.elementkey_5 .AbilityElement {
-        color: #fdff9f;
-        text-shadow: 0px 0px 2px 3.0 #919259;
+    &.element_3 .AbilityElement {
+        background-image: url("file://{images}/custom_game/icon/element/sm_3.png");
     }
 
-    &.elementkey_6 .AbilityElement {
-        color: #9d0aff;
-        text-shadow: 0px 0px 2px 3.0 #450086;
+    &.element_4 .AbilityElement {
+        background-image: url("file://{images}/custom_game/icon/element/sm_4.png");
+    }
+
+    &.element_5 .AbilityElement {
+        background-image: url("file://{images}/custom_game/icon/element/sm_5.png");
+    }
+
+    &.element_6 .AbilityElement {
+        background-image: url("file://{images}/custom_game/icon/element/sm_6.png");
     }
 }
 
+#AbilityHeader {
+    width: 100%;
+    height: 102px;
+    // padding: 18px;
+    flow-children: right;
+    // border: 1px solid #ffffff;
+
+    .AbilityImagePanel {
+        margin-left: 26px;
+        width: 68px;
+        height: 68px;
+        border: 2px solid @rarity_color_1;
+        vertical-align: middle;
+
+        .AbilityIcon {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+    }
+
+    .AbilityLabel {
+        width: 100%;
+        margin-left: 12px;
+        flow-children: down;
+        vertical-align: middle;
+
+        .AbilityName {
+            width: 100%;
+            height: 24px;
+            flow-children: right;
+
+
+
+
+
+            .AbilityLevel {
+                horizontal-align: right;
+                vertical-align: middle;
+                color: #ffffff;
+                font-size: 18px;
+                margin-right: 28px;
+            }
+        }
+
+
+
+        #CurrentItemCosts {
+            flow-children: right;
+        }
+
+        .Icon {
+            width: 14px;
+            height: 14px;
+            vertical-align: middle;
+
+            &.Cooldown {
+                background-image: url("file://{images}/custom_game/tooltip/ability/cooldown.png");
+            }
+
+            &.Mana {
+                background-image: url("file://{images}/custom_game/tooltip/ability/mana_cost.png");
+            }
+        }
+
+        .CostsRows {
+            flow-children: right;
+            margin-left: 4px;
+            margin-right: 4px;
+
+            Label {
+                margin-left: 2px;
+                vertical-align: middle;
+                font-size: 18px;
+                color: #ffffff;
+            }
+        }
+    }
+}
+
+#AbilityCoreDetails {
+    width: 100%;
+    margin-top: 8px;
+    flow-children: down;
+
+    #DescriptionContainer {
+        width: 100%;
+        flow-children: down;
+
+        .DescriptionLabel {
+            width: 100%;
+            font-size: 18px;
+            color: #ffffff;
+            // border: 1px solid #ffffff;
+            padding: 8px 16px;
+        }
+    }
+}
+
+
+.BottomlBank {
+    width: 100%;
+    height: 32px;
+}
+
+#ComboContainer {
+    margin-top: 8px;
+    horizontal-align: center;
+    width: 308px;
+    background-image: url("file://{images}/custom_game/tooltip/ability/combo_separator.png");
+    background-repeat: no-repeat;
+    flow-children: down;
+    // padding-top: 24px;
+
+    .ArmsCombieRows {
+        margin-top: 16px;
+        flow-children: down;
+
+        .CombieTitle {
+            font-size: 17px;
+            color: #fff175;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+        }
+
+        .CombieAbilityRequire {
+            margin-top: 4px;
+            font-size: 15px;
+            color: #666666;
+        }
+
+        .on {
+            color: #cae0f3;
+            // color: #ffffff;
+        }
+
+        .off {
+            color: #666666;
+        }
+
+        .CombieAbilityDesc {
+            color: #00ff00;
+            visibility: collapse;
+        }
+
+        .hover {
+            font-size: 16px;
+            color: #7cff7c;
+            font-weight: bold;
+        }
+
+        &.is_activate .CombieAbilityDesc {
+            visibility: visible;
+        }
+    }
+}
+
+.AbilityTag {
+    // margin-top: 2px;
+    // margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    width: 50px;
+    height: 22px;
+    vertical-align: middle;
+    visibility: collapse;
+
+    &.Aoe {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/aoe.png");
+    }
+
+    &.Buff {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/buff.png");
+    }
+
+    &.Dot {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/dot.png");
+    }
+
+    &.Grow {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/grow.png");
+    }
+
+    &.Missile {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/missile.png");
+    }
+
+    &.Orb {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/orb.png");
+    }
+
+    &.Resource {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/resource.png");
+    }
+
+    &.Summon {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/summon.png");
+    }
+
+    &.Surround {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/Surround.png");
+    }
+}
+
+#AbilityCategoryType {
+    height: 24px;
+    flow-children: right;
+    // border: 1px solid #ffffff;
+
+    &.Surround .Surround,
+    &.Summon .Summon,
+    &.Resource .Resource,
+    &.Orb .Orb,
+    &.Missile .Missile,
+    &.Grow .Grow,
+    &.Dot .Dot,
+    &.Buff .Buff,
+    &.Aoe .Aoe {
+        visibility: visible;
+    }
+}

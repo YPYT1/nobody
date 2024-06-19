@@ -11,20 +11,28 @@
 			<Button class="ShopItem" hittest="false">
 				<Panel class="ShopItemCard">
 					<Panel class="ShopItemInfo">
-						<Panel id="ItemIcon" />
+						<Image id="ItemIcon" />
 						<Label class="ItemDesc" text="{s:item_desc}"/>
 						<Label class="ItemName" text="{s:item_name}"/>
 					</Panel>
 					<Panel class="PrivilegeLock" />
 				</Panel>
 				
-				<Button id="PurchaseBtn">
-					<Panel class="Info">
-						<Panel class="Icon Soul" />
-						<Label class="Price" text="{d:cost}"/>
-					</Panel>
-					
-				</Button>
+				<Panel class="ButtonGroup">
+					<Button id="PurchaseBtn">
+						<Panel class="Info">
+							<Panel class="Icon Soul" />
+							<Label class="Price" text="{d:cost}"/>
+						</Panel>
+					</Button>
+					<Button id="RefreshBtn" class="btn">
+						<Panel class="Info">
+							<Panel class="Icon Soul" />
+							<Label class="Price" text="{d:refresh_cost}"/>
+						</Panel>
+					</Button>
+				</Panel>
+				
 			
 			</Button>
 		</snippet>

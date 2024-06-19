@@ -13,6 +13,7 @@ export class CustomAttribute {
 
     constructor() {
         print("[CustomAttribute]:constructor")
+        this.ModifierList = {};
         ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
 
     }
@@ -368,10 +369,9 @@ export class CustomAttribute {
 
 
     //技能相关
-
     ModifierList: {
         [EntityIndexList: EntityIndex]: {
-            AbilityName: string,
+            ability: CDOTABaseAbility,
             modifierName: string,
             add_type: "Driven" | "Script",
             modifierTable: object,
@@ -386,7 +386,7 @@ export class CustomAttribute {
      */
     AddHeroModifier(
         hUnit: CDOTA_BaseNPC, //来源
-        AbilityName: string, //技能名
+        hAbility: CDOTABaseAbility, //技能
         modifierName: string, //modifier名字
         add_type: "Driven" | "Script" = "Driven", //驱动方式
         modifierTable: object = {}, //额外参数
@@ -394,28 +394,22 @@ export class CustomAttribute {
     ) {
         if (hUnit.IsAlive()) { //没有死亡立即添加
             // 技能
-            if (target == null) {
-                target = hUnit;
+            if (target == null) { target = hUnit; }
+            if (add_type == "Driven") {
+                // 数据驱动
+                (hAbility as CDOTA_Ability_DataDriven).ApplyDataDrivenModifier(hUnit, target, modifierName, modifierTable);
+            } else if (add_type == "Script") {
+                // 脚本技能
+                target.AddNewModifier(hUnit, hAbility, modifierName, modifierTable);
             }
-            let ability = hUnit.FindAbilityByName(AbilityName) as CDOTA_Ability_DataDriven;
-            if (ability) {
-                if (add_type == "Driven") {
-                    // 数据驱动
-                    ability.ApplyDataDrivenModifier(hUnit, target, modifierName, modifierTable);
-                } else if (add_type == "Script") {
-                    // 脚本技能
-                    let buff = target.AddNewModifier(hUnit, ability, modifierName, modifierTable);
-                }   
-            }
+
         } else {
-            if (target == null) {
-                target = hUnit;
-            }
+            if (target == null) { target = hUnit; }
             let ModifierUpdata = target.CustomVariables["ModifierUpdataThink"] ?? 0; //是否启动Think
             let HEntityIndex = target.GetEntityIndex();
             if (this.ModifierList.hasOwnProperty(HEntityIndex)) {
                 this.ModifierList[HEntityIndex].push({
-                    AbilityName: AbilityName,
+                    ability: hAbility,
                     modifierName: modifierName,
                     add_type: add_type,
                     modifierTable: modifierTable,
@@ -424,7 +418,7 @@ export class CustomAttribute {
             } else {
                 this.ModifierList[HEntityIndex] = [];
                 this.ModifierList[HEntityIndex].push({
-                    AbilityName: AbilityName,
+                    ability: hAbility,
                     modifierName: modifierName,
                     add_type: add_type,
                     modifierTable: modifierTable,
@@ -438,16 +432,15 @@ export class CustomAttribute {
                         if (this.ModifierList.hasOwnProperty(HEntityIndex)) {
                             for (const moddata of this.ModifierList[HEntityIndex]) {
                                 // 技能
-                                let ability = hUnit.FindAbilityByName(moddata.AbilityName) as CDOTA_Ability_DataDriven;
-                                if (ability) {
-                                    if (add_type == "Driven") {
-                                        // 数据驱动
-                                        ability.ApplyDataDrivenModifier(hUnit, target, moddata.modifierName, moddata.modifierTable);
-                                    } else if (add_type == "Script") {
-                                        // 脚本技能
-                                        let buff = target.AddNewModifier(hUnit, ability, moddata.modifierName, moddata.modifierTable);
-                                    }
+                                let hAbility = moddata.ability;
+                                if (add_type == "Driven") {
+                                    // 数据驱动
+                                    (hAbility as CDOTA_Ability_DataDriven).ApplyDataDrivenModifier(hUnit, target, moddata.modifierName, moddata.modifierTable);
+                                } else if (add_type == "Script") {
+                                    // 脚本技能
+                                    target.AddNewModifier(hUnit, hAbility, moddata.modifierName, moddata.modifierTable);
                                 }
+
                             }
                         }
                         target.CustomVariables["ModifierUpdataThink"] = 0;

@@ -140,6 +140,7 @@ export class modifier_public_attribute extends BaseModifier {
             ModifierFunction.HEALTH_REGEN_CONSTANT,
             ModifierFunction.MANA_BONUS,
             ModifierFunction.MANA_REGEN_CONSTANT,
+            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
         ]
     }
 
@@ -179,4 +180,10 @@ export class modifier_public_attribute extends BaseModifier {
         return this.AttributeData.ManaRegen
     }
 
+    GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
+        if (event.damage_type != DamageTypes.PURE) {
+            return GameRules.DamageReduction.GetTotalReductionPct(event)
+        }
+        return 0
+    }
 }

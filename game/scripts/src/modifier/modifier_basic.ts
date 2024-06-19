@@ -91,3 +91,21 @@ export class modifier_basic_debug extends BaseModifier {
         return 1
     }
 }
+
+@registerModifier()
+export class modifier_common_mul_health extends BaseModifier {
+
+    IsHidden(): boolean { return true; }
+    IsDebuff(): boolean { return false; }
+    RemoveOnDeath(): boolean { return false; }
+
+    GetAttributes(): ModifierAttribute {
+        return ModifierAttribute.PERMANENT;
+    }
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return; }
+        let iMulte = params.iMulte;
+        this.SetStackCount(iMulte);
+    }
+}

@@ -1,3 +1,6 @@
+import { GetTextureSrc } from "../../../common/custom_kv_method";
+import { default as MysteriousShopConfig } from "../../../json/config/game/shop/mysterious_shop_config.json";
+
 let MainPanel = $.GetContextPanel();
 let MysticalShop = $("#MysticalShop");
 let ShopItemList = $("#ShopItemList");
@@ -17,27 +20,54 @@ GameEvents.Subscribe("MysticalShopSystem_GetShopState", event => {
 })
 
 GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
-    $.Msg(["MysticalShopSystem_GetShopData"])
+    // $.Msg(["MysticalShopSystem_GetShopData"])
     let data = event.data;
-    ShopItemList.RemoveAndDeleteChildren();
-
-    for (let i = 0; i < 6; i++) {
-        let ShopItem = $.CreatePanel("Button", ShopItemList, "");
-        ShopItem.BLoadLayoutSnippet("ShopItem")
-        ShopItem.SetDialogVariableInt("cost", 9999);
-        const is_enabled = i < 4;
-        ShopItem.enabled = is_enabled
-        // ShopItem.SetHasClass("Vip", i > 3);
-        ShopItem.SetDialogVariable("item_name","物品名字");
-        ShopItem.SetDialogVariable("item_desc","物品的描述,总之很长很长的接口sad价款拉伸快点948阶段看来事件发送");
-
-        const PurchaseBtn = ShopItem.FindChildTraverse("PurchaseBtn")!;
-        PurchaseBtn.enabled = is_enabled;
-    }
-
+    const local_vip = 0;//data.player_vip_status;
+    // ShopItemList.RemoveAndDeleteChildren();
     let shop_field_list = data.shop_field_list;
     for (let k in shop_field_list) {
+        let index = parseInt(k) - 1;
         let row_data = shop_field_list[k];
+        let shop_key = row_data.key
+        let ShopItem = ShopItemList.GetChild(index)!;
+        // ShopItem.BLoadLayoutSnippet("ShopItem")
+        ShopItem.SetHasClass("IsVip", row_data.is_vip == 1);
+        ShopItem.SetHasClass("IsBuy", row_data.is_buy == 1);
+        ShopItem.SetHasClass("IsLock", row_data.is_lock == 1);
+
+        ShopItem.SetDialogVariableInt("cost", row_data.soul);
+        ShopItem.SetDialogVariableInt("refresh_cost", row_data.refresh_soul);
+        ShopItem.SetDialogVariable("item_name", row_data.key);
+        ShopItem.SetDialogVariable("item_desc", row_data.key);
+
+        const is_enabled = row_data.is_lock == 0 && local_vip >= row_data.is_vip && row_data.is_buy == 0;
+        // ShopItem.enabled = is_enabled
+        const ItemIcon = ShopItem.FindChildTraverse("ItemIcon") as ImagePanel;
+        const ShopItemJson = MysteriousShopConfig[shop_key as keyof typeof MysteriousShopConfig]
+        const ItemSrc = GetTextureSrc(ShopItemJson.AbilityTextureName);
+        ItemIcon.SetImage(ItemSrc)
+        const PurchaseBtn = ShopItem.FindChildTraverse("PurchaseBtn")!;
+        PurchaseBtn.enabled = is_enabled;
+        PurchaseBtn.SetPanelEvent("onactivate", () => {
+            GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+                event_name: "BuyItem",
+                params: {
+                    index: parseInt(k) - 1,
+                }
+            })
+        })
+
+        const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
+        // RefreshBtn.enabled = row_data.is_buy == 1;
+        RefreshBtn.SetPanelEvent("onactivate", () => {
+            GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+                event_name: "RefreshOneItemBySoul",
+                params: {
+                    index: parseInt(k) - 1,
+                }
+            })
+        })
+
     }
 
 })
@@ -66,6 +96,16 @@ export const CreatePanel = () => {
         MysticalShop.AddClass("Open")
     })
 
+    // 创建商店页面
+    ShopItemList.RemoveAndDeleteChildren()
+    for (let i = 0; i < 6; i++) {
+        let ShopItem = $.CreatePanel("Button", ShopItemList, "");
+        ShopItem.BLoadLayoutSnippet("ShopItem")
+        ShopItem.SetDialogVariableInt("cost", 0);
+        ShopItem.SetDialogVariableInt("refresh_cost", 0);
+        // ShopItem.SetDialogVariable("item_name", "");
+        // ShopItem.SetDialogVariable("item_desc", "");
+    }
 }
 
 export const Init = () => {

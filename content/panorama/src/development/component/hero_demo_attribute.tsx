@@ -286,9 +286,9 @@ const OverrideSpecialValueEditor = () => {
         <Panel id='AbilityKeyValueEditor'>
             <Panel className='KeyValueTable'>
                 {
-                    Object.keys(special_keyvalue).map((v, k) => {
-                        return <RowOverrideKvEditor key={k} kv_key={v as keyof typeof special_keyvalue} />
-                    })
+                    // Object.keys(special_keyvalue).map((v, k) => {
+                    //     return <RowOverrideKvEditor key={k} kv_key={v as keyof typeof special_keyvalue} />
+                    // })
                 }
             </Panel>
         </Panel>

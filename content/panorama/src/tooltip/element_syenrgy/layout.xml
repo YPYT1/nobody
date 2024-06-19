@@ -15,5 +15,20 @@
             </Panel>
         </snippet>
     </snippets>
-    <Panel class="tooltip_element_syenrgy" hittest="false"/>
+    <Panel class="tooltip_element_syenrgy" hittest="false">
+        <Panel class="Background">
+            <Panel class="Header">
+                <Panel class="Top"/>
+                <Panel class="Mid"/>
+            </Panel>
+        </Panel>
+        <Panel class="Bot" />
+        <Panel class="TooltipContent">
+            <Panel id="Header">
+                <Panel id="ElementIcon"/>
+                <Label id="BaseDescription" text="{s:base_desc}" />
+            </Panel>
+            <Panel id='BonusDescription' />
+        </Panel>
+    </Panel>
 </root>

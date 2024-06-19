@@ -6,6 +6,7 @@
     background-color: #00000000;
     box-shadow: none;
 
+    // border: 1px solid #292929;
     &.Tooltip {
         background-color: #00000000;
         background-repeat: no-repeat;
@@ -15,53 +16,190 @@
 
 }
 
-#CustomTooltip {
-    width: 320px;
-    border: 1.5px solid #000000;
-    // border-radius: 6px;
-    // background-image: url("file://{images}/custom_game/hero_choose/border_background.png");
-    background-color: #1b1b1bf8;
+.TooltipContent {
+    width: 100%;
     flow-children: down;
-    // background-color: #000000e1;
-    // padding: 8px;
+    padding-bottom: 64px;
+}
+
+.tooltip_element_syenrgy {
+    width: 288px;
+
+    .Background {
+        width: 100%;
+        height: 100%;
+        flow-children: down;
+        padding-bottom: 137px;
+    }
+
+    .Header {
+        width: 100%;
+        height: 100%;
+        flow-children: down;
+    }
+
+    .Top {
+        width: 288px;
+        height: 298px;
+        background-image: url("file://{images}/custom_game/tooltip/element/tips_1_a.png");
+        // border: 1px solid #235a18;
+    }
+
+    .Mid {
+        width: 288px;
+        height: 100%;
+        background-image: url("file://{images}/custom_game/tooltip/element/tips_1_b.png");
+        // border: 1px solid #235a18;
+    }
+
+    .Bot {
+        width: 288px;
+        height: 139px;
+        background-image: url("file://{images}/custom_game/tooltip/element/tips_1_c.png");
+        vertical-align: bottom;
+        // border: 1px solid #235a18;
+    }
+
+    &.fire {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_1_a.png");
+        }
+
+        .Mid {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_1_b.png");
+        }
+
+        .Bot {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_1_c.png");
+        }
+
+        #ElementIcon {
+            background-image: url("file://{images}/custom_game/tooltip/element/title_1.png");
+        }
+    }
+
+    &.ice {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_2_a.png");
+        }
+
+        .Mid {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_2_b.png");
+        }
+
+        .Bot {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_2_c.png");
+        }
+
+        #ElementIcon {
+            background-image: url("file://{images}/custom_game/tooltip/element/title_2.png");
+        }
+    }
+
+    &.thunder {
+
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_3_a.png");
+        }
+
+        .Mid {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_3_b.png");
+        }
+
+        .Bot {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_3_c.png");
+        }
+
+        #ElementIcon {
+            background-image: url("file://{images}/custom_game/tooltip/element/title_3.png");
+        }
+    }
+
+    &.wind {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_4_a.png");
+        }
+
+        .Mid {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_4_b.png");
+        }
+
+        .Bot {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_4_c.png");
+        }
+
+        #ElementIcon {
+            background-image: url("file://{images}/custom_game/tooltip/element/title_4.png");
+        }
+    }
+
+    &.light {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_5_a.png"); 
+        }
+
+        .Mid {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_5_b.png");
+        }
+
+        .Bot {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_5_c.png");
+        }
+
+        #ElementIcon {
+            background-image: url("file://{images}/custom_game/tooltip/element/title_5.png");
+        }
+    }
+
+    &.dark {
+        .Top {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_6_a.png"); 
+        }
+
+        .Mid {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_6_b.png");
+        }
+
+        .Bot {
+            background-image: url("file://{images}/custom_game/tooltip/element/tips_6_c.png");
+        }
+
+        #ElementIcon {
+            background-image: url("file://{images}/custom_game/tooltip/element/title_6.png");
+        }
+    }
 
     #Header {
         width: 100%;
-        background-color: #702917;
-        height: 36px;
-
-    }
-
-    .SyenrgyImage {
-        width: 45px;
-        height: 45px;
-        border: 1px solid #ffffff;
-
-        // transform: translateX(-30px);
-    }
-
-    .SyenrgyInfo {
+        margin-top: 210px;
+        // border: 1px solid #96ff50;
         flow-children: down;
     }
 
-    .SyenrgyTitle {
-        font-size: 20px;
+    #ElementIcon {
+        width: 73px;
+        height: 40px;
+        background-image: url("file://{images}/custom_game/tooltip/element/title_1.png");
+        margin-left: 20px;
     }
 
-    #BaseDescription,
-    #BonusDescription {
-        padding: 8px;
-    }
-    
     #BaseDescription {
-        margin-top: 4px;
-        // padding: 4px;
+        width: 100%;
+        margin-top: 8px;
+        margin-left: 25px;
+        margin-right: 25px;
+        padding: 4px;
         font-size: 17px;
+        // background-color: #235a18;
+        // border: 1px solid #235a18;
     }
 
     #BonusDescription {
+        margin-top: 12px;
+        margin-left: 25px;
+        margin-right: 25px;
         flow-children: down;
-        
+        // border: 1px solid #235a18;
 
         .SyenrgyRow {
             margin-top: 4px;
@@ -72,13 +210,15 @@
                 // wash-color: #ffffff;
 
                 .SyenrgyAmount {
-                    color:#45d801;
-                    background-color: #235a18;
-                    border: 1px solid #96ff50;
+                    color: #ffffff;
+                    text-shadow: 0px 0px 2px 3.0 #000000;
+                    background-color: #818181;
+                    // border: 1px solid #838383;
                 }
 
                 .SyenrgyDesc {
-                    color:#45d801;
+                    color: #ffffff;
+                    text-shadow: 0px 0px 2px 2.0 #000000;
                 }
             }
 
@@ -88,8 +228,8 @@
 
                 font-size: 20px;
                 font-weight: bold;
-                background-color: #505050;
-                border: 1px solid #292929;
+                background-color: #313131;
+                // border: 1px solid #292929;
                 text-align: center;
             }
 
@@ -97,7 +237,8 @@
                 font-size: 18px;
                 margin-left: 8px;
                 vertical-align: middle;
-                color:#797979;
+                color: #505050;
+
             }
         }
     }

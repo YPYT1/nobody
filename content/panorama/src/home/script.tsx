@@ -90,7 +90,10 @@ export const RegisterCustomTooltip = () => {
 
 export const Initialize = () => {
     const layout_path = "file://{resources}/layout/custom_game/home/panel";
-    $("#control").BLoadLayout(layout_path + "/control/control.xml", true, false);
+    
+    const control = $("#control");
+    control.RemoveAndDeleteChildren()
+    control.BLoadLayout(layout_path + "/control/control.xml", true, false);
     $("#resource").BLoadLayout(layout_path + "/resource/resource.xml", true, false);
     $("#top_info").BLoadLayout(layout_path + "/top_info/top_info.xml", true, false);
     $("#chapter").BLoadLayout(layout_path + "/chapter/chapter.xml", true, false);
@@ -102,8 +105,6 @@ export const Initialize = () => {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
         $.GetContextPanel().SetHasClass("IsInToolsMode", true);
     }
-
-
 
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
         let data = event.data;

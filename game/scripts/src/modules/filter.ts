@@ -7,11 +7,13 @@ export class Filter {
     constructor() {
         // GameRules.GetGameModeEntity().SetItemAddedToInventoryFilter((params) => this.ItemAddedToInventory(params), this);
         GameRules.GetGameModeEntity().SetDamageFilter((params) => this.DamageFilter(params), this);
+        // GameRules.GetGameModeEntity().SetExecuteOrderFilter((params) => this.ExecuteOrderFilter(params), this);
     }
 
     Reload() {
         // GameRules.GetGameModeEntity().SetItemAddedToInventoryFilter((params) => this.ItemAddedToInventory(params), this);
         GameRules.GetGameModeEntity().SetDamageFilter((params) => this.DamageFilter(params), this);
+        // GameRules.GetGameModeEntity().SetExecuteOrderFilter((params) => this.ExecuteOrderFilter(params), this);
     }
 
     ItemAddedToInventory(keys: ItemAddedToInventoryFilterEvent): boolean {
@@ -38,5 +40,10 @@ export class Filter {
         if (params.damage > 2100000000) { params.damage = 2100000000; }
         // print(params.damage)
         return true;
+    }
+
+    ExecuteOrderFilter(params: ExecuteOrderFilterEvent) {
+        // DeepPrintTable(params)
+        return true
     }
 }

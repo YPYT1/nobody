@@ -7,5 +7,65 @@
         <include src="./../../_styles/styles.less" />
         <include src="./styles.less" />
     </styles>
-    <Panel class="tooltip_ability" hittest="false"/>
+    <snippets>
+        <snippet name="ArmsCombieRows">
+            <Panel class='ArmsCombieRows'>
+                <Label class="CombieTitle" text="{s:combie_text}" />
+                <Label class='CombieAbilityRequire' text="{s:combie_list}" html="true" />
+                <Label class='CombieAbilityDesc' text="{s:combie_desc}" html="true" />
+            </Panel>
+        </snippet>
+    </snippets>
+    <Panel class="tooltip_ability" hittest="false">
+        <Panel class="Background">
+            <Panel class="Header">
+                <Panel class="Top"/>
+                <Panel class="Mid"/>
+            </Panel>
+        </Panel>
+        <Panel class="Bot" />
+        <Panel class="TooltipContent">
+            <Panel id="AbilityHeader">
+                <Panel class='AbilityImagePanel'>
+                    <Image id='AbilityIcon' scaling='stretch-to-fit-y-preserve-aspect'/>
+                </Panel>
+                <Panel class='AbilityLabel'>
+                    <Panel class="AbilityName">
+                        <Label class='AbilityNameLabel' text="{s:ability_name}" />
+                        <Panel class='AbilityElement' />
+                        <Label class="AbilityLevel" text="Lv.{d:level}"/>
+                    </Panel>
+                    <Panel id='AbilityCategoryType'>
+                        <Panel class="AbilityTag Aoe"/>
+                        <Panel class="AbilityTag Buff"/>
+                        <Panel class="AbilityTag Dot"/>
+                        <Panel class="AbilityTag Grow"/>
+                        <Panel class="AbilityTag Missile"/>
+                        <Panel class="AbilityTag Orb"/>
+                        <Panel class="AbilityTag Resource"/>
+                        <Panel class="AbilityTag Summon"/>
+                        <Panel class="AbilityTag Surround"/>
+                    </Panel>
+                    <Panel id="CurrentItemCosts">
+                        <Panel id="ManaCost" class="CostsRows">
+                            <Panel class="Icon Mana"/>
+                            <Label text="{s:mana}" />
+                        </Panel>
+                        <Panel id="Cooldown" class="CostsRows">
+                            <Panel class="Icon Cooldown"/>
+                            <Label text="{s:cooldown}" />
+                        </Panel>
+                    </Panel>
+                </Panel>
+            </Panel>
+            <Panel id="AbilityCoreDetails">
+                <!-- <Label id="AttributeInfo" text="{s:attribute}" html="true" /> -->
+                <Panel id="DescriptionContainer">
+                    <Label class="DescriptionLabel" text="{s:description}" html="true" />
+                </Panel>
+                <Panel id='ComboContainer' />
+            </Panel>
+            <Panel class="BottomlBank"/>
+        </Panel>
+    </Panel>
 </root>

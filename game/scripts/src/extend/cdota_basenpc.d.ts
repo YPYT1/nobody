@@ -12,6 +12,20 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     /** 属性转换 */
     custom_attribute_conversion: CustomAttributeConversionType;
 
+    /** 减伤百分比列表 */
+    ReductionPct: { [key: string]: number; };
+    /** 减伤百分比列表第二层 */
+    ReductionPct2: { [key: string]: number; };
+    /** 减伤百分比列表第三层 */
+    ReductionPct3: { [key: string]: number; };
+    
+    /** 减伤最终结果 */
+    ReductionResult: number;
+    /** 第二层减伤 */
+    ReductionResult2: number;
+    /** 第三层减伤 */
+    ReductionResult3: number;
+    
     // AbilityUpgrades: AbilitySpecialValueProps;
     /** 肉鸽专用词条词条 */
     OverrideSpecial: OverrideSpecialValueProps;
