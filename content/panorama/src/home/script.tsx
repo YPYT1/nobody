@@ -6,7 +6,7 @@ export const HideOfficialLayoutUI = () => {
 
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_TIMEOFDAY, false);
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_HEROES, false);
-    GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_PANEL, false);
+    GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_PANEL, true);
     // 小地图
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_MINIMAP, false);
     // 击杀
@@ -56,19 +56,19 @@ export const RegisterCustomTooltip = () => {
         HideCustomTooltip()
     })
 
-    $.RegisterForUnhandledEvent("DOTAShowAbilityTooltipForEntityIndex", function (
-        Panel: Panel,
-        ability_name: string,
-        ability_index: EntityIndex,
-    ) {
-        // $.Msg([ability_name, unit_index])
-        $.Schedule(0, () => {
-            // $.Msg([itemName, itemIndex])
-            // let name = Entities.GetUnitName(ability_index);
-            // $.Msg(["name",name])
-            ShowCustomTooltip(Panel, "ability", ability_name,)
-        })
-    })
+    // $.RegisterForUnhandledEvent("DOTAShowAbilityTooltipForEntityIndex", function (
+    //     Panel: Panel,
+    //     ability_name: string,
+    //     ability_index: EntityIndex,
+    // ) {
+    //     // $.Msg([ability_name, unit_index])
+    //     $.Schedule(0, () => {
+    //         // $.Msg([itemName, itemIndex])
+    //         // let name = Entities.GetUnitName(ability_index);
+    //         // $.Msg(["name",name])
+    //         ShowCustomTooltip(Panel, "ability", ability_name,)
+    //     })
+    // })
 
     $.RegisterForUnhandledEvent("DOTAShowDroppedItemTooltip", function (panel, x, y, itemName: string, num, boolean) {
         $.Msg(["DOTAShowDroppedItemTooltip"])

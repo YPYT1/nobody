@@ -148,6 +148,7 @@ export class modifier_public_attribute extends BaseModifier {
         return this.AttributeData.AttackRange
     }
 
+    // GetModifierOverrideAttackDamage
     // GetModifierBaseAttack_BonusDamage(): number {
     //     return this.AttributeData.AttackDamage
     // }

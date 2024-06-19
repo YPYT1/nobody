@@ -14,16 +14,16 @@ cd：5秒
 @registerAbility()
 export class arms_73 extends BaseArmsAbility {
 
-    _OnUpdateKeyValue(): void {
-        this.buff_duration = this.GetSpecialValueFor("buff_duration")
-        this.RegisterEvent(["OnArmsStart"])
-    }
+    // _OnUpdateKeyValue(): void {
+    //     this.buff_duration = this.GetSpecialValueFor("buff_duration")
+    //     this.RegisterEvent(["OnArmsStart"])
+    // }
 
-    OnArmsStart(): void {
-        this.caster.AddNewModifier(this.caster, this, "modifier_arms_73_buff", {
-            duration: this.buff_duration
-        })
-    }
+    // OnArmsStart(): void {
+    //     this.caster.AddNewModifier(this.caster, this, "modifier_arms_73_buff", {
+    //         duration: this.buff_duration
+    //     })
+    // }
 }
 
 @registerModifier()

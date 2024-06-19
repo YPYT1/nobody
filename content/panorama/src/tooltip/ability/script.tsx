@@ -119,18 +119,20 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
 
     // 类型
     let type_category = GetAbilityTypeCategory(ability_name);
+    // $.Msg(["type_category",type_category])
     for (let order in ArmsTypesJson) {
         let order_key = ArmsTypesJson[order as keyof typeof ArmsTypesJson];
-        // $.Msg(["order_key", order_key, type_category.indexOf(order) != -1])
-        AbilityCategoryType.SetHasClass(order_key, type_category.indexOf(order) != -1)
+        // $.Msg(["order_key", order_key, type_category.indexOf(order_key) != -1])
+        AbilityCategoryType.SetHasClass(order_key, type_category.indexOf(order_key) != -1)
     }
     // 属性
     let AttributeObject = GetAbilityAttribute(ability_name);
     // let attr_list = ConvertAttributeValues(AttributeObject);
-
+    
+    
     // 稀有度
     const rarity = GetAbilityRarity(ability_name)
-    for (let r = 0; r < 7; r++) {
+    for (let r = 1; r <= 7; r++) {
         MainPanel.SetHasClass("rarity_" + r, rarity == r);
     }
 

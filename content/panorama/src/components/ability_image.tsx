@@ -6,17 +6,19 @@ import { HideCustomTooltip, ShowCustomTooltip } from '../utils/custom_tooltip';
 export const CAbilityImage = ({ id, abilityname, showtooltip }: { id?: string, abilityname: string; showtooltip?: boolean }) => {
 
     let image_src = "";
+    let rarity = 0;
     let ability_data = NpcAbilityCustom[abilityname as keyof typeof NpcAbilityCustom];
     if (ability_data) {
         let image = ability_data.AbilityTextureName;
         image_src = GetTextureSrc(image);
+        rarity = ability_data.Rarity;
     }
 
 
     return (
         <Panel
             id={id}
-            className="CAbilityImage"
+            className={`CAbilityImage Rarity${rarity}`}
             onmouseover={(e) => {
                 if (showtooltip) {
                     ShowCustomTooltip(e, "ability", abilityname)

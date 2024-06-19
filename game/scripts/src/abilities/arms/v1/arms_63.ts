@@ -15,7 +15,7 @@ cd：3秒
 export class arms_63 extends BaseArmsAbility {
 
     projectile_width: number;
-
+    projectile_speed:number;
 
     Precache(context: CScriptPrecacheContext): void {
         PrecacheResource("particle", "particles/units/heroes/hero_lina/lina_spell_dragon_slave.vpcf", context);

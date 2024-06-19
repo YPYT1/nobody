@@ -39,15 +39,16 @@ export class CustomAttribute {
 
         GameRules.CustomOverrideAbility.InitOverrideSpecialTable(player_id, hUnit);
 
-        for (let i = 0; i < 32; i++) {
-            let hAbility = hUnit.GetAbilityByIndex(i);
-            if (hAbility) { hAbility.RemoveSelf() }
-        }
+
         //PrecacheUnitByNameAsync(heroname, () => {
         print("InitHeroAttribute", hHeroKvData)
         if (hHeroKvData) {
-            print("has herodata")
+            // print("has herodata")
             // 延迟1帧之后加载
+            for (let i = 0; i < 32; i++) {
+                let hAbility = hUnit.GetAbilityByIndex(i);
+                if (hAbility) { hAbility.RemoveSelf() }
+            }
             hUnit.SetContextThink("delay_init_attr", () => {
                 /** 属性表 */
                 let attribute_table: CustomAttributeTableType = {};
@@ -121,7 +122,10 @@ export class CustomAttribute {
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
-                this.InitHeroAbility(hUnit, false);
+                // this.InitHeroAbility(hUnit, false);
+                hUnit.AddAbility("public_arms").SetLevel(1);
+                hUnit.AddAbility("public_attribute").SetLevel(1);
+                hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
 
                 return null

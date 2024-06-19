@@ -13,7 +13,8 @@ cd：4秒
 export class arms_71 extends BaseArmsAbility {
 
     root_duration: number;
-
+    aoe_radius:number;
+    
     Precache(context: CScriptPrecacheContext): void {
         PrecacheResource("particle", "particles/items3_fx/gleipnir_root.vpcf", context);
         PrecacheResource("particle", " particles/items3_fx/gleipnir_projectile.vpcf", context);

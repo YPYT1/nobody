@@ -7,9 +7,15 @@ type MdfEventTyps =
     | "OnAffected"
     | "OnKill"
     | "OnArmsExecuted"
-    | "OnAttackStart"
+    | "OnAttackStart";
 
 
+/**
+ * 自定义Arms技能系统.
+ * @ 属性变更时自动更新伤害
+ * @ 注册相关事件触发
+ * 
+ */
 export class BaseArmsAbility extends BaseAbility {
 
     // Precache(context: CScriptPrecacheContext): void {
@@ -31,20 +37,10 @@ export class BaseArmsAbility extends BaseAbility {
     buff: CDOTA_Buff;
     unit_list: CDOTA_BaseNPC[];
 
-    // OverrideKyes
-    projectile_speed: number;
-    bounce_count: number;
-    projectile_count: number;
-    aoe_radius: number;
-    damage_interval_cut: number;
-    cooldown_cut: number;
-    summoned_duration: number;
-    summoned_damage: number;
-    buff_duration: number;
-    debuff_duration: number;
-    shield_amplify: number;
-    health_amplify: number;
-
+    /**
+     * 查找范围内随机敌人
+     * @returns 
+     */
     FindRandomEnemyTarget() {
         const vCaster = this.caster.GetOrigin();
         let targets = FindUnitsInRadius(
@@ -65,6 +61,10 @@ export class BaseArmsAbility extends BaseAbility {
         }
     }
 
+    /**
+     * 查找范围内随机敌人的坐标
+     * @returns 
+     */
     FindRandomEnemyVect() {
         const vCaster = this.caster.GetOrigin();
         let targets = FindUnitsInRadius(
@@ -89,10 +89,12 @@ export class BaseArmsAbility extends BaseAbility {
         return vTarget
     }
 
-    SetLinkBuff(hBuff: CDOTA_Buff) { this.buff = hBuff }
+    // SetLinkBuff(hBuff: CDOTA_Buff) { this.buff = hBuff }
 
+    /**
+     * 技能升级事件
+     */
     OnUpgrade() {
-
         this.element_type = 0;
         this.dmg_formula = "0";
         this.caster = this.GetCaster();
@@ -239,6 +241,10 @@ export class BaseArmsAbility extends BaseAbility {
     OnAttackStart(hTarget: CDOTA_BaseNPC): void { }
     OnDeath() { }
 
+    UpdateAbilityDamage(){
+        this.ability_damage = this.GetAbilityDamage();
+    }
+
     GetAbilityDamage() {
         if (this.dmg_formula == null) {
             return 0;
@@ -281,7 +287,7 @@ export class BaseArmsModifier extends BaseModifier {
         this.C_OnCreatedBefore(params);
         if (IsServer()) {
             let hAbility = this.GetAbility() as BaseArmsAbility;
-            hAbility.SetLinkBuff(this);
+            hAbility.buff = this;
             let ability_attr = GameRules.CustomAttribute.GetAbilityAttribute(this.GetAbility().GetAbilityName());
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.item_key, ability_attr);
             this.C_OnCreated(params)

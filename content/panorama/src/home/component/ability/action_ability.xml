@@ -28,7 +28,7 @@
 				<Panel id="AutocastableAbilityBorder" />
 				<Panel class='ButtonSize'>
 					<Button class='AbilityButton'>
-						<DOTAAbilityImage id='AbilityImage' />
+						<Image id='AbilityImage' />
 						<Panel id="Cooldown" hittest="false">
 							<Panel id="CooldownOverlay" hittest="false" />
 							<Label id="CooldownTimer" text="{s:cooldown_timer}" hittest="false" />

@@ -1,16 +1,15 @@
-import { modifier_motion_surround } from "../../../modifier/modifier_motion";
 import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
+/**
+ * 对锥型区域内的敌人造成伤害并减缓其移动速度
+ */
 @registerAbility()
 export class arms_1 extends BaseArmsAbility {
 
     spirit_list: CDOTA_BaseNPC[];
     spirit_limit: number;
-
-    Precache(context: CScriptPrecacheContext): void {
-        PrecacheResource("particle", "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf", context);
-    }
+    projectile_distance:number;
 
     _OnUpdateKeyValue(): void {
         this.spirit_limit = this.GetSpecialValueFor("spirit_limit");
@@ -19,131 +18,104 @@ export class arms_1 extends BaseArmsAbility {
     }
 
     OnArmsStart(): void {
-        print("this.spirit_list.length", this.spirit_list.length)
-        if (this.spirit_list.length < this.spirit_limit) {
-            this.caster.SpendMana(10, this);
-            let summoned_duration = this.GetSpecialValueFor("skv_summoned_duration");
-            let hSpirit = GameRules.SummonedSystem.CreatedUnit(
-                "npc_summoned_dummy",
-                this.caster.GetAbsOrigin() + Vector(0, 300, 0) as Vector,
-                this.caster,
-                summoned_duration,
-                true
-            )
-            this.spirit_list.push(hSpirit)
-            hSpirit.AddNewModifier(this.caster, this, "modifier_arms_1_summoned", {
-                duration: summoned_duration,
-                surround_distance: 300,
-                surround_qangle: 0,
-                surround_speed: 900,
-                surround_entity: this.caster.entindex(),
-            });
+        this.projectile_distance = 750
+        this.ability_damage = 11;
+        // this.trigger_distance = 600;
+        // print("this.spirit_list.length", this.spirit_list.length)
+        const projectile_start_radius = 55;
+        const projectile_end_radius = 355;
+        // const projectile_distance = 650;
+        const projectile_speed = 3000;
+        // const projectile_speed = this.GetSpecialValueFor("projectile_speed");
+        const vOrigin = this.caster.GetOrigin();
 
-        }
-    }
+        // let enemies = FindUnitsInRadius(
+        //     this.caster.GetTeam(),
+        //     vOrigin,
+        //     null,
+        //     projectile_distance,
+        //     UnitTargetTeam.ENEMY,
+        //     UnitTargetType.BASIC + UnitTargetType.HERO,
+        //     UnitTargetFlags.NONE,
+        //     FindOrder.CLOSEST,
+        //     false
+        // );
 
-    _RemoveSelf(): void {
-        for (let hSpirit of this.spirit_list) {
-            if (hSpirit.IsNull() == false) {
-                hSpirit.RemoveModifierByName("modifier_arms_1_summoned");
+        // GameRules.ResourceSystem.ModifyResource
+        let vPoint = vOrigin + this.caster.GetForwardVector() * this.projectile_distance as Vector;
+        // if (enemies.length > 0) {
+        //     let vTarget = enemies[0].GetAbsOrigin();
+        //     let direction = vTarget - vOrigin as Vector;
+        //     direction.z = 0
+        //     direction = direction.Normalized();
+        //     // print(this.caster.GetForwardVector(),direction)
+        //     vPoint = vOrigin + direction * projectile_distance as Vector;
+
+        //     // DebugDrawCircle(vTarget, Vector(255, 9, 9), 100, 100, true, 1);
+        // }
+        // print("vPoint", vPoint)
+        // DebugDrawCircle(vPoint, Vector(255, 9, 9), 100, 100, true, 1);
+        let projectile_direction = vPoint - vOrigin as Vector
+        projectile_direction.z = 0
+        projectile_direction = projectile_direction.Normalized()
+
+        // let enemy = 
+        ProjectileManager.CreateLinearProjectile({
+            Source: this.caster,
+            Ability: this,
+            vSpawnOrigin: this.caster.GetAbsOrigin(),
+            iUnitTargetTeam: UnitTargetTeam.ENEMY,
+            iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,
+            iUnitTargetFlags: UnitTargetFlags.NONE,
+            EffectName: "particles/units/heroes/hero_snapfire/hero_snapfire_shotgun.vpcf",
+            // EffectName: "particles/units/heroes/hero_nyx_assassin/nyx_assassin_impale.vpcf",
+
+            fDistance: this.projectile_distance,
+            fStartRadius: projectile_start_radius,
+            fEndRadius: projectile_end_radius,
+            vVelocity: projectile_direction * projectile_speed as Vector,
+
+            bProvidesVision: false,
+
+            ExtraData: {
+                pos_x: vOrigin.x,
+                pos_y: vOrigin.y,
             }
-        }
-    }
-}
+        });
+        EmitSoundOn("Hero_Snapfire.Shotgun.Fire", this.caster);
 
-@registerModifier()
-export class modifier_arms_1 extends BaseArmsModifier { }
+        // let particle_name = "particles/units/heroes/hero_snapfire/hero_snapfire_shotgun_range_finder_aoe.vpcf";
+        // let effect_cast = ParticleManager.CreateParticle(particle_name, ParticleAttachment.ABSORIGIN, this.caster);
+        // ParticleManager.SetParticleControl(effect_cast, 0, vOrigin)
 
-@registerModifier()
-export class modifier_arms_1_summoned extends modifier_motion_surround {
+        // ParticleManager.SetParticleControl(effect_cast, 1, vPoint)
+        // ParticleManager.SetParticleControl(effect_cast, 2, Vector(0, projectile_end_radius, 0))
+        // // ParticleManager.SetParticleControl(effect_cast, 6, vOrigin + projectile_direction * projectile_end_radius as Vector);
+        // this.caster.SetContextThink(DoUniqueString("test"), () => {
+        //     ParticleManager.DestroyParticle(effect_cast, true)
+        //     return null
+        // }, 1)
 
-    IsAura(): boolean { return true; }
-    GetAuraRadius(): number { return 80; }
-    IsAuraActiveOnDeath() { return false; }
-    GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
-    GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
-    GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
-    GetModifierAura() { return "modifier_arms_1_summoned_collision"; }
-
-    CheckState(): Partial<Record<ModifierState, boolean>> {
-        return {
-            [ModifierState.INVISIBLE]: true,
-            [ModifierState.NO_HEALTH_BAR]: true,
-            [ModifierState.INVULNERABLE]: true,
-            [ModifierState.NOT_ON_MINIMAP]: true,
-            [ModifierState.UNSELECTABLE]: true,
-        };
     }
 
-    C_OnCreated(params: any): void {
-        let hParent = this.GetParent();
-        hParent.summoned_damage = this.GetAbility().GetAbilityDamage();
-        let Vpcf1 = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf",
-            ParticleAttachment.POINT_FOLLOW,
-            this.GetParent()
-        );
-        this.AddParticle(Vpcf1, false, false, 1, false, false);
-    }
-
-    OnDestroy(): void {
-        if (!IsServer()) { return }
-        let hParent = this.GetParent();
-        let hAbility = this.GetAbility() as arms_1;
-        if (hAbility) {
-            let index = hAbility.spirit_list.indexOf(hParent);
-            if (index != -1) { hAbility.spirit_list.splice(index, 1) }
-        }
-        UTIL_Remove(hParent);
-    }
-}
-
-@registerModifier()
-export class modifier_arms_1_summoned_collision extends BaseModifier {
-
-    IsHidden(): boolean { return true; }
-
-    GetAttributes(): ModifierAttribute {
-        return ModifierAttribute.MULTIPLE;
-    }
-
-    OnCreated(params: object): void {
-        if (!IsServer()) { return }
-        let hAuraUnit = this.GetAuraOwner()
-        let vPoint = hAuraUnit.GetAbsOrigin();
-
-        let pfx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_wisp/wisp_guardian_explosion.vpcf",
-            ParticleAttachment.WORLDORIGIN,
-            null
-        );
-        ParticleManager.SetParticleControl(pfx, 0, hAuraUnit.GetAbsOrigin());
-        ParticleManager.ReleaseParticleIndex(pfx);
-
-        let ability_damage = hAuraUnit.summoned_damage;
-        let enemies = FindUnitsInRadius(
-            DotaTeam.GOODGUYS,
-            vPoint,
-            null,
-            120,
-            UnitTargetTeam.ENEMY,
-            UnitTargetType.BASIC + UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
-            FindOrder.ANY,
-            false
-        );
-
-        for (let enemy of enemies) {
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: any): boolean | void {
+        if (target) {
+            let vOrigin = Vector(extraData.pos_x, extraData.pos_y, 0);
+            let vTarget = target.GetAbsOrigin();
+            let distance = (vTarget - vOrigin as Vector).Length2D();
+            // print("distance", distance, this.projectile_distance)
+            if (distance > this.projectile_distance + 200) { return };
             ApplyCustomDamage({
-                victim: enemy,
-                attacker: this.GetCaster(),
-                damage: ability_damage,
+                victim: target,
+                attacker: this.caster,
+                damage: this.ability_damage,
                 damage_type: DamageTypes.MAGICAL,
-                ability: this.GetAbility(),
-                element_type: ElementTypeEnum.thunder,
-            })
+                ability: this,
+                element_type: this.element_type
+            });
+            return false
         }
-
-        hAuraUnit.RemoveModifierByName("modifier_arms_1_summoned")
+        return true
     }
+
 }

@@ -10,7 +10,6 @@ import { CAbilityImage } from "../../components/ability_image";
 const CustomAbilityPanel = ({ abilityname }: { abilityname: string }) => {
 
     const panelRef = useRef<Panel | null>();
-
     const onInit = useCallback((e: Panel) => {
         panelRef.current = e;
         $.RegisterEventHandler('DragStart', e, OnDragStart);
@@ -79,7 +78,8 @@ const CustomAbilityPanel = ({ abilityname }: { abilityname: string }) => {
             onload={onInit}
             draggable={true}
         >
-            <DOTAAbilityImage abilityname={abilityname} visible={!!abilityname} />
+            {/* <Image visible={!!abilityname} /> */}
+            <CAbilityImage abilityname={abilityname} />
             <Label localizedText={`#DOTA_Tooltip_Ability_${abilityname}`} />
         </Panel>
     )

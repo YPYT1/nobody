@@ -2,6 +2,7 @@
 import { HideCustomTooltip, ShowCustomTextTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 import { default as NpcAbilityCustom } from "../../../json/npc_abilities_custom.json";
 import { GetAbilityRarity } from "../../../utils/ability_description";
+import { GetTextureSrc } from "../../../common/custom_kv_method";
 
 let MainPanel = $.GetContextPanel();
 let AbilityContainer = MainPanel.GetChild(1) as Panel;
@@ -62,8 +63,16 @@ function UpdateAbilityVar() {
     let ability_name = Abilities.GetAbilityName(m_Ability)
     // MainPanel.visible = !is_hidden;
     MainPanel.SetHasClass("is_hidden",is_hidden)
-    let AbilityImage = $("#AbilityImage") as AbilityImage;
-    AbilityImage.abilityname = ability_name;
+    let AbilityImage = $("#AbilityImage") as ImagePanel;
+    let ability_data = NpcAbilityCustom[ability_name as keyof typeof NpcAbilityCustom];
+    let texture = ""
+    if (ability_data){
+        texture = ability_data ? (ability_data.AbilityTextureName ?? "") : "";
+    } else {
+        texture = Abilities.GetAbilityTextureName(m_Ability);
+    }
+
+    AbilityImage.SetImage(GetTextureSrc(texture)) 
 
     // 变更品质
     const rarity = GetAbilityRarity(ability_name);

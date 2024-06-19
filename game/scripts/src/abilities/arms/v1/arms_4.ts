@@ -14,7 +14,7 @@ export class arms_4 extends BaseArmsAbility {
 
     OnArmsStart(): void {
         let count = 0;
-        this.debuff_duration = this.GetSpecialValueFor("debuff_duration");
+        // this.debuff_duration = this.GetSpecialValueFor("debuff_duration");
         this.ability_damage = this.GetAbilityDamage();
         const projectile_speed = this.GetSpecialValueFor("projectile_speed");
         const extra_count = this.GetSpecialValueFor("extra_count");
