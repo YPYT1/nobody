@@ -1,3 +1,5 @@
+
+import * as HeroLevelConfig from "../json/config/game/hero_level_config.json";
 export class GameConfig {
     constructor() {
         SendToServerConsole('dota_max_physical_items_purchase_limit 9999'); // 用来解决物品数量限制问题
@@ -115,14 +117,14 @@ export class GameConfig {
 }
 
 
-function GetHeroLevelTable(max_level: number = 80) {
+function GetHeroLevelTable(max_level: number = 100) {
     let hero_xp_table: { [index: number]: number } = {};
     let param = { LEVEL: 1 };
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 100; i++) {
         let xp = 0;
         if (i > 0 && i < max_level) {
             param.LEVEL = i;
-            xp = eval(GameRules.PUBLIC_CONST.EXP_EQUATION, param) + hero_xp_table[i - 1];
+            xp = HeroLevelConfig[i];
         } else if (i == 0) {
             xp = 0;
         } else {

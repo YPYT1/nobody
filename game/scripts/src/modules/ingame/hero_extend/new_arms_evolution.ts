@@ -15,9 +15,9 @@ export class NewArmsEvolution extends UIEventRegisterClass {
             [qualiy: number]: {  //品质
                 key: string[], //物品key
                 pro: number[]; //物品概率
-            }
+            }   
         }
-    } = {};
+    } = {}; 
 
     kill_list : number[] = [ 50 , 50 , 100 , 200 , 400 , 600 , 800 , 1000 , 1000 , 1000 , 1000];
 
@@ -55,7 +55,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      //玩家羁绊记录数据
      ElementBondDateRecord : ElementBondDateList[][] = [];
 
-    // 羁绊表
+    // 羁绊表   
     ElementBondTable: { [element: string]: number[] };
 
     constructor() {

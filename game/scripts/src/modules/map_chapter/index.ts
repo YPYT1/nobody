@@ -365,7 +365,7 @@ export class MapChapter extends UIEventRegisterClass {
 
         this._game_select_phase = 3
         this.GetGameSelectPhase(-1, {})
-        //开始刷怪
+        //初始化 刷怪地点
         GameRules.Spawn.Init(ChapterData.map_centre_x, ChapterData.map_centre_y)
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawn",

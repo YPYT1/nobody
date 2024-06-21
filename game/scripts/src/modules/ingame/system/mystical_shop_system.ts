@@ -81,7 +81,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
 
     //玩家折扣率
     player_shop_discount : number[] = [];
-    //获得灵魂概率 双倍产出概率
+    //获得灵魂概率 双倍产出概率 
     player_get_soul_double_pro : number[] = [];
 
     /**
@@ -204,7 +204,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         }, this.MYSTICAL_SHOP_BUY_ITEM);
     }
     /**
-     * 使用灵魂刷新单个物品
+     * 使用灵魂刷新单个物品 
      * @param player_id 
      * @param params 
      * @param callback 
@@ -212,7 +212,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     RefreshOneItemBySoul(player_id: PlayerID, params: CGED["MysticalShopSystem"]["RefreshOneItemBySoul"], callback?: string) {
         let index = params.index;
         let refresh_soul = this.shop_field_list[player_id][index].refresh_soul;
-        let player_gold_start = GameRules.ResourceSystem.ModifyResource(player_id, { Soul : - refresh_soul});
+        let player_gold_start = GameRules.ResourceSystem.ModifyResource( player_id, { Soul : - refresh_soul});
         if (player_gold_start) {
             GameRules.MysticalShopSystem.OneItemRefresh( player_id , index)
         } else {

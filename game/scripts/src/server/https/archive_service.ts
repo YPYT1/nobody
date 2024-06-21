@@ -215,7 +215,7 @@ export class ArchiveService {
      * @param player_id 
      * @param equipdata
      */
-    UpdateEquip(player_id : PlayerID , equipdata : ServerEquip){
+    UpdateEquip(player_id : PlayerID , equipdata : ServerEquip , red_list : string = ""){
         let steam_id = PlayerResource.GetSteamAccountID(player_id);
         let param_data = <UpdateEquipParam>{
             gid: this._game_id,

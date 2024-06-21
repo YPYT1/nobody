@@ -158,40 +158,37 @@ export class Spawn extends UIEventRegisterClass {
                 this._unit_gold_list[key] = init["KillBountyRange"]
             }
         }
-        let drop_out_item_max = "";
         //查找当前地图boss信息
 
         // 回合内怪物信息
         for (let key in MapInfoRound) {
             let TwiceMapInfoRoundInit = MapInfoRound[key as keyof typeof MapInfoRound];
-            if (TwiceMapInfoRoundInit.round_class == 10) {
-                //抽取那一拨怪物作为小怪
-                let monster_list_kyes = Object.keys(TwiceMapInfoRoundInit.monster_list);
-                let new_monster_list: { [monster_index: string]: string } = {}
-                let monster_list_key = "1";
-                if (monster_list_kyes.length > 1) {
-                    // let keys_index = RandomInt( 0 , monster_list_kyes.length - 1);
-                    // let monster_list_key = monster_list_kyes[keys_index];
-                    new_monster_list = {
-                        "1": TwiceMapInfoRoundInit.monster_list[monster_list_key] as string
-                    }
-                } else {
-                    new_monster_list = {
-                        "1": TwiceMapInfoRoundInit.monster_list[monster_list_key] as string
-                    }
+            //抽取那一拨怪物作为小怪
+            let monster_list_kyes = Object.keys(TwiceMapInfoRoundInit.monster_list);
+            let new_monster_list: { [monster_index: string]: string } = {}
+            let monster_list_key = "1";
+            if (monster_list_kyes.length > 1) {
+                // let keys_index = RandomInt( 0 , monster_list_kyes.length - 1);
+                // let monster_list_key = monster_list_kyes[keys_index];
+                new_monster_list = {
+                    "1": TwiceMapInfoRoundInit.monster_list[monster_list_key] as string
                 }
-                //根据玩家数量修改上线
-                let monster_count_list: { [index: string]: number } = {};
-                monster_count_list["1"] = math.ceil(TwiceMapInfoRoundInit.monster_count_list[monster_list_key]
-                    * GameRules.PUBLIC_CONST.PLAYER_COUNT_REF_MONSTER[this.player_count - 1])
-                // TwiceMapInfoRoundInit.round_index;
-                this.map_info_round[TwiceMapInfoRoundInit.round_index] = {
-                    monster_type: TwiceMapInfoRoundInit.monster_type,
-                    t_time: TwiceMapInfoRoundInit.t_time,
-                    monster_list: new_monster_list,
-                    interval_time: TwiceMapInfoRoundInit.interval_time,
-                    monster_count_list: monster_count_list,
+            } else {
+                new_monster_list = {
+                    "1": TwiceMapInfoRoundInit.monster_list[monster_list_key] as string
                 }
+            }
+            //根据玩家数量修改上线
+            let monster_count_list: { [index: string]: number } = {};
+            monster_count_list["1"] = math.ceil(TwiceMapInfoRoundInit.monster_count_list[monster_list_key]
+                * GameRules.PUBLIC_CONST.PLAYER_COUNT_REF_MONSTER[this.player_count - 1])
+            // TwiceMapInfoRoundInit.round_index;
+            this.map_info_round[TwiceMapInfoRoundInit.round_index] = {
+                monster_type: TwiceMapInfoRoundInit.monster_type,
+                t_time: TwiceMapInfoRoundInit.t_time,
+                monster_list: new_monster_list,
+                interval_time: TwiceMapInfoRoundInit.interval_time,
+                monster_count_list: monster_count_list,
             }
         }
 
@@ -252,7 +249,7 @@ export class Spawn extends UIEventRegisterClass {
         }
         //怪物数量 
         this._monster_count = 0;
-        this._monster_count_interval = {}
+        this._monster_count_interval = {};
         //普通怪总和
         for (let index = 1; index <= Object.keys(this.map_info_round[this._round_index].monster_count_list).length; index++) {
             this._monster_count += tonumber(this.map_info_round[this._round_index].monster_count_list[index.toString()])
@@ -265,7 +262,7 @@ export class Spawn extends UIEventRegisterClass {
         let BossTime = GameRules.GetDOTATime(false,false) + 30;
         let BossRageTime = GameRules.GetDOTATime(false,false) + 60;
         
-        let refresh_type = 1; // 1正在刷怪 2处于间隔冷却
+        let refresh_type = 1; // 1. 正在刷怪 2. 处于间隔冷却
         let monster_refresh_count = 0;
         //普通怪物模式
 
@@ -720,6 +717,7 @@ export class Spawn extends UIEventRegisterClass {
     //通过游戏胜利 或失败 清空所有怪物
     StopAllSpawnAndMonster(GameWin: Boolean = false, iskillboss: Boolean = false) {
         GameRules.GetGameModeEntity().SetContextThink("StopAllSpawnAndMonster", () => {
+            
             GameRules.Spawn._game_start = false;
 
             GameRules.MapChapter._game_select_phase = 999;
@@ -749,8 +747,6 @@ export class Spawn extends UIEventRegisterClass {
 
             //调用确认游戏失败
             GameRules.ArchiveService.GameOver();
-
-
             return null;
         }, 0)
     }
@@ -868,7 +864,6 @@ export class Spawn extends UIEventRegisterClass {
         }else{
             GameRules.Spawn.StopAllSpawnAndMonster()
         }
-        
     }
 
     //移除单位
