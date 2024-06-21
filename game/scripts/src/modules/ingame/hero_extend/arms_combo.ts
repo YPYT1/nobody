@@ -47,6 +47,7 @@ export class ArmsCombo {
         return []
     }
 
+    /** 判断技能Combo */
     AddComboAbility(hUnit: CDOTA_BaseNPC, ability_name: string) {
         let player_id = hUnit.GetPlayerOwnerID();
         let combo_list = this.GetAbilityCombo(ability_name);

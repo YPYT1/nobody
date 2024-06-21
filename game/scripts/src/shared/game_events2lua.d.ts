@@ -44,6 +44,10 @@ declare interface CGED {
     ResourceSystem: {
         GetPlayerResource: {}
     }
+
+    CustomOverrideAbility: {
+        GetUpdateSpecialValue: {}
+    }
 }
 
 

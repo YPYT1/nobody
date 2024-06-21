@@ -28,8 +28,9 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     
     // AbilityUpgrades: AbilitySpecialValueProps;
     /** 肉鸽专用词条词条 */
-    OverrideSpecial: OverrideSpecialValueProps;
-
+    // OverrideSpecial: MinorAbilityUpgradesProps;
+    MinorAbilityUpgrades:MinorAbilityUpgradesProps;
+    
     is_picking: boolean;
     /** 所有技能的内置冷却相应 */
     CDResp: { [key: string]: number }

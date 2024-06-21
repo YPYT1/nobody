@@ -100,22 +100,26 @@ declare type CustomAttributeConversionType = {
 }
 
 
-declare type OverrideSpecialKeyTypes = "skv_count"
-    | "skv_radius"
-    | "skv_duration"
-    | "skv_growth"
-    | "skv_damage"
-    | "skv_financing"
-    | "skv_defense"
-    | "skv_summoned_duration"
-    | "skv_income"
-    | "skv_haste"
-    | "skv_fire"
-    | "skv_thunder"
-    | "skv_ice"
-    | "skv_wind"
-    | "skv_light"
-    | "skv_dark"
+declare type OverrideSpecialKeyTypes = "skv_missile_count"
+    | "skv_aoe_radius"
+    | "skv_dot_duration"
+    | "skv_dot_interval"
+    | "skv_grow_income"
+    | "skv_surround_speed"
+    | "skv_surround_duration"
+    | "skv_surround_count"
+    | "skv_ring_width"
+    | "skv_ring_interval"
+    | "skv_bounce_count"
+    | "skv_bounce_increase"
+    | "skv_target_count"
+    | "skv_resource_percent"
+    | "skv_buff_increase"
+    | "skv_orb_chance"
+    | "skv_orb_count"
+    | "skv_summon_duration"
+    | "skv_summon_strength"
+
 
 declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Multiple" | "Correct";
 
@@ -137,10 +141,14 @@ interface OverrideSpecialValueProps {
         mul_value: number;
         /** 修正值. 最终乘区 默认为0即100% 最小[-100%]*/
         correct_value: number;
-        /** 结果 (基础*倍率)*修正 */
+        /** 结果  = (原始 + 基础) * 倍率 * 修正 */
         // result_value: number;
         cache_value?: number;
     }
+}
+
+interface MinorAbilityUpgradesProps {
+    [ability_name: string]: OverrideSpecialValueProps
 }
 
 /** 资源类型 */

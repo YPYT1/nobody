@@ -124,7 +124,7 @@ export function FormatDescription(
     for (let key in AbilityValues) {
         let special_key = AbilityValues[key];
         let special_num = 0;
-        if (entityIndex) {
+        if (entityIndex && entityIndex > 0) {
             special_num = Abilities.GetSpecialValueFor(entityIndex, key)
         } else {
             if (typeof (special_key) == "string") {

@@ -189,9 +189,6 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     }
 
 
-
-
-
     MainPanel.SetDialogVariableInt("level", ability_level)
     MainPanel.SetDialogVariable("cooldown", `${ability_cooldown}`);
     MainPanel.SetDialogVariable("mana", `${ability_mana}`);
@@ -199,7 +196,9 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     // 名字与描述
     let ability_name_label = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}`)
     MainPanel.SetDialogVariable("ability_name", ability_name_label);
-    let description = SetAbilityDescription(ability_name, undefined, ability_level);
+
+    let description = SetAbilityDescription(ability_name, entityIndex, ability_level);
+    // $.Msg(["description",description])
     MainPanel.SetDialogVariable("description", description);
 
 

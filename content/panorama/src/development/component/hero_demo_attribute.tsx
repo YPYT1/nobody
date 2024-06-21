@@ -206,19 +206,51 @@ const AbilityButtonRow = ({ entity, Btnhandle }: { entity: AbilityEntityIndex, B
     )
 }
 
-const RowOverrideKvEditor = ({ kv_key }: { kv_key: OverrideSpecialKeyTypes }) => {
+const RowOverrideKvEditor = ({ kv_key }: { kv_key: string }) => {
 
+
+
+    // const [KvValue, setKvValue] = useState("")
     const [value, setValue] = useState(0)
     const [AttrSubKey, setAttrSubKey] = useState<OverrideSpecialBonusTypes>("Base");
 
+    useGameEvent("CustomOverrideAbility_UpdateSpecialValue", event => {
+        let data = event.data;
+        // $.Msg(["key", kv_key])
+        let kv_data = data[kv_key];
+        if (kv_data) {
+            let value = [
+                kv_data.base_value ?? 0,
+                kv_data.percent_value ?? 0,
+                kv_data.mul_value ?? 0,
+                kv_data.correct_value ?? 0
+            ]
+            // $.Msg(["has value",value,value.join("|")])
+            let mainPanel = $(`#AbilityKvRowEditor_${kv_key}`)
+
+            mainPanel.SetDialogVariable("kv_text", value.join(" | "))
+            // setKvValue()
+        }
+
+
+    })
+
     // unit_special_value
-    const netdata = CustomNetTables.GetTableValue("unit_special_value", `${LocalPlayerID}`) ?? {};
-    let kv_data = netdata[kv_key];
-    let KvValue = 0
-    if (kv_data) { KvValue = kv_data.cache_value ?? 0; }
+    // const netdata = CustomNetTables.GetTableValue("unit_special_value", `${LocalPlayerID}`) ?? {};
+    // $.Msg(["netdata",netdata])
+    // let kv_data = netdata[kv_key];
+    // let KvValue = 0
+    // if (kv_data) { KvValue = kv_data.cache_value ?? 0; }
+    // $.Msg(["KvValue", kv_key, KvValue]);
 
     return (
-        <Panel className='AbilityKvRowEditor flow-right'>
+        <Panel
+            id={`AbilityKvRowEditor_${kv_key}`}
+            className='AbilityKvRowEditor flow-right'
+            onload={(e) => {
+                e.SetDialogVariable("kv_text", "0")
+            }}
+        >
             <Label className='KvKey'
                 text={kv_key}
                 onmouseover={(e) => {
@@ -228,7 +260,7 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: OverrideSpecialKeyTypes }) =>
                     HideCustomTooltip()
                 }}
             />
-            <Label className='KvValue' text={KvValue} />
+            <Label className='KvValue' localizedText='{s:kv_text}' />
             <TextEntry
                 className='TextEntry'
                 textmode="numeric"
@@ -263,7 +295,7 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: OverrideSpecialKeyTypes }) =>
                     GameEvents.SendCustomGameEventToServer("Development", {
                         event_name: "ModiyOverrideSpecialValue",
                         params: {
-                            special_key: kv_key,
+                            special_key: kv_key as OverrideSpecialKeyTypes,
                             special_type: AttrSubKey,
                             special_value: value,
                         }
@@ -282,17 +314,25 @@ const OverrideKeyList = Object.keys(special_keyvalue);
 const OverrideSpecialValueEditor = () => {
 
     // overri
-    return useMemo(() => (
-        <Panel id='AbilityKeyValueEditor'>
+    return (
+        <Panel
+            id='AbilityKeyValueEditor'
+            onload={(e) => {
+                GameEvents.SendCustomGameEventToServer("CustomOverrideAbility", {
+                    event_name: "GetUpdateSpecialValue",
+                    params: {}
+                })
+            }}
+        >
             <Panel className='KeyValueTable'>
                 {
-                    // Object.keys(special_keyvalue).map((v, k) => {
-                    //     return <RowOverrideKvEditor key={k} kv_key={v as keyof typeof special_keyvalue} />
-                    // })
+                    Object.keys(special_keyvalue).map((v, k) => {
+                        return <RowOverrideKvEditor key={k} kv_key={v as keyof typeof special_keyvalue} />
+                    })
                 }
             </Panel>
         </Panel>
-    ), [])
+    )
 }
 
 const HeroEditorAbility = () => {

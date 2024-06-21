@@ -146,7 +146,7 @@ export class CustomAttribute {
         if (has_innate) {
             let hero_name = hUnit.GetName().replace("npc_dota_hero_", "")
             let innate_ability = `innate_${hero_name}`;
-            print("innate_ability", innate_ability)
+            // print("innate_ability", innate_ability)
             hUnit.AddAbility(innate_ability).SetLevel(1);//.SetLevel(1);
         } else {
             hUnit.AddAbility("generic_hidden")
@@ -198,7 +198,9 @@ export class CustomAttribute {
         if (hUnit == null || hUnit.IsNull()) { return }
         hUnit.last_attribute_update = GameRules.GetDOTATime(false, false) + this.update_delay
         let buff = hUnit.FindModifierByName("modifier_public_attribute");
-        if (buff) { buff.ForceRefresh(); }
+        if (buff) { 
+            buff.ForceRefresh(); 
+        }
     }
 
     /** 属性转换计算 */

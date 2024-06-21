@@ -68,14 +68,14 @@ export function SetAbilityDescription(
 ) {
 
     if (ability_name == null) {
-        if (entityIndex) {
+        if (entityIndex && entityIndex > 0) {
             ability_name = Abilities.GetAbilityName(entityIndex);
         } else {
             ability_name = "null";
         }
     }
 
-    if (entityIndex) {
+    if (entityIndex && entityIndex > 0) {
         level = Abilities.GetLevel(entityIndex);
     }
     // $("#AbilityDamageType")?.SetHasClass("Hidden", true);

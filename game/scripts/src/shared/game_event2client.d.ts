@@ -47,4 +47,8 @@ declare interface CustomGameEventDeclarations {
     ResourceSystem_SendPlayerResources: {
         data: { [key in PlayerResourceTyps]: number }
     }
+
+    CustomOverrideAbility_UpdateSpecialValue: {
+        data: OverrideSpecialValueProps
+    }
 }

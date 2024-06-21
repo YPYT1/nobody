@@ -14,7 +14,7 @@ declare interface CustomNetTableDeclarations {
     }
 
     unit_special_value: {
-        [player_id: string]: OverrideSpecialValueProps;
+        [player_id: string]: MinorAbilityUpgradesProps;
     }
 
 }

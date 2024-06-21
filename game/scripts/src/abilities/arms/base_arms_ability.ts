@@ -95,30 +95,21 @@ export class BaseArmsAbility extends BaseAbility {
      * 技能升级事件
      */
     OnUpgrade() {
-        this.element_type = 0;
-        this.dmg_formula = "0";
-        this.caster = this.GetCaster();
-        this.player_id = this.caster.GetPlayerOwnerID();
-        this.arms_cd = this.GetCooldown(0);
-        this.team = this.caster.GetTeamNumber();
-        this.key = this.GetAbilityName();
-        this.trigger_distance = this.GetCastRange(this.caster.GetAbsOrigin(), this.caster);
-        // if (this.arms_cd <= 0) { this.arms_cd = 0 }
-        this.ArmsActTime = GameRules.GetDOTATime(false, false) + 1;
-        this.AffectedActTime = GameRules.GetDOTATime(false, false) + 1;
-        GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
-        this.UpdateDamageFormula()
-        this._OnUpdateKeyValue();
-
-
-    }
-
-    UpdateDamageFormula() {
-        let KeyValues = this.GetAbilityKeyValues() as any;
-        if (KeyValues.DamageFormula) { this.dmg_formula = KeyValues.DamageFormula; }
-        if (KeyValues.Element) { this.element_type = tonumber(KeyValues.Element) }
         if (this.is_init == null) {
             this.is_init = true;
+            this.dmg_formula = "0";
+            this.element_type = 0;
+            this.caster = this.GetCaster();
+            this.player_id = this.caster.GetPlayerOwnerID();
+            this.arms_cd = this.GetCooldown(0);
+            this.team = this.caster.GetTeamNumber();
+            this.key = this.GetAbilityName();
+            this.ArmsActTime = GameRules.GetDOTATime(false, false) + 1;
+            this.AffectedActTime = GameRules.GetDOTATime(false, false) + 1;
+            this.trigger_distance = this.GetCastRange(this.caster.GetAbsOrigin(), this.caster);
+            let KeyValues = this.GetAbilityKeyValues() as any;
+            if (KeyValues.Element) { this.element_type = tonumber(KeyValues.Element) }
+
             for (let i = 0; i < 6; i++) {
                 let hAbility = this.caster.GetAbilityByIndex(i);
                 if (hAbility == this) {
@@ -126,9 +117,27 @@ export class BaseArmsAbility extends BaseAbility {
                     break
                 }
             }
-            print("init", this.player_id, this.element_type, "slot_index:", this.slot_index)
-            GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, 1, this.slot_index)
+            GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
+            GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, 1, this.slot_index);
+            if (this.element_type != 0){
+                GameRules.CustomOverrideAbility.UpdateOverrideAbility(this.caster,this.GetAbilityName());
+            }
+            
+            this.InitCustomAbilityData();
         }
+
+        this.UpdateDamageFormula()
+        this.UpdataCustomKeyValue()
+    }
+
+    /** 初始化自定义设置 */
+    InitCustomAbilityData() { }
+    /** 更新自定义KV值 */
+    UpdataCustomKeyValue() { }
+    /** 更新伤害公式 */
+    UpdateDamageFormula() {
+        let KeyValues = this.GetAbilityKeyValues() as any;
+        if (KeyValues.DamageFormula) { this.dmg_formula = KeyValues.DamageFormula; }
 
     }
 
@@ -241,7 +250,7 @@ export class BaseArmsAbility extends BaseAbility {
     OnAttackStart(hTarget: CDOTA_BaseNPC): void { }
     OnDeath() { }
 
-    UpdateAbilityDamage(){
+    UpdateAbilityDamage() {
         this.ability_damage = this.GetAbilityDamage();
     }
 

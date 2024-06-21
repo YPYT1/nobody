@@ -1,6 +1,8 @@
 declare interface CDOTABaseAbility extends CBaseEntity {
 
+    /** 主动类冷却 */
     ArmsActTime: number;
+    /** 受伤类冷却 */
     AffectedActTime: number;
 
     element_type: ElementTypeEnum
