@@ -23,14 +23,10 @@ export class arms_1 extends BaseArmsAbility {
         this.RegisterEvent(["OnArmsStart"])
     }
 
-    UpdataCustomKeyValue(): void {
-        
-    }
-
     OnArmsStart(): void {
         this.ability_damage = this.GetAbilityDamage();
         this.skv_aoe_radius = this.GetSpecialValueFor("skv_aoe_radius");
-        print("skv_aoe_radius",this.skv_aoe_radius)
+        // print("skv_aoe_radius",this.skv_aoe_radius)
         const vOrigin = this.caster.GetOrigin();
 
         // let enemies = FindUnitsInRadius(

@@ -43,8 +43,9 @@ GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
         const is_enabled = row_data.is_lock == 0 && local_vip >= row_data.is_vip && row_data.is_buy == 0;
         // ShopItem.enabled = is_enabled
         const ItemIcon = ShopItem.FindChildTraverse("ItemIcon") as ImagePanel;
-        const ShopItemJson = MysteriousShopConfig[shop_key as keyof typeof MysteriousShopConfig]
-        const ItemSrc = GetTextureSrc(ShopItemJson.AbilityTextureName);
+        const ShopItemJson = MysteriousShopConfig[shop_key as keyof typeof MysteriousShopConfig];
+        // $.Msg(["ShopItemJson",ShopItemJson])
+        const ItemSrc = ShopItemJson ? GetTextureSrc(ShopItemJson.AbilityTextureName) : "";
         ItemIcon.SetImage(ItemSrc)
         const PurchaseBtn = ShopItem.FindChildTraverse("PurchaseBtn")!;
         PurchaseBtn.enabled = is_enabled;

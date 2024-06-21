@@ -32,21 +32,21 @@ export class modifier_custom_override extends BaseModifier {
 
     OnRefresh(params: object): void {
         this.bDirty = true
-        print("OnRefresh",IsServer(),this.bDirty)
+        // print("OnRefresh", IsServer(), this.bDirty)
         if (IsServer()) {
             CustomNetTables.SetTableValue("unit_special_value", tostring(this.player_id), this.GetParent().MinorAbilityUpgrades);
         } else {
             this.GetParent().MinorAbilityUpgrades = CustomNetTables.GetTableValue("unit_special_value", tostring(this.player_id))
         }
         // 更新缓存
-        if (this.GetParent().MinorAbilityUpgrades != null) {
-            for (let [_, Override] of pairs(this.GetParent().MinorAbilityUpgrades)) {
-                // DeepPrintTable(Override)
-                if (Override && Override.cache_value != null) {
-                    Override.cache_value = null
-                }
-            }
-        }
+        // if (this.GetParent().MinorAbilityUpgrades != null) {
+        //     for (let [_, Override] of pairs(this.GetParent().MinorAbilityUpgrades)) {
+        //         // DeepPrintTable(Override)
+        //         if (Override && Override.cache_value != null) {
+        //             Override.cache_value = null
+        //         }
+        //     }
+        // }
     }
 
 
@@ -93,17 +93,18 @@ export class modifier_custom_override extends BaseModifier {
         }
         let SpecialValueUpgrades = hUpgrades[szAbilityName][sSpecialValueName];
         if (SpecialValueUpgrades != null) {
-            if (this.bDirty == false && SpecialValueUpgrades.cache_value != null) {
+            if (SpecialValueUpgrades.cache_value != null) {
+                // print("cache_value", IsServer(), szAbilityName, sSpecialValueName, SpecialValueUpgrades.cache_value)
                 return SpecialValueUpgrades.cache_value
             }
-            let flAddResult = SpecialValueUpgrades.base_value;
-            let flMulResult = SpecialValueUpgrades.mul_value;
-            let flPercentResult = SpecialValueUpgrades.percent_value * 0.01;
-            let flCorrResult = math.max(0, SpecialValueUpgrades.correct_value * 0.01);
-            let flResult = math.floor((flBaseValue + flAddResult) * flPercentResult * flMulResult * flCorrResult)
-            SpecialValueUpgrades.cache_value = flResult;
-            this.bDirty = false;
-            return flResult;
+            // let flAddResult = SpecialValueUpgrades.base_value;
+            // let flMulResult = SpecialValueUpgrades.mul_value;
+            // let flPercentResult = SpecialValueUpgrades.percent_value * 0.01;
+            // let flCorrResult = math.max(0, SpecialValueUpgrades.correct_value * 0.01);
+            // let flResult = math.floor((flBaseValue + flAddResult) * flPercentResult * flMulResult * flCorrResult)
+            // SpecialValueUpgrades.cache_value = flResult;
+            // this.bDirty = false;
+            // return flResult;
         }
 
         return flBaseValue;

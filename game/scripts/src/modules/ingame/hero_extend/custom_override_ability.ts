@@ -90,9 +90,9 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
                 if (sCategoryString != "Null") {
                     let category_list = sCategoryString.split(",");
                     for (let cate of category_list) {
-                        let kv_key_list = this.SpecialCategoryTable[cate];
-                        for (let kv_key of kv_key_list) {
-                            MinorAbilityUpgrades[sAbilityName][kv_key] = {
+                        let override_key_list = this.SpecialCategoryTable[cate];
+                        for (let override_key of override_key_list) {
+                            MinorAbilityUpgrades[sAbilityName][override_key] = {
                                 base_value: 0,
                                 mul_value: 1,
                                 percent_value: 100,
@@ -105,6 +105,7 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
             }
         }
 
+        this.UpdateSpecialValue(hUnit.GetPlayerOwnerID());
     }
 
 
@@ -141,7 +142,7 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
                 this.OverrideSpecialValue[player_id][override_key].correct_value += RowInput.Correct
             }
         }
-        this.UpdateSpecialValue(player_id)
+        this.UpdateSpecialValue(player_id);
     }
 
     // CustomOverrideAbility_
@@ -154,15 +155,41 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
         let MinorAbilityUpgrades = hHero.MinorAbilityUpgrades;
         const OverrideSpecialValue = this.OverrideSpecialValue[player_id];
         for (let override_key in OverrideSpecialValue) {
-            let row_kv_data = OverrideSpecialValue[override_key];
+            const row_kv_data = OverrideSpecialValue[override_key];
+     
             for (let ability_name in MinorAbilityUpgrades) {
                 let row_ability_data = MinorAbilityUpgrades[ability_name];
-                row_ability_data[override_key].percent_value = row_kv_data.percent_value;
-                row_ability_data[override_key].base_value = row_kv_data.base_value;
-                row_ability_data[override_key].mul_value = row_kv_data.mul_value;
-                row_ability_data[override_key].correct_value = row_kv_data.correct_value;
+                DeepPrintTable(row_ability_data[override_key])
+                
+                if (row_ability_data[override_key]) {
+                    row_ability_data[override_key].percent_value = row_kv_data.percent_value;
+                    row_ability_data[override_key].base_value = row_kv_data.base_value;
+                    row_ability_data[override_key].mul_value = row_kv_data.mul_value;
+                    row_ability_data[override_key].correct_value = row_kv_data.correct_value;
+                }
+
             }
         }
+        // 对技能的值进行修改
+        for (let ability_name in MinorAbilityUpgrades) {
+            let hAbility = hHero.FindAbilityByName(ability_name);
+            let iAbilityLevel = hAbility.GetLevel();
+            let kv_data = MinorAbilityUpgrades[ability_name];
+            for (let sSpecialValueName in kv_data) {
+                let row_data = kv_data[sSpecialValueName];
+                if (row_data) {
+                    let flBaseValue = hAbility.GetLevelSpecialValueNoOverride(sSpecialValueName, iAbilityLevel);
+                    let flAddResult = row_data.base_value;
+                    let flMulResult = row_data.mul_value;
+                    let flPercentResult = row_data.percent_value * 0.01;
+                    let flCorrResult = math.max(0, row_data.correct_value * 0.01);
+                    let flResult = math.floor((flBaseValue + flAddResult) * flPercentResult * flMulResult * flCorrResult);
+                    row_data.cache_value = flResult
+                }
+
+            }
+        }
+
         // hHero.OverrideSpecial = this.OverrideSpecialValue[player_id];
         CustomNetTables.SetTableValue("unit_special_value", tostring(player_id), hHero.MinorAbilityUpgrades);
         const KvBuff = hHero.FindModifierByName("modifier_custom_override");

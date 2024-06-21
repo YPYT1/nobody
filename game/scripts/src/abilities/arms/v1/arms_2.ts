@@ -2,30 +2,63 @@ import { registerAbility, registerModifier } from "../../../utils/dota_ts_adapte
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 /**
- * 增肥	每%arms_cd%秒永久增加%gain_hp%生命值
+ * 在自身%skv_aoe_radius%码释放具有破坏力的水波攻击。
+
+伤害系数：攻击力100%*冰元素伤害
  */
 @registerAbility()
-export class arms_2 extends BaseArmsAbility { }
+export class arms_2 extends BaseArmsAbility {
 
-@registerModifier()
-export class modifier_arms_2 extends BaseArmsModifier {
+    aoe_radius: number;
 
-    gain_hp: number;
-
-    C_OnCreated(params: any): void {
-        this.gain_hp = this.ability.GetSpecialValueFor("gain_hp");
-        this.StartIntervalThink(1)
+    Precache(context: CScriptPrecacheContext): void {
+        PrecacheResource("particle", "particles/units/heroes/hero_siren/naga_siren_riptide.vpcf", context);
     }
 
-    OnIntervalThink(): void {
-        GameRules.CustomAttribute.ModifyAttribute(this.caster, {
-            "HealthPoints": {
-                "Base": this.gain_hp
-            }
-        })
+    InitCustomAbilityData(): void {
+        this.RegisterEvent(["OnArmsStart"])
     }
 
+    OnArmsStart(): void {
+        this.ability_damage = this.GetAbilityDamage();
+        this.aoe_radius = this.GetSpecialValueFor("skv_aoe_radius");
+        // print("skv_aoe_radius", this.GetAbilityName(), this.aoe_radius)
+        // const vOrigin = this.caster.GetOrigin();
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_siren/naga_siren_riptide.vpcf",
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            this.caster
+        )
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.aoe_radius, this.aoe_radius, this.aoe_radius));
+        ParticleManager.ReleaseParticleIndex(effect_fx);
+
+        const vOrigin = this.caster.GetOrigin();
+        let enemies = FindUnitsInRadius(
+            this.caster.GetTeam(),
+            vOrigin,
+            null,
+            this.aoe_radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+
+        for (let enemy of enemies) {
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.caster,
+                damage: this.ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: this.element_type
+            });
+        }
+    }
 }
+
+
 
 
 

@@ -222,7 +222,7 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: string }) => {
             let value = [
                 kv_data.base_value ?? 0,
                 kv_data.percent_value ?? 0,
-                kv_data.mul_value ?? 0,
+                kv_data.mul_value.toFixed(2) ?? 0,
                 kv_data.correct_value ?? 0
             ]
             // $.Msg(["has value",value,value.join("|")])
