@@ -1,13 +1,15 @@
+import { default as HeroLevelConfig } from "../../../json/config/game/hero_level_config.json";
 
-export let ExpBarPanel: ProgressBar;
-export let localPlayerID = Game.GetLocalPlayerID();
+let ExpStatusPanel: Panel;
+let ExpBarPanel: ProgressBar;
+let localPlayerID = Game.GetLocalPlayerID();
 
 export function GetHeroLevelTable(HERO_MAX_LEVEL: number) {
     let hero_xp_table = [];
     for (let i = 0; i < HERO_MAX_LEVEL; i++) {
         let xp = 0;
         if (i > 0) {
-            xp = (600 + i * (100) + 5 * Math.pow(i, 2)) + hero_xp_table[i - 1];
+            xp = HeroLevelConfig[`${i}` as keyof typeof HeroLevelConfig] + hero_xp_table[i - 1];
         }
         hero_xp_table[i] = xp;
     }
@@ -23,7 +25,11 @@ export const GetLevelExpInfo = (unit_level: number, curr_exp: number, next_up_ex
 };
 
 export const CreatePanel_ExpBar = () => {
+    ExpStatusPanel = $("#ExpStatusPanel")
     ExpBarPanel = $("#ExpBar") as ProgressBar;
+    ExpStatusPanel.SetDialogVariable("exp_percent", "0");
+    ExpStatusPanel.SetDialogVariable("current_xp", "0");
+    ExpStatusPanel.SetDialogVariable("uplevel_xp", `${HeroExpLevelTable[1]}`);
     StartLoop()
 }
 
@@ -39,12 +45,16 @@ export const UpdateLocalPlayer = () => {
     let unit_level = Entities.GetLevel(queryUnit);
     let current_exp = Entities.GetCurrentXP(queryUnit);
     let up_exp = Entities.GetNeededXPToLevel(queryUnit);
+    // $.Msg([current_exp,up_exp])
     const { CurrentLevelXP, CurrentLevelUpXP } = GetLevelExpInfo(unit_level, current_exp, up_exp);
 
-    // $.Msg(ExpBarPanel)
-    ExpBarPanel.SetDialogVariable("CurrentLevelXP", `${CurrentLevelXP}`)
-    ExpBarPanel.SetDialogVariable("CurrentLevelUpXP", `${CurrentLevelUpXP}`)
-    ExpBarPanel.value = 100 * CurrentLevelXP / CurrentLevelUpXP
+    const xp_percent = Math.floor(100 * CurrentLevelXP / CurrentLevelUpXP)
+    ExpBarPanel.value = xp_percent
+
+
+    ExpStatusPanel.SetDialogVariable("current_xp", `${CurrentLevelXP}`)
+    ExpStatusPanel.SetDialogVariable("uplevel_xp", `${CurrentLevelUpXP}`)
+    ExpStatusPanel.SetDialogVariable("exp_percent", `${xp_percent}`);
 }
 
 (function () {

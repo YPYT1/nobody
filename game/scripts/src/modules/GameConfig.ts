@@ -111,6 +111,7 @@ export class GameConfig {
         gameEntity.SetForcedHUDSkin("aghanims_labyrinth_2021");
 
         const exp_level_list = GetHeroLevelTable();
+        DeepPrintTable(exp_level_list);
         gameEntity.SetUseCustomHeroLevels(true);
         gameEntity.SetCustomXPRequiredToReachNextLevel(exp_level_list)
     }
@@ -119,16 +120,14 @@ export class GameConfig {
 
 function GetHeroLevelTable(max_level: number = 100) {
     let hero_xp_table: { [index: number]: number } = {};
-    let param = { LEVEL: 1 };
-    for (let i = 0; i < 100; i++) {
+    // let param = { LEVEL: 1 };
+    for (let i = 0; i < max_level; i++) {
         let xp = 0;
-        if (i > 0 && i < max_level) {
-            param.LEVEL = i;
-            xp = HeroLevelConfig[i];
-        } else if (i == 0) {
+
+        if (i == 0) {
             xp = 0;
         } else {
-            return hero_xp_table;
+            xp = HeroLevelConfig[`${i}`] + hero_xp_table[i - 1];
         }
         hero_xp_table[i] = xp;
     }

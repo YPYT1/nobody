@@ -1,6 +1,11 @@
 #ExpStatusPanel {
     width: 100%;
     vertical-align: bottom;
+    flow-children: down;
+
+    height: 26px;
+    background-image: url("file://{images}/custom_game/hud/control/xp_bg.png");
+    background-repeat: no-repeat;
 }
 
 #ExpBar {
@@ -35,5 +40,31 @@
         color:#ffffff;
         horizontal-align: center;
         vertical-align: middle;
+    }
+}
+
+#ExpNumInfo {
+    horizontal-align: right;
+    
+    width: 110px;
+    flow-children: right;
+
+    Label {
+        font-size: 15px;
+        color:#539b38;
+    }
+
+    .XPPercent {
+        width: 36px;
+        text-overflow: shrink;
+        // border: 1px solid #ffffff;
+        text-align: center;
+    }
+
+    .XPValue {
+        // border: 1px solid #ffffff;
+        width: 80px;
+        text-align: center;
+        // margin-left: 8px;
     }
 }

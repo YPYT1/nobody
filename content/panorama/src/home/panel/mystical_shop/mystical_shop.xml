@@ -8,33 +8,36 @@
 	</scripts>
 	<snippets>
 		<snippet name="ShopItem">
-			<Button class="ShopItem" hittest="false">
-				<Panel class="ShopItemCard">
-					<Panel class="ShopItemInfo">
-						<Image id="ItemIcon" />
-						<Label class="ItemDesc" text="{s:item_desc}"/>
-						<Label class="ItemName" text="{s:item_name}"/>
+			<Panel class="ShopItem" hittest="false">
+				<Button id="ShopItemCard" hittest="true">
+					<Panel id="ShopItemInfo" >
+						<Panel id="PurchaseBtn" hittest="false">
+							<Image id="ItemIcon" />
+							<Label class="ItemName" text="{s:item_name}"/>
+							<Label class="ItemDesc" text="{s:item_desc}"/>
+							<Panel class="ItemPrice">
+								<Label text="{d:cost}"/>
+							</Panel>
+						</Panel>
+						<Panel class="CardHover" hittest="false" />
+					</Panel>
+					<Panel class="ItemLockState">
+						<Label text="#已锁定"/>
 					</Panel>
 					<Panel class="PrivilegeLock" />
-				</Panel>
+				</Button>
 				
-				<Panel class="ButtonGroup">
-					<Button id="PurchaseBtn">
-						<Panel class="Info">
-							<Panel class="Icon Soul" />
-							<Label class="Price" text="{d:cost}"/>
-						</Panel>
+				<Panel class="ButtonGroup" hittest="false">
+					<Button id="LockBtn">
+						<Panel class="BtnImg"/>
 					</Button>
-					<Button id="RefreshBtn" class="btn">
-						<Panel class="Info">
-							<Panel class="Icon Soul" />
-							<Label class="Price" text="{d:refresh_cost}"/>
-						</Panel>
+					<Button id="RefreshBtn"  >
+						<Panel class="BtnImg"/>
 					</Button>
 				</Panel>
 				
 			
-			</Button>
+			</Panel>
 		</snippet>
 		<snippet name="PlayerShopState">
 			<Panel class="PlayerShopState">
@@ -43,19 +46,38 @@
 		</snippet>
 	</snippets>
 	<Panel class="mystical_shop" hittest="false">
-		<Button id="OpenButton" class="btn"></Button>
+		
 		<Panel id="MysticalShop" class="" >
-			<Panel class="Header">
-				<Button id="ToggleButton"></Button>
-			</Panel>
-			<Panel class="Container">
+			<Panel class="ShopContainer">
+				<Panel class="CountdownTimer">
+					<Label class="Title" text="#购买倒计时: "/>
+					<Label class="Timer" text="{s:countdown_timer}"/>
+				</Panel>
 				<Panel id="ShopItemList" />
 			</Panel>
-			<Panel class="Footer">
-				<Label id="CountdownTimer" text="{s:countdown_timer}"/>
-				<Panel id="PlayerReadyStateList"></Panel>
-			</Panel>
+			<Panel class="TitleImg"/>
+			<Button id="ReadyBtn"></Button>
 		</Panel>
-		
+		<Button id="OpenButton">
+			<Label text="缩放"/>
+		</Button>
+
+		<Button id="PopupModal" class="ModalBackground">
+			<Panel id="PurchaseConfirm" class="PopupWindow">
+				<Panel class="PopupContent">
+					<Label text="是否购买 {s:item_key}"/>
+				</Panel>
+				<Panel class="PopupFooter">
+					<Panel class="ButtonGroup">
+						<Button id="BtnConfirm" class="BtnCancel">
+							<Label text="#爷要了" />
+						</Button>
+						<Button id="BtnCancel" class="BtnConfirm">
+							<Label text="#要不起" />
+						</Button>
+					</Panel>
+				</Panel>
+			</Panel>
+		</Button>
 	</Panel>
 </root>

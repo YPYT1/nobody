@@ -8,275 +8,537 @@
         #OpenButton {
             visibility: visible;
         }
-        
+
     }
+
 }
 
 #OpenButton {
-    width: 64px;
-    height: 32px;
+    width: 237px;
+    height: 52px;
     horizontal-align: center;
     // border: 1px solid #ffffff;
-    margin-top: 64px;
+    margin-bottom: 200px;
+    vertical-align: bottom;
     visibility: collapse;
+    // 
+    background-image: url("file://{images}/custom_game/hud/mystical_shop/btn_toggle.png");
+    background-size: 100%;
+
+    Label {
+        align: center center;
+        font-size: 22px;
+        color: #ffffff;
+        text-shadow: 0px 0px 2px 2.0 #000000;
+    }
+
+    &:hover {
+        brightness: 1.5;
+    }
+
+    &:active {
+        pre-transform-scale2d: 0.9;
+        brightness: 0.9;
+    }
 }
 
 #MysticalShop {
-    width: 1308px;
-    height: 828px;
-    background-image: url("file://{images}/custom_game/hud/mystical_shop/bg.png");
+    // height: 944px;
+    // border: 1px solid #ffffff;
     horizontal-align: center;
-    // vertical-align: middle;
-    flow-children: down;
-    margin-top: 100px;
+    // margin-top: 30px;
     visibility: collapse;
     transition-property: pre-transform-scale2d, opacity;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
-
     opacity: 0;
     pre-transform-scale2d: 0.5;
+    overflow: noclip;
 
     &.Open {
         opacity: 1;
         pre-transform-scale2d: 1;
     }
 
-    
 
 
-    .Header {
-        width: 100%;
-        border: 1px solid #f00;
-        height: 64px;
-        overflow: noclip;
-        // background-color: #000000;
+    .TitleImg {
+        width: 339px;
+        height: 134px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/title.png");
+        horizontal-align: center;
     }
 
-    .Container {
-        width: 100%;
-        min-height: 240px;
-        // height: 100%;
+
+    .ShopContainer {
+        margin-top: 72px;
+        width: 1156px;
+        height: 744px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/bg.png");
         flow-children: down;
-        border: 1px solid #0f0;
-    }
-
-    .Footer {
-        width: 100%;
-        // vertical-align: bottom;
-        border: 1px solid #00f;
+        // border: 1px solid #0f0;
     }
 
 
-
-    #ToggleButton {
-        width: 64px;
-        height: 81px;
-        background-image: url("file://{images}/custom_game/hud/mystical_shop/closed_btn.png");
+    #ReadyBtn {
+        width: 133px;
+        height: 220px;
+        // border: 1px solid #ffffff;
+        vertical-align: bottom;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/ready_btn1.png");
         horizontal-align: right;
-        wash-color: #aaaaaa;
         transition-property: wash-color;
         transition-duration: 0.1s;
         transition-timing-function: ease-in-out;
+        transform: translateY(48px);
+        // brightness: 2;
+        // wash-color: #cccccc;
+        // animation-name: flash;
+        // animation-duration: 1.4s;
+        // animation-iteration-count: infinite;
 
-        &:hover {
-            wash-color: #ffffff;
+        &:enabled {
+            &:hover {
+                // wash-color: #ffffff;
+                // animation-name: none;
+                brightness: 2;
+            }
+
+            &:active {
+                pre-transform-scale2d: 0.9;
+                brightness: 0.9;
+                // 
+            }
+        }
+
+        &:disabled {
+            background-image: url("file://{images}/custom_game/hud/mystical_shop/ready_btn2.png");
+        }
+
+    }
+
+    .CountdownTimer {
+        horizontal-align: right;
+        // border: 1px solid #ffffff;
+        margin-right: 48px;
+        margin-top: 24px;
+        flow-children: right;
+
+        .Title {
+            width: 120px;
+            font-size: 16px;
+            text-shadow: 0px 0px 2px 4.0 #000000;
+            text-align: right;
+        }
+
+        .Timer {
+            font-weight: bold;
+            width: 48px;
+            margin-left: 8px;
+            font-size: 24px;
+        }
+
+        Label {
+            color: #50db5a;
+            vertical-align: bottom;
         }
     }
 }
 
 #ShopItemList {
-    width: (182px + 68px) * 4;
+    margin-top: 20px;
+    width: (232px + 42px) * 3;
     horizontal-align: center;
     // border: 1px solid #f00;
     flow-children: right-wrap;
 
-    .ShopItem {
+    // pre-transform-scale2d: 2;
+
+
+}
+
+.ShopItem {
+    // flow-children: none;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    // overflow: noclip;
+
+    #ShopItemCard {
+        z-index: -1;
+        width: 232px;
+        height: 295px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/item_card_1.png");
+        background-repeat: no-repeat;
+        // border: 1px solid #ffffff;
+        // transition-property: pre-transform-scale2d, opacity;
+        // transition-duration: 0.05s;
+        // transition-timing-function: ease-in-out;
+        pre-transform-scale2d: 1;
+
+        // &:hover {
+        //     .CardHover {
+        //         opacity: 1;
+        //     }
+        //     // pre-transform-scale2d: 0.9;
+        // }
+
+        // &:active {
+        //     pre-transform-scale2d: 0.9;
+        // }
+    }
+
+    #PurchaseBtn {
+        horizontal-align: center;
+        // width: 180px;
+        // width: 100%;
+        // height: 100%;
+        margin-top: 24px;
+        // border: 1px solid #ff0000;
         flow-children: down;
-        margin-left: 32px;
-        margin-right: 32px;
-        margin-top: 12px;
-        margin-bottom: 12px;
+        // overflow: noclip;
 
+        // &:disabled {
+        //     saturation: 0.2;
+        //     brightness: 0.2;
+        // }
 
-        .ShopItemCard {
-            width: 182px;
-            height: 279px;
-            background-image: url("file://{images}/custom_game/hud/mystical_shop/shop_item_card.png");
-        }
+        // &:active {
+        //     pre-transform-scale2d: 0.9;
+        // }
+    }
 
-        .ShopItemInfo {
-            flow-children: down;
-            // border: 1px solid #f00;
+    #ShopItemInfo {
+        horizontal-align: center;
+        width: 232px;
+        height: 295px;
+
+        // flow-children: down;
+        // overflow: noclip;
+        // border: 1px solid #ffffff;
+        // pre-transform-scale2d: 0.5;
+        #ItemIcon {
+            margin-top: 1px;
+            width: 54px;
+            height: 54px;
+            // border: 2px solid #ffffff;
+            // background-color: #000000;
+            // box-shadow: #000000 0px 0px 4px 0px;
             horizontal-align: center;
-            height: 100%;
-
-            #ItemIcon {
-                margin-top: 44px;
-                width: 64px;
-                height: 64px;
-                border: 1px solid #ffffff;
-                background-color: #000000;
-                horizontal-align: center;
-            }
-
-            .ItemDesc {
-                margin-top: 8px;
-                width: 150px;
-                height: 100px;
-                color: #c0c0c0;
-                font-size: 14px;
-                // border: 1px solid #ffffff;
-            }
-
-            .ItemName {
-                horizontal-align: center;
-                font-size: 18px;
-                color: #dbe4e8;
-                text-shadow: 0px 0px 2px 2.0 #000000;
-                vertical-align: bottom;
-                margin-bottom: 20px;
-
-            }
-        }
-
-        .PrivilegeLock {
-            //
-            width: 186px;
-            height: 266px;
-            horizontal-align: center;
-            vertical-align: middle;
-            background-image: url("file://{images}/custom_game/hud/mystical_shop/privilege_lock.png");
-            visibility: collapse;
-        }
-
-        .ButtonGroup {
-            flow-children: right;
-            horizontal-align: center;
-            // horizontal-align: cneter;
-        }
-
-        #PurchaseBtn {
-            width: 124px;
-            height: 38px;
-            horizontal-align: center;
-            background-image: url("file://{images}/custom_game/hud/mystical_shop/purchase_btn.png");
-            wash-color: #ccc;
-
-            &:enabled:hover {
-                wash-color: #fff;
-            }
-
-            &:disabled {
-                // wash-color: #5e5e5e;
-                saturation: 0.5;
-                brightness: 0.5;
-            }
-
-            .Info {
-                vertical-align: middle;
-                horizontal-align: center;
-                flow-children: right;
-                margin-bottom: 4px;
-
-                .Icon {
-                    width: 20px;
-                    height: 20px;
-                    background-size: 100%;
-                    brightness: 2.0;
-
-                }
-
-                Label {
-                    margin-left: 4px;
-                    font-size: 18px;
-                    color: #ffffff;
-                    text-shadow: 0px 0px 2px 2.0 #000000;
-                }
-            }
-
-        }
-
-        #RefreshBtn {
-            width: 96px;
-            // height: 38px;
-            horizontal-align: center;
-            background-color:#2f352f;
-            padding: 4px;
-            // background-image: url("file://{images}/custom_game/hud/mystical_shop/purchase_btn.png");
-            // wash-color: rgb(160, 115, 115);
+            // transform: translateY(-12px);
             // visibility: collapse;
+        }
 
-            .Info {
-                vertical-align: middle;
-                horizontal-align: center;
-                flow-children: right;
-                // margin-bottom: 4px;
+        .ItemName {
+            margin-top: 14px;
+            horizontal-align: center;
+            font-size: 18px;
+            color: #dbe4e8;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+            vertical-align: bottom;
+            // margin-bottom: 20px;
 
-                .Icon {
-                    width: 20px;
-                    height: 20px;
-                    background-size: 100%;
-                    brightness: 2.0;
+        }
 
-                }
+        .ItemDesc {
+            margin-top: 8px;
+            width: 180px;
+            height: 100px;
+            color: #c0c0c0;
+            font-size: 14px;
+            horizontal-align: center;
+            padding: 4px;
+            // border: 1px solid #ffffff;
+        }
 
-                Label {
-                    margin-left: 4px;
-                    font-size: 18px;
-                    color: #ffffff;
-                    text-shadow: 0px 0px 2px 2.0 #000000;
-                }
+        .ItemPrice {
+            margin-top: 8px;
+            horizontal-align: center;
+
+            Label {
+                color: #ffffff;
+                font-size: 19px;
             }
         }
 
-        &.IsBuy {
-            // #PurchaseBtn {
-            //     visibility: collapse;
-            // }
+        .CardHover {
+            width: 232px;
+            height: 295px;
+            background-image: url("file://{images}/custom_game/hud/mystical_shop/card_hover.png");
+            opacity: 0;
+            // border: 1px solid #ffffff;
+        }
 
-            // #RefreshBtn {
-            //     visibility: visible;
-            // }
 
-            .ShopItemCard {
-                brightness: 0.5;
-                saturation: 0.1;
+    }
+
+    .ItemLockState {
+        height: 38px;
+        width: 196px;
+        background-color: #000000;
+        vertical-align: middle;
+        horizontal-align: center;
+        visibility: collapse;
+
+        Label {
+            align: center center;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+    }
+
+    .PrivilegeLock {
+        width: 204px;
+        height: 233px;
+        horizontal-align: center;
+        vertical-align: bottom;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/vip_lock.png");
+        visibility: collapse;
+        z-index: 2;
+    }
+
+    .ButtonGroup {
+        z-index: 1;
+        transform: translateY(6px);
+        width: 100%;
+        overflow: noclip;
+        padding-left: 9px;
+        // background-color: #000000;
+        // padding-right: 8px;
+        // margin-left: 10px;
+        // margin-right: 11px;
+        flow-children: right;
+        horizontal-align: center;
+        vertical-align: bottom;
+        // horizontal-align: cneter;
+    }
+
+    #LockBtn {
+        width: 113px;
+        height: 59px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_d.png");
+        // border: 1px solid #ffffff;
+
+        &:disabled {
+            saturation: 0.25;
+            brightness: 0.25;
+        }
+
+        &:enabled {
+            &:hover {
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_hover.png");
+            }
+
+            &:active {
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_hit.png");
+            }
+        }
+
+    }
+
+    #RefreshBtn {
+        // border: 1px solid #ffffff;
+        width: 113px;
+        height: 59px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/refresh_n.png");
+        transform: translateX(-13px);
+
+        &:enabled {
+            &:hover {
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/refresh_h.png");
+            }
+
+            &:active {
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/refresh_a.png");
             }
         }
 
         &:disabled {
-            .PrivilegeLock {
-                visibility: visible;
-            }
-
-            brightness: 0.5;
-            saturation: 0.1;
-
+            saturation: 0.25;
+            brightness: 0.25;
         }
 
-        // &:enabled {
-        //     .ShopItemCard {
-        //         &:hover {
-        //             brightness: 1.5;
-        //         }
-        //     }
+    }
+
+    // &:disabled {
+    //     .PrivilegeLock {
+    //         visibility: visible;
+    //     }
+
+    //     brightness: 0.5;
+    //     saturation: 0.1;
+
+    // }
+
+    &.IsVip {
+        saturation: 0.3;
+        brightness: 0.3;
+
+        .PrivilegeLock {
+            visibility: visible;
+        }
+    }
+
+    &.IsLock {
+        // #RefreshBtn {
+        //     saturation: 0.2;
+        //     brightness: 0.2;
+        //     // wash-color: #00ff00;
         // }
 
+        #ShopItemCard {
+            brightness: 0.3;
+            saturation: 0.1;
+        }
 
-        // &:enabled {
-        //     #PurchaseBtn {
+        .ItemLockState {
+            visibility: visible;
+        }
+    }
 
-        //     }
+    &.IsBuy {
+        #ShopItemCard {
+            brightness: 0.1;
+            saturation: 0.1;
+        }
+
+        // #ShopItemCard {
+        //     wash-color: #acd89fdd;
         // }
+
+        // #LockBtn {
+        //     saturation: 0.2;
+        //     brightness: 0.2;
+        // }
+    }
+
+    &.Enabled {
+
+        &:hover {
+            .CardHover {
+                opacity: 1;
+            }
+        }
+
+        &:active {
+            pre-transform-scale2d: 0.9;
+        }
+
+        #ShopItemCard {
+            saturation: 1;
+            brightness: 1;
+
+            &:hover {
+                .CardHover {
+                    opacity: 1;
+                }
+
+                // pre-transform-scale2d: 0.9;
+            }
+
+            &:active {
+                pre-transform-scale2d: 0.9;
+            }
+        }
+
     }
 }
 
-.Footer {
-    
-    #CountdownTimer {
-        font-size: 36px;
-        color:#ff6944;
-        text-shadow: 0px 0px 1px 3.0 #1b416d;
+#PopupModal {
+    width: 100%;
+    height: 100%;
+    background-color: #00000099;
+    opacity: 0;
+    visibility: collapse;
+
+    &.Open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    #PurchaseConfirm {
+        align: center center;
+        margin-bottom: 100px;
+        width: 422px;
+        height: 183px;
+        flow-children: none;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/purchase_popup.png");
+
+        // 
+        .PopupContent {
+            width: 100%;
+            vertical-align: middle;
+            margin-bottom: 50px;
+
+            Label {
+                horizontal-align: center;
+                text-align: center;
+                font-size: 20px;
+                color: #ffffff;
+            }
+        }
+
+        .PopupFooter {
+            width: 100%;
+            // border: 1px solid #ffffff;
+            vertical-align: bottom;
+            margin-bottom: 20px;
+
+            .ButtonGroup {
+                horizontal-align: center;
+                flow-children: right;
+
+                >Button {
+                    margin-left: 8px;
+                    margin-right: 8px;
+
+                    &:hover {
+                        brightness: 1.5;
+                    }
+
+                    &:active {
+                        brightness: 0.8;
+                        pre-transform-scale2d: 0.95;
+                    }
+
+                    Label {
+                        align: center center;
+                        color: #ffffff;
+                        font-size: 18px;
+                        text-shadow: 0px 0px 2px 2.0 #000000;
+                        margin-bottom: 4px;
+                    }
+                }
+            }
+
+            #BtnConfirm {
+                width: 111px;
+                height: 39px;
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/btn_confirm.png");
+            }
+
+            #BtnCancel {
+                width: 111px;
+                height: 39px;
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/btn_cancel.png");
+            }
+        }
+
+    }
+}
+
+@keyframes flash {
+    0% {
+        brightness: 0.5;
+    }
+
+    50% {
+        brightness: 2;
+    }
+
+    100% {
+        brightness: 0.5;
     }
 }

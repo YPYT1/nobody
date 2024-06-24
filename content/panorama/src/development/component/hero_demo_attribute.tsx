@@ -216,7 +216,7 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: string }) => {
 
     useGameEvent("CustomOverrideAbility_UpdateSpecialValue", event => {
         let data = event.data;
-        // $.Msg(["key", kv_key])
+        if (data == null) { return };
         let kv_data = data[kv_key];
         if (kv_data) {
             let value = [

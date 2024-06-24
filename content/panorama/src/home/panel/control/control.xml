@@ -74,6 +74,10 @@
             </Panel>
 
 			<Panel id="ExpStatusPanel">
+				<Panel id="ExpNumInfo">
+					<Label class="XPPercent" text="{s:exp_percent}%"/>
+					<Label class="XPValue" text="{s:current_xp} / {s:uplevel_xp}"/>
+				</Panel>
 				<ProgressBar id='ExpBar' value="0" min="0" max="100">
 					<Panel id="DivisionLine">
 						<Panel class="Line" />
@@ -87,6 +91,7 @@
 						<Panel class="Line" />
 					</Panel>
 				</ProgressBar>
+				
 			</Panel>
         </Panel>
 		<Panel id="ArmsSelector" class="container">
