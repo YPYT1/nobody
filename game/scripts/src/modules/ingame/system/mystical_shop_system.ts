@@ -12,12 +12,11 @@ export class MysticalShopSystem extends UIEventRegisterClass {
 
     /**
      * 神秘商店物品列表
-     */
+     */ 
     item_level_group: string[] = [];
     /**
      * 神秘商店物品概率
      */
-     
     item_level_probability_group: number[] = [];
     /**
      * player_count : number,
@@ -30,7 +29,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             player_count: number,
             player_max: number,
         },
-    }[] = [];
+    }[] = [];   
     /**
      * 全局限购记录
      */
@@ -61,23 +60,24 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     // 折扣type 初始值
     // box_type_discount_start: number = 18;
     //默认最大栏位
-    shop_field_max : number = 4; 
+    shop_field_max : number = 5;
     //VIP栏位
-    shop_field_max_vip : number = 2; 
+    shop_field_max_vip : number = 1;
     //刷新信息
     player_refresh_data: PlayerRefreshData[] = [];
-    //商店装备信息
+    //商店准备信息
     shop_state_data : ShopStateData[] = [];
     //售卖状态
     start_buy_state : number = 0;
     //玩家vip状态
     player_vip_status : number[] = [];
 
-    STORE_REFRESHES_SOUL_FORMULA: string = "100+200*count";
     //购买结束时间
     countdown_timer : number = 0 ;
     //玩家购买时间
-    MYSTICAL_SHOP_BUY_ITEM : number = 60;
+    MYSTICAL_SHOP_BUY_ITEM : number = 90;
+    //最终等待时间
+    MYSTICAL_SHOP_AWAIT : number = 3;
 
     //玩家折扣率
     player_shop_discount : number[] = [];
@@ -88,7 +88,23 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * 玩家购买记录
      */
     player_shop_buy_data : { [item_key : string] : number }[] = [] ;//购买的物品/数量
-    
+
+    /**
+     * 初始灵魂刷新价格
+     */
+    initial_refresh_price : number = 100;
+    /**
+     * 1-5次增加价格 
+     */
+    refresh_price_1_5 : number = 50;
+    /**
+     * 5次后增加价格
+     */
+    refresh_price_6 : number = 100;
+    /**
+     * 刷新次数上限
+     */
+    refresh_limit : number = 10;
     //玩家灵魂消耗率
 
     /**
@@ -120,8 +136,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             //玩家vip状态
             this.player_vip_status.push(0);
         }
-        //灵魂
-        this.STORE_REFRESHES_SOUL_FORMULA = GameRules.PUBLIC_CONST.STORE_REFRESHES_SOUL_FORMULA;
         //购买时间
         this.MYSTICAL_SHOP_BUY_ITEM = GameRules.PUBLIC_CONST.MYSTICAL_SHOP_BUY_ITEM;
 
@@ -154,7 +168,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         let eval_param = {
             count: 0,
         };
-        let refresh_soul = math.ceil(eval(this.STORE_REFRESHES_SOUL_FORMULA, eval_param));
+        let refresh_soul = GameRules.MysticalShopSystem.initial_refresh_price;
         for (let index = 0; index < this.player_shop_field_count[player_id]; index++) {
             let is_vip = 0;
             if(index >= this.shop_field_max){
@@ -180,10 +194,10 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
             // this.player_refresh_data[index].refresh_count = 0;
             // let eval_param = {
-            //     count: this.player_refresh_data[index].refresh_count,
+            //     count: this.player_refresh_data[index].refresh_count, 
             // };
             // let refresh_soul = math.ceil(eval(this.STORE_REFRESHES_SOUL_FORMULA, eval_param));
-            // this.player_refresh_data[index].soul = refresh_soul;
+            // this.player_refresh_data[index].soul = refresh_soul; 技嘉 gaming ac d4
             this.shop_state_data[index].is_ready = 0;
         }
         //开始售卖
@@ -195,7 +209,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         //给每个玩家刷新一次商店
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
             GameRules.MysticalShopSystem.PlayerShopItem(index);
-            
         }
 
         GameRules.GetGameModeEntity().SetContextThink("MYSTICAL_SHOP_BUY_ITEM", () => {
@@ -211,12 +224,23 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     RefreshOneItemBySoul(player_id: PlayerID, params: CGED["MysticalShopSystem"]["RefreshOneItemBySoul"], callback?: string) {
         let index = params.index;
-        let refresh_soul = this.shop_field_list[player_id][index].refresh_soul;
-        let player_gold_start = GameRules.ResourceSystem.ModifyResource( player_id, { Soul : - refresh_soul});
-        if (player_gold_start) {
-            GameRules.MysticalShopSystem.OneItemRefresh( player_id , index)
-        } else {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 刷新所需灵魂不足!");
+        if(this.shop_state_data[player_id].is_ready == 1){
+            let refresh_count = this.shop_field_list[player_id][index].refresh_count;
+
+            if(refresh_count >= GameRules.MysticalShopSystem.refresh_limit){
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 刷新超过上限!");
+                return 
+            }
+
+            let refresh_soul = this.shop_field_list[player_id][index].refresh_soul;
+            let player_gold_start = GameRules.ResourceSystem.ModifyResource( player_id, { Soul : - refresh_soul});
+            if (player_gold_start) {
+                GameRules.MysticalShopSystem.OneItemRefresh( player_id , index)
+            } else {
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 刷新所需灵魂不足!");
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 准备后无法刷新!");
         }
     }
     /**
@@ -224,10 +248,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     StopShopSystem(){
         GameRules.GetGameModeEntity().StopThink("MYSTICAL_SHOP_BUY_ITEM");
-        let eval_param = {
-            count: 0,
-        };
-        let refresh_soul = math.ceil(eval(this.STORE_REFRESHES_SOUL_FORMULA, eval_param));
+        let refresh_soul = GameRules.MysticalShopSystem.initial_refresh_price;
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
             //重新更新商店
             for (let i = 0; i < this.player_shop_field_count[index]; i++) {
@@ -344,7 +365,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     /**
      * 单个位置道具刷新
      * @param player_id 
-     * @param index 
+     * @param index     
      */
     private OneItemRefresh(player_id: PlayerID , index : number) {
         //回归池子
@@ -405,10 +426,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 this.shop_field_list[player_id][index].is_lock = 0;
                 this.shop_field_list[player_id][index].refresh_count = this.shop_field_list[player_id][index].refresh_count + 1;
                 //刷新价格增加
-                let eval_param = {
-                    count: 0,
-                };
-                let refresh_soul = math.ceil(eval(this.STORE_REFRESHES_SOUL_FORMULA, eval_param));
+                let refresh_soul = GameRules.MysticalShopSystem.GetSXPrice(this.shop_field_list[player_id][index].refresh_count);
                 this.shop_field_list[player_id][index].refresh_soul = refresh_soul;
             }else{
                 index--;
@@ -418,6 +436,22 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             shop_wp_list.push(item_name);
         }
         this.GetShopData(player_id, {});
+    }
+
+    /**
+     * 刷新价格获得方法
+     * @param count 刷新次数
+     */
+
+    GetSXPrice(count : number ) :  number{
+        let initial_refresh_price = GameRules.MysticalShopSystem.initial_refresh_price;
+        let refresh_price = initial_refresh_price
+        if(count > 5){
+            refresh_price += (GameRules.MysticalShopSystem.refresh_price_1_5 * 5) + (GameRules.MysticalShopSystem.refresh_price_6 * (count - 5) )
+        }else{
+            refresh_price += GameRules.MysticalShopSystem.refresh_price_1_5 * count
+        }
+        return refresh_price;
     }
     /**
      * 获取玩家商店数据
@@ -478,45 +512,48 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     BuyItem(player_id: PlayerID, params: CGED["MysticalShopSystem"]["BuyItem"], callback?: string) {
-        let item_index = params.index;
-        if (this.shop_field_list[player_id][item_index]) {
-            let item_info = this.shop_field_list[player_id][item_index];
-            if (item_info.is_buy == 0) {
-                if (3 < 2) {
-                    // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : 没有木材");
-                } else if (3 < 2) {
-                    // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : 没有金币");
-                } else {
-                    // 扣除灵魂
-                    GameRules.ResourceSystem.ModifyResource(player_id, { Soul : 10});
-                    // let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-                    // let hNewItem = CreateItem(item_info.key, null, null);
-                    // hHero.AddItem(hNewItem);
-                    let name = item_info.key ;
-                    //标记为出售
-                    this.shop_field_list[player_id][item_index].is_buy = 1;
-                    this.shop_field_list[player_id][item_index].is_lock = 0;
-                    if(this.player_shop_buy_data[player_id].hasOwnProperty(name)){
-                        this.player_shop_buy_data[player_id][name] ++;
-                    }else{
-                        this.player_shop_buy_data[player_id][name] = 1;
+        if(this.shop_state_data[player_id].is_ready == 1){
+            let item_index = params.index;
+            if (this.shop_field_list[player_id][item_index]) {
+                let item_info = this.shop_field_list[player_id][item_index];
+                if (item_info.is_buy == 0) {
+                    if (3 < 2) {
+                        // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : 没有木材");
+                    } else if (3 < 2) {
+                        // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : 没有金币");
+                    } else {
+                        // 扣除灵魂
+                        GameRules.ResourceSystem.ModifyResource(player_id, { Soul : 10});
+                        // let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+                        // let hNewItem = CreateItem(item_info.key, null, null);
+                        // hHero.AddItem(hNewItem);
+                        let name = item_info.key ;
+                        //标记为出售
+                        this.shop_field_list[player_id][item_index].is_buy = 1;
+                        this.shop_field_list[player_id][item_index].is_lock = 0;
+                        if(this.player_shop_buy_data[player_id].hasOwnProperty(name)){
+                            this.player_shop_buy_data[player_id][name] ++;
+                        }else{
+                            this.player_shop_buy_data[player_id][name] = 1;
+                        }
+                        let ItemData = MysteriousShopConfig[name as keyof typeof MysteriousShopConfig];
+                        let ret_action_string = ItemData.ret_action;
+                        let param = ItemData.AbilityValues;
+                        
+                        //执行后续处理....
+                        GameRules.MysticalShopSystem[ret_action_string](player_id, param , name);
                     }
-
-                    let ItemData = MysteriousShopConfig[name as keyof typeof MysteriousShopConfig];
-                    let ret_action_string = ItemData.ret_action;
-                    let param = ItemData.AbilityValues;
-                    
-                    //执行后续处理....
-                    GameRules.MysticalShopSystem[ret_action_string](player_id, param , name);
+                } else {
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "此物已经被购买");
                 }
-            } else {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "此物已经被购买");
-            }
 
-        } else {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "物品不存在");
+            } else {
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "物品不存在");
+            }
+            this.GetShopData(player_id, {});
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "玩家准备后无法购买.");
         }
-        this.GetShopData(player_id, {});
     }
 
     /**
@@ -666,18 +703,36 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     PlayerReady(player_id: PlayerID, params: CGED["MysticalShopSystem"]["PlayerReady"], callback?: string) {
         if(this.shop_state_data[player_id].is_ready == 0){
             this.shop_state_data[player_id].is_ready = 1;
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "你已准备好了!");
+            GameRules.MysticalShopSystem.GetShopState(-1 , {})
+            return 
         }
         let player_count = GetPlayerCount();
         let all_ready = true;
         for (let index = 0 as PlayerID; index < player_count; index++) {
-            let is_ready = this.shop_state_data[index].is_ready;
+            let is_ready = this.shop_state_data[index].is_ready;    
             if(is_ready == 0){
                 all_ready = false;
                 break
             }
         }
         if(all_ready){
-            GameRules.MysticalShopSystem.StopShopSystem()
+            let itme = GameRules.GetDOTATime(false, false)
+
+            if((this.countdown_timer - itme) > 3){
+                //完成时间
+                this.countdown_timer = GameRules.GetDOTATime(false, false) + this.MYSTICAL_SHOP_AWAIT;
+                
+                GameRules.GetGameModeEntity().StopThink("MYSTICAL_SHOP_BUY_ITEM");
+
+                GameRules.GetGameModeEntity().SetContextThink("MYSTICAL_SHOP_BUY_ITEM", () => {
+                    GameRules.MysticalShopSystem.StopShopSystem();
+                    return null;
+                }, this.MYSTICAL_SHOP_AWAIT);
+
+                GameRules.MysticalShopSystem.GetShopState(-1 , {});
+            }
         }else{
             GameRules.MysticalShopSystem.GetShopState(-1 , {})
         }
