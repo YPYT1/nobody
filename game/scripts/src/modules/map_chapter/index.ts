@@ -35,6 +35,8 @@ export class MapChapter extends UIEventRegisterClass {
     player_select_hero: MapSelectHeroList[] = [];
     //玩家数量
     player_count: number = 1;
+    //新玩家标记
+    is_new_player : number = 0;
 
 
     constructor() {
@@ -97,6 +99,7 @@ export class MapChapter extends UIEventRegisterClass {
 
     /** 生成营地 */
     OnCreatedCampMap() {
+
         if (this.CampMapHandle == null) {
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
             for (let hHero of HeroList.GetAllHeroes()) {
@@ -111,6 +114,7 @@ export class MapChapter extends UIEventRegisterClass {
                 this
             );
         }
+        
     }
 
     //营地创建前置
@@ -130,6 +134,32 @@ export class MapChapter extends UIEventRegisterClass {
         //     vect.z += 128;
         //     hHero.SetOrigin(vect)
         // }
+
+        /**
+         *  //是否为新号标记
+         */
+        GameRules.MapChapter.is_new_player = 1;
+
+        if(GameRules.MapChapter.is_new_player == 1){
+            GameRules.MapChapter.GetNewPlayerStatus( 0 , {})
+        }
+    }
+    
+    /**
+     * 获取玩家新号状态 
+     * @param player_id 
+     * @param params 
+     */
+    GetNewPlayerStatus(player_id: PlayerID , params: CGED["MapChapter"]["GetNewPlayerStatus"]){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "MapChapter_GetNewPlayerStatus",
+            {
+                data: {
+                    status : GameRules.MapChapter.is_new_player, //状态
+                }
+            }
+        );
     }
 
 
@@ -306,6 +336,9 @@ export class MapChapter extends UIEventRegisterClass {
         //修改流程
         this._game_select_phase = 2;
         this.GetGameSelectPhase(-1, {})
+
+
+        GameRules.MapChapter.is_new_player = 0;
 
         let ChapterData = MapInfo[this.MapIndex];
 

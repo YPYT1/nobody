@@ -224,7 +224,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     RefreshOneItemBySoul(player_id: PlayerID, params: CGED["MysticalShopSystem"]["RefreshOneItemBySoul"], callback?: string) {
         let index = params.index;
-        if(this.shop_state_data[player_id].is_ready == 1){
+        if(this.shop_state_data[player_id].is_ready == 0){
             let refresh_count = this.shop_field_list[player_id][index].refresh_count;
 
             if(refresh_count >= GameRules.MysticalShopSystem.refresh_limit){
@@ -233,11 +233,15 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             }
 
             let refresh_soul = this.shop_field_list[player_id][index].refresh_soul;
+
+            print("refresh_soul : " , refresh_soul)
+            
             let player_gold_start = GameRules.ResourceSystem.ModifyResource( player_id, { Soul : - refresh_soul});
-            if (player_gold_start) {
+
+            if (player_gold_start.status) {
                 GameRules.MysticalShopSystem.OneItemRefresh( player_id , index)
             } else {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 刷新所需灵魂不足!");
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : !" + player_gold_start.msg);
             }
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 准备后无法刷新!");
@@ -512,21 +516,15 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     BuyItem(player_id: PlayerID, params: CGED["MysticalShopSystem"]["BuyItem"], callback?: string) {
-        if(this.shop_state_data[player_id].is_ready == 1){
+        if(this.shop_state_data[player_id].is_ready == 0){
             let item_index = params.index;
             if (this.shop_field_list[player_id][item_index]) {
                 let item_info = this.shop_field_list[player_id][item_index];
                 if (item_info.is_buy == 0) {
-                    if (3 < 2) {
-                        // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : 没有木材");
-                    } else if (3 < 2) {
-                        // GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : 没有金币");
-                    } else {
-                        // 扣除灵魂
-                        GameRules.ResourceSystem.ModifyResource(player_id, { Soul : 10});
-                        // let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-                        // let hNewItem = CreateItem(item_info.key, null, null);
-                        // hHero.AddItem(hNewItem);
+                    //扣除资源
+                    let ModifyResource = GameRules.ResourceSystem.ModifyResource(player_id, { Soul : - item_info.soul});
+                    
+                    if (ModifyResource.status) {
                         let name = item_info.key ;
                         //标记为出售
                         this.shop_field_list[player_id][item_index].is_buy = 1;
@@ -542,6 +540,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         
                         //执行后续处理....
                         GameRules.MysticalShopSystem[ret_action_string](player_id, param , name);
+                    } else {
+                        
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
                     }
                 } else {
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "此物已经被购买");
@@ -655,6 +656,26 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 shopdata.BuffName , 
                 shopdata.Drive as "Driven" | "Script",
             )
+        }
+    }
+    /**
+     * 对全体玩家增加buff
+     */
+    AddBuffOfAll(player_id: PlayerID, param : { [ key : string] : string | number} , key : string){
+        let playercount = GetPlayerCount()
+        let shopdata = MysteriousShopConfig[key as keyof typeof MysteriousShopConfig]
+        for (let index = 0 as PlayerID; index < playercount; index++) {
+            let unit = PlayerResource.GetSelectedHeroEntity(index);
+            if (unit) {
+                // 技能
+                let custom_datadriven_ability = unit.FindAbilityByName("custom_datadriven_ability")
+                GameRules.CustomAttribute.AddHeroModifier(
+                    unit , 
+                    custom_datadriven_ability, 
+                    shopdata.BuffName , 
+                    shopdata.Drive as "Driven" | "Script",
+                )
+            }
         }
     }
     /**

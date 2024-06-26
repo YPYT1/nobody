@@ -130,6 +130,10 @@ declare interface CGED {
         GetPlayerSelectHeroList : {
 
         }
+        //获取是否为新玩家状态
+        GetNewPlayerStatus : {
+
+        }
         //选择英雄
         SelectHero : {
             hero_id : number;
