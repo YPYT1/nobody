@@ -91,7 +91,15 @@ export class modifier_basic_debug extends BaseModifier {
         return 1
     }
 }
+@registerModifier()
+export class modifier_basic_tracking_thinker extends BaseModifier {
 
+    OnDestroy(): void {
+        if (!IsServer()) {
+            UTIL_Remove(this.GetParent())
+        }
+    }
+}
 @registerModifier()
 export class modifier_common_mul_health extends BaseModifier {
 

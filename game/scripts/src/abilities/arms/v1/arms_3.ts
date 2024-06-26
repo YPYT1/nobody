@@ -1,70 +1,59 @@
 import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
+/**
+ * "对附近%skv_aoe_radius%范围内的敌人放出尖利的刀刃，击中时造成目标伤害并削减最大生命值一定的百分比
 
+伤害系数：%DamageFormula%
+削减最大生命值：2%"
+
+ */
 @registerAbility()
 export class arms_3 extends BaseArmsAbility {
 
     aoe_radius: number;
 
     InitCustomAbilityData(): void {
-        this.RegisterEvent(["OnArmsStart"])
+        this.RegisterEvent(["OnArmsInterval"])
     }
 
-    
-    OnArmsStart(): void {
-        this.ability_damage = this.GetAbilityDamage();
+    UpdataCustomKeyValue(): void {
         this.aoe_radius = this.GetSpecialValueFor("skv_aoe_radius");
-        print("skv_aoe_radius", this.GetAbilityName(), this.aoe_radius)
-        // const vOrigin = this.caster.GetOrigin();
+    }
+
+    OnArmsInterval(): void {
+        this.ability_damage = this.GetAbilityDamage();
         let effect_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_phantom_assassin/phantom_assassin_shard_fan_of_knives.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.caster
         )
-        // ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.aoe_radius, this.aoe_radius, this.aoe_radius));
-        ParticleManager.ReleaseParticleIndex(effect_fx)
+        ParticleManager.ReleaseParticleIndex(effect_fx);
 
-        // particles/units/heroes/hero_phantom_assassin/phantom_assassin_shard_fan_of_knives.vpcf
+        const vOrigin = this.caster.GetOrigin();
+        let enemies = FindUnitsInRadius(
+            this.caster.GetTeam(),
+            vOrigin,
+            null,
+            this.aoe_radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+        for (let enemy of enemies) {
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.caster,
+                damage: this.ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: this.element_type
+            });
+        }
     }
 
 }
 @registerModifier()
 export class modifier_arms_3 extends BaseArmsModifier {}
-/**
- * 灵魂交易
- * 每%arms_cd%秒损失%losing_soul%灵魂，
- * 替换该技能时获取已损失灵魂的%income_mul%倍收益。
- */
-// @registerModifier()
-// export class modifier_arms_3 extends BaseArmsModifier {
-
-//     losing_soul: number;
-//     lost_amount: number;
-//     income_mul: number;
-
-//     IsHidden(): boolean { return false }
-
-//     C_OnCreated(params: any): void {
-//         this.lost_amount = 0;
-//         this.losing_soul = this.ability.GetSpecialValueFor("losing_soul")
-//         this.income_mul = this.ability.GetSpecialValueFor("income_mul")
-//         this.StartIntervalThink(1)
-//     }
-
-//     OnIntervalThink(): void {
-//         let res = GameRules.ResourceSystem.ModifyResource(this.player_id, {
-//             "Soul": -1 * this.losing_soul
-//         })
-//         if (res.status) {
-//             this.lost_amount += this.losing_soul
-//             this.SetStackCount(this.lost_amount)
-//         }
-//     }
-
-//     _OnRemovedAfter(): void {
-//         GameRules.ResourceSystem.ModifyResource(this.player_id, {
-//             "Soul": this.lost_amount * this.income_mul
-//         })
-//     }
-// }

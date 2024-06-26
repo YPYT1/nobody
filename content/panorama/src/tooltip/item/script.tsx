@@ -57,9 +57,6 @@ const App = () => {
 
     const UpdateItemInfoFromName = useCallback(() => {
         let name = $.GetContextPanel().GetAttributeString("name", "");
-        // Category
-        // let kvdata = NpcItemCustom[name as "item_arms_t0_1"];
-
         setItemname(name);
         SetCustomDescription(name, "DescriptionLabel");
         setDescription($.Localize(`#DOTA_Tooltip_Ability_${name}_Description`));

@@ -10,10 +10,9 @@ export const CAbilityImage = ({ id, abilityname, showtooltip }: { id?: string, a
     let ability_data = NpcAbilityCustom[abilityname as keyof typeof NpcAbilityCustom];
     if (ability_data) {
         let image = ability_data.AbilityTextureName;
-        image_src = GetTextureSrc(image);
+        image_src = GetTextureSrc(image,"CAbilityImage");
         rarity = ability_data.Rarity;
     }
-
 
     return (
         <Panel

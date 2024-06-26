@@ -15,10 +15,10 @@ const ABILITY_PATH_ORIGINAL = "file://{images}/spellicons/";
  * @param texture 
  * @returns 
  */
-export function GetTextureSrc(texture: string) {
+export function GetTextureSrc(texture: string, func: string = "123") {
     let texture_arr = texture.split("_");
     let bIsItem = texture_arr[0] == "item";
-
+    // $.Msg(["GetTextureSrc", func])
     if (bIsItem) {
         // 物品
         let cut_texture = texture.replace("item_", "");
@@ -37,7 +37,7 @@ export function GetTextureSrc(texture: string) {
     } else {
         // 技能
         let cut_arr = texture.split("/");
-        if (cut_arr[0] == "custom") {
+        if (cut_arr[0] == "custom" || cut_arr[0] == "arms") {
             return `${ABILITY_PATH_CUSTOM}${texture}.png`;
         } else {
             return `${ABILITY_PATH_ORIGINAL}${texture}.png`;

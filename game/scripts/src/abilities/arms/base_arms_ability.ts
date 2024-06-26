@@ -3,6 +3,7 @@ import { BaseAbility, BaseItem, BaseModifier, registerAbility, registerModifier 
 
 type MdfEventTyps =
     | "OnAbilityKill"
+    | "OnArmsInterval"
     | "OnArmsStart"
     | "OnAffected"
     | "OnKill"
@@ -31,6 +32,7 @@ export class BaseArmsAbility extends BaseAbility {
     player_id: PlayerID;
     ability_damage: number;
     team: DOTATeam_t;
+    mana_cost: number;
     // search_radius: number;
     /** 附近单位最近多少码可触发 */
     trigger_distance: number;
@@ -119,10 +121,10 @@ export class BaseArmsAbility extends BaseAbility {
             }
             GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
             GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, 1, this.slot_index);
-            if (this.element_type != 0){
-                GameRules.CustomOverrideAbility.UpdateOverrideAbility(this.caster,this.GetAbilityName());
+            if (this.element_type != 0) {
+                GameRules.CustomOverrideAbility.UpdateOverrideAbility(this.caster, this.GetAbilityName());
             }
-            
+
             this.InitCustomAbilityData();
         }
 
@@ -141,10 +143,7 @@ export class BaseArmsAbility extends BaseAbility {
 
     }
 
-    _OnUpdateKeyValue() { }
-
-
-
+    // InitCustomAbilityData() { }
     RemoveSelf(): void {
         const hCaster = this.GetCaster();
         const public_arms = hCaster.FindAbilityByName("public_arms") as public_arms;
@@ -188,7 +187,7 @@ export class BaseArmsAbility extends BaseAbility {
         // print("attack_range", this.caster.GetBaseAttackRange())
         if (this.trigger_distance == 0 || min_distance <= this.trigger_distance) {
             this.ArmsActTime = GameRules.GetDOTATime(false, false) + this.arms_cd;
-            this.OnArmsStart();
+            this.OnArmsInterval();
             for (let arms_ability of this.caster.ArmsExecutedList) {
                 (arms_ability as this).OnArmsExecuted();
             }
@@ -196,7 +195,7 @@ export class BaseArmsAbility extends BaseAbility {
     }
 
     // ArmsEffectStart() { }
-    // OnArmsStart(event: ModifierAttackEvent){}
+    // OnArmsInterval(event: ModifierAttackEvent){}
     // ArmsEffectStart_After() { }
 
     _AffectedEffectStart(event: ModifierAttackEvent) {
@@ -212,7 +211,7 @@ export class BaseArmsAbility extends BaseAbility {
 
 
     RegisterEvent(event_list: MdfEventTyps[]) {
-        if (event_list.indexOf("OnArmsStart") != -1) {
+        if (event_list.indexOf("OnArmsInterval") != -1) {
             const public_arms = this.caster.FindAbilityByName("public_arms") as public_arms;
             public_arms.ArmsInsert(this)
         }
@@ -239,8 +238,8 @@ export class BaseArmsAbility extends BaseAbility {
         }
     }
 
-    /** 火力技触发 */
-    OnArmsStart() { }
+    /** 周期性技能 可触发`OnArmsExecuted` */
+    OnArmsInterval() { }
     /** 受到伤害 */
     OnAffected(event: ModifierAttackEvent) { }
     /** 当有火力技触发时 */
@@ -276,7 +275,7 @@ export class BaseArmsModifier extends BaseModifier {
     caster: CDOTA_BaseNPC;
     item_key: string;
     buff_key: string;
-    ability: CDOTABaseAbility;
+    ability: BaseArmsAbility;
     player_id: PlayerID;
 
     IsHidden(): boolean {
@@ -289,21 +288,31 @@ export class BaseArmsModifier extends BaseModifier {
 
     OnCreated(params: any): void {
         this.caster = this.GetCaster();
-        this.ability = this.GetAbility();
+        this.ability = this.GetAbility() as BaseArmsAbility;
         this.player_id = this.caster.GetPlayerOwnerID();
         this.item_key = "item_" + this.GetAbility().entindex();
         this.buff_key = DoUniqueString("buff_" + this.GetAbility().GetAbilityName());
+        
         this.C_OnCreatedBefore(params);
         if (IsServer()) {
+            this.ability.buff = this;
             let hAbility = this.GetAbility() as BaseArmsAbility;
             hAbility.buff = this;
             let ability_attr = GameRules.CustomAttribute.GetAbilityAttribute(this.GetAbility().GetAbilityName());
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.item_key, ability_attr);
+            this.C_UpdateKeyvalue()
             this.C_OnCreated(params)
         }
 
     }
 
+    OnRefresh(params: object): void {
+        if (IsServer()) {
+            this.C_UpdateKeyvalue();
+        }
+    }
+
+    C_UpdateKeyvalue() { }
     C_OnCreatedBefore(params: any) { }
     C_OnCreated(params: any) { }
 
@@ -470,4 +479,44 @@ export class modifier_public_arms extends BaseModifier {
         return 0
     }
 
+}
+
+/** Arms Dot伤害模版 */
+export class BaseArmsMdf_Dot extends BaseModifier {
+
+    dot_damage: number
+    dot_interval: number
+
+    hAbility: CDOTABaseAbility;
+
+    parent: CDOTA_BaseNPC;
+    caster: CDOTA_BaseNPC;
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        this.caster = this.GetCaster();
+        this.parent = this.GetParent();
+        this.hAbility = this.GetAbility();
+        this.dot_damage = params.dot_damage;
+        this.dot_interval = params.dot_interval;
+        this.StartIntervalThink(this.dot_interval)
+    }
+
+    OnRefresh(params: any): void {
+        if (!IsServer()) { return }
+        this.dot_damage = params.dot_damage;
+    }
+
+    OnIntervalThink(): void {
+        ApplyCustomDamage({
+            victim: this.parent,
+            attacker: this.caster,
+            damage: this.dot_damage,
+            damage_type: DamageTypes.MAGICAL,
+            ability: this.GetAbility(),
+            // element_type: this.element_type,
+            is_direct: false,
+            special_effect: true,
+        });
+    }
 }

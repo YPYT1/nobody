@@ -1,47 +1,32 @@
 import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
+
 /**
- * 独狼	自身%check_radius%码范围内没有友军存在时，每秒获得%bonus_soul%灵魂和%bonus_exp%经验。
+ * 增肥	每2秒永久增加2生命值
  */
 @registerAbility()
-export class arms_11 extends BaseArmsAbility {
-
-    check_radius: number;
-    bonus_soul: number;
-    bonus_exp: number;
-
-    _OnUpdateKeyValue(): void {
-        this.bonus_soul = this.GetSpecialValueFor("bonus_soul")
-        this.bonus_exp = this.GetSpecialValueFor("bonus_exp")
-        this.check_radius = this.GetSpecialValueFor("check_radius")
-        this.RegisterEvent(["OnArmsStart"])
-    }
-
-    OnArmsStart(): void {
-        const vPoint = this.caster.GetAbsOrigin();
-        const friends = FindUnitsInRadius(
-            this.team,
-            vPoint,
-            null,
-            this.check_radius,
-            UnitTargetTeam.FRIENDLY,
-            UnitTargetType.BASIC + UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
-            FindOrder.ANY,
-            false
-        );
-        if (friends.length == 1) {
-            GameRules.ResourceSystem.ModifyResource(this.player_id, {
-                "Soul": this.bonus_soul,
-                "SingleExp": this.bonus_exp,
-            })
-        }
-    }
-}
+export class arms_11 extends BaseArmsAbility { }
 
 @registerModifier()
 export class modifier_arms_11 extends BaseArmsModifier {
 
+    skv_grow_value: number;
 
+    C_OnCreated(params: any): void {
+        let fix_interval = this.ability.GetSpecialValueFor("fix_interval")
+        this.StartIntervalThink(fix_interval)
+    }
+
+    C_UpdateKeyvalue(): void {
+        this.skv_grow_value = this.ability.GetSpecialValueFor("skv_grow_value");
+    }
+
+    OnIntervalThink(): void {
+        GameRules.CustomAttribute.ModifyAttribute(this.caster, {
+            "HealthPoints": {
+                "Base": this.skv_grow_value
+            }
+        })
+    }
 }

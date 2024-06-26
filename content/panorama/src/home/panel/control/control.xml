@@ -98,7 +98,7 @@
 			<Panel id="ArmsList"></Panel>
             <Panel id="ArmsOption">
                 <Button id="ArmsToggleButton" class="btn">
-                    <Label text="切换" />
+                    <Label text="#切换" />
                 </Button>
             </Panel>
 		</Panel>

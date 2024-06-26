@@ -47,6 +47,7 @@ export const CreatePanel_ActionAbility = () => {
 }
 
 export const UpdateAbilityList = () => {
+    // $.Msg(["UpdateAbilityList"])
     let MainPanel = $.GetContextPanel()
     let LeftPanel = MainPanel.FindChildTraverse("Left");
     if (LeftPanel != null) {

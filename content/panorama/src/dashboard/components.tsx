@@ -100,43 +100,6 @@ export function DashboardRoute<
     }
 };
 
-// export const CServerStoreLabel = ({ item_id }: { item_id: string; }) => {
-//     let item_data = ServerItemList[item_id as "1"];
-//     let item_text = "null";
-//     if (item_data != null) {
-//         item_text = $.Localize("#custom_server_server_item_list_" + item_id);
-//     }
-
-//     return <Label className='CServerStoreLabel' text={item_text} />;
-// };
-
-// export const CServerStoreDesc = ({ item_id }: { item_id: string; }) => {
-//     let item_data = ServerItemList[item_id as "1"];
-//     let item_text = "null";
-//     if (item_data != null) {
-//         item_text = $.Localize("#custom_server_server_item_list_" + item_id + "_Description");
-//     }
-
-//     return <Label className='CServerStoreDesc' text={item_text} />;
-// };
-
-// export const GetServerItemRarity = (item_id: string) => {
-//     let item_data = ServerItemList[item_id as "1"];
-//     let rarity = 0;
-//     if (item_data != null) {
-//         rarity = item_data.rarity;
-//     }
-//     return rarity;
-// };
-
-// export const GetServerItemSrc = (item_id: string) => {
-//     let item_data = ServerItemList[item_id as "1"];
-//     let AbilityTextureName = "";
-//     if (item_data != null) {
-//         AbilityTextureName = item_data.AbilityTextureName;
-//     }
-//     return GetTextureSrc(AbilityTextureName);
-// };
 
 
 

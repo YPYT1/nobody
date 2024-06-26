@@ -29,13 +29,14 @@ export const OnKill = (params: CGDatadrivenProps) => {
 
 export const OnAttack = (params: CGDatadrivenProps) => {
     // print("OnAttack")
+    for (let hAbility of params.caster.OnAttackList) {
+        hAbility.OnAttackStart(params.target)
+    }
 }
 
 export const OnAttackStart = (params: CGDatadrivenProps) => {
     // print("OnAttackStart")
-    for (let hAbility of params.caster.OnAttackList) {
-        hAbility.OnAttackStart(params.target)
-    }
+    
 
     // 分裂箭
     // let count = 0;

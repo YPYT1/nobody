@@ -2,54 +2,110 @@ import { BaseModifier, registerAbility, registerModifier } from "../../../utils/
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 /**
- * 每击杀%every_kills%个敌人，扣除%every_hp%点生命值.同时获得%every_addad%点攻击力。
- * 上限%limit_kills%个敌人。击杀%limit_kills%个敌人之后自动升级。
+ * 雷鸣震击	"向直径400码数个敌人
+制造出分叉闪电造成伤害。
+技能逻辑也类似（仅对同一个方向扇形45°敌人生效）
+cd：3秒
+伤害系数：攻击力100%·雷元素伤害
+作用范围：直径400码，3名敌军"
+
  */
 @registerAbility()
-export class arms_14 extends BaseArmsAbility { }
+export class arms_14 extends BaseArmsAbility {
 
-@registerModifier()
-export class modifier_arms_14 extends BaseArmsModifier {
+    skv_target_count: number;
+    sector_angle: number;
 
-    every_kills: number;
-    every_hp: number;
-    every_addad: number;
-    limit_kills: number;
-    current_kills: number;
-
-    IsHidden(): boolean {
-        return false
+    Precache(context: CScriptPrecacheContext): void {
+        PrecacheUnitByNameSync("npc_dota_hero_shadow_shaman", context);
+        PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_shadowshaman.vsndevts", context);
     }
 
-    C_OnCreated(params: any): void {
-        this.every_kills = this.ability.GetSpecialValueFor("every_kills");
-        this.every_hp = this.ability.GetSpecialValueFor("every_hp");
-        this.every_addad = this.ability.GetSpecialValueFor("every_addad");
-        this.limit_kills = this.ability.GetSpecialValueFor("limit_kills");
-        this.current_kills = 0;
-        this.C_RegisterOnKilled();
-        // this.RegisterMdfEvent();
+    InitCustomAbilityData(): void {
+        this.RegisterEvent(["OnArmsInterval"])
     }
 
-    C_OnKilled(hTarget: CDOTA_BaseNPC): void {
-        this.current_kills += 1;
-        this.SetStackCount(this.current_kills)
-        // print("modifier_arms_14 OnKilled", this.current_kills)
-        if (this.current_kills % this.every_kills == 0) {
-            GameRules.CustomAttribute.ModifyAttribute(this.caster, {
-                "HealthPoints": {
-                    "Base": this.every_hp
-                },
-                "AttackDamage": {
-                    "Base": this.every_addad,
-                }
-            })
+    UpdataCustomKeyValue(): void {
+        this.sector_angle = this.GetSpecialValueFor("sector_angle")
+        this.skv_target_count = this.GetSpecialValueFor("skv_target_count")
+    }
 
-            if (this.current_kills >= this.limit_kills) {
-                this.C_UnRegisterOnKilled();
-                print("FullPower")
+    OnArmsInterval(): void {
+        // print("arms_14")
+        const ability_damage = this.GetAbilityDamage()
+        const vOrigin = this.caster.GetOrigin();
+        // const aoe_radius = this.GetSpecialValueFor("aoe_radius")
+        // 
+
+        let targets = FindUnitsInRadius(
+            this.caster.GetTeam(),
+            vOrigin,
+            null,
+            this.trigger_distance,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+
+
+        if (targets.length > 0) {
+            EmitSoundOn("Hero_ShadowShaman.EtherShock",this.caster)
+            let targets_shocked = 1;
+            let main_target = targets[0];
+
+            let cast_fx = ParticleManager.CreateParticle(
+                "particles/units/heroes/hero_shadowshaman/shadowshaman_ether_shock.vpcf",
+                ParticleAttachment.WORLDORIGIN,
+                this.caster
+            )
+            ParticleManager.SetParticleControl(cast_fx, 0, vOrigin);
+            ParticleManager.SetParticleControl(cast_fx, 1, main_target.GetAbsOrigin());
+            ParticleManager.ReleaseParticleIndex(cast_fx);
+
+            let enemies = Custom_FindUnitsInSector(
+                this.caster.GetTeam(),
+                this.caster,
+                vOrigin,
+                main_target.GetAbsOrigin(),
+                this.trigger_distance,
+                this.sector_angle,
+                UnitTargetTeam.ENEMY,
+                UnitTargetType.BASIC + UnitTargetType.HERO,
+                UnitTargetFlags.NONE,
+                FindOrder.ANY
+            )
+
+
+            for (let enemy of enemies) {
+                if (targets_shocked >= this.skv_target_count) { break }
+                if (enemy == main_target) { continue }
+                targets_shocked += 1;
+                let cast_fx = ParticleManager.CreateParticle(
+                    "particles/units/heroes/hero_shadowshaman/shadowshaman_ether_shock.vpcf",
+                    ParticleAttachment.WORLDORIGIN,
+                    this.caster
+                )
+                ParticleManager.SetParticleControl(cast_fx, 0, vOrigin);
+                ParticleManager.SetParticleControl(cast_fx, 1, enemy.GetAbsOrigin());
+                ParticleManager.ReleaseParticleIndex(cast_fx);
+
+                ApplyCustomDamage({
+                    victim: enemy,
+                    attacker: this.caster,
+                    damage: ability_damage,
+                    damage_type: DamageTypes.MAGICAL,
+                    ability: this,
+                    element_type: ElementTypeEnum.thunder,
+                })
+
             }
         }
     }
 }
 
+
+
+@registerModifier()
+export class modifier_arms_14 extends BaseArmsModifier { }

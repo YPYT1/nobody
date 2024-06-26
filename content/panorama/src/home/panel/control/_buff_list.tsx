@@ -33,24 +33,6 @@ export const RegisterPanelTooltip = (panel: Panel) => {
     })
 }
 
-// export function OnBuffClicked() {
-//     var queryUnit = $.GetContextPanel().data().m_QueryUnit;
-//     var buffSerial = $.GetContextPanel().data().m_BuffSerial;
-//     var alertBuff = GameUI.IsAltDown();
-//     Players.BuffClicked(queryUnit, buffSerial, alertBuff);
-// }
-
-// export function BuffShowTooltip() {
-//     var queryUnit = $.GetContextPanel().data().m_QueryUnit;
-//     var buffSerial = $.GetContextPanel().data().m_BuffSerial;
-//     var isEnemy = Entities.IsEnemy(queryUnit);
-//     $.DispatchEvent("DOTAShowBuffTooltip", $.GetContextPanel(), queryUnit, buffSerial, isEnemy);
-// }
-
-// export function BuffHideTooltip() {
-//     $.DispatchEvent("DOTAHideBuffTooltip", $.GetContextPanel());
-// }
-
 export function UpdateBuffs() {
     let queryUnit = Players.GetLocalPlayerPortraitUnit();
     let buff_count = Entities.GetNumBuffs(queryUnit);

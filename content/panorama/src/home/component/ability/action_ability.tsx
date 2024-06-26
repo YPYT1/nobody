@@ -72,7 +72,7 @@ function UpdateAbilityVar() {
         texture = Abilities.GetAbilityTextureName(m_Ability);
     }
 
-    AbilityImage.SetImage(GetTextureSrc(texture)) 
+    AbilityImage.SetImage(GetTextureSrc(texture,"UpdateAbilityVar")) 
 
     // 变更品质
     const rarity = GetAbilityRarity(ability_name);

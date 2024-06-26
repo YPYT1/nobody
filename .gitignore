@@ -50,8 +50,7 @@ materials
 /game/scripts/npc/units
 /game/resource/kv_generated.csv
 /game/scripts/npc/localize
-/content/panorama/images/custom_game/_temp
-/content/panorama/images/_temp
+_temp
 /package-lock.json
 /yarn.lock
 /content/panorama/image_precache0.css

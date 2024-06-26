@@ -1,119 +1,105 @@
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
+
 /**
- * 冰龙咆哮	"召唤一只持续%summoned_duration%秒的冰龙保护召唤者
-
-攻击间隔：1.0
-攻击范围：直径600码
-雷龙特性：对目标500范围的敌人造成伤害和减速
-冰龙伤害：%DamageFormula%"
-
+ * 战意	
+ * 战意	每次使用技能都会叠加5%攻击力和3%移动速度,持续时间20秒。最大层数8层后不再叠加，持续时间结束之后进入冷却,内置冷却:10秒
  */
 @registerAbility()
 export class arms_25 extends BaseArmsAbility {
 
-    splash_radius: number;
+    stack_buff: CDOTA_Buff;
+    activate_time: number;
 
-    _OnUpdateKeyValue(): void {
-        this.splash_radius = 150;
-        this.RegisterEvent(["OnArmsStart"])
+
+    stack_limit: number;
+
+    InitCustomAbilityData() {
+        this.activate_time = 0
+        this.stack_limit = this.GetSpecialValueFor("stack_limit");
+        this.RegisterEvent(["OnArmsExecuted"])
     }
 
-    OnArmsStart(): void {
-        this.ability_damage = this.GetAbilityDamage();
-        let summoned_duration = this.GetSpecialValueFor("summoned_duration")
-        let vLoc = this.caster.GetAbsOrigin() + RandomVector(200) as Vector;
-        let summoned_unit = GameRules.SummonedSystem.CreatedUnit(
-            "summoned_ice_dragon",
-            vLoc,
-            this.caster,
-            summoned_duration
-        )
-        summoned_unit.AddNewModifier(this.caster, this, "modifier_arms_25_summoned", {})
-
-    }
-
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: any): boolean | void {
-        if (target) {
-            let enemies = FindUnitsInRadius(
-                DotaTeam.GOODGUYS,
-                location,
-                null,
-                this.splash_radius,
-                UnitTargetTeam.ENEMY,
-                UnitTargetType.HERO + UnitTargetType.BASIC,
-                UnitTargetFlags.NONE,
-                FindOrder.ANY,
-                false
-            )
-            for (let enemy of enemies) {
-                ApplyCustomDamage({
-                    victim: enemy,
-                    attacker: this.caster,
-                    damage: this.ability_damage,
-                    damage_type: DamageTypes.MAGICAL,
-                    ability: this,
-                    element_type: this.element_type,
-                })
-
-                
+    OnArmsExecuted(): void {
+        // print("arms_25 OnAbilityExecuted");
+        let gameTime = GameRules.GetDOTATime(false, false);
+        if (this.activate_time < gameTime) {
+            let buff_duration = this.GetSpecialValueFor("buff_duration")
+            if (this.stack_buff == null) {
+                this.stack_buff = this.caster.AddNewModifier(this.caster, this, "modifier_arms_25_stack", { duration: buff_duration })
             }
-
+            this.stack_buff.IncrementStackCount();
+            this.stack_buff.SetDuration(buff_duration, true);
+            let stack = this.stack_buff.GetStackCount();
+            if (stack >= this.stack_limit) {
+                this.activate_time = gameTime + buff_duration + this.arms_cd
+            }
         }
+
     }
-
 }
 
 @registerModifier()
-export class modifier_arms_25 extends BaseArmsModifier {
+export class modifier_arms_25 extends BaseArmsModifier { }
 
-}
 @registerModifier()
-export class modifier_arms_25_summoned extends BaseModifier {
+export class modifier_arms_25_stack extends BaseModifier {
 
-    parent: CDOTA_BaseNPC;
+    stack_ad_pct: number;
+    stack_mv_pct: number;
+    stack_count: number;
+    ability: arms_25;
+    buff_key: string;
+
+    GetAttributes(): ModifierAttribute {
+        return ModifierAttribute.MULTIPLE
+    }
 
     OnCreated(params: object): void {
+        this.stack_count = 1;
+        this.ability = this.GetAbility() as arms_25;
+        this.stack_mv_pct = this.ability.GetSpecialValueFor("stack_mv_pct");
+        this.stack_ad_pct = this.ability.GetSpecialValueFor("stack_ad_pct");
+        this.buff_key = "buff_key_" + this.ability.GetEntityIndex();
+    }
+
+
+    OnStackCountChanged(stackCount: number): void {
+        this.stack_count = this.GetStackCount();
         if (!IsServer()) { return }
-        this.parent = this.GetParent();
-        this.StartIntervalThink(1)
+        GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
+            "AttackDamage": {
+                "BasePercent": this.stack_ad_pct * this.stack_count,
+            },
+            "MoveSpeed": {
+                "BasePercent": this.stack_mv_pct * this.stack_count,
+            }
+        })
     }
 
-    CheckState(): Partial<Record<ModifierState, boolean>> {
-        return {
-            [ModifierState.NO_HEALTH_BAR]: true,
-            [ModifierState.NO_UNIT_COLLISION]: true,
-            [ModifierState.INVULNERABLE]: true,
-            [ModifierState.UNSELECTABLE]: true,
-        }
-    }
+    // DeclareFunctions(): ModifierFunction[] {
+    //     return [
+    //         ModifierFunction.BASEDAMAGEOUTGOING_PERCENTAGE,
+    //         ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
+    //     ]
+    // }
 
-    OnIntervalThink(): void {
-        let vParent = this.parent.GetAbsOrigin()
-        let enemies = FindUnitsInRadius(
-            DotaTeam.GOODGUYS,
-            vParent,
-            null,
-            600,
-            UnitTargetTeam.ENEMY,
-            UnitTargetType.HERO + UnitTargetType.BASIC,
-            UnitTargetFlags.NONE,
-            FindOrder.ANY,
-            false
-        )
-        if (enemies.length > 0) {
-            let target = enemies[0];
-            this.parent.StartGesture(GameActivity.DOTA_ATTACK)
-            ProjectileManager.CreateTrackingProjectile({
-                Source: this.parent,
-                Target: enemies[0],
-                Ability: this.GetAbility(),
-                EffectName: "particles/units/heroes/hero_puck/puck_base_attack.vpcf",
-                iSourceAttachment: ProjectileAttachment.ATTACK_1,
-                // vSourceLoc: this.parent.GetAbsOrigin(),
-                iMoveSpeed: 1200,
-            })
-        }
+    // GetModifierBaseDamageOutgoing_Percentage(event: ModifierAttackEvent): number {
+    //     return this.stack_ad_pct * this.stack_count;
+    // }
+
+    // GetModifierMoveSpeedBonus_Percentage(): number {
+    //     return this.stack_mv_pct * this.stack_count;
+    // }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
+        this.ability.stack_buff = null;
     }
 }
+
+
+
+

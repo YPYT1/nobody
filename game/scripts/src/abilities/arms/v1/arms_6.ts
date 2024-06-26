@@ -2,43 +2,69 @@ import { modifier_motion_surround } from "../../../modifier/modifier_motion";
 import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
+/**
+ * 雷魂	"毎秒生成1个雷电幽魂围绕英雄，对所有触碰到的敌人造成范围伤害伤害。至多同时存在3个。
+
+持续时间：5秒
+环绕距离：300
+伤害系数：每个雷魂造成攻击力50%单体·雷元素伤害"
+
+ */
 @registerAbility()
 export class arms_6 extends BaseArmsAbility {
 
     spirit_list: CDOTA_BaseNPC[];
-    spirit_limit: number;
+    skv_surround_limit: number;
 
     Precache(context: CScriptPrecacheContext): void {
         PrecacheResource("particle", "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf", context);
     }
 
-    _OnUpdateKeyValue(): void {
-        this.spirit_limit = this.GetSpecialValueFor("spirit_limit");
+    InitCustomAbilityData(): void {
+        
         if (this.spirit_list == null) { this.spirit_list = [] }
-        this.RegisterEvent(["OnArmsStart"])
+        this.RegisterEvent(["OnArmsInterval"])
     }
 
-    OnArmsStart(): void {
-        print("this.spirit_list.length", this.spirit_list.length)
-        if (this.spirit_list.length < this.spirit_limit) {
-            this.caster.SpendMana(10, this);
-            let summoned_duration = this.GetSpecialValueFor("skv_summoned_duration");
+    UpdataCustomKeyValue(): void {
+        this.skv_surround_limit = this.GetSpecialValueFor("skv_surround_limit");
+    }
+    
+    OnArmsInterval(): void {
+        // print("this.spirit_list.length", this.spirit_list.length, this.skv_surround_limit)
+        if (this.spirit_list.length < this.skv_surround_limit) {
+            // this.caster.SpendMana(10, this);
+            let skv_surround_duration = this.GetSpecialValueFor("skv_surround_duration");
+            let skv_surround_speed = this.GetSpecialValueFor("skv_surround_speed");
+            let skv_surround_distance = this.GetSpecialValueFor("skv_surround_distance");
+            // print("skv_surround_duration",skv_surround_duration,skv_surround_speed)
+            // 获得最后一个环绕物的位置
+            let surround_qangle = 0;
+            if (this.spirit_list.length > 0) {
+                let last_spirit = this.spirit_list[this.spirit_list.length - 1];
+                let last_vect = last_spirit.GetAbsOrigin();
+                let vOrigin = this.caster.GetAbsOrigin();
+                let angle = VectorToAngles((last_vect - vOrigin as Vector).Normalized());
+                surround_qangle = angle.y + 30
+            }
+
             let hSpirit = GameRules.SummonedSystem.CreatedUnit(
                 "npc_summoned_dummy",
                 this.caster.GetAbsOrigin() + Vector(0, 300, 0) as Vector,
                 this.caster,
-                summoned_duration,
+                skv_surround_duration,
                 true
             )
-            this.spirit_list.push(hSpirit)
+
             hSpirit.AddNewModifier(this.caster, this, "modifier_arms_6_summoned", {
-                duration: summoned_duration,
-                surround_distance: 300,
-                surround_qangle: 0,
-                surround_speed: 900,
+                duration: skv_surround_duration,
+                surround_distance: skv_surround_distance,
+                surround_qangle: surround_qangle,
+                surround_speed: skv_surround_speed,
                 surround_entity: this.caster.entindex(),
             });
 
+            this.spirit_list.push(hSpirit)
         }
     }
 
@@ -162,11 +188,11 @@ export class modifier_arms_6_summoned_collision extends BaseModifier {
 //         PrecacheResource("particle", "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf", context);
 //     }
 
-//     _OnUpdateKeyValue(): void {
-//         this.RegisterEvent(["OnArmsStart"])
+//     InitCustomAbilityData(): void {
+//         this.RegisterEvent(["OnArmsInterval"])
 //     }
 
-//     OnArmsStart(): void {
+//     OnArmsInterval(): void {
 //         const vPoint = this.caster.GetOrigin();
 //         const projectile_distance = 800;
 

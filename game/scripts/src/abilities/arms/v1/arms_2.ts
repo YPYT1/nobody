@@ -16,12 +16,16 @@ export class arms_2 extends BaseArmsAbility {
     }
 
     InitCustomAbilityData(): void {
-        this.RegisterEvent(["OnArmsStart"])
+        this.RegisterEvent(["OnArmsInterval"])
     }
 
-    OnArmsStart(): void {
-        this.ability_damage = this.GetAbilityDamage();
+    UpdataCustomKeyValue(): void {
         this.aoe_radius = this.GetSpecialValueFor("skv_aoe_radius");
+    }
+    
+    OnArmsInterval(): void {
+        this.ability_damage = this.GetAbilityDamage();
+        
         // print("skv_aoe_radius", this.GetAbilityName(), this.aoe_radius)
         // const vOrigin = this.caster.GetOrigin();
         let effect_fx = ParticleManager.CreateParticle(

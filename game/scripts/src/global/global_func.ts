@@ -499,49 +499,6 @@ function GetCustomSystemTime() {
 }
 
 /**
- * 查找圆形线上的单位
- * @param team 
- * @param location 
- * @param radius 
- * @param width 
- * @param teamFilter 
- * @param typeFilter 
- * @param flagFilter 
- * @returns 
- */
-function FindUnitsInRing(
-    team: DOTATeam_t,
-    location: Vector,
-    radius: number,
-    width: number,
-    teamFilter: DOTA_UNIT_TARGET_TEAM,
-    typeFilter: DOTA_UNIT_TARGET_TYPE,
-    flagFilter: DOTA_UNIT_TARGET_FLAGS,
-) {
-    // DebugDrawCircle(location, Vector(255, 0, 0), 100, radius + width, true, 0.5)
-
-    let enemies = FindUnitsInRadius(
-        team,
-        location,
-        null,
-        radius + width + 24,
-        teamFilter,
-        typeFilter,
-        flagFilter,
-        FindOrder.ANY,
-        false
-    );
-    let _targets: CDOTA_BaseNPC[] = [];
-    for (let enemy of enemies) {
-        // print("leng2d", (enemy.GetAbsOrigin() - location as Vector).Length2D(), (radius - width * 2 - enemy.GetHullRadius()),enemy.GetHullRadius())
-        if ((enemy.GetAbsOrigin() - location as Vector).Length2D() >= (radius - width - enemy.GetHullRadius() - 8)) {
-            _targets.push(enemy)
-        }
-    }
-
-    return _targets
-}
-/**
  * 获取玩家数量
  */
 function GetPlayerCount() :  number{

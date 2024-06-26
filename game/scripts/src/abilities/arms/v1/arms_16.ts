@@ -1,105 +1,73 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
+import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 
-/**
- * 战意	
- * 战意	每次使用技能都会叠加5%攻击力和3%移动速度,持续时间20秒。最大层数8层后不再叠加，持续时间结束之后进入冷却,内置冷却:10秒
- */
 @registerAbility()
-export class arms_16 extends BaseArmsAbility {
+export class arms_16 extends BaseArmsAbility { 
 
-    stack_buff: CDOTA_Buff;
-    activate_time: number;
+    skv_missile_count:number;
+    skv_missile_speed:number;
 
-
-    stack_limit: number;
-
-    _OnUpdateKeyValue() {
-        this.activate_time = 0
-        this.stack_limit = this.GetSpecialValueFor("stack_limit");
-        this.RegisterEvent(["OnArmsExecuted"])
+    InitCustomAbilityData(): void {
+        this.RegisterEvent(["OnArmsInterval"])
     }
 
-    OnArmsExecuted(): void {
-        // print("arms_16 OnAbilityExecuted");
-        let gameTime = GameRules.GetDOTATime(false, false);
-        if (this.activate_time < gameTime) {
-            let buff_duration = this.GetSpecialValueFor("buff_duration")
-            if (this.stack_buff == null) {
-                this.stack_buff = this.caster.AddNewModifier(this.caster, this, "modifier_arms_16_stack", { duration: buff_duration })
-            }
-            this.stack_buff.IncrementStackCount();
-            this.stack_buff.SetDuration(buff_duration, true);
-            let stack = this.stack_buff.GetStackCount();
-            if (stack >= this.stack_limit) {
-                this.activate_time = gameTime + buff_duration + this.arms_cd
-            }
+    UpdataCustomKeyValue(): void {
+        this.skv_missile_count = this.GetSpecialValueFor("skv_missile_count");
+        this.skv_missile_speed = this.GetSpecialValueFor("skv_missile_speed");
+    }
+
+    OnArmsInterval(): void {
+        print("")
+        const vPoint = this.caster.GetOrigin();
+        let enemies = FindUnitsInRadius(
+            this.caster.GetTeam(),
+            vPoint,
+            null,
+            this.trigger_distance,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+
+        if(enemies.length > 0){
+            let hTarget = enemies[0];
+            this.ability_damage = this.GetAbilityDamage();
+            ProjectileManager.CreateTrackingProjectile({
+                Target: hTarget,
+                Source: this.caster,
+                Ability: this,
+                EffectName: "particles/units/heroes/hero_ogre_magi/ogre_magi_ignite.vpcf",
+                iMoveSpeed: this.skv_missile_speed,
+                vSourceLoc: vPoint,
+                bDodgeable: false,
+                bProvidesVision: false,
+            });
         }
+    }
 
+    OnProjectileHit(target: CDOTA_BaseNPC, location: Vector): boolean | void {
+        if (target) {
+            ApplyCustomDamage({
+                victim: target,
+                attacker: this.caster,
+                damage: this.ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: this.element_type
+            });
+
+            // target.AddNewModifier(this.caster, this, "modifier_arms_7_dot", {
+            //     dot_damage: this.ability_damage,
+            //     dot_interval: this.skv_dot_interval,
+            //     duration: this.skv_dot_duration,
+            // })
+            return true
+        }
     }
 }
 
 @registerModifier()
-export class modifier_arms_16 extends BaseArmsModifier { }
-
-@registerModifier()
-export class modifier_arms_16_stack extends BaseModifier {
-
-    stack_ad_pct: number;
-    stack_mv_pct: number;
-    stack_count: number;
-    ability: arms_16;
-    buff_key: string;
-
-    GetAttributes(): ModifierAttribute {
-        return ModifierAttribute.MULTIPLE
-    }
-
-    OnCreated(params: object): void {
-        this.stack_count = 1;
-        this.ability = this.GetAbility() as arms_16;
-        this.stack_mv_pct = this.ability.GetSpecialValueFor("stack_mv_pct");
-        this.stack_ad_pct = this.ability.GetSpecialValueFor("stack_ad_pct");
-        this.buff_key = "buff_key_" + this.ability.GetEntityIndex();
-    }
-
-
-    OnStackCountChanged(stackCount: number): void {
-        this.stack_count = this.GetStackCount();
-        if (!IsServer()) { return }
-        GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
-            "AttackDamage": {
-                "BasePercent": this.stack_ad_pct * this.stack_count,
-            },
-            "MoveSpeed": {
-                "BasePercent": this.stack_mv_pct * this.stack_count,
-            }
-        })
-    }
-
-    // DeclareFunctions(): ModifierFunction[] {
-    //     return [
-    //         ModifierFunction.BASEDAMAGEOUTGOING_PERCENTAGE,
-    //         ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
-    //     ]
-    // }
-
-    // GetModifierBaseDamageOutgoing_Percentage(event: ModifierAttackEvent): number {
-    //     return this.stack_ad_pct * this.stack_count;
-    // }
-
-    // GetModifierMoveSpeedBonus_Percentage(): number {
-    //     return this.stack_mv_pct * this.stack_count;
-    // }
-
-    OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
-        this.ability.stack_buff = null;
-    }
-}
-
-
-
-
+export class modifier_arms_16 extends BaseArmsModifier {}

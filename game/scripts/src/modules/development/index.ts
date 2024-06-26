@@ -141,12 +141,74 @@ export class Development extends UIEventRegisterClass {
         let vOrigin = hUnit.GetAbsOrigin();
         hUnit.SetAbsOrigin(Vector(params.x, params.y, vOrigin.z));
     }
-    
+
+    RemoveStakes() {
+        let stakes = FindUnitsInRadius(
+            DotaTeam.BADGUYS,
+            Vector(0, 0, 0),
+            null,
+            99999,
+            UnitTargetTeam.FRIENDLY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        )
+
+        // let stakes = Entities.FindAllByName("npc_public_test");
+        print("stakes", stakes.length);
+        for (let stake of stakes) {
+            stake.RemoveSelf();
+        }
+        // for(let unit of stakes){
+        //     let 
+        // }
+    }
+    CreateStakes(player_id: PlayerID) {
+        const grid_size = 64;
+        const max_x = 10;
+        const max_y = 10;
+
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let vOrigin = hHero.GetAbsOrigin() + hHero.GetForwardVector() * 400 as Vector;
+
+        for (let x = 0; x < max_x; x++) {
+            for (let y = 0; y < max_y; y++) {
+                // Entities.CreateByClassname("");
+
+                let Dummy = CreateUnitByName("npc_public_test",
+                    Vector(
+                        -max_x * grid_size / 2 + x * grid_size + vOrigin.x,
+                        -max_y * grid_size / 2 + y * grid_size + vOrigin.x,
+                        vOrigin.z
+                    ),
+                    true,
+                    null,
+                    null,
+                    DotaTeam.BADGUYS
+                );
+                Dummy.CDResp = {};
+                Dummy.SetControllableByPlayer(player_id, false)
+                // unit.SetUnitCanRespawn(true);
+                // unit.SetControllableByPlayer(0, true);
+            }
+        }
+
+    }
+
     /** Debug命令 */
     DebugChat(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-reset") {
             // let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
             PlayerResource.ReplaceHeroWith(player_id, "npc_dota_hero_sniper", 0, 0)
+        }
+
+        if (cmd == "-stake") {
+            this.CreateStakes(player_id);
+        }
+
+        if (cmd == "-rmsk") {
+            this.RemoveStakes()
         }
         // if (cmd == "-sg" || cmd == "-xg") {
         //     const count = tonumber(args[0] ?? "1");

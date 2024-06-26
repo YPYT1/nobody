@@ -7,59 +7,32 @@ import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 @registerAbility()
 export class arms_1 extends BaseArmsAbility {
 
- 
-    // projectile_distance:number;
-
     skv_aoe_radius:number;
-
     start_radius :number;
     end_radius :number;
     speed:number;
 
     InitCustomAbilityData(): void {
+        this.RegisterEvent(["OnArmsInterval"])
+    }
+
+    UpdataCustomKeyValue(): void {
         this.speed = this.GetSpecialValueFor("speed");
         this.start_radius = this.GetSpecialValueFor("start_radius");
         this.end_radius = this.GetSpecialValueFor("end_radius");
-        this.RegisterEvent(["OnArmsStart"])
-    }
-
-    OnArmsStart(): void {
-        this.ability_damage = this.GetAbilityDamage();
         this.skv_aoe_radius = this.GetSpecialValueFor("skv_aoe_radius");
-        // print("skv_aoe_radius",this.skv_aoe_radius)
+    }
+    
+    OnArmsInterval(): void {
+        this.ability_damage = this.GetAbilityDamage();
+        
+
         const vOrigin = this.caster.GetOrigin();
-
-        // let enemies = FindUnitsInRadius(
-        //     this.caster.GetTeam(),
-        //     vOrigin,
-        //     null,
-        //     projectile_distance,
-        //     UnitTargetTeam.ENEMY,
-        //     UnitTargetType.BASIC + UnitTargetType.HERO,
-        //     UnitTargetFlags.NONE,
-        //     FindOrder.CLOSEST,
-        //     false
-        // );
-
-        // GameRules.ResourceSystem.ModifyResource
         let vPoint = vOrigin + this.caster.GetForwardVector() * this.skv_aoe_radius as Vector;
-        // if (enemies.length > 0) {
-        //     let vTarget = enemies[0].GetAbsOrigin();
-        //     let direction = vTarget - vOrigin as Vector;
-        //     direction.z = 0
-        //     direction = direction.Normalized();
-        //     // print(this.caster.GetForwardVector(),direction)
-        //     vPoint = vOrigin + direction * projectile_distance as Vector;
-
-        //     // DebugDrawCircle(vTarget, Vector(255, 9, 9), 100, 100, true, 1);
-        // }
-        // print("vPoint", vPoint)
-        // DebugDrawCircle(vPoint, Vector(255, 9, 9), 100, 100, true, 1);
         let projectile_direction = vPoint - vOrigin as Vector
         projectile_direction.z = 0
         projectile_direction = projectile_direction.Normalized()
 
-        // let enemy = 
         ProjectileManager.CreateLinearProjectile({
             Source: this.caster,
             Ability: this,

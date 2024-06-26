@@ -45,10 +45,10 @@ export function HeroPassiveDamageFormula(abilityName: string, formula: string, l
                     }
 
                     if (value != 0) {
-                        arr1.push(`<span class="Variable">${(value * 100).toFixed(0)}%</span>${attr_text}`);
+                        arr1.push(`<span class="Variable">${(value * 100).toFixed(0)}%</span><span class="AttributeVar">${attr_text}</span>`);
                     }
                 } else {
-                    arr1.push(`${attr_text}`);
+                    arr1.push(`<span class="AttributeVar">${attr_text}</span>`);
                 }
 
             }

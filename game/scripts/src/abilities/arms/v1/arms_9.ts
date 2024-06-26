@@ -2,58 +2,42 @@ import { BaseModifier, registerAbility, registerModifier } from "../../../utils/
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 /**
- * 钢毛皮甲	"在受到伤害时触发，将尖刺喷射向敌人，对附近的敌人造成伤害。
-特效：钢背刺针扫射
-内置cd：1秒
-伤害系数：攻击力150%·风元素伤害
-作用范围：自身范围500码"
+ * 毒瘤	"每1秒获得当前英雄等级的经验值。
+300秒后自动升级该技能。无法更换、无法升级。"
+
  */
 @registerAbility()
-export class arms_9 extends BaseArmsAbility {
-
-    _OnUpdateKeyValue(): void {
-        this.RegisterEvent(["OnAffected"])
-    }
-
-    OnAffected(event: ModifierAttackEvent): void {
-        const aoe_radius = this.GetSpecialValueFor("aoe_radius");
-        const vPoint = this.caster.GetAbsOrigin();
-        let ability_damage = this.GetAbilityDamage();
-        let cast_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_bristleback/bristleback_quill_spray.vpcf",
-            ParticleAttachment.POINT,
-            this.caster
-        )
-        ParticleManager.ReleaseParticleIndex(cast_fx);
-
-        const enemies = FindUnitsInRadius(
-            this.team,
-            vPoint,
-            null,
-            aoe_radius,
-            UnitTargetTeam.ENEMY,
-            UnitTargetType.BASIC + UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
-            FindOrder.ANY,
-            false
-        );
-        for (let enemy of enemies) {
-            ApplyCustomDamage({
-                victim: enemy,
-                attacker: this.caster,
-                damage: ability_damage,
-                damage_type: DamageTypes.MAGICAL,
-                ability: this,
-                element_type: this.element_type,
-                is_direct: true,
-            })
-        }
-
-    }
-}
+export class arms_9 extends BaseArmsAbility { }
 
 @registerModifier()
-export class modifier_arms_9 extends BaseArmsModifier { }
+export class modifier_arms_9 extends BaseArmsModifier {
+
+    timer: number;
+    limit_timer: number;
+
+    C_OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        this.timer = 0;
+        this.limit_timer = this.GetAbility().GetSpecialValueFor("limit_timer");
+        this.StartIntervalThink(1)
+    }
+
+    OnIntervalThink(): void {
+        let level = this.caster.GetLevel();
+        let skv_resource_income = this.GetAbility().GetSpecialValueFor("skv_resource_income");
+        let add_exp = math.floor(level * skv_resource_income * 0.01);
+
+        GameRules.ResourceSystem.ModifyResource(this.player_id, {
+            "SingleExp": add_exp
+        })
+
+        this.timer += 1;
+        if (this.timer >= this.limit_timer) {
+            this.StartIntervalThink(-1);
+            // 升级该技能
+        }
+    }
+}
 
 
 

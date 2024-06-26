@@ -2,43 +2,39 @@ import { BaseModifier, registerAbility, registerModifier } from "../../../utils/
 import { BaseArmsAbility, BaseArmsModifier } from "../base_arms_ability";
 
 /**
- * 群狼	自身%check_radius%码范围内有友军存在时，每秒获得%bonus_soul%灵魂和%bonus_exp%经验。
+ * 召唤骷髅	"召唤一名骷髅，骷髅会跟随英雄攻击周围的敌方单位。
+骷髅兵持续时间：40
+骷髅兵攻击力：攻击力10%*暗元素伤害
+骷髅兵攻击间隔：1.0
+骷髅兵血量：自身最大生命值*（1+暗元素等级系数）*20%
+骷髅兵护甲：3
+骷髅兵移速：350
+召唤上限：2
+CD：15"
+
  */
 @registerAbility()
 export class arms_10 extends BaseArmsAbility {
 
-    check_radius: number;
-    bonus_soul: number;
-    bonus_exp: number;
-
-    _OnUpdateKeyValue(): void {
-        this.bonus_soul = this.GetSpecialValueFor("bonus_soul")
-        this.bonus_exp = this.GetSpecialValueFor("bonus_exp")
-        this.check_radius = this.GetSpecialValueFor("check_radius")
-        
-        this.RegisterEvent(["OnArmsStart"])
+    InitCustomAbilityData(): void {
+        this.RegisterEvent(["OnArmsInterval"])
     }
 
-    OnArmsStart(): void {
-        const vPoint = this.caster.GetAbsOrigin();
-        const friends = FindUnitsInRadius(
-            this.team,
-            vPoint,
-            null,
-            this.check_radius,
-            UnitTargetTeam.FRIENDLY,
-            UnitTargetType.BASIC + UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
-            FindOrder.ANY,
-            false
-        );
-        if (friends.length > 1) {
-            GameRules.ResourceSystem.ModifyResource(this.player_id, {
-                "Soul": this.bonus_soul,
-                "SingleExp": this.bonus_exp,
-            })
-        }
+    OnArmsInterval(): void {
+        this.ability_damage = this.GetAbilityDamage();
+        let summoned_duration = this.GetSpecialValueFor("summoned_duration")
+        let vLoc = this.caster.GetAbsOrigin() + RandomVector(200) as Vector;
+        let summoned_unit = GameRules.SummonedSystem.CreatedUnit(
+            "summoned_skeleton1",
+            vLoc,
+            this.caster,
+            summoned_duration
+        )
+        summoned_unit.AddNewModifier(this.caster, this, "modifier_arms_158_summoned", {})
+
     }
+
+
 }
 
 @registerModifier()
