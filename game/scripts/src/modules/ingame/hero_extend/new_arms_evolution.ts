@@ -205,7 +205,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      */
     CreatArmssSelectData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssSelectData"]) {
         //阶段2之前不可用
-        if (GameRules.MapChapter._game_select_phase <= 2) {
+        if (GameRules.MapChapter._game_select_phase <= 2) { 
             return
         } 
 
@@ -225,7 +225,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                 return
             }
             let killcount = this.kill_list[Quality+1] ;
-            let skillcount = 1;
+            let skillcount = 1;//109.3   105.6
             //最多几样物品
             let amount = this.PlayerSelectAmount[player_id];
             //循环计数器

@@ -49,6 +49,14 @@ declare interface CustomGameEventDeclarations {
         };
     };
     /**
+     * 新玩家状态
+     */
+    MapChapter_GetNewPlayerStatus : {
+        data: {
+            status : number, //状态
+        };
+    }
+    /**
      * 获取难度信息
      */
     MapChapter_GetDifficulty : {
