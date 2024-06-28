@@ -164,7 +164,7 @@ export class ResourceSystem extends UIEventRegisterClass {
 
     SendPlayerResource(player_id: PlayerID) {
         CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
+            PlayerResource.GetPlayer(player_id),    
             "ResourceSystem_SendPlayerResources",
             {
                 data: this.player_resource[player_id]

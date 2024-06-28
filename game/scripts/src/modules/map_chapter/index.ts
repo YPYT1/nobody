@@ -26,7 +26,7 @@ export class MapChapter extends UIEventRegisterClass {
     // 1 选择地图难度 2选择英雄 3游戏开始了
     _game_select_phase: number = 0; //
     //根据等级可用地图
-    _map_list: UserMapSelectDifficulty[] = [];
+    _map_list : { [key : string ] : UserMapSelectDifficulty }  = {};
     //玩家已通关的难度
     level_difficulty: string[] = [];
     //玩家可用英雄列表
@@ -64,36 +64,21 @@ export class MapChapter extends UIEventRegisterClass {
             }
         }
 
-        this._map_list.push({
-            is_unlock: 0, // 是否锁定
+        this._map_list["c1"] = {
             user_difficulty: 103, // 玩家最高可选难度
             difficulty_max: 105, // 地图最高难度
-            chapter_key: "z1", //地图编号 m1 m2 
-        })
-        this._map_list.push({
-            is_unlock: 0, // 是否锁定
+            chapter_key: "m1", //地图编号 m1 m2 
+        };
+        this._map_list["c2"] = {
             user_difficulty: 202, // 玩家最高可选难度
             difficulty_max: 205, // 地图最高难度
-            chapter_key: "z2", //地图编号 m1 m2 
-        })
-        this._map_list.push({
-            is_unlock: 0, // 是否锁定
+            chapter_key: "m2", //地图编号 m1 m2 
+        }
+        this._map_list["c3"] = {
             user_difficulty: 302, // 玩家最高可选难度
             difficulty_max: 305, // 地图最高难度
-            chapter_key: "z3", //地图编号 m1 m2 
-        })
-        this._map_list.push({
-            is_unlock: 1, // 是否锁定
-            user_difficulty: 401, // 玩家最高可选难度
-            difficulty_max: 405, // 地图最高难度
-            chapter_key: "z4", //地图编号 m1 m2 
-        })
-        this._map_list.push({
-            is_unlock: 1, // 是否锁定
-            user_difficulty: 501, // 玩家最高可选难度
-            difficulty_max: 505, // 地图最高难度
-            chapter_key: "z5", //地图编号 m1 m2 
-        })
+            chapter_key: "m3", //地图编号 m1 m2 
+        }
 
     }
 

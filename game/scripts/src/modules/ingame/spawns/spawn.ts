@@ -89,6 +89,7 @@ export class Spawn extends UIEventRegisterClass {
             monster_count_list: {
                 [monster_index: string]: number
             };
+            elite_name : string; //精英怪名字
         }
     } = {
 
@@ -120,6 +121,10 @@ export class Spawn extends UIEventRegisterClass {
     _game_start : boolean = false;
 
     _game_player_ds : number = 0;
+
+    //精英怪 计时器
+    elite_time : number = 0;
+    
 
     constructor() {
         super("Spawn")  
@@ -189,6 +194,7 @@ export class Spawn extends UIEventRegisterClass {
                 monster_list: new_monster_list,
                 interval_time: TwiceMapInfoRoundInit.interval_time,
                 monster_count_list: monster_count_list,
+                elite_name : TwiceMapInfoRoundInit.elite_name,
             }
         }
 
@@ -229,6 +235,7 @@ export class Spawn extends UIEventRegisterClass {
     SpawnInit(){
         this._round_index = 1;
         this._game_player_ds = 0;
+        this.elite_time = 0;
     }
 
     //开始刷怪
@@ -273,6 +280,17 @@ export class Spawn extends UIEventRegisterClass {
             }
             let Heros = HeroList.GetAllHeroes();
             GameRules.GetGameModeEntity().SetContextThink("MapCommonSpawnTimers", () => {
+                //精英怪刷新
+                if(this._round_index >= 3){
+                    let gametime = GameRules.GetDOTATime(false,false);
+                    if(this.elite_time < gametime){
+                        let coord_index = RandomInt(0, 199);
+                        let elite_Vector = GameRules.Spawn._map_coord[coord_index];
+                        this.elite_time = gametime + 15;
+                        let elite_spawn_name  = GameRules.Spawn.map_info_round[this._round_index].elite_name;
+                        let unit = GameRules.Spawn.CreateMonster(elite_spawn_name, elite_Vector, this._round_index);
+                    }
+                }
                 let _map_coord_index = RandomInt(0, 199);
                 //基础怪
                 if (refresh_type == 1) {  //只有刷怪阶段才出怪
@@ -433,13 +451,22 @@ export class Spawn extends UIEventRegisterClass {
         this.MonsterAmend(unit, "normal", 1, round_index);
         return unit;
     }
+
+    //刷新精英
+    CreateEliteMonster(bs_spawn_name: string, _Vector: Vector, round_index: number): CDOTA_BaseNPC {
+        // print("_Vector :" , _Vector )
+        let unit = GameRules.Spawn.CreepNormalCreate(bs_spawn_name, _Vector);
+        //属性修改
+        this.MonsterAmend(unit, "elite", 1, round_index);
+        return unit;
+    }
     //记录修改血量波数
     endless_hp_index = -1
     /**
      * 统一的怪物数据修改
      * @param round_index 
      */
-    MonsterAmend(hUnit: CDOTA_BaseNPC, type: 'boss' | 'teamboss' | 'leader' | 'normal' | 'soulboss' | 'equipboss' | 'cube' | 'elementDragon' | 'abyss_elite' | 'creature_abyss_boss' | 'monsterNian', level: number = 1, round_index: number = 1) {
+    MonsterAmend(hUnit: CDOTA_BaseNPC, type: 'boss'  | 'leader' | 'normal' | 'elite' , level: number = 1, round_index: number = 1) {
 
     }
     /**

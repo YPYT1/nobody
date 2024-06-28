@@ -34,8 +34,8 @@ declare interface CustomGameEventDeclarations {
      */
     MapChapter_GetDifficultyMax: {
         data: {
-            map_difficulty: UserMapSelectDifficulty[];
-            level_difficulty: string[]; //玩家所通关的难度
+            map_difficulty: { [key : string ] : UserMapSelectDifficulty}; //通关信息
+            level_difficulty: string[]; //玩家所通关的难度 --弃用
         };
     };
 
@@ -155,7 +155,6 @@ declare interface MapSelectHeroList {
 
 
 declare interface UserMapSelectDifficulty { //地图详细信息
-    is_unlock: number, // 是否锁定
     user_difficulty: number, // 玩家最高可选难度
     difficulty_max: number, // 地图最高难度
     chapter_key: string, //地图编号 m1 m2 
