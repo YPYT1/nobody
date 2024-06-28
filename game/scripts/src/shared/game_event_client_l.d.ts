@@ -157,7 +157,7 @@ declare interface MapSelectHeroList {
 declare interface UserMapSelectDifficulty { //地图详细信息
     user_difficulty: number, // 玩家最高可选难度
     difficulty_max: number, // 地图最高难度
-    chapter_key: string, //地图编号 m1 m2 
+    map_key: string, //地图编号 m1 m2 
 }
 
 

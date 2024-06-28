@@ -67,24 +67,22 @@ export class MapChapter extends UIEventRegisterClass {
         this._map_list["c1"] = {
             user_difficulty: 103, // 玩家最高可选难度
             difficulty_max: 105, // 地图最高难度
-            chapter_key: "m1", //地图编号 m1 m2 
+            map_key: "m1", //地图编号 m1 m2 
         };
         this._map_list["c2"] = {
             user_difficulty: 202, // 玩家最高可选难度
             difficulty_max: 205, // 地图最高难度
-            chapter_key: "m2", //地图编号 m1 m2 
+            map_key: "m2", //地图编号 m1 m2 
         }
         this._map_list["c3"] = {
             user_difficulty: 302, // 玩家最高可选难度
             difficulty_max: 305, // 地图最高难度
-            chapter_key: "m3", //地图编号 m1 m2 
+            map_key: "m3", //地图编号 m1 m2 
         }
-
     }
 
     /** 生成营地 */
     OnCreatedCampMap() {
-
         if (this.CampMapHandle == null) {
             let vLocation = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 0);
             for (let hHero of HeroList.GetAllHeroes()) {
@@ -99,7 +97,6 @@ export class MapChapter extends UIEventRegisterClass {
                 this
             );
         }
-        
     }
 
     //营地创建前置
