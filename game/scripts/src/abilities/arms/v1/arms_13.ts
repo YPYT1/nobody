@@ -30,9 +30,9 @@ export class arms_13 extends BaseArmsAbility {
     }
 
     OnAttackStart(hTarget: CDOTA_BaseNPC): void {
-        print("arms_13 OnAttackStart")
+        this.skv_orb_chance = this.GetSpecialValueFor("skv_orb_chance");
+        print("arms_13 OnAttackStart", this.skv_orb_chance);
         if (RollPercentage(this.skv_orb_chance)) {
-
             CreateModifierThinker(
                 this.caster,
                 this,
@@ -57,11 +57,12 @@ export class arms_13 extends BaseArmsAbility {
         if (target) {
             // 造成伤害
             thinker_buff.ApplyCustomDamage(target);
-            EmitSoundOn("Hero_Hoodwink.AcornShot.Target", target);
+
+            // thinker_buff.ToNextProjectileHit(target);
         }
 
         // thinker.SetOrigin(location);
-        thinker_buff.ToNextProjectileHit(target);
+
     }
 }
 
@@ -90,14 +91,13 @@ export class modifier_arms_13_shot_thinker extends BaseModifier {
     }
 
     TrackingProjectile(hSource: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC) {
-        this.bounce_count -= 1;
         ProjectileManager.CreateTrackingProjectile({
-            Source: hSource,
+            // Source: this.GetCaster(),
             Target: hTarget,
             Ability: this.GetAbility(),
             EffectName: "particles/units/heroes/hero_hoodwink/hoodwink_acorn_shot_tracking.vpcf",
             iSourceAttachment: ProjectileAttachment.HITLOCATION,
-            // vSourceLoc: this.GetCaster().GetAbsOrigin(),
+            vSourceLoc: hSource.GetAbsOrigin(),
             iMoveSpeed: this.bounce_speed,
             ExtraData: {
                 thinker: this.GetParent().entindex(),
@@ -129,18 +129,7 @@ export class modifier_arms_13_shot_thinker extends BaseModifier {
                 if (enemy == lastUnit) { continue; }
                 is_shot = true;
                 this.TrackingProjectile(lastUnit, enemy);
-                // ProjectileManager.CreateTrackingProjectile({
-                //     Source: lastUnit,
-                //     Target: enemy,
-                //     Ability: this.GetAbility(),
-                //     EffectName: "particles/units/heroes/hero_hoodwink/hoodwink_acorn_shot_tracking.vpcf",
-                //     iSourceAttachment: ProjectileAttachment.HITLOCATION,
-                //     // vSourceLoc: this.GetCaster().GetAbsOrigin(),
-                //     iMoveSpeed: this.bounce_speed,
-                //     ExtraData: {
-                //         thinker: this.GetParent().entindex(),
-                //     }
-                // });
+                break;
             }
             if (is_shot == false) {
                 this.Destroy();
@@ -151,7 +140,8 @@ export class modifier_arms_13_shot_thinker extends BaseModifier {
     }
 
     ApplyCustomDamage(hTarget: CDOTA_BaseNPC) {
-
+        // print("this.bounce_count",this.bounce_count)
+        EmitSoundOn("Hero_Hoodwink.AcornShot.Target", hTarget);
         ApplyCustomDamage({
             victim: hTarget,
             attacker: this.GetCaster(),
@@ -160,9 +150,12 @@ export class modifier_arms_13_shot_thinker extends BaseModifier {
             ability: this.GetAbility(),
             // element_type: 0,
         });
+        this.bounce_count -= 1;
+        this.ToNextProjectileHit(hTarget)
         // this.damage_factor *= (1 + this.dmg_reduction);
 
     }
+
     OnDestroy(): void {
         if (!IsServer()) { return }
         UTIL_RemoveImmediate(this.GetParent())

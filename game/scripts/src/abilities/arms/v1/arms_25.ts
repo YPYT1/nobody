@@ -52,9 +52,9 @@ export class modifier_arms_25_stack extends BaseModifier {
     ability: arms_25;
     buff_key: string;
 
-    GetAttributes(): ModifierAttribute {
-        return ModifierAttribute.MULTIPLE
-    }
+    // GetAttributes(): ModifierAttribute {
+    //     return ModifierAttribute.MULTIPLE
+    // }
 
     OnCreated(params: object): void {
         this.stack_count = 1;

@@ -12,6 +12,7 @@
         <Panel id="resource" hittest="false" />
         <Panel id="top_info" hittest="false" />
         <Panel id="chapter" hittest="false" />
+        <Panel id="hero_selection" hittest="true" />
         <Panel id="arms_selector" hittest="false" />
         <Panel id="message" hittest="false" />
         <Panel id="mystical_shop" hittest="false" />

@@ -1,0 +1,45 @@
+.ServerItem {
+    width: 128px;
+    height: 128px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    // border: 1px solid #ffffff;
+    background-image: url("file://{images}/custom_game/icon/server_item/rare_1.jpg");
+    
+    &.x64 {
+        width: 64px;
+        height: 64px;
+    }
+
+    &.x96 {
+        width: 96px;
+        height: 96px;
+    }
+
+    &.rare_1 {
+        background-image: url("file://{images}/custom_game/icon/server_item/rare_1.jpg");
+    }
+
+    &.rare_2 {
+        background-image: url("file://{images}/custom_game/icon/server_item/rare_2.jpg");
+    }
+
+    #ServerItemIcon {
+        width: 80%;
+        height: 80%;
+        align: center center;
+        border: 1px solid #000000;
+    }
+
+    .ItemCount {
+        vertical-align: bottom;
+        width: 100%;
+        background-color: #00000099;
+
+        Label {
+            color:#ffffff;
+            font-size: 12px;
+            horizontal-align: right;
+        }
+    }
+}

@@ -1,0 +1,25 @@
+<root>
+	<styles>
+		<include src="./hero_selection.less" />
+	</styles>
+	<scripts>
+		<include src="./hero_selection.tsx" />
+	</scripts>
+    <snippets>
+        <snippet name="HeroCardButton">
+			<RadioButton class="HeroCardButton" group="HeroCardButtonGroup" >
+				<Panel class="HeroImage">
+					<Image id="HeroIcon" />
+					<DOTAHeroMovie id="HeroMovie"  />
+				</Panel>
+			</RadioButton>
+		</snippet>
+    </snippets>
+    <Button class="HeroSelection" onactivate="">
+        <Label text="HeroSelection"/>
+        <Panel class="Background" />
+        <Panel id="HeroSelectionContainer" class="Container">
+            
+        </Panel>
+    </Button>
+</root>

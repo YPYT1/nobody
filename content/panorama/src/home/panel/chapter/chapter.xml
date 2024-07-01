@@ -7,109 +7,96 @@
 		<include src="./chapter.tsx" />
 	</scripts>
 	<snippets>
-		<snippet name="SelectChapter">
-			<Button class="btn">
-				<Label text="{s:chapter}" />
-			</Button>
-		</snippet>
-		<snippet name="StageDifficulty">
-			<Panel class="StageDifficulty row wrap"></Panel>
-		</snippet>
-		<snippet name="StageDifficultyRows">
-			<Button class="btn diff_btn">
-				<Label text="{s:chapter}- {s:difficulty}"/>
-			</Button>
-		</snippet>
-		<snippet name="PlayerReadyStateItem">
-			<Panel class="PlayerReadyStateItem">
-				<Panel class='AvatarImage'>
-					<DOTAAvatarImage id="DOTAAvatarImage" onactivate="" />
-				</Panel>
-				<Panel class="SelectHero">
-					<Panel class='HeroImage'>
-						<Image id="HeroIcon" />
-					</Panel>
-					<Panel class='HeroBorder' />
-				</Panel>
-				<Panel class='PlayerInfo'>
-					<Panel id="ReadyState">
-						<Label class='NotReady' text="正在选择..." />
-						<Label class='IsReady' text="已选择" />
-					</Panel>
-					<Label id='PlayerName' text="{s:player_name}" />
-				</Panel>
+		<snippet name="ChapterPageInfo">
+			<Panel class="ChapterPageInfo" hittest="false">
+				<Panel id="ChapterLogo" hittest="false"/>
+				<Panel id="ChapterList" hittest="false"/>
 			</Panel>
 		</snippet>
-		<snippet name="HeroCardButton">
-			<RadioButton class="HeroCardButton" group="HeroCardButtonGroup" >
-				<Panel class="HeroImage">
-					<Image id="HeroIcon" />
-					<DOTAHeroMovie id="HeroMovie"  />
+
+		<snippet name="ChapterSelectBtn">
+			<RadioButton class="ChapterSelectBtn" group="ChapterSelectGroup">
+				<Panel class="ChapterName">
+					<Label text="{s:chapter_name}"/>
 				</Panel>
 			</RadioButton>
 		</snippet>
-	</snippets>
-	<Panel class="Open container">
-		<Panel class="content">
-			<Panel class="head">
-				<Panel class="title">
-					<Label text="chapter_select" />
-				</Panel>
-				<Panel class="head-btn">
-					<Button id="ChapterClosedButton" class="btn-close" />
-				</Panel>
-			</Panel>
-		</Panel>
-		<Panel id="ChapterContent" class="content">
-			<Panel id="CurrentStageSelect">
-				<Panel class="title">
-					<Label text="章节选择" />
-				</Panel>
-				<Panel id="ChapterList" class="row btn-group"></Panel>
-				<Panel id="ChapterForDiff" class="row btn-group"></Panel>
-				<Panel id="StageBtnGroup">
-					<Button id="StartGameButton" class="btn">
-						<Label text="START==> {s:difficulty}" />
-					</Button>
-				</Panel>
-			</Panel>
 
-			<Panel id="StageHeroSelect" class="container">
-				<Panel class="content">
-					<Panel class="grid">
-						<Panel class="head">
-							<Label text="当前关卡:{s:difficulty}" />
+		<snippet name="DifficultyButton">
+			<RadioButton class="DifficultyButton" group="DifficultyButtonGroup">
+				<Panel class="DiffNum" />
+			</RadioButton>
+		</snippet>
+	</snippets>
+	<Panel class="Chapter">
+		<Panel id="ChapterContainer" >
+			<Panel id="ChapterBackground" />
+			<Panel id="ChapterSelect">
+				<Panel class="Header">
+					<Panel  class="Title">
+						<Label text="#请选择关卡"/>
+					</Panel>
+					<Button id="ClosedBtn" class="ClosedBtn" />
+				</Panel>
+				<Panel class="Body">
+					<Button id="LeftBtn" class="PageBtn" />
+					<Panel class="Info">
+						<Panel id="PageList" />
+
+						
+
+					</Panel>
+					<Button id="RightBtn" class="PageBtn" />
+				</Panel>
+				<Panel class="Footer">
+				
+				</Panel>
+			</Panel>
+			<Panel id="ChapterTooltip">
+				<Panel class="FloorTexture"/>
+				<Panel class="TooltipContent">
+					<Panel id="About">
+						<Panel class="TitleName">
+							<Panel class="NameTextrue Left"/>	
+							<Label text="#关卡说明"/>
+							<Panel class="NameTextrue Right"/>
+						</Panel>
+						<Panel class="ChapterDesc">
+							<Label text="dlasjdsakj福克斯的境况范德萨fjksjkdf福建省咖啡机肯定是fsjklf发送方式"/>
 						</Panel>
 					</Panel>
-					<Panel class="grid">
-						<Panel class="title">
-							<Label text="英雄选择" />
-						</Panel>
-						<Panel class="grid">
-							<Panel id="PickHeroList">
-							
-							</Panel>
-						</Panel>
+					
+					<Panel id="DiffInfo" class="TitleName">
+						<Panel class="NameTextrue Left"/>	
+						<Label text="#难度选择"/>
+						<Panel class="NameTextrue Right"/>
 					</Panel>
-					<Panel class="grid">
-						<Panel class="title">
-							<Label text="玩家列表" />
-						</Panel>
-						<Panel class="grid">
-							<Panel id="PlayerList" >
-								
-							</Panel>
-						</Panel>
+
+					<Panel id="ChapterDiffList"  />
+						
+					<Panel class="TitleName">
+						<Panel class="NameTextrue Left"/>	
+						<Label text="#掉落信息"/>
+						<Panel class="NameTextrue Right"/>
 					</Panel>
-					<Panel class="vert-bot grid">
-						<Button id="HeroConfirmButton" class="btn hor-center">
-							<Label text="确认" />
+
+					<Panel id="DroppedInfoList" />
+					
+					<Panel id="ChapterOption" class="flow-right">
+						<Button id="ChapterConfirmBtn" class="btn">
+							<Label text="#开始挑战" />
+						</Button>
+						<Button id="ChapterCancelBtn" class="btn cancel">
+							<Label text="#还是算了" />
 						</Button>
 					</Panel>
+				
 				</Panel>
 			</Panel>
 		</Panel>
-
+		<Button id="TestToggleBtn" class="btn">
+			<Label text="#关卡切换页面"/>
+		</Button>
 
 	</Panel>
 </root>

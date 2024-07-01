@@ -56,19 +56,19 @@ export const RegisterCustomTooltip = () => {
         HideCustomTooltip()
     })
 
-    // $.RegisterForUnhandledEvent("DOTAShowAbilityTooltipForEntityIndex", function (
-    //     Panel: Panel,
-    //     ability_name: string,
-    //     ability_index: EntityIndex,
-    // ) {
-    //     // $.Msg([ability_name, unit_index])
-    //     $.Schedule(0, () => {
-    //         // $.Msg([itemName, itemIndex])
-    //         // let name = Entities.GetUnitName(ability_index);
-    //         // $.Msg(["name",name])
-    //         ShowCustomTooltip(Panel, "ability", ability_name,)
-    //     })
-    // })
+    $.RegisterForUnhandledEvent("DOTAShowAbilityTooltipForEntityIndex", function (
+        Panel: Panel,
+        ability_name: string,
+        ability_index: EntityIndex,
+    ) {
+        // $.Msg([ability_name, unit_index])
+        $.Schedule(0, () => {
+            // $.Msg([itemName, itemIndex])
+            // let name = Entities.GetUnitName(ability_index);
+            // $.Msg(["name",name])
+            ShowCustomTooltip(Panel, "ability", ability_name,)
+        })
+    })
 
     $.RegisterForUnhandledEvent("DOTAShowDroppedItemTooltip", function (panel, x, y, itemName: string, num, boolean) {
         $.Msg(["DOTAShowDroppedItemTooltip"])
@@ -100,6 +100,7 @@ export const Initialize = () => {
     $("#message").BLoadLayout(layout_path + "/message/message.xml", true, false);
     $("#mystical_shop").BLoadLayout(layout_path + "/mystical_shop/mystical_shop.xml", true, false);
     $("#element_bond").BLoadLayout(layout_path + "/element_bond/element_bond.xml", true, false);
+    $("#hero_selection").BLoadLayout(layout_path + "/hero_selection/hero_selection.xml", true, false);
     
     if (Game.IsInToolsMode()) {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);

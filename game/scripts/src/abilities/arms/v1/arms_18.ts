@@ -18,7 +18,7 @@ export class arms_18 extends BaseArmsAbility {
     }
 
     UpdataCustomKeyValue(): void {
-        this.base_chance = this.GetSpecialValueFor("base_chance");
+        this.base_chance = this.GetSpecialValueFor("skv_orb_chance");
     }
 
     InitCustomAbilityData(): void {
@@ -27,6 +27,8 @@ export class arms_18 extends BaseArmsAbility {
 
     OnAttackStart(hTarget: CDOTA_BaseNPC): void {
         // let dotaTime = GameRules.GetDOTATime(false, false);
+        this.base_chance = this.GetSpecialValueFor("skv_orb_chance");
+        print("base_chance",this.base_chance)
         if (RollPercentage(this.base_chance) ) {
             // this.ArmsActTime = dotaTime + this.arms_cd;
             CreateModifierThinker(
@@ -69,10 +71,10 @@ export class modifier_arms_18_thinker extends BaseModifier {
         this.unit_list = []
         this.caster = this.GetCaster();
         this.team = this.GetCaster().GetTeamNumber();
-        this.dmg_reduction = (100 + this.GetAbility().GetSpecialValueFor("dmg_reduction")) * 0.01;
+        this.dmg_reduction = (100 + this.GetAbility().GetSpecialValueFor("skv_bounce_increase")) * 0.01;
         this.ability_damage = this.GetAbility().GetAbilityDamage();
-        this.extra_count = this.GetAbility().GetSpecialValueFor("extra_count")
-        this.serach_radius = this.GetAbility().GetSpecialValueFor("serach_radius")
+        this.extra_count = this.GetAbility().GetSpecialValueFor("skv_bounce_count")
+        this.serach_radius = 500;
         this.last_target = this.GetCaster();
         let target = EntIndexToHScript(params.target) as CDOTA_BaseNPC;
         this.ArcLightning(target, this.GetCaster());
@@ -91,7 +93,7 @@ export class modifier_arms_18_thinker extends BaseModifier {
             this.serach_radius,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
+            UnitTargetFlags.FOW_VISIBLE,
             FindOrder.CLOSEST,
             false
         );

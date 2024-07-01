@@ -27,28 +27,47 @@
 }
 
 .btn {
-    background-color: @btn-color-bg;
-    border: 1px solid @btn-color-border;
+    width: 111px;
+    height: 39px;
+
+    background-image: url("file://{images}/custom_game/icon/btn/btn_confirm.png");
+    background-size: 100%;
+
+    &.cancel {
+        background-image: url("file://{images}/custom_game/icon/btn/btn_cancel.png");
+    }
+
+    &:enabled {
+        &:hover {
+            brightness: 1.5;
+        }
+    
+        &:active {
+            brightness: 0.8;
+            pre-transform-scale2d: 0.95;
+        }
+    }
+    
+    &:disabled {
+        saturation: 0.2;
+        brightness: 0.2;
+    }
+    
+    Label {
+        align: center center;
+        color: #ffffff;
+        font-size: 18px;
+        text-shadow: 0px 0px 2px 2.0 #000000;
+        margin-bottom: 4px;
+    }
+
+    // background-color: @btn-color-bg;
+    // border: 1px solid @btn-color-border;
     transition-property: background-color, border, color;
     transition-duration: 0.15s;
     transition-timing-function: linear;
     margin: 4px;
     padding: 4px;
 
-    &:hover {
-        background-color: @btn-color-bg-hover;
-        border: 1px solid @btn-color-border-hover;
-    }
-
-    Label {
-        horizontal-align: center;
-        vertical-align: middle;
-        color: @btn-color-text;
-        font-size: @btn-font-size;
-        text-transform: uppercase;
-        // font-family: defaultFont;
-        font-weight: normal;
-        text-overflow: shrink;
-        letter-spacing: 1px;
-    }
+   
 }

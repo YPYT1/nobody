@@ -41,7 +41,7 @@ const GetImportPathFileList = (path_dir) => {
 GetImportPathFileList("home");
 
 const ImportHome = GetImportPathFileList("home")
-
+const ImportComponents = GetImportPathFileList("components");
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
@@ -152,6 +152,7 @@ module.exports = {
 
 
                 ...ImportHome,
+                ...ImportComponents,
             ],
         }),
         // use ignore plugin to ignore less files changes

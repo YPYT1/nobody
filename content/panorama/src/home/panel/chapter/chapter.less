@@ -1,324 +1,444 @@
-.GameSelectPhase_1 #chapter #StageHeroSelect,
-.GameSelectPhase_0 #chapter #CurrentStageSelect {
-    visibility: visible;
-}
-.GameSelectPhase_1 #chapter,
-.GameSelectPhase_0 #chapter{
-    visibility: visible;
-}
-#chapter {
-    margin-top: 12px;
-    horizontal-align: right;
-    width: 600px;
-    flow-children: down;
-    margin-top: 320px;
+// @import "./../../../_styles/components/server_item.less";
+
+.Chapter {
+    width: 100%;
+    height: 100%;
     visibility: collapse;
 
-    .StageDifficulty,
-    #ChapterContent {
-        visibility: collapse;
-    }
-
-    &.Open #ChapterContent {
+    &.Open {
         visibility: visible;
     }
+}
 
-    &.Stage_5 #StageDifficulty_5,
-    &.Stage_4 #StageDifficulty_4,
-    &.Stage_3 #StageDifficulty_3,
-    &.Stage_2 #StageDifficulty_2,
-    &.Stage_1 #StageDifficulty_1 {
-        visibility: visible;
+
+#ChapterContainer {
+    // border: 1px solid #000000;
+    // width: 1600px;
+    // height: 840px;
+    align: center center;
+    pre-transform-scale2d: 0;
+    transition-property: pre-transform-scale2d;
+    transition-duration: 0.1s;
+
+    &.Show {
+        pre-transform-scale2d: 1;
     }
+}
 
-    .diff_btn {
-        width: 120px;
-    }
+#ChapterBackground {
+    width: 1456px;
+    height: 816px;
+    background-image: url("file://{images}/custom_game/hud/chapter/chapter_1.png");
+    align: center center;
+}
 
-    #CurrentStageSelect {
+#ChapterSelect {
+    width: 1627px;
+    height: 892px;
+    flow-children: down;
+    background-image: url("file://{images}/custom_game/hud/chapter/base_frame.png");
+
+    .Header {
         width: 100%;
-        // height: 100%;
-        visibility: collapse;
-        // background-color: #d8cc27;
-        flow-children: down;
+        // border: 1px solid #ffffff;
+        height: 72px;
+        // padding: 8px;
 
-        #StageAction {
-            width: 100%;
-            flow-children: right;
-        }
-
-        #StageBtnGroup {
-            horizontal-align: right;
-            vertical-align: bottom;
-        }
-
-
-
-        #SelectStageList {
-            width: 50%;
-            // height: 100%;
-            flow-children: down;
-        }
-
-        #StageDifficultyList {
-            width: 50%;
-            // height: 100%;
-            // flow-children: none;
-        }
-
-        .SelectStage {
-            width: 100%;
-            // height: 100%;
-            padding: 4px;
-            border: 1px solid #a09d6e;
-            background-color: #1b1b19;
+        .Title {
+            vertical-align: middle;
+            horizontal-align: center;
 
             Label {
-                font-size: 24px;
+                font-size: 34px;
+                color: #ffffff;
+                text-shadow: 0px 0px 2px 2.0 #000000;
+            }
+
+        }
+
+        #ClosedBtn {
+            width: 66px;
+            height: 59px;
+            horizontal-align: right;
+            vertical-align: middle;
+            background-image: url("file://{images}/custom_game/hud/chapter/closed_btn.png");
+            margin-right: 24px;
+            margin-top: 12px;
+
+            &:hover {
+                brightness: 2;
+            }
+
+            &:active {
+                pre-transform-scale2d: 0.85;
+                brightness: 0.9;
+            }
+        }
+    }
+
+    .Body {
+        width: 100%;
+        height: 100%;
+        flow-children: none;
+        // background-color: #00000099;
+
+        .PageBtn {
+            vertical-align: middle;
+            width: 80px;
+            height: 96px;
+            background-image: url("file://{images}/custom_game/hud/chapter/arrow_btn_n.png");
+
+            // border: 1px solid #000000;
+            &:enabled {
+                &:hover {
+                    brightness: 2;
+                }
+
+                &:active {
+                    pre-transform-scale2d: 0.85;
+                }
+            }
+
+            &:disabled {
+                // saturation: 0.2;
+                // brightness: 0.2;
+                // 
+                background-image: url("file://{images}/custom_game/hud/chapter/arrow_btn_d.png");
             }
         }
 
-        // .StageDifficulty {
-        //     visibility: collapse;
-        // }
+        #LeftBtn {
+            transform: rotateY(180deg);
+            margin-left: 20px;
+        }
 
-        #ChapterList {
-            border-bottom: 1px solid #a09d6e;
+        #RightBtn {
+            horizontal-align: right;
+            margin-right: 20px;
+        }
+
+        .Info {
+            width: 1406px;
+            height: 768px;
+            // border: 1px solid #fff;
+            horizontal-align: center;
         }
     }
+}
 
-    #StageHeroSelect {
-        width: 100%;
-        // height: 100%;
-        visibility: collapse;
-        background-color: #263028;
+#PageList {
+    width: 100%;
+    height: 100%;
+    // border: 1px solid #f00;
+}
 
-        #PickHeroList {
-            flow-children: right-wrap;
+.ChapterPageInfo {
+    width: 100%;
+    height: 100%;
+    visibility: collapse;
 
-            .HeroCardButton {
-                width: 100px;
-                height: 100px;
-                border: 1px solid #1b1b19;
-                box-shadow: rgba(0, 0, 0, 0.856) 0px 0px 4px;
-                margin: 4px;
-                transition-property: transform, height, box-shadow, saturation, border-color;
-                transition-duration: 0.2s;
-                transform-origin: 0% 100%;
+    &.Show {
+        visibility: visible;
+    }
 
-                &:hover {
-                    border-color: #a09d6e;
+    #ChapterLogo {
+        width: 456px;
+        height: 244px;
+        background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo.png");
+    }
+}
+
+#ChapterList {
+    width: 100%;
+    height: 100%;
+
+    .ChapterSelectBtn {
+        width: 161px;
+        height: 161px;
+        background-image: url("file://{images}/custom_game/hud/chapter/chapter_normal_n.png");
+
+        &:enabled {
+
+            &:hover,
+            &:selected {
+                background-image: url("file://{images}/custom_game/hud/chapter/chapter_normal_h.png");
+
+                Label {
+                    color: #ffffff;
                 }
+            }
+        }
+
+        &:disabled {
+            background-image: url("file://{images}/custom_game/hud/chapter/chapter_normal_d.png");
+        }
 
 
+        .ChapterName {
+            // width: 100%;
+            vertical-align: bottom;
+            margin-top: 16px;
+            horizontal-align: center;
+            padding: 4px 8px;
+            background-color: #000000dd;
 
+            Label {
+                // width: 100%;
+                text-align: center;
+                // horizontal-align: center;
+                font-size: 24px;
+
+            }
+        }
+
+        &.is_boss {
+            width: 193px;
+            height: 193px;
+            background-image: url("file://{images}/custom_game/hud/chapter/chapter_boss_n.png");
+
+            &:enabled {
+
+                &:hover,
                 &:selected {
-                    // border-color: #a09d6e;
-                    box-shadow: rgba(255, 250, 201, 0.849) 0px 0px 4px;
+                    background-image: url("file://{images}/custom_game/hud/chapter/chapter_boss_h.png");
 
-                    DOTAHeroMovie {
-                        // visibility: visible;
-                        opacity: 1;
+                    Label {
+                        color: #ffffff;
                     }
                 }
+            }
 
-                .HeroImage {
-                    width: 100%;
-                    height: 100%;
-                    overflow: clip;
-                }
 
-                DOTAHeroMovie {
-                    opacity: 0;
-                }
-
-                #HeroIcon,
-                DOTAHeroMovie {
-                    width: 151px * 0.7;
-                    height: 200px * 0.7;
-                    overflow: clip;
-                    horizontal-align: center;
-                    vertical-align: middle;
-                    transition-property: opacity;
-                    transition-duration: 0.2s;
-                    // border: 1px solid #0d4470;
-
-                }
+            &:disabled {
+                background-image: url("file://{images}/custom_game/hud/chapter/chapter_boss_d.png");
             }
 
         }
     }
 
-    #PlayerList {
-        width: 100%;
-        flow-children: down;
+    #Chapter_c1 {
+        transform: translateX(600px) translateY(580px);
     }
 
-    .PlayerReadyStateItem {
-        width: 100%;
-        height: 80px;
-        background-repeat: no-repeat;
-        // select_hero_layder
-        // 
-        background-img-opacity: 0.5;
-        padding-left: 12px;
-        // border-radius: 4px;
-        // // height: 66px;
-        // background-color: #292929;
-        // border: 2px solid #898989;
-        margin-top: 8px;
-        flow-children: right;
+    #Chapter_c2 {
+        transform: translateX(200px) translateY(450px);
+    }
 
-        .MasterVoteCount {
-            width: 58px;
-            height: 58px;
-            vertical-align: middle;
-            background-image: url("file://{images}/custom_game/selection/hero/master/vote_bg.png");
+    #Chapter_c3 {
+        transform: translateX(1200px) translateY(380px);
+    }
 
-            Label {
-                font-size: 22px;
-                color: #ffeccc;
-                align: center center;
-            }
+    #Chapter_c4 {
+        transform: translateX(400px) translateY(200px);
+    }
 
-            margin-right: 8px;
-        }
+    #Chapter_c5 {
+        transform: translateX(700px) translateY(50px);
+    }
+}
 
-        &.is_ready {
-            background-image: url("file://{images}/custom_game/selection/hero/select_hero_layder.png");
+#ChapterTooltip {
 
-            .NotReady {
-                visibility: collapse;
-            }
+    width: 372px;
+    height: 476px;
+    background-image: url("file://{images}/custom_game/hud/chapter/tips_normal.png");
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    opacity: 0;
 
-            .IsReady {
-                visibility: visible;
-            }
-        }
+    &.Show {
+        opacity: 1;
+        // visibility: visible;
+    }
 
-        &.is_local {
-            background-color: #d35029;
-        }
+    &.is_boss {
+        height: 584px;
+        background-image: url("file://{images}/custom_game/hud/chapter/tips_boss.png");
 
-        .AvatarImage {
-            vertical-align: middle;
-            width: 56px;
-            height: 56px;
-            border: 2px solid #757575;
-            // border-radius: 0px 12px 0px 12px;
-        }
-
-
-
-        .SelectHero {
-            width: 64px;
-            height: 64px;
-            horizontal-align: right;
-            vertical-align: middle;
-
-            // transform: skew(-30deg) translateX(16px);
-            // border-left: 2.5px solid #000000;
-            background-color: #000000;
-            border-radius: 50%;
-
-            // padding: 4px;
-            // 
-            .HeroImage {
-                width: 62px;
-                height: 62px;
-                margin: 2px;
-                vertical-align: middle;
-                horizontal-align: center;
-                overflow: clip;
-                border-radius: 50%;
-            }
-
-            Image {
-                width: 151px * 0.36;
-                height: 200px * 0.36;
-                vertical-align: middle;
-                horizontal-align: center;
-                // transform: skew(30deg) translateY(-10px);
-            }
-
-            .HeroBorder {
-                width: 100%;
-                height: 100%;
-                background-image: url("file://{images}/custom_game/selection/hero/select_hero_border1.png");
-                background-size: 100%;
-            }
-        }
-
-        .PlayerInfo {
-            width: 240px;
-            margin-left: 6px;
-            vertical-align: middle;
-            flow-children: down;
-
-            #PlayerName {
-                color: #c7c7c7;
-                text-shadow: 0px 0px 2px 2.0;
-                vertical-align: middle;
-                font-size: 14px;
-            }
-        }
-
-        #AvatarImage {
-            width: 32px;
-            height: 32px;
-            border: 1px solid #ffffff;
-        }
-
-        DOTAAvatarImage {
-            z-index: 99;
-            width: 100%;
-            height: 100%;
-            border: 1px solid #ffffff;
-            horizontal-align: right;
-            vertical-align: bottom;
-            opacity: 1;
-
-           
-            &.Ready {
-                opacity: 1;
-            }
-        }
-
-        #ReadyState {
-
-            // horizontal-align: center;
-            vertical-align: middle;
-
-            Label {
-                font-size: 20px;
-                // text-align: center;
-                // background-color: #4ce3f7;
-                // box-shadow: 0px 0px 4px rgba(72, 234, 255, 0.627);
-                border-radius: 4px;
-                margin-top: 2px;
-                padding: 2px 5px;
-                color: #ebc803;
-                text-shadow: #000000 0px 0px 1px 1;
-                font-family: FZLanTingHei-R-GBK;
-                // horizontal-align: center;
-                vertical-align: bottom;
-                // opacity: 0;
-            }
-
-            .IsReady {
-                color: #fff09c;
-            }
-
-
-        }
-
-        .NotReady {
+        #About {
             visibility: visible;
         }
+    }
 
-        .IsReady {
-            visibility: collapse;
+    .FloorTexture {
+        width: 256px;
+        height: 437px;
+        horizontal-align: right;
+        background-image: url("file://{images}/custom_game/hud/chapter/bg_textrue.png");
+        vertical-align: bottom;
+        opacity: 0.25;
+    }
+
+    #About {
+        width: 100%;
+        flow-children: down;
+        visibility: collapse;
+    }
+
+
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    .TooltipContent {
+        width: 100%;
+        height: 100%;
+        flow-children: down;
+        // border: 1px solid #ffffff;
+        padding: 0px 28px;
+    }
+
+    .ChapterDesc {
+        Label {
+            line-height: 24px;
+            font-size: 16px;
+            color: #c3c3c3;
+        }
+    }
+
+    .TitleName {
+        margin-top: 20px;
+        horizontal-align: center;
+        flow-children: right;
+
+        >Label {
+            width: 120px;
+            // border: 1px solid #ffffff;
+            vertical-align: middle;
+            color: #d2b066;
+            font-size: 20px;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+            text-align: center;
         }
 
+        .NameTextrue {
+            width: 100px;
+            height: 27px;
+            background-image: url("file://{images}/custom_game/hud/chapter/header_name.png");
+
+            &.Right {
+                transform: rotateY(180deg);
+            }
+
+
+        }
     }
+
+    #ChapterDiffList {
+        margin-top: 8px;
+        width: 100%;
+        // border: 1px solid #ffffff;
+        flow-children: right-wrap;
+        padding: 8px;
+
+        .DifficultyButton {
+            width: 66px;
+            height: 70px;
+            margin-left: 4px;
+            margin-right: 4px;
+            background-image: url("file://{images}/custom_game/hud/chapter/diff_btn_n.png");
+            transition-property: background-image;
+            transition-duration: 0.15s;
+
+            .DiffNum {
+                transition-property: pre-transform-scale2d;
+                transition-duration: 0.1s;
+                align: center center;
+                width: 34px;
+                height: 41px;
+                background-image: url("file://{images}/custom_game/hud/chapter/num/0.png");
+                visibility: collapse;
+                pre-transform-scale2d: 0.9;
+            }
+
+            &:enabled {
+
+                .DiffNum {
+                    visibility: visible;
+                }
+
+                &:hover,
+                &:selected {
+                    background-image: url("file://{images}/custom_game/hud/chapter/diff_btn_h.png");
+
+                    .DiffNum {
+                        pre-transform-scale2d: 1;
+                    }
+                }
+            }
+
+            &:disabled {
+                background-image: url("file://{images}/custom_game/hud/chapter/diff_btn_d.png");
+
+                .DiffNum {
+                    visibility: collapse;
+                }
+            }
+
+
+        }
+
+        #Diff_1 .DiffNum {
+            background-image: url("file://{images}/custom_game/hud/chapter/num/1.png");
+        }
+
+        #Diff_2 .DiffNum {
+            background-image: url("file://{images}/custom_game/hud/chapter/num/2.png");
+        }
+
+        #Diff_3 .DiffNum {
+            background-image: url("file://{images}/custom_game/hud/chapter/num/3.png");
+        }
+
+        #Diff_4 .DiffNum {
+            background-image: url("file://{images}/custom_game/hud/chapter/num/4.png");
+        }
+
+        #Diff_5 .DiffNum {
+            background-image: url("file://{images}/custom_game/hud/chapter/num/5.png");
+        }
+
+        #Diff_6 .DiffNum {
+            background-image: url("file://{images}/custom_game/hud/chapter/num/6.png");
+        }
+
+        #Diff_7 .DiffNum {
+            background-image: url("file://{images}/custom_game/hud/chapter/num/7.png");
+        }
+
+        #Diff_8 .DiffNum {
+            background-image: url("file://{images}/custom_game/hud/chapter/num/8.png");
+        }
+    }
+
+    #DroppedInfoList {
+        // border: 1px solid #0f0;
+        width: 100%;
+        margin-left: 5px;
+        margin-right: 5px;
+        flow-children: right-wrap;
+
+        .ServerItem {
+            margin: 6px;
+        }
+    }
+
+    #ChapterOption {
+        horizontal-align: center;
+        vertical-align: bottom;
+        margin-bottom: 12px;
+    }
+
+    #ChapterCancelBtn,
+    #ChapterConfirmBtn {
+        width: 120px;
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+}
+
+#TestToggleBtn {
+    horizontal-align: right;
+    margin-right: 196px;
 }

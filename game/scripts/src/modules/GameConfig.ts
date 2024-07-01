@@ -111,7 +111,6 @@ export class GameConfig {
         gameEntity.SetForcedHUDSkin("aghanims_labyrinth_2021");
 
         const exp_level_list = GetHeroLevelTable();
-        DeepPrintTable(exp_level_list);
         gameEntity.SetUseCustomHeroLevels(true);
         gameEntity.SetCustomXPRequiredToReachNextLevel(exp_level_list)
     }
