@@ -20,7 +20,8 @@ export class ArchiveService {
     _game_id : string = null;
     //服务器时间
     _game_t : number = 9703764246;
-
+    //服务器版本
+    _game_versions : string = "";
     //构造
     constructor() {
 
@@ -46,6 +47,7 @@ export class ArchiveService {
                 if(data.code == 200){
                     this._game_id = data.data.game_id;
                     this._game_t = data.data.time;
+                    this._game_versions = data.data.v;
                     for (let index = 0 as PlayerID; index < 1; index++) {
                         let steam_id = PlayerResource.GetSteamAccountID(index as PlayerID);
                     }
@@ -101,7 +103,6 @@ export class ArchiveService {
     ConfirmDifficulty(){
         print("==============提交确认难度================")
         let param_data = <ConfirmDifficultyParam>{
-            gid: this._game_id,
             nd: parseInt(GameRules.MapChapter.GameDifficulty),
         }
         HttpRequest.AM2Post(ACTION_CONFIRM_DIFFICULTY,
@@ -127,7 +128,6 @@ export class ArchiveService {
     GameOver(){
         print("==============游戏结束================")
         let param_data = <GameOverParam>{
-            gid: this._game_id,
             state: 1,
         }
         HttpRequest.AM2Post(ACTION_GAME_OVER,
@@ -156,7 +156,6 @@ export class ArchiveService {
     AddEquip(player_id : PlayerID , equipdata : ServerEquip[]){
         let steam_id = PlayerResource.GetSteamAccountID(player_id);
         let param_data = <AddEquipParam>{
-            gid: this._game_id,
             sid: steam_id.toString(),
             equipdata : equipdata,
         }
@@ -186,7 +185,6 @@ export class ArchiveService {
     GetEquip(player_id : PlayerID){
         let steam_id = PlayerResource.GetSteamAccountID(player_id);
         let param_data = <GetEquipParam>{
-            gid: this._game_id,
             sid: steam_id.toString(),
             limit : 50 ,
         }
@@ -218,7 +216,6 @@ export class ArchiveService {
     UpdateEquip(player_id : PlayerID , equipdata : ServerEquip , red_list : string = ""){
         let steam_id = PlayerResource.GetSteamAccountID(player_id);
         let param_data = <UpdateEquipParam>{
-            gid: this._game_id,
             sid: steam_id.toString(),
             equipdata : equipdata,
         }

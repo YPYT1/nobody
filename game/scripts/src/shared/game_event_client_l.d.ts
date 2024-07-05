@@ -120,7 +120,7 @@ declare interface CustomGameEventDeclarations {
     /**
      *  神秘商店
      */
-
+    
     //服务器相关
     /**
      * 游戏激活状态
@@ -145,6 +145,18 @@ declare interface CustomGameEventDeclarations {
             difficulty : string ,
         }
     }
+
+    /**
+     * 天赋数据
+     */
+    HeroTalentSystem_GetHeroTalentListData: {
+        data: {
+            hero_talent_list: CGEDPlayerTalentList,
+            talent_points: number,
+            talent_use_count: number,
+        };
+    };
+
 }
 
 
@@ -243,4 +255,37 @@ declare interface CGEDEquipConfigInfo {
     hero: {
         [hero_name: string]: string[][],
     };
+}
+declare interface CGEDPlayerTalentList {
+    //层数
+    [index: string] : CGEDPlayerTalentData;
+}
+
+declare interface CGEDPlayerTalentData {
+    use_count : number; //当前层投入点数
+    is_unlock: number, //当前层是否解锁 0 未解锁 1已解锁
+    skill_data :  { //天赋key
+        [index: string]: CGEDPlayerTalentDataSkill;
+    },
+    passive_unlock : number , //当前技能是否解锁被动 0 未解锁 1已解锁
+}
+declare interface CGEDPlayerTalentDataSkill {
+    is_unlock: number, //当前技能是否解锁 0 未解锁 1已解锁
+    max_level : number , //最高等级
+    use_count : number , //当前技能投入点数
+    tier_index : string, //此层点的技能为
+}
+declare interface CGEDPlayerTalentSkillPoints {
+    use_count : number , //使用的技能点
+    points : number , //还剩的技能点
+}
+
+
+
+
+
+
+
+declare interface CGEDPlayerTalentConfig {
+    unlock_count : { [ key : number] : number};
 }

@@ -35,6 +35,7 @@ export class HttpRequest{
             DeepPrintTable(options.header)
             print("json:",JSON.encode(options.param))
         }
+        options.param["gid"] = GameRules.ArchiveService._game_id;
         this.Request(url,options,success,fail)
     }
     /**
@@ -54,6 +55,7 @@ export class HttpRequest{
         // options.param.serverKey = Server_Key;
         // options.param.mapCode = SERVER_MAP_CODE;
         options.header["gamekey"] = Server_Key;
+        options.header["v"] = GameRules.ArchiveService._game_versions;
         this.Get(url,options,success,fail)
     }
     /**

@@ -20,6 +20,7 @@ declare interface CreateGameReturn {
         }  
         time : number , // 服务器时间
         game_id : string , // 游戏唯一id
+        v : string, //游戏版本
     }
 }
 
@@ -45,7 +46,6 @@ declare interface VerificationCodeReturn {
  * 确认难度
  */
 declare interface ConfirmDifficultyParam {
-	gid: string, //游戏id
 	nd: number , //难度
 }
 /**
@@ -63,7 +63,6 @@ declare interface ConfirmDifficultyReturn {
  * 游戏结束参数
  */
 declare interface GameOverParam {
-	gid: string, //游戏id
 	state: number , //结束状态 0 输了 1赢了
 }
 /**
@@ -93,7 +92,6 @@ declare interface GameOverReturn {
  * 游戏兑换码
  */
 declare interface GameDhmParam {
-	gid : string, //游戏id
 	sid : string , //steamid
     keys : string , //兑换码
 }
@@ -122,7 +120,6 @@ declare interface GameDhmReturn {
  * 新增装备
  */
 declare interface AddEquipParam {
-	gid : string, //游戏id
 	sid : string , //steamid
     equipdata : ServerEquip[] , //装备信息
 }
@@ -140,7 +137,6 @@ declare interface AddEquipReturn {
  * 获取装备信息
  */
 declare interface GetEquipParam {
-	gid : string, //游戏id
 	sid : string , //steamid
     limit ? : number , //获取数量
 }
@@ -159,7 +155,6 @@ declare interface GetEquipReturn {
  * 更新装备信息
  */
 declare interface UpdateEquipParam {
-	gid : string, //游戏id
 	sid : string , //steamid
     equipdata : ServerEquip , //装备信息
 }

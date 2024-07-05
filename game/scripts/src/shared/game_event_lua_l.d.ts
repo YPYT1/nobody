@@ -96,6 +96,17 @@ declare interface CGED {
 
         }
     }
+    //英雄天赋系统 : 
+    HeroTalentSystem : {
+        //点天赋
+        HeroSelectTalent : {
+            key : string ; //天赋下标
+        }
+        //获取天赋信息
+        GetHeroTalentListData : {
+            
+        }
+    }
     //地图选择
     MapChapter : {
         //获取可选最高难度

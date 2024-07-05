@@ -22,6 +22,7 @@ import { ServiceEquipment } from '../server/https/service_equipment';
 import { GameInformation } from './ingame/public/game_information';
 import { WarningMarker } from './ingame/system/warning_marker';
 import { DamageReduction } from './ingame/system/damage_reduction';
+import { HeroTalentSystem } from './ingame/hero_extend/hero_talent_system';
 
 declare global {
 
@@ -47,6 +48,7 @@ declare global {
         CustomMechanics: CustomMechanics;
         RuneSystem: RuneSystem;
         MysticalShopSystem: MysticalShopSystem;
+        HeroTalentSystem : HeroTalentSystem;
         // 自定义系统
         DamageReduction:DamageReduction;
 
@@ -142,7 +144,9 @@ export class GameEvent {
             //初始化可用符文
             GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id)
             //初始化神秘商店
-            GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id)
+            GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
+            //注册英雄天赋
+            GameRules.HeroTalentSystem.RegisterHeroTalent(hUnit);
 
 
             let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);

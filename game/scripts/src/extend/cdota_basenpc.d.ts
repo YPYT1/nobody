@@ -55,4 +55,8 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     //英雄定时器
     CustomVariables: { [key: string]: number; };
+
+    //天赋分配情况
+    hero_talent : { [key : string ] : number };
+    
 }
