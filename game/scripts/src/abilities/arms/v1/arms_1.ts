@@ -25,8 +25,6 @@ export class arms_1 extends BaseArmsAbility {
     
     OnArmsInterval(): void {
         this.ability_damage = this.GetAbilityDamage();
-        
-
         const vOrigin = this.caster.GetOrigin();
         let vPoint = vOrigin + this.caster.GetForwardVector() * this.skv_aoe_radius as Vector;
         let projectile_direction = vPoint - vOrigin as Vector

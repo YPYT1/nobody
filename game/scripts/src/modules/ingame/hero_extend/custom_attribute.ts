@@ -1,7 +1,10 @@
 import * as AttributeConst from "../../../json/config/game/attribute_const.json";
+import * as AttributeSub from "../../../json/config/game/attribute_sub.json";
 import * as NpcHeroesCustom from "../../../json/npc_heroes_custom.json";
 import * as ItemArmsJson from "../../../json/items/item_arms.json";
 import * as AbilitiesArmsJson from "../../../json/abilities/arms.json";
+
+
 import { reloadable } from "../../../utils/tstl-utils";
 
 /** 自定义属性系统 */
@@ -60,7 +63,7 @@ export class CustomAttribute {
                     hUnit.custom_attribute_show[attr_key] = [0, 0]
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
                     let AttributeRows = hHeroKvData.AttributeValues[key as keyof typeof hHeroKvData.AttributeValues];
-                    for (let key2 in AttributeConst[attr_key]["AbilityValues"]) {
+                    for (let key2 in AttributeSub) {
                         let sub_key = key2 as AttributeSubKey
                         if (attribute_table[attr_key][sub_key] == null) {
                             let value: number;
@@ -81,7 +84,7 @@ export class CustomAttribute {
                     }
                 }
 
-                // DeepPrintTable(attribute_table)
+                DeepPrintTable(attribute_table)
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
@@ -104,7 +107,7 @@ export class CustomAttribute {
                     hUnit.custom_attribute_value[attr_key] = 0;
                     hUnit.custom_attribute_show[attr_key] = [0, 0]
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
-                    for (let key2 in AttributeConst[attr_key]["AbilityValues"]) {
+                    for (let key2 in AttributeSub) {
                         let sub_key = key2 as AttributeSubKey
                         if (attribute_table[attr_key][sub_key] == null) {
                             attribute_table[attr_key][key2] = 0
@@ -143,14 +146,15 @@ export class CustomAttribute {
         hUnit.AddAbility("arms_passive_4").SetLevel(1);
         hUnit.AddAbility("arms_passive_5").SetLevel(1);
         // 先天技能
-        if (has_innate) {
-            let hero_name = hUnit.GetName().replace("npc_dota_hero_", "")
-            let innate_ability = `innate_${hero_name}`;
-            // print("innate_ability", innate_ability)
-            hUnit.AddAbility(innate_ability).SetLevel(1);//.SetLevel(1);
-        } else {
-            hUnit.AddAbility("generic_hidden")
-        }
+        hUnit.AddAbility("generic_hidden")
+        // if (has_innate) {
+        //     let hero_name = hUnit.GetName().replace("npc_dota_hero_", "")
+        //     let innate_ability = `innate_${hero_name}`;
+        //     // print("innate_ability", innate_ability)
+        //     hUnit.AddAbility(innate_ability).SetLevel(1);//.SetLevel(1);
+        // } else {
+        //     hUnit.AddAbility("generic_hidden")
+        // }
         hUnit.AddAbility("public_arms").SetLevel(1);
         hUnit.AddAbility("public_attribute").SetLevel(1);
         hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
@@ -165,7 +169,7 @@ export class CustomAttribute {
                 * (1 + SubAttr["TotalPercent"] * 0.01)
                 + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                 + (SubAttr["Fixed"]);
-            hUnit.custom_attribute_value[main_key] = math.floor(MainAttrValue);
+            hUnit.custom_attribute_value[main_key] = MainAttrValue;
             hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
             hUnit.custom_attribute_show[main_key][1] = MainAttrValue - SubAttr["Base"]
         }
@@ -177,6 +181,7 @@ export class CustomAttribute {
             hUnit.custom_attribute_show[extra_key][1] += math.floor(extra_attribute_value[extra_key])
         }
         // 属性更新
+        DeepPrintTable(hUnit.custom_attribute_value)
         const update_state = GameRules.GetDOTATime(false, false) > hUnit.last_attribute_update;
         if (update_state) {
             this.UpdateAttributeInGame(hUnit)

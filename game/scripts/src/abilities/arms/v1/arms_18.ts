@@ -28,7 +28,6 @@ export class arms_18 extends BaseArmsAbility {
     OnAttackStart(hTarget: CDOTA_BaseNPC): void {
         // let dotaTime = GameRules.GetDOTATime(false, false);
         this.base_chance = this.GetSpecialValueFor("skv_orb_chance");
-        print("base_chance",this.base_chance)
         if (RollPercentage(this.base_chance) ) {
             // this.ArmsActTime = dotaTime + this.arms_cd;
             CreateModifierThinker(

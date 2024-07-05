@@ -6,6 +6,57 @@ function GetQuadraticVector(start_point: Vector, end_point: Vector, mid_point: V
 }
 
 
+/**
+ * 扇形范围查询
+ * 一目标点面向作为中心,进行范围查询
+ * @param team 队伍
+ * @param vOrigin 开始点
+ * @param vTarget 目标点
+ * @param radius 
+ * @param angle 
+ * @param teamFilter 
+ */
+function CustomFindUnitsInSector(
+    team: DOTATeam_t,
+    vOrigin: Vector,
+    vTarget: Vector,
+    radius: number,
+    angle: number,
+    teamFilter: UnitTargetTeam,
+) {
+    let caster_origin_difference = vOrigin - vTarget as Vector;
+    let caster_origin_difference_radian = math.atan2(caster_origin_difference.y, caster_origin_difference.x);
+    caster_origin_difference_radian = caster_origin_difference_radian * 180;
+    let attacker_angle = caster_origin_difference_radian / math.pi;
+    attacker_angle = attacker_angle + 180.0;
+
+    let radius_enemy: CDOTA_BaseNPC[] = [];
+    let enemies = FindUnitsInRadius(
+        team,
+        vTarget,
+        null,
+        radius,
+        teamFilter,
+        UnitTargetType.HERO + UnitTargetType.BASIC,
+        UnitTargetFlags.NONE,
+        FindOrder.ANY,
+        false
+    );
+    for (let enemy of enemies) {
+        let target_origin_difference = vTarget - enemy.GetAbsOrigin() as Vector;
+        let target_origin_difference_radian = math.atan2(target_origin_difference.y, target_origin_difference.x);
+        target_origin_difference_radian = target_origin_difference_radian * 180;
+        let victim_angle = target_origin_difference_radian / math.pi;
+        victim_angle = victim_angle + 180.0;
+        let angle_difference = math.abs(victim_angle - attacker_angle);
+        if (angle_difference < angle) {
+            radius_enemy.push(enemy);
+        }
+    }
+
+    return radius_enemy;
+}
+
 function Custom_FindUnitsInSector(
     team: DOTATeam_t,
     hCaster: CDOTA_BaseNPC,

@@ -1,11 +1,10 @@
-import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
-
+import { BaseModifier, registerModifier } from "../utils/dota_ts_adapter";
 
 /**
  * 灼烧效果
  */
 @registerModifier()
-export class modifier_element_bond_fire extends BaseModifier {
+export class modifier_element_effect_fire extends BaseModifier {
 
     dot_damage: number
     dot_interval: number
@@ -16,10 +15,6 @@ export class modifier_element_bond_fire extends BaseModifier {
     parent: CDOTA_BaseNPC;
     caster: CDOTA_BaseNPC;
     playerid: PlayerID;
-
-    GetAttributes(): ModifierAttribute {
-        return ModifierAttribute.MULTIPLE
-    }
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
@@ -35,14 +30,14 @@ export class modifier_element_bond_fire extends BaseModifier {
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
-        let duration = 3;
-        let bond_count = GameRules.NewArmsEvolution.ElementBondDateList[this.playerid].Element["1"];
+        // let duration = 3;
+        // let bond_count = GameRules.NewArmsEvolution.ElementBondDateList[this.playerid].Element["1"];
         let caster_damage = this.caster.GetAverageTrueAttackDamage(null)
         this.dot_damage = caster_damage * 0.25;
-        if (bond_count >= 4) { this.dot_damage += caster_damage * 0.25; }
-        if (bond_count >= 6) { duration = 6 }
-        this.total_damage = this.dot_damage * (this.dot_interval / 1) * duration;
-        this.SetDuration(duration, true)
+        // if (bond_count >= 4) { this.dot_damage += caster_damage * 0.25; }
+        // if (bond_count >= 6) { duration = 6 }
+        // this.total_damage = this.dot_damage * (this.dot_interval / 1) * duration;
+        // this.SetDuration(duration, true)
     }
 
     C_OnCreated(params: any): void { }
@@ -55,10 +50,10 @@ export class modifier_element_bond_fire extends BaseModifier {
             damage_type: DamageTypes.MAGICAL,
             ability: this.GetAbility(),
             element_type: this.element_type,
-            is_direct: false,
+            is_primary: false,
             special_effect: true,
         });
-        this.total_damage -= this.dot_damage
+        // this.total_damage -= this.dot_damage
         // print("last damage", this.total_damage)
     }
 
@@ -66,11 +61,15 @@ export class modifier_element_bond_fire extends BaseModifier {
     Detonate() {
 
     }
+
+    GetEffectName(): string {
+        return "particles/units/heroes/hero_ogre_magi/ogre_magi_ignite_debuff.vpcf"
+    }
 }
 
 /** 冰冻效果 */
 @registerModifier()
-export class modifier_element_bond_ice extends BaseModifier {
+export class modifier_element_effect_ice extends BaseModifier {
 
     IsDebuff(): boolean {
         return false
@@ -88,7 +87,7 @@ export class modifier_element_bond_ice extends BaseModifier {
 
 /** 雷:麻痹 */
 @registerModifier()
-export class modifier_element_bond_thunder extends BaseModifier {
+export class modifier_element_effect_thunder extends BaseModifier {
 
     IsDebuff(): boolean {
         return false
@@ -103,14 +102,14 @@ export class modifier_element_bond_thunder extends BaseModifier {
     OnDestroy(): void {
         if (!IsServer()) { return }
         let hParent = this.GetParent();
-        hParent.AddNewModifier(hParent, null, "modifier_element_bond_thunder_immune", {
+        hParent.AddNewModifier(hParent, null, "modifier_element_effect_thunder_immune", {
             duration: 10
         })
     }
 }
 
 @registerModifier()
-export class modifier_element_bond_thunder_immune extends BaseModifier {
+export class modifier_element_effect_thunder_immune extends BaseModifier {
 
     IsHidden(): boolean {
         return true

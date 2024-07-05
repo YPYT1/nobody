@@ -94,7 +94,7 @@ export class GameConfig {
         gameEntity.SetDaynightCycleDisabled(true);
         // gameEntity.SetTPScrollSlotItemOverride("item_backpack");
         // 平衡性
-        gameEntity.SetCustomGameForceHero("npc_dota_hero_wisp");
+        gameEntity.SetCustomGameForceHero("npc_dota_hero_drow_ranger");
         gameEntity.SetMinimumAttackSpeed(1);
         gameEntity.SetMaximumAttackSpeed(9999);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.STRENGTH_DAMAGE, 0);

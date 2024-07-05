@@ -3,10 +3,11 @@ import { useGameEvent, useNetTableKey, useNetTableValues } from 'react-panorama-
 import { HideCustomTooltip, ShowCustomTextTooltip } from '../../utils/custom_tooltip';
 import { default as NpcAbilitiesCustom } from "./../../json/npc_abilities_custom.json";
 import { default as attribute_const } from "./../../json/config/game/attribute_const.json"
+import { default as attribute_sub } from "./../../json/config/game/attribute_sub.json"
 import { default as special_keyvalue } from "./../../json/config/game/special_keyvalue.json"
 
 const LocalPlayerID = Players.GetLocalPlayer();
-const attr_sub_key_list = Object.keys(Object.values(attribute_const)[0].AbilityValues);
+const attr_sub_key_list = Object.keys(attribute_sub);
 
 /** 属性表头 */
 const AttributeRowsHeader = () => {
@@ -175,8 +176,18 @@ const HeroDemoAttribute = () => {
                     <Label className='AttrTotal' text={"总值"} />
                 </Panel>
                 <Panel className='table-body AttributeRowList'>
-                    <AttributeRows attr_key="AttackDamage" attr_value={AttributeValue} attr_table={AttributeTable} />
-                    <AttributeRows attr_key="PhyicalArmor" attr_value={AttributeValue} attr_table={AttributeTable} />
+                    {
+                        Object.keys(attribute_const).map((v,k)=>{
+                            return <AttributeRows 
+                            attr_key={v as AttributeMainKey} 
+                            attr_value={AttributeValue} 
+                            attr_table={AttributeTable} 
+                            key={k}
+                            />
+                        })
+                    }
+                    
+                    {/* <AttributeRows attr_key="PhyicalArmor" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackRange" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="MoveSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
@@ -189,7 +200,7 @@ const HeroDemoAttribute = () => {
                     <AttributeRows attr_key="Fire_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="Ice_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="Thunder_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
-                    <AttributeRows attr_key="Wind_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} />
+                    <AttributeRows attr_key="Wind_DamageMul" attr_value={AttributeValue} attr_table={AttributeTable} /> */}
                 </Panel>
             </Panel>
         </>

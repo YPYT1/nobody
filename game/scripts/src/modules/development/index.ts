@@ -41,6 +41,7 @@ export class Development extends UIEventRegisterClass {
         const hero_class = `npc_dota_hero_` + DOTAGameManager.GetHeroNameByID(heroid)
         PlayerResource.ReplaceHeroWithNoTransfer(player_id, hero_class, 0, 0);
 
+        // PrecacheUnitByNameAsync(hero_class, () => { })
         // const lastSelectHero = PlayerResource.GetPlayer(player_id).GetAssignedHero();
         if (originHero) { UTIL_Remove(originHero); }
     }

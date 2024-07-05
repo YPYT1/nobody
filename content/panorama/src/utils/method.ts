@@ -119,6 +119,8 @@ export function FormatDescription(
     entityIndex?: AbilityEntityIndex,
 ) {
     let original_description_txt = $.Localize(`#DOTA_Tooltip_Ability_${name}_Description`);
+    // original_description_txt = GameUI.ReplaceDOTAAbilitySpecialValues(name, original_description_txt)!;
+    // $.Msg(original_description_txt)
     if (level <= 0) { level = 1; }
 
     for (let key in AbilityValues) {
@@ -154,35 +156,6 @@ export function FormatDescription(
         );
     }
 
-    if (AbilityValues2) {
-        for (let key in AbilityValues2) {
-            let special_key = AbilityValues2[key];
-            let special_num = 0;
-            if (typeof (special_key) == "string") {
-                let _arr = special_key.split(" ").map((v, k) => { return parseFloat(v); });
-                const kv_value_len = _arr.length;
-                if (level >= kv_value_len) {
-                    special_num = _arr[kv_value_len - 1];
-                } else {
-                    special_num = _arr[level - 1];
-                }
-            } else {
-                special_num = special_key;
-            }
-            let is_negative = special_num < 0;
-            special_num = Math.abs(special_num);
-            let special_value = special_num % 1 ? special_num.toFixed(2) : special_num.toFixed(0);
-            let value = special_value;
-            original_description_txt = original_description_txt.replaceAll(
-                `%${key}%%%`,
-                `<span class="GameplayVariable ${is_negative ? "negative" : ""}">${value}%</span>`
-            );
-            original_description_txt = original_description_txt.replaceAll(
-                `%${key}%`,
-                `<span class="GameplayVariable ${is_negative ? "negative" : ""}">${value}</span>`
-            );
-        }
-    }
 
     original_description_txt = original_description_txt.replaceAll("\n", "<br>");
     return original_description_txt;

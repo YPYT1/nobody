@@ -91,6 +91,7 @@ export class modifier_basic_debug extends BaseModifier {
         return 1
     }
 }
+
 @registerModifier()
 export class modifier_basic_tracking_thinker extends BaseModifier {
 
@@ -116,4 +117,9 @@ export class modifier_common_mul_health extends BaseModifier {
         let iMulte = params.iMulte;
         this.SetStackCount(iMulte);
     }
+}
+
+@registerModifier()
+export class modifier_basic_attack extends BaseModifier {
+
 }

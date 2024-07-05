@@ -515,7 +515,7 @@ export class BaseArmsMdf_Dot extends BaseModifier {
             damage_type: DamageTypes.MAGICAL,
             ability: this.GetAbility(),
             // element_type: this.element_type,
-            is_direct: false,
+            is_primary: false,
             special_effect: true,
         });
     }

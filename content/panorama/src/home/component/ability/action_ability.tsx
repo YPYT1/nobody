@@ -92,34 +92,35 @@ function SetAbilityRarity(rarity: number) {
 
 function RegisterArmsEvent() {
     // let order = 
-    let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
-    MainPanel.SetPanelEvent("onactivate", () => {
-        GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
-            event_name: "CreatArmssSelectData",
-            params: {
-                index: m_SlotIndex
-            }
-        })
-    })
+    // let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
+    // MainPanel.SetPanelEvent("onactivate", () => {
+    //     GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
+    //         event_name: "CreatArmssSelectData",
+    //         params: {
+    //             index: m_SlotIndex
+    //         }
+    //     })
+    // })
 
-    const AbilityReselect = MainPanel.FindChildTraverse("AbilityReselect") as Button;
-    // AbilityReselect.enabled = false;
-    AbilityReselect.SetPanelEvent("onactivate", () => {
-        // $.Msg(["CreatArmssWeightData",m_SlotIndex])
-        GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
-            event_name: "CreatArmssWeightData",
-            params: {
-                index: m_SlotIndex
-            }
-        })
-    })
-    AbilityReselect.SetPanelEvent("onmouseover", () => {
-        ShowCustomTextTooltip(AbilityReselect, "", "重新随机技能")
-    })
+    // const AbilityReselect = MainPanel.FindChildTraverse("AbilityReselect") as Button;
+    // // AbilityReselect.enabled = false;
+    // AbilityReselect.SetPanelEvent("onactivate", () => {
+    //     // $.Msg(["CreatArmssWeightData",m_SlotIndex])
+    //     GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
+    //         event_name: "CreatArmssWeightData",
+    //         params: {
+    //             index: m_SlotIndex
+    //         }
+    //     })
+    // })
 
-    AbilityReselect.SetPanelEvent("onmouseout", () => {
-        HideCustomTooltip()
-    })
+    // AbilityReselect.SetPanelEvent("onmouseover", () => {
+    //     ShowCustomTextTooltip(AbilityReselect, "", "重新随机技能")
+    // })
+
+    // AbilityReselect.SetPanelEvent("onmouseout", () => {
+    //     HideCustomTooltip()
+    // })
 
 }
 (function () {

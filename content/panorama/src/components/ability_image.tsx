@@ -11,7 +11,7 @@ export const CAbilityImage = ({ id, abilityname, showtooltip }: { id?: string, a
     if (ability_data) {
         let image = ability_data.AbilityTextureName;
         image_src = GetTextureSrc(image,"CAbilityImage");
-        rarity = ability_data.Rarity;
+        // rarity = ability_data.Rarity;
     }
 
     return (

@@ -152,7 +152,7 @@ export function sheetToKV(options: SheetToKVOptions) {
                     // 处理技能的特殊键值对，现在只需要处理顶部key作为通用key，value为数组的情况
                     if (key == `AbilityValues[{]` 
                     || key == `ConversionValue[{]`
-                    // || key == `AttributeValues[{]`
+                    || key == `ObjectValues[{]`
                     ) abilityValuesBlock = true;
                     if (abilityValuesBlock && key == '[}]') abilityValuesBlock = false;
 
@@ -187,6 +187,7 @@ export function sheetToKV(options: SheetToKVOptions) {
                         (key !== `AbilityValues[{]` 
                         && key !== `ConversionValue[{]` 
                         && key !== `AttributeValues[{]`
+                        && key !== `ObjectValues[{]`
                         )
                     
                     ) {
@@ -228,7 +229,10 @@ export function sheetToKV(options: SheetToKVOptions) {
 
                         // 如果输出中包含 { } 等，那么直接输出value，不加双引号
                         if (cell != null && cell.toString().trimStart().startsWith('{')) {
-                            return `${indentStr}"${values_key}" ${cell}`;
+                            let sub_indentStr = (indent || `\t`).repeat(indentLevel + 1);
+                            let cell_text = cell.replaceAll("\n","\n"+ sub_indentStr).replaceAll("\t}","}");
+
+                            return `${indentStr}"${values_key}" ${cell_text}`;
                         }
 
                         return `${indentStr}"${values_key}" "${cell}"`;

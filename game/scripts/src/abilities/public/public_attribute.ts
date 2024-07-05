@@ -102,6 +102,7 @@ export class modifier_public_attribute extends BaseModifier {
         hUnit.CalculateStatBonus(true);
         // 写入网表
         // DeepPrintTable(hUnit.custom_attribute_value)
+        print("AttackRate:", hUnit.custom_attribute_value.AttackRate)
         CustomNetTables.SetTableValue("unit_attribute", `${hUnit.GetEntityIndex()}`, {
             table: hUnit.custom_attribute_table,
             value: hUnit.custom_attribute_value,
@@ -152,7 +153,6 @@ export class modifier_public_attribute extends BaseModifier {
     // GetModifierBaseAttack_BonusDamage(): number {
     //     return this.AttributeData.AttackDamage
     // }
-
     GetModifierBaseAttackTimeConstant(): number {
         return this.AttributeData.AttackRate
     }
