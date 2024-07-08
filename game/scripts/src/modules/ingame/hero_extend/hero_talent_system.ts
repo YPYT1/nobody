@@ -15,7 +15,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * 英雄对应加点信息
      */
     player_talent_list : CGEDPlayerTalentList[] = [];
-    /**
+    /** 
      * 加载通用
      */
     player_talent_config : CGEDPlayerTalentConfig = {
@@ -58,9 +58,18 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      */
     RegisterHeroTalent(BaseNPC: CDOTA_BaseNPC) {
         let unitname = BaseNPC.GetUnitName();
-        let HeroTalentCounfg :  { [key : string] : typeof DrowRanger["1"]} ;
+        let HeroTalentCounfg :  {
+            [key: string]: {
+                index: number;
+                is_ability: number;
+                link_ability: string;
+                tier_number: number;
+                unlock_key: number[];
+                max_number: number;
+            };
+        };
         if(unitname == "npc_dota_hero_drow_ranger"){
-            HeroTalentCounfg = DrowRanger;
+            HeroTalentCounfg = DrowRanger ;
         }else{
             print("天赋配置错误！！！！")
             return 
@@ -168,9 +177,9 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id , "技能点不足！！")
                 this.GetHeroTalentListData(player_id, {});
                 return 
-        }
+        }       
         if(unitname == "npc_dota_hero_drow_ranger"){
-            HeroTalentCounfg = DrowRanger[key];
+            HeroTalentCounfg = DrowRanger[key]; 
             if(!DrowRanger.hasOwnProperty(key)){
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "没有此技能！！")
                 this.GetHeroTalentListData(player_id, {});
