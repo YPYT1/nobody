@@ -151,7 +151,7 @@ declare interface CustomGameEventDeclarations {
      */
     HeroTalentSystem_GetHeroTalentListData: {
         data: {
-            hero_talent_list: CGEDPlayerTalentList,
+            hero_talent_list: CGEDPlayerTalentSkill,
             talent_points: number,
             talent_use_count: number,
         };
@@ -212,7 +212,7 @@ declare interface ShopStateData {
     is_ready : number, // 是否准备好了 0 未准备好 1准备好了
 }
 
-
+    
 declare interface CGEDGetEquipListInfo {
     id: string, //唯一id
     n: string, //装备key
@@ -242,7 +242,7 @@ declare interface ServerEquip {
     zl: number, //装备等级
     ma : string, //装备主属性
     pa : string, // 装备拼图属性
-    s : string, //套装数据
+    s : string, //套装数据  
     lk? : number , //装备锁
     created_at ? : number , //创建时间
     t : number , //装备部位
@@ -256,24 +256,33 @@ declare interface CGEDEquipConfigInfo {
         [hero_name: string]: string[][],
     };
 }
-declare interface CGEDPlayerTalentList {
-    //层数
-    [index: string] : CGEDPlayerTalentData;
+declare interface CGEDPlayerTalentSkill {
+    //技能位置  - 技能信息
+    [index: string] : CGEDPlayerTalentList;
 }
+declare interface CGEDPlayerTalentList {
+    uc : number; //当前技能入点数
+    iu: number,  //当技能是否解锁 0 未解锁 1已解锁
+    //层
+    t :  { //天赋key
+        //层数 - 层数中的技能信息
+        [index: number]: { 
+            //当前层选择的技能key
+            sk : string ;
+            //天赋key
+            si : {
+                [index: string]: CGEDPlayerTalentDataSkill;
 
-declare interface CGEDPlayerTalentData {
-    use_count : number; //当前层投入点数
-    is_unlock: number, //当前层是否解锁 0 未解锁 1已解锁
-    skill_data :  { //天赋key
-        [index: string]: CGEDPlayerTalentDataSkill;
-    },
-    passive_unlock : number , //当前技能是否解锁被动 0 未解锁 1已解锁
+            }
+        };
+    }
+    tm : number , //最大层数 99被动不算
+    pu : number , //当前技能是否解锁被动 0 未解锁 1已解锁
 }
 declare interface CGEDPlayerTalentDataSkill {
-    is_unlock: number, //当前技能是否解锁 0 未解锁 1已解锁
-    max_level : number , //最高等级
-    use_count : number , //当前技能投入点数
-    tier_index : string, //此层点的技能为
+    iu: number, //当前技能是否解锁 0 未解锁 1已解锁
+    ml : number , //最高等级
+    uc : number , //当前技能投入点数
 }
 declare interface CGEDPlayerTalentSkillPoints {
     use_count : number , //使用的技能点

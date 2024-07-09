@@ -103,6 +103,7 @@ export class GameEvent {
             GameRules.GameInformation = new GameInformation();
             GameRules.WarningMarker = new WarningMarker();
             GameRules.DamageReduction = new DamageReduction();
+            GameRules.HeroTalentSystem = new HeroTalentSystem();
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段

@@ -81,5 +81,6 @@ export class Debug {
         GameRules.ResourceSystem.Debug(cmd, args, keys.playerid)
         GameRules.ServiceEquipment.Debug(cmd, args, keys.playerid)
         GameRules.CMsg.Debug(cmd, args, keys.playerid)
+        GameRules.HeroTalentSystem.Debug(cmd, args, keys.playerid)
     }
 }
