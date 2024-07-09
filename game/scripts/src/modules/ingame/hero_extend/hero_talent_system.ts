@@ -14,7 +14,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     /** 
      * 英雄对应加点信息
      */
-    player_talent_list : CGEDPlayerTalentList[] = [];
+    player_talent_list : CGEDPlayerTalentSkill[] = [];
     /** 
      * 加载通用
      */
@@ -27,11 +27,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     player_hero_name : string[] = [];
     //玩家数量
     player_count = 6;
-
-    /**
-     * 记录玩家每层使用的数据
-     */
-    player_hero_tier_number : { [key : string] : string}[] = [];
 
     constructor() {
         super("HeroTalentSystem");
@@ -47,8 +42,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             this.player_talent_list.push({
             })
             this.player_hero_name.push("");
-            this.player_hero_tier_number.push({});
-
         }
     }
     
@@ -70,6 +63,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         };
         if(unitname == "npc_dota_hero_drow_ranger"){
             HeroTalentCounfg = DrowRanger ;
+            print("npc_dota_hero_drow_ranger:......")
         }else{
             print("天赋配置错误！！！！")
             return 
@@ -81,24 +75,26 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             use_count : 1,
             points : 0,
         };
-        this.player_hero_tier_number[player_id] = {};
-
         for (let index = 1; index <= Object.keys(this.player_talent_config.unlock_count).length; index++) {
-            if(index == 1){
-                this.player_talent_list[player_id][index] = {
-                    use_count : 1, //当前层投入点数
-                    is_unlock: 1, //当前层是否解锁 0 未解锁 1已解锁
-                    skill_data :  {},
-                    passive_unlock : 0 , //当前技能是否解锁被动 0 未解锁 1已解锁
+            //是否初始化
+            // this.player_talent_list[player_id][index] = {};
+                if(index == 1){
+                    this.player_talent_list[player_id][index] = {
+                        uc : 1, //当技能投入点数
+                        iu: 1, //当技能是否解锁 0 未解锁 1已解锁
+                        t : {} , //层信息
+                        pu : 0 , //当前技能是否解锁被动 0 未解锁 1已解锁
+                        tm : 0 , //最大层数
+                    }
+                }else{
+                    this.player_talent_list[player_id][index] = {
+                        uc : 0, //当前层投入点数
+                        iu: 0, //当前层是否解锁 0 未解锁 1已解锁
+                        t : {} , //层信息
+                        pu : 0 , //当前技能是否解锁被动 0 未解锁 1已解锁
+                        tm : 0 , //最大层数
+                    }
                 }
-            }else{
-                this.player_talent_list[player_id][index] = {
-                    use_count : 0, //当前层投入点数
-                    is_unlock: 0, //当前层是否解锁 0 未解锁 1已解锁
-                    skill_data :  {},
-                    passive_unlock : 0 , //当前技能是否解锁被动 0 未解锁 1已解锁
-                }
-            }
         }
         let h_max_tf : { [key : string ] : number } = {};
         //处理解锁条件
@@ -107,32 +103,41 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         for (const key in HeroTalentCounfg) {
             let skill_index = HeroTalentCounfg[key].index;
             let max_number = HeroTalentCounfg[key].max_number;
-
-            if(key == "1"){ //第一个技能默认点了
-                h_max_tf["1"] = 1;
-                this.player_talent_list[player_id][skill_index].skill_data[key] = {
-                    is_unlock: 1, //当前技能是否解锁 0 未解锁 1已解锁
-                    max_level : max_number , //最高等级
-                    use_count : 1 , //当前技能投入点数
-                    tier_index : "", //此层点的技能
-                }
-            }else if(unlock_key.includes(parseInt(key))){ //默认可以解锁
-                this.player_talent_list[player_id][skill_index].skill_data[key] = {
-                    is_unlock: 1, //当前技能是否解锁 0 未解锁 1已解锁
-                    max_level : max_number , //最高等级
-                    use_count : 0 , //当前技能投入点数
-                    tier_index : "", //此层点的技能
-                }
-            }else{
-                this.player_talent_list[player_id][skill_index].skill_data[key] = {
-                    is_unlock: 0, //当前技能是否解锁 0 未解锁 1已解锁
-                    max_level : max_number , //最高等级
-                    use_count : 0 , //当前技能投入点数
-                    tier_index : "", //此层点的技能
+            let tier_number = HeroTalentCounfg[key].tier_number;
+            if(!this.player_talent_list[player_id][skill_index].t.hasOwnProperty(tier_number)){
+                this.player_talent_list[player_id][skill_index].t[tier_number] = {
+                    sk : "",
+                    si : {},
                 }
             }
+            if(key == "1"){ //第一个技能默认点了
+                h_max_tf["1"] = 1;
+                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
+                    iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
+                    ml : max_number , //最高等级
+                    uc : 1 , //当前技能投入点数
+                }
+            }else if(unlock_key.includes(parseInt(key))){ //默认可以解锁
+                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
+                    iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
+                    ml : max_number , //最高等级
+                    uc : 0 , //当前技能投入点数
+                }
+            }else{
+                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
+                    iu: 0, //当前技能是否解锁 0 未解锁 1已解锁
+                    ml : max_number , //最高等级
+                    uc : 0 , //当前技能投入点数
+                }
+            }
+            //重设最大层数
+
+            if(this.player_talent_list[player_id][skill_index].tm < tier_number && tier_number != 99){
+                this.player_talent_list[player_id][skill_index].tm = tier_number;
+            }
         }
-        
+
+
         BaseNPC.hero_talent = h_max_tf;
         //发送玩家天赋信息
         this.GetHeroTalentListData(player_id, {});
@@ -160,10 +165,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * @param callback 
      */
     /**
-     * 增加天赋点
+     * 增加/减少 天赋点
      */
-    AddHeroTalent(player_id: PlayerID) {
-        this.player_talent_data[player_id].points++;
+    AddHeroTalent(player_id: PlayerID , count : number = 1) {
+        this.player_talent_data[player_id].points += count;
         this.GetHeroTalentListData(player_id, {});
     }
     /**
@@ -194,24 +199,28 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         let skill_index =  HeroTalentCounfg.index;
         let tier_number =  HeroTalentCounfg.tier_number;
         
-        if(this.player_talent_list[player_id][skill_index].is_unlock == 1){
-            if(this.player_talent_list[player_id][skill_index].skill_data[key]){
-                if(this.player_talent_list[player_id][skill_index].skill_data[key].use_count >= this.player_talent_list[player_id][skill_index].skill_data[key].max_level){
+        if(this.player_talent_list[player_id][skill_index].iu == 1){
+            if(this.player_talent_list[player_id][skill_index].t[tier_number].si[key]){
+                if(this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc 
+                    >= this.player_talent_list[player_id][skill_index].t[tier_number].si[key].ml
+                ){
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能已满级");
-                }else if(this.player_talent_list[player_id][skill_index].skill_data[key].is_unlock == 0){
+                }else if(this.player_talent_list[player_id][skill_index].t[tier_number].si[key].iu == 0){
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能未解锁");
                 }else{
                     if(tier_number != 99){
-                        if(this.player_hero_tier_number[player_id].hasOwnProperty(skill_index + "-" + tier_number)){
-                            if(this.player_hero_tier_number[player_id][skill_index + "-" + tier_number] != key){
+                        if(this.player_talent_list[player_id][skill_index].t[tier_number].sk != ""){
+                            if(this.player_talent_list[player_id][skill_index].t[tier_number].sk != key){
                                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "不能选取同层其他技能");
+                                this.GetHeroTalentListData(player_id, {});
+                                return 
                             }
                         }
                     }
                     let unlock_key = HeroTalentCounfg.unlock_key;
                     for (let index = 0; index < unlock_key.length; index++) {
-                        const element = unlock_key[index];
-                        if(element == 0){
+                        const element = tostring(unlock_key[index]);
+                        if(element == "0"){
                             continue;
                         }
                         let HeroTalent :  typeof DrowRanger["1"];
@@ -224,13 +233,67 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             return 
                         }
                         let si = HeroTalent.index;
-                        this.player_talent_list[player_id][si].skill_data[element].is_unlock = 1;
+                        let tu = HeroTalent.tier_number;
+                        this.player_talent_list[player_id][si].t[tu].si[element].iu = 1;
                     }
                     //处理技能
-                    this.player_talent_list[player_id][skill_index].skill_data[key].use_count ++;
-                    this.player_talent_list[player_id][skill_index].skill_data[key].tier_index = key;
-                    this.player_hero_tier_number[player_id][skill_index + "-" + tier_number] = key
-                    
+                    this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc ++;
+                    //减少技能点
+                    this.player_talent_data[player_id].points --;
+                    //增加使用记录
+                    this.player_talent_data[player_id].use_count ++;
+
+                    if(tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == ""){
+                        this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
+                    }
+                    //根据总投入点 解锁层
+                    if(Object.values(this.player_talent_config.unlock_count).includes(this.player_talent_data[player_id].use_count)){
+                        let s_u_index = Object.values(this.player_talent_config.unlock_count).indexOf((this.player_talent_data[player_id].use_count)) + 1;
+                        this.player_talent_list[player_id][s_u_index].iu = 1;
+                        for (const key in this.player_talent_list[player_id][s_u_index].t[1].si) {
+                            this.player_talent_list[player_id][s_u_index].t[1].si[key].iu = 1;
+                        }
+                    }
+                    //检查此层是否可以开启 被动
+                    if(this.player_talent_list[player_id][skill_index].pu == 0){
+                        for (let index = 1 ; index <= this.player_talent_list[player_id][skill_index].tm ; index++) {
+                            let sk = this.player_talent_list[player_id][skill_index].t[index].sk;
+                            if(sk == ""){
+                                break;
+                            }
+                            let HeroTalentT :  typeof DrowRanger["1"];
+                            if(unitname == "npc_dota_hero_drow_ranger"){
+                                HeroTalentT = DrowRanger[sk];
+                            }else{
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "天赋配置错误！！！！")
+                                this.GetHeroTalentListData(player_id, {});
+                                return 
+                            }
+                            if(this.player_talent_list[player_id][skill_index].t[index].si[sk].uc 
+                                < this.player_talent_list[player_id][skill_index].t[index].si[sk].ml
+                            ){
+                                break;
+                            }
+                            if(HeroTalentT.unlock_key[0] == 0){
+                                this.player_talent_list[player_id][skill_index].pu = 1;
+                                if(this.player_talent_list[player_id][skill_index].t.hasOwnProperty(99)){
+                                    for (const skp in this.player_talent_list[player_id][skill_index].t[99].si) {
+                                        let HeroTalentP :  typeof DrowRanger["1"];
+                                        if(unitname == "npc_dota_hero_drow_ranger"){
+                                            HeroTalentP = DrowRanger[skp];
+                                        }else{
+                                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "天赋配置错误！！！！")
+                                            this.GetHeroTalentListData(player_id, {});
+                                            return 
+                                        }
+                                        //tudo 需要特定处理
+                                        this.player_talent_list[player_id][skill_index].t[99].si[skp].iu = 1;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
 
                     //加载技能效果
 
@@ -242,35 +305,22 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能未解锁");
         }
-            
         this.GetHeroTalentListData(player_id, {});
     }
 
     /**
      * debug 命令
      */
-    DebugChat(player_id: PlayerID, command: string[], hHero: CDOTA_BaseNPC) {
-        if (command[0] == "-tfxz") { //天赋选择
-            let indexstr = command[1] ?? "1";
-            GameRules.HeroTalentSystem.HeroSelectTalent(player_id, { key: indexstr });
-        } else if (command[0] == "-tf") { //目标天赋满级 不会增加属性 直接设置
-            //从下标开始
-            // let indexstr = command[1] ?? "1";
-            // let player_hero = PlayerResource.GetSelectedHeroEntity(player_id);
-            // this.player_talent_list[player_id][indexstr].now_level = this.player_talent_list[player_id][indexstr].max_level;
-            // player_hero.hero_talent[this.player_talent_list[player_id][indexstr].fission_id] = 1;
-            // CustomNetTables.SetTableValue("hero_talent_fission", player_hero.GetEntityIndex().toString(), player_hero.hero_talent);
-            // this.GetHeroTalentListData(player_id, {});
-        } else if (command[0] == "-tfall") { //天赋全开 不会增加属性 直接设置
-            // let player_hero = PlayerResource.GetSelectedHeroEntity(player_id);
-            // for (let index = 1; index <= 16; index++) {
-            //     this.player_talent_list[player_id][index.toString()].now_level = this.player_talent_list[player_id][index.toString()].max_level;
-            //     player_hero.hero_talent[this.player_talent_list[player_id][index.toString()].fission_id] = 1;
-            // }
-            // CustomNetTables.SetTableValue("hero_talent_fission", player_hero.GetEntityIndex().toString(), player_hero.hero_talent);
-            // this.GetHeroTalentListData(player_id, {});
-        }
+    Debug(cmd: string, args: string[], player_id: PlayerID) {
 
+        if (cmd == "-atf") {    
+            let number = tonumber(args[0]) ?? 1;
+            this.AddHeroTalent(player_id , number)
+        }
+        if (cmd == "-stf") {
+            let key = args[0] ?? "1";
+            this.HeroSelectTalent(player_id ,  { key : key })
+        }
     }
 
     // OnKillUnit(killer: CDOTA_BaseNPC, target: CDOTA_BaseNPC) {
