@@ -1,10 +1,9 @@
+#base "custom_datadriven.txt"
+
 #base "abilities/public.txt"
 #base "abilities/arms.txt"
-#base "abilities/hero_innate.txt"
 
 #base "abilities/hero/drow_skill.txt"
-
-#base "custom_datadriven.txt"
 
 "DOTAAbilities"
 {

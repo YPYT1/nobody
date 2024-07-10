@@ -8,6 +8,12 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 @registerAbility()
 export class drow_1 extends BaseAbility {
 
+    caster: CDOTA_BaseNPC;
+
+    OnUpgrade(): void {
+        this.caster = this.GetCaster();
+    }
+
     GetIntrinsicModifierName(): string {
         return "modifier_drow_1"
     }
@@ -20,10 +26,15 @@ export class modifier_drow_1 extends BaseModifier {
     caster: CDOTA_BaseNPC;
     team: DotaTeam;
 
+    fakeAttack: boolean;
+    useProjectile: boolean;
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         this.team = this.caster.GetTeamNumber();
+        this.fakeAttack = false;
+        this.useProjectile = true;
         this.UpdateSpecialValue();
         this.OnIntervalThink()
         this.StartIntervalThink(0.03)
@@ -34,7 +45,7 @@ export class modifier_drow_1 extends BaseModifier {
         this.UpdateSpecialValue()
     }
 
-    UpdateSpecialValue() {}
+    UpdateSpecialValue() { }
 
     OnIntervalThink(): void {
         if (this.caster.AttackReady()) {
@@ -52,31 +63,26 @@ export class modifier_drow_1 extends BaseModifier {
             )
             if (enemies.length <= 0) { return }
             let hTarget = enemies[0];
-            // this.caster.in_process_attack = true;
+            this.caster.in_process_attack = true;
+            this.caster.GiveMana(5);
+            this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
+            this.caster.StartGesture(GameActivity.DOTA_ATTACK)
             this.caster.PerformAttack(
                 hTarget,
                 true, // useCastAttackOrb
                 true, // processProcs
                 false, // skipCooldown
                 false, // ignoreInvis
-                true, // useProjectile
-                false, // fakeAttack
+                this.useProjectile, // useProjectile
+                this.fakeAttack, // fakeAttack
                 false // neverMiss
             );
-            // this.caster.in_process_attack = false;
+            this.caster.in_process_attack = false;
+            this.PlayAttackStart({ hTarget: hTarget })
         }
     }
 
-    DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.PROCATTACK_FEEDBACK,
-            ModifierFunction.PROJECTILE_NAME,
-        ]
-    }
-
-    GetModifierProcAttack_Feedback(event: ModifierAttackEvent): number {
-        this.caster.GiveMana(5);
-        return 0
-    }
-
+    PlayAttackStart(params: PlayEffectProps) { }
+    PlayAttackLanded(params: PlayEffectProps) { }
+    PlayEffect(params: PlayEffectProps) { }
 }

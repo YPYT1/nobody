@@ -52,7 +52,8 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     /** 法球状态 */
     OrbStatus:boolean;
-
+    in_process_attack:boolean;
+    
     //英雄定时器
     CustomVariables: { [key: string]: number; };
 

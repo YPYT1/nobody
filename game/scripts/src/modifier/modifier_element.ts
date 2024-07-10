@@ -67,20 +67,36 @@ export class modifier_element_effect_fire extends BaseModifier {
     }
 }
 
-/** 冰冻效果 */
+/** 冰冻-减速 */
 @registerModifier()
 export class modifier_element_effect_ice extends BaseModifier {
 
-    IsDebuff(): boolean {
-        return false
+    GetTexture(): string {
+        return "ancient_apparition_cold_feet"
     }
 
-    CheckState(): Partial<Record<ModifierState, boolean>> {
-        return {
-            [ModifierState.STUNNED]: true,
-            [ModifierState.FROZEN]: true,
-        }
+    IsDebuff(): boolean { return true }
+
+    DeclareFunctions(): modifierfunction[] {
+        return [
+            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
+        ]
     }
+
+    GetModifierMoveSpeedBonus_Percentage(): number {
+        return -30
+    }
+
+    GetStatusEffectName(): string {
+        return "particles/status_fx/status_effect_frost.vpcf"
+    }
+
+    // CheckState(): Partial<Record<ModifierState, boolean>> {
+    //     return {
+    //         [ModifierState.STUNNED]: true,
+    //         [ModifierState.FROZEN]: true,
+    //     }
+    // }
 
 
 }

@@ -87,9 +87,9 @@ export class GameConfig {
         gameEntity.SetSelectionGoldPenaltyEnabled(false);
         gameEntity.SetLoseGoldOnDeath(false);
         gameEntity.SetBuybackEnabled(false);
-        gameEntity.SetCustomBackpackSwapCooldown(0);
+        // gameEntity.SetCustomBackpackSwapCooldown(0);
         gameEntity.SetGiveFreeTPOnDeath(false);
-        gameEntity.SetHudCombatEventsDisabled(true);
+        // gameEntity.SetHudCombatEventsDisabled(true);
         // 禁用昼夜交替
         gameEntity.SetDaynightCycleDisabled(true);
         // gameEntity.SetTPScrollSlotItemOverride("item_backpack");

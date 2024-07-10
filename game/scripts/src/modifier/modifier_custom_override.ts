@@ -110,13 +110,11 @@ export class modifier_custom_override extends BaseModifier {
         return flBaseValue;
     }
 
-    GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
-        if (!IsServer()) { return 100 }
-        if (this.hParent == null || event.ability == null) { return 100; }
-        // let hAbility = event.ability;
-        // print("GetModifierPercentageCooldown", this.player_id, IsServer(), event.ability.GetAbilityName())
-        // let skv_haste = GameRules.CustomOverrideAbility.GetOverrideKeyValue(this.player_id, "skv_haste");
-
-        return 100
-    }
+    // GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
+    //     if (this.hParent == null || event.ability == null) { return 100; }
+    //     // let hAbility = event.ability;
+    //     // print("GetModifierPercentageCooldown", this.player_id, IsServer(), event.ability.GetAbilityName())
+    //     // let skv_haste = GameRules.CustomOverrideAbility.GetOverrideKeyValue(this.player_id, "skv_haste");
+    //     return 100
+    // }
 }

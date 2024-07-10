@@ -84,12 +84,15 @@ export class CustomAttribute {
                     }
                 }
 
-                DeepPrintTable(attribute_table)
+                // DeepPrintTable(attribute_table)
                 hUnit.custom_attribute_table = attribute_table;
                 hUnit.custom_attribute_conversion = attribute_conversion;
 
-                this.InitHeroAbility(hUnit, true);
+                this.InitHeroAbility(hUnit);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
+
+                //注册英雄天赋
+                GameRules.HeroTalentSystem.RegisterHeroTalent(hUnit);
                 return null
             }, 0.1)
 
@@ -97,48 +100,48 @@ export class CustomAttribute {
         } else {
             print("no hero data:", heroname);
 
-            hUnit.SetContextThink("delay_init_attr", () => {
-                /** 属性表 */
-                let attribute_table: CustomAttributeTableType = {};
-                /** 属性转换 */
-                let attribute_conversion: CustomAttributeConversionType = {};
-                for (let key in AttributeConst) {
-                    let attr_key = key as keyof typeof AttributeConst;
-                    hUnit.custom_attribute_value[attr_key] = 0;
-                    hUnit.custom_attribute_show[attr_key] = [0, 0]
-                    if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
-                    for (let key2 in AttributeSub) {
-                        let sub_key = key2 as AttributeSubKey
-                        if (attribute_table[attr_key][sub_key] == null) {
-                            attribute_table[attr_key][key2] = 0
-                        }
-                    }
-                    // 属性转换表加载
-                    if (attribute_conversion[attr_key] == null) { attribute_conversion[attr_key] = {} }
-                    const ConversionValue = AttributeConst[attr_key]["ConversionValue"];
-                    for (let conver_key in ConversionValue) {
-                        let data = ConversionValue[conver_key]
-                        attribute_conversion[attr_key][conver_key] = data
-                    }
-                }
+            // hUnit.SetContextThink("delay_init_attr", () => {
+            //     /** 属性表 */
+            //     let attribute_table: CustomAttributeTableType = {};
+            //     /** 属性转换 */
+            //     let attribute_conversion: CustomAttributeConversionType = {};
+            //     for (let key in AttributeConst) {
+            //         let attr_key = key as keyof typeof AttributeConst;
+            //         hUnit.custom_attribute_value[attr_key] = 0;
+            //         hUnit.custom_attribute_show[attr_key] = [0, 0]
+            //         if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
+            //         for (let key2 in AttributeSub) {
+            //             let sub_key = key2 as AttributeSubKey
+            //             if (attribute_table[attr_key][sub_key] == null) {
+            //                 attribute_table[attr_key][key2] = 0
+            //             }
+            //         }
+            //         // 属性转换表加载
+            //         if (attribute_conversion[attr_key] == null) { attribute_conversion[attr_key] = {} }
+            //         const ConversionValue = AttributeConst[attr_key]["ConversionValue"];
+            //         for (let conver_key in ConversionValue) {
+            //             let data = ConversionValue[conver_key]
+            //             attribute_conversion[attr_key][conver_key] = data
+            //         }
+            //     }
 
-                hUnit.custom_attribute_table = attribute_table;
-                hUnit.custom_attribute_conversion = attribute_conversion;
+            //     hUnit.custom_attribute_table = attribute_table;
+            //     hUnit.custom_attribute_conversion = attribute_conversion;
 
-                // this.InitHeroAbility(hUnit, false);
-                hUnit.AddAbility("public_arms").SetLevel(1);
-                hUnit.AddAbility("public_attribute").SetLevel(1);
-                hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
-                this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
+            //     // this.InitHeroAbility(hUnit, false);
+            //     hUnit.AddAbility("public_arms").SetLevel(1);
+            //     hUnit.AddAbility("public_attribute").SetLevel(1);
+            //     hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
+            //     this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
 
-                return null
-            }, 0.1)
+            //     return null
+            // }, 0.1)
         }
 
         //});
     }
 
-    InitHeroAbility(hUnit: CDOTA_BaseNPC, has_innate: boolean = false) {
+    InitHeroAbility(hUnit: CDOTA_BaseNPC) {
         hUnit.AddAbility("arms_passive_0").SetLevel(1);
         hUnit.AddAbility("arms_passive_1").SetLevel(1);
         hUnit.AddAbility("arms_passive_2").SetLevel(1);
@@ -146,7 +149,7 @@ export class CustomAttribute {
         hUnit.AddAbility("arms_passive_4").SetLevel(1);
         hUnit.AddAbility("arms_passive_5").SetLevel(1);
         // 先天技能
-        hUnit.AddAbility("generic_hidden")
+        // hUnit.AddAbility("generic_hidden")
         // if (has_innate) {
         //     let hero_name = hUnit.GetName().replace("npc_dota_hero_", "")
         //     let innate_ability = `innate_${hero_name}`;
@@ -181,7 +184,7 @@ export class CustomAttribute {
             hUnit.custom_attribute_show[extra_key][1] += math.floor(extra_attribute_value[extra_key])
         }
         // 属性更新
-        DeepPrintTable(hUnit.custom_attribute_value)
+        // DeepPrintTable(hUnit.custom_attribute_value)
         const update_state = GameRules.GetDOTATime(false, false) > hUnit.last_attribute_update;
         if (update_state) {
             this.UpdateAttributeInGame(hUnit)
@@ -203,8 +206,8 @@ export class CustomAttribute {
         if (hUnit == null || hUnit.IsNull()) { return }
         hUnit.last_attribute_update = GameRules.GetDOTATime(false, false) + this.update_delay
         let buff = hUnit.FindModifierByName("modifier_public_attribute");
-        if (buff) { 
-            buff.ForceRefresh(); 
+        if (buff) {
+            buff.ForceRefresh();
         }
     }
 

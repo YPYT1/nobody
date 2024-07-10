@@ -164,3 +164,23 @@ declare type ArmsTypeCategory = "Aoe" // 范围
     | "Resource" // 理财
     | "Summon" // 召唤
     | "Surround" // 环绕
+    ;
+
+interface PlayEffectProps {
+    /** 目标 */
+    hTarget?: CDOTA_BaseNPC,
+    /** 坐标点 */
+    vPos?: Vector,
+    /** 值 */
+    value?: number,
+    /** 伤害 */
+    damage?: number,
+    /** 触发额外效果 */
+    trigger?: boolean;
+    /** 类型编号 */
+    type?: number;
+    /** 额外倍率 */
+    bonus_pct?: number;
+    /** 临时单位组 */
+    unit_list?:CDOTA_BaseNPC[]
+}

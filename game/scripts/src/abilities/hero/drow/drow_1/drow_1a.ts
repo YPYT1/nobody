@@ -18,16 +18,22 @@ export class drow_1a extends drow_1 {
 export class modifier_drow_1a extends modifier_drow_1 {
 
     raidus = 300;
-
-    mul_chance:number;
+    mul_chance: number;
 
     UpdateSpecialValue(): void {
+        this.fakeAttack = false;
+        this.useProjectile = true;
         this.mul_chance = this.GetAbility().GetSpecialValueFor("mul_chance");
     }
 
+    DeclareFunctions(): modifierfunction[] {
+        return [
+            ModifierFunction.PROCATTACK_FEEDBACK,
+            ModifierFunction.PROJECTILE_NAME,
+        ]
+    }
     GetModifierProcAttack_Feedback(event: ModifierAttackEvent): number {
-        this.caster.GiveMana(5);
-        this.PlayEffect(event.target.GetAbsOrigin())
+        this.PlayAttackLanded({ hTarget: event.target })
         return - 1 * event.original_damage
     }
 
@@ -35,7 +41,9 @@ export class modifier_drow_1a extends modifier_drow_1 {
      * 攻击变为300码范围伤害（直径），伤害提高 40%/70%/120%，技能赋予火元素效果，伤害变为火元素伤害。
      * 伤害提高加算
      */
-    PlayEffect(vPos: Vector) {
+    PlayAttackLanded(params: PlayEffectProps): void {
+        let hTarget = params.hTarget;
+        let vPos = hTarget.GetAbsOrigin();
         let cast_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_warlock/warlock_ambient_explosion.vpcf",
             ParticleAttachment.WORLDORIGIN,

@@ -146,8 +146,7 @@ export class GameEvent {
             GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id)
             //初始化神秘商店
             GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
-            //注册英雄天赋
-            GameRules.HeroTalentSystem.RegisterHeroTalent(hUnit);
+            
 
 
             let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);

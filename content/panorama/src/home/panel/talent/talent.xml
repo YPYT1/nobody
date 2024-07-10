@@ -1,0 +1,40 @@
+<root>
+	<styles>
+		<include src="./talent.less" />
+        <include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./talent.tsx" />
+	</scripts>
+
+    <snippets>
+        <snippet name="TalentNode">
+            <Panel class="TalentNode">
+                <Panel class="TalentInfo">
+                    <Button id="TalentNodeButton">
+                        <Image id="TalentIcon"/>
+                    </Button>
+                    <Panel class="TalentLabel">
+                        <Label class="TalentName" text="{s:talent_name}"/>
+                        <Label class="TalentState" text="{d:used} / {d:max}"/>
+                    </Panel>
+                </Panel>
+                
+                <Panel id="TalentChildNode"/>
+            </Panel>
+        </snippet>
+    </snippets>
+	<Panel class="talent">
+		<Panel class="TalentContainer">
+            <Panel id="TalentBackgroundHeight">
+                <Panel class="BackgroundNode"/>
+                <Panel class="BackgroundNode"/>
+                <Panel class="BackgroundNode"/>
+            </Panel>
+            <Panel id="TalentNodeList">
+                
+
+            </Panel>
+        </Panel>
+	</Panel>
+</root>

@@ -75,9 +75,9 @@ export class Development extends UIEventRegisterClass {
         let hAbility = hUnit.GetAbilityByIndex(ability_order);
         hAbility.RemoveSelf()
         hUnit.RemoveAbilityByHandle(hAbility)
-        if (ability_order < 6) {
-            hUnit.AddAbility("arms_passive_" + ability_order)
-        }
+        // if (ability_order < 6) {
+        //     hUnit.AddAbility("arms_passive_" + ability_order)
+        // }
     }
 
     // 创建物品到单位身上
