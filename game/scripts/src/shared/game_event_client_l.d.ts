@@ -84,7 +84,7 @@ declare interface CustomGameEventDeclarations {
 
     MapChapter_GetGameSelectPhase : {
         data: {
-            game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3游戏开始了 ----结束---> 0处于营地
+            game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3正常游戏开始了 ---过程--> 4正常游戏流程结束 -> 999最终流程  ----返回---> 0处于营地
         };
     }
 
@@ -151,7 +151,7 @@ declare interface CustomGameEventDeclarations {
      */
     HeroTalentSystem_GetHeroTalentListData: {
         data: {
-            hero_talent_list: CGEDPlayerTalentSkill,
+            hero_talent_list: CGEDPlayerTalentSkillClientList,
             talent_points: number,
             talent_use_count: number,
         };
@@ -282,6 +282,14 @@ declare interface CGEDPlayerTalentList {
 declare interface CGEDPlayerTalentDataSkill {
     iu: number, //当前技能是否解锁 0 未解锁 1已解锁
     ml : number , //最高等级
+    uc : number , //当前技能投入点数
+}
+declare interface CGEDPlayerTalentSkillClientList {
+    [ index : string] : CGEDPlayerTalentDataSkillClient
+}
+
+declare interface CGEDPlayerTalentDataSkillClient {
+    iu: number, //当前技能是否解锁 0 未解锁 1已解锁
     uc : number , //当前技能投入点数
 }
 declare interface CGEDPlayerTalentSkillPoints {
