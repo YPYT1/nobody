@@ -11,6 +11,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * 英雄天赋点
      */
     player_talent_data : CGEDPlayerTalentSkillPoints[] = [];
+    /**
+     * 客服端传入数据
+     */
+    player_talent_data_client : CGEDPlayerTalentSkillClientList[] = [];
     /** 
      * 英雄对应加点信息
      */
@@ -39,8 +43,12 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 use_count : 0,
                 points : 0,
             });
+            this.player_talent_data_client.push({
+
+            });
             this.player_talent_list.push({
-            })
+
+            });
             this.player_hero_name.push("");
         }
     }
@@ -71,6 +79,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         let player_id = BaseNPC.GetPlayerOwnerID();
         this.player_hero_name[player_id] = unitname;
         this.player_talent_list[player_id] = {};
+        this.player_talent_data_client[player_id] = {};
         this.player_talent_data[player_id] = {
             use_count : 1,
             points : 0,
@@ -117,11 +126,19 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     ml : max_number , //最高等级
                     uc : 1 , //当前技能投入点数
                 }
+                this.player_talent_data_client[player_id]["1"] = {
+                    iu  : 1 ,
+                    uc  : 1 ,
+                }
             }else if(unlock_key.includes(parseInt(key))){ //默认可以解锁
                 this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
                     iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
                     ml : max_number , //最高等级
                     uc : 0 , //当前技能投入点数
+                }
+                this.player_talent_data_client[player_id][key] = {
+                    iu  : 1 ,
+                    uc  : 0 ,
                 }
             }else{
                 this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
@@ -146,12 +163,17 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * 获取天赋选择列表
      */
     GetHeroTalentListData(player_id: PlayerID, params: CGED["HeroTalentSystem"]["GetHeroTalentListData"], callback?) {
+        DeepPrintTable({
+            hero_talent_list: this.player_talent_data_client[player_id],
+            talent_points: this.player_talent_data[player_id].points,
+            talent_use_count: this.player_talent_data[player_id].use_count,
+        });
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "HeroTalentSystem_GetHeroTalentListData",
             {
                 data: {
-                    hero_talent_list: this.player_talent_list[player_id],
+                    hero_talent_list: this.player_talent_data_client[player_id],
                     talent_points: this.player_talent_data[player_id].points,
                     talent_use_count: this.player_talent_data[player_id].use_count,
                 }
@@ -235,6 +257,13 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         let si = HeroTalent.index;
                         let tu = HeroTalent.tier_number;
                         this.player_talent_list[player_id][si].t[tu].si[element].iu = 1;
+                        if(!this.player_talent_data_client[player_id].hasOwnProperty(element)){
+                            this.player_talent_data_client[player_id][element] = {
+                                iu : 1 ,
+                                uc   : 0,
+                            }
+                        }
+                        
                     }
                     //处理技能
                     this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc ++;
@@ -242,6 +271,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     this.player_talent_data[player_id].points --;
                     //增加使用记录
                     this.player_talent_data[player_id].use_count ++;
+                    this.player_talent_data_client[player_id][key].uc ++;
+
 
                     if(tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == ""){
                         this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
@@ -250,8 +281,16 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     if(Object.values(this.player_talent_config.unlock_count).includes(this.player_talent_data[player_id].use_count)){
                         let s_u_index = Object.values(this.player_talent_config.unlock_count).indexOf((this.player_talent_data[player_id].use_count)) + 1;
                         this.player_talent_list[player_id][s_u_index].iu = 1;
-                        for (const key in this.player_talent_list[player_id][s_u_index].t[1].si) {
-                            this.player_talent_list[player_id][s_u_index].t[1].si[key].iu = 1;
+                        if(this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)){
+                            for (const key in this.player_talent_list[player_id][s_u_index].t[1].si) {
+                                this.player_talent_list[player_id][s_u_index].t[1].si[key].iu = 1;
+                                if(!this.player_talent_data_client[player_id].hasOwnProperty(key)){
+                                    this.player_talent_data_client[player_id][key] = {
+                                        iu  :  1 ,
+                                        uc  :  0 ,
+                                    }
+                                }
+                            }
                         }
                     }
                     //检查此层是否可以开启 被动
@@ -288,16 +327,19 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                         }
                                         //tudo 需要特定处理
                                         this.player_talent_list[player_id][skill_index].t[99].si[skp].iu = 1;
+                                        if(!this.player_talent_data_client[player_id].hasOwnProperty(skp)){
+                                            this.player_talent_data_client[player_id][skp] = {
+                                                iu  :  1 ,
+                                                uc  :  0 ,
+                                            }
+                                        }
                                     }
                                 }
                                 break;
                             }
                         }
                     }
-
                     //加载技能效果
-
-
                 }
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "未找到此技能");    
