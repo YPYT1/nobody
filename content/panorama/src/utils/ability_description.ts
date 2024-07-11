@@ -62,29 +62,17 @@ export function HeroPassiveDamageFormula(abilityName: string, formula: string, l
 }
 
 export function SetAbilityDescription(
-    ability_name: string | null,
-    entityIndex?: AbilityEntityIndex,
+    ability_name: string,
     level: number = 1,
+    show_all: boolean = false,
 ) {
 
-    if (ability_name == null) {
-        if (entityIndex && entityIndex > 0) {
-            ability_name = Abilities.GetAbilityName(entityIndex);
-        } else {
-            ability_name = "null";
-        }
-    }
-
-    if (entityIndex && entityIndex > 0) {
-        level = Abilities.GetLevel(entityIndex);
-    }
-    // $("#AbilityDamageType")?.SetHasClass("Hidden", true);
     let abilityData = NpcAbilityCustom[ability_name as "public_template"];
     if (abilityData == null) { return "" }
     let AbilityValues: AbilityValuesProps = abilityData.AbilityValues;
-    let original_description_txt = FormatDescription(ability_name, AbilityValues, level, undefined, entityIndex);
+    let description_txt = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}_Description`);
+    let original_description_txt = FormatDescription(description_txt, AbilityValues, level, show_all);
     if (original_description_txt.search("#") == 0) { return ""; }
-
     original_description_txt = original_description_txt.replaceAll(
         "%AbilityCooldown%",
         `<span class="GameplayVariable">${abilityData.AbilityCooldown ?? 0}</span>`

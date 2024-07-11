@@ -149,7 +149,7 @@ module.exports = {
                 { import: './tooltip/item/layout.xml', filename: 'tooltip/item/layout.xml' },
                 { import: './tooltip/ability/layout.xml', filename: 'tooltip/ability/layout.xml' },
                 { import: './tooltip/element_syenrgy/layout.xml', filename: 'tooltip/element_syenrgy/layout.xml' },
-
+                { import: './tooltip/talent_tree/layout.xml', filename: 'tooltip/talent_tree/layout.xml' },
 
                 ...ImportHome,
                 ...ImportComponents,

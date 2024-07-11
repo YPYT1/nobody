@@ -2,16 +2,18 @@
 
     // width: 600px;
     // height: 400px;
+    // pre-transform-scale2d: 0.75;
     border: 1px solid #ffffff;
     background-color: #000000;
-    horizontal-align: center;
-
+    horizontal-align: right;
+    vertical-align: bottom;
     flow-children: down;
+    margin-bottom: 64px;
 }
 
 .TalentContainer {
     // width: 100%;
-
+   
     .TalentLabel {
         horizontal-align: center;
         flow-children: down;
@@ -25,24 +27,6 @@
         }
     }
 
-    // .TalentName {
-        
-    //     font-size: 16px;
-    // }
-
-    // .TalentState {
-    //     color: #ffffff;
-    //     font-size: 18px;
-    // }
-
-    #TalentBackgroundHeight {
-        flow-children: down;
-
-        .BackgroundNode {
-            width: 64px;
-            height: 64px;
-        }
-    }
 
     #TalentNodeList {
 
@@ -50,12 +34,12 @@
             horizontal-align: center;
             // border: 1px solid #ffffff;
             flow-children: down;
-            margin: 16px;
+            margin: 8px;
             // margin-top: 20px;
 
             .TalentInfo {
-                width: 100px;
-                height: 100px;
+                width: 80px;
+                height: 80px;
                 horizontal-align: center;
                 // border: 1px solid #bd8181;
             }
@@ -63,8 +47,8 @@
             #TalentNodeButton {
                 horizontal-align: center;
                 // vertical-align: middle;
-                width: 72px;
-                height: 72px;
+                width: 56px;
+                height: 56px;
                 border: 2px solid #ffaf02;
 
                 &:enabled {

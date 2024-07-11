@@ -1,0 +1,18 @@
+<root>
+    <scripts>
+        <include src="./script.tsx" />
+    </scripts>
+    <styles>
+        <include src="./../../_styles/keyframes.less" />
+        <include src="./../../_styles/styles.less" />
+        <include src="./styles.less" />
+    </styles>
+    <Panel class="tooltip_talent_tree">
+        <Panel class="TalentHeader">
+            <Image id="TalentIcon" />
+            <Label class="TalentName" text="{s:talent_name}"/>
+            <Label class="TalentStatus" text="{d:level} / {d:max}"/>
+        </Panel>
+        <Label class="TalentDesc" text="{s:talent_desc}" html="true" />
+    </Panel>
+</root>

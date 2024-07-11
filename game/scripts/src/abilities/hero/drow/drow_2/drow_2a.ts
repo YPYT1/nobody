@@ -1,4 +1,5 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
+import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 
 /**
  * 连续射击【目标型】5	"快速射出4支箭，每支箭造成攻击力130%的伤害。
@@ -14,13 +15,7 @@ cd：3秒
 
  */
 @registerAbility()
-export class drow_2a extends BaseAbility {
-
-    caster: CDOTA_BaseNPC;
-
-    OnUpgrade(): void {
-        this.caster = this.GetCaster();
-    }
+export class drow_2a extends BaseHeroAbility {
 
     GetIntrinsicModifierName(): string {
         return "modifier_drow_2a"
@@ -44,42 +39,23 @@ export class drow_2a extends BaseAbility {
 }
 
 @registerModifier()
-export class modifier_drow_2a extends BaseModifier {
+export class modifier_drow_2a extends BaseHeroModifier {
 
-    caster: CDOTA_BaseNPC;
-    team: DotaTeam;
-    ability: CDOTABaseAbility;
-    damage_mul: number;
-    attack_range: number;
-    skv_count: number;
-    mana_cost: number;
+    base_value: number;
+
+    proj_count: number;
+    proj_distance: number;
     proj_speed: number;
     proj_width: number;
 
 
-    OnCreated(params: object): void {
-        if (!IsServer()) { return }
-        this.caster = this.GetCaster();
-        this.team = this.caster.GetTeamNumber();
-        this.ability = this.GetAbility();
-        this.UpdateSpecialValue();
-        this.OnIntervalThink()
-        this.StartIntervalThink(0.03)
-    }
-
-    OnRefresh(params: object): void {
-        if (!IsServer()) { return }
-
-        this.UpdateSpecialValue();
-    }
-
-    UpdateSpecialValue() {
-        this.damage_mul = 130;
-        this.skv_count = 4;
-        this.attack_range = 750;
-        this.proj_speed = 1400;
-        this.mana_cost = this.ability.GetManaCost(0)
-        this.proj_width = 96;
+    MdfUpdataAbilityValue(): void {
+        const hAbility = this.GetAbility();
+        this.base_value = hAbility.GetSpecialValueFor("base_value");
+        this.proj_count = hAbility.GetSpecialValueFor("proj_count");
+        this.proj_speed = hAbility.GetSpecialValueFor("proj_speed");
+        this.proj_width = hAbility.GetSpecialValueFor("proj_width");
+        this.proj_distance = hAbility.GetSpecialValueFor("proj_distance");
     }
 
     OnIntervalThink() {
@@ -88,7 +64,7 @@ export class modifier_drow_2a extends BaseModifier {
                 this.team,
                 this.caster.GetAbsOrigin(),
                 null,
-                this.attack_range,
+                this.proj_distance,
                 UnitTargetTeam.ENEMY,
                 UnitTargetType.HERO + UnitTargetType.BASIC,
                 UnitTargetFlags.NONE,
@@ -105,7 +81,7 @@ export class modifier_drow_2a extends BaseModifier {
     PlayEffect(params: PlayEffectProps) {
         let hTarget = params.hTarget;
         let count = 0;
-        let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.damage_mul * 0.01;
+        let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
         this.caster.SetContextThink("drow_2a_shot", () => {
             let vCaster = this.caster.GetAbsOrigin() + RandomVector(100) as Vector;
             let vDirection = (hTarget.GetAbsOrigin() - vCaster as Vector).Normalized();
@@ -116,7 +92,7 @@ export class modifier_drow_2a extends BaseModifier {
                 Ability: this.GetAbility(),
                 // vSpawnOrigin: vCaster,
                 vVelocity: vVelocity,
-                fDistance: this.attack_range,
+                fDistance: this.proj_distance,
                 fStartRadius: this.proj_width,
                 fEndRadius: this.proj_width,
                 Source: this.caster,
@@ -129,7 +105,7 @@ export class modifier_drow_2a extends BaseModifier {
                 }
             })
             count += 1;
-            if (count >= this.skv_count) {
+            if (count >= this.proj_count) {
                 return null
             }
             return 0.1

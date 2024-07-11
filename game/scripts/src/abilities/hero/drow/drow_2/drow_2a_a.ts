@@ -35,14 +35,8 @@ export class drow_2a_a extends drow_2a {
 @registerModifier()
 export class modifier_drow_2a_a extends modifier_drow_2a {
 
-    extra_lianfa: number;
-
-    UpdateSpecialValue() {
-        this.damage_mul = 130;
-        this.skv_count = 10;
-        this.attack_range = 750;
-        this.mana_cost = this.ability.GetManaCost(0)
-    }
+    
+    
 }
 
 @registerModifier()

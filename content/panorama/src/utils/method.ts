@@ -112,48 +112,67 @@ export function FormatLocalize(key: string, AbilityValues: AbilityValuesProps, l
 }
 
 export function FormatDescription(
-    name: string,
+    original_description_txt: string,
     AbilityValues: AbilityValuesProps,
-    level: number = 1,
-    AbilityValues2?: AbilityValuesProps,
-    entityIndex?: AbilityEntityIndex,
+    curr_level: number = 1,
+    show_all: boolean = true,
 ) {
-    let original_description_txt = $.Localize(`#DOTA_Tooltip_Ability_${name}_Description`);
+    // let original_description_txt = $.Localize(`#DOTA_Tooltip_Ability_${name}_Description`);
     // original_description_txt = GameUI.ReplaceDOTAAbilitySpecialValues(name, original_description_txt)!;
     // $.Msg(original_description_txt)
-    if (level <= 0) { level = 1; }
+    // if (level <= 0) { level = 1; }
 
     for (let key in AbilityValues) {
         let special_key = AbilityValues[key];
-        let special_num = 0;
-        if (entityIndex && entityIndex > 0) {
-            special_num = Abilities.GetSpecialValueFor(entityIndex, key)
+        let special_num: number[] = [];
+        if (typeof (special_key) == "string") {
+            let _arr = special_key.split(" ").map((v, k) => { return parseFloat(v); });
+            special_num = _arr
         } else {
-            if (typeof (special_key) == "string") {
-                let _arr = special_key.split(" ").map((v, k) => { return parseFloat(v); });
-                const kv_value_len = _arr.length;
-                if (level >= kv_value_len) {
-                    special_num = _arr[kv_value_len - 1];
-                } else {
-                    special_num = _arr[level - 1];
-                }
-            } else {
-                special_num = special_key;
-            }
+            special_num = [special_key]
         }
 
-        let is_negative = special_num < 0;
-        if (is_negative) { special_num = Math.abs(special_num); }
-        let special_value = special_num % 1 ? special_num.toFixed(2) : special_num.toFixed(0);
-        let value = special_value;
-        original_description_txt = original_description_txt.replaceAll(
-            `%${key}%%%`,
-            `<span class="GameplayVariable ${is_negative ? "negative" : ""}">${value}%</span>`
-        );
-        original_description_txt = original_description_txt.replaceAll(
-            `%${key}%`,
-            `<span class="GameplayVariable ${is_negative ? "negative" : ""}">${value}</span>`
-        );
+        let is_percent = original_description_txt.indexOf(`%${key}%%%`) != -1;
+        // $.Msg(["is_percent", is_percent, key])
+        if (show_all) {
+            let special_value: string[] = [];
+
+            for (let i = 1; i <= special_num.length; i++) {
+                let class_name = i == curr_level ? "Current" : "OtherVariable";
+                if (curr_level >= i && i == special_num.length){
+                    class_name = "Current"
+                }
+                let value = special_num[i - 1]
+                let is_negative = value < 0;
+                let col_value = `<span class="${class_name} ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
+                special_value.push(col_value)
+            }
+
+            original_description_txt = original_description_txt.replaceAll(
+                `%${key}%%%`,
+                `<span class="GameplayVariable">${special_value.join(" / ")}</span>`
+            );
+            original_description_txt = original_description_txt.replaceAll(
+                `%${key}%`,
+                `<span class="GameplayVariable">${special_value.join(" / ")}</span>`
+            );
+        } else {
+            if (curr_level <= 0) { curr_level = 1; }
+            curr_level = Math.min(curr_level, special_num.length)
+            let value = special_num[curr_level - 1];
+            // $.Msg(["value",value])
+            let is_negative = value < 0;
+            let col_value = `<span class="GameplayVariable Current ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
+            original_description_txt = original_description_txt.replaceAll(
+                `%${key}%%%`,
+                col_value
+            );
+            original_description_txt = original_description_txt.replaceAll(
+                `%${key}%`,
+                col_value
+            );
+        }
+
     }
 
 

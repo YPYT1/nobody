@@ -14,9 +14,9 @@
                     <Button id="TalentNodeButton">
                         <Image id="TalentIcon"/>
                     </Button>
-                    <Panel class="TalentLabel">
-                        <Label class="TalentName" text="{s:talent_name}"/>
-                        <Label class="TalentState" text="{d:used} / {d:max}"/>
+                    <Panel class="TalentLabel" hittest="false">
+                        <Label class="TalentName" text="{s:talent_name}" hittest="false" />
+                        <Label class="TalentState" text="{d:used} / {d:max}" hittest="false"/>
                     </Panel>
                 </Panel>
                 

@@ -6,6 +6,8 @@ import { default as ArmsTypesJson } from "./../../json/config/game/const/arms_ty
 import { SetAbilityDescription, GetAbilityRarity, GetAbilityTypeCategory, GetAbilityElementLabel } from '../../utils/ability_description';
 import { ConvertAttributeValues, GetAbilityAttribute } from '../../utils/attribute_method';
 import { GetTextureSrc } from '../../common/custom_kv_method';
+import { GetHeroTalentTreeRowData } from "../../common/custom_talent";
+import { FormatDescription } from "../../utils/method";
 
 
 let AbilityCategoryType = $("#AbilityCategoryType")
@@ -128,8 +130,8 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     // 属性
     let AttributeObject = GetAbilityAttribute(ability_name);
     // let attr_list = ConvertAttributeValues(AttributeObject);
-    
-    
+
+
     // 稀有度
     const rarity = GetAbilityRarity(ability_name)
     for (let r = 1; r <= 7; r++) {
@@ -197,8 +199,28 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     let ability_name_label = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}`)
     MainPanel.SetDialogVariable("ability_name", ability_name_label);
 
-    let description = SetAbilityDescription(ability_name, entityIndex, ability_level);
-    // $.Msg(["description",description])
+    let description = SetAbilityDescription(ability_name, ability_level, false);
+    // $.Msg(["description", description])
+    // 解构天赋
+    let reg = /@[\w:]*@/g;
+    let res_text = description.match(reg)
+
+    if (res_text) {
+        for (let row of res_text) {
+            let row_list = row.replaceAll("@", "").split(":");
+            let talent_level = 0;
+            let talent_text = $.Localize(`#custom_talent_${row_list[1]}_${row_list[2]}`);
+            let talent_desc = $.Localize(`#custom_talent_${row_list[1]}_${row_list[2]}_desc`)
+            let TalentData = GetHeroTalentTreeRowData(row_list[1], row_list[2])
+            let description_txt = FormatDescription(talent_desc, TalentData.AbilityValues, talent_level, true);
+            let is_enable = talent_level > 0 ? "enable" : "disble"
+            description = description.replace(
+                row,
+                `<br><span class="${is_enable}">${talent_text} (${talent_level}/${TalentData.max_number})<br>${description_txt}</span>`
+            )
+        }
+    }
+
     MainPanel.SetDialogVariable("description", description);
 
 

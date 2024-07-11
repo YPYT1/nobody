@@ -18,8 +18,11 @@ export class drow_1c extends drow_1 {
 @registerModifier()
 export class modifier_drow_1c extends modifier_drow_1 {
 
-    branch_a: number;
-    branch_b: number;
+    /** 寒冰箭天赋 */
+    talent_9: number = 0;
+    talent_9_percent: number = 0;
+    /** 积蓄天赋 */
+    talent_10: number = 0;
 
     DeclareFunctions(): modifierfunction[] {
         return [
@@ -29,43 +32,11 @@ export class modifier_drow_1c extends modifier_drow_1 {
         ]
     }
 
-    UpdateSpecialValue(): void {
-        this.branch_a = 1;
-        this.branch_b = 1;
+    MdfUpdataAbilityValue_Extends(): void {
+        this.talent_9 = this.caster.hero_talent["9"] ?? 0;
+        this.talent_9_percent = 150;
+        this.talent_10 = 1;
     }
-
-    // OnIntervalThink(): void {
-    //     if (this.caster.AttackReady()) {
-    //         let attackrange = this.caster.Script_GetAttackRange() + 64;
-    //         let enemies = FindUnitsInRadius(
-    //             this.team,
-    //             this.caster.GetAbsOrigin(),
-    //             null,
-    //             attackrange,
-    //             UnitTargetTeam.ENEMY,
-    //             UnitTargetType.HERO + UnitTargetType.BASIC,
-    //             UnitTargetFlags.NONE,
-    //             FindOrder.ANY,
-    //             false
-    //         )
-    //         if (enemies.length <= 0) { return }
-    //         let hTarget = enemies[0];
-    //         this.caster.in_process_attack = true;
-    //         this.caster.GiveMana(5);
-    //         this.caster.PerformAttack(
-    //             hTarget,
-    //             true, // useCastAttackOrb
-    //             true, // processProcs
-    //             false, // skipCooldown
-    //             false, // ignoreInvis
-    //             true, // useProjectile
-    //             false, // fakeAttack
-    //             false // neverMiss
-    //         );
-    //         this.caster.in_process_attack = false;
-    //         this.PlayEffect({ hTarget: hTarget, unit_list: enemies })
-    //     }
-    // }
 
     OnAttackStart(event: ModifierAttackEvent): void {
         if (event.attacker != this.GetParent()) { return }
@@ -74,6 +45,10 @@ export class modifier_drow_1c extends modifier_drow_1 {
 
     PlayAttackStart(params: PlayEffectProps): void {
         let hTarget = params.hTarget;
+        this.ability_damage = math.floor(
+            this.caster.GetAverageTrueAttackDamage(null)
+            * (1 + this.base_value * 0.01 + this.talent_9_percent * 0.01)
+        )
         let enemies = FindUnitsInRadius(
             this.team,
             this.caster.GetAbsOrigin(),
@@ -108,12 +83,24 @@ export class modifier_drow_1c extends modifier_drow_1 {
     }
 
     GetModifierProcAttack_Feedback(event: ModifierAttackEvent): number {
-        if (this.branch_b > 0) {
+        if (this.talent_10 > 0) {
             // 额外回蓝
             this.caster.GiveMana(2);
         }
         // 寒冰箭150 / 300
-        return event.original_damage * 1.5
+        if (this.talent_9 > 0) {
+            ApplyCustomDamage({
+                victim: event.target,
+                attacker: this.GetCaster(),
+                damage: this.ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this.ability,
+                element_type: ElementTypeEnum.ice
+            })
+            return -1 * event.original_damage
+        }
+        return 0
+
     }
 
     GetModifierProjectileName(): string {

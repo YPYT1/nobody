@@ -10,8 +10,6 @@ export class modifier_element_effect_fire extends BaseModifier {
     dot_interval: number
     element_type: ElementTypeEnum
 
-    total_damage: number;
-
     parent: CDOTA_BaseNPC;
     caster: CDOTA_BaseNPC;
     playerid: PlayerID;
@@ -30,14 +28,8 @@ export class modifier_element_effect_fire extends BaseModifier {
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
-        // let duration = 3;
-        // let bond_count = GameRules.NewArmsEvolution.ElementBondDateList[this.playerid].Element["1"];
-        let caster_damage = this.caster.GetAverageTrueAttackDamage(null)
-        this.dot_damage = caster_damage * 0.25;
-        // if (bond_count >= 4) { this.dot_damage += caster_damage * 0.25; }
-        // if (bond_count >= 6) { duration = 6 }
-        // this.total_damage = this.dot_damage * (this.dot_interval / 1) * duration;
-        // this.SetDuration(duration, true)
+        let burn_percent = this.caster.custom_attribute_value.BurningDmg;
+        this.dot_damage = math.floor(this.caster.GetAverageTrueAttackDamage(null) * burn_percent * 0.01);
     }
 
     C_OnCreated(params: any): void { }
@@ -53,13 +45,6 @@ export class modifier_element_effect_fire extends BaseModifier {
             is_primary: false,
             special_effect: true,
         });
-        // this.total_damage -= this.dot_damage
-        // print("last damage", this.total_damage)
-    }
-
-    /** 引爆DOT,直接造成剩余DOT伤害 */
-    Detonate() {
-
     }
 
     GetEffectName(): string {

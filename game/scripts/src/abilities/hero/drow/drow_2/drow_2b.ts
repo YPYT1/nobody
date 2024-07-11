@@ -1,5 +1,5 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroModifier } from "../../base_hero_ability";
+import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 
 /**
  * B.散射（5/5）：散射5支箭，造成攻击力120%/140%/160%/190%/240%的伤害。
@@ -8,13 +8,7 @@ cd：3秒
 作用范围：500码距离，扇形90°
  */
 @registerAbility()
-export class drow_2b extends BaseAbility {
-
-    caster: CDOTA_BaseNPC;
-
-    OnUpgrade(): void {
-        this.caster = this.GetCaster();
-    }
+export class drow_2b extends BaseHeroAbility {
 
     GetIntrinsicModifierName(): string {
         return "modifier_drow_2b"
@@ -40,12 +34,14 @@ export class drow_2b extends BaseAbility {
 @registerModifier()
 export class modifier_drow_2b extends BaseHeroModifier {
 
-    base_mul:number;
+    base_mul: number;
     ability_damage: number;
     arrow_count: number;
     proj_width: number;
     proj_speed: number;
-    porj_name: string;
+    proj_name: string;
+    proj_distance: number;
+
     /** 投射 */
     porj_track = {
         "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
@@ -61,21 +57,22 @@ export class modifier_drow_2b extends BaseHeroModifier {
 
     }
 
-    UpdateSpecialValue(): void {
+    MdfUpdataSpecialValue(): void {
         this.base_mul = 1.6;
         this.arrow_count = 5;
         this.proj_width = 96;
         this.proj_speed = 1800;
-        this.porj_name = this.porj_linear.none;
+        this.proj_name = this.porj_linear.none;
+        this.proj_distance = 500;
     }
 
     OnIntervalThink() {
-        if (this.ability.IsCooldownReady() && this.caster.GetMana() >= this.mana_cost) {
+        if (this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(-1)) {
             let enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.GetAbsOrigin(),
                 null,
-                this.attack_range,
+                this.proj_distance,
                 UnitTargetTeam.ENEMY,
                 UnitTargetType.HERO + UnitTargetType.BASIC,
                 UnitTargetFlags.NONE,
@@ -97,19 +94,20 @@ export class modifier_drow_2b extends BaseHeroModifier {
     }
 
     MultiShot(vTarget: Vector) {
+
         let vCaster = this.caster.GetAbsOrigin();
         let direction = vTarget - vCaster as Vector;
         direction.z = 0;
         direction = direction.Normalized();
         ProjectileManager.CreateLinearProjectile({
             // EffectName: "particles/heroes/windrunner/passive_proj.vpcf",
-            EffectName: this.porj_name,
+            EffectName: this.proj_name,
             Ability: this.GetAbility(),
             vSpawnOrigin: this.GetCaster().GetOrigin(),
             fStartRadius: this.proj_width,
             fEndRadius: this.proj_width,
             vVelocity: (direction * this.proj_speed) as Vector,
-            fDistance: this.attack_range,
+            fDistance: this.proj_distance,
             Source: this.GetCaster(),
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,
@@ -128,13 +126,13 @@ export class modifier_drow_2b extends BaseHeroModifier {
             direction = direction.Normalized();
             ProjectileManager.CreateLinearProjectile({
                 // EffectName: "particles/heroes/windrunner/passive_proj.vpcf",
-                EffectName: this.porj_name,
+                EffectName: this.proj_name,
                 Ability: this.GetAbility(),
                 vSpawnOrigin: this.GetCaster().GetOrigin(),
                 fStartRadius: this.proj_width,
                 fEndRadius: this.proj_width,
                 vVelocity: (direction * this.proj_speed) as Vector,
-                fDistance: this.attack_range,
+                fDistance: this.proj_distance,
                 Source: this.GetCaster(),
                 iUnitTargetTeam: UnitTargetTeam.ENEMY,
                 iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,

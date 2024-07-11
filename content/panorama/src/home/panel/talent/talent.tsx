@@ -1,5 +1,6 @@
 import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { default as talent_tree_drow_ranger } from "../../../json/config/game/hero/talent_tree/drow_ranger.json";
+import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 
 let TalentBackgroundHeight = $("#TalentBackgroundHeight");
 let TalentNodeList = $("#TalentNodeList");
@@ -67,17 +68,17 @@ export const CreateHeroTalentTreeUI = (heroname: string, index: string = "1") =>
     TalentNodeList.RemoveAndDeleteChildren();
     let talent_tree = hero_talent_tree[heroname][index];
     for (let row of talent_tree) {
-        CreateTalentTreeNode(row, TalentNodeList)
+        CreateTalentTreeNode(heroname, row, TalentNodeList)
     }
 
 }
 
-export const CreateTalentTreeNode = (row: TalentTreeObject, NodePanel: Panel) => {
+export const CreateTalentTreeNode = (heroname: string, row: TalentTreeObject, NodePanel: Panel) => {
     let id = row.name;
     let TalentNode = $.CreatePanel("Panel", NodePanel, id);
     // TalentNode.enabled = false;
     TalentNode.BLoadLayoutSnippet("TalentNode");
-    TalentNode.SetDialogVariable("talent_name", $.Localize(`#custom_talent_${id}_drow_ranger`))
+    TalentNode.SetDialogVariable("talent_name", $.Localize(`#custom_talent_${heroname}_${id}`))
     TalentNode.SetDialogVariableInt("used", 0)
     TalentNode.SetDialogVariableInt("max", row.max)
     TalentNode.Data<PanelDataObject>().used = 0;
@@ -96,10 +97,20 @@ export const CreateTalentTreeNode = (row: TalentTreeObject, NodePanel: Panel) =>
             }
         })
     })
+
+    TalentNodeButton.SetPanelEvent("onmouseover", () => {
+        let level = TalentNode.Data<PanelDataObject>().used as number;
+        ShowCustomTooltip(TalentNodeButton, "talent_tree", heroname, id, level)
+    })
+
+    TalentNodeButton.SetPanelEvent("onmouseout", () => {
+        HideCustomTooltip()
+    })
+
     if (row.sub.length > 0) {
         let TalentChildNode = TalentNode.FindChildTraverse("TalentChildNode")!;
         for (let sub2 of row.sub) {
-            CreateTalentTreeNode(sub2, TalentChildNode)
+            CreateTalentTreeNode(heroname, sub2, TalentChildNode)
         }
     }
 }
@@ -109,6 +120,7 @@ export const GameEventsSubscribe = () => {
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
         let data = event.data;
         let hero_talent_list = data.hero_talent_list;
+        $.Msg(["hero_talent_list",hero_talent_list])
         for (let id in hero_talent_list) {
             let data = hero_talent_list[id];
             let TalentNode = TalentNodeList.FindChildTraverse(id)!;

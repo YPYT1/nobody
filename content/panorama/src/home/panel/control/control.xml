@@ -69,7 +69,7 @@
 					<Panel id="Left"></Panel>
 					<Panel id="Right"></Panel>
 				</Panel>
-                <Panel id="HeroInnateAbility" />
+                <!-- <Panel id="HeroInnateAbility" /> -->
                 
             </Panel>
 

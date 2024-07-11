@@ -18,24 +18,24 @@ export function HideCustomTooltip() {
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_ability");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_item");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_element_syenrgy");
-    
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_talent_tree");
 }
 
-declare type TooltipType = "ability" | "item" | "element_syenrgy";
+declare type TooltipType = "ability" | "item" | "element_syenrgy" | "talent_tree";
 
 export function ShowCustomTooltip(
     panel: Panel,
-    type: TooltipType,
+    tooltip_type: TooltipType,
     name: string,
-    entityIndex?: EntityIndex | number,
+    entityIndex?: EntityIndex | number | string,
     item_level: number = 1,
     value: number = 0,
 ) {
-    if (entityIndex && entityIndex > 0) {
+    if (typeof entityIndex == "number" && entityIndex && entityIndex > 0) {
         name = Abilities.GetAbilityName(entityIndex as AbilityEntityIndex);
     }
 
-    if (type == "ability") {
+    if (tooltip_type == "ability") {
         $.DispatchEvent(
             "UIShowCustomLayoutParametersTooltip",
             panel,
@@ -43,7 +43,7 @@ export function ShowCustomTooltip(
             "file://{resources}/layout/custom_game/tooltip/ability/layout.xml",
             `name=${name}&item_level=${item_level}&entityIndex=${entityIndex}&ext_int=${value}`
         );
-    } else if (type == "item") {
+    } else if (tooltip_type == "item") {
         $.DispatchEvent(
             "UIShowCustomLayoutParametersTooltip",
             panel,
@@ -53,7 +53,7 @@ export function ShowCustomTooltip(
             + "&item_level=" + item_level
             + "&entityIndex=" + entityIndex
         );
-    } else if (type == "element_syenrgy"){
+    } else if (tooltip_type == "element_syenrgy") {
         $.DispatchEvent(
             "UIShowCustomLayoutParametersTooltip",
             panel,
@@ -61,6 +61,14 @@ export function ShowCustomTooltip(
             "file://{resources}/layout/custom_game/tooltip/element_syenrgy/layout.xml",
             "element_type=" + item_level
             + "&element_count=" + value
+        );
+    } else if (tooltip_type == "talent_tree") {
+        $.DispatchEvent(
+            "UIShowCustomLayoutParametersTooltip",
+            panel,
+            "custom_tooltip_talent_tree",
+            "file://{resources}/layout/custom_game/tooltip/talent_tree/layout.xml",
+            `hero=${name}&key=${entityIndex}&level=${item_level}`,
         );
     }
 }

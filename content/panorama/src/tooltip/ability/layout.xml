@@ -62,6 +62,7 @@
                 <!-- <Label id="AttributeInfo" text="{s:attribute}" html="true" /> -->
                 <Panel id="DescriptionContainer">
                     <Label class="DescriptionLabel" text="{s:description}" html="true" />
+                    
                 </Panel>
                 <Panel id='ComboContainer' />
             </Panel>

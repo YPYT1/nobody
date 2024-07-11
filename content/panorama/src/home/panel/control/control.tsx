@@ -37,12 +37,12 @@ export const CreatePanel_ActionAbility = () => {
         AbilityPanel.Data<PanelDataObject>().RegisterArmsEvent()
     }
 
-    let HeroInnateAbility = $("#HeroInnateAbility");
-    HeroInnateAbility.BLoadLayout(
-        "file://{resources}/layout/custom_game/home/component/ability/action_ability.xml",
-        true, false
-    );
-    HeroInnateAbility.Data<PanelDataObject>().SetAbility(6, true);
+    // let HeroInnateAbility = $("#HeroInnateAbility");
+    // HeroInnateAbility.BLoadLayout(
+    //     "file://{resources}/layout/custom_game/home/component/ability/action_ability.xml",
+    //     true, false
+    // );
+    // HeroInnateAbility.Data<PanelDataObject>().SetAbility(6, true);
     InitAbilityAction()
 }
 
@@ -64,8 +64,8 @@ export const UpdateAbilityList = () => {
             AbilityPanel.Data<PanelDataObject>().UpdateAbilityVar();
         }
     }
-    let HeroInnateAbility = $("#HeroInnateAbility");
-    HeroInnateAbility.Data<PanelDataObject>().UpdateAbilityVar();
+    // let HeroInnateAbility = $("#HeroInnateAbility");
+    // HeroInnateAbility.Data<PanelDataObject>().UpdateAbilityVar();
     let AbilityList = $("#AbilityList");
     let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
     let is_local = Entities.GetPlayerOwnerID(m_QueryUnit) == Players.GetLocalPlayer();

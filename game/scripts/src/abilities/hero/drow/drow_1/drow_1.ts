@@ -1,4 +1,5 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
+import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 
 /**
  * 攻击1名敌人，
@@ -6,13 +7,7 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 间隔基于自身攻击速度,
  */
 @registerAbility()
-export class drow_1 extends BaseAbility {
-
-    caster: CDOTA_BaseNPC;
-
-    OnUpgrade(): void {
-        this.caster = this.GetCaster();
-    }
+export class drow_1 extends BaseHeroAbility {
 
     GetIntrinsicModifierName(): string {
         return "modifier_drow_1"
@@ -21,31 +16,21 @@ export class drow_1 extends BaseAbility {
 }
 
 @registerModifier()
-export class modifier_drow_1 extends BaseModifier {
-
-    caster: CDOTA_BaseNPC;
-    team: DotaTeam;
+export class modifier_drow_1 extends BaseHeroModifier {
 
     fakeAttack: boolean;
     useProjectile: boolean;
+    base_value: number;
+    give_mana: number;
+    ability_damage: number;
 
-    OnCreated(params: object): void {
-        if (!IsServer()) { return }
-        this.caster = this.GetCaster();
-        this.team = this.caster.GetTeamNumber();
+    MdfUpdataAbilityValue(): void {
         this.fakeAttack = false;
         this.useProjectile = true;
-        this.UpdateSpecialValue();
-        this.OnIntervalThink()
-        this.StartIntervalThink(0.03)
+        this.ability_damage = 0;
+        this.base_value = this.ability.GetSpecialValueFor("base_value");
+        this.give_mana = this.ability.GetSpecialValueFor("give_mana");
     }
-
-    OnRefresh(params: object): void {
-        if (!IsServer()) { return }
-        this.UpdateSpecialValue()
-    }
-
-    UpdateSpecialValue() { }
 
     OnIntervalThink(): void {
         if (this.caster.AttackReady()) {
@@ -64,7 +49,7 @@ export class modifier_drow_1 extends BaseModifier {
             if (enemies.length <= 0) { return }
             let hTarget = enemies[0];
             this.caster.in_process_attack = true;
-            this.caster.GiveMana(5);
+            this.caster.GiveMana(this.give_mana);
             this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
             this.caster.StartGesture(GameActivity.DOTA_ATTACK)
             this.caster.PerformAttack(

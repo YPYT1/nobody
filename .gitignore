@@ -54,3 +54,5 @@ _temp
 /package-lock.json
 /yarn.lock
 /content/panorama/image_precache0.css
+/game/scripts/npc/npc_heroes_custom.txt
+/content/maps
