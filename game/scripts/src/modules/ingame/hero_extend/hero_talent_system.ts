@@ -4,7 +4,10 @@ import * as TalentConfig from "../../../json/config/game/hero/talent_config/tale
 import * as DrowRanger from "../../../json/config/game/hero/talent_tree/drow_ranger.json";
 
 
-
+const TalentTreeObject = {
+    ["drow_ranger"]:DrowRanger,
+    ["lina"]:DrowRanger,
+}
 @reloadable
 export class HeroTalentSystem extends UIEventRegisterClass {
     /**
@@ -32,6 +35,18 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     //玩家数量
     player_count = 6;
 
+
+    talent_tree_values: {
+        [hero: string]: {
+            [key: string]: {
+                [ability_key: string]: number[];
+            }
+        };
+    } = {};
+
+
+    //
+
     constructor() {
         super("HeroTalentSystem");
         for (const key in TalentConfig) {
@@ -51,6 +66,27 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             });
             this.player_hero_name.push("");
         }
+
+        for (const hero in TalentTreeObject) {
+            let hero_talent = TalentTreeObject[hero as keyof typeof TalentTreeObject];
+            this.talent_tree_values[hero] = {};
+
+            for (let i_key in hero_talent) {
+                let data = hero_talent[i_key as keyof typeof hero_talent];
+                this.talent_tree_values[hero][i_key] = {};
+                //技能数组
+                for (const A_key in data.AbilityValues) {
+                    let str = tostring(data.AbilityValues[A_key]);
+                    let strlist = str.split(" ");
+                    let numlist: number[] = [];
+                    for (let value of strlist) {
+                        numlist.push(tonumber(value));
+                    }
+                    this.talent_tree_values[hero][i_key][A_key] = numlist;
+                }
+            }
+        }
+       
     }
     
     /**
@@ -148,7 +184,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 }
             }
             //重设最大层数
-
             if(this.player_talent_list[player_id][skill_index].tm < tier_number && tier_number != 99){
                 this.player_talent_list[player_id][skill_index].tm = tier_number;
             }
@@ -163,11 +198,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * 获取天赋选择列表
      */
     GetHeroTalentListData(player_id: PlayerID, params: CGED["HeroTalentSystem"]["GetHeroTalentListData"], callback?) {
-        DeepPrintTable({
-            hero_talent_list: this.player_talent_data_client[player_id],
-            talent_points: this.player_talent_data[player_id].points,
-            talent_use_count: this.player_talent_data[player_id].use_count,
-        });
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "HeroTalentSystem_GetHeroTalentListData",
@@ -287,7 +317,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                 if(!this.player_talent_data_client[player_id].hasOwnProperty(key)){
                                     this.player_talent_data_client[player_id][key] = {
                                         iu  :  1 ,
-                                        uc  :  0 ,
+                                        uc  :  0 ,  
                                     }
                                 }
                             }
@@ -349,6 +379,176 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         }
         this.GetHeroTalentListData(player_id, {});
     }
+    /**
+     * 重置天赋
+     * @param player_id 
+     * @returns 
+     */
+    ResetHeroTalent(player_id : PlayerID){
+
+        let unitname = this.player_hero_name[player_id];
+
+        let HeroTalentCounfg :  {
+            [key: string]: {
+                index: number;
+                is_ability: number;
+                link_ability: string;
+                tier_number: number;
+                unlock_key: number[];
+                max_number: number;
+            };
+        };
+        if(unitname == "npc_dota_hero_drow_ranger"){
+            HeroTalentCounfg = DrowRanger ;
+            print("npc_dota_hero_drow_ranger:......")
+        }else{
+            print("天赋配置错误！！！！")
+            return 
+        }
+
+        let points = this.player_talent_data[player_id].points + this.player_talent_data[player_id].use_count - 1;
+
+
+        this.player_hero_name[player_id] = unitname;
+        this.player_talent_list[player_id] = {};
+        this.player_talent_data_client[player_id] = {};
+        this.player_talent_data[player_id] = {
+            use_count : 1,
+            points : points,
+        };
+        for (let index = 1; index <= Object.keys(this.player_talent_config.unlock_count).length; index++) {
+            //是否初始化
+            // this.player_talent_list[player_id][index] = {};
+                if(index == 1){
+                    this.player_talent_list[player_id][index] = {
+                        uc : 1, //当技能投入点数
+                        iu: 1, //当技能是否解锁 0 未解锁 1已解锁
+                        t : {} , //层信息
+                        pu : 0 , //当前技能是否解锁被动 0 未解锁 1已解锁
+                        tm : 0 , //最大层数
+                    }
+                }else{
+                    this.player_talent_list[player_id][index] = {
+                        uc : 0, //当前层投入点数
+                        iu: 0, //当前层是否解锁 0 未解锁 1已解锁
+                        t : {} , //层信息
+                        pu : 0 , //当前技能是否解锁被动 0 未解锁 1已解锁
+                        tm : 0 , //最大层数
+                    }
+                }
+        }
+        let h_max_tf : { [key : string ] : number } = {};
+        //处理解锁条件
+        let unlock_key = HeroTalentCounfg["1"].unlock_key;
+        
+        for (const key in HeroTalentCounfg) {
+            let skill_index = HeroTalentCounfg[key].index;
+            let max_number = HeroTalentCounfg[key].max_number;
+            let tier_number = HeroTalentCounfg[key].tier_number;
+            if(!this.player_talent_list[player_id][skill_index].t.hasOwnProperty(tier_number)){
+                this.player_talent_list[player_id][skill_index].t[tier_number] = {
+                    sk : "",
+                    si : {},
+                }
+            }
+            if(key == "1"){ //第一个技能默认点了
+                h_max_tf["1"] = 1;
+                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
+                    iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
+                    ml : max_number , //最高等级
+                    uc : 1 , //当前技能投入点数
+                }
+                this.player_talent_data_client[player_id]["1"] = {
+                    iu  : 1 ,
+                    uc  : 1 ,
+                }
+            }else if(unlock_key.includes(parseInt(key))){ //默认可以解锁
+                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
+                    iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
+                    ml : max_number , //最高等级
+                    uc : 0 , //当前技能投入点数
+                }
+                this.player_talent_data_client[player_id][key] = {
+                    iu  : 1 ,
+                    uc  : 0 ,
+                }
+            }else{
+                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
+                    iu: 0, //当前技能是否解锁 0 未解锁 1已解锁
+                    ml : max_number , //最高等级
+                    uc : 0 , //当前技能投入点数
+                }
+            }
+            //重设最大层数
+            if(this.player_talent_list[player_id][skill_index].tm < tier_number && tier_number != 99){
+                this.player_talent_list[player_id][skill_index].tm = tier_number;
+            }
+        }
+
+        //单独发送重置
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "HeroTalentSystem_ResetHeroTalent",
+            {
+                data: {
+                    hero_name : unitname,
+                }
+            }
+        );
+
+        //发送玩家天赋信息
+        this.GetHeroTalentListData(player_id, {});
+
+    }
+
+
+    /**
+     * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)
+     * @param name 英雄名
+     * @param key 键
+     * @param level_index 等级下标
+     */
+    GetTKV<
+        Hero extends keyof typeof TalentTreeObject, 
+        Key extends keyof typeof TalentTreeObject[Hero],
+        T1 extends keyof typeof TalentTreeObject[Hero][Key],
+        T2 extends typeof TalentTreeObject[Hero][Key][T1]
+    >(hero:  Hero, key: Key, ability_key:  T1, k2: keyof T2, level_index: number = 0) {
+        let value_key = key as string;
+        let k2_key = k2 as string;
+        let length = this.talent_tree_values[hero][value_key][k2_key].length;
+        if (length > 0) {
+            if (level_index < 0) {
+                return this.talent_tree_values[hero][value_key][k2_key][0];
+            } else if ((level_index + 1) > length) {
+                return this.talent_tree_values[hero][value_key][k2_key][length - 1];
+            } else {
+                return this.talent_tree_values[hero][value_key][k2_key][level_index];
+            }
+        } else {
+            return this.talent_tree_values[hero][value_key][k2_key][level_index];
+        }
+    }
+
+    /**
+     * 天赋数据获取
+     * @param hUnit 
+     * @param hero 
+     * @param key 
+     * @param ability_key 
+     * @param k2 
+     * @returns 
+     */
+    GetTalentKvOfUnit<
+    Hero extends keyof typeof TalentTreeObject, 
+    Key extends keyof typeof TalentTreeObject[Hero],
+    T1 extends keyof typeof TalentTreeObject[Hero][Key],
+    T2 extends typeof TalentTreeObject[Hero][Key][T1]
+>(hUnit: CDOTA_BaseNPC, hero:  Hero, key: Key, ability_key:  T1, k2: keyof T2) {
+        let index_key = key as string;
+        let treasure_level_index = hUnit.hero_talent[index_key] ?? 0;
+        return this.GetTKV(hero,key,ability_key,k2 , treasure_level_index)
+    }
 
     /**
      * debug 命令
@@ -362,6 +562,9 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         if (cmd == "-stf") {
             let key = args[0] ?? "1";
             this.HeroSelectTalent(player_id ,  { key : key })
+        }
+        if( cmd == "-rtf"){
+            this.ResetHeroTalent(player_id)
         }
     }
 

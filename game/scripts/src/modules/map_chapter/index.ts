@@ -27,7 +27,7 @@ export class MapChapter extends UIEventRegisterClass {
     _game_select_phase: number = 0; //
     //根据等级可用地图
     _map_list : { [key : string ] : UserMapSelectDifficulty }  = {};
-    //玩家已通关的难度
+    //玩家已通关的难度  
     level_difficulty: string[] = [];
     //玩家可用英雄列表
     player_hero_available: number[][] = [];
@@ -56,7 +56,7 @@ export class MapChapter extends UIEventRegisterClass {
         let current_map = GetMapName();
         if (current_map != "main") { return }
         //加载营地
-        GameRules.MapChapter.OnCreatedCampMap();
+        // GameRules.MapChapter.OnCreatedCampMap();
 
         for (let [key, RowData] of pairs(NpcHeroesCustom)) {
             if (RowData.Enable == 1) {
@@ -78,6 +78,24 @@ export class MapChapter extends UIEventRegisterClass {
             user_difficulty: 302, // 玩家最高可选难度
             difficulty_max: 305, // 地图最高难度
             map_key: "m3", //地图编号 m1 m2 
+        }
+
+        //创建游戏
+        GameRules.ArchiveService.CreateGame();
+        // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
+        // for (let hHero of HeroList.GetAllHeroes()) {
+        //     let vect = hHero.GetAbsOrigin();
+        //     vect.z += 128;
+        //     hHero.SetOrigin(vect)
+        // }
+
+        /**
+         *  //是否为新号标记
+         */
+        GameRules.MapChapter.is_new_player = 1;
+
+        if(GameRules.MapChapter.is_new_player == 1){
+            GameRules.MapChapter.GetNewPlayerStatus( 0 , {})
         }
     }
 
@@ -108,29 +126,12 @@ export class MapChapter extends UIEventRegisterClass {
     //营地创建后置
     OnSpawnCampComplete(spawnGroupHandle: SpawnGroupHandle) {
         print("OnSpawnCampComplete", spawnGroupHandle);
-        //营地生产后 创建游戏
-        GameRules.ArchiveService.CreateGame();
-        // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
-        // for (let hHero of HeroList.GetAllHeroes()) {
-        //     let vect = hHero.GetAbsOrigin();
-        //     vect.z += 128;
-        //     hHero.SetOrigin(vect)
-        // }
-
-        /**
-         *  //是否为新号标记
-         */
-        GameRules.MapChapter.is_new_player = 1;
-
-        if(GameRules.MapChapter.is_new_player == 1){
-            GameRules.MapChapter.GetNewPlayerStatus( 0 , {})
-        }
     }
     
     /**
      * 获取玩家新号状态 
      * @param player_id 
-     * @param params 
+     * @param params    
      */
     GetNewPlayerStatus(player_id: PlayerID , params: CGED["MapChapter"]["GetNewPlayerStatus"]){
         CustomGameEventManager.Send_ServerToPlayer(
@@ -313,7 +314,7 @@ export class MapChapter extends UIEventRegisterClass {
         for (const date of this.player_select_hero) {
             if (date.state != 1) {
                 return
-            }
+            }   
         }
         //修改流程
         this._game_select_phase = 2;

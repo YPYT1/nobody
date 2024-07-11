@@ -157,6 +157,15 @@ declare interface CustomGameEventDeclarations {
         };
     };
 
+    /**
+     * 天赋数据 重置后的英雄
+     */
+    HeroTalentSystem_ResetHeroTalent: {
+        data: {
+            hero_name : string,
+        };
+    };
+
 }
 
 
