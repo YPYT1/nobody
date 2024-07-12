@@ -18,11 +18,11 @@ export class drow_1a extends drow_1 {
 @registerModifier()
 export class modifier_drow_1a extends modifier_drow_1 {
 
-    aoe_radius: number;
-    bonus_value: number;
+    // aoe_radius: number;
+    // bonus_value: number;
 
-    mul_chance: number;
-    mul_value: number;
+    // mul_chance: number;
+    // mul_value: number;
 
     bonus_radius: number;
 

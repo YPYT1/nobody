@@ -33,7 +33,7 @@ export class modifier_drow_1b extends modifier_drow_1 {
     projectiles_speed: number;
     wave_width: number;
 
-    UpdateSpecialValue(): void {
+    MdfUpdataAbilityValue_Extends(): void {
         this.wave_width = 128;
         this.projectiles_speed = 1600;
         this.fakeAttack = true;

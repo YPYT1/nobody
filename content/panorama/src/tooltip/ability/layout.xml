@@ -15,6 +15,16 @@
                 <Label class='CombieAbilityDesc' text="{s:combie_desc}" html="true" />
             </Panel>
         </snippet>
+        <snippet name="ExtraAbility">
+            <Panel class="ExtraAbility">
+                
+            </Panel>
+        </snippet>
+        <snippet name="ExtraBranch">
+            <Panel class="ExtraAbility">
+                
+            </Panel>
+        </snippet>
     </snippets>
     <Panel class="tooltip_ability" hittest="false">
         <Panel class="Background">
@@ -62,7 +72,7 @@
                 <!-- <Label id="AttributeInfo" text="{s:attribute}" html="true" /> -->
                 <Panel id="DescriptionContainer">
                     <Label class="DescriptionLabel" text="{s:description}" html="true" />
-                    
+                    <Panel id="TalentAbilityExtra" />
                 </Panel>
                 <Panel id='ComboContainer' />
             </Panel>

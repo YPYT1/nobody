@@ -99,6 +99,14 @@ export class CustomAttribute {
 
         } else {
             print("no hero data:", heroname);
+            for (let i = 0; i < 32; i++) {
+                let hAbility = hUnit.GetAbilityByIndex(i);
+                if (hAbility) {
+                    if (hAbility.GetAbilityType() == 2) {
+                        hAbility.RemoveSelf()
+                    }
+                }
+            }
 
             hUnit.SetContextThink("delay_init_attr", () => {
                 /** 属性表 */
@@ -142,22 +150,12 @@ export class CustomAttribute {
     }
 
     InitHeroAbility(hUnit: CDOTA_BaseNPC) {
-        hUnit.AddAbility("arms_passive_0").SetLevel(1);
+        hUnit.AddAbility("drow_1").SetLevel(1);
         hUnit.AddAbility("arms_passive_1").SetLevel(1);
         hUnit.AddAbility("arms_passive_2").SetLevel(1);
         hUnit.AddAbility("arms_passive_3").SetLevel(1);
         hUnit.AddAbility("arms_passive_4").SetLevel(1);
-        hUnit.AddAbility("arms_passive_5").SetLevel(1);
-        // 先天技能
-        // hUnit.AddAbility("generic_hidden")
-        // if (has_innate) {
-        //     let hero_name = hUnit.GetName().replace("npc_dota_hero_", "")
-        //     let innate_ability = `innate_${hero_name}`;
-        //     // print("innate_ability", innate_ability)
-        //     hUnit.AddAbility(innate_ability).SetLevel(1);//.SetLevel(1);
-        // } else {
-        //     hUnit.AddAbility("generic_hidden")
-        // }
+
         hUnit.AddAbility("public_arms").SetLevel(1);
         hUnit.AddAbility("public_attribute").SetLevel(1);
         hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
@@ -473,11 +471,10 @@ export class CustomAttribute {
         for (let i = 0; i < 5; i++) {
             let hAbility = hHero.GetAbilityByIndex(i);
             let PassiveMdfName = hAbility.GetIntrinsicModifierName();
-            print("PassiveMdfName", PassiveMdfName, "IntrinsicMdf:", hAbility.IntrinsicMdf)
-            if (hAbility.IntrinsicMdf){
+            if (hAbility.IntrinsicMdf) {
                 hAbility.IntrinsicMdf.ForceRefresh()
             }
-            
+
             // let 
         }
     }

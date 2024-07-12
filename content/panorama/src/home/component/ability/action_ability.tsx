@@ -66,11 +66,9 @@ function UpdateAbilityVar() {
     let AbilityImage = $("#AbilityImage") as ImagePanel;
     let ability_data = NpcAbilityCustom[ability_name as keyof typeof NpcAbilityCustom];
     let texture = ""
-    if (ability_data){
-        texture = ability_data ? (ability_data.AbilityTextureName ?? "") : "";
-    } else {
+    if (m_Ability){
         texture = Abilities.GetAbilityTextureName(m_Ability);
-    }
+    } 
 
     AbilityImage.SetImage(GetTextureSrc(texture,"UpdateAbilityVar")) 
 

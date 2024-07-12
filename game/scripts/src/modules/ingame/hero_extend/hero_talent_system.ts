@@ -194,6 +194,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
 
         BaseNPC.hero_talent = h_max_tf;
         //数据写入到网表
+        DeepPrintTable(this.player_talent_data_client[player_id])
         CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
         //发送玩家天赋信息
         this.GetHeroTalentListData(player_id, {});

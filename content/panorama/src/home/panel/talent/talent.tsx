@@ -137,7 +137,9 @@ export const Init = () => {
     GameEventsSubscribe()
     // 英雄天赋树
     hero_talent_tree["drow_ranger"] = FormatTalentTree("drow_ranger", talent_tree_drow_ranger)
-    CreateHeroTalentTreeUI("drow_ranger",);
+    CreateHeroTalentTreeUI("drow_ranger");
+
+    // CreateHeroTalentTreeUI("drow_ranger","2");
     // 发送请求
     GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
         event_name: "GetHeroTalentListData",

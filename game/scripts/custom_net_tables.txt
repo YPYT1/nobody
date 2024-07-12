@@ -6,5 +6,6 @@
         "unit_attribute",
         "unit_attribute_value",
         "unit_special_value",
+        "hero_talent",
     ]
 }

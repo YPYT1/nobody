@@ -35,8 +35,9 @@ export class drow_2b extends BaseHeroAbility {
 export class modifier_drow_2b extends BaseHeroModifier {
 
     base_mul: number;
-    ability_damage: number;
     arrow_count: number;
+    arrow_angle: number;
+
     proj_width: number;
     proj_speed: number;
     proj_name: string;
@@ -54,19 +55,20 @@ export class modifier_drow_2b extends BaseHeroModifier {
         "fire": "particles/proj/linear/fire/proj_linear_fire.vpcf",
         "ice": "particles/proj/linear/ice/proj_linear_ice.vpcf",
         "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",
-
     }
 
     MdfUpdataSpecialValue(): void {
         this.base_mul = 1.6;
         this.arrow_count = 5;
-        this.proj_width = 96;
+        this.arrow_angle = 50
+        this.proj_width = 90;
         this.proj_speed = 1800;
         this.proj_name = this.porj_linear.none;
-        this.proj_distance = 500;
+        this.proj_distance = 900;
     }
 
     OnIntervalThink() {
+        // print(this.caster.GetMana() , this.ability.GetManaCost(-1))
         if (this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(-1)) {
             let enemies = FindUnitsInRadius(
                 this.team,
@@ -119,7 +121,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
 
         for (let i = 0; i < this.arrow_count - 1; i++) {
             let is_even = i % 2 == 0; // 偶数
-            let angle_y = is_even ? 22.5 * math.floor(1 + i / 2) : -22.5 * math.floor(1 + i / 2);
+            let angle_y = is_even ? (this.arrow_angle / 4) * math.floor(1 + i / 2) : (this.arrow_angle / -4) * math.floor(1 + i / 2);
             let vPoint = RotatePosition(vCaster, QAngle(0, angle_y, 0), vTarget);
             let direction = vPoint - vCaster as Vector;
             direction.z = 0;

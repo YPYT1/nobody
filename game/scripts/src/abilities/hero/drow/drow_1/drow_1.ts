@@ -1,5 +1,6 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
 import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import { modifier_drow_1a } from "./drow_1a";
 
 /**
  * 攻击1名敌人，
@@ -18,16 +19,42 @@ export class drow_1 extends BaseHeroAbility {
 @registerModifier()
 export class modifier_drow_1 extends BaseHeroModifier {
 
+    proj_name: string;
+    /** 投射 */
+    porj_track = {
+        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
+        "fire": "fire",
+    }
+
+    /** 线型 */
+    porj_linear = {
+        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
+        "fire": "particles/proj/linear/fire/proj_linear_fire.vpcf",
+        "ice": "particles/proj/linear/ice/proj_linear_ice.vpcf",
+        "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",
+    }
+
     fakeAttack: boolean;
     useProjectile: boolean;
     base_value: number;
     give_mana: number;
-    ability_damage: number;
 
-    MdfUpdataAbilityValue(): void {
+    aoe_radius: number;
+    bonus_value: number;
+    mul_chance: number;
+    mul_value: number;
+
+    lianshe_chance: number;
+
+    proj_width: number;
+    proj_speed: number;
+
+    C_OnCreated(): void {
         this.fakeAttack = false;
         this.useProjectile = true;
-        this.ability_damage = 0;
+    }
+
+    MdfUpdataAbilityValue(): void {
         this.base_value = this.ability.GetSpecialValueFor("base_value");
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
     }
@@ -49,7 +76,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
             if (enemies.length <= 0) { return }
             let hTarget = enemies[0];
             this.caster.in_process_attack = true;
-            this.caster.GiveMana(this.give_mana);
+            // this.caster.GiveMana(this.give_mana);
             this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
             this.caster.StartGesture(GameActivity.DOTA_ATTACK)
             this.caster.PerformAttack(
@@ -62,12 +89,13 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 this.fakeAttack, // fakeAttack
                 false // neverMiss
             );
-            this.caster.in_process_attack = false;
             this.PlayAttackStart({ hTarget: hTarget })
+            this.caster.in_process_attack = false;
         }
     }
 
-    PlayAttackStart(params: PlayEffectProps) { }
-    PlayAttackLanded(params: PlayEffectProps) { }
-    PlayEffect(params: PlayEffectProps) { }
+    PlayAttackStart(params: PlayEffectProps) {
+        this.caster.GiveMana(this.give_mana);
+    }
+
 }
