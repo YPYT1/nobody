@@ -9,6 +9,8 @@ declare interface CDOTABaseAbility extends CBaseEntity {
     unit_list: CDOTA_BaseNPC[];
     ability_damage: number;
 
+    IntrinsicMdf:CDOTA_Buff;
+    
     GetAbilityDamage(): number;
     OnAttackStart(hTarget?: CDOTA_BaseNPC): void;
     OnKill(hTarget?: CDOTA_BaseNPC): void;

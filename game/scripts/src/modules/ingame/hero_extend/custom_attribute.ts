@@ -467,9 +467,19 @@ export class CustomAttribute {
         }
     }
 
-
-    // 修改SpecialValue
-
+    /** 更新KV值 */
+    UpdataPlayerSpecialValue(player_id: PlayerID) {
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        for (let i = 0; i < 5; i++) {
+            let hAbility = hHero.GetAbilityByIndex(i);
+            let PassiveMdfName = hAbility.GetIntrinsicModifierName();
+            if (hAbility.IntrinsicMdf){
+                hAbility.IntrinsicMdf.ForceRefresh()
+            }
+            // print("PassiveMdfName", PassiveMdfName, "IntrinsicMdf:", hAbility.IntrinsicMdf)
+            // let 
+        }
+    }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);

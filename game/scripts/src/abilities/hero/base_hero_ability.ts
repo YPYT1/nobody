@@ -4,7 +4,7 @@ export class BaseHeroAbility extends BaseAbility {
 
     init: boolean;
     caster: CDOTA_BaseNPC;
-
+    
     OnUpgrade(): void {
         if (this.init != true) {
             this.init = true;
@@ -36,11 +36,8 @@ export class BaseHeroModifier extends BaseModifier {
         this.caster = this.GetCaster();
         this.team = this.caster.GetTeamNumber();
         this.ability = this.GetAbility();
-        this.MdfUpdataAbilityValue();
-        this.MdfUpdataAbilityValue_Extends();
-
-        this.MdfUpdataSpecialValue();
-
+        this.ability.IntrinsicMdf = this;
+        this.OnRefresh(params)
         this.StartIntervalThink(0.03)
     }
 
