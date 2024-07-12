@@ -188,9 +188,13 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 this.player_talent_list[player_id][skill_index].tm = tier_number;
             }
         }
+        //更新数据
+        GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
 
 
         BaseNPC.hero_talent = h_max_tf;
+        //数据写入到网表
+        CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
         //发送玩家天赋信息
         this.GetHeroTalentListData(player_id, {});
     }
@@ -306,8 +310,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     //添加到英雄天赋去
                     hero.hero_talent[key] = this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc;
 
-                    DeepPrintTable(hero.hero_talent);
-
                     if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
                         this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
                     }
@@ -373,7 +375,16 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             }
                         }
                     }
-
+                    //数据写入到网表
+                    CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
+                    /**
+                     * 替换技能
+                     */
+                    // if(HeroTalentCounfg.is_ability == 1){
+                    //     let ablname = HeroTalentCounfg.link_ability;
+                    //     let ablindex = HeroTalentCounfg.index - 1;
+                    //     GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero);
+                    // }
                     // 更新点了天赋之后相关变动数值
                     GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
                 }
@@ -384,6 +395,22 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能未解锁");
         }
         this.GetHeroTalentListData(player_id, {});
+    }
+
+    /**
+     * 替换技能
+     * @param player_id 
+     * @param params    
+     */
+    ReplaceAbility(ability_name: string, order: number, queryUnit: CDOTA_BaseNPC_Hero) {
+        const hUnit = queryUnit;
+        let order_ability = hUnit.GetAbilityByIndex(order);
+        if (order_ability) {
+            order_ability.RemoveSelf()
+            hUnit.RemoveAbilityByHandle(order_ability)
+        }
+        let new_ability = hUnit.AddAbility(ability_name)
+        new_ability.SetLevel(1);
     }
     /**
      * 重置天赋
