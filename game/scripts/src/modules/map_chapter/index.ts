@@ -56,7 +56,7 @@ export class MapChapter extends UIEventRegisterClass {
         let current_map = GetMapName();
         if (current_map != "main") { return }
         //加载营地
-        // GameRules.MapChapter.OnCreatedCampMap();
+        GameRules.MapChapter.OnCreatedCampMap();
 
         for (let [key, RowData] of pairs(NpcHeroesCustom)) {
             if (RowData.Enable == 1) {
@@ -201,7 +201,6 @@ export class MapChapter extends UIEventRegisterClass {
                 }
             );
         }
-       
     }
 
     
@@ -476,6 +475,15 @@ export class MapChapter extends UIEventRegisterClass {
         if (cmd == "-sh") {
             let hero_index = args[0] ?? "0";
             this.SelectHero(player_id, { hero_id: parseInt(hero_index) })
+        }
+        if(cmd == "-sha"){
+            this.SelectHeroAffirm(player_id , {});
+        }
+        if (cmd == "-sd"){
+            this.SelectDifficulty( player_id , { "difficulty" : "101"})
+        }
+        if( cmd == "-sda"){
+            this.SelectDifficultyAffirm( player_id , {})
         }
         if (cmd == "-mapinfo") {
             print("GameRules.Spawn._game_start", GameRules.Spawn._game_start)

@@ -260,7 +260,7 @@ declare interface ServerEquip {
 
 
 declare interface CGEDEquipConfigInfo {
-    public: string[][],
+    public: string[][], 
     hero: {
         [hero_name: string]: string[][],
     };
