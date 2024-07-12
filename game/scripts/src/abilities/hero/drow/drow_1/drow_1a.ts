@@ -25,6 +25,7 @@ export class modifier_drow_1a extends modifier_drow_1 {
     mul_value: number;
 
     bonus_radius: number;
+
     MdfUpdataAbilityValue_Extends(): void {
         // 基础
         this.aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "aoe_radius");
@@ -33,11 +34,11 @@ export class modifier_drow_1a extends modifier_drow_1 {
         // 浓缩
         this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
         this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");
-    
+
         // 炸裂 灼烧伤害为属性值,
         this.bonus_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "4", "aoe_radius");
-        
 
+        print("this.aoe_radius", this.aoe_radius, this.bonus_radius)
     }
 
     DeclareFunctions(): modifierfunction[] {
@@ -69,7 +70,7 @@ export class modifier_drow_1a extends modifier_drow_1 {
         ParticleManager.ReleaseParticleIndex(cast_fx);
 
         // DebugDrawCircle(vPos, Vector(255, 0, 0), 100, radius, true, 0.5)
-        let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (1 + (this.bonus_value  )* 0.01)
+        let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (1 + (this.bonus_value) * 0.01)
         if (RollPercentage(this.mul_chance)) {
             ability_damage *= this.mul_value
         }

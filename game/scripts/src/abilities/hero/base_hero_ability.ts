@@ -43,6 +43,7 @@ export class BaseHeroModifier extends BaseModifier {
 
     OnRefresh(params: object): void {
         if (!IsServer()) { return }
+        // print("OnRefresh")
         this.MdfUpdataAbilityValue();
         this.MdfUpdataAbilityValue_Extends();
         this.MdfUpdataSpecialValue();
