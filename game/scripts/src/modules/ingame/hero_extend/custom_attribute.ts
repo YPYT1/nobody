@@ -473,10 +473,11 @@ export class CustomAttribute {
         for (let i = 0; i < 5; i++) {
             let hAbility = hHero.GetAbilityByIndex(i);
             let PassiveMdfName = hAbility.GetIntrinsicModifierName();
+            print("PassiveMdfName", PassiveMdfName, "IntrinsicMdf:", hAbility.IntrinsicMdf)
             if (hAbility.IntrinsicMdf){
                 hAbility.IntrinsicMdf.ForceRefresh()
             }
-            // print("PassiveMdfName", PassiveMdfName, "IntrinsicMdf:", hAbility.IntrinsicMdf)
+            
             // let 
         }
     }

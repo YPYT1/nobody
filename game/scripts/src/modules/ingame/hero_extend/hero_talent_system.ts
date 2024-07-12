@@ -39,7 +39,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     //玩家数量
     player_count = 6;
 
-
     talent_tree_values: {
         [hero: string]: {
             [key: string]: {
@@ -47,9 +46,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         };
     } = {};
-
-
-    //
 
     constructor() {
         super("HeroTalentSystem");
@@ -234,6 +230,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         let key = params.key;
         let unitname = this.player_hero_name[player_id];
         let HeroTalentCounfg: typeof DrowRanger["1"];
+        let hero = PlayerResource.GetSelectedHeroEntity(player_id);
         if (this.player_talent_data[player_id].points <= 0) {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！！")
             this.GetHeroTalentListData(player_id, {});
@@ -306,7 +303,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     //增加使用记录
                     this.player_talent_data[player_id].use_count++;
                     this.player_talent_data_client[player_id][key].uc++;
+                    //添加到英雄天赋去
+                    hero.hero_talent[key] = this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc;
 
+                    DeepPrintTable(hero.hero_talent);
 
                     if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
                         this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
@@ -373,7 +373,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             }
                         }
                     }
-                    // 加载技能效果
 
                     // 更新点了天赋之后相关变动数值
                     GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
