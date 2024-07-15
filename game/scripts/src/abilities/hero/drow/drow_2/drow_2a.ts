@@ -3,14 +3,9 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 
 /**
  * 连续射击【目标型】5	"快速射出4支箭，每支箭造成攻击力130%的伤害。
-（2/5）：攻击力160%
-（3/5）：攻击力190%
-（4/5）：攻击力225%
-（5/5）：攻击力260%
 cd：3秒
 蓝量消耗：20
 作用范围：750码内敌对单位
-
 连发 1/3"
 
  */
@@ -43,20 +38,36 @@ export class modifier_drow_2a extends BaseHeroModifier {
 
     base_value: number;
 
+    action_range: number;
     proj_count: number;
-    proj_distance: number;
     proj_speed: number;
     proj_width: number;
 
+    proj_name: string;
+    /** 投射 */
+    porj_track = {
+        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
+        "fire": "fire",
+    }
 
-    MdfUpdataAbilityValue(): void {
+    /** 线型 */
+    porj_linear = {
+        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
+        "fire": "particles/proj/linear/fire/proj_linear_fire.vpcf",
+        "ice": "particles/proj/linear/ice/proj_linear_ice.vpcf",
+        "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",
+    }
+
+    UpdataAbilityValue(): void {
         const hAbility = this.GetAbility();
         this.base_value = hAbility.GetSpecialValueFor("base_value");
         this.proj_count = hAbility.GetSpecialValueFor("proj_count");
         this.proj_speed = hAbility.GetSpecialValueFor("proj_speed");
         this.proj_width = hAbility.GetSpecialValueFor("proj_width");
-        this.proj_distance = hAbility.GetSpecialValueFor("proj_distance");
+        this.action_range = hAbility.GetSpecialValueFor("action_range");
+        this.proj_name = this.porj_linear.none;
     }
+
 
     OnIntervalThink() {
         if (this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(0)) {
@@ -64,7 +75,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
                 this.team,
                 this.caster.GetAbsOrigin(),
                 null,
-                this.proj_distance,
+                this.action_range,
                 UnitTargetTeam.ENEMY,
                 UnitTargetType.HERO + UnitTargetType.BASIC,
                 UnitTargetFlags.NONE,
@@ -88,11 +99,11 @@ export class modifier_drow_2a extends BaseHeroModifier {
             vDirection.z = 0;
             let vVelocity = vDirection * this.proj_speed as Vector;
             ProjectileManager.CreateLinearProjectile({
-                EffectName: "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
+                EffectName: this.proj_name,
                 Ability: this.GetAbility(),
                 // vSpawnOrigin: vCaster,
                 vVelocity: vVelocity,
-                fDistance: this.proj_distance,
+                fDistance: this.action_range,
                 fStartRadius: this.proj_width,
                 fEndRadius: this.proj_width,
                 Source: this.caster,

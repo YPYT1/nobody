@@ -12,22 +12,35 @@ import { drow_2b, modifier_drow_2b } from "./drow_2b";
 @registerAbility()
 export class drow_2b_a extends drow_2b {
 
-    heighest_mul:number;
-    
+    heighest_mul: number;
+
+    yazhi_value: number;
+    yazhi_hp_heighest: number;
+
     GetIntrinsicModifierName(): string {
         return "modifier_drow_2b_a"
     }
 
     GetManaCost(level: number): number {
-        return super.GetManaCost(level) - 5
+        let player_id = this.GetCaster().GetPlayerOwnerID();
+        let nettable = CustomNetTables.GetTableValue("hero_talent", `${player_id}`);
+        if (nettable && nettable["20"].uc) {
+            let cost = nettable["20"].uc * 5;
+            return super.GetManaCost(level) - cost;
+        }
+        return super.GetManaCost(level)
     }
 
-    
+    UpdataSpecialValue(): void {
+        this.yazhi_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "21", "bonus_value");
+        this.yazhi_hp_heighest = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "21", "hp_heighest");
+    }
+
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
-            if(target.GetHealthPercent() > 50){
-                ability_damage *= 1.3
+            if (this.yazhi_value > 0 && target.GetHealthPercent() > this.yazhi_hp_heighest) {
+                ability_damage *= (this.yazhi_value * 0.01)
             }
 
             ApplyCustomDamage({
@@ -47,8 +60,15 @@ export class drow_2b_a extends drow_2b {
 @registerModifier()
 export class modifier_drow_2b_a extends modifier_drow_2b {
 
+    bonus_value: number;
+
+    MdfUpdataAbilityValue_Extends(): void {
+        this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "19", "bonus_value");
+        this.proj_name = this.porj_linear.fire;
+    }
+
     PlayEffect(params: PlayEffectProps): void {
-        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * 2.4
+        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (this.base_value + this.bonus_value) * 0.01
         let vTarget = params.hTarget.GetAbsOrigin()
         this.MultiShot(vTarget);
     }

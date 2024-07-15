@@ -76,7 +76,6 @@ export class modifier_drow_1 extends BaseHeroModifier {
             if (enemies.length <= 0) { return }
             let hTarget = enemies[0];
             this.caster.in_process_attack = true;
-            // this.caster.GiveMana(this.give_mana);
             this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
             this.caster.StartGesture(GameActivity.DOTA_ATTACK)
             this.caster.PerformAttack(

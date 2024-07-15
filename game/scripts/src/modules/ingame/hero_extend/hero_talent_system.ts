@@ -473,7 +473,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         const hUnit = queryUnit;
         let order_ability = hUnit.GetAbilityByIndex(order);
         if (order_ability) {
-            order_ability.RemoveSelf()
+            // order_ability.RemoveSelf()
             hUnit.RemoveAbilityByHandle(order_ability)
         }
         let new_ability = hUnit.AddAbility(ability_name)

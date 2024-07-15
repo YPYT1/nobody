@@ -101,7 +101,7 @@ export class CustomAttribute {
 
 
         } else {
-            print("no hero data:", heroname);
+            
             for (let i = 0; i < 32; i++) {
                 let hAbility = hUnit.GetAbilityByIndex(i);
                 if (hAbility) {
@@ -153,7 +153,8 @@ export class CustomAttribute {
     }
 
     InitHeroAbility(hUnit: CDOTA_BaseNPC) {
-        hUnit.AddAbility("drow_1").SetLevel(1);
+        // print("InitHeroAbility");
+        hUnit.AddAbility("arms_passive_0").SetLevel(1);
         hUnit.AddAbility("arms_passive_1").SetLevel(1);
         hUnit.AddAbility("arms_passive_2").SetLevel(1);
         hUnit.AddAbility("arms_passive_3").SetLevel(1);

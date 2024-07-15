@@ -34,7 +34,7 @@ export class drow_2b extends BaseHeroAbility {
 @registerModifier()
 export class modifier_drow_2b extends BaseHeroModifier {
 
-    base_mul: number;
+    base_value: number;
     arrow_count: number;
     arrow_angle: number;
 
@@ -57,14 +57,14 @@ export class modifier_drow_2b extends BaseHeroModifier {
         "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",
     }
 
-    MdfUpdataSpecialValue(): void {
-        this.base_mul = 1.6;
-        this.arrow_count = 5;
-        this.arrow_angle = 50
-        this.proj_width = 90;
-        this.proj_speed = 1800;
+    MdfUpdataAbilityValue(): void {
+        this.base_value = this.ability.GetSpecialValueFor("base_value");
+        this.arrow_count = this.ability.GetSpecialValueFor("arrow_count");
+        this.arrow_angle = this.ability.GetSpecialValueFor("arrow_angle");
+        this.proj_width = this.ability.GetSpecialValueFor("proj_width");
+        this.proj_speed = this.ability.GetSpecialValueFor("proj_speed");
         this.proj_name = this.porj_linear.none;
-        this.proj_distance = 900;
+        this.proj_distance = this.ability.GetSpecialValueFor("proj_distance");
     }
 
     OnIntervalThink() {
@@ -89,14 +89,12 @@ export class modifier_drow_2b extends BaseHeroModifier {
     }
 
     PlayEffect(params: PlayEffectProps): void {
-        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * 2.4
+        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01
         let vTarget = params.hTarget.GetAbsOrigin()
         this.MultiShot(vTarget);
-
     }
 
     MultiShot(vTarget: Vector) {
-
         let vCaster = this.caster.GetAbsOrigin();
         let direction = vTarget - vCaster as Vector;
         direction.z = 0;
@@ -115,13 +113,15 @@ export class modifier_drow_2b extends BaseHeroModifier {
             iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,
             iUnitTargetFlags: UnitTargetFlags.NONE,
             ExtraData: {
-                a: this.ability_damage
+                a: this.ability_damage,
+                x: vCaster.x,
+                y: vCaster.y,
             }
         });
-
-        for (let i = 0; i < this.arrow_count - 1; i++) {
+        let last_count = this.arrow_count - 1
+        for (let i = 0; i < last_count; i++) {
             let is_even = i % 2 == 0; // 偶数
-            let angle_y = is_even ? (this.arrow_angle / 4) * math.floor(1 + i / 2) : (this.arrow_angle / -4) * math.floor(1 + i / 2);
+            let angle_y = is_even ? (this.arrow_angle / last_count) * math.floor(1 + i / 2) : (this.arrow_angle / -last_count) * math.floor(1 + i / 2);
             let vPoint = RotatePosition(vCaster, QAngle(0, angle_y, 0), vTarget);
             let direction = vPoint - vCaster as Vector;
             direction.z = 0;
@@ -140,7 +140,9 @@ export class modifier_drow_2b extends BaseHeroModifier {
                 iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,
                 iUnitTargetFlags: UnitTargetFlags.NONE,
                 ExtraData: {
-                    a: this.ability_damage
+                    a: this.ability_damage,
+                    x: vCaster.x,
+                    y: vCaster.y,
                 }
             });
         }
