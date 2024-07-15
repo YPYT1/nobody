@@ -441,8 +441,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             let ablobj = hero.GetAbilityByIndex(ablindex);
                             ablobj.SetLevel(hero.hero_talent[key])
                         }else{
-                            if(this.player_talent_index_max[player_id][skill_index].tier < HeroTalentCounfg.index){
-                                this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.index;
+                            if(this.player_talent_index_max[player_id][skill_index].tier < HeroTalentCounfg.tier_number){
+                                this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.tier_number;
                                 let sklevel = this.player_talent_index_max[player_id][skill_index].max;
                                 let ablname = HeroTalentCounfg.link_ability;
                                 let ablindex = HeroTalentCounfg.index - 1;
