@@ -63,12 +63,12 @@ export const RecursionTalentTree = () => {
 
 }
 
-export const CreateHeroTalentTreeUI = (heroname: string, index: string = "1") => {
+export const CreateHeroTalentTreeUI = (heroname: string, NodePanel: Panel, index: string = "1") => {
     // TalentBackgroundHeight.RemoveAndDeleteChildren()
-    TalentNodeList.RemoveAndDeleteChildren();
+
     let talent_tree = hero_talent_tree[heroname][index];
     for (let row of talent_tree) {
-        CreateTalentTreeNode(heroname, row, TalentNodeList)
+        CreateTalentTreeNode(heroname, row, NodePanel)
     }
 
 }
@@ -120,7 +120,7 @@ export const GameEventsSubscribe = () => {
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
         let data = event.data;
         let hero_talent_list = data.hero_talent_list;
-        $.Msg(["hero_talent_list",hero_talent_list])
+        // $.Msg(["hero_talent_list", hero_talent_list])
         for (let id in hero_talent_list) {
             let data = hero_talent_list[id];
             let TalentNode = TalentNodeList.FindChildTraverse(id)!;
@@ -130,15 +130,32 @@ export const GameEventsSubscribe = () => {
             TalentNodeButton.enabled = data.iu == 1;;
         }
     })
+
+    GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
+        let data = event.data;
+        let heroname = data.hero_name.replace("npc_dota_hero_", "");
+        CreateHeroTalent(heroname);
+    })
+
+}
+
+export const CreateHeroTalent = (heroname: string) => {
+    $.Msg(["CreateHeroTalent", heroname])
+    TalentNodeList.RemoveAndDeleteChildren();
+    for (let i = 1; i <= 5; i++) {
+        let row_node = $.CreatePanel("Panel", TalentNodeList, `Node_${i}`);
+        row_node.AddClass("RowNode");
+        CreateHeroTalentTreeUI(heroname, row_node, `${i}`);
+    }
 }
 
 export const Init = () => {
 
     GameEventsSubscribe()
     // 英雄天赋树
-    hero_talent_tree["drow_ranger"] = FormatTalentTree("drow_ranger", talent_tree_drow_ranger)
-    CreateHeroTalentTreeUI("drow_ranger");
+    hero_talent_tree["drow_ranger"] = FormatTalentTree("drow_ranger", talent_tree_drow_ranger);
 
+    // TalentNodeList.RemoveAndDeleteChildren();
     // CreateHeroTalentTreeUI("drow_ranger","2");
     // 发送请求
     GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {

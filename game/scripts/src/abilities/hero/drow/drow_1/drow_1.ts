@@ -54,7 +54,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
         this.useProjectile = true;
     }
 
-    MdfUpdataAbilityValue(): void {
+    UpdataAbilityValue(): void {
         this.base_value = this.ability.GetSpecialValueFor("base_value");
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
     }

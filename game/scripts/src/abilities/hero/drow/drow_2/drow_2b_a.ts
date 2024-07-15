@@ -62,7 +62,7 @@ export class modifier_drow_2b_a extends modifier_drow_2b {
 
     bonus_value: number;
 
-    MdfUpdataAbilityValue_Extends(): void {
+    UpdataSpecialValue(): void {
         this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "19", "bonus_value");
         this.proj_name = this.porj_linear.fire;
     }

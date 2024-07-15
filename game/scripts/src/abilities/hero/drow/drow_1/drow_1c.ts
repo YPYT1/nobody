@@ -32,7 +32,7 @@ export class modifier_drow_1c extends modifier_drow_1 {
         ]
     }
 
-    MdfUpdataAbilityValue_Extends(): void {
+    UpdataSpecialValue(): void {
         this.talent_9 = this.caster.hero_talent["9"] ?? 0;
         this.talent_9_percent = 150;
         this.talent_10 = 1;

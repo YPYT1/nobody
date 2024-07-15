@@ -26,7 +26,7 @@ export class modifier_drow_1a extends modifier_drow_1 {
 
     bonus_radius: number;
 
-    MdfUpdataAbilityValue_Extends(): void {
+    UpdataSpecialValue(): void {
         // 基础
         this.aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "aoe_radius");
         this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
@@ -38,7 +38,7 @@ export class modifier_drow_1a extends modifier_drow_1 {
         // 炸裂 灼烧伤害为属性值,
         this.bonus_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "4", "aoe_radius");
 
-        print("this.aoe_radius", this.aoe_radius, this.bonus_radius)
+        // print("this.aoe_radius", this.aoe_radius, this.bonus_radius)
     }
 
     DeclareFunctions(): modifierfunction[] {
