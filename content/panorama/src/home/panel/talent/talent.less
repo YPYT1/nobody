@@ -8,12 +8,12 @@
     horizontal-align: right;
     vertical-align: bottom;
     flow-children: down;
-    margin-bottom: 64px;
+    // margin-bottom: 64px;
 }
 
 .TalentContainer {
     // width: 100%;
-   
+
     .TalentLabel {
         horizontal-align: center;
         flow-children: down;
@@ -29,8 +29,15 @@
 
 
     #TalentNodeList {
-        flow-children: right;
-        
+        flow-children: down;
+        max-height: 600px;
+        overflow: clip scroll;
+
+        .RowNode {
+            horizontal-align: center;
+            flow-children: right;
+        }
+
         .TalentNode {
             horizontal-align: center;
             // border: 1px solid #ffffff;

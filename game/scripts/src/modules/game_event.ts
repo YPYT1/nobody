@@ -72,7 +72,7 @@ export class GameEvent {
         ListenToGameEvent("player_disconnect", event => this.OnPlayerDisconnect(event), this)
         ListenToGameEvent("player_connect", event => this.OnPlayerConnect(event), this)
         ListenToGameEvent("player_connect_full", event => this.OnPlayerConnectFull(event), this)
-        ListenToGameEvent("dota_player_gained_level", event => this.OnPlayerGainedLevel(event), this)
+        // ListenToGameEvent("dota_player_gained_level", event => this.OnPlayerGainedLevel(event), this)
     }
 
     OnGameRulesStateChange() {
@@ -170,10 +170,10 @@ export class GameEvent {
         DeepPrintTable(event)
     }
 
-    OnPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
-        // DeepPrintTable(event)
-        let hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
-        // hHero.SetAbilityPoints(0);
-        GameRules.NewArmsEvolution.AddEvolutionPoint(event.player_id, 1)
-    }
+    // OnPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
+    //     // DeepPrintTable(event)
+    //     let hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
+    //     // hHero.SetAbilityPoints(0);
+        
+    // }
 }

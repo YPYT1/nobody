@@ -127,7 +127,7 @@ export class modifier_public_attribute extends BaseModifier {
         return {
             // [ModifierState.PROVIDES_VISION]: true,
             [ModifierState.BLOCK_DISABLED]: true,
-
+            [ModifierState.DISARMED]: true,
         }
     }
 

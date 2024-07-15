@@ -64,16 +64,14 @@ export class BaseHeroModifier extends BaseModifier {
     OnRefresh(params: object): void {
         if (!IsServer()) { return }
         // print("OnRefresh")
-        this.MdfUpdataAbilityValue();
-        this.MdfUpdataAbilityValue_Extends();
-        this.MdfUpdataSpecialValue();
+        this.UpdataAbilityValue();
+        this.UpdataSpecialValue();
     }
 
     /** 技能的Ability更新 */
-    MdfUpdataAbilityValue() { }
-    MdfUpdataAbilityValue_Extends() { }
+    UpdataAbilityValue() { }
     /** 技能的特殊词条更新 */
-    MdfUpdataSpecialValue() { }
+    UpdataSpecialValue() { }
 
     OnIntervalThink(): void { }
 

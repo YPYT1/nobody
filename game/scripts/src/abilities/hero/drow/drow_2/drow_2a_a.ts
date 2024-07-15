@@ -11,21 +11,44 @@ import { drow_2a, modifier_drow_2a } from "./drow_2a";
 @registerAbility()
 export class drow_2a_a extends drow_2a {
 
+    talent_13: number;
+    talent_14: number;
+
+    UpdataSpecialValue(): void {
+        this.talent_14 = this.caster.hero_talent["14"] ?? 0;
+        this.talent_13 = this.caster.hero_talent["13"] ?? 0;
+    }
+
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
-            ApplyCustomDamage({
-                victim: target,
-                attacker: this.caster,
-                damage: ability_damage,
-                damage_type: DamageTypes.MAGICAL,
-                ability: this,
-                is_primary: true,
-                element_type: ElementTypeEnum.wind
-            })
-            target.AddNewModifier(this.caster, this, "modifier_drow_2a_a_debuff", {
-                duration: 3
-            })
+            if (this.talent_14 > 0) {
+                ApplyCustomDamage({
+                    victim: target,
+                    attacker: this.caster,
+                    damage: ability_damage,
+                    damage_type: DamageTypes.MAGICAL,
+                    ability: this,
+                    is_primary: true,
+                    element_type: ElementTypeEnum.wind
+                })
+            } else {
+                ApplyCustomDamage({
+                    victim: target,
+                    attacker: this.caster,
+                    damage: ability_damage,
+                    damage_type: DamageTypes.PHYSICAL,
+                    ability: this,
+                    is_primary: true,
+                    // element_type: ElementTypeEnum.wind
+                })
+            }
+            if (this.talent_13 > 0) {
+                target.AddNewModifier(this.caster, this, "modifier_drow_2a_a_debuff", {
+                    duration: 3
+                })
+            }
+
             return true
         }
     }
@@ -35,15 +58,25 @@ export class drow_2a_a extends drow_2a {
 @registerModifier()
 export class modifier_drow_2a_a extends modifier_drow_2a {
 
-    
-    
+    UpdataSpecialValue(): void {
+        this.proj_count = this.ability.GetSpecialValueFor("proj_count")
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "12", 'bonus_value')
+    }
 }
 
 @registerModifier()
 export class modifier_drow_2a_a_debuff extends BaseModifier {
 
+    stack_income: number;
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.stack_income = GameRules.HeroTalentSystem.GetTalentKvOfUnit(
+            this.GetCaster(),
+            "drow_ranger",
+            "13",
+            'value'
+        )
         this.SetStackCount(1)
     }
 
@@ -61,6 +94,6 @@ export class modifier_drow_2a_a_debuff extends BaseModifier {
     }
 
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
-        return this.GetStackCount() * 5
+        return this.GetStackCount() * this.stack_income
     }
 }
