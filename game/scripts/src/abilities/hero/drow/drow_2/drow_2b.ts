@@ -57,7 +57,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
         "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",
     }
 
-    MdfUpdataAbilityValue(): void {
+    UpdataAbilityValue(): void {
         this.base_value = this.ability.GetSpecialValueFor("base_value");
         this.arrow_count = this.ability.GetSpecialValueFor("arrow_count");
         this.arrow_angle = this.ability.GetSpecialValueFor("arrow_angle");
@@ -69,7 +69,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
 
     OnIntervalThink() {
         // print(this.caster.GetMana() , this.ability.GetManaCost(-1))
-        if (this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(-1)) {
+        if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(-1)) {
             let enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.GetAbsOrigin(),

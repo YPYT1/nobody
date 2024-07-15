@@ -530,11 +530,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         if (level_index == null) {
             return 0
         } else {
-            return this.GetTKV(hero, index_key, ability_key, level_index)
+            return this.GetTKV(hero, index_key, ability_key, level_index - 1)
         }
-        // let level_index = hUnit.hero_talent[index_key] ?? 0;
-        // if (level_index == 0){ return 0}
-        // this.GetTKV(hero,"1","base_value",treasure_level_index)
     }
 
     /**

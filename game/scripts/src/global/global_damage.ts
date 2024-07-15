@@ -14,6 +14,7 @@ function PlayElementHitEffect(hUnit: CDOTA_BaseNPC, element_type?: ElementTypeEn
 }
 
 function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
+    if (params.attacker == null) { return }
     const hAttacker = params.attacker;
     const iPlayerID = hAttacker.GetPlayerOwnerID();
     let element_type = params.ability.element_type;

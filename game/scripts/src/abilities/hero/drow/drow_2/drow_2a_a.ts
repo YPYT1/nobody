@@ -14,6 +14,10 @@ export class drow_2a_a extends drow_2a {
     talent_13: number;
     talent_14: number;
 
+    GetIntrinsicModifierName(): string {
+        return "modifier_drow_2a_a"
+    }
+
     UpdataSpecialValue(): void {
         this.talent_14 = this.caster.hero_talent["14"] ?? 0;
         this.talent_13 = this.caster.hero_talent["13"] ?? 0;
@@ -60,7 +64,7 @@ export class modifier_drow_2a_a extends modifier_drow_2a {
 
     UpdataSpecialValue(): void {
         this.proj_count = this.ability.GetSpecialValueFor("proj_count")
-            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "12", 'bonus_value')
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "12", 'bonus_value');
     }
 }
 

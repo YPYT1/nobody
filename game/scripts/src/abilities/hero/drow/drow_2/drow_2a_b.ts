@@ -19,17 +19,16 @@ export class drow_2a_b extends drow_2a {
 
     cigu_value:number;
 
+    GetIntrinsicModifierName(): string {
+        return "modifier_drow_2a_b"
+    }
+
     UpdataSpecialValue(): void {
         this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '15', 'bonus_value')
         this.cigu_value =  GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '16', 'cigu_value')
         this.bb_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "chance");
         this.bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "radius");
         this.bb_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "base_value");
-
-    }
-
-    GetIntrinsicModifierName(): string {
-        return "modifier_drow_2a_b"
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {

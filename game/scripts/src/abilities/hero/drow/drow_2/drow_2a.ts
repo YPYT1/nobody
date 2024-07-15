@@ -70,7 +70,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
 
 
     OnIntervalThink() {
-        if (this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(0)) {
+        if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(0)) {
             let enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.GetAbsOrigin(),
