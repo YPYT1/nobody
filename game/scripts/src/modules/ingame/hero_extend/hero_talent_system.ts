@@ -231,16 +231,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         //数据写入到网表
         CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
 
-        //单独发送重置
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "HeroTalentSystem_ResetHeroTalent",
-            {
-                data: {
-                    hero_name: unitname,
-                }
-            }
-        );
+        this.ResetHeroTalent(player_id , {})
         //发送玩家天赋信息
         this.GetHeroTalentListData(player_id, {});
     }
@@ -256,6 +247,21 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     hero_talent_list: this.player_talent_data_client[player_id],
                     talent_points: this.player_talent_data[player_id].points,
                     talent_use_count: this.player_talent_data[player_id].use_count,
+                }
+            }
+        );
+    }
+    /**
+     * 重新获取选择英雄的天赋
+     */
+    ResetHeroTalent(player_id: PlayerID, params: CGED["HeroTalentSystem"]["ResetHeroTalent"], callback?) {
+        let unitname = this.player_hero_name[player_id];
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "HeroTalentSystem_ResetHeroTalent",
+            {
+                data: {
+                    hero_name: unitname,
                 }
             }
         );
@@ -571,6 +577,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             this.RegisterHeroTalent(hero,true);
         }
     }
+
+
 
     // OnKillUnit(killer: CDOTA_BaseNPC, target: CDOTA_BaseNPC) {
     //     // 小松鼠大招标记
