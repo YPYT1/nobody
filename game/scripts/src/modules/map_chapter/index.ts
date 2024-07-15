@@ -368,6 +368,7 @@ export class MapChapter extends UIEventRegisterClass {
             let hHero = PlayerResource.GetSelectedHeroEntity(index)
             hHero.SetOrigin(vLocation);
             let hname = GameRules.MapChapter.hero_list[this.player_select_hero[index].hero_id];
+            print("hname : " , hname)
             PlayerResource.ReplaceHeroWith(
                 index,
                 hname,
@@ -473,7 +474,7 @@ export class MapChapter extends UIEventRegisterClass {
             this.OnLoadChapterMap(map_index, difficulty)
         }
         if (cmd == "-sh") {
-            let hero_index = args[0] ?? "0";
+            let hero_index = args[0] ?? "6";
             this.SelectHero(player_id, { hero_id: parseInt(hero_index) })
         }
         if(cmd == "-sha"){

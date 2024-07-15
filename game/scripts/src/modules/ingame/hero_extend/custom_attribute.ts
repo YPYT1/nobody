@@ -25,6 +25,9 @@ export class CustomAttribute {
     OnEntityDotaPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
         // print("OnEntityDotaPlayerGainedLevel")
         const hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
+        //增加天赋点
+        GameRules.HeroTalentSystem.AddHeroTalent(event.player_id , 1);
+        
         this.AttributeInLevelUp(hHero)
     }
 

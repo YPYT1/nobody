@@ -46,6 +46,12 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         };
     } = {};
+    //技能位置
+    player_talent_index_max : { [index : number] : {
+        max : number,
+        abikey : string,
+        tier : number,
+    }}[] = []
 
     constructor() {
         super("HeroTalentSystem");
@@ -65,6 +71,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
 
             });
             this.player_hero_name.push("");
+            this.player_talent_index_max.push({});
         }
 
         for (const hero in TalentTreeObject) {
@@ -91,9 +98,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
 
     /**
      * 注册英雄天赋
-     * @param BaseNPC 
+     * @param BaseNPC //使用的英雄
+     * @param IsReset //是否为重置
      */
-    RegisterHeroTalent(BaseNPC: CDOTA_BaseNPC) {
+    RegisterHeroTalent(BaseNPC: CDOTA_BaseNPC , IsReset : boolean = false) {
         let unitname = BaseNPC.GetUnitName();
         let HeroTalentCounfg: {
             [key: string]: {
@@ -116,10 +124,19 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         this.player_hero_name[player_id] = unitname;
         this.player_talent_list[player_id] = {};
         this.player_talent_data_client[player_id] = {};
-        this.player_talent_data[player_id] = {
-            use_count: 1,
-            points: 0,
-        };
+        if(IsReset){
+            let points = this.player_talent_data[player_id].points + this.player_talent_data[player_id].use_count - 1;
+            this.player_talent_data[player_id] = {
+                use_count: 1,
+                points: points,
+            };
+        }else{
+            this.player_talent_data[player_id] = {
+                use_count: 1,
+                points: 0,
+            };
+        }
+        
         for (let index = 1; index <= Object.keys(this.player_talent_config.unlock_count).length; index++) {
             //是否初始化
             // this.player_talent_list[player_id][index] = {};
@@ -131,6 +148,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     pu: 0, //当前技能是否解锁被动 0 未解锁 1已解锁
                     tm: 0, //最大层数
                 }
+                this.player_talent_index_max[player_id][index] = {
+                    max : 1 ,
+                    abikey : "1",
+                    tier : 1,
+                }
             } else {
                 this.player_talent_list[player_id][index] = {
                     uc: 0, //当前层投入点数
@@ -138,6 +160,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     t: {}, //层信息
                     pu: 0, //当前技能是否解锁被动 0 未解锁 1已解锁
                     tm: 0, //最大层数
+                }
+                this.player_talent_index_max[player_id][index] = {
+                    max : 0 ,
+                    abikey : "",
+                    tier : 0,
                 }
             }
         }
@@ -190,12 +217,30 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         }
         //更新数据
         GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
-
+        //增加技能
+        if(HeroTalentCounfg["1"].is_ability == 1){
+            let ablname = HeroTalentCounfg.link_ability;
+            let ablindex = HeroTalentCounfg["1"].index - 1;
+            if(BaseNPC.IsHero()){
+                GameRules.HeroTalentSystem.ReplaceAbility(HeroTalentCounfg["1"].link_ability , ablindex , BaseNPC , 1);
+            }
+        }
 
         BaseNPC.hero_talent = h_max_tf;
+        
         //数据写入到网表
-        DeepPrintTable(this.player_talent_data_client[player_id])
         CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
+
+        //单独发送重置
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "HeroTalentSystem_ResetHeroTalent",
+            {
+                data: {
+                    hero_name: unitname,
+                }
+            }
+        );
         //发送玩家天赋信息
         this.GetHeroTalentListData(player_id, {});
     }
@@ -256,7 +301,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
 
         let skill_index = HeroTalentCounfg.index;
         let tier_number = HeroTalentCounfg.tier_number;
-
+        let is_ability = HeroTalentCounfg.is_ability;
         if (this.player_talent_list[player_id][skill_index].iu == 1) {
             if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key]) {
                 if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc
@@ -379,15 +424,37 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     //数据写入到网表
                     CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
                     /**
-                     * 替换技能
+                     * 替换技能 / 更新等级
                      */
-                    // if(HeroTalentCounfg.is_ability == 1){
-                    //     let ablname = HeroTalentCounfg.link_ability;
-                    //     let ablindex = HeroTalentCounfg.index - 1;
-                    //     GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero);
-                    // }
+                    if(is_ability == 1){
+                        if(HeroTalentCounfg.tier_number == 1 && hero.hero_talent[key] == 1){
+                            //基础技能记录
+                            this.player_talent_index_max[player_id][skill_index].abikey = key;
+                            this.player_talent_index_max[player_id][skill_index].max = 1;
+                            this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.tier_number;
+                            let ablname = HeroTalentCounfg.link_ability;
+                            let ablindex = HeroTalentCounfg.index - 1;
+                            GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero , 1);
+                        }else if(HeroTalentCounfg.tier_number == 1 && hero.hero_talent[key] > 1){
+                            this.player_talent_index_max[player_id][skill_index].max = hero.hero_talent[key];
+                            let ablindex = HeroTalentCounfg.index - 1;
+                            let ablobj = hero.GetAbilityByIndex(ablindex);
+                            ablobj.SetLevel(hero.hero_talent[key])
+                        }else{
+                            if(this.player_talent_index_max[player_id][skill_index].tier < HeroTalentCounfg.index){
+                                this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.index;
+                                let sklevel = this.player_talent_index_max[player_id][skill_index].max;
+                                let ablname = HeroTalentCounfg.link_ability;
+                                let ablindex = HeroTalentCounfg.index - 1;
+                                GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero , sklevel);
+                            }
+                        }
+                    }
+                    
                     // 更新点了天赋之后相关变动数值
                     GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
+
+                    this.GetHeroTalentListData(player_id, {});
                 }
             } else {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "未找到此技能");
@@ -395,7 +462,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         } else {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能未解锁");
         }
-        this.GetHeroTalentListData(player_id, {});
     }
 
     /**
@@ -403,7 +469,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * @param player_id 
      * @param params    
      */
-    ReplaceAbility(ability_name: string, order: number, queryUnit: CDOTA_BaseNPC_Hero) {
+    ReplaceAbility(ability_name: string, order: number, queryUnit: CDOTA_BaseNPC_Hero , SetLevel : number) {
         const hUnit = queryUnit;
         let order_ability = hUnit.GetAbilityByIndex(order);
         if (order_ability) {
@@ -411,130 +477,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             hUnit.RemoveAbilityByHandle(order_ability)
         }
         let new_ability = hUnit.AddAbility(ability_name)
-        new_ability.SetLevel(1);
+        new_ability.SetLevel(SetLevel);
     }
-    /**
-     * 重置天赋
-     * @param player_id 
-     * @returns 
-     */
-    ResetHeroTalent(player_id: PlayerID) {
-
-        let unitname = this.player_hero_name[player_id];
-
-        let HeroTalentCounfg: {
-            [key: string]: {
-                index: number;
-                is_ability: number;
-                link_ability: string;
-                tier_number: number;
-                unlock_key: number[];
-                max_number: number;
-            };
-        };
-        if (unitname == "npc_dota_hero_drow_ranger") {
-            HeroTalentCounfg = DrowRanger;
-            print("npc_dota_hero_drow_ranger:......")
-        } else {
-            print("天赋配置错误！！！！")
-            return
-        }
-
-        let points = this.player_talent_data[player_id].points + this.player_talent_data[player_id].use_count - 1;
-
-
-        this.player_hero_name[player_id] = unitname;
-        this.player_talent_list[player_id] = {};
-        this.player_talent_data_client[player_id] = {};
-        this.player_talent_data[player_id] = {
-            use_count: 1,
-            points: points,
-        };
-        for (let index = 1; index <= Object.keys(this.player_talent_config.unlock_count).length; index++) {
-            //是否初始化
-            // this.player_talent_list[player_id][index] = {};
-            if (index == 1) {
-                this.player_talent_list[player_id][index] = {
-                    uc: 1, //当技能投入点数
-                    iu: 1, //当技能是否解锁 0 未解锁 1已解锁
-                    t: {}, //层信息
-                    pu: 0, //当前技能是否解锁被动 0 未解锁 1已解锁
-                    tm: 0, //最大层数
-                }
-            } else {
-                this.player_talent_list[player_id][index] = {
-                    uc: 0, //当前层投入点数
-                    iu: 0, //当前层是否解锁 0 未解锁 1已解锁
-                    t: {}, //层信息
-                    pu: 0, //当前技能是否解锁被动 0 未解锁 1已解锁
-                    tm: 0, //最大层数
-                }
-            }
-        }
-        let h_max_tf: { [key: string]: number } = {};
-        //处理解锁条件
-        let unlock_key = HeroTalentCounfg["1"].unlock_key;
-
-        for (const key in HeroTalentCounfg) {
-            let skill_index = HeroTalentCounfg[key].index;
-            let max_number = HeroTalentCounfg[key].max_number;
-            let tier_number = HeroTalentCounfg[key].tier_number;
-            if (!this.player_talent_list[player_id][skill_index].t.hasOwnProperty(tier_number)) {
-                this.player_talent_list[player_id][skill_index].t[tier_number] = {
-                    sk: "",
-                    si: {},
-                }
-            }
-            if (key == "1") { //第一个技能默认点了
-                h_max_tf["1"] = 1;
-                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
-                    iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
-                    ml: max_number, //最高等级
-                    uc: 1, //当前技能投入点数
-                }
-                this.player_talent_data_client[player_id]["1"] = {
-                    iu: 1,
-                    uc: 1,
-                }
-            } else if (unlock_key.includes(parseInt(key))) { //默认可以解锁
-                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
-                    iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
-                    ml: max_number, //最高等级
-                    uc: 0, //当前技能投入点数
-                }
-                this.player_talent_data_client[player_id][key] = {
-                    iu: 1,
-                    uc: 0,
-                }
-            } else {
-                this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
-                    iu: 0, //当前技能是否解锁 0 未解锁 1已解锁
-                    ml: max_number, //最高等级
-                    uc: 0, //当前技能投入点数
-                }
-            }
-            //重设最大层数
-            if (this.player_talent_list[player_id][skill_index].tm < tier_number && tier_number != 99) {
-                this.player_talent_list[player_id][skill_index].tm = tier_number;
-            }
-        }
-
-        //单独发送重置
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "HeroTalentSystem_ResetHeroTalent",
-            {
-                data: {
-                    hero_name: unitname,
-                }
-            }
-        );
-
-        //发送玩家天赋信息
-        this.GetHeroTalentListData(player_id, {});
-
-    }
-
 
     /**
      * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)
@@ -623,7 +567,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             this.HeroSelectTalent(player_id, { key: key })
         }
         if (cmd == "-rtf") {
-            this.ResetHeroTalent(player_id)
+            let hero = PlayerResource.GetSelectedHeroEntity(player_id);
+            this.RegisterHeroTalent(hero,true);
         }
     }
 
