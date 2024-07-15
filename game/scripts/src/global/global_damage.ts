@@ -112,6 +112,8 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     } else {
 
     }
+
+    // print("damage",params.damage,params.ability,params.attacker)
     return ApplyDamage(params);
 }
 

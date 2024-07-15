@@ -5,12 +5,14 @@ export default function Precache(context: CScriptPrecacheContext) {
     precacheResource(
         [
             'particles/econ/items/zeus/zeus_ti8_immortal_arms/zeus_ti8_immortal_arc.vpcf',
-            'particles/diy/pick_item_fx2.vpcf',
             'soundevents/game_sounds_heroes/game_sounds_zuus.vsndevts',
             'soundevents/game_sounds_heroes/game_sounds_hoodwink.vsndevts',
+            'particles/econ/items/mirana/mirana_persona/mirana_starstorm.vpcf',
+            'particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray.vpcf',
         ],
         context
     );
+
     // 需要预载入的kv文件，会自动解析KV文件中的所有vpcf资源等等
     precacheEveryResourceInKV(
         [
@@ -19,6 +21,7 @@ export default function Precache(context: CScriptPrecacheContext) {
         ],
         context
     );
+    
     // 需要预载入的单位
     precacheUnits(
         [
