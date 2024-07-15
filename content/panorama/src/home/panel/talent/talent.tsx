@@ -117,6 +117,12 @@ export const CreateTalentTreeNode = (heroname: string, row: TalentTreeObject, No
 
 export const GameEventsSubscribe = () => {
 
+    GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
+        let data = event.data;
+        let heroname = data.hero_name.replace("npc_dota_hero_", "");
+        CreateHeroTalent(heroname);
+    })
+
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
         let data = event.data;
         let hero_talent_list = data.hero_talent_list;
@@ -127,20 +133,16 @@ export const GameEventsSubscribe = () => {
             TalentNode.Data<PanelDataObject>().used = data.uc
             TalentNode.SetDialogVariableInt("used", data.uc)
             let TalentNodeButton = TalentNode.FindChildTraverse("TalentNodeButton") as Button;
-            TalentNodeButton.enabled = data.iu == 1;;
+            TalentNodeButton.enabled = data.iu == 1;
         }
     })
 
-    GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
-        let data = event.data;
-        let heroname = data.hero_name.replace("npc_dota_hero_", "");
-        CreateHeroTalent(heroname);
-    })
+
 
 }
 
 export const CreateHeroTalent = (heroname: string) => {
-    $.Msg(["CreateHeroTalent", heroname])
+    // $.Msg(["CreateHeroTalent", heroname])
     TalentNodeList.RemoveAndDeleteChildren();
     for (let i = 1; i <= 5; i++) {
         let row_node = $.CreatePanel("Panel", TalentNodeList, `Node_${i}`);
@@ -155,13 +157,12 @@ export const Init = () => {
     // 英雄天赋树
     hero_talent_tree["drow_ranger"] = FormatTalentTree("drow_ranger", talent_tree_drow_ranger);
 
-    // TalentNodeList.RemoveAndDeleteChildren();
-    // CreateHeroTalentTreeUI("drow_ranger","2");
-    // 发送请求
     GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
-        event_name: "GetHeroTalentListData",
+        event_name: "ResetHeroTalent",
         params: {}
     })
+
+
 }
 
 

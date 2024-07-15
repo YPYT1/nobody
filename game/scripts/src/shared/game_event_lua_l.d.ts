@@ -106,6 +106,10 @@ declare interface CGED {
         GetHeroTalentListData : {
             
         }
+        //重新获取充值英雄的名字
+        ResetHeroTalent : {
+
+        }
     }
     //地图选择
     MapChapter : {

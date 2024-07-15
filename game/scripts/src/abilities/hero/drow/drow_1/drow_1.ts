@@ -37,7 +37,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
     fakeAttack: boolean;
     useProjectile: boolean;
     base_value: number;
-    give_mana: number;
+    give_mana: number = 0;
 
     aoe_radius: number;
     bonus_value: number;
@@ -60,7 +60,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.caster.AttackReady()) {
+        if (this.caster.IsAlive() && this.caster.AttackReady()) {
             let attackrange = this.caster.Script_GetAttackRange() + 64;
             let enemies = FindUnitsInRadius(
                 this.team,

@@ -471,14 +471,18 @@ export class CustomAttribute {
 
     /** 更新KV值 */
     UpdataPlayerSpecialValue(player_id: PlayerID) {
+        // print("UpdataPlayerSpecialValue")
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         for (let i = 0; i < 5; i++) {
             let hAbility = hHero.GetAbilityByIndex(i);
-            let PassiveMdfName = hAbility.GetIntrinsicModifierName();
-            if (hAbility.IntrinsicMdf) {
-                hAbility.IntrinsicMdf.ForceRefresh()
+            if (hAbility){
+                hAbility.OnUpgrade();
             }
-
+            if (hAbility.IntrinsicMdf) {
+                let PassiveMdfName = hAbility.GetIntrinsicModifierName();
+                hAbility.IntrinsicMdf.ForceRefresh()
+                // print("PassiveMdfName ForceRefresh:",PassiveMdfName)
+            }
             // let 
         }
     }

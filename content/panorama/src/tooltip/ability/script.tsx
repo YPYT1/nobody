@@ -6,7 +6,7 @@ import { default as ArmsTypesJson } from "./../../json/config/game/const/arms_ty
 import { SetAbilityDescription, GetAbilityRarity, GetAbilityTypeCategory, GetAbilityElementLabel } from '../../utils/ability_description';
 import { ConvertAttributeValues, GetAbilityAttribute } from '../../utils/attribute_method';
 import { GetTextureSrc } from '../../common/custom_kv_method';
-import { GetHeroTalentTreeRowData } from "../../common/custom_talent";
+import { GetHeroTalentTreeObject, GetHeroTalentTreeRowData } from "../../common/custom_talent";
 import { FormatDescription } from "../../utils/method";
 
 
@@ -21,6 +21,9 @@ const AbilityCategoryList: ArmsTypeCategory[] = [
     "Resource",
     "Summon", "Surround",
 ]
+
+const MainPanel = $.GetContextPanel();
+const TalentAbilityExtra = $("#TalentAbilityExtra");
 
 let m_CombiePanel: Panel[] = []
 
@@ -77,7 +80,6 @@ function GetCurrentAbilityGetState(ability_list: string[]) {
 }
 
 const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
-    // $.Msg(["name",name,"entityIndex",entityIndex])
     let ability_name: string;
     let ability_level = 1;
     let ability_cooldown = 0;
@@ -199,36 +201,82 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     let ability_name_label = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}`)
     MainPanel.SetDialogVariable("ability_name", ability_name_label);
 
-    let description = SetAbilityDescription(ability_name, ability_level, false);
-    // $.Msg(["description", description])
-    // 解构天赋
-    let reg = /@[\w:]*@/g;
-    let res_text = description.match(reg)
-
-    if (res_text) {
-        for (let row of res_text) {
-            let row_list = row.replaceAll("@", "").split(":");
-            let talent_level = 0;
-            let talent_text = $.Localize(`#custom_talent_${row_list[1]}_${row_list[2]}`);
-            let talent_desc = $.Localize(`#custom_talent_${row_list[1]}_${row_list[2]}_desc`)
-            let TalentData = GetHeroTalentTreeRowData(row_list[1], row_list[2])
-            let description_txt = FormatDescription(talent_desc, TalentData.AbilityValues, talent_level, true);
-            let is_enable = talent_level > 0 ? "enable" : "disble"
-            description = description.replace(
-                row,
-                `<br><span class="${is_enable}">${talent_text} (${talent_level}/${TalentData.max_number})<br>${description_txt}</span>`
-            )
-        }
-    }
-
-    MainPanel.SetDialogVariable("description", description);
-
+    SetExtraAbilityDesc(ability_name, ability_level);
 
 }
 
-// render(<App />, $.GetContextPanel());
+function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
+    const QueryUnit = Players.GetLocalPlayerPortraitUnit();
+    let player_id = Entities.GetPlayerOwnerID(QueryUnit)
+    let description = SetAbilityDescription(ability_name, ability_level, false);
+    let is_hero = Entities.IsHero(QueryUnit);
+    if (!is_hero) {
+        MainPanel.SetDialogVariable("description", description);
+        return
+    }
+    let heroname = Entities.GetUnitName(QueryUnit).replace("npc_dota_hero_", "")
+    let talent_data = GetHeroTalentTreeObject(heroname);
 
-const MainPanel = $.GetContextPanel();
+    TalentAbilityExtra.RemoveAndDeleteChildren();
+
+    // $.Msg(["heroname", heroname, ability_name])
+
+    let netdata = CustomNetTables.GetTableValue("hero_talent", `${player_id}`)
+    // $.Msg(netdata)
+    if (netdata != null) {
+        for (let key in talent_data) {
+            let level = -1;
+            if (netdata[key]) { level = netdata[key].uc }
+            if (level <= 0) { continue }
+            let row_data = talent_data[key as keyof typeof talent_data]
+            let link_ability = row_data.link_ability;
+            if (link_ability == ability_name) {
+                let is_ability = row_data.is_ability == 1;
+                // $.Msg([ability_name, key, netdata[key]])
+                let extra_panel = $.CreatePanel("Panel", TalentAbilityExtra, "");;
+                extra_panel.BLoadLayoutSnippet("ExtraAbility");
+                extra_panel.SetHasClass("IsAbility", is_ability);
+
+
+                extra_panel.SetDialogVariableInt("talent_level", level);
+                extra_panel.SetDialogVariableInt("talent_max", row_data.max_number);
+
+                let title = $.Localize(`#custom_talent_${heroname}_${key}`)
+                extra_panel.SetDialogVariable("extra_title", title)
+
+                let TalentData = GetHeroTalentTreeRowData(heroname, key);
+                let talent_desc = $.Localize(`#custom_talent_${heroname}_${key}_desc`)
+                let extra_desc = FormatDescription(talent_desc, TalentData.AbilityValues, level, true);
+                extra_panel.SetDialogVariable("extra_desc", extra_desc)
+            }
+        }
+    }
+
+    // $.Msg(["description", description])
+    // 解构天赋
+    // let reg = /@[\w:]*@/g;
+    // let res_text = description.match(reg)
+
+    // if (res_text) {
+    //     for (let row of res_text) {
+    //         let row_list = row.replaceAll("@", "").split(":");
+    //         let talent_level = 0;
+    //         let talent_text = $.Localize(`#custom_talent_${row_list[1]}_${row_list[2]}`);
+    //         let talent_desc = $.Localize(`#custom_talent_${row_list[1]}_${row_list[2]}_desc`)
+    //         let TalentData = GetHeroTalentTreeRowData(row_list[1], row_list[2])
+    //         let description_txt = FormatDescription(talent_desc, TalentData.AbilityValues, talent_level, true);
+    //         let is_enable = talent_level > 0 ? "enable" : "disble"
+    //         description = description.replace(
+    //             row,
+    //             `<br><span class="${is_enable}">${talent_text} (${talent_level}/${TalentData.max_number})<br>${description_txt}</span>`
+    //         )
+    //     }
+    // }
+
+    MainPanel.SetDialogVariable("description", description);
+}
+
+
 
 export function Init() {
 
