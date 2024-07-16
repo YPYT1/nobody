@@ -232,8 +232,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
 
         this.ResetHeroTalent(player_id , {})
-        //发送玩家天赋信息
-        this.GetHeroTalentListData(player_id, {});
     }
     /**
      * 获取天赋选择列表
@@ -265,6 +263,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 }
             }
         );
+        //发送玩家天赋信息
+        this.GetHeroTalentListData(player_id, {});
     }
     /**
      * 
@@ -381,7 +381,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             }
                         }
                     }
-                    //检查此层是否可以开启 被动
+                    //检查此层是否可以开启 被动 
                     if (this.player_talent_list[player_id][skill_index].pu == 0) {
                         for (let index = 1; index <= this.player_talent_list[player_id][skill_index].tm; index++) {
                             let sk = this.player_talent_list[player_id][skill_index].t[index].sk;
