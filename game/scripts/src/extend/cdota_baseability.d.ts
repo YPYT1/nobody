@@ -5,7 +5,7 @@ declare interface CDOTABaseAbility extends CBaseEntity {
     /** 受伤类冷却 */
     AffectedActTime: number;
 
-    element_type: ElementTypeEnum
+    element_type: ElementTypes
     unit_list: CDOTA_BaseNPC[];
     ability_damage: number;
 

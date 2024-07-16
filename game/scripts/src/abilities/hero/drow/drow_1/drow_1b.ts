@@ -21,7 +21,7 @@ export class drow_1b extends drow_1 {
                 damage: ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 ability: this,
-                element_type: ElementTypeEnum.wind
+                element_type: ElementTypes.WIND
             })
         }
     }
@@ -40,62 +40,27 @@ export class modifier_drow_1b extends modifier_drow_1 {
         this.useProjectile = false;
     }
 
-    DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.ON_ATTACK_START,
-        ]
-    }
-
-    // OnIntervalThink(): void {
-    //     if (this.caster.AttackReady()) {
-    //         let attackrange = this.caster.Script_GetAttackRange() + 64;
-    //         let enemies = FindUnitsInRadius(
-    //             this.team,
-    //             this.caster.GetAbsOrigin(),
-    //             null,
-    //             attackrange,
-    //             UnitTargetTeam.ENEMY,
-    //             UnitTargetType.HERO + UnitTargetType.BASIC,
-    //             UnitTargetFlags.NONE,
-    //             FindOrder.CLOSEST,
-    //             false
-    //         )
-    //         if (enemies.length <= 0) { return }
-    //         let hTarget = enemies[0];
-    //         this.caster.in_process_attack = true;
-    //         this.caster.PerformAttack(
-    //             hTarget,
-    //             true, // useCastAttackOrb
-    //             true, // processProcs
-    //             false, // skipCooldown
-    //             false, // ignoreInvis
-    //             false, // useProjectile
-    //             true, // fakeAttack
-    //             false // neverMiss
-    //         );
-    //         this.caster.in_process_attack = false;
-    //         // 投射物
-    //         this.PlayEffect({ hTarget: hTarget })
-    //     }
+    // DeclareFunctions(): modifierfunction[] {
+    //     return [
+    //         ModifierFunction.ON_ATTACK_START,
+    //     ]
     // }
 
-   
-
-    OnAttackStart(event: ModifierAttackEvent): void {
-        if (event.attacker != this.GetParent()) { return }
-        // print("OnAttackStart")
-        this.caster.PerformAttack(
-            event.target,
-            true, // useCastAttackOrb
-            true, // processProcs
-            false, // skipCooldown
-            false, // ignoreInvis
-            false, // useProjectile
-            true, // fakeAttack
-            false // neverMiss
-        );
-        this.PlayAttackStart({ hTarget: event.target })
-    }
+    // OnAttackStart(event: ModifierAttackEvent): void {
+    //     if (event.attacker != this.GetParent()) { return }
+    //     // print("OnAttackStart")
+    //     this.caster.PerformAttack(
+    //         event.target,
+    //         true, // useCastAttackOrb
+    //         true, // processProcs
+    //         false, // skipCooldown
+    //         false, // ignoreInvis
+    //         false, // useProjectile
+    //         true, // fakeAttack
+    //         false // neverMiss
+    //     );
+    //     this.PlayAttackStart({ hTarget: event.target })
+    // }
 
     PlayAttackStart(params: PlayEffectProps): void {
         let hTarget = params.hTarget;

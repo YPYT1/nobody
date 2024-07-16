@@ -31,18 +31,14 @@
 						<Image id='AbilityImage' />
 						<Panel id="Cooldown" hittest="false">
 							<Panel id="CooldownOverlay" hittest="false" />
-							<Label id="CooldownTimer" text="{s:cooldown_timer}" hittest="false" />
+							<Label id="CooldownTimer" text="{d:cooldown_timer}" hittest="false" />
 						</Panel>
 						<Panel id='ActiveAbility' />
 						<Panel id="PassiveAbilityBorder" />
 						<Panel id="ActiveAbilityBorder" />
-
 						<Panel id="SilencedOverlay" />
-						<Panel hittest="false" id="ShineContainer" class=''>
-							<Panel hittest="false" id="Shine" class="do_shine" />
-						</Panel>
 					</Button>
-					<Panel hittest="false" id="ShineContainer" class=''>
+					<Panel hittest="false" id="ShineContainer">
 						<Panel hittest="false" id="Shine" class="do_shine" />
 					</Panel>
 				</Panel>

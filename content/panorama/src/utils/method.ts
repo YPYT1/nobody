@@ -150,11 +150,11 @@ export function FormatDescription(
 
             original_description_txt = original_description_txt.replaceAll(
                 `%${key}%%%`,
-                `<span class="GameplayVariable">${special_value.join(" / ")}</span>`
+                `<span class="GameplayVariable">${special_value.join("/")}</span>`
             );
             original_description_txt = original_description_txt.replaceAll(
                 `%${key}%`,
-                `<span class="GameplayVariable">${special_value.join(" / ")}</span>`
+                `<span class="GameplayVariable">${special_value.join("/")}</span>`
             );
         } else {
             if (curr_level <= 0) { curr_level = 1; }

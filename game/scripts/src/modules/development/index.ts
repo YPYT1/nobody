@@ -211,28 +211,12 @@ export class Development extends UIEventRegisterClass {
         if (cmd == "-rmsk") {
             this.RemoveStakes()
         }
-        // if (cmd == "-sg" || cmd == "-xg") {
-        //     const count = tonumber(args[0] ?? "1");
-        //     let amount = 0;
-        //     const unit_name_list = [
-        //         "npc_public_test",
-        //         // "npc_public_test2",
-        //         // "npc_public_test3",
-        //     ]
-        //     const vCenter = Vector(0, 0, 0)
-        //     GameRules.GetGameModeEntity().SetContextThink("devxg", () => {
-        //         amount += 1
-        //         for (let unit_name of unit_name_list) {
-        //             let unit = GameRules.Spawns.CreateNormal(unit_name, vCenter + RandomVector(3800) as Vector)
-        //             unit.SetControllableByPlayer(0, true)
-        //             // unit.SetHullRadius(36);
-        //         }
-        //         if (amount >= count) {
-        //             return null
-        //         }
-        //         return 0.25
-        //     }, 0.25)
-        // }
+        
+        if (cmd == "-prechace"){
+            // PrecacheResourceList([
+            //     'particles/econ/items/lich/frozen_chains_ti6/lich_frozenchains_frostnova.vpcf'
+            // ], context)
+        }
 
         if (cmd == "-vis") {
             print("add vis")

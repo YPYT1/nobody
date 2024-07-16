@@ -9,6 +9,16 @@
 */
 type CElementType = "null" | "fire" | "ice" | "thunder" | "wind" | "light" | "dark" ;
 
+declare const enum ElementTypes {
+    NONE = 0,
+    FIRE = 1,
+    ICE = 2,
+    THUNDER = 3,
+    WIND = 4,
+    LIGHT = 5,
+    DARK = 6    
+}
+
 declare const enum ElementTypeEnum {
     null = 0,
     fire = 1,

@@ -39,16 +39,18 @@ declare interface ApplyCustomDamageOptions {
     special_effect?: boolean;
     /** 伤害来源点 */
     damage_vect?: Vector;
-    /** 暴击判定 -1不暴击 0默认 1必定暴击  */
+    /** 暴击判定 -1必定不暴击 0默认 1必定暴击  */
     critical_flasg?: -1 | 0 | 1;
     /** 额外伤害`整数` 后续会转为百分比小数  */
     extra_percent?: number;
-    /** 元素 */
-    element_type?: ElementTypeEnum;
+    /** 元素类型 */
+    element_type?: ElementTypes;
     /** 技能类型 */
     ability_category?: ArmsAbilityCategory;
     /** 是否为固定值,不吃任何加成 */
     fixed?: boolean;
+    /** 额外暴击率 */
     crit_chance?: number;
+    /** 额外暴击伤害 */
     crit_bonus_dmg?: number;
 }

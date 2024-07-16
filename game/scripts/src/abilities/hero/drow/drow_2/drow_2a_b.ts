@@ -41,7 +41,7 @@ export class drow_2a_b extends drow_2a {
                     damage: ability_damage,
                     damage_type: DamageTypes.MAGICAL,
                     ability: this,
-                    element_type: ElementTypeEnum.ice,
+                    element_type: ElementTypes.ICE,
                     is_primary: true,
                 })
             } else {
@@ -51,7 +51,6 @@ export class drow_2a_b extends drow_2a {
                     damage: ability_damage,
                     damage_type: DamageTypes.PHYSICAL,
                     ability: this,
-                    // element_type: ElementTypeEnum.ice,
                     is_primary: true,
                 })
             }
@@ -88,7 +87,7 @@ export class drow_2a_b extends drow_2a {
                         damage: damage,
                         damage_type: DamageTypes.MAGICAL,
                         ability: this,
-                        element_type: ElementTypeEnum.ice,
+                        element_type: ElementTypes.ICE,
                         is_primary: true,
                     })
                 }

@@ -261,9 +261,9 @@
 
         .Variable,
         .GameplayVariable {
-            font-size: 20px;
-            font-weight: bold;
-            color: #29323b;
+            // font-size: 20px;
+            // font-weight: bold;
+            color: #747474;
         }
 
         .OtherVariable {
@@ -271,7 +271,8 @@
         }
 
         .Current {
-            color: #ffffff;
+            color: #ffde4b;
+            // color: #ffffff;
         }
 
         .negative {
@@ -280,7 +281,7 @@
 
         .AttributeVar {
             font-size: 19px;
-            color: #ffde4b;
+            
         }
     }
 
@@ -293,74 +294,86 @@
     .ExtraAbility {
         width: 100%;
         flow-children: down;
-        margin-top: 4px;
-        // padding: 0px 4px;
+        margin-top: 8px;
+        // padding: 0px 8px;
 
         &.IsAbility {
             // border: 1px solid #00ff00;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
 
             .ExtraHeader {
-                background-color: #184418;
+                height: 41px;
+                background-image: url("file://{images}/custom_game/tooltip/ability/extra_header_1.png");
+                background-repeat: no-repeat;
+                // background-color: #184418;
             }
 
             #TalentIcon {
+                // margin-left: 12px;
                 width: 20px;
                 height: 20px;
+                border: 1px solid #000000;
+                background-color: #dddddd;
             }
 
             .Title {
-                font-size: 20px;
+                font-size: 22px;
             }
 
-            .ExtraDescription {
-                font-size: 18px;
-                // color: #00ff00;
-                background-color: #162916;
-                wash-color: #bbffbb;
-            }
         }
 
 
 
         .ExtraHeader {
             width: 100%;
-            padding: 4px;
+            padding: 4px 8px;
             flow-children: right;
+            height: 29px;
+            background-image: url("file://{images}/custom_game/tooltip/ability/extra_header_2.png");
+            background-repeat: no-repeat;
         }
 
         #TalentIcon {
             // margin-left: 8px;
-            width: 16px;
-            height: 16px;
-            background-color: #fff;
+            // visibility: collapse;
+            // width: 16px;
+            // height: 16px;
+            // background-color: #fff;
             vertical-align: middle;
         }
 
         .Title {
             margin-left: 4px;
             font-size: 18px;
-            color: #cae0f3;
+            color: #ffffff;
             text-shadow: 0px 0px 2px 3.0 #000000;
             vertical-align: middle;
         }
 
         .Level {
             margin-left: 4px;
-            font-size: 16px;
+            font-size: 18px;
+            color:#ffffff;
+            text-shadow: 0px 0px 2px 3.0 #000000;
             vertical-align: middle;
         }
 
         .ExtraDescription {
             width: 100%;
             // margin-top: 2px;
-            padding: 2px 4px;
+            background-image: url("file://{images}/custom_game/tooltip/ability/extra_label_bg.png");
+            padding: 8px;
 
+            Label {
+                font-size: 18px;
+                color: #ffffff;
+            }
 
-            font-size: 16px;
-            color: #ffffff;
-            wash-color: #ebbf31;
+            // wash-color: #ebbf31;
 
+            .Current {
+                color:#ffde4b;
+            }
         }
     }
 

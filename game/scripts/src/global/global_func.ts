@@ -450,6 +450,23 @@ function GetCustomSystemTime() {
 /**
  * 获取玩家数量
  */
-function GetPlayerCount() :  number{
+function GetPlayerCount(): number {
     return PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS)
+}
+
+function PrecacheResourceList(resourceList: string[], context: CScriptPrecacheContext) {
+    print("PrecacheResourceList", IsServer())
+    resourceList.forEach(resource => {
+        _precacheResString(resource, context);
+    });
+}
+
+function _precacheResString(res: string, context: CScriptPrecacheContext) {
+    if (res.endsWith('.vpcf')) {
+        PrecacheResource('particle', res, context);
+    } else if (res.endsWith('.vsndevts')) {
+        PrecacheResource('soundfile', res, context);
+    } else if (res.endsWith('.vmdl')) {
+        PrecacheResource('model', res, context);
+    }
 }

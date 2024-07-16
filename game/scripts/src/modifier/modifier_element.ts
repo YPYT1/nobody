@@ -8,7 +8,7 @@ export class modifier_element_effect_fire extends BaseModifier {
 
     dot_damage: number
     dot_interval: number
-    element_type: ElementTypeEnum
+    element_type: ElementTypes
 
     parent: CDOTA_BaseNPC;
     caster: CDOTA_BaseNPC;
@@ -19,7 +19,7 @@ export class modifier_element_effect_fire extends BaseModifier {
         this.caster = this.GetCaster();
         this.parent = this.GetParent();
         this.playerid = this.caster.GetPlayerOwnerID();
-        this.element_type = ElementTypeEnum.fire;
+        this.element_type = ElementTypes.FIRE;
         this.OnRefresh(params)
         this.C_OnCreated(params);
         this.dot_interval = 1;

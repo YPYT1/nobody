@@ -1,3 +1,4 @@
+/** @noSelf */
 import { modifier_motion_surround } from "../../../../modifier/modifier_motion";
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
 import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
@@ -12,11 +13,6 @@ cd:15秒
 @registerAbility()
 export class drow_3a extends BaseHeroAbility {
 
-    Precache(context: CScriptPrecacheContext): void {
-        print("Precache drow_3a")
-        PrecacheResource('particle', "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf", context);
-    }
-
     GetIntrinsicModifierName(): string {
         return "modifier_drow_3a"
     }
@@ -28,6 +24,7 @@ export class modifier_drow_3a extends BaseHeroModifier {
     base_count: number;
     bonus_count: number;
     surround_duration: number;
+    surround_mdf = "modifier_drow_3a_summoned";
 
     UpdataAbilityValue(): void {
         this.base_count = this.ability.GetSpecialValueFor("base_count");
@@ -40,8 +37,9 @@ export class modifier_drow_3a extends BaseHeroModifier {
 
     OnIntervalThink() {
         if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(0)) {
-            this.ability.UseResources(true, true, true, true)
-            let total_count = 3;//this.base_count + this.bonus_count;
+            this.ability.UseResources(true, true, true, true);
+            this.ExtraEffect()
+            let total_count = this.base_count + this.bonus_count;
             // 1个 面向 2个对角 3
             let pre_angle = 360 / total_count;
             for (let i = 0; i < total_count; i++) {
@@ -54,30 +52,36 @@ export class modifier_drow_3a extends BaseHeroModifier {
                     true
                 )
 
-                hSpirit.AddNewModifier(this.caster, this.ability, "modifier_drow_3a_summoned", {
+                hSpirit.AddNewModifier(this.caster, this.ability, this.surround_mdf, {
                     duration: this.surround_duration,
                     surround_distance: 500,
                     surround_qangle: surround_qangle,
-                    surround_speed: 500,
+                    surround_speed: 300,
                     surround_entity: this.caster.entindex(),
                 });
             }
-
+            
         }
     }
 
+    /** 额外效果 */
+    ExtraEffect() {
+
+    }
 }
 
 @registerModifier()
 export class modifier_drow_3a_summoned extends modifier_motion_surround {
 
-    // IsAura(): boolean { return true; }
-    // GetAuraRadius(): number { return 128; }
-    // IsAuraActiveOnDeath() { return false; }
-    // GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
-    // GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
-    // GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
-    // GetModifierAura() { return "modifier_drow_3a_summoned_collision"; }
+    ModifierAura = "modifier_drow_3a_summoned_collision";
+
+    IsAura(): boolean { return true; }
+    GetAuraRadius(): number { return 300; }
+    IsAuraActiveOnDeath() { return false; }
+    GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
+    GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
+    GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
+    GetModifierAura() { return this.ModifierAura; }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
@@ -90,14 +94,58 @@ export class modifier_drow_3a_summoned extends modifier_motion_surround {
     }
 
     C_OnCreated(params: any): void {
-        let hParent = this.GetParent();
-        hParent.summoned_damage = this.GetAbility().GetAbilityDamage();
-        let Vpcf1 = ParticleManager.CreateParticle(
+        let cast_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf",
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         );
-        this.AddParticle(Vpcf1, false, false, 1, false, false);
+        this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 
+}
+
+@registerModifier()
+export class modifier_drow_3a_summoned_collision extends BaseModifier {
+
+    caster: CDOTA_BaseNPC;
+    team: DotaTeam;
+    ability_damage: number;
+    ability: CDOTABaseAbility;
+    radius: number;
+    base_value: number;
+    damage_type: DamageTypes;
+    element_type: ElementTypes;
+    interval: number;
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.caster = this.GetCaster();
+        this.base_value = this.GetAbility().GetSpecialValueFor("base_value");
+        this.interval = this.GetAbility().GetSpecialValueFor("interval");
+        this.team = this.caster.GetTeamNumber();
+        this.ability = this.GetAbility();
+        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
+        this.OnCreated_Extends();
+        this.OnIntervalThink();
+        this.StartIntervalThink(this.interval);
+
+    }
+
+    OnCreated_Extends() {
+        this.damage_type = DamageTypes.PHYSICAL;
+        this.element_type = ElementTypes.NONE
+        this.interval = 1;
+    }
+
+    OnIntervalThink(): void {
+        ApplyCustomDamage({
+            victim: this.GetParent(),
+            attacker: this.GetCaster(),
+            damage: this.ability_damage,
+            damage_type: this.damage_type,
+            ability: this.ability,
+            element_type: this.element_type,
+            is_primary: true,
+        })
+    }
 }

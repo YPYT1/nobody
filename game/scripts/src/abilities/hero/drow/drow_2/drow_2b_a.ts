@@ -49,7 +49,7 @@ export class drow_2b_a extends drow_2b {
                 damage: ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 ability: this,
-                element_type: ElementTypeEnum.fire,
+                element_type: ElementTypes.FIRE,
                 is_primary: true,
             })
             return true

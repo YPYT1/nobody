@@ -39,7 +39,7 @@ export class drow_2b_b extends drow_2b {
                 // 伤害衰减
                 let dmg_reduce = (1 + math.max(-1, (distance - this.closest_distance) / 1000)) * this.zc_value * 0.01;
                 ability_damage *= dmg_reduce;
-                print(ability_damage, dmg_reduce, distance)
+                // print(ability_damage, dmg_reduce, distance)
             }
             if (this.tj_value > 0 && UnitIsSlowed(target)) {
                 ability_damage *= (1 + this.tj_value * 0.01)
@@ -50,7 +50,7 @@ export class drow_2b_b extends drow_2b {
                 damage: ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 ability: this,
-                element_type: ElementTypeEnum.ice,
+                element_type: ElementTypes.ICE,
                 is_primary: true,
             })
             return true

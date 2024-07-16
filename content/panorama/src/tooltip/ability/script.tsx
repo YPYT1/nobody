@@ -225,9 +225,9 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
     // $.Msg(netdata)
     if (netdata != null) {
         for (let key in talent_data) {
-            let level = -1;
+            let level = 0;
             if (netdata[key]) { level = netdata[key].uc }
-            if (level <= 0) { continue }
+            // if (level <= 0) { continue }
             let row_data = talent_data[key as keyof typeof talent_data]
             let link_ability = row_data.link_ability;
             if (link_ability == ability_name) {

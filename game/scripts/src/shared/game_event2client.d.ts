@@ -51,4 +51,24 @@ declare interface CustomGameEventDeclarations {
     CustomOverrideAbility_UpdateSpecialValue: {
         data: OverrideSpecialValueProps
     }
+
+    /**
+     * 伤害显示回调
+     */
+    Popup_DamageNumberToClients: {
+        data: {
+            // 值
+            value: number,
+            // 伤害类型[物理/元素/纯粹]
+            type: DamageTypes,
+            // 单位实体
+            entity: number,
+            // 暴击
+            is_crit: number,
+            // 元素
+            element_type: ElementTypes;
+            // 攻击/承伤
+            is_attack: 0 | 1;
+        };
+    };
 }

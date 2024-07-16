@@ -95,7 +95,7 @@ export class modifier_drow_1c extends modifier_drow_1 {
                 damage: this.ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 ability: this.ability,
-                element_type: ElementTypeEnum.ice
+                element_type: ElementTypes.ICE
             })
             return -1 * event.original_damage
         }

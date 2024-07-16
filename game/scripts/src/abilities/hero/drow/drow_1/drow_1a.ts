@@ -93,7 +93,7 @@ export class modifier_drow_1a extends modifier_drow_1 {
                 damage: ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 ability: this.GetAbility(),
-                element_type: ElementTypeEnum.fire,
+                element_type: ElementTypes.FIRE,
                 is_primary: true,
             })
         }

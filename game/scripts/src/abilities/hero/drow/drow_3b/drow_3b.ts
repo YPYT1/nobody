@@ -8,10 +8,6 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 @registerAbility()
 export class drow_3b extends BaseHeroAbility {
 
-    Precache(context: CScriptPrecacheContext): void {
-        // particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf
-    }
-
     GetIntrinsicModifierName(): string {
         return "modifier_drow_3b"
     }
@@ -21,9 +17,20 @@ export class drow_3b extends BaseHeroAbility {
 export class modifier_drow_3b extends BaseHeroModifier {
 
     radius: number;
+    arrow_count: number;
+    base_value: number;
+
+    mdf_thinker = "modifier_drow_3b_thinker";
 
     UpdataAbilityValue(): void {
-        this.radius = 1000;
+        let hAbility = this.GetAbility();
+        this.radius = hAbility.GetSpecialValueFor("radius");
+        this.arrow_count = hAbility.GetSpecialValueFor("arrow_count")
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "38", 'bonus_arrow')
+            ;
+        this.base_value = hAbility.GetSpecialValueFor("base_value");
+
+
     }
 
     OnIntervalThink(): void {
@@ -56,12 +63,16 @@ export class modifier_drow_3b extends BaseHeroModifier {
         )
         ParticleManager.ReleaseParticleIndex(cast_fx)
 
+        let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
         CreateModifierThinker(
             this.caster,
             this.ability,
-            "modifier_drow_3b_thinker",
+            this.mdf_thinker,
             {
-                duration: 2
+                // duration: 3,
+                radius: this.radius,
+                arrow_count: this.arrow_count,
+                ability_damage: ability_damage,
             },
             vPos,
             this.team,
@@ -73,33 +84,45 @@ export class modifier_drow_3b extends BaseHeroModifier {
 @registerModifier()
 export class modifier_drow_3b_thinker extends BaseModifier {
 
+    caster: CDOTA_BaseNPC;
     arrow_count: number;
     parent: CDOTA_BaseNPC;
     ability_damage: number;
+    radius: number;
+    do_destroy: boolean;
+    ability:CDOTABaseAbility;
 
-    OnCreated(params: object): void {
+    OnCreated(params: any): void {
         if (!IsServer()) { return }
-        this.arrow_count = 12;
-        this.ability_damage = this.GetCaster().GetAverageTrueAttackDamage(null);
+        this.do_destroy = false;
+        this.caster = this.GetCaster();
+        this.ability = this.GetAbility();
+        this.arrow_count = params.arrow_count;
+        this.radius = params.radius;
+        this.ability_damage = params.ability_damage;
+        this.element_type = ElementTypes.NONE;
         this.parent = this.GetParent();
+        this.OnCreated_Extends();
         this.StartIntervalThink(0.5)
+    }
+
+    OnCreated_Extends() {
+
     }
 
     OnIntervalThink(): void {
         this.StartIntervalThink(-1);
-
         let arrow_fx = ParticleManager.CreateParticle(
             "particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrows.vpcf",
             ParticleAttachment.POINT,
             this.GetParent()
         )
         ParticleManager.ReleaseParticleIndex(arrow_fx);
-        
         let enemies = FindUnitsInRadius(
             this.GetCaster().GetTeam(),
             this.GetParent().GetAbsOrigin(),
             null,
-            1000,
+            this.radius,
             UnitTargetTeam.ENEMY,
             UnitTargetType.HERO + UnitTargetType.BASIC,
             UnitTargetFlags.NONE,
@@ -111,9 +134,12 @@ export class modifier_drow_3b_thinker extends BaseModifier {
             let hCaster = this.GetCaster()
             let hAbility = this.GetAbility()
             let ability_damage = this.ability_damage
-            //
-            
+
             this.parent.SetContextThink("drow_3b", () => {
+                if (this.do_destroy) {
+                    this.Destroy()
+                    return null
+                }
                 let rand = RandomInt(0, enemies.length - 1);
                 let target = enemies[rand]
                 let cast_fx = ParticleManager.CreateParticle(
@@ -122,38 +148,33 @@ export class modifier_drow_3b_thinker extends BaseModifier {
                     target,
                 )
                 ParticleManager.ReleaseParticleIndex(cast_fx);
-
-                // print("this.ability_damage ", this.ability_damage)
-                target.SetContextThink(DoUniqueString("drow3_b_delay"), () => {
-                    ApplyCustomDamage({
-                        victim: target,
-                        attacker: hCaster,
-                        damage: ability_damage,
-                        damage_type: DamageTypes.PHYSICAL,
-                        ability: hAbility,
-                        is_primary: true,
-                        // special_effect: true,
-                    });
-                    return null
-                }, 0.3)
-
-
-
+                this.DoDamageTarget(target, ability_damage)
                 count += 1;
                 if (count >= this.arrow_count) {
-                    this.Destroy();
-                    return null
+                    this.do_destroy = true
+                    return 0.5
                 }
                 return 0.1
             }, 0.1)
 
-        } else {
-
         }
-
 
     }
 
+    DoDamageTarget(target: CDOTA_BaseNPC, ability_damage: number) {
+        target.SetContextThink(DoUniqueString("drow3_b_delay"), () => {
+            ApplyCustomDamage({
+                victim: target,
+                attacker: this.caster,
+                damage: ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                element_type: this.element_type,
+                ability: this.ability,
+                is_primary: true,
+            });
+            return null
+        }, 0.3)
+    }
     OnDestroy(): void {
         if (!IsServer()) { return }
         UTIL_Remove(this.GetParent())

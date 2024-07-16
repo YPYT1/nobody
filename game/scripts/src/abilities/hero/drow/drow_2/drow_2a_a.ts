@@ -34,17 +34,16 @@ export class drow_2a_a extends drow_2a {
                     damage_type: DamageTypes.MAGICAL,
                     ability: this,
                     is_primary: true,
-                    element_type: ElementTypeEnum.wind
+                    element_type: ElementTypes.WIND
                 })
             } else {
                 ApplyCustomDamage({
                     victim: target,
                     attacker: this.caster,
                     damage: ability_damage,
-                    damage_type: DamageTypes.PHYSICAL,
+                    damage_type: DamageTypes.MAGICAL,
                     ability: this,
                     is_primary: true,
-                    // element_type: ElementTypeEnum.wind
                 })
             }
             if (this.talent_13 > 0) {

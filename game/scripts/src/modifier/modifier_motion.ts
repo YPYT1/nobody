@@ -339,6 +339,8 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
     _base_entity: CDOTA_BaseNPC;
     _rote_value: number;
     _downswing: boolean;
+    parent:CDOTA_BaseNPC;
+    caster:CDOTA_BaseNPC;
 
     IsHidden(): boolean { return true; }
     IsPurgable() { return false; }
@@ -374,10 +376,13 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
         this._downswing = false;
         this._base_entity = EntIndexToHScript(this.surround_entity) as CDOTA_BaseNPC;
         this._rote_value = 0;
+        this.parent = this.GetParent();
+        this.caster = this.GetCaster();
         if (this.ApplyHorizontalMotionController() == false || this.ApplyVerticalMotionController() == false) {
             this.Destroy();
             return;
         }
+        
         this.StartIntervalThink(0.1);
         this.C_OnCreated(params);
     }

@@ -17,6 +17,7 @@
         "strict": false
     },
     "include": ["src"],
+    "exclude": ["src/_temp"],
     "tstl": {
         "luaTarget": "JIT",
         "sourceMapTraceback": true,

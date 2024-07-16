@@ -113,27 +113,6 @@
         transition-duration: 0.1s;
     }
 
-    #ShineContainer {
-        width: 100%;
-        height: 100%;
-        margin: 2px;
-
-        #Shine {
-            background-color: gradient(linear, 100% 0%, 0% 100%, from(#00000000), color-stop(0.3, #00000000), color-stop(0.45, #ffffffff), color-stop(0.55, #ffffffff), color-stop(0.7, #00000000), to(#00000000));
-            background-size: 100% 100%;
-            width: 100%;
-            height: 100%;
-            opacity: 0.0001;
-            animation-name: none;
-            animation-duration: 0.4s;
-            animation-timing-function: ease-in-out;
-
-            &.do_shine {
-                animation-name: shine_sweep;
-                animation-duration: 0.4s;
-            }
-        }
-    }
 
     .ButtonSize {
         width: 100%;
@@ -550,7 +529,7 @@
         visibility: collapse;
     }
 
-    &.HasPoint .is_ability #AbilityReselect{
+    &.HasPoint .is_ability #AbilityReselect {
         background-image: url("file://{images}/custom_game/hud/control/re_select_h.png");
     }
 }
@@ -559,38 +538,35 @@
     visibility: collapse;
 }
 
-// .is_local.HasPoint .AbilityPanel .AbilityHoverTip {
-//     animation-name: flash;
-//     animation-duration: 0.4s;
-//     animation-iteration-count: infinite;
-// }
+#ShineContainer {
+    width: 100%;
+    height: 100%;
+    margin: 2px;
 
+    #Shine {
+        background-color: gradient(linear, 100% 0%, 0% 100%, from(#00000000),
+                color-stop(0.3, #00000000),
+                color-stop(0.45, #ffffffff),
+                color-stop(0.55, #ffffffff),
+                color-stop(0.7, #00000000), to(#00000000));
+        background-size: 100% 100%;
+        width: 100%;
+        height: 100%;
+        opacity: 0.00001;
+        animation-name: none;
+        animation-duration: 0.1s;
+        animation-timing-function: ease-in-out;
 
+    }
+}
 
-// .IsSelecting {
+.in_ready #ShineContainer #Shine.do_shine {
+    animation-name: shine_sweep;
+    animation-duration: 0.4s;
+}
 
-//     &.HasPoint {
-//         .AbilityHoverTip {
-//             animation-name: none;
-//             // animation-duration: 0.4s;
-//             // animation-iteration-count: infinite;
-//         }
-//     }
-
-//     &.SetIndex_5 .Ability5,
-//     &.SetIndex_4 .Ability4,
-//     &.SetIndex_3 .Ability3,
-//     &.SetIndex_2 .Ability2,
-//     &.SetIndex_1 .Ability1,
-//     &.SetIndex_0 .Ability0 {
-
-//         .AbilityContainer {
-//             brightness: 2;
-//             wash-color: #ffbe82;
-//             animation-name: flash;
-//             animation-duration: 1.4s;
-//             animation-iteration-count: infinite;
-//         }
-
-//     }
+// .in_cooldown #ShineContainer #Shine.do_shine {
+//     animation-delay: 0.1s;
+//     animation-name: shine_sweep;
+//     animation-duration: 0.1s;
 // }

@@ -23,7 +23,6 @@ export class drow_2b extends BaseHeroAbility {
                 damage: ability_damage,
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
-                // element_type: ElementTypeEnum.fire,
                 is_primary: true,
             })
             return true

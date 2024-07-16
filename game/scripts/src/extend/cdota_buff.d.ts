@@ -2,7 +2,11 @@ declare interface CDOTA_Buff {
 
     // MdfItemEffect(): void;
 
-    C_OnKilled(hTarget: CDOTA_BaseNPC) 
+    C_OnKilled(hTarget: CDOTA_BaseNPC);
+
+    damage_type: DamageTypes;
+    element_type: ElementTypes;
+    
     // attach_element: string;
 
     // element_value: number;

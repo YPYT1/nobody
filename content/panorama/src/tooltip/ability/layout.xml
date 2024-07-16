@@ -20,9 +20,12 @@
                 <Panel class="ExtraHeader">
                     <Image id="TalentIcon"/>
                     <Label class="Title" text="{s:extra_title}"/>
-                    <Label class="Level" text="{d:talent_level} / {d:talent_max}"/>
+                    <Label class="Level" text="({d:talent_level} / {d:talent_max})"/>
                 </Panel>
-                <Label class="ExtraDescription" text="{s:extra_desc}" html="true"/>
+                <Panel class="ExtraDescription" >
+                    <Label text="{s:extra_desc}" html="true"/>
+                </Panel>
+                
             </Panel>
         </snippet>
         <snippet name="ExtraBranch">

@@ -1,8 +1,8 @@
 /** @noSelfInFile */
-function PlayElementHitEffect(hUnit: CDOTA_BaseNPC, element_type?: ElementTypeEnum) {
+function PlayElementHitEffect(hUnit: CDOTA_BaseNPC, element_type?: ElementTypes) {
     // print("PlayElementHitEffect", element_type)
     if (element_type == null) { return }
-    if (element_type == ElementTypeEnum.thunder) {
+    if (element_type == ElementTypes.THUNDER) {
         let hit_fx = ParticleManager.CreateParticle(
             "particles/diy/element_impact_thunder.vpcf",
             ParticleAttachment.POINT_FOLLOW,
@@ -16,19 +16,13 @@ function PlayElementHitEffect(hUnit: CDOTA_BaseNPC, element_type?: ElementTypeEn
 function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     if (params.attacker == null) { return }
     const hAttacker = params.attacker;
+    const hTarget = params.victim;
     const iPlayerID = hAttacker.GetPlayerOwnerID();
-    let element_type = params.ability.element_type;
-    if (params.element_type != null) { element_type = params.element_type }
-    // const ability_category = params.ability_category
-
+    let element_type = params.element_type ?? ElementTypes.NONE;
     let is_primary = params.is_primary ?? false;
-    let critical_flasg = params.critical_flasg ?? 0;
-    let crit_chance = params.crit_chance ?? 0;
-    let crit_bonus_dmg = (params.crit_bonus_dmg ?? 0) + 150;
-    let extra_percent = params.extra_percent ?? 0;
-    let special_effect = params.special_effect ?? true;
+    let damage_number = params.damage;
     // PlayElementHitEffect(params.victim, element_type);
-
+    let is_crit = 0;
     let increased_injury = 0;// 增伤乘区
     let BondElement = GameRules.NewArmsEvolution.ElementBondDateList[iPlayerID].Element
     // DeepPrintTable(BondElement)
@@ -38,7 +32,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
         // 物理伤害
     } else if (params.damage_type == DamageTypes.MAGICAL) {
 
-        if (element_type == ElementTypeEnum.fire) {
+        if (element_type == ElementTypes.FIRE) {
             if (is_primary) {
                 // 添加灼烧
                 GameRules.ElementEffect.SetFirePrimary(params.attacker, params.victim)
@@ -57,7 +51,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
             //     crit_bonus_dmg += 50
             // }
 
-        } else if (element_type == ElementTypeEnum.ice) {
+        } else if (element_type == ElementTypes.ICE) {
             if (is_primary) {
                 GameRules.ElementEffect.SetIcePrimary(params.attacker, params.victim)
             }
@@ -76,7 +70,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
             //     if (has_effect_ice) { critical_flasg = 1 }
             // }
 
-        } else if (element_type == ElementTypeEnum.thunder) {
+        } else if (element_type == ElementTypes.THUNDER) {
             // let bond_count_thunder = BondElement[3];
             // // 3 雷元素技能极速+10
             // // 5 对麻痹的敌人额外+25%伤害
@@ -87,7 +81,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
             // if (bond_count_thunder >= 7) {
             //     crit_chance += 25
             // }
-        } else if (element_type == ElementTypeEnum.wind) {
+        } else if (element_type == ElementTypes.WIND) {
             // let bond_count_wind = BondElement[4];
             // /**
             //  * 3风元素伤害+10%
@@ -102,9 +96,9 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
             // let Wind_DamageMul = hAttacker.custom_attribute_value.Wind_DamageMul;
             // // print("Wind_DamageMul",Wind_DamageMul)
             // params.damage = params.damage * ( 1+ Wind_DamageMul * 0.01)
-        } else if (element_type == ElementTypeEnum.light) {
+        } else if (element_type == ElementTypes.LIGHT) {
             // let bond_count_light = BondElement[5];
-        } else if (element_type == ElementTypeEnum.dark) {
+        } else if (element_type == ElementTypes.DARK) {
             // let bond_count_dark = BondElement[6];
         }
 
@@ -113,6 +107,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
 
     }
 
+    PopupDamageNumber(hAttacker, hTarget, params.damage_type, damage_number, is_crit, element_type)
     // print("damage",params.damage,params.ability,params.attacker)
     return ApplyDamage(params);
 }
@@ -137,5 +132,34 @@ function ElementSpecialEffect_Fire(hTarget: CDOTA_BaseNPC, hCaster: CDOTA_BaseNP
         dot_buff.ForceRefresh()
     }
 
+
+}
+
+function PopupDamageNumber(
+    attacker: CDOTA_BaseNPC,
+    target: CDOTA_BaseNPC,
+    damage_type: DamageTypes,
+    value: number,
+    is_crit: number = 0,
+    element_type?: ElementTypes,
+) {
+    // print("PopupDamageNumber:", attacker, target, damage_type, value, is_crit, element_type)
+    if (value <= 0) { return; }
+    if (attacker.GetPlayerOwner()) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            attacker.GetPlayerOwner(),
+            "Popup_DamageNumberToClients",
+            {
+                data: {
+                    value: math.floor(value),
+                    type: damage_type,
+                    entity: target.entindex(),
+                    is_crit: is_crit,
+                    element_type: element_type,
+                    is_attack: 1,
+                }
+            }
+        );
+    }
 
 }

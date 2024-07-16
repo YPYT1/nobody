@@ -5,6 +5,8 @@ import { GetAbilityRarity } from "../../../utils/ability_description";
 import { GetTextureSrc } from "../../../common/custom_kv_method";
 
 let MainPanel = $.GetContextPanel();
+let CooldownOverlay = $("#CooldownOverlay");
+let Shine = $("#Shine");
 let AbilityContainer = MainPanel.GetChild(1) as Panel;
 let m_Ability = -1 as AbilityEntityIndex;
 let m_QueryUnit = -1 as EntityIndex;
@@ -16,11 +18,36 @@ function GetAbilityData(ability_name: string) {
 
 function AutoUpdateAbility() {
     UpdateAbility();
-    $.Schedule(1, AutoUpdateAbility);
+    $.Schedule(0.1, AutoUpdateAbility);
 }
 
 function UpdateAbility() {
-    // let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex
+    // let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
+    const queryUnit = Players.GetLocalPlayerPortraitUnit();
+
+    const isHidden = Abilities.IsHidden(m_Ability);
+
+    const ability_name = Abilities.GetAbilityName(m_Ability);
+    const ability_level = Abilities.GetLevel(m_Ability);
+
+    const have_nmana = Entities.GetMana(queryUnit);
+
+
+    const need_mana = Abilities.GetManaCost(m_Ability);
+    const cooldown_ready = Abilities.IsCooldownReady(m_Ability)
+    MainPanel.SetHasClass("insufficient_mana", have_nmana < need_mana);
+    // cooldown
+    const cooldownLength = Abilities.GetCooldownLength(m_Ability);
+    const cooldownRemaining = Abilities.GetCooldownTimeRemaining(m_Ability);
+    MainPanel.SetHasClass("in_cooldown", !cooldown_ready);
+    MainPanel.SetHasClass("in_ready", cooldown_ready);
+
+    let cooldown_total = Abilities.GetCooldown(m_Ability) == 0 ? -1 : Abilities.GetCooldown(m_Ability);
+    let deg = Math.ceil(-360 * cooldownRemaining / cooldown_total);
+    MainPanel.SetDialogVariableInt("cooldown_timer", cooldownRemaining);
+    // Shine.SetHasClass("do_shine", cooldown_ready);
+    CooldownOverlay.style.clip = `radial( 50.0% 50.0%, 0.0deg, ${deg}deg)`;
+    // setManaCost(need_mana);
     // $.Msg(["UpdateAbility", m_Ability, "m_QueryUnit", m_QueryUnit, "m_SlotIndex", m_SlotIndex])
     // m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
 
@@ -29,7 +56,6 @@ function UpdateAbility() {
 }
 
 function AbilityShowTooltip() {
-    // $.Msg(["AbilityShowTooltip", m_Ability])
     ShowCustomTooltip(AbilityContainer, "ability", "", m_Ability)
 }
 
@@ -44,7 +70,6 @@ function ActivateAbility() {
 
 
 function SetAbility(slot: number, innate: boolean = false) {
-
     MainPanel.Data<PanelDataObject>().m_SlotIndex = slot
     UpdateAbilityVar();
     AbilityContainer.SetPanelEvent("onmouseover", AbilityShowTooltip)
@@ -57,20 +82,20 @@ function SetAbility(slot: number, innate: boolean = false) {
 function UpdateAbilityVar() {
     let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex
     let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
-    
+
     m_Ability = Entities.GetAbility(m_QueryUnit, m_SlotIndex);
     let is_hidden = m_Ability < 1 || Abilities.IsHidden(m_Ability)
     let ability_name = Abilities.GetAbilityName(m_Ability)
     // MainPanel.visible = !is_hidden;
-    MainPanel.SetHasClass("is_hidden",is_hidden)
+    MainPanel.SetHasClass("is_hidden", is_hidden)
     let AbilityImage = $("#AbilityImage") as ImagePanel;
     let ability_data = NpcAbilityCustom[ability_name as keyof typeof NpcAbilityCustom];
     let texture = ""
-    if (m_Ability){
+    if (m_Ability) {
         texture = Abilities.GetAbilityTextureName(m_Ability);
-    } 
+    }
 
-    AbilityImage.SetImage(GetTextureSrc(texture,"UpdateAbilityVar")) 
+    AbilityImage.SetImage(GetTextureSrc(texture, "UpdateAbilityVar"))
 
     // 变更品质
     const rarity = GetAbilityRarity(ability_name);

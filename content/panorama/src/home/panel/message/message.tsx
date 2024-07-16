@@ -138,10 +138,45 @@ export const SendErrorMessage = (params: CustomGameEventDeclarations["CMsg_SendE
     GameEvents.SendEventClientSide("dota_hud_error_message", eventData);
 };
 
-export const Init = () => {
-    $.Msg(["MessageInit"])
-    StartMessageTimer();
+const element_color: [number, number, number][] = [
+    [255, 255, 255], // 无
+    [255, 33, 25], // 火
+    [77, 228, 255], // 冰
+    [193, 126, 255], // 雷
+    [148, 255, 77], // 风
+    [255, 240, 173], // 光
+    [161, 0, 140], // 暗
+];
 
+export const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageNumberToClients"]) => {
+    // $.Msg(["Popup_DamageNumberToClients",event])
+    const duration = 1;
+    let params = event.data;
+    let element = params.element_type ?? 0;
+
+    let damage_value = params.value;
+    let damage_type = params.type;
+    let entity = params.entity as EntityIndex;
+
+
+    let digits = String(damage_value).length + 1;
+
+
+    let color = element_color[element]
+    let pidx = Particles.CreateParticle(
+        "particles/msg_fx/msg_damage.vpcf",
+        ParticleAttachment_t.PATTACH_WORLDORIGIN,
+        entity
+    );
+    Particles.SetParticleControl(pidx, 0, Entities.GetAbsOrigin(entity));
+    Particles.SetParticleControl(pidx, 1, [1, damage_value, 3]);
+    Particles.SetParticleControl(pidx, 2, [duration, digits, 0]);
+    Particles.SetParticleControl(pidx, 3, color);
+    Particles.ReleaseParticleIndex(pidx);
+}
+
+export const Init = () => {
+    StartMessageTimer();
     GameEvents.Subscribe("CMsg_SendCommonMsgToPlayer", event => {
         let data = event.data;
         const message_object = { "message": data.message, "data": data.data };
@@ -149,7 +184,7 @@ export const Init = () => {
     })
 
     GameEvents.Subscribe("CMsg_SendErrorMsgToPlayer", SendErrorMessage)
-
+    GameEvents.Subscribe("Popup_DamageNumberToClients", DamageFloating)
 }
 
 (function () {

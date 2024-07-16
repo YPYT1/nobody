@@ -118,12 +118,14 @@ export const CreateTalentTreeNode = (heroname: string, row: TalentTreeObject, No
 export const GameEventsSubscribe = () => {
 
     GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
+        $.Msg(["HeroTalentSystem_ResetHeroTalent"])
         let data = event.data;
         let heroname = data.hero_name.replace("npc_dota_hero_", "");
         CreateHeroTalent(heroname);
     })
 
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
+        $.Msg(["HeroTalentSystem_GetHeroTalentListData"])
         let data = event.data;
         let hero_talent_list = data.hero_talent_list;
         // $.Msg(["hero_talent_list", hero_talent_list])
