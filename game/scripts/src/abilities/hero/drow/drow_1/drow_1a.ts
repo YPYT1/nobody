@@ -10,96 +10,78 @@ import { drow_1, modifier_drow_1 } from "./drow_1";
 @registerAbility()
 export class drow_1a extends drow_1 {
 
+    mul_chance: number;
+    mul_value: number;
+
+    aoe_radius: number;
+    bonus_value: number;
+
     GetIntrinsicModifierName(): string {
         return "modifier_drow_1a"
+    }
+
+    UpdataSpecialValue(): void {
+        print("drow_1a UpdataSpecialValue")
+        this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
+        this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
+        this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");
+        this.aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "aoe_radius")
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "4", "aoe_radius");
+    }
+
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
+        if (target) {
+            // let element_type: ElementTypes = extraData.et;
+            // let damage_type: DamageTypes = extraData.dt;
+
+            let vPos = target.GetAbsOrigin();
+            let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (1 + (this.bonus_value) * 0.01)
+            let effect_name = "particles/econ/items/abaddon/abaddon_alliance/abaddon_death_coil_alliance_explosion.vpcf"
+            if (RollPercentage(this.mul_chance)) {
+                ability_damage *= this.mul_value
+            }
+            // print("this.aoe_radius", this.mul_chance, this.mul_value)
+            let enemies = FindUnitsInRadius(
+                this.team,
+                vPos,
+                null,
+                this.aoe_radius,
+                UnitTargetTeam.ENEMY,
+                UnitTargetType.HERO + UnitTargetType.BASIC,
+                UnitTargetFlags.NONE,
+                FindOrder.ANY,
+                false
+            );
+
+            for (let enemy of enemies) {
+                ApplyCustomDamage({
+                    victim: enemy,
+                    attacker: this.caster,
+                    damage: ability_damage,
+                    damage_type: DamageTypes.MAGICAL,
+                    element_type: ElementTypes.FIRE,
+                    ability: this,
+                    is_primary: true,
+                })
+            }
+
+            let cast_fx = ParticleManager.CreateParticle(
+                "particles/econ/items/abaddon/abaddon_alliance/abaddon_death_coil_alliance_explosion.vpcf",
+                ParticleAttachment.WORLDORIGIN,
+                null
+            )
+            ParticleManager.SetParticleControl(cast_fx, 0, vPos);
+            ParticleManager.SetParticleControl(cast_fx, 1, vPos);
+            ParticleManager.ReleaseParticleIndex(cast_fx);
+        }
     }
 }
 
 @registerModifier()
 export class modifier_drow_1a extends modifier_drow_1 {
 
-    // aoe_radius: number;
-    // bonus_value: number;
-
-    // mul_chance: number;
-    // mul_value: number;
-
-    bonus_radius: number;
-
     UpdataSpecialValue(): void {
-        // 基础
-        this.aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "aoe_radius");
-        this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
-
-        // 浓缩
-        this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
-        this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");
-
-        // 炸裂 灼烧伤害为属性值,
-        this.bonus_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "4", "aoe_radius");
-
-        // print("this.aoe_radius", this.aoe_radius, this.bonus_radius)
+        this.tracking_proj_name = "particles/units/heroes/hero_clinkz/clinkz_searing_arrow.vpcf"
     }
 
-    DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.PROCATTACK_FEEDBACK,
-            ModifierFunction.PROJECTILE_NAME,
-        ]
-    }
-
-    GetModifierProcAttack_Feedback(event: ModifierAttackEvent): number {
-        this.PlayAttackLanded({ hTarget: event.target })
-        return - 1 * event.original_damage
-    }
-
-    /**
-     * 攻击变为300码范围伤害（直径），伤害提高 40%/70%/120%，技能赋予火元素效果，伤害变为火元素伤害。
-     * 伤害提高加算
-     */
-    PlayAttackLanded(params: PlayEffectProps): void {
-        let hTarget = params.hTarget;
-        let vPos = hTarget.GetAbsOrigin();
-        let radius = this.aoe_radius + this.bonus_radius;
-        let cast_fx = ParticleManager.CreateParticle(
-            "particles/econ/items/abaddon/abaddon_alliance/abaddon_death_coil_alliance_explosion.vpcf",
-            ParticleAttachment.WORLDORIGIN,
-            this.caster
-        )
-        ParticleManager.SetParticleControl(cast_fx, 0, vPos);
-        ParticleManager.ReleaseParticleIndex(cast_fx);
-
-        // DebugDrawCircle(vPos, Vector(255, 0, 0), 100, radius, true, 0.5)
-        let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (1 + (this.bonus_value) * 0.01)
-        if (RollPercentage(this.mul_chance)) {
-            ability_damage *= this.mul_value
-        }
-        let enemies = FindUnitsInRadius(
-            this.team,
-            vPos,
-            null,
-            radius,
-            UnitTargetTeam.ENEMY,
-            UnitTargetType.HERO + UnitTargetType.BASIC,
-            UnitTargetFlags.NONE,
-            FindOrder.CLOSEST,
-            false
-        );
-
-        for (let enemy of enemies) {
-            ApplyCustomDamage({
-                victim: enemy,
-                attacker: this.caster,
-                damage: ability_damage,
-                damage_type: DamageTypes.MAGICAL,
-                ability: this.GetAbility(),
-                element_type: ElementTypes.FIRE,
-                is_primary: true,
-            })
-        }
-    }
-
-    GetModifierProjectileName(): string {
-        return "particles/units/heroes/hero_clinkz/clinkz_searing_arrow.vpcf"
-    }
 }

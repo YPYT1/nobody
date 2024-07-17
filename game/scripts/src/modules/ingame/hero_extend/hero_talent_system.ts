@@ -524,13 +524,27 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     GetTalentKvOfUnit<
         TIndex extends keyof typeof TalentTreeObject[HeroName],
         T1 extends keyof typeof TalentTreeObject[HeroName][TIndex]["AbilityValues"],
-    >(hUnit: CDOTA_BaseNPC,
-        hero: HeroName, index_key: TIndex, ability_key: T1) {
-        let level_index = hUnit.hero_talent[index_key]
-        if (level_index == null) {
-            return 0
+    >(hUnit: CDOTA_BaseNPC,hero: HeroName, index_key: TIndex, ability_key: T1) {
+        if(IsServer()){
+            let level_index = hUnit.hero_talent[index_key]
+            if (level_index == null) {
+                return 0
+            } else {
+                return this.GetTKV(hero, index_key, ability_key, level_index - 1)
+            }
         } else {
-            return this.GetTKV(hero, index_key, ability_key, level_index - 1)
+            let player_id = hUnit.GetPlayerOwnerID();
+            let netdata = CustomNetTables.GetTableValue("hero_talent",`${player_id}`);
+            if(netdata && netdata[index_key]){
+                let level_index  = netdata[index_key].uc;
+                if(level_index > 0){
+                    return this.GetTKV(hero, index_key, ability_key, level_index - 1)
+                } else {
+                    return 0
+                }
+            } else {
+                return 0
+            }
         }
     }
 

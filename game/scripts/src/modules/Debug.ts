@@ -53,6 +53,7 @@ export class Debug {
             print("entity count", all_entities.length);
         }
         if (cmd == "-kvload") {
+            print("Playtesting_UpdateAddOnKeyValues")
             GameRules.Playtesting_UpdateAddOnKeyValues();
         }
 

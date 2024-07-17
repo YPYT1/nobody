@@ -14,6 +14,20 @@ export class drow_1 extends BaseHeroAbility {
         return "modifier_drow_1"
     }
 
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: object): boolean | void {
+        if (target) {
+            let ability_damage = this.caster.GetAverageTrueAttackDamage(null);
+            ApplyCustomDamage({
+                victim: target,
+                attacker: this.caster,
+                damage: ability_damage,
+                damage_type: DamageTypes.PHYSICAL,
+                ability: this,
+                element_type: ElementTypes.NONE,
+                is_primary: true,
+            })
+        }
+    }
 }
 
 @registerModifier()
@@ -36,15 +50,10 @@ export class modifier_drow_1 extends BaseHeroModifier {
 
     fakeAttack: boolean;
     useProjectile: boolean;
-    base_value: number;
-    give_mana: number = 0;
+    base_value: number = 0;
+    bonus_value: number = 0;
+    give_mana: number;
 
-    aoe_radius: number;
-    bonus_value: number;
-    mul_chance: number;
-    mul_value: number;
-
-    lianshe_chance: number;
 
     proj_width: number;
     proj_speed: number;
@@ -60,7 +69,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive() && this.caster.AttackReady()) {
+        if (this.caster.IsAlive()) {
             let attackrange = this.caster.Script_GetAttackRange() + 64;
             let enemies = FindUnitsInRadius(
                 this.team,
@@ -75,26 +84,24 @@ export class modifier_drow_1 extends BaseHeroModifier {
             )
             if (enemies.length <= 0) { return }
             let hTarget = enemies[0];
+            this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (this.base_value + this.bonus_value) * 0.01
             this.caster.in_process_attack = true;
             this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
-            this.caster.StartGesture(GameActivity.DOTA_ATTACK)
-            this.caster.PerformAttack(
-                hTarget,
-                true, // useCastAttackOrb
-                true, // processProcs
-                false, // skipCooldown
-                false, // ignoreInvis
-                this.useProjectile, // useProjectile
-                this.fakeAttack, // fakeAttack
-                false // neverMiss
-            );
+            this.caster.StartGesture(GameActivity.DOTA_ATTACK);
+            this.caster.GiveMana(this.give_mana);
+            this.PlayPerformAttack(this.caster, hTarget, this.ability_damage, this.fakeAttack);
             this.PlayAttackStart({ hTarget: hTarget })
             this.caster.in_process_attack = false;
+            let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
+
+            // print("attack_rate", attack_rate)
+            this.StartIntervalThink(attack_rate)
         }
     }
 
+
     PlayAttackStart(params: PlayEffectProps) {
-        this.caster.GiveMana(this.give_mana);
+
     }
 
 }

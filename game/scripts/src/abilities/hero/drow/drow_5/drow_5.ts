@@ -1,0 +1,177 @@
+import { BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
+import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+
+/**
+54	复仇	引燃复仇之魂，获得40%伤害加成，持续15秒。cd：40秒,没有蓝耗。
+
+
+
+ */
+@registerAbility()
+export class drow_5 extends BaseHeroAbility {
+
+    GetIntrinsicModifierName(): string {
+        return "modifier_drow_5"
+    }
+
+}
+
+export const branch_mdf_list = [
+    "modifier_drow_5_buff",
+    "modifier_drow_5_branch_a",
+    "modifier_drow_5_branch_b",
+    "modifier_drow_5_branch_c",
+]
+@registerModifier()
+export class modifier_drow_5 extends BaseHeroModifier {
+
+    duration: number;
+    branch: number = 0;
+    branch_mdf: string;
+
+    UpdataAbilityValue(): void {
+        this.duration = this.ability.GetSpecialValueFor("duration");
+
+        if (this.caster.hero_talent["55"]) {
+            this.branch = 1
+        } else if (this.caster.hero_talent["56"]) {
+            this.branch = 2
+        } else if (this.caster.hero_talent["57"]) {
+            this.branch = 3
+        } else {
+            this.branch = 0
+        }
+        // this.branch = 3;
+        this.branch_mdf = branch_mdf_list[this.branch]
+
+    }
+
+    OnIntervalThink(): void {
+        if (this.caster.IsAlive() && this.ability.IsCooldownReady()) {
+            this.ability.UseResources(true, true, true, true)
+            this.caster.AddNewModifier(this.caster, this.ability, "modifier_drow_5_buff", {
+                duration: this.duration
+            })
+            if (this.branch != 0) {
+                this.caster.AddNewModifier(this.caster, this.ability, this.branch_mdf, {
+                    duration: this.duration
+                })
+            }
+        }
+    }
+
+}
+
+@registerModifier()
+export class modifier_drow_5_buff extends BaseModifier {
+
+    buff_key = "drow_5_buff";
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
+        let hParent = this.GetParent();
+        GameRules.CustomAttribute.SetAttributeInKey(hParent, this.buff_key, {
+            'DamageBonusMul': {
+                "Base": dmg_bonus_pct
+            }
+        })
+
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
+    }
+}
+
+// 55	寒霜	"复仇获得冰元素之力，持续期间冰元素伤害提高50%，且免疫自身减速效果。"
+@registerModifier()
+export class modifier_drow_5_branch_a extends BaseModifier {
+
+    buff_key = "drow_5_branch_a";
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.caster = this.GetCaster();
+        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "55", 'bonus_value');
+        GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
+            'IceDamageBonus': {
+                "Base": bonus_value
+            }
+        })
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
+    }
+}
+
+// 56	追风	复仇获得风元素之力，攻击力提高50%，攻击速度及移动速度提高20%。
+@registerModifier()
+export class modifier_drow_5_branch_b extends BaseModifier {
+
+    buff_key = "drow_5_branch_a";
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.caster = this.GetCaster();
+        let ad_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "56", 'ad_bonus_pct');
+        let as_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "56", 'as_bonus_pct');
+        // print("ad_bonus_pct",ad_bonus_pct,as_bonus_pct)
+        GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
+            'AttackDamage': {
+                'BasePercent': ad_bonus_pct
+            },
+            'AttackSpeed': {
+                'Base': as_bonus_pct
+            },
+            'MoveSpeed': {
+                'BasePercent': as_bonus_pct
+            }
+        })
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
+    }
+
+}
+
+// 57	热烈	"复仇获得火元素之力，持续期间火元素伤害提高50%，且所有技能蓝量消耗降低50%。"
+@registerModifier()
+export class modifier_drow_5_branch_c extends BaseModifier {
+
+    buff_key = "drow_5_branch_c";
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.caster = this.GetCaster();
+        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "57", 'bonus_value');
+        GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
+            'FireDamageBonus': {
+                "Base": bonus_value
+            }
+        })
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
+    }
+
+    DeclareFunctions(): modifierfunction[] {
+        return [
+            ModifierFunction.MANACOST_PERCENTAGE_STACKING,
+        ]
+    }
+
+
+    GetModifierPercentageManacostStacking(): number {
+        return 50
+    }
+
+
+}

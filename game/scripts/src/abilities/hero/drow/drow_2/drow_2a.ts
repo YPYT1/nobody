@@ -51,7 +51,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
 
     /** 线型 */
     porj_linear = {
-        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
+        "none": "particles/proj/linear/none/proj_linear_none.vpcf",
         "fire": "particles/proj/linear/fire/proj_linear_fire.vpcf",
         "ice": "particles/proj/linear/ice/proj_linear_ice.vpcf",
         "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",

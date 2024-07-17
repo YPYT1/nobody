@@ -6,7 +6,7 @@ declare interface CDOTA_Buff {
 
     damage_type: DamageTypes;
     element_type: ElementTypes;
-    
+    caster:CDOTA_BaseNPC;
     // attach_element: string;
 
     // element_value: number;

@@ -2,8 +2,8 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 import { drow_1, modifier_drow_1 } from "./drow_1";
 
 /**
- * 穿透
- * 攻击可以穿透敌人，伤害提高30%。技能赋予风元素效果，伤害变为风元素伤害。
+5	穿透箭	攻击可以穿透敌人，伤害提高%bonus_value%%%。技能赋予风元素效果，伤害变为风元素伤害。（穿透距离不超过攻击距离）
+6	连射	穿透箭攻击时有%lianshe_chance%%%概率再射出一只箭。
  */
 @registerAbility()
 export class drow_1b extends drow_1 {
@@ -14,7 +14,7 @@ export class drow_1b extends drow_1 {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
         if (target) {
-            let ability_damage = extraData.a as number;;
+            let ability_damage = extraData.a as number;
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.GetCaster(),
@@ -30,59 +30,36 @@ export class drow_1b extends drow_1 {
 @registerModifier()
 export class modifier_drow_1b extends modifier_drow_1 {
 
-    projectiles_speed: number;
-    wave_width: number;
+    lianshe_chance: number;
 
     UpdataSpecialValue(): void {
-        this.wave_width = 128;
-        this.projectiles_speed = 1600;
+        this.proj_width = 90;
         this.fakeAttack = true;
-        this.useProjectile = false;
+        this.lianshe_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "6", 'lianshe_chance')
     }
-
-    // DeclareFunctions(): modifierfunction[] {
-    //     return [
-    //         ModifierFunction.ON_ATTACK_START,
-    //     ]
-    // }
-
-    // OnAttackStart(event: ModifierAttackEvent): void {
-    //     if (event.attacker != this.GetParent()) { return }
-    //     // print("OnAttackStart")
-    //     this.caster.PerformAttack(
-    //         event.target,
-    //         true, // useCastAttackOrb
-    //         true, // processProcs
-    //         false, // skipCooldown
-    //         false, // ignoreInvis
-    //         false, // useProjectile
-    //         true, // fakeAttack
-    //         false // neverMiss
-    //     );
-    //     this.PlayAttackStart({ hTarget: event.target })
-    // }
 
     PlayAttackStart(params: PlayEffectProps): void {
         let hTarget = params.hTarget;
+        let proj_speed = this.caster.GetProjectileSpeed();
         let attackrange = this.caster.Script_GetAttackRange() + 64;
         let vCaster = this.caster.GetAbsOrigin();
         let vTarget = hTarget.GetAbsOrigin()
         let vDirection = (vTarget - vCaster as Vector).Normalized();
         let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (1 + 0.3);
         vDirection.z = 0;
-        let vVelocity = vDirection * this.projectiles_speed as Vector;
+        let vVelocity = vDirection * proj_speed as Vector;
 
         // this.caster.in_process_attack = false;
         this.LaunchArrows(vCaster, vVelocity, attackrange * 1.3, ability_damage);
-        if (RollPercentage(50)) {
+        if (RollPercentage(this.lianshe_chance)) {
             this.caster.SetContextThink(DoUniqueString("shot"), () => {
                 this.LaunchArrows(vCaster, vVelocity, attackrange, ability_damage);
                 return null
-            }, 0.1)
+            }, 0.15)
 
         }
     }
-    
+
     LaunchArrows(vCaster: Vector, vVelocity: Vector, fDistance: number, ability_damage: number) {
         ProjectileManager.CreateLinearProjectile({
             EffectName: "particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf",
@@ -90,8 +67,8 @@ export class modifier_drow_1b extends modifier_drow_1 {
             vSpawnOrigin: vCaster,
             vVelocity: vVelocity,
             fDistance: fDistance,
-            fStartRadius: this.wave_width,
-            fEndRadius: this.wave_width,
+            fStartRadius: this.proj_width,
+            fEndRadius: this.proj_width,
             Source: this.caster,
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
@@ -100,6 +77,6 @@ export class modifier_drow_1b extends modifier_drow_1 {
                 a: ability_damage,
             }
         })
-        this.caster.GiveMana(5);
+        // this.caster.GiveMana(5);
     }
 }

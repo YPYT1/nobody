@@ -60,7 +60,7 @@ export class modifier_drow_3a extends BaseHeroModifier {
                     surround_entity: this.caster.entindex(),
                 });
             }
-            
+
         }
     }
 
@@ -102,6 +102,10 @@ export class modifier_drow_3a_summoned extends modifier_motion_surround {
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        UTIL_Remove(this.GetParent())
+    }
 }
 
 @registerModifier()

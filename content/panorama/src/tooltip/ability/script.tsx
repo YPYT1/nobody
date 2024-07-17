@@ -95,9 +95,11 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     }
     // $.Msg([ability_name,entityIndex])
     const abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
+    let ability_mana = 0;
     if (entityIndex <= 0) {
         // cooldown
         // $.Msg(["abilityData",abilityData])
+        ability_mana = abilityData ? (abilityData.AbilityManaCost ?? 0) : 0;
         let AbilityCooldown = (abilityData ? abilityData.AbilityCooldown : 0) as string | number;
         // $.Msg(AbilityCooldown)
         if (AbilityCooldown != null) {
@@ -113,8 +115,12 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
         }
 
         // mana
+    } else {
+        ability_mana = Abilities.GetManaCost(entityIndex);
+        // let mana_fra = Entities.ManaFraction(entityIndex)
+        // $.Msg(["entityIndex",entityIndex,ability_mana])
     }
-    let ability_mana = abilityData ? (abilityData.AbilityManaCost ?? 0) : 0;
+    
     // 图标
     const AbilityIcon = MainPanel.FindChildTraverse("AbilityIcon") as ImagePanel;
 

@@ -15,10 +15,11 @@ export const OnCreated = (params: CGDatadrivenProps) => {
 
 export const OnDeath = (params: CGDatadrivenProps) => {
     print("OnDeath")
-    for (let i = 0; i < 6; i++) {
-        let hAbility = params.caster.GetAbilityByIndex(i);
-        hAbility.OnDeath()
-    }
+    // for (let i = 0; i < 6; i++) {
+    //     let hAbility = params.caster.GetAbilityByIndex(i);
+
+    //     hAbility.OnDeath()
+    // }
 }
 
 export const OnKill = (params: CGDatadrivenProps) => {

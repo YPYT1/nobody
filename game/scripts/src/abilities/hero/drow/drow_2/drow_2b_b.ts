@@ -37,7 +37,8 @@ export class drow_2b_b extends drow_2b {
                 let distance = math.max(this.closest_distance, (vOrigin - vTarget as Vector).Length2D());
                 // 散射对距离越近的单位造成伤害越高。最近25码
                 // 伤害衰减
-                let dmg_reduce = (1 + math.max(-1, (distance - this.closest_distance) / 1000)) * this.zc_value * 0.01;
+                // print("diff", (distance - this.closest_distance) / 1000);
+                let dmg_reduce = 1 + (1 - (distance - this.closest_distance) / 1000) * this.zc_value * 0.01;
                 ability_damage *= dmg_reduce;
                 // print(ability_damage, dmg_reduce, distance)
             }
@@ -53,7 +54,7 @@ export class drow_2b_b extends drow_2b {
                 element_type: ElementTypes.ICE,
                 is_primary: true,
             })
-            return true
+            return false
         }
     }
 }
@@ -64,12 +65,13 @@ export class modifier_drow_2b_b extends modifier_drow_2b {
     sp_chance: number;
 
     UpdataSpecialValue(): void {
-        this.proj_name = this.porj_linear.fire;
+        this.proj_name = this.porj_linear.ice;
         this.sp_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "22", "chance");
     }
 
     PlayEffect(params: PlayEffectProps): void {
         this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01
+        print("base_val", this.base_value)
         let vTarget = params.hTarget.GetAbsOrigin()
         this.MultiShot(vTarget);
         if (RollPercentage(this.sp_chance)) {
