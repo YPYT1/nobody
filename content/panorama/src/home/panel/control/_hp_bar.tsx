@@ -49,5 +49,5 @@ export const UpdateLocalPlayer = () => {
 }
 
 (function () {
-    CreatePanel_HpBar();
+    // CreatePanel_HpBar();
 })();

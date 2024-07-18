@@ -28,29 +28,58 @@
 
     // visibility: collapse;
     #CenterPanel {
-        width: 731px;
+        width: 767px;
+        padding: 8px;
         // border: 1px solid #f00;
-        height: 225px;
+
+        // height: 145px;
         // background-color: #302f3b;
         horizontal-align: center;
         // flow-children: down;
         background-image: url("file://{images}/custom_game/hud/control/baseplate.png");
         background-repeat: no-repeat;
         background-position: 0% 100%;
-        margin-bottom: 12px;
+        margin-bottom: 4px;
+
+        .Content {
+            margin-left: 44px;
+            flow-children: right;
+            // horizontal-align: center;
+        }
     }
 
 }
 
+#AbilityPoint {
+    margin-left: 8px;
+    width: 67px;
+    height: 70px;
+    background-image: url("file://{images}/custom_game/hud/control/ability_point_bg.png");
+    vertical-align: bottom;
+    // border: 1px solid #ffffff;
+    // padding: 8px;
+
+    Label {
+        margin-left: 8px;
+        font-size: 22px;
+        color: #ffe8aa;
+        text-shadow: 0px 0px 2px 2.0 #000000;
+        horizontal-align: center;
+        vertical-align: middle;
+        margin-bottom: 12px;
+    }
+}
+
 #AbilityList {
+    margin-left: 8px;
     // width: (@AbilitySize + 4px)* 6;
     // min-height: @AbilitySize;
     flow-children: right;
     vertical-align: bottom;
     // background-color: #0a52489d;
     // border: 1px solid #ffffff;
-    horizontal-align: center;
-    margin-bottom: 28px;
+    // horizontal-align: center;
+    // margin-bottom: 28px;
 
     #Right,
     #Left {
@@ -180,6 +209,116 @@
     }
 }
 
-#HeroInnateAbility {
-    horizontal-align: center;
+#PlayerTalentTreeList {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+
+    &.Show {
+        opacity: 1;
+    }
+
+    .AbilityTreePanel {
+        // border: 1px solid #000000;
+        width: 320px;
+        height: 97px;
+        background-image: url("file://{images}/custom_game/hud/control/ability_up_bg.png");
+        background-size: 100%;
+
+        vertical-align: bottom;
+        // margin-bottom: 120px;
+        transform: translateY(-86px);
+        opacity: 0;
+        // flow-children: right;
+        // horizontal-align: center;
+        // padding: 0px 12px;
+
+        &.Show {
+            opacity: 1;
+        }
+
+        #TalentList {
+            margin-top: 6px;
+            // vertical-align: middle;
+            horizontal-align: center;
+            // width: 58px * 5;
+            flow-children: right;
+            overflow: clip;
+        }
+
+        .TalentInfo {
+            width: 66px;
+            height: 76px;
+
+            // margin: 0px 2px;
+            flow-children: none;
+            visibility: collapse;
+
+            &.Show {
+                visibility: visible;
+            }
+
+            &.IsNew {
+                .StateIcon {
+                    background-image: url("file://{images}/custom_game/hud/control/icon_new.png");
+                }
+
+                .TalentStateLabel {
+                    width: 66px;
+                    height: 69px;
+                    background-image: url("file://{images}/custom_game/hud/control/state_new.png");
+                    vertical-align: bottom;
+                }
+            }
+
+            &.IsUp {
+                .StateIcon {
+                    background-image: url("file://{images}/custom_game/hud/control/icon_up.png");
+                }
+
+                .TalentStateLabel {
+                    width: 66px;
+                    height: 69px;
+                    background-image: url("file://{images}/custom_game/hud/control/state_up.png");
+                    vertical-align: bottom;
+                }
+            }
+
+            .StateIcon {
+                width: 26px;
+                height: 12px;
+                margin-left: 4px;
+                margin-top: 4px;
+
+            }
+            #TalentNodeButton {
+                horizontal-align: center;
+                width: 52px;
+                height: 52px;
+                tooltip-position: top;
+                border: 2px solid #fec75200;
+                box-shadow: #8f6e2700 0px 0px 4px 0px;
+
+                &:enabled {
+                    &:hover {
+                        border: 2px solid #fec752;
+                        box-shadow: #8f6e27cc 0px 0px 4px 0px;
+                    }
+                }
+
+                #TalentIcon {
+                    width: 42px;
+                    height: 42px;
+                    horizontal-align: center;
+                    vertical-align: middle;
+                    border: 2px solid #8491a7;
+                }
+            }
+
+
+        }
+
+
+    }
+
 }

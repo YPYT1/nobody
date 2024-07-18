@@ -27,6 +27,7 @@ export const InitPanel = () => {
     //     }
     // })
 }
+
 export const UpdateLocalPlayer = () => {
     let select_unit = Players.GetLocalPlayerPortraitUnit();
     // $.Msg(last_unit <= 0 || select_unit == last_unit)

@@ -7,7 +7,8 @@ let talent_tree = {
 }
 
 let MainPanel = $.GetContextPanel();
-let TalentIcon = $("#TalentIcon") as ImagePanel;
+// let TalentIcon = $("#TalentIcon") as ImagePanel;
+
 export function Init() {
 
     let m_TooltipPanel = $.GetContextPanel().GetParent()!.GetParent()!;
@@ -30,7 +31,7 @@ function UpdateTooltip() {
     let talent_data = talent_tree[hero as keyof typeof talent_tree][key as "1"]
     let img = talent_data.img;
     let AbilityValues = talent_data.AbilityValues;
-    TalentIcon.SetImage(GetTextureSrc(img))
+    // TalentIcon.SetImage(GetTextureSrc(img))
 
 
     MainPanel.SetDialogVariableInt("max", talent_data.max_number)
@@ -43,6 +44,9 @@ function UpdateTooltip() {
     let description_txt = FormatDescription(talent_desc, AbilityValues, level, true);
 
     MainPanel.SetDialogVariable("talent_desc", description_txt)
+
+    // 风格
+    MainPanel.SetHasClass("IsAbility", talent_data.is_ability == 1)
 }
 
 (function () {

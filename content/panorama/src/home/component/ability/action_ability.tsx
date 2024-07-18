@@ -10,6 +10,8 @@ let Shine = $("#Shine");
 let AbilityContainer = MainPanel.GetChild(1) as Panel;
 let m_Ability = -1 as AbilityEntityIndex;
 let m_QueryUnit = -1 as EntityIndex;
+let LevelUpBtn = $("#LevelUpBtn") as Button;
+
 // let m_SlotIndex = 0;
 
 function GetAbilityData(ability_name: string) {
@@ -114,6 +116,7 @@ function SetAbilityRarity(rarity: number) {
 }
 
 function RegisterArmsEvent() {
+
     // let order = 
     // let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
     // MainPanel.SetPanelEvent("onactivate", () => {

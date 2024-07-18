@@ -4,77 +4,48 @@ import "./_attribute_state";
 import "./_portrait";
 import "./_arms_selector";
 import "./_buff_list";
+import { CreatePanel_Talent } from "./_talent";
+import { OnInitMoveHotkey } from "./_move_controller";
+
+
+export let AbilityList = $("#AbilityList");
+export let MainPanel = $.GetContextPanel();
 
 export const CreatePanel_ActionAbility = () => {
-    let MainPanel = $.GetContextPanel()
+
     let CenterStatsContainer = MainPanel.FindChildTraverse("CenterStatsContainer");
     if (CenterStatsContainer == null) {
         $.Schedule(0.3, CreatePanel_ActionAbility)
         return
     }
 
-    let LeftPanel = CenterStatsContainer.FindChildTraverse("Left")!;
-    LeftPanel.RemoveAndDeleteChildren();
-    for (var i = 0; i < 3; i++) {
-        var AbilityPanel = $.CreatePanel("Panel", LeftPanel, "");
+    AbilityList.RemoveAndDeleteChildren();
+    for (var i = 0; i < 5; i++) {
+        var AbilityPanel = $.CreatePanel("Panel", AbilityList, "");
         AbilityPanel.BLoadLayout(
             "file://{resources}/layout/custom_game/home/component/ability/action_ability.xml",
             true, false
         );
         AbilityPanel.Data<PanelDataObject>().SetAbility(i);
         AbilityPanel.Data<PanelDataObject>().RegisterArmsEvent()
-
     }
-
-    let RightPanel = CenterStatsContainer.FindChildTraverse("Right")!;
-    for (var i = 0; i < 3; i++) {
-        var AbilityPanel = $.CreatePanel("Panel", RightPanel, "");
-        AbilityPanel.BLoadLayout(
-            "file://{resources}/layout/custom_game/home/component/ability/action_ability.xml",
-            true, false
-        );
-        AbilityPanel.Data<PanelDataObject>().SetAbility(i + 3);
-        AbilityPanel.Data<PanelDataObject>().RegisterArmsEvent()
-    }
-
-    // let HeroInnateAbility = $("#HeroInnateAbility");
-    // HeroInnateAbility.BLoadLayout(
-    //     "file://{resources}/layout/custom_game/home/component/ability/action_ability.xml",
-    //     true, false
-    // );
-    // HeroInnateAbility.Data<PanelDataObject>().SetAbility(6, true);
-    InitAbilityAction()
+    InitAbilityAction();
+    CreatePanel_Talent()
 }
 
 export const UpdateAbilityList = () => {
-    // $.Msg(["UpdateAbilityList"])
-    let MainPanel = $.GetContextPanel()
-    let LeftPanel = MainPanel.FindChildTraverse("Left");
-    if (LeftPanel != null) {
-        for (let i = 0; i < LeftPanel.GetChildCount(); i++) {
-            let AbilityPanel = LeftPanel.GetChild(i)!;
-            AbilityPanel.Data<PanelDataObject>().UpdateAbilityVar();
-        }
+
+    for (let i = 0; i < AbilityList.GetChildCount(); i++) {
+        let AbilityPanel = AbilityList.GetChild(i)!;
+        AbilityPanel.Data<PanelDataObject>().UpdateAbilityVar();
     }
 
-    let RightPanel = MainPanel.FindChildTraverse("Right");
-    if (RightPanel != null) {
-        for (let i = 0; i < RightPanel.GetChildCount(); i++) {
-            let AbilityPanel = RightPanel.GetChild(i)!;
-            AbilityPanel.Data<PanelDataObject>().UpdateAbilityVar();
-        }
-    }
-    // let HeroInnateAbility = $("#HeroInnateAbility");
-    // HeroInnateAbility.Data<PanelDataObject>().UpdateAbilityVar();
-    let AbilityList = $("#AbilityList");
     let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
     let is_local = Entities.GetPlayerOwnerID(m_QueryUnit) == Players.GetLocalPlayer();
     AbilityList.SetHasClass("is_local", is_local)
 }
 
 const InitAbilityAction = () => {
-
-    let AbilityList = $("#AbilityList");
 
     GameEvents.Subscribe("NewArmsEvolution_GetEvolutionPoint", event => {
         let data = event.data;
@@ -88,6 +59,7 @@ const InitAbilityAction = () => {
 }
 
 (function () {
+    OnInitMoveHotkey()
     CreatePanel_ActionAbility();
     GameEvents.Subscribe("dota_portrait_ability_layout_changed", UpdateAbilityList);
     GameEvents.Subscribe("dota_player_update_selected_unit", UpdateAbilityList);

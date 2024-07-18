@@ -164,7 +164,7 @@ export const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageN
 
     let color = element_color[element]
     let pidx = Particles.CreateParticle(
-        "particles/msg_fx/msg_damage.vpcf",
+        "particles/diy/msg_damage.vpcf",
         ParticleAttachment_t.PATTACH_WORLDORIGIN,
         entity
     );

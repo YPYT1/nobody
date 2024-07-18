@@ -508,35 +508,111 @@
 
 // }
 .is_local {
-
-    #AbilityReselect {
-        width: 33px;
-        height: 32px;
-        horizontal-align: center;
+    .LevelUpTab {
         visibility: visible;
-        background-image: url("file://{images}/custom_game/hud/control/re_select_d.png");
-
-        // &:disabled {
-        //     background-image: url("file://{images}/custom_game/hud/control/re_select_d.png");
-        // }
-
-        // &:enabled {
-        //     background-image: url("file://{images}/custom_game/hud/control/re_select_h.png");
-        // }
     }
-
-    &.Innate #AbilityReselect {
-        visibility: collapse;
-    }
-
-    &.HasPoint .is_ability #AbilityReselect {
-        background-image: url("file://{images}/custom_game/hud/control/re_select_h.png");
-    }
+    
 }
-
-#AbilityReselect {
+.CanUpgrade .LevelUpTab {
+    opacity: 1;
+}
+.LevelUpTab {
     visibility: collapse;
+    width: 100%;
+    // height: 36px;
+    // border: 1px solid #ffffff;
+    // margin-bottom: -4px;
+    opacity: 0;
+
+    tooltip-position: top;
+    tooltip-body-position: 50% 50%;
+
+    z-index: 2;
+    transition-property: opacity, brightness;
+    transition-timing-function: ease-in-out;
+    transition-duration: .12s;
+
+    .LevelUpFX {
+        width: 100%;
+        height: 80px;
+        margin-bottom: 4px;
+
+        #LevelUpBurstFX {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    #LevelUpBtn {
+        width: 100%;
+        height: 36px;
+
+        vertical-align: bottom;
+        // 
+        // opacity: 0;
+        // 
+        tooltip-position: top;
+        tooltip-body-position: 50% 50%;
+
+        z-index: 2;
+        transition-property: opacity, brightness;
+        transition-timing-function: ease-in-out;
+        transition-duration: .12s;
+
+        background-image: url("s2r://panorama/images/hud/reborn/levelup_button_2_psd.vtex");
+        background-size: 100%;
+        background-repeat: no-repeat;
+
+        &:enabled {
+            &:active {
+                pre-transform-scale2d: .9;
+            }
+
+            &:hover {
+                .UpBtn {
+                    background-image: url("s2r://panorama/images/hud/reborn/levelup_plus_fill_psd.vtex");
+                }
+            }
+        }
+
+        .UpBtn {
+            horizontal-align: center;
+            vertical-align: middle;
+            width: 24px;
+            height: 24px;
+            background-image: url("s2r://panorama/images/hud/reborn/levelup_plus_well_psd.vtex");
+            background-size: 100% 100%;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            transition-property: background-image;
+            transition-duration: .12s;
+        }
+
+        #LearnModeButton {
+
+            background-image: url("s2r://panorama/images/hud/reborn/levelup_button_learnmode_psd.vtex");
+            height: 92px;
+            width: 72px;
+
+            horizontal-align: center;
+            margin-top: 14px;
+            z-index: 6;
+
+            background-size: 100% 100%;
+            background-position: 100% 100%;
+            background-repeat: no-repeat;
+
+            visibility: collapse;
+
+            transition-property: opacity, brightness, pre-transform-scale2d;
+            transition-timing-function: ease-in-out;
+            transition-duration: .12s;
+        }
+    }
 }
+
+
+
 
 #ShineContainer {
     width: 100%;
