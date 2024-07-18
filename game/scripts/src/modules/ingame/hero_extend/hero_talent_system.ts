@@ -350,7 +350,23 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                 uc: 0,
                             }
                         }
+                    }
 
+                    //根据总投入点 解锁层
+                    if (Object.values(this.player_talent_config.unlock_count).includes(this.player_talent_data[player_id].use_count)) {
+                        let s_u_index = Object.values(this.player_talent_config.unlock_count).indexOf((this.player_talent_data[player_id].use_count)) + 1;
+                        this.player_talent_list[player_id][s_u_index].iu = 1;
+                        if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
+                            for (const si_key in this.player_talent_list[player_id][s_u_index].t[1].si) {
+                                this.player_talent_list[player_id][s_u_index].t[1].si[si_key].iu = 1;
+                                if (!this.player_talent_data_client[player_id].hasOwnProperty(si_key)) {
+                                    this.player_talent_data_client[player_id][si_key] = {
+                                        iu: 1,
+                                        uc: 0,
+                                    }
+                                }
+                            }
+                        }
                     }
                     //处理技能
                     this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc++;
@@ -365,22 +381,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
                         this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
                     }
-                    //根据总投入点 解锁层
-                    if (Object.values(this.player_talent_config.unlock_count).includes(this.player_talent_data[player_id].use_count)) {
-                        let s_u_index = Object.values(this.player_talent_config.unlock_count).indexOf((this.player_talent_data[player_id].use_count)) + 1;
-                        this.player_talent_list[player_id][s_u_index].iu = 1;
-                        if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
-                            for (const key in this.player_talent_list[player_id][s_u_index].t[1].si) {
-                                this.player_talent_list[player_id][s_u_index].t[1].si[key].iu = 1;
-                                if (!this.player_talent_data_client[player_id].hasOwnProperty(key)) {
-                                    this.player_talent_data_client[player_id][key] = {
-                                        iu: 1,
-                                        uc: 0,
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    
                     //检查此层是否可以开启 被动 
                     if (this.player_talent_list[player_id][skill_index].pu == 0) {
                         for (let index = 1; index <= this.player_talent_list[player_id][skill_index].tm; index++) {
@@ -424,6 +425,34 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                     }
                                 }
                                 break;
+                            }
+                        }
+                    }
+
+                    if(tier_number != 99){
+                        //同层排除功能
+                        if(this.player_talent_list[player_id][skill_index].t[tier_number]){
+                            for (const t_key in this.player_talent_list[player_id][skill_index].t[tier_number].si) {
+                                if(this.player_talent_list[player_id][skill_index].t[tier_number].sk != ""){
+                                    if(t_key != this.player_talent_list[player_id][skill_index].t[tier_number].sk){
+                                        if(this.player_talent_data_client[player_id][t_key]){
+                                            this.player_talent_data_client[player_id][t_key].iu = 0;
+                                        }
+                                    }
+                                }
+                                
+                            }
+                        }
+                        //上下级排除
+                        if(this.player_talent_list[player_id][skill_index].t[tier_number + 1]){
+                            for (const t_key in this.player_talent_list[player_id][skill_index].t[tier_number + 1].si) {
+                                if(this.player_talent_list[player_id][skill_index].t[tier_number + 1].sk != ""){
+                                    if(t_key != this.player_talent_list[player_id][skill_index].t[tier_number + 1].sk){
+                                        if(this.player_talent_data_client[player_id][t_key]){
+                                            this.player_talent_data_client[player_id][t_key].iu = 0;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -511,7 +540,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             return this.talent_tree_values[hero][value_key][k2_key][level_index];
         }
     }
-
     /**
      * 天赋数据获取
      * @param hUnit 
@@ -547,6 +575,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         }
     }
+
 
     /**
      * 天赋数据获取 最低都是1级
