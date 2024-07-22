@@ -18,7 +18,7 @@
         <Panel id="mystical_shop" hittest="false" />
         <Panel id="element_bond" hittest="false"/>
         <Panel id="talent" hittest="true" />
-
+        <Panel id="health_bar" hittest="false" />
         <Panel id="game_logo" hittest="false" />
         <Panel id="development" />
     </Panel>

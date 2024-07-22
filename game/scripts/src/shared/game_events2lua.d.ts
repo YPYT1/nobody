@@ -48,6 +48,10 @@ declare interface CGED {
     CustomOverrideAbility: {
         GetUpdateSpecialValue: {}
     }
+
+    CMsg: {
+        GetEntityListHealthBar: {}
+    }
 }
 
 

@@ -19,6 +19,11 @@ declare interface CustomGameEventDeclarations {
         };
     };
 
+    CMsg_GetEntityListHealthBar: {
+        data: {
+            boss_list: EntityIndex[], // boss
+        };
+    };
 
     CMsg_PopupNumbersToClients: {
         data: {

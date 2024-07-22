@@ -32,7 +32,7 @@ export class Filter {
         //     params.damage = params.damage * damage_income * 0.01;
         // }
         // 倍率
-        const hMulBuff = hUnit.FindModifierByName("modifier_common_mul_health");
+        const hMulBuff = hUnit.FindModifierByName("");
         if (hMulBuff) {
             let iMulStack = hMulBuff.GetStackCount();
             params.damage = params.damage / iMulStack;

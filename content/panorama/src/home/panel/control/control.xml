@@ -37,12 +37,12 @@
             </Button>
         </snippet>
 		<snippet name="AbilityTreePanel">
-			<Panel class="AbilityTreePanel">
+			<Button class="AbilityTreePanel">
 				<Panel class="AbilityUpBg">
 					<Panel class=""/>
 				</Panel>
 				<Panel id="TalentList"/>
-			</Panel>
+			</Button>
 		</snippet>
 		<snippet name="TalentInfo" hittest="false">
 			<Panel class="TalentInfo" hittest="false">

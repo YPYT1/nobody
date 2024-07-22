@@ -4,6 +4,7 @@ import { default as NpcAbilityCustom } from "../../../json/npc_abilities_custom.
 import { GetAbilityRarity } from "../../../utils/ability_description";
 import { GetTextureSrc } from "../../../common/custom_kv_method";
 
+const localPlayer = Players.GetLocalPlayer();
 let MainPanel = $.GetContextPanel();
 let CooldownOverlay = $("#CooldownOverlay");
 let Shine = $("#Shine");
@@ -25,7 +26,7 @@ function AutoUpdateAbility() {
 
 function UpdateAbility() {
     // let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
-    const queryUnit = Players.GetLocalPlayerPortraitUnit();
+    const queryUnit = Players.GetPlayerHeroEntityIndex(localPlayer) ;// Players.GetLocalPlayerPortraitUnit();
 
     const isHidden = Abilities.IsHidden(m_Ability);
 
@@ -83,7 +84,7 @@ function SetAbility(slot: number, innate: boolean = false) {
 
 function UpdateAbilityVar() {
     let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex
-    let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
+    let m_QueryUnit = Players.GetPlayerHeroEntityIndex(localPlayer);// Players.GetLocalPlayerPortraitUnit();
 
     m_Ability = Entities.GetAbility(m_QueryUnit, m_SlotIndex);
     let is_hidden = m_Ability < 1 || Abilities.IsHidden(m_Ability)

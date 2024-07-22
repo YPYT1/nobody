@@ -101,7 +101,8 @@ export const Initialize = () => {
     $("#mystical_shop").BLoadLayout(layout_path + "/mystical_shop/mystical_shop.xml", true, false);
     $("#element_bond").BLoadLayout(layout_path + "/element_bond/element_bond.xml", true, false);
     $("#hero_selection").BLoadLayout(layout_path + "/hero_selection/hero_selection.xml", true, false);
-    
+    $("#health_bar").BLoadLayout(layout_path + "/health_bar/health_bar.xml", true, false);
+
     // talent
     $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", true, false);
     if (Game.IsInToolsMode()) {

@@ -211,8 +211,8 @@ export class Development extends UIEventRegisterClass {
         if (cmd == "-rmsk") {
             this.RemoveStakes()
         }
-        
-        if (cmd == "-prechace"){
+
+        if (cmd == "-prechace") {
             // PrecacheResourceList([
             //     'particles/econ/items/lich/frozen_chains_ti6/lich_frozenchains_frostnova.vpcf'
             // ], context)
@@ -244,6 +244,33 @@ export class Development extends UIEventRegisterClass {
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vDrop, 100);
             }
 
+        }
+
+        if (cmd == "-hb") {
+            // let index = command[1] ?? "1";
+            // print("bosshealthbar");
+            let hHero = PlayerResource.GetSelectedHeroEntity(player_id)
+            let boss_unit = CreateUnitByName(
+                `npc_creature_boss_0`,
+                hHero.GetAbsOrigin() + RandomVector(500) as Vector,
+                true,
+                null,
+                null,
+                DotaTeam.BADGUYS
+            );
+            // boss_unit.map_info = {};
+            // print("boss_unit", boss_unit);
+            GameRules.CMsg.SetBossHealthBar(boss_unit);
+        }
+
+        if (cmd == "-hbremove") {
+            let unit_length = GameRules.CMsg.boss_list.length;
+            // for(let i = 0;i<unit_length;i++ ){}
+            for (let entity of GameRules.CMsg.boss_list) {
+                let unit = EntIndexToHScript(entity) as CDOTA_BaseNPC;
+                GameRules.CMsg.RemoveBossHealthBar(unit)
+                unit.Kill();
+            }
         }
 
         if (cmd == "-getall") {

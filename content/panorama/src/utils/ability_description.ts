@@ -1,5 +1,5 @@
 import { default as NpcAbilityCustom } from "./../json/npc_abilities_custom.json";
-import { FormatDescription, FormatLocalize } from "./method";
+import { FormatDescription } from "./method";
 
 
 const DamageTypeLabel: { [key: string]: string; } = {

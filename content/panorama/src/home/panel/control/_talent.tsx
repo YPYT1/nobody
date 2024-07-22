@@ -120,11 +120,10 @@ export const CreatePanel_Talent = () => {
 }
 
 const CreateHeroTalentTree = (heroname: string) => {
-    $.Msg(["CreateHeroTalentTree", heroname])
+    // $.Msg(["CreateHeroTalentTree", heroname])
     PlayerTalentTreeList.RemoveAndDeleteChildren();
     let hero_data = talent_data[heroname as keyof typeof talent_data];
     let talent_tree = FormatTalentTree(heroname, hero_data);
-
     let index = 0;
     for (let id in hero_data) {
         let row_data = hero_data[id as keyof typeof hero_data];
@@ -132,10 +131,9 @@ const CreateHeroTalentTree = (heroname: string) => {
         let talent_id = `talent_${id}`;
         let AbilityTreePanel = PlayerTalentTreeList.FindChildTraverse(tree_id);
         if (AbilityTreePanel == null) {
-            AbilityTreePanel = $.CreatePanel("Panel", PlayerTalentTreeList, tree_id, {
-                class: "AbilityTreePanel"
-            });
+            AbilityTreePanel = $.CreatePanel("Button", PlayerTalentTreeList, tree_id);
             AbilityTreePanel.BLoadLayoutSnippet("AbilityTreePanel")
+            AbilityTreePanel.SetPanelEvent("onactivate", () => { })
             let AbilityPanel = AbilityList.GetChild(index);
             // $.Msg(["AbilityPanel", AbilityPanel])
             if (AbilityPanel) {
@@ -259,11 +257,11 @@ const GameEventsSubscribe = () => {
                         ShowAbilityUpgradeBtn(i, false)
                     }
                     let curr_max = CheckCurrentNodeAllMax(open_state.index);
-                    if (curr_max){
+                    if (curr_max) {
                         // 关闭升级窗口
-                        ToggleAbilityTreePanel(open_state.index,false)
+                        ToggleAbilityTreePanel(open_state.index, false)
                     }
-                 
+
                 } else {
                     for (let i = 0; i < 5; i++) {
                         let is_max = CheckCurrentNodeAllMax(i);

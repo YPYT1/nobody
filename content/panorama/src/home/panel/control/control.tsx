@@ -40,9 +40,9 @@ export const UpdateAbilityList = () => {
         AbilityPanel.Data<PanelDataObject>().UpdateAbilityVar();
     }
 
-    let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
-    let is_local = Entities.GetPlayerOwnerID(m_QueryUnit) == Players.GetLocalPlayer();
-    AbilityList.SetHasClass("is_local", is_local)
+    // let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
+    // let is_local = Entities.GetPlayerOwnerID(m_QueryUnit) == Players.GetLocalPlayer();
+    // AbilityList.SetHasClass("is_local", is_local)
 }
 
 const InitAbilityAction = () => {

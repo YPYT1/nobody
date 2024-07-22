@@ -1,0 +1,78 @@
+<root>
+	<styles>
+		<include src="./health_bar.less" />
+		<!-- <include src="./huanshen.less" /> -->
+	</styles>
+	<scripts>
+		<include src="./health_bar.tsx" />
+	</scripts>
+	<snippets>
+		<snippet name="TopHealthBar">
+            <Panel class="TopHealthBar" hittest="true">
+                <Panel id="HealthBarInfo">
+                    <Panel class="BossLabel">
+                        <Label class="BossName" text="{s:boss_name}"/>
+						<Label class="BossHpCount" text="X{d:hp_count}"/>
+                    </Panel>
+					
+                    <Panel class="HealthBarPanel">
+						<Panel class="HudHeathBarProgressBar">
+							<Panel id="HudHeathBarContent" class="HealthBar">
+								<Panel id="HudHeathBar_0">
+									<Panel class="Screen"/>
+								</Panel>
+								<Panel id="HudHeathBar_1" />
+								<Panel id="HudHeathBar_2" >
+									<Panel class="Screen"/>
+								</Panel>
+							</Panel>
+						</Panel>
+                        
+                        <Label class="HealthbarLabel" text="{s:current_hp} / {s:max_hp}"/>
+                    </Panel>
+                    <Panel class="AttributeList">
+                        <Panel class="AttributeRows att1">
+							<Panel class="Icon"/>
+							<Label text="19999"/>
+						</Panel>
+						<Panel class="AttributeRows att2">
+							<Panel class="Icon"/>
+							<Label text="19999"/>
+						</Panel>
+						<Panel class="AttributeRows att3">
+							<Panel class="Icon"/>
+							<Label text="19999"/>
+						</Panel>
+                    </Panel>
+                </Panel>
+				<Panel id="PortraitContent">
+					<Panel class="PortraitBg"/>
+					<Panel class="PortraitRune"/>
+                    <Panel class="PortraitIcon"/>
+                </Panel>
+            </Panel>
+        </snippet>
+		<snippet name="OverheadBar">
+			<Panel class="OverheadBar" hittest="false">
+				<Panel class="Title" hittest="false">
+					<Label class="titleNameLabel" text="单位名字" hittest="false" />
+					<Panel id="dropItemList" hittest="false" />
+				</Panel>
+				<Panel class="HeadBar" hittestchildren="false">
+					<Panel class="headBarPanel">
+						<Panel id="HealthBar0" />
+						<Panel id="HealthBar" />
+					</Panel>
+					<Panel class="LevelInfo">
+						<Label id="level_lab" text="" />
+					</Panel>
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
+
+	<Panel class="health_bar" hittest="false">
+		<Panel id="TopHealthBarContent" hittest="false" />
+		<Panel id="OverheadBarContainer" hittest="false" />
+	</Panel>
+</root>

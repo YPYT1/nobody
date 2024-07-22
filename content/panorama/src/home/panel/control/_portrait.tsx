@@ -4,6 +4,7 @@ export let last_unit: EntityIndex;
 export let last_unit_name: string;
 export let UnitPortraitPanel = $("#UnitPortrait");
 
+let localPlayer = Players.GetLocalPlayer();
 export const InitPanel = () => {
     // UnitPortraitPanel.SetPanelEvent("onmouseover", () => {
     //     let queryUnit = Players.GetLocalPlayerPortraitUnit();
@@ -30,8 +31,10 @@ export const InitPanel = () => {
 
 export const UpdateLocalPlayer = () => {
     let select_unit = Players.GetLocalPlayerPortraitUnit();
+   
     // $.Msg(last_unit <= 0 || select_unit == last_unit)
     if (last_unit <= 0 || select_unit == last_unit) { return }
+    if (Entities.GetPlayerOwnerID(select_unit) != localPlayer) { return }
     let unit_name = Entities.GetUnitName(select_unit);
     if (last_unit_name == unit_name) { return }
     last_unit_name = unit_name

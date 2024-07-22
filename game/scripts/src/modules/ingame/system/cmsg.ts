@@ -2,11 +2,20 @@
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 
+type TopHealthBarTyps = "Elite" | "Boss" | "King";
+
 @reloadable
 export class CMsg extends UIEventRegisterClass {
 
+    elite_list: EntityIndex[];
+    boss_list: EntityIndex[];
+    king_list: EntityIndex[];
+
     constructor() {
         super("CMsg");
+        this.elite_list = [];
+        this.boss_list = [];
+        this.king_list = [];
     }
 
     /**
@@ -71,8 +80,53 @@ export class CMsg extends UIEventRegisterClass {
         }
     }
 
+    /**
+     * 设置一个血条到客户端
+     * @param hUnit 
+     */
+    SetBossHealthBar(hUnit: CDOTA_BaseNPC) {
+        let unit_entity = hUnit.GetEntityIndex();
+        this.boss_list.push(unit_entity);
+        this.GetEntityListHealthBar(-1, {});
+    }
+
+    RemoveBossHealthBar(hUnit: CDOTA_BaseNPC) {
+        if (hUnit == null || IsValid(hUnit) || hUnit.UnitCanRespawn()) { return; }
+        let unit_entity = hUnit.GetEntityIndex();
+        let index = this.boss_list.indexOf(unit_entity);
+        if (index > -1) {
+            table.remove(this.boss_list, index + 1);
+            this.GetEntityListHealthBar(-1, {});
+        }
+    }
+
+    GetEntityListHealthBar(player_id: PlayerID, params: any) {
+        if (player_id == -1) {
+            CustomGameEventManager.Send_ServerToAllClients(
+                "CMsg_GetEntityListHealthBar",
+                {
+                    data: {
+                        boss_list: this.boss_list,
+                    }
+                }
+            );
+        } else {
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "CMsg_GetEntityListHealthBar",
+                {
+                    data: {
+                        boss_list: this.boss_list,
+                    }
+                }
+            );
+        }
+
+    }
+
+
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
-        if(cmd == "-msg"){
+        if (cmd == "-msg") {
             let message = args[0];
             CustomGameEventManager.Send_ServerToAllClients(
                 "CMsg_SendCommonMsgToPlayer",
