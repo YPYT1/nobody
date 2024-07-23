@@ -59,7 +59,7 @@ export class RuneSystem extends UIEventRegisterClass {
                         val : parseInt(ConditionList[1]),
                     })
                 }
-                this.AdvRuneUnlockConfig[key] = UnlockConfig;
+                this.AdvRuneUnlockConfig[key] = UnlockConfig;   
             }
         }
     }

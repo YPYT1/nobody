@@ -25,7 +25,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     /** 
      * 英雄对应加点信息
      */
-    player_talent_list: CGEDPlayerTalentSkill[] = [];
+    player_talent_list: CGEDPlayerTalentSkill[] = [];   
     /** 
      * 加载通用
      */
@@ -66,7 +66,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             });
             this.player_talent_data_client.push({
 
-            });
+            }); 
             this.player_talent_list.push({
 
             });
@@ -80,7 +80,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
 
             for (let i_key in hero_talent) {
                 let data = hero_talent[i_key as keyof typeof hero_talent];
-                this.talent_tree_values[hero][i_key] = {};
+                this.talent_tree_values[hero][i_key] = {};  
                 //技能数组
                 for (const A_key in data.AbilityValues) {
                     let str = tostring(data.AbilityValues[A_key]);
@@ -120,7 +120,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             print("天赋配置错误！！！！")
             return
         }
-        let player_id = BaseNPC.GetPlayerOwnerID();
+        let player_id = BaseNPC.GetPlayerOwnerID(); 
         this.player_hero_name[player_id] = unitname;
         this.player_talent_list[player_id] = {};
         this.player_talent_data_client[player_id] = {};

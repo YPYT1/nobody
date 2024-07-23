@@ -35,9 +35,9 @@ declare interface CustomGameEventDeclarations {
     MapChapter_GetDifficultyMax: {
         data: {
             map_difficulty: { [key : string ] : UserMapSelectDifficulty}; //通关信息
-            level_difficulty: string[]; //玩家所通关的难度 --弃用
+            level_difficulty: string[]; //玩家所    通关的难度 --弃用
         };
-    };
+    };  
 
      /**
      * 主机选择难度后返回
@@ -63,6 +63,7 @@ declare interface CustomGameEventDeclarations {
         data: {
             select_map: string, //已选地图编号
             select_difficulty: string, //已选地图难度
+            time : number, //倒计时
         };
     }
     /**
@@ -78,7 +79,8 @@ declare interface CustomGameEventDeclarations {
      */
     MapChapter_GetPlayerHeroList : {
         data: {
-            hero_id : number[],
+            hero_id : MapSelectHeroData[],
+            time : number ,//选择倒计时
         };
     }
 
@@ -172,8 +174,14 @@ declare interface CustomGameEventDeclarations {
 declare interface MapSelectHeroList {
     hero_id : number,
     state : number, //是否确认 0 未确认 1 确认
+    star : number , //星级
+    lv : number , //等级
 }
-
+declare interface MapSelectHeroData {
+    hero_id : number,
+    star : number , //星级
+    lv : number , //等级
+}
 
 declare interface UserMapSelectDifficulty { //地图详细信息
     user_difficulty: number, // 玩家最高可选难度
@@ -204,7 +212,7 @@ declare interface ShopFieldList {
     is_vip : number , //是否为vip栏位
     refresh_count : number , //刷新次数
     refresh_soul : number , //刷新价格
-}
+}   
 //商店刷新信息
 declare interface PlayerRefreshData {
     refresh_count: number, //刷新次数
@@ -260,9 +268,8 @@ declare interface ServerEquip {
 
 
 declare interface CGEDEquipConfigInfo {
-    public: string[][], 
     hero: {
-        [hero_name: string]: string[][],
+        [heroid: string]: string[][],
     };
 }
 declare interface CGEDPlayerTalentSkill {
@@ -307,11 +314,17 @@ declare interface CGEDPlayerTalentSkillPoints {
 }
 
 
-
-
-
-
-
 declare interface CGEDPlayerTalentConfig {
     unlock_count : { [ key : number] : number};
+}
+
+
+
+declare interface CGEDServerSkillful {
+    level : { [ key : string] : {
+        lv : number, //等级
+        exp : number, //经验
+        type : number, //类型
+        cur_exp : number , //当前经验   
+    }};
 }

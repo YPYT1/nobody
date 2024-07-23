@@ -36,14 +36,14 @@ export class ServiceEquipment extends UIEventRegisterClass {
 
     //词条概率数据 
     Main_Attr_SEAEP: { [key: string]: number[]; } = {};
-    //词条key数据
+    //词条key数据   
     Main_Attr_SEAEKEY: { [key: string]: string[]; } = {};
     //是否显示装备加载信息
-    is_show_show_log : boolean = false;
+    is_show_show_log : boolean = false; 
 
 
     //套装信息
-    ServerEquipDeputy: typeof ServerEquipDeputy;
+    ServerEquipDeputy: typeof ServerEquipDeputy;    
 
     constructor() {
         super("ServiceEquipment");
@@ -65,7 +65,7 @@ export class ServiceEquipment extends UIEventRegisterClass {
             }
         }
         //主词条随机
-        for (let key in ServerEquipMainAttr) {
+        for (let key in ServerEquipMainAttr) {  
             let SEAE_Main_data = ServerEquipMainAttr[key as keyof typeof ServerEquipMainAttr];
             if (this.Main_Attr_SEAEP[SEAE_Main_data.box_type]) {
                 this.Main_Attr_SEAEP[SEAE_Main_data.box_type].push(SEAE_Main_data.item_probability);
@@ -83,10 +83,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
     Init() {
         // let player_count = GetPlayerCount();
         // let init_config_data : CGEDEquipConfigInfo = {
-        //     public: [
-        //         ["", "", "", "", "", "",""],
-        //         ["", "", "", "", "", "",""]
-        //     ],
         //     hero : {
 
         //     }
@@ -156,7 +152,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
                         v: number, //值
                     }[]
                 }[] = [];
-
                 add_equip_list.push({
                     n: equip_key, //装备key
                     r: equip_r, //稀有度 0 1 2 3 => n,r,sr,ssr

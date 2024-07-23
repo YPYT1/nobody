@@ -25,28 +25,53 @@ export class MapChapter extends UIEventRegisterClass {
 
     // 1 选择地图难度 2选择英雄 3游戏开始了
     _game_select_phase: number = 0; //
-    //根据等级可用地图
+    //根据等级可用地图  
     _map_list : { [key : string ] : UserMapSelectDifficulty }  = {};
     //玩家已通关的难度  
     level_difficulty: string[] = [];
     //玩家可用英雄列表
-    player_hero_available: number[][] = [];
+    player_hero_available: MapSelectHeroData[][] = [];
     //玩家选择英雄记录
     player_select_hero: MapSelectHeroList[] = [];
     //玩家数量
-    player_count: number = 1;
+    player_count: number = 1;   
     //新玩家标记
     is_new_player : number = 0;
-
+    //确认时间
+    select_map_time : number = 60;
+    //客服端确认时间
+    countdown_select_map_time : number = 0;
+    //确认英雄时间
+    select_hero_time : number = 60;
+    //客服端确认时间
+    countdown_select_hero_time : number = 0;
 
     constructor() {
-        super("MapChapter")
+        super("MapChapter") 
         print("[MapChapter]:constructor")
+
+        let sort_hero : { [key : number] : number} = {};
+        for (let [key, RowData] of pairs(NpcHeroesCustom)) {
+            if (RowData.Enable == 1) {
+                this.hero_list[RowData.HeroID] = key;
+                sort_hero[RowData.sort] = RowData.HeroID;
+            }
+        }
         for (let index = 0; index < this.player_count; index++) {
-            this.player_hero_available.push([57, 102, 22]);
+            let hero_key : MapSelectHeroData[] = [];
+            for (let index = 0; index < Object.keys(sort_hero).length; index++) {
+                hero_key.push({
+                    hero_id : sort_hero[index],
+                    lv : 1,
+                    star : 1,
+                })
+            }
+            this.player_hero_available.push(hero_key);
             this.player_select_hero.push({
-                hero_id: 57,
+                hero_id: hero_key[index].hero_id,
                 state: 0, //是否确认
+                star : 1,
+                lv : 1, 
             });
         }
     }
@@ -57,12 +82,6 @@ export class MapChapter extends UIEventRegisterClass {
         if (current_map != "main") { return }
         //加载营地
         GameRules.MapChapter.OnCreatedCampMap();
-
-        for (let [key, RowData] of pairs(NpcHeroesCustom)) {
-            if (RowData.Enable == 1) {
-                GameRules.MapChapter.hero_list[RowData.HeroID] = key;
-            }
-        }
 
         this._map_list["c1"] = {
             user_difficulty: 103, // 玩家最高可选难度
@@ -97,6 +116,14 @@ export class MapChapter extends UIEventRegisterClass {
         if(GameRules.MapChapter.is_new_player == 1){
             GameRules.MapChapter.GetNewPlayerStatus( 0 , {})
         }
+
+        //完成时间
+        this.countdown_select_map_time = GameRules.GetDOTATime(false, false) + this.select_map_time;
+
+        GameRules.GetGameModeEntity().SetContextThink("SELECT_DIFFICULTY_AFFIRM", () => {
+            GameRules.MapChapter.SelectDifficultyAffirm( 0 , {});
+            return null;
+        }, this.select_map_time);
     }
 
     /** 生成营地 */
@@ -168,7 +195,7 @@ export class MapChapter extends UIEventRegisterClass {
         }
         CustomGameEventManager.Send_ServerToAllClients(
             "MapChapter_SelectDifficulty",
-            {
+            {   
                 data: {
                     select_map: this.MapIndex,
                     select_difficulty: this.GameDifficulty,
@@ -186,6 +213,7 @@ export class MapChapter extends UIEventRegisterClass {
                     data: {
                         select_map : this.MapIndex,
                         select_difficulty: this.GameDifficulty,
+                        time : this.countdown_select_map_time
                     }
                 }
             );
@@ -197,6 +225,7 @@ export class MapChapter extends UIEventRegisterClass {
                     data: {
                         select_map : this.MapIndex,
                         select_difficulty: this.GameDifficulty,
+                        time : this.countdown_select_map_time
                     }
                 }
             );
@@ -210,11 +239,19 @@ export class MapChapter extends UIEventRegisterClass {
         if (this._game_select_phase == 0) {
             this._game_select_phase = 1; //修改游戏进程
             this.GetGameSelectPhase(-1, {})
+            //完成时间
+            this.countdown_select_hero_time = GameRules.GetDOTATime(false, false) + this.select_hero_time;
+            GameRules.GetGameModeEntity().SetContextThink("SELECT_HERO_AFFIRM", () => {
+                GameRules.MapChapter.SelectHeroAffirm( 0 , {});
+                return null;
+            }, this.select_hero_time);
             //发送选择英雄信息
             for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
                 GameRules.MapChapter.GetPlayerHeroList(index, {})
             }
+            
         }
+        GameRules.GetGameModeEntity().StopThink("SELECT_DIFFICULTY_AFFIRM");
     }
 
     /**
@@ -242,6 +279,7 @@ export class MapChapter extends UIEventRegisterClass {
             {
                 data: {
                     hero_id: this.player_hero_available[player_id],
+                    time : this.countdown_select_hero_time
                 }
             }
         );
@@ -298,7 +336,7 @@ export class MapChapter extends UIEventRegisterClass {
     SelectHero(player_id: PlayerID, params: CGED["MapChapter"]["SelectHero"]) {
         if (this._game_select_phase == 1) {
             if (this.player_select_hero[player_id].state == 0) {
-                let hero_id = params.hero_id
+                let hero_id = params.hero_id;
                 this.player_select_hero[player_id].hero_id = hero_id;
                 GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
             }
@@ -323,6 +361,10 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.MapChapter.is_new_player = 0;
 
         let ChapterData = MapInfo[this.MapIndex];
+
+
+        GameRules.GetGameModeEntity().StopThink("SELECT_HERO_AFFIRM");
+
 
         //调用确认游戏开始
         GameRules.ArchiveService.ConfirmDifficulty();
