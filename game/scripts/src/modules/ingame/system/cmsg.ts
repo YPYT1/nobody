@@ -2,7 +2,7 @@
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 
-type TopHealthBarTyps = "Elite" | "Boss" | "King";
+type TopHealthBarTyps = "Boss" | "King";
 
 @reloadable
 export class CMsg extends UIEventRegisterClass {
@@ -84,7 +84,7 @@ export class CMsg extends UIEventRegisterClass {
      * 设置一个血条到客户端
      * @param hUnit 
      */
-    SetBossHealthBar(hUnit: CDOTA_BaseNPC) {
+    SetBossHealthBar(hUnit: CDOTA_BaseNPC, barTypes: TopHealthBarTyps = "Boss") {
         let unit_entity = hUnit.GetEntityIndex();
         this.boss_list.push(unit_entity);
         this.GetEntityListHealthBar(-1, {});
@@ -97,6 +97,14 @@ export class CMsg extends UIEventRegisterClass {
         if (index > -1) {
             table.remove(this.boss_list, index + 1);
             this.GetEntityListHealthBar(-1, {});
+            return
+        }
+
+        let index2 = this.king_list.indexOf(unit_entity);
+        if (index2 > -1) {
+            table.remove(this.king_list, index2 + 1);
+            this.GetEntityListHealthBar(-1, {});
+            return
         }
     }
 

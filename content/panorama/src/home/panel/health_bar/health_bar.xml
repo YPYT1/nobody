@@ -1,7 +1,7 @@
 <root>
 	<styles>
 		<include src="./health_bar.less" />
-		<!-- <include src="./huanshen.less" /> -->
+		<include src="./../../../_styles/keyframes.less" />
 	</styles>
 	<scripts>
 		<include src="./health_bar.tsx" />

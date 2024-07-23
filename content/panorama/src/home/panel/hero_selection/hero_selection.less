@@ -1,18 +1,14 @@
-
-// .GameSelectPhase_1 .HeroSelection {
-//     visibility: visible;
-// }
+.GameSelectPhase_1 .HeroSelection {
+    visibility: visible;
+}
 
 .HeroSelection {
-    width: 100%;
-    height: 100%;
     background-color: #16354e99;
+    // opacity: 0.5;
     visibility: collapse;
 }
 
-.Background {
-    width: 100%;
-    height: 100%;
+#Background {
     background-image: url("file://{images}/custom_game/hud/hero_selection/bg.png");
 }
 
@@ -20,4 +16,342 @@
 .Container {
     width: 100%;
     height: 100%;
+}
+
+#PlayerStateContainer {
+    margin-top: 20%;
+    // border: 1px solid #ffffff;
+    flow-children: down;
+}
+
+.PlayerState {
+    margin: 4px 0px;
+    width: 423px;
+    // border: 1px solid #ffffff;
+    // height: 116px;
+    background-image: url("file://{images}/custom_game/hud/hero_selection/player_state_bg_0.png");
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    flow-children: right;
+
+    &.Local {
+
+        background-image: url("file://{images}/custom_game/hud/hero_selection/player_state_bg_1.png");
+
+        .HeroInfo {
+            .SelectGlow {
+                background-image: url("file://{images}/custom_game/hud/hero_selection/select_glow_0.png");
+            }
+        }
+
+        .PlayerLabel {
+            .HeroName {
+                color: #ffea5a;
+            }
+
+            .PlayerName {
+                color: #ffe033;
+            }
+        }
+    }
+
+    .HeroInfo {
+        margin-left: 16px;
+
+        .SelectGlow {
+            width: 144px;
+            height: 144px;
+            // 
+            background-image: url("file://{images}/custom_game/hud/hero_selection/select_glow_1.png");
+
+            animation-name: rotate_z;
+            animation-duration: 5s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        .HeroBorder {
+            width: 104px;
+            height: 104px;
+            align: center center;
+            // 
+            background-image: url("file://{images}/custom_game/hud/hero_selection/hero_border.png");
+
+
+            #HeroIcon {
+                width: 100%;
+                height: 100%;
+                margin: 4px;
+                border-radius: 50%;
+                // background-color: #b38627;
+            }
+        }
+
+        #HeroStar {
+            vertical-align: bottom;
+            horizontal-align: center;
+            flow-children: right;
+            pre-transform-scale2d: 0.6;
+            background-color: #000000aa;
+            padding: 4px 8px;
+            margin-bottom: 8px;
+
+            .Star {
+                width: 25px;
+                height: 24px;
+                background-image: url("file://{images}/custom_game/hud/hero_selection/hero_star_bg.png");
+            }
+        }
+    }
+
+    .PlayerLabel {
+        margin-left: 8px;
+        vertical-align: middle;
+        flow-children: down;
+
+        .HeroName {
+            color: #f0f0f0;
+            font-size: 28px;
+        }
+
+        .PlayerName {
+            margin-top: 12px;
+            font-size: 20px;
+            color: #afafaf;
+        }
+
+    }
+}
+
+#HeroesSelectContainer {
+    margin-top: 150px;
+    horizontal-align: right;
+    // border: 1px solid #f0f0f0;
+    flow-children: down;
+
+    .HeroesHeader {
+        // flow-children: down;
+        background-image: url("file://{images}/custom_game/hud/hero_selection/select_hero_title.png");
+        background-repeat: no-repeat;
+        height: 150px;
+
+        .HeaderTitle {
+            width: 461px;
+
+        }
+
+        #HeaderTabList {
+            vertical-align: bottom;
+            horizontal-align: center;
+            flow-children: right;
+
+            RadioButton {
+                width: 44px;
+                height: 45px;
+                background-image: url("file://{images}/custom_game/icon/hero_type/all_0.png");
+                transition-property: background-image;
+                transition-duration: 0.1s;
+
+                &:selected,
+                &:hover {
+                    background-image: url("file://{images}/custom_game/icon/hero_type/all_1.png");
+                }
+
+                &.fire {
+                    background-image: url("file://{images}/custom_game/icon/hero_type/fire_0.png");
+
+                    &:selected,
+                    &:hover {
+                        background-image: url("file://{images}/custom_game/icon/hero_type/fire_1.png");
+                    }
+                }
+
+                &.ice {
+                    background-image: url("file://{images}/custom_game/icon/hero_type/ice_0.png");
+
+                    &:selected,
+                    &:hover {
+                        background-image: url("file://{images}/custom_game/icon/hero_type/ice_1.png");
+                    }
+                }
+
+                &.thunder {
+                    background-image: url("file://{images}/custom_game/icon/hero_type/thunder_0.png");
+
+                    &:selected,
+                    &:hover {
+                        background-image: url("file://{images}/custom_game/icon/hero_type/thunder_1.png");
+                    }
+                }
+
+                &.wind {
+                    background-image: url("file://{images}/custom_game/icon/hero_type/wind_0.png");
+
+                    &:selected,
+                    &:hover {
+                        background-image: url("file://{images}/custom_game/icon/hero_type/wind_1.png");
+                    }
+                }
+
+                &.light {
+                    background-image: url("file://{images}/custom_game/icon/hero_type/light_0.png");
+
+                    &:selected,
+                    &:hover {
+                        background-image: url("file://{images}/custom_game/icon/hero_type/light_1.png");
+                    }
+                }
+
+                &.dark {
+                    background-image: url("file://{images}/custom_game/icon/hero_type/dark_0.png");
+
+                    &:selected,
+                    &:hover {
+                        background-image: url("file://{images}/custom_game/icon/hero_type/dark_1.png");
+                    }
+                }
+            }
+        }
+    }
+
+    #HeroesList {
+        horizontal-align: right;
+        margin-top: 8px;
+        width: 120px * 4;
+        height: 192px * 3 + 4px;
+        // border: 1px solid #ffffff;
+        // horizontal-align: center;
+        flow-children: right-wrap;
+
+        .HeroCardButton {
+            width: 142px * 0.75;
+            height: 188px * 0.75;
+            margin: 6px;
+            border: 2px solid #6b6b6b;
+            // background-image: url("file://{images}/custom_game/hud/hero_selection/hero_list_border.png");
+            background-size: 100%;
+            padding: 2px;
+            box-shadow: #cca7007a 0px 0px 0px 0px;
+            background-color: #000000;
+            border-radius: 4px;
+
+            transition-property: box-shadow, border;
+            transition-duration: 0.15s;
+
+            #HeroMovie {
+                transition-property: opacity;
+                transition-duration: 0.1s;
+                opacity: 0;
+            }
+
+            &:hover,
+            &:selected {
+                border: 2px solid #fff565;
+                box-shadow: #cca7007a 0px 0px 6px 1px;
+
+                #HeroMovie {
+                    opacity: 1;
+                }
+            }
+
+            .HeroLevel {
+                color: #ffffff;
+                font-size: 16px;
+                text-shadow: 0px 0px 2px 2.0 #000000;
+            }
+        }
+
+        #HeroStar {
+            vertical-align: bottom;
+            horizontal-align: center;
+
+            .Star {
+                width: 19px;
+                height: 20px;
+            }
+        }
+    }
+
+    .BottomButton {
+        margin-top: 8px;
+        horizontal-align: center;
+    }
+
+    #HeroConfirm {
+        width: 257px;
+        height: 62px;
+        background-image: url("file://{images}/custom_game/hud/hero_selection/start_btn.png");
+
+        Label {
+            align: center center;
+            font-size: 24px;
+            color: #ffffff;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+        }
+
+        &:enabled {
+            &:hover {
+                brightness: 2;
+            }
+
+            &:active {
+                pre-transform-scale2d: 0.9;
+            }
+        }
+
+        &:disabled {
+            saturation: 0.2;
+            brightness: 0.2;
+        }
+    }
+}
+
+.HeroStars {
+    flow-children: right;
+    background-color: #000000aa;
+    // padding: 4px 8px;
+    // margin-bottom: 8px;
+
+    .Star {
+        width: 25px;
+        height: 24px;
+        background-image: url("file://{images}/custom_game/hud/hero_selection/hero_star_bg.png");
+        background-size: 100%;
+    }
+}
+
+.HeroSelectionTop {
+    horizontal-align: center;
+    // border: 1px solid #f00;
+
+    .CountdownPanel {
+        width: 476px;
+        height: 173px;
+        background-image: url("file://{images}/custom_game/hud/hero_selection/count_down_bg.png");
+
+        Label {
+            margin-top: 40px;
+            horizontal-align: center;
+            font-size: 48px;
+            // font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 2px;
+            // line-height: 1.2;
+            // text-decoration-style: dotted;
+            text-shadow: 0px 0px 15px 2.0 #ae4b30;
+        }
+    }
+}
+
+#FocusedHeroSetPreview {
+    // margin-top: 120px;
+    transform: translateY(100px);
+    horizontal-align: center;
+    height: 100%;
+    width: 70%;
+    max-width: 1920px;
+    vertical-align: bottom;
+    opacity-mask: url("s2r://panorama/images/masks/hero_model_preview_mask_loadout_psd.vtex");
+    overflow: noclip;
+
 }

@@ -222,7 +222,6 @@ const GameEventsSubscribe = () => {
     })
 
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
-        // $.Msg(["HeroTalentSystem_GetHeroTalentListData"])
         let data = event.data;
         let hero_talent_list = data.hero_talent_list;
         talent_points = data.talent_points;

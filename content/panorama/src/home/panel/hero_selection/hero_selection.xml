@@ -1,25 +1,99 @@
 <root>
 	<styles>
 		<include src="./hero_selection.less" />
+		<include src="./../../../_styles/styles.less" />
+		<include src="./../../../_styles/keyframes.less" />
 	</styles>
 	<scripts>
 		<include src="./hero_selection.tsx" />
 	</scripts>
     <snippets>
+		<snippet name="PlayerState">
+			<Panel class="PlayerState">
+				<Panel class="HeroInfo">
+					<Panel class="SelectGlow"/>
+					<Panel class="HeroBorder">
+						<Image id="HeroIcon"/>
+					</Panel>
+					<Panel id="HeroStar" class="HeroStars">
+						<Panel class="Star Star1"/>
+						<Panel class="Star Star2"/>
+						<Panel class="Star Star3"/>
+						<Panel class="Star Star4"/>
+						<Panel class="Star Star5"/>
+					</Panel>
+				</Panel>
+
+				<Panel class="PlayerLabel">
+					<Label class="HeroName" text="{s:hero_name}"/>
+					<Label class="PlayerName" text="{s:player_name}"/>
+				</Panel>
+
+				<Panel class="PlayerReadyState">
+					<Panel id="ReadyState" />
+				</Panel>
+			
+			</Panel>
+		</snippet>
         <snippet name="HeroCardButton">
 			<RadioButton class="HeroCardButton" group="HeroCardButtonGroup" >
 				<Panel class="HeroImage">
 					<Image id="HeroIcon" />
 					<DOTAHeroMovie id="HeroMovie"  />
 				</Panel>
+				<Label class="HeroLevel" text="Lv.{d:level}" />
+				<Panel id="HeroStar" class="HeroStars">
+					<Panel class="Star Star1"/>
+					<Panel class="Star Star2"/>
+					<Panel class="Star Star3"/>
+					<Panel class="Star Star4"/>
+					<Panel class="Star Star5"/>
+				</Panel>
 			</RadioButton>
 		</snippet>
     </snippets>
-    <Button class="HeroSelection" onactivate="">
-        <Label text="HeroSelection"/>
-        <Panel class="Background" />
-        <Panel id="HeroSelectionContainer" class="Container">
-            
+    <Button class="HeroSelection full" onactivate="">
+        <Panel id="Background" class="full">
+			<DOTAScenePanel
+				class='full'
+				map='maps/backgrounds/frontpage_nemestice.vmap'
+				camera='default_camera'
+				light='light_frontpage'
+				particleonly="false"
+				renderdeferred="true"
+            />
+		</Panel>
+        <Panel id="HeroSelectionContainer" class="full">
+            <Panel id="PlayerStateContainer" />
+			<Panel class="HeroSelectionTop">
+				<Panel class="CountdownPanel">
+					<Label text="{s:countdown}"/>
+				</Panel>
+			</Panel>
+			<Panel id="FocusedHeroSetPreview" />
+			<Panel id="HeroesSelectContainer">
+				<Panel class="HeroesHeader">
+					<Panel class="HeaderTitle" />
+					<Panel id="HeaderTabList">
+						<RadioButton class="all" checked="true" group="HeroTypeGroup"  />
+						<RadioButton class="fire" group="HeroTypeGroup" />
+						<RadioButton class="ice" group="HeroTypeGroup" />
+						<RadioButton class="thunder" group="HeroTypeGroup" />
+						<RadioButton class="wind" group="HeroTypeGroup" />
+						<RadioButton class="light" group="HeroTypeGroup" />
+						<RadioButton class="dark" group="HeroTypeGroup" />
+					</Panel>
+				</Panel>
+				<Panel id="HeroesList">
+					
+				</Panel>
+
+				<Panel class="BottomButton">
+					<Button id="HeroConfirm" class="ButtonClass" >
+						<Label text="#准备" />
+					</Button>
+				</Panel>
+			</Panel>
         </Panel>
     </Button>
 </root>
