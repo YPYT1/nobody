@@ -143,7 +143,7 @@ export class ArchiveService {
                     //胜负状态
                     this.general_game_over_data_pass_data.state = state;
                     //通关评分
-                    this.general_game_over_data_pass_data.item = 515;
+                    this.general_game_over_data_pass_data.time = 515;
                     //
                     this.general_game_over_data_pass_data.player_list_data.push({
                         "exp" : 200,
@@ -192,7 +192,7 @@ export class ArchiveService {
     //通关信息
     general_game_over_data_pass_data : CGEDGeneralGameOverDataPassData = {
         state : 0,
-        item : 0,
+        time : 0,
         player_list_data : [],
     };
 

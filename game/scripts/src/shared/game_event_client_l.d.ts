@@ -340,7 +340,7 @@ declare interface CGEDServerSkillful {
 
 declare interface CGEDGeneralGameOverDataPassData {
     state : number // 通关状态 1通关  2未通关 
-    item : number , //通关所用时间
+    time : number , //通关所用时间
     player_list_data : {
         player_id : PlayerID,
         steam_id : number, //steam_id
