@@ -5,9 +5,10 @@ import { HttpRequest } from "./http_request";
  * 存档服务
  */
 import { reloadable } from '../../utils/tstl-utils';
+import { UIEventRegisterClass } from "../../modules/class_extends/ui_event_register_class";
 
 @reloadable 
-export class ArchiveService {
+export class ArchiveService extends UIEventRegisterClass {
     /**
      * 测试模式下使用的steam_id
      */
@@ -24,7 +25,7 @@ export class ArchiveService {
     _game_versions : string = "";
     //构造
     constructor() {
-
+        super("ArchiveService") 
     }
 
     Init() {
