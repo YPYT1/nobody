@@ -171,7 +171,7 @@ declare interface CustomGameEventDeclarations {
     /**
      * 获取通关后存档数据
      */
-    ArchiveService_GetPlayerTalentData : {
+    ArchiveService_GetPlayerGameOverData : {
         data: CGEDGeneralGameOverDataPassData
     }
 

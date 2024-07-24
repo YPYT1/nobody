@@ -179,7 +179,7 @@ export class ArchiveService {
     GetPlayerGameOverData(player_id: PlayerID, params: CGED["ArchiveService"]["GetPlayerGameOverData"], callback?) {
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
-            "ArchiveService_GetPlayerTalentData",
+            "ArchiveService_GetPlayerGameOverData",
             {
                 data: this.general_game_over_data_pass_data
             }
