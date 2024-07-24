@@ -79,7 +79,7 @@ declare interface CustomGameEventDeclarations {
      */
     MapChapter_GetPlayerHeroList : {
         data: {
-            hero_id : MapSelectHeroData[],
+            hero_id : MapSelectHeroData[],  
             time : number ,//选择倒计时
         };
     }
@@ -167,6 +167,14 @@ declare interface CustomGameEventDeclarations {
             hero_name : string,
         };
     };
+
+    /**
+     * 获取通关后存档数据
+     */
+    ArchiveService_GetPlayerTalentData : {
+        data: CGEDGeneralGameOverDataPassData
+    }
+
 
 }
 
@@ -327,4 +335,23 @@ declare interface CGEDServerSkillful {
         type : number, //类型
         cur_exp : number , //当前经验   
     }};
+}
+
+
+declare interface CGEDGeneralGameOverDataPassData {
+    state : number // 通关状态 1通关  2未通关 
+    item : number , //通关所用时间
+    player_list_data : {
+        player_id : PlayerID,
+        steam_id : number, //steam_id
+        exp : number, //通关奖励经验
+        old_exp : number, //当时的经验
+        pass_item : { //通关物品 //包含  商城物品（例如抽奖券）
+            item_id : string, // 物品id
+            type : number , // 1商城物品 
+            item_number : number, //数量
+            quality : number , // 品质 
+        }[],
+        is_mvp : number , //是否为mvp
+    }[],
 }

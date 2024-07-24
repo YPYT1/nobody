@@ -94,7 +94,7 @@ export class MapChapter extends UIEventRegisterClass {
             map_key: "m2", //地图编号 m1 m2 
         }
         this._map_list["c3"] = {
-            user_difficulty: 302, // 玩家最高可选难度
+            user_difficulty: 302, // 玩家最高可选难度   
             difficulty_max: 305, // 地图最高难度
             map_key: "m3", //地图编号 m1 m2 
         }
@@ -495,13 +495,67 @@ export class MapChapter extends UIEventRegisterClass {
             GameRules.MapChapter.SelectDifficulty( -1 , { difficulty : "-1"})
 
             GameRules.ResourceSystem.InitAllPlayer();
-
-
         }
     }
 
-    Debug(cmd: string, args: string[], player_id: PlayerID) {
+    //游戏胜利 普通关卡
+    GameWin() {
+        GameRules.Spawn.StopAllSpawnAndMonster();
+        let exp_list: number[] = [];
+        let cj_list: string[] = [];
+        let hero_list: string[] = [];
+        let player_count = GetPlayerCount();
+        for (let index = 0 as PlayerID; index < player_count; index++) {
+            
+        }
+        for (let index: PlayerID = 0; index < player_count; index++) {
+            // let CPlayer = PlayerResource.GetPlayer(index as PlayerID);
+            let unit = PlayerResource.GetSelectedHeroEntity(index as PlayerID);
+            if (!unit.IsAlive()) {
+                unit.SetRespawnPosition(unit.GetAbsOrigin());
+                unit.RespawnHero(false, false);
+                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 5 });
+            }
+        }
+        //通关结算
+        GameRules.ArchiveService.GameOver(
+            1,
+            exp_list,
+            cj_list,
+            hero_list
+        );
+        GameRules.CMsg.SendCommonMsgToPlayer(
+            -1 as PlayerID,
+            "游戏胜利",
+            {}
+        );
+    }
+    //游戏失败 普通关卡
+    GameLoser() {
+        GameRules.Spawn.StopAllSpawnAndMonster();
+        let exp_list: number[] = [];
+        let cj_list: string[] = [];
+        let hero_list: string[] = [];
+        let player_count = GetPlayerCount();
+        for (let index = 0 as PlayerID; index < player_count; index++) {
 
+        }
+        //通关结算
+        GameRules.ArchiveService.GameOver(
+            2,
+            exp_list,
+            cj_list,
+            hero_list
+        );
+        //停止定时器
+        GameRules.CMsg.SendCommonMsgToPlayer(
+            -1 as PlayerID,
+            "游戏失败",
+            {}
+        );
+    }
+
+    Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-fh") {
             this.ReturntoCamp()
         }
@@ -528,11 +582,16 @@ export class MapChapter extends UIEventRegisterClass {
         if( cmd == "-sda"){
             this.SelectDifficultyAffirm( player_id , {})
         }
+        if(cmd == "-win"){
+            GameRules.MapChapter.GameWin()
+        }
+        if(cmd == "-loser"){
+            GameRules.MapChapter.GameLoser()
+        }
         if (cmd == "-mapinfo") {
             print("GameRules.Spawn._game_start", GameRules.Spawn._game_start)
             print("this._game_select_phase", this._game_select_phase)
             this.ReturnSelectDifficulty(player_id, {})
         }
-
     }
 }

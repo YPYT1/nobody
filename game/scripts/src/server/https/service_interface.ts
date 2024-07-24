@@ -43,7 +43,6 @@ export class ServiceInterface extends UIEventRegisterClass{
         ServerSkillful[key as keyof typeof ServerSkillful].exp;
         let yyexp = exp;
         let level = 0;
-        let cur_exp = 0;
         
         for (let index = 1; index < 30; index++) {  
             let use_exp = 24500 + index * 500;
@@ -53,7 +52,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             }else{
                 return {
                     level : level,
-                    cur_exp : cur_exp,
+                    cur_exp : yyexp,
                 };
             }
         }
@@ -89,6 +88,8 @@ export class ServiceInterface extends UIEventRegisterClass{
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
-        
+        if(cmd == "-LoadSkillfulLevel"){
+            this.LoadSkillfulLevel(player_id)
+        }
     }
 }

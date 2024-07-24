@@ -125,26 +125,76 @@ export class ArchiveService {
      * @param args 
      * @param player_id 
      */
-    GameOver(){
+    GameOver( state : number , exp : number[] = [] ,cj : string[] = [], hero : string []  = [], is_endless : number = -1 , is_nianshou : number = -1){
         print("==============游戏结束================")
         let param_data = <GameOverParam>{
             state: 1,
         }
+        let steam_id = PlayerResource.GetSteamAccountID(0);
+
         HttpRequest.AM2Post(ACTION_GAME_OVER,
             {
                 param: param_data
             },
             (data: GameOverReturn) => {
                 print("==============获得返回数据================")
+                DeepPrintTable(data);
                 if (data.code == 200) {
-
+                    //胜负状态
+                    this.general_game_over_data_pass_data.state = state;
+                    //通关评分
+                    this.general_game_over_data_pass_data.item = 515;
+                    //
+                    this.general_game_over_data_pass_data.player_list_data.push({
+                        "exp" : 200,
+                        "is_mvp" : 1,
+                        "old_exp" : 100,
+                        "player_id" : 0,
+                        "steam_id" : steam_id,
+                        "pass_item" : [
+                            {
+                                "item_id" : "1",
+                                "item_number" : 100,
+                                "quality" : 3,
+                                "type" : 1,
+                            }
+                        ],
+                    })
+                }
+                let player_count = 6;
+                //发送给每个玩家数据
+                for (let index = 0 as PlayerID; index < player_count; index++) {
+                    GameRules.ArchiveService.GetPlayerGameOverData(index , {})
                 }
             },
             (code: number, body: string) => {
+
             }
         )
     }
+
+    /**
+     * 获取天赋选择列表
+     */
+    GetPlayerGameOverData(player_id: PlayerID, params: CGED["ArchiveService"]["GetPlayerGameOverData"], callback?) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ArchiveService_GetPlayerTalentData",
+            {
+                data: this.general_game_over_data_pass_data
+            }
+        );
+    }
         
+    /**
+     * 玩家存档信息
+     */
+    //通关信息
+    general_game_over_data_pass_data : CGEDGeneralGameOverDataPassData = {
+        state : 0,
+        item : 0,
+        player_list_data : [],
+    };
 
 
     

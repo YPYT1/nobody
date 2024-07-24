@@ -1,4 +1,11 @@
 declare interface CGED {
+    //服务器数据
+    ArchiveService : {
+        //获取通关后数据
+        GetPlayerGameOverData : {
+
+        }
+    }
     //神秘商店
     MysticalShopSystem : {
         //购买物品

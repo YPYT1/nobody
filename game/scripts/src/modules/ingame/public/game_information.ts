@@ -46,12 +46,7 @@ export class GameInformation extends UIEventRegisterClass {
         }
         //游戏结束
         if(game_over == true){
-            GameRules.Spawn.StopAllSpawnAndMonster()
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                player_id,
-                "游戏结束",
-                {}
-            );  
+            GameRules.MapChapter.GameLoser()
             return ;    
         }
         if(this.player_life_list[player_id] > 0){
