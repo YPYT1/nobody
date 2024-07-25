@@ -513,7 +513,7 @@ export class CustomAttribute {
             // 移除原始饰品
             for (let v of hUnit.GetChildren()) {
                 if (v.GetClassname() == "dota_item_wearable") {
-                    print("v", v.GetClassname(), v.GetModelName())
+                    // print("v", v.GetClassname(), v.GetModelName())
                     //@ts-ignore
                     // v.SetModel("models/development/invisiblebox.vmdl")
                     v.RemoveSelf()

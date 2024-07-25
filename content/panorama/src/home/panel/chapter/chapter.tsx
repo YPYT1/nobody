@@ -1,3 +1,4 @@
+import { CreateServerItem } from "../../../common/server_item";
 import { default as ChapterInfo } from "../../../json/config/chapter_info.json"
 import { default as NpcHeroesCustom } from "../../../json/npc_heroes_custom.json"
 
@@ -250,12 +251,15 @@ export const CreatePanel = () => {
     }
 
     // DroppedInfoList
+    // .ServerItem
     DroppedInfoList.RemoveAndDeleteChildren();
     for (let i = 0; i < 8; i++) {
-        let ServerItem = $.CreatePanel("Panel", DroppedInfoList, "");
-        ServerItem.BLoadLayout("file://{resources}/layout/custom_game/components/server_item/server_item.xml", true, true);
-        ServerItem.SetHasClass("x64", true);
-        ServerItem.Data<PanelDataObject>().SetItemId("1");
+        let item_id = `${i + 1}`
+        CreateServerItem(item_id, 0, DroppedInfoList)
+        // let ServerItem = $.CreatePanel("Panel", DroppedInfoList, "");
+        // ServerItem.BLoadLayout("file://{resources}/layout/custom_game/components/server_item/server_item.xml", true, true);
+        // // ServerItem.SetHasClass("x64", true);
+        // ServerItem.Data<PanelDataObject>().SetItemId("1");
     }
 
 
