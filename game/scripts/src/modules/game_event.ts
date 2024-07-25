@@ -23,6 +23,7 @@ import { GameInformation } from './ingame/public/game_information';
 import { WarningMarker } from './ingame/system/warning_marker';
 import { DamageReduction } from './ingame/system/damage_reduction';
 import { HeroTalentSystem } from './ingame/hero_extend/hero_talent_system';
+import { NpcSystem } from './map_chapter/npc_system';
 
 declare global {
 
@@ -43,6 +44,7 @@ declare global {
         ArmsCombo: ArmsCombo;
         CMsg: CMsg;
         GameInformation: GameInformation;
+        NpcSystem : NpcSystem;
 
         SummonedSystem: SummonedSystem;
         CustomMechanics: CustomMechanics;
@@ -104,6 +106,7 @@ export class GameEvent {
             GameRules.WarningMarker = new WarningMarker();
             GameRules.DamageReduction = new DamageReduction();
             GameRules.HeroTalentSystem = new HeroTalentSystem();
+            GameRules.NpcSystem = new NpcSystem();  
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段

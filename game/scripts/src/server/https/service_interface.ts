@@ -4,7 +4,7 @@
 import { UIEventRegisterClass } from '../../modules/class_extends/ui_event_register_class';
 import { reloadable } from '../../utils/tstl-utils';
 
-import * as ServerSkillful from "../../json/config/server/hero/server_skillful.json";
+// import * as ServerSkillful from "../../json/config/server/hero/server_skillful.json";
 
 @reloadable
 export class ServiceInterface extends UIEventRegisterClass{
@@ -40,7 +40,7 @@ export class ServiceInterface extends UIEventRegisterClass{
      * @param key 
      */
     GetServerSkillfulLevel(key : string , exp : number) : { level : number , cur_exp : number}{
-        ServerSkillful[key as keyof typeof ServerSkillful].exp;
+        // ServerSkillful[key as keyof typeof ServerSkillful].exp;
         let yyexp = exp;
         let level = 0;
         
@@ -68,22 +68,22 @@ export class ServiceInterface extends UIEventRegisterClass{
             })
         }
         let level_obj : { [ key : string] : number } =  {};
-        for (let index = 1; index <= 32; index++) {
-            let SkillData = ServerSkillful[index.toString() as keyof typeof ServerSkillful];
-            if(SkillData.is_lock == 0){
-                level_obj[index.toString()] = RandomInt(10000 , 920000);
-            }
-        }
-        for (const key in level_obj) {
-            let type = ServerSkillful[key as keyof typeof ServerSkillful].type;
-            let lvdata = this.GetServerSkillfulLevel( key , level_obj[key]);
-            this.PlayerServerSkillful[player_id].level[key] = {
-                "lv" : lvdata.level,
-                "exp" : level_obj[key],
-                "type" : type,
-                "cur_exp" : lvdata.cur_exp,
-            }
-        }
+        // for (let index = 1; index <= 32; index++) {
+        //     let SkillData = ServerSkillful[index.toString() as keyof typeof ServerSkillful];
+        //     if(SkillData.is_lock == 0){
+        //         level_obj[index.toString()] = RandomInt(10000 , 920000);
+        //     }
+        // }
+        // for (const key in level_obj) {
+        //     let type = ServerSkillful[key as keyof typeof ServerSkillful].type;
+        //     let lvdata = this.GetServerSkillfulLevel( key , level_obj[key]);
+        //     this.PlayerServerSkillful[player_id].level[key] = {
+        //         "lv" : lvdata.level,
+        //         "exp" : level_obj[key],
+        //         "type" : type,
+        //         "cur_exp" : lvdata.cur_exp,
+        //     }
+        // }
         DeepPrintTable(this.PlayerServerSkillful[player_id]);
     }
 

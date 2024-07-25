@@ -178,6 +178,26 @@ export class ArchiveService extends UIEventRegisterClass {
                                 "type" : 1,
                             }
                         ],
+                        "skill_exp" : [
+                            {
+                                "1" : {
+                                    "exp" : 123,
+                                    "old_exp" : 23423,
+                                },
+                                "2" : {
+                                    "exp" : 324,
+                                    "old_exp" : 4234,
+                                },
+                                "3" : {
+                                    "exp" : 20,
+                                    "old_exp" : 53451,
+                                },
+                                "4" : {
+                                    "exp" : 20,
+                                    "old_exp" : 225432,
+                                },
+                            }
+                        ]
                     })
                 }
                 let player_count = 6;
@@ -185,6 +205,7 @@ export class ArchiveService extends UIEventRegisterClass {
                 for (let index = 0 as PlayerID; index < player_count; index++) {
                     GameRules.ArchiveService.GetPlayerGameOverData(index , {})
                 }
+                GameRules.NpcSystem.CreationNpc();
             },
             (code: number, body: string) => {
 
@@ -192,7 +213,7 @@ export class ArchiveService extends UIEventRegisterClass {
         )
     }
 
-    /**
+    /**o
      * 获取天赋选择列表
      */
     GetPlayerGameOverData(player_id: PlayerID, params: CGED["ArchiveService"]["GetPlayerGameOverData"], callback?) {

@@ -18,7 +18,7 @@ declare interface CGED {
         }
         //玩家准备
         PlayerReady : {
-
+            
         }
         //刷新单个物品
         RefreshOneItemBySoul : {

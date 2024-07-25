@@ -47,7 +47,7 @@ export class GameInformation extends UIEventRegisterClass {
         //游戏结束
         if(game_over == true){
             GameRules.MapChapter.GameLoser()
-            return ;    
+            return ;
         }
         if(this.player_life_list[player_id] > 0){
             //测试模式下死亡会增加生命

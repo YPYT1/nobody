@@ -24,8 +24,8 @@ export class MapChapter extends UIEventRegisterClass {
     hero_list: { [key: number]: string } = {}
 
     // 1 选择地图难度 2选择英雄 3游戏开始了
-    _game_select_phase: number = 0; //
-    //根据等级可用地图  
+    _game_select_phase: number = 0;
+    //根据等级可用地图
     _map_list : { [key : string ] : UserMapSelectDifficulty }  = {};
     //玩家已通关的难度  
     level_difficulty: string[] = [];
@@ -34,7 +34,7 @@ export class MapChapter extends UIEventRegisterClass {
     //玩家选择英雄记录
     player_select_hero: MapSelectHeroList[] = [];
     //玩家数量
-    player_count: number = 1;   
+    player_count: number = 1;
     //新玩家标记
     is_new_player : number = 0;
     //确认时间
@@ -367,7 +367,7 @@ export class MapChapter extends UIEventRegisterClass {
 
 
         //调用确认游戏开始
-        GameRules.ArchiveService.ConfirmDifficulty();
+        GameRules.ArchiveService.ConfirmDifficulty();   
         //todo 需要修改成流程中
 
         //重新设置时间
@@ -444,6 +444,11 @@ export class MapChapter extends UIEventRegisterClass {
 
     //返回到营地
     ReturntoCamp() {
+
+
+        GameRules.NpcSystem.RemoveNPC();
+
+
         let hDropItemList = FindUnitsInRadius(
             DotaTeam.GOODGUYS,
             Vector(0,0,0),

@@ -352,6 +352,12 @@ declare interface CGEDGeneralGameOverDataPassData {
             item_number : number, //数量
             quality : number , // 品质 
         }[],
+        skill_exp : {
+            [key : string] : { //类型
+                exp : number, //通关奖励经验
+                old_exp : number, //当时的经验
+            }
+        }[],
         is_mvp : number , //是否为mvp
     }[],
 }

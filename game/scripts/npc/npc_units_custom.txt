@@ -4,3 +4,4 @@
 #base "units/monster/boss.txt"
 #base "units/monster/elite.txt"
 
+#base "units/interact.txt"
