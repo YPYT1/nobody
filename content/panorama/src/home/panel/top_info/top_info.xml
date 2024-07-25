@@ -7,12 +7,12 @@
 	</scripts>
 	<Panel>
 		<Panel id="StageInfo" class="TopRows" >
-			<Label text="{s:stage}" />
 			<Panel class="Icon" />
+			<Label text="{s:stage}" />
 		</Panel>
 		<Panel id="LifeInfo" class="TopRows" >
 			<Panel class="Icon" />
-			<Label text="{d:life}" />
+			<Label text="{d:round} / {d:max_round}" />
 		</Panel>
 		<Panel id="GameTimeInfo">
 			<Label class="TimeLabel" text="{s:time_label}" />

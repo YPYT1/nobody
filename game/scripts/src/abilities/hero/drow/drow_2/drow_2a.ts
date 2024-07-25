@@ -90,11 +90,12 @@ export class modifier_drow_2a extends BaseHeroModifier {
 
     PlayEffect(params: PlayEffectProps) {
         let hTarget = params.hTarget;
+        let vTarget = hTarget.GetAbsOrigin();
         let count = 0;
         let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
         this.caster.SetContextThink("drow_2a_shot", () => {
             let vCaster = this.caster.GetAbsOrigin() + RandomVector(100) as Vector;
-            let vDirection = (hTarget.GetAbsOrigin() - vCaster as Vector).Normalized();
+            let vDirection = (vTarget - vCaster as Vector).Normalized();
             vDirection.z = 0;
             let vVelocity = vDirection * this.proj_speed as Vector;
             ProjectileManager.CreateLinearProjectile({

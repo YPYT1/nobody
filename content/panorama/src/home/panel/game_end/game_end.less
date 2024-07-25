@@ -1,0 +1,345 @@
+.GameSelectPhase_999 .GameEnd {
+    visibility: visible;
+}
+
+
+.GameEnd {
+    width: 100%;
+    height: 100%;
+    visibility: collapse;
+}
+
+#GameEndContainer {
+    width: 100%;
+    height: 800px;
+    margin-top: 100px;
+
+    overflow: noclip;
+    // vertical-align: middle;
+
+
+    .Content {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.815);
+        overflow: noclip;
+        flow-children: right;
+
+        transition-property: transform;
+        transition-duration: 0.1s;
+    }
+
+    &.Closed .Content {
+        transform: translateX(100%);
+    }
+
+    .LeftPanel {
+        width: 30%;
+        height: 100%;
+        flow-children: down;
+    }
+
+    .RightPanel {
+        width: 70%;
+        // height: 100%;
+        // border: 1px solid #ffffff;
+        // overflow: noclip;
+        flow-children: down;
+        transform: translateY(-50px);
+    }
+}
+
+#MvpModelPanel {
+    width: 100%;
+    height: 650px;
+    // border: 1px solid #ffffff;
+
+    #ModelScene {
+        width: 100%;
+        height: 100%;
+    }
+
+}
+
+.BestPlayerLabel {
+    width: 318px;
+    height: 112px;
+    background-image: url("file://{images}/custom_game/hud/game_end/base_player_label_0.png");
+    vertical-align: bottom;
+    margin-bottom: 12px;
+}
+
+#GameEndState {
+    horizontal-align: center;
+
+    .GameEndIcon {
+        // border: 1px solid #ffffff;
+        horizontal-align: center;
+        width: 932px;
+        height: 398px;
+        background-image: url("file://{images}/custom_game/hud/game_end/icon_defeat.png");
+
+    }
+
+    .PlayTime {
+        horizontal-align: center;
+        vertical-align: bottom;
+        font-size: 24px;
+        color: #ffffff;
+        margin-bottom: 24px;
+    }
+}
+
+#PlayerList {
+    width: 1086px;
+    // height: 360px;
+    horizontal-align: center;
+    // border: 1px solid #ffffff;
+}
+
+.ButtonGroup {
+    margin-bottom: 12px;
+    horizontal-align: right;
+    flow-children: right;
+    vertical-align: bottom;
+
+    #NextGameBtn {
+        vertical-align: middle;
+        width: 183px;
+        height: 54px;
+        background-image: url("file://{images}/custom_game/hud/game_end/next_game_btn.png");
+
+        Label {
+            align: center center;
+            font-size: 26px;
+            color: #ffedcd;
+        }
+
+        &:enabled {
+            &:hover {
+                brightness: 2;
+            }
+
+            &:active {
+                pre-transform-scale2d: 0.9;
+            }
+        }
+    }
+
+    .ToNextGame {
+        margin-left: 4px;
+        width: 101px;
+        height: 56px;
+        background-image: url("file://{images}/custom_game/hud/game_end/next_game_arrow.png");
+        vertical-align: middle;
+    }
+}
+
+.BonusExpBar {
+    height: 100%;
+    background-color: #ffffff;
+}
+
+.OriginExpBar {
+    height: 100%;
+    background-color: #00ff00;
+}
+
+.PlayerInfoRows {
+    width: 100%;
+
+
+    // border: 1px solid #ffffff;
+
+    &.Local {
+        background-color: #55261e;
+        border: 2px solid #613b34;
+    }
+
+    .BaseInfo {
+        background-color: #161718;
+        border: 2px solid #2e3030;
+    }
+
+    flow-children: down;
+
+    .BaseInfo {
+        width: 100%;
+        height: 80px;
+        flow-children: right;
+    }
+
+    .PlayerAvater {
+        width: 64px;
+        height: 64px;
+        vertical-align: middle;
+        margin-left: 12px;
+
+        #Avater {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #000000;
+            background-color: #000000;
+        }
+
+    }
+
+    .PlayerLabel {
+        margin-left: 8px;
+        vertical-align: middle;
+        width: 160px;
+        flow-children: down;
+
+        .HeroName {
+            width: 100%;
+            color: #ffffff;
+            font-size: 20px;
+        }
+
+        .PlayerName {
+            width: 100%;
+            margin-top: 4px;
+            color: #afafaf;
+            font-size: 16px;
+        }
+    }
+
+    .PlayerLevel {
+        width: 200px;
+        vertical-align: middle;
+        flow-children: down;
+
+        .LevelAndExp {
+            width: 100%;
+            flow-children: right;
+
+            .LevelLabel {
+                vertical-align: middle;
+                font-size: 20px;
+                color: #ffffff;
+            }
+
+            .BonusExp {
+                vertical-align: bottom;
+                font-size: 14px;
+                color: #6cff45;
+                horizontal-align: right;
+            }
+        }
+
+        #PlayerExp {
+            margin-top: 4px;
+            width: 100%;
+            border: 1px solid #000000;
+            height: 18px;
+            padding: 1px;
+            background-color: #333333;
+
+
+
+
+        }
+    }
+
+    .RewardLabel {
+        margin-left: 24px;
+        vertical-align: middle;
+        flow-children: right;
+
+        Label {
+            width: 24px;
+            font-size: 20px;
+            color: #d3d3d3;
+            vertical-align: middle;
+        }
+
+        .RewardLine {
+            width: 2px;
+            height: 52px;
+            background-image: url("file://{images}/custom_game/hud/game_end/reward_line.png");
+            vertical-align: middle;
+        }
+    }
+
+    #RewardList {
+        margin-left: 8px;
+        border: 1px solid #ffffff;
+        vertical-align: middle;
+        width: 500px;
+        height: 70px;
+        flow-children: right;
+        overflow: scroll;
+
+
+        .PassItem {
+            margin-left: 8px;
+            width: 56px;
+            height: 56px;
+            border: 1px solid #ff0000;
+            vertical-align: middle;
+        }
+    }
+
+    #AbilityTypesInfo {
+        width: 100%;
+        border: 2px solid #181919;
+        background-color: #000000;
+        flow-children: right-wrap;
+    }
+
+
+    .AbilityTypesRows {
+        flow-children: right;
+        margin: 4px 12px;
+        // border: 1px solid #ffffff;
+        padding: 12px;
+
+        .TypesImage {
+            width: 32px;
+            height: 29px;
+            vertical-align: middle;
+
+            .ArmsIcon {
+                width: 100%;
+                height: 100%;
+            }
+
+        }
+
+        .TypesInfo {
+            margin-left: 4px;
+            vertical-align: middle;
+            flow-children: down;
+
+            .Header {
+                width: 100%;
+                flow-children: right;
+
+                Label {
+                    font-size: 16px;
+                    color: #ffffff;
+                }
+
+                .BonusExp {
+                    horizontal-align: right;
+                }
+            }
+
+            .AboutExp {
+
+                margin-top: 4px;
+                width: 151px;
+                height: 9px;
+                padding: 1px;
+                margin-top: 4px;
+                // width: 100%;
+                border: 1px solid #000000;
+                // height: 18px;
+                // padding: 1px;
+                background-color: #333333;
+            }
+        }
+
+        // border-top-width: 0px;
+    }
+}

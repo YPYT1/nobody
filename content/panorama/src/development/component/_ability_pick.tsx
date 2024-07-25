@@ -4,7 +4,7 @@ import { CreateDragPanelImage } from "../../common/panel_operaton";
 import { GetAbilityImageSrc } from "../../common/custom_kv_method";
 import { useGameEvent } from "react-panorama-x";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../utils/custom_tooltip";
-import { CAbilityImage } from "../../components/ability_image";
+// import { CAbilityImage } from "../../components/ability_image";
 
 
 const CustomAbilityPanel = ({ abilityname }: { abilityname: string }) => {
@@ -78,8 +78,7 @@ const CustomAbilityPanel = ({ abilityname }: { abilityname: string }) => {
             onload={onInit}
             draggable={true}
         >
-            {/* <Image visible={!!abilityname} /> */}
-            <CAbilityImage abilityname={abilityname} />
+            <DOTAAbilityImage abilityname={abilityname} />
             <Label localizedText={`#DOTA_Tooltip_Ability_${abilityname}`} />
         </Panel>
     )
@@ -178,7 +177,8 @@ const UnitAbilityImage = ({ order }: { order: number }) => {
                         }}
                     >
                         {/* <DOTAItemImage src={image_src} scaling='stretch-to-fit-y-preserve-aspect' /> */}
-                        <CAbilityImage abilityname={AbilityName} />
+                    
+                        <DOTAAbilityImage abilityname={AbilityName} />
                         <Label text={`Lv.${AbilityLevel}`} />
                     </Panel>
 

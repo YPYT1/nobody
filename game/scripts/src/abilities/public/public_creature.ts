@@ -2,15 +2,15 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 
 // 属性
 @registerAbility()
-export class public_attribute extends BaseAbility {
+export class public_creature extends BaseAbility {
 
     GetIntrinsicModifierName(): string {
-        return "modifier_public_attribute"
+        return "modifier_public_creature"
     }
 }
 
 @registerModifier()
-export class modifier_public_attribute extends BaseModifier {
+export class modifier_public_creature extends BaseModifier {
 
     IsHidden(): boolean {
         return true

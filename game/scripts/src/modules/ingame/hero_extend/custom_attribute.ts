@@ -6,19 +6,35 @@ import * as AbilitiesArmsJson from "../../../json/abilities/arms.json";
 
 
 import { reloadable } from "../../../utils/tstl-utils";
+import { drow_range_wearable } from "../../../kv_data/hero_wearable/drow_range";
 
+type HeroWearable = typeof drow_range_wearable
+
+interface HeroWearableProps {
+    wearables: {
+        model: string;
+        particle: string;
+    }[];
+    particle_create: string[];
+}
 /** 自定义属性系统 */
 @reloadable
 export class CustomAttribute {
 
     /** 更新间隔 */
     update_delay = 0.1;
+    hero_wearable: {
+        [hero: string]: HeroWearable
+    }
+
 
     constructor() {
         print("[CustomAttribute]:constructor")
         this.ModifierList = {};
-        ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
+        this.hero_wearable = {};
+        this.hero_wearable["npc_dota_hero_drow_ranger"] = drow_range_wearable
 
+        ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
     }
 
     /** 升级事件 */
@@ -26,8 +42,8 @@ export class CustomAttribute {
         // print("OnEntityDotaPlayerGainedLevel")
         const hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
         //增加天赋点
-        GameRules.HeroTalentSystem.AddHeroTalent(event.player_id , 1);
-        
+        GameRules.HeroTalentSystem.AddHeroTalent(event.player_id, 1);
+
         this.AttributeInLevelUp(hHero)
     }
 
@@ -55,6 +71,7 @@ export class CustomAttribute {
                 let hAbility = hUnit.GetAbilityByIndex(i);
                 if (hAbility) { hAbility.RemoveSelf() }
             }
+            this.SetHeroWearables(hUnit)
             hUnit.SetContextThink("delay_init_attr", () => {
                 /** 属性表 */
                 let attribute_table: CustomAttributeTableType = {};
@@ -101,7 +118,7 @@ export class CustomAttribute {
 
 
         } else {
-            
+
             for (let i = 0; i < 32; i++) {
                 let hAbility = hUnit.GetAbilityByIndex(i);
                 if (hAbility) {
@@ -163,6 +180,8 @@ export class CustomAttribute {
         hUnit.AddAbility("public_arms").SetLevel(1);
         hUnit.AddAbility("public_attribute").SetLevel(1);
         hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
+
+
     }
 
     /** 计算属性 */
@@ -475,7 +494,7 @@ export class CustomAttribute {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         for (let i = 0; i < 5; i++) {
             let hAbility = hHero.GetAbilityByIndex(i);
-            if (hAbility){
+            if (hAbility) {
                 hAbility.OnUpgrade();
             }
             if (hAbility.IntrinsicMdf) {
@@ -485,6 +504,57 @@ export class CustomAttribute {
             }
             // let 
         }
+    }
+
+    SetHeroWearables(hUnit: CDOTA_BaseNPC) {
+        let heroname = hUnit.GetUnitName();
+        let wearable_data = this.hero_wearable[heroname]
+        if (wearable_data) {
+            // 移除原始饰品
+            for (let v of hUnit.GetChildren()) {
+                if (v.GetClassname() == "dota_item_wearable") {
+                    print("v", v.GetClassname(), v.GetModelName())
+                    //@ts-ignore
+                    // v.SetModel("models/development/invisiblebox.vmdl")
+                    v.RemoveSelf()
+                }
+            }
+            hUnit.SetOriginalModel("models/items/drow/drow_arcana/drow_arcana.vmdl")
+            hUnit.SetModel("models/items/drow/drow_arcana/drow_arcana.vmdl");
+            // hUnit.SetSkin(1)
+            for (let particle_create of wearable_data.particle_create) {
+                let particle_index = ParticleManager.CreateParticle(
+                    particle_create,
+                    ParticleAttachment.ABSORIGIN_FOLLOW,
+                    hUnit
+                )
+            }
+
+
+
+            let szWearables = wearable_data.wearables;
+            for (let wearable of szWearables) {
+                let hWearable = Entities.CreateByClassname("wearable_item") as CDOTA_BaseNPC
+                if (hWearable != null) {
+                    hWearable.SetModel(wearable.model)
+                    hWearable.SetTeam(DotaTeam.GOODGUYS)
+                    hWearable.SetOwner(hUnit)
+                    hWearable.FollowEntity(hUnit, true)
+                    if (wearable.particle) {
+                        let particle_index = ParticleManager.CreateParticle(
+                            wearable.particle,
+                            ParticleAttachment.POINT_FOLLOW,
+                            hWearable
+                        )
+                    }
+                    // hWearable.SetSkin(1)
+                }
+            }
+
+        }
+
+
+
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {

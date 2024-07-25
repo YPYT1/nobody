@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { render, useGameEvent } from 'react-panorama-x';
 
 import { default as NpcItemCustom } from "./../../json/npc_items_custom.json";
-import { CItemImage, CItemLabel } from '../../components/item_image';
+// import { CItemImage, CItemLabel } from '../../components/item_image';
 import { ConvertAttributeValues, GetItemAttribute } from '../../utils/attribute_method';
 
 const SetCustomDescription = (name: string, panel_id: string) => {
@@ -137,11 +137,11 @@ const App = () => {
             }}>
             <Panel className="TooltipHeader">
                 <Panel className='ItemImage'>
-                    <CItemImage id='ItemIcon' itemname={itemname} />
+                    {/* <CItemImage id='ItemIcon' itemname={itemname} /> */}
                 </Panel>
                 <Panel id="HeaderLabels" className="flow-down">
                     <Panel id="ItemNameContent" className='w100 flow-right'>
-                        <CItemLabel id="TooltipItemName" itemname={itemname} />
+                        {/* <CItemLabel id="TooltipItemName" itemname={itemname} /> */}
                         {/* <Label id="ItemLevel" html={true} text={"Lv:" + level} /> */}
                     </Panel>
                     <Panel id='ItemCategory'>

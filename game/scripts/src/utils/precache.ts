@@ -1,6 +1,6 @@
 /** @noSelfInFile */
-import { drow_precache } from "./precache_data/hero_ability/drow";
-import { HeroList } from "./precache_data/hero_list";
+import { drow_precache } from "../kv_data/precache_data/hero_ability/drow";
+import { HeroList } from "../kv_data/precache_data/hero_list";
 
 // 导出的预载入方法，用来给addon_game_mode.ts调用
 export default function Precache(context: CScriptPrecacheContext) {
@@ -13,6 +13,7 @@ export default function Precache(context: CScriptPrecacheContext) {
             'soundevents/game_sounds_heroes/game_sounds_hoodwink.vsndevts',
             'particles/econ/items/mirana/mirana_persona/mirana_starstorm.vpcf',
             'particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray.vpcf',
+            'particles/diy/pick_item_fx2.vpcf',
             ...drow_precache,
         ],
         context

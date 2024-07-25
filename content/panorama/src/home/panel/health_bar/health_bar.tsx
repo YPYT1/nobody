@@ -59,6 +59,7 @@ const CMsg_GetEntityListHealthBar = (params: NetworkedData<CustomGameEventDeclar
 
 function StartUpdateHealthBar() {
     UpdateTopPanelBoss();
+    // UpdateOverheadThinker();
     $.Schedule(Game.GetGameFrameTime(), StartUpdateHealthBar);
 }
 
@@ -66,11 +67,11 @@ function StartUpdateHealthBar() {
 function UpdateTopPanelBoss() {
     // $.Msg(["overhead_boss_list",overhead_boss_list])
     overhead_boss_list.forEach((entity) => {
-        if (!Entities.IsValidEntity(entity)) { 
-            return; 
+        if (!Entities.IsValidEntity(entity)) {
+            return;
         }
         let pPanel = overhead_panel_boss[entity];
-        
+
         // $.Msg(["pPanel", pPanel,OverheadBarContainer])
         if (pPanel === null || pPanel === undefined) {
             pPanel = $.CreatePanel("Panel", TopHealthBarContent, "");
@@ -91,7 +92,7 @@ function UpdateTopPanelBoss() {
 
         let unit_hp_max = Entities.GetMaxHealth(entity);
         let unit_hp_current = Entities.GetHealth(entity);
-        
+
         let mod_hp_value = Math.ceil(unit_hp_current / EVER_MAX_HP);
         let mod_hp_max_value = Math.ceil(unit_hp_max / EVER_MAX_HP);
         let color_index = (mod_hp_max_value - mod_hp_value) % TOTAL_COLOR_COUNT;
@@ -132,10 +133,62 @@ function UpdateTopPanelBoss() {
 
 function UpdateOverheadThinker() {
     let entities = Entities.GetAllEntitiesByName('npc_dota_creature');
-    overhead_boss_list.forEach((entity) => {
-
+    entities.forEach((entity) => {
         let cur_panel = OverheadBarContainer.FindChild(String(entity));
         const unit_label = Entities.GetUnitLabel(entity);
+        // $.Msg(["unit_label",unit_label])
+        if (
+            !Entities.IsValidEntity(entity)
+            || !Entities.IsAlive(entity)
+            || unit_label === 'dummy'
+            || unit_label === 'event'
+            || (unit_label != "unit_elite")
+        ) {
+            if (cur_panel) {
+                cur_panel.DeleteAsync(0);
+            }
+            return;
+        }
+        
+        const pos = Entities.GetAbsOrigin(entity);
+        let fOffset = Entities.GetHealthBarOffset(entity);
+        fOffset = (fOffset === -1 || fOffset < 350) ? 350 : fOffset;
+        let xUI = Game.WorldToScreenX(pos[0], pos[1], pos[2] + fOffset);
+        let yUI = Game.WorldToScreenY(pos[0], pos[1], pos[2] + fOffset);
+
+        if (xUI < 0 || xUI > Game.GetScreenWidth() || yUI < 0 || yUI > Game.GetScreenHeight()) {
+            if (cur_panel) { cur_panel.DeleteAsync(0); }
+            return;
+        }
+
+        if (cur_panel == null) {
+            cur_panel = $.CreatePanel('Panel', OverheadBarContainer, String(entity));
+            cur_panel.BLoadLayoutSnippet("OverheadBar");
+            if (unit_label == "unit_elite") {
+                cur_panel.AddClass("elite")
+            }
+        }
+
+        let healthWidth = GetNumDecimals((Entities.GetHealth(entity) / Entities.GetMaxHealth(entity)) * 100, 1);
+        if (cur_panel.FindChildTraverse("HealthBar0")) {
+            cur_panel.FindChildTraverse("HealthBar0")!.style.width = `${healthWidth}%`;
+            cur_panel.FindChildTraverse("HealthBar")!.style.width = `${healthWidth}%`;
+        }
+
+        const [clampX, clampY] = GameUI.WorldToScreenXYClamped(pos);
+		const diffX = clampX - 0.5;
+		const diffY = clampY - 0.5;
+		xUI -= diffX * Game.GetScreenWidth() * 0.16;
+		yUI -= diffY * Game.GetScreenHeight() * 0.10;
+
+        let xoffset = 0;
+        let yoffset = 30;
+        cur_panel.SetPositionInPixels(
+            (xUI - cur_panel.actuallayoutwidth / 2 - xoffset) / cur_panel.actualuiscale_x,
+            (yUI - cur_panel.actuallayoutheight + yoffset) / cur_panel.actualuiscale_y,
+            0,
+        );
+
     })
 }
 

@@ -18,7 +18,6 @@ function FormatNumberToTime(time: number) {
 
 const UpdateTopInfoTime = () => {
     let GameSelectPhase = MainPanel.Data<PanelDataObject>().GameSelectPhase as number;
-
     if (GameSelectPhase <= 2) {
         MainPanel.SetDialogVariable("stage", "rest");
         MainPanel.SetDialogVariable("time_label", "-");
@@ -35,15 +34,23 @@ const UpdateTopInfoTime = () => {
 export const Init = () => {
     MainPanel.Data<PanelDataObject>().timer_loop = false;
     MainPanel.Data<PanelDataObject>().GameSelectPhase = -1;
-    MainPanel.SetDialogVariable("stage", "101");
+    MainPanel.SetDialogVariable("stage", "-");
     MainPanel.SetDialogVariableInt("life", 0);
     MainPanel.SetDialogVariable("time_label", "0:0");
-
+    MainPanel.SetDialogVariableInt("round", 0);
+    MainPanel.SetDialogVariableInt("max_round", 15);
     GameEvents.Subscribe("GameInformation_GetPlayGameHeadData", event => {
         let data = event.data;
         RoundGameStartTime = data.time;
         RoundGameDifficulty = data.difficulty;
         MainPanel.SetDialogVariable("stage", RoundGameDifficulty);
+
+
+    });
+
+    GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
+        let data = event.data;
+        MainPanel.Data<PanelDataObject>().GameSelectPhase = data.game_select_phase;
     });
 
     GameEvents.SendCustomGameEventToServer("GameInformation", {
@@ -51,11 +58,10 @@ export const Init = () => {
         params: {}
     });
 
-    // GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
-    //     $.Msg(["MapChapter_GetGameSelectPhase"])
-    //     let data = event.data;
-    //     GameSelectPhase = data.game_select_phase;
-    // });
+    GameEvents.SendCustomGameEventToServer("MapChapter", {
+        event_name: "GetGameSelectPhase",
+        params: {}
+    });
 
     $.Schedule(1, () => {
         MainPanel.Data<PanelDataObject>().timer_loop = true;

@@ -1,8 +1,8 @@
 #top_info {
     horizontal-align: center;
-    width: 604px;
-    height: 111px;
-    background-image: url("file://{images}/custom_game/hud/top_info/top_border.png");
+    width: 666px;
+    height: 146px;
+    background-image: url("file://{images}/custom_game/hud/top_info/top_border2.png");
 
 
     #GameTimeInfo {
@@ -15,9 +15,10 @@
             horizontal-align: center;
             // background-color: #000000;
             font-weight: bold;
-            font-size: 24px;
+            font-size: 30px;
             // color:#3ab4d3;
-            color: gradient(linear, 0% 0%, 0% 100%, from(#b7fff4), to(#42c9d1));
+            color: gradient(linear, 0% 0%, 0% 100%, from(#e8fffc), to(#ffffff));
+            text-shadow: 0px 0px 2px 2.0 #000000;
             // font-family: "思源黑体";
         }
     }
@@ -25,12 +26,12 @@
     .TopRows {
         // border: 1px solid #ffffff;
         flow-children: right;
-        margin-top: 6px;
-
+        margin-top: 12px;
+        
         Label {
             vertical-align: middle;
             font-size: 18px;
-            color: #cddfdf;
+            color: #c5c7c6;
             text-shadow: 0px 0px 1px 2 #000000;
             margin-left: 4px;
             margin-right: 4px;
@@ -43,21 +44,23 @@
 
     #StageInfo {
         // width: 100px;
-        margin-left: 100px;
+        margin-left: 150px;
+
         .Icon {
-            width: 21px;
-            height: 21px;
-            background-image: url("file://{images}/custom_game/icon/difficulty.png");
+            width: 28px;
+            height: 27px;
+            background-image: url("file://{images}/custom_game/hud/top_info/icon_map.png");
         }
     }
 
     #LifeInfo {
-        margin-right: 100px;
+        margin-right: 150px;
         horizontal-align: right;
+
         .Icon {
-            width: 21px;
-            height: 21px;
-            background-image: url("file://{images}/custom_game/icon/life.png");
+            width: 20px;
+            height: 25px;
+            background-image: url("file://{images}/custom_game/hud/top_info/icon_round.png");
             background-repeat: no-repeat;
             background-position: 50%;
         }

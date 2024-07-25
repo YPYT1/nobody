@@ -75,5 +75,6 @@ export const FormatTalentTree = (hero_name: string, talent_tree_obj: any) => {
             }
         }
     }
+    
     return temp_tree
 }

@@ -21,7 +21,7 @@ export class drow_1a extends drow_1 {
     }
 
     UpdataSpecialValue(): void {
-        print("drow_1a UpdataSpecialValue")
+        // print("[UpdataSpecialValue]:",this.GetAbilityName())
         this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
         this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
         this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");

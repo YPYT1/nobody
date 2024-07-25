@@ -46,7 +46,7 @@ declare interface ApplyCustomDamageOptions {
     /** 元素类型 */
     element_type?: ElementTypes;
     /** 技能类型 */
-    ability_category?: ArmsAbilityCategory;
+    // ability_category?: ArmsAbilityCategory;
     /** 是否为固定值,不吃任何加成 */
     fixed?: boolean;
     /** 额外暴击率 */

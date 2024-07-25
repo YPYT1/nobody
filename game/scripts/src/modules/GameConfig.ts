@@ -69,6 +69,8 @@ export class GameConfig {
         GameRules.LockCustomGameSetupTeamAssignment(true);
         GameRules.EnableCustomGameSetupAutoLaunch(true);
 
+        // DisableWearables
+        // GameRules.wear
         // 自定义游戏加载事件
         GameRules.SetCustomGameSetupTimeout(-1);
         GameRules.SetCustomGameSetupAutoLaunchDelay(9999);

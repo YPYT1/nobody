@@ -1,0 +1,90 @@
+<root>
+	<styles>
+		<include src="./game_end.less" />
+        <include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./game_end.tsx" />
+	</scripts>
+    <snippets>
+        <snippet name="PlayerInfoRows">
+            <Panel class="PlayerInfoRows">
+                <Panel class="BaseInfo">
+                    <Panel class="PlayerAvater">
+                        <DOTAAvatarImage id="Avater" nocompendiumborder="false" onmouseover="()=>{}" onactivate="()=>{}" />
+                    </Panel>
+                    <Panel class="PlayerLabel">
+                        <Label class="HeroName" text="{s:hero_name}" />
+                        <Label class="PlayerName" text="{s:player_name}" />
+                    </Panel>
+                    <Panel class="PlayerLevel">
+                        <Panel class="LevelAndExp">
+                            <Label class="LevelLabel" text="Lv.{d:player_lv}" />
+                            <Label class="BonusExp" text="+{d:bonus_exp}" />
+                        </Panel>
+                        <Panel id="PlayerExp">
+                            <Panel id="BonusExp" class="BonusExpBar"/>
+                            <Panel id="OriginExp" class="OriginExpBar"/>
+                        </Panel>
+                    </Panel>
+                    <Panel class="RewardLabel">
+                        <Label text="奖励"/>
+                        <Panel class="RewardLine" />
+                    </Panel>
+                    <Panel id="RewardList" />
+                </Panel>
+                <Panel id="AbilityTypesInfo" />
+              
+            </Panel>
+        </snippet>
+        <snippet name="AbilityTypesRows">
+            <Panel class="AbilityTypesRows">
+                <Panel class="TypesImage">
+                    <Panel id="TypesIcon" class="ArmsIcon" />
+                </Panel>
+                <Panel class="TypesInfo">
+                    <Panel class="Header">
+                        <Label class="LevelLabel" text="Lv.{d:arms_level}" />
+                        <Label class="BonusExp" text="+{d:bonus_exp}" />
+                    </Panel>
+                    <Panel class="AboutExp">
+                        <Panel id="BonusExp" class="BonusExpBar"/>
+                        <Panel id="OriginExp" class="OriginExpBar"/>
+                    </Panel>
+                </Panel>
+            </Panel>
+        </snippet>
+    </snippets>
+	<Panel class="GameEnd">
+		<Panel id="GameEndContainer">
+            <Panel class="Content">
+                <Panel class="LeftPanel">
+                    <Panel id="MvpModelPanel">
+                        <DOTAScenePanel 
+                            id="ModelScene" 
+                            class="full" 
+                            hittest='false' 
+                            unit='npc_dota_hero_drow_ranger' 
+                            particleonly='false' 
+                        />
+                    </Panel>
+                    <Panel class="BestPlayerLabel" />
+                </Panel>
+                <Panel class="RightPanel">
+                    <Panel id="GameEndState">
+                        <Panel class="GameEndIcon"/>
+                        <Label class="PlayTime" text="{s:play_time}"/>
+                    </Panel>
+                    <Panel id="PlayerList" />
+                    
+                </Panel>
+            </Panel>
+            <Panel class="ButtonGroup">
+                <Button id="NextGameBtn">
+                    <Label text="#哦" />
+                </Button>
+                <Panel class="ToNextGame"/>
+            </Panel>
+        </Panel>
+	</Panel>
+</root>
