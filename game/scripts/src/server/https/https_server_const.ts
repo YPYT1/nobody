@@ -1,8 +1,8 @@
 /** @noSelfInFile */
 
-const SERVER_URL = "127.0.0.1:8080/api";
+const SERVER_URL = "47.108.197.4:8080/api";
 
-const SERVER_URL_GW = "127.0.0.1:8080/api";
+const SERVER_URL_GW = "47.108.197.4:8080/api";
 
 const SERVER_AGREEMENT = "http";
 

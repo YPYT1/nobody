@@ -106,9 +106,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     } else {
 
     }
-
     PopupDamageNumber(hAttacker, hTarget, params.damage_type, damage_number, is_crit, element_type)
-    // print("damage",params.damage,params.ability,params.attacker)
     return ApplyDamage(params);
 }
 

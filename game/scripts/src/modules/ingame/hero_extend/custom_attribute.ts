@@ -519,8 +519,8 @@ export class CustomAttribute {
                     v.RemoveSelf()
                 }
             }
-            hUnit.SetOriginalModel("models/items/drow/drow_arcana/drow_arcana.vmdl")
-            hUnit.SetModel("models/items/drow/drow_arcana/drow_arcana.vmdl");
+            hUnit.SetOriginalModel(wearable_data.unit_model)
+            hUnit.SetModel(wearable_data.unit_model);
             // hUnit.SetSkin(1)
             for (let particle_create of wearable_data.particle_create) {
                 let particle_index = ParticleManager.CreateParticle(
@@ -540,9 +540,10 @@ export class CustomAttribute {
                     hWearable.SetTeam(DotaTeam.GOODGUYS)
                     hWearable.SetOwner(hUnit)
                     hWearable.FollowEntity(hUnit, true)
-                    if (wearable.particle) {
+
+                    for (let w_particle of wearable.particle) {
                         let particle_index = ParticleManager.CreateParticle(
-                            wearable.particle,
+                            w_particle,
                             ParticleAttachment.POINT_FOLLOW,
                             hWearable
                         )

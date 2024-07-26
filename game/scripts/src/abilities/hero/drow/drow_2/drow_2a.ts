@@ -94,6 +94,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
         let count = 0;
         let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
         this.caster.SetContextThink("drow_2a_shot", () => {
+            // print("proj_width",this.proj_width)
             let vCaster = this.caster.GetAbsOrigin() + RandomVector(100) as Vector;
             let vDirection = (vTarget - vCaster as Vector).Normalized();
             vDirection.z = 0;

@@ -24,8 +24,8 @@ export class drow_1c extends drow_1 {
         if (target) {
             this.caster.GiveMana(this.add_mana)
             let ability_damage: number = extraData.a;
-            let element_type = extraData.et
-            let damage_type = extraData.td
+            let element_type = extraData.et;
+            let damage_type = extraData.dt;
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,

@@ -2,7 +2,7 @@
 export const DASHBOARD_NAVBAR = {
 
     // 个人档案
-    "Archive": {
+    "personal": {
         "Show": true,
         "Sub": { // 子菜单
             "Equip": true,
@@ -10,25 +10,25 @@ export const DASHBOARD_NAVBAR = {
         }
     },
 
-    // 商城
-    "Mall": {
+    "equip": {
         "Show": true,
-        "Sub": {
-            "Store": true, // 商城
-        }
-
     },
 
-    // 抽奖
-    "Gacha": {
-        "Show": false,
-        "Sub": {
-            "Main": true, // 
-        }
+    "backpack": {
+        "Show": true,
     },
 
+    "store": {
+        "Show": true,
+    },
 
+    "achievement": {
+        "Show": true,
+    },
 
+    "event": {
+        "Show": true,
+    },
 };
 
 

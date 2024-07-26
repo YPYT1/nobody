@@ -7,20 +7,19 @@
     </styles>
     <snippets>
         <snippet name="DashboardButton">
-            <Button class="DashboardButton">
-                
-            </Button>
+            <RadioButton class="DashboardButton" group="MenuRadioGroup">
+                <Panel id="ButtonIcon"/>
+                <Image id="ButtonIconImage" src="Panel://ButtonIcon" />
+            </RadioButton>
         </snippet>
     </snippets>
     <Panel class="dashboard" hittest="false">
         <Panel id="DashboardMainPage" hittest="false">
             <Panel id="DashboardButtonList">
-                <Panel id="ReturnButtonPanel">
-                    <Button id="ReturnButton" class="TooltipButton"/>
-                </Panel>
-                <Panel id="MenuButtonsPanel" />
+                <Button id="ReturnButton" class="TooltipButton"/>
+                <Panel id="MenuButtonList" />
             </Panel>
-            <Panel id="DashboardList" />
+            <Panel id="DashboardList" hittest="false"/>
         </Panel>
         <Button id="GenericPopups" class="PopupsBackground" />
     </Panel>

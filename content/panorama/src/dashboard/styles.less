@@ -8,63 +8,159 @@
         height: 100%;
     }
 
-    
+
 }
 
 #DashboardButtonList {
     z-index: 9;
     flow-children: right;
-    // visibility: collapse;
-    // padding: 6px 24px 6px 8px;
-    // padding-top: 12px;
-    // border-radius: 8px;
-    // margin-left: -8px;
-    // margin-top: -8px;
-    // background-size: 100%;
+    width: 615px;
+    height: 44px;
+    background-image: url("file://{images}/custom_game/dashboard/top_menu_bg.png");
 
-    #ReturnButtonPanel {
-        width: 101px;
-        height: 46px;
-        background-image: url("file://{images}/custom_game/dashboard/top_menu_1.png");
-        z-index: 9;
-        #ReturnButton {
-            vertical-align: middle;
-            margin-left: 8px;
-            width: 46px;
-            height: 30px;
-            background-image: url("file://{images}/custom_game/icon/topbar/return.png");
-        }
+    #ReturnButton {
+        margin-top: 12px;
+        // vertical-align: middle;
+        margin-left: 8px;
+        width: 41px;
+        height: 23px;
+        background-image: url("file://{images}/custom_game/dashboard/icons/retrun.png");
     }
 
-    #MenuButtonsPanel {
-        width: 395px;
-        height: 51px;
-        background-image: url("file://{images}/custom_game/dashboard/top_menu_2.png");
+    #MenuButtonList {
+        // height: 51px;
+        margin-top: 1px;
+        margin-left: 12px;
+        vertical-align: middle;
         z-index: 8;
-        transform: translateX(-101px);
-        padding-left: 100px;
-        padding-top: 8px;
+        // margin-top: 6px;
         flow-children: right;
+
+
     }
 
     .DashboardButton {
-        width: 24px;
-        height: 24px;
-        tooltip-position: bottom;
-        border-width: 0px;
-        // background-color: #999999;
-        background-image: url("file://{images}/custom_game/icon/topbar/setting.png");
-        background-size: 100%;
-        background-repeat: no-repeat;
-        margin-left: 10px;
-        margin-right: 10px;
 
+        // border: 1px solid #ffffff;
+        // padding: 4px;
+        margin-left: 6px;
+        margin-right: 6px;
+        width: 48px;
+        height: 37px;
+        overflow: noclip;
+        tooltip-position: bottom;
+        // background-size: 30px 29px;
+        // background-position: 50% 50%;
+        // background-repeat: no-repeat;
+        // transition-property: background-size;
+        // transition-duration: 0.15s;
+        // brightness: 1.1;
+
+        #ButtonIcon {
+            // width: 0px;
+            // height: 20px;
+            // background-image: url("file://{images}/custom_game/dashboard/hover_glow.png");
+            tooltip-position: bottom;
+            width: 30px;
+            height: 29px;
+            background-image: url("file://{images}/custom_game/dashboard/icons/setting.png");
+            background-repeat: no-repeat;
+            vertical-align: middle;
+            horizontal-align: center;
+            // opacity: 0;
+            // transform: translateY(12px);
+
+            transition-property: opacity, width, pre-transform-scale2d;
+            transition-duration: 0.15s;
+
+            // img-shadow: 0px 0px 1px 1.0 #1b1b1bd0;
+        }
+
+        #ButtonIconImage {
+            width: 30px;
+            height: 29px;
+            vertical-align: middle;
+            horizontal-align: center;
         
+            blur: gaussian(1);
+            pre-transform-scale2d: 0;
+            // wash-color: #e93939;
+            // border: 1px solid #ffffff;
+            
+        }
+
+        &:selected,
+        &:hover {
+            #ButtonIcon {
+                brightness: 2;
+                pre-transform-scale2d: 1.2;
+            }
+
+       
+
+        }
+
+        // Button {
+        //     width: 30px;
+        //     height: 29px;
+        //     align: center center;
+        //     transition-property: pre-transform-scale2d;
+        //     transition-duration: 0.125s;
+        //     tooltip-position: bottom;
+        //     // border: 1px solid #ffffff;
+        //     // background-image: url("file://{images}/custom_game/dashboard/icons/achievement.png");
+        //     background-size: 100%;
+        //     background-repeat: no-repeat;
+        //     margin-left: 10px;
+        //     margin-right: 10px;
+
+        //     &:hover {
+        //         pre-transform-scale2d: 1.2;
+        //     }
+
+        // }
+
+
     }
-    #ArchiveButton.DashboardButton {
-        background-image: url("file://{images}/custom_game/icon/topbar/archive.png");
+
+    #settingsButton #ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/setting.png");
+    }
+
+    #personalButton #ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/personal.png");
+    }
+
+    #achievementButton #ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/achievement.png");
+    }
+
+    #backpackButton #ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/backpack.png");
+    }
+
+    #equipButton#ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/equip.png");
+    }
+
+    #eventButton #ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/event.png");
+    }
+
+    #mailButton #ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/mail.png");
+    }
+
+    #storeButton #ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/store.png");
     }
 }
+
 .TooltipButton {
     tooltip-position: bottom;
+}
+
+#DashboardList {
+    width: 100%;
+    height: 100%;
 }
