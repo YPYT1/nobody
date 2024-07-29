@@ -45,11 +45,21 @@ export class MapChapter extends UIEventRegisterClass {
     select_hero_time : number = 60;
     //客服端确认时间
     countdown_select_hero_time : number = 0;
+    //投票确认时间
+    vote_time : number = 60;
+    //客服端确认时间
+    countdown_vote_time : number = 0;
+    //玩家投票信息
+    vote_data: MapVote = {
+        playervote : [],
+        state : 0,
+        vote_time : 0 ,
+    };
 
     constructor() {
         super("MapChapter") 
         print("[MapChapter]:constructor")
-
+        
         let sort_hero : { [key : number] : number} = {};
         for (let [key, RowData] of pairs(NpcHeroesCustom)) {
             if (RowData.Enable == 1) {
@@ -355,16 +365,14 @@ export class MapChapter extends UIEventRegisterClass {
         }
         //修改流程
         this._game_select_phase = 2;
-        this.GetGameSelectPhase(-1, {})
 
+        this.GetGameSelectPhase(-1, {})
 
         GameRules.MapChapter.is_new_player = 0;
 
         let ChapterData = MapInfo[this.MapIndex];
 
-
         GameRules.GetGameModeEntity().StopThink("SELECT_HERO_AFFIRM");
-
 
         //调用确认游戏开始
         GameRules.ArchiveService.ConfirmDifficulty();   
@@ -410,14 +418,12 @@ export class MapChapter extends UIEventRegisterClass {
             let hHero = PlayerResource.GetSelectedHeroEntity(index)
             hHero.SetOrigin(vLocation);
             let hname = GameRules.MapChapter.hero_list[this.player_select_hero[index].hero_id];
-            print("hname : " , hname)
             PlayerResource.ReplaceHeroWith(
                 index,
                 hname,
                 0,
                 0
             );
-
             UTIL_Remove(hHero)
         }
 
@@ -436,19 +442,129 @@ export class MapChapter extends UIEventRegisterClass {
         );
     }
 
-
     OnRemoveChapterMap() {
 
     }
+    //重开状态
+    is_reopen = false;
+    //开启重开投票
+    OpenReopenVote(player_id: PlayerID, params: CGED["MapChapter"]["OpenReopenVote"]) {
+        if (player_id == 0 && this._game_select_phase == 999) {
+            if(this.is_reopen == false){
+                this.is_reopen = true;
+                this.vote_data.state = 1;
+                this.vote_data.playervote = [];
+                let plyaer_count = GetPlayerCount()
+                for (let index = 0 as PlayerID ; index < plyaer_count ; index++) {
+                    this.vote_data.playervote.push(-1);
+                }
+                //完成时间
+                this.countdown_vote_time = GameRules.GetDOTATime(false, false) + this.vote_time;
+                //投票时间
+                this.vote_data.vote_time = this.countdown_vote_time;
+                GameRules.GetGameModeEntity().SetContextThink("VOTE_TIME", () => {
+                    GameRules.MapChapter.VoteTimeLose();
+                    return null;
+                }, this.vote_time);
+            }else{
+                GameRules.CMsg.SendErrorMsgToPlayer(
+                    player_id,
+                    "已经开启重开投票",
+                    {}
+                );
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(
+                player_id,
+                "主机才能开启投票,或游戏未结束",
+                {}
+            );
+        }
+    }
 
+    //玩家投票
+    PlayerVote(player_id: PlayerID, params: CGED["MapChapter"]["PlayerVote"]) {
+        if(this.is_reopen && this._game_select_phase == 999){
+            if(this.vote_data.playervote[player_id] == 0){
+                if(params.vote == 1){
+                    this.vote_data.playervote[player_id] = params.vote;
+                    let plyaer_count = GetPlayerCount()
+                    for (let index = 0 as PlayerID ; index < plyaer_count ; index++) {
+                        if(this.vote_data.playervote[index] != 1){
+                            this.GetPlayerVoteData(-1 , {});
+                            return 
+                        }
+                    }
+                    this.VoteTimeSucceed();
+                }else{
+                    this.vote_data.playervote[player_id] = params.vote;
+                    this.VoteTimeLose();
+                }
+            }else{
+                GameRules.CMsg.SendErrorMsgToPlayer(
+                    -1 as PlayerID,
+                    "你已投票....",
+                    {}
+                );
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(
+                -1 as PlayerID,
+                "未开启投票,或游戏未结束",
+                {}
+            );
+        }
+    }
+
+
+    //投票重开失败
+    VoteTimeLose(){
+        GameRules.GetGameModeEntity().StopThink("VOTE_TIME");
+        this.is_reopen = false;
+        this.vote_data.state = 0;
+        this.GetPlayerVoteData(-1 , {});
+    }
+
+    //投票重开成功
+    VoteTimeSucceed(){
+        GameRules.GetGameModeEntity().StopThink("VOTE_TIME");
+        this.is_reopen = false;
+        this.vote_data.state = 0;
+        this.GetPlayerVoteData(-1 , {});
+        this.ReturntoCamp();
+    }
+    
+    /**
+     * 投票信息
+     * @param player_id 
+     * @param params 
+     */
+    GetPlayerVoteData(player_id: PlayerID, params: CGED["MapChapter"]["GetPlayerVoteData"]){
+        if (player_id == -1) {
+            CustomGameEventManager.Send_ServerToAllClients(
+                "MapChapter_GetPlayerVoteData",
+                {
+                    data: {
+                        vote_data: this.vote_data,
+                    }
+                }
+            );
+        } else {
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "MapChapter_GetPlayerVoteData",
+                {
+                    data: {
+                        vote_data: this.vote_data,
+                    }
+                }
+            )
+        }
+    }
 
     //返回到营地
     ReturntoCamp() {
-
-
         GameRules.NpcSystem.RemoveNPC();
-
-
         let hDropItemList = FindUnitsInRadius(
             DotaTeam.GOODGUYS,
             Vector(0,0,0),
@@ -510,16 +626,15 @@ export class MapChapter extends UIEventRegisterClass {
         let cj_list: string[] = [];
         let hero_list: string[] = [];
         let player_count = GetPlayerCount();
-        for (let index = 0 as PlayerID; index < player_count; index++) {
-            
-        }
         for (let index: PlayerID = 0; index < player_count; index++) {
             // let CPlayer = PlayerResource.GetPlayer(index as PlayerID);
             let unit = PlayerResource.GetSelectedHeroEntity(index as PlayerID);
+            let ChapterData = MapInfo[this.MapIndex];
+            let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
             if (!unit.IsAlive()) {
-                unit.SetRespawnPosition(unit.GetAbsOrigin());
+                unit.SetRespawnPosition(vLocation);
                 unit.RespawnHero(false, false);
-                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 5 });
+                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
             }
         }
         //通关结算
@@ -542,8 +657,16 @@ export class MapChapter extends UIEventRegisterClass {
         let cj_list: string[] = [];
         let hero_list: string[] = [];
         let player_count = GetPlayerCount();
+        let ChapterData = MapInfo[this.MapIndex];
+        let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
         for (let index = 0 as PlayerID; index < player_count; index++) {
-
+            let hHero = PlayerResource.GetSelectedHeroEntity(index);
+            if(hHero.IsAlive() == false){
+                hHero.SetRespawnPosition(vLocation);
+                hHero.RespawnHero(false, false);
+                hHero.AddNewModifier(hHero, null, "modifier_state_invincible", { duration: 3 });
+                break;
+            }
         }
         //通关结算
         GameRules.ArchiveService.GameOver(
