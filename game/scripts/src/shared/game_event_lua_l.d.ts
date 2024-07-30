@@ -176,6 +176,10 @@ declare interface CGED {
         GetPlayerVoteData : {
 
         }
+        //获取游戏信息
+        NewPlay : {
+
+        }
     }
 
     /**

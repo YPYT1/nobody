@@ -56,6 +56,8 @@ export class MapChapter extends UIEventRegisterClass {
         vote_time : 0 ,
     };
 
+    game_count = 0;
+
     constructor() {
         super("MapChapter") 
         print("[MapChapter]:constructor")
@@ -432,7 +434,8 @@ export class MapChapter extends UIEventRegisterClass {
         let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
 
         for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
-            let hHero = PlayerResource.GetSelectedHeroEntity(index)
+            let hHero = PlayerResource.GetSelectedHeroEntity(index);
+            GameRules.GameInformation.player_die_count[index] = 0;
             hHero.SetOrigin(vLocation);
             let hname = GameRules.MapChapter.hero_list[this.player_select_hero[index].hero_id];
             PlayerResource.ReplaceHeroWith(
@@ -443,7 +446,9 @@ export class MapChapter extends UIEventRegisterClass {
             );
             UTIL_Remove(hHero)
         }
-
+        this.game_count ++;
+        this.NewPlay(-1 , {});
+        
         this._game_select_phase = 3
         this.GetGameSelectPhase(-1, {})
         //初始化 刷怪地点
@@ -457,6 +462,32 @@ export class MapChapter extends UIEventRegisterClass {
             },
             5
         );
+    }
+
+    //获取当前游戏次数
+    NewPlay(player_id: PlayerID, params: CGED["MapChapter"]["NewPlay"]) {
+        if (player_id == -1) {
+            CustomGameEventManager.Send_ServerToAllClients(
+                "MapChapter_NewPlay",
+                {
+                    data: {
+                        count : this.game_count , //游戏次数
+                        extend : {} , //扩展参数
+                    }
+                }
+            );
+        } else {
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "MapChapter_NewPlay",
+                {
+                    data: {
+                        count : this.game_count , //游戏次数
+                        extend : {} , //扩展参数
+                    }
+                }
+            )
+        }
     }
 
     OnRemoveChapterMap() {

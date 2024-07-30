@@ -101,6 +101,15 @@ declare interface CustomGameEventDeclarations {
             game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3正常游戏开始了 ---过程--> 4正常游戏流程结束 -> 999最终流程  ----返回---> 0处于营地
         };
     }
+    /**
+     * 游戏次数
+     */
+    MapChapter_NewPlayer : {
+        data: {
+            count : number,  //游戏次数
+            extend : {} , //扩展参数
+        };
+    }
 
      /**
      * 获取神秘商店信息
@@ -185,7 +194,7 @@ declare interface CustomGameEventDeclarations {
             hero_name : string,
         };
     };
-
+    
     /**
      * 获取通关后存档数据
      */
