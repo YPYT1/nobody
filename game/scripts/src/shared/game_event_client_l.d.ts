@@ -74,6 +74,7 @@ declare interface CustomGameEventDeclarations {
             hero_ids : MapSelectHeroList[],
         };
     }
+    
     /**
      * 玩家可选英雄列表
      */
@@ -84,6 +85,17 @@ declare interface CustomGameEventDeclarations {
         };
     }
 
+    /**
+     * 玩家投票信息
+     */
+    MapChapter_GetPlayerVoteData : {
+        data : {
+            vote_data : MapVote,
+        }
+    }
+    /**
+     * 地图状态
+     */
     MapChapter_GetGameSelectPhase : {
         data: {
             game_select_phase: number, //0处于营地 ----选择地图---> 1 确认了地图难度 ----选择英雄---> 2 确认了英雄 ----开始---> 3正常游戏开始了 ---过程--> 4正常游戏流程结束 -> 999最终流程  ----返回---> 0处于营地
@@ -189,6 +201,13 @@ declare interface MapSelectHeroData {
     hero_id : number,
     star : number , //星级
     lv : number , //等级
+}
+
+
+declare interface MapVote {
+    playervote : number[], //准备状态
+    state : number, // 0 未开启投票 1开启投票
+    vote_time : number , //投票到期时间
 }
 
 declare interface UserMapSelectDifficulty { //地图详细信息

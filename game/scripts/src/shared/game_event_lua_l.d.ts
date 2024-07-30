@@ -164,6 +164,18 @@ declare interface CGED {
         SelectHeroAffirm : {
 
         }
+        //发起重开投票 只有主机有效
+        OpenReopenVote : {
+            
+        }
+        //玩家重开投票
+        PlayerVote : {
+            vote : number , // 0 拒绝 1 通过
+        }
+        //玩家投票信息
+        GetPlayerVoteData : {
+
+        }
     }
 
     /**

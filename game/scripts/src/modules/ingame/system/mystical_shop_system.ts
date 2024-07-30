@@ -284,8 +284,11 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         GameRules.MysticalShopSystem.start_buy_state = 0;
 
         GameRules.MysticalShopSystem.GetShopState(-1 , {})
-        //继续游戏
-        GameRules.Spawn.StartSpawn()
+        
+        if(GameRules.MapChapter._game_select_phase == 3){
+            //继续游戏
+            GameRules.Spawn.StartSpawn()
+        }
     }   
     /**
      * 刷新
