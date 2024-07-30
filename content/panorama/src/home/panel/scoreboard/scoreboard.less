@@ -1,0 +1,105 @@
+#PlayerBoard {
+    width: 284px;
+    height: 257px;
+    background-image: url("file://{images}/custom_game/hud/scoreboard/player_board_border.png");
+
+    margin-top: 120px;
+    flow-children: down;
+
+    // opacity: 0;
+    
+    .Header {
+        margin-top: 8px;
+        width: 100%;
+        // border: 1px solid #fff;
+        height: 36px;
+
+        .HeaderPlayerList {
+            horizontal-align: center;
+            vertical-align: middle;
+            font-size: 18px;
+            // color:#ffffff;
+            text-shadow: 0px 0px 1px 1.0 #000000;
+        }
+    }
+
+    #PlayerList {
+        width: 100%;
+        flow-children: down;
+    }
+
+    .PlayerScoreBoard {
+        width: 100%;
+        // border: 1px solid #0ff;
+        flow-children: right;
+        padding: 4px;
+        margin-top: 2px;
+
+        .ReviveState {
+            width: 100%;
+            height: 100%;
+            background-color: #000000ea;
+            opacity: 0.01;
+
+            Label {
+                font-size: 16px;
+                color:#f00;
+                font-weight: bold;
+                vertical-align: middle;
+                horizontal-align: center;
+            }
+        }
+
+        &.is_death {
+            .ReviveState {
+                opacity: 1;
+            }
+
+            .PlayerAvatar {
+                border: 1px solid #f00;
+            }
+        }
+
+        .PlayerAvatar {
+            margin-left: 4px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #fff;
+
+            >DOTAAvatarImage {
+                width: 100%;
+                height: 100%;
+                background-color: #000000;
+            }
+
+            
+        }
+
+        .PlayerLabel {
+            margin-left: 8px;
+            width: 160px;
+            vertical-align: middle;
+            flow-children: down;
+
+            .PlayerName {
+                font-size: 16px;
+                
+            }
+
+            #PanelBar {
+                margin-top: 2px;
+                width: 100%;
+                height: 18px;
+                border: 1px solid #000000;
+                background-color: #333333;
+
+                .BarVal {
+                    width: 50%;
+                    height: 100%;
+                    // ackground-color: gradient( linear, 0% 0%, 70% 0%, from( #676b70), to( #3e4144));
+                    background-color: #b53a32;
+                }
+            }
+        }
+    }
+}

@@ -3,5 +3,5 @@
 #base "units/monster/normal.txt"
 #base "units/monster/boss.txt"
 #base "units/monster/elite.txt"
-
+#base "units/hero_portrait.txt"
 #base "units/interact.txt"

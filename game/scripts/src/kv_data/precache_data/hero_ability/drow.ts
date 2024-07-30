@@ -5,4 +5,5 @@ export const drow_precache = [
     'particles/econ/items/abaddon/abaddon_alliance/abaddon_death_coil_alliance_explosion.vpcf',
     'particles/econ/items/drow/drow_arcana/drow_arcana_ambient.vpcf',
     'particles/econ/items/drow/drow_arcana/drow_arcana_weapon_ambient_debut_traces.vpcf',
+    'particles/econ/items/drow/drow_arcana/drow_arcana_weapon_v2_ambient.vpcf',
 ] 

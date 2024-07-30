@@ -2,7 +2,7 @@ import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { FormatTalentTree, GetAllHeroTalentTree, GetHeroTalentTreeObject, HeroTreeObject } from "../../../common/custom_talent";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 
-
+const UnitPortraitPanel = $("#UnitPortrait") as ScenePanel;
 const PlayerTalentTreeList = $("#PlayerTalentTreeList");
 let AbilityList = $("#AbilityList");
 let local_player = Players.GetLocalPlayer();
@@ -116,7 +116,6 @@ export const CreatePanel_Talent = () => {
     MainPanel.SetDialogVariableInt("point_count", 0)
     CreateHeroTalentTree(hero_name)
     GameEventsSubscribe()
-
 }
 
 const CreateHeroTalentTree = (heroname: string) => {
@@ -190,8 +189,13 @@ const CreateHeroTalentTree = (heroname: string) => {
         }
     })
 
-
-
+    //
+    let entity = `portrait_` + heroname;
+    
+    UnitPortraitPanel.FireEntityInput('portrait_drow_ranger', "Enable", "1")
+    UnitPortraitPanel.SetPanelEvent("onload",()=>{
+        UnitPortraitPanel.FireEntityInput('portrait_drow_ranger', "Enable", "1")
+    })
 }
 
 

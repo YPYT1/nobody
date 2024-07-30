@@ -69,8 +69,8 @@ GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
 
         ShopItem.SetDialogVariableInt("cost", row_data.soul);
         ShopItem.SetDialogVariableInt("refresh_cost", row_data.refresh_soul);
-        ShopItem.SetDialogVariable("item_name", row_data.key);
-        ShopItem.SetDialogVariable("item_desc", row_data.key);
+        ShopItem.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${row_data.key}`));
+        ShopItem.SetDialogVariable("item_desc", $.Localize(`#custom_shopitem_${row_data.key}_Description`));
 
 
 

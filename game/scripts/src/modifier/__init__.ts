@@ -1,4 +1,4 @@
-import "./arms_combo/__init__"
+// import "./arms_combo/__init__"
 
 import "./pickitem";
 import "./modifier_motion";
@@ -9,3 +9,4 @@ import "./modifier_custom_override";
 import "./modifier_summoned";
 import "./modifier_knockback_lua";
 import "./modifier_element";
+import "./modifier_state";

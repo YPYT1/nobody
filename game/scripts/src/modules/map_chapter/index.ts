@@ -468,7 +468,7 @@ export class MapChapter extends UIEventRegisterClass {
     NewPlay(player_id: PlayerID, params: CGED["MapChapter"]["NewPlay"]) {
         if (player_id == -1) {
             CustomGameEventManager.Send_ServerToAllClients(
-                "MapChapter_NewPlay",
+                "MapChapter_NewPlayer",
                 {
                     data: {
                         count : this.game_count , //游戏次数
@@ -479,7 +479,7 @@ export class MapChapter extends UIEventRegisterClass {
         } else {
             CustomGameEventManager.Send_ServerToPlayer(
                 PlayerResource.GetPlayer(player_id),
-                "MapChapter_NewPlay",
+                "MapChapter_NewPlayer",
                 {
                     data: {
                         count : this.game_count , //游戏次数

@@ -68,7 +68,7 @@ export class DamageReduction {
         }, 0.03);
     }
     
-
+    /** 受到伤害时 */
     GetTotalReductionPct(event: ModifierAttackEvent) {
         return 0
     }

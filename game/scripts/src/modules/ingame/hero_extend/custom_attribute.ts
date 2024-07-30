@@ -37,6 +37,11 @@ export class CustomAttribute {
         ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
     }
 
+    Reload() {
+        print("Reload")
+        this.hero_wearable["npc_dota_hero_drow_ranger"] = drow_range_wearable
+    }
+
     /** 升级事件 */
     OnEntityDotaPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
         // print("OnEntityDotaPlayerGainedLevel")
@@ -511,17 +516,19 @@ export class CustomAttribute {
         let wearable_data = this.hero_wearable[heroname]
         if (wearable_data) {
             // 移除原始饰品
+            hUnit.SetModel("models/development/invisiblebox.vmdl");
+            hUnit.SetOriginalModel("models/development/invisiblebox.vmdl")
             for (let v of hUnit.GetChildren()) {
-                if (v.GetClassname() == "dota_item_wearable") {
-                    // print("v", v.GetClassname(), v.GetModelName())
-                    //@ts-ignore
-                    // v.SetModel("models/development/invisiblebox.vmdl")
+                // print("v", v)
+                if (v && v.GetClassname() == "dota_item_wearable") {
                     v.RemoveSelf()
                 }
             }
+            const WearableSkin = wearable_data.Skin ?? 0;
+
             hUnit.SetOriginalModel(wearable_data.unit_model)
             hUnit.SetModel(wearable_data.unit_model);
-            // hUnit.SetSkin(1)
+            hUnit.SetSkin(WearableSkin)
             for (let particle_create of wearable_data.particle_create) {
                 let particle_index = ParticleManager.CreateParticle(
                     particle_create,
@@ -530,17 +537,25 @@ export class CustomAttribute {
                 )
             }
 
-
-
             let szWearables = wearable_data.wearables;
             for (let wearable of szWearables) {
                 let hWearable = Entities.CreateByClassname("wearable_item") as CDOTA_BaseNPC
                 if (hWearable != null) {
+
                     hWearable.SetModel(wearable.model)
                     hWearable.SetTeam(DotaTeam.GOODGUYS)
                     hWearable.SetOwner(hUnit)
                     hWearable.FollowEntity(hUnit, true)
+                    // hWearable.SetSkin(1);
 
+                    let material = wearable.material
+                    if (material) {
+                        hWearable.SetMaterialGroup(material.name)
+                        hWearable.SetBodygroupByName(material.grou_name, material.group_value)
+                        // hWearable.SetBodygroup(0, 2)
+                    }
+
+                    // hWearable.SetRenderColor(255,0,0);
                     for (let w_particle of wearable.particle) {
                         let particle_index = ParticleManager.CreateParticle(
                             w_particle,

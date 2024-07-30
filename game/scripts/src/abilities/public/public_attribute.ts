@@ -188,3 +188,78 @@ export class modifier_public_attribute extends BaseModifier {
         return 0
     }
 }
+
+@registerModifier()
+export class modifier_public_revive_thinker extends BaseModifier {
+
+    team: DotaTeam;
+    origin: Vector;
+    player_id: PlayerID;
+    cast_fx: ParticleID;
+    state: boolean;
+    rescue_time: number;
+    rescue_radius: number;
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.rescue_radius = 225;
+        this.state = true;
+        this.player_id = this.GetCaster().GetPlayerOwnerID()
+        this.team = this.GetCaster().GetTeamNumber();
+        this.origin = this.GetParent().GetAbsOrigin();
+        let duration = this.GetDuration();
+        let cast_fx = ParticleManager.CreateParticle(
+            "particles/diy_particles/event_ring_anim/event_ring_anim.vpcf",
+            ParticleAttachment.POINT,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControl(cast_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
+        ParticleManager.SetParticleControl(cast_fx, 1, Vector(duration, 0, 0))
+        ParticleManager.SetParticleControl(cast_fx, 2, Vector(this.rescue_radius, 0, 0))
+        ParticleManager.SetParticleControl(cast_fx, 3, Vector(255, 0, 0))
+        // this.AddParticle(cast_fx, false, false, -1, false, false);
+        this.rescue_time = GameRules.GetDOTATime(false, false) + duration / 2;
+        this.cast_fx = cast_fx;
+        // print("revive duration", duration)
+        this.StartIntervalThink(0.1)
+    }
+
+    OnIntervalThink(): void {
+        let game_select_phase = GameRules.MapChapter._game_select_phase;
+        if (game_select_phase == 999) {
+            this.StartIntervalThink(-1);
+            this.OnDestroy()
+            return
+        }
+        if (this.state) {
+            if (this.rescue_time <= GameRules.GetDOTATime(false, false)) {
+                this.state = false;
+            }
+        } else {
+            let other_hero = FindUnitsInRadius(
+                this.team,
+                this.origin,
+                null,
+                this.rescue_radius,
+                UnitTargetTeam.FRIENDLY,
+                UnitTargetType.HERO,
+                UnitTargetFlags.NONE,
+                FindOrder.ANY,
+                false
+            );
+            if (other_hero.length > 0) {
+                this.StartIntervalThink(-1);
+                this.OnDestroy()
+                return
+            }
+        }
+
+
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.GameInformation.PlayerRevive(this.player_id);
+        ParticleManager.DestroyParticle(this.cast_fx, true)
+        UTIL_Remove(this.GetParent())
+    }
+}

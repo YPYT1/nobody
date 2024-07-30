@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { render } from 'react-panorama-x';
+import { render, useGameEvent } from 'react-panorama-x';
 import { HeroPick } from './component/_hero_pick';
 import { AbilityPick } from './component/_ability_pick';
 import { ItemListPick } from './component/_items_list';
@@ -125,6 +125,15 @@ export const HeroDemo = () => {
 
     const [PopupsViews, setPopupsViews] = useState<PopupsViewsType>("None")
     const [show, setShow] = useState(true);
+    const [name, setName] = useState("")
+
+   
+
+    const updateUnit = useCallback((event: object) => {
+        let unit = Players.GetLocalPlayerPortraitUnit();
+        let unitName = Entities.GetUnitName(unit);
+        setName($.Localize(`#${unitName}`))
+    }, [])
 
     const TogglePopupsViews = (popups_type: PopupsViewsType, views: boolean) => {
         if (PopupsViews == popups_type || views == false) {
@@ -139,12 +148,16 @@ export const HeroDemo = () => {
         setPopupsViews("None")
     }
 
+     useGameEvent("dota_player_update_query_unit", updateUnit);
+     useGameEvent('dota_player_update_selected_unit', updateUnit);
+
     return (
         <>
             <Panel id='DevelopmentContainer' className={`container flow-down ${show ? "" : "off"}`} >
                 <Panel className="head">
                     <Panel className='flow-right'>
                         <Label text="开发工具" />
+                        <Label text={name} />
                         <UnitCountsPanel />
                     </Panel>
                     {/* <Button className='btn-close' onactivate={ToggleHandle} /> */}

@@ -2,7 +2,7 @@
 export let iAttackRangeFx = 0 as ParticleID;
 export let last_unit: EntityIndex;
 export let last_unit_name: string;
-export let UnitPortraitPanel = $("#UnitPortrait");
+export let UnitPortraitPanel = $("#UnitPortrait") as ScenePanel;
 
 let localPlayer = Players.GetLocalPlayer();
 export const InitPanel = () => {
@@ -31,7 +31,6 @@ export const InitPanel = () => {
 
 export const UpdateLocalPlayer = () => {
     let select_unit = Players.GetLocalPlayerPortraitUnit();
-   
     // $.Msg(last_unit <= 0 || select_unit == last_unit)
     if (last_unit <= 0 || select_unit == last_unit) { return }
     if (Entities.GetPlayerOwnerID(select_unit) != localPlayer) { return }
@@ -41,17 +40,18 @@ export const UpdateLocalPlayer = () => {
     last_unit = select_unit;
     let is_hero = Entities.IsHero(select_unit);
 
-    UnitPortraitPanel.RemoveAndDeleteChildren();
-    $.CreatePanel("DOTAScenePanel", UnitPortraitPanel, "Portrait", {
-        hittest: false,
-        unit: unit_name,
-        particleonly: false
-    });
+    // UnitPortraitPanel.FireEntityInput("")
+    // UnitPortraitPanel.RemoveAndDeleteChildren();
+    // $.CreatePanel("DOTAScenePanel", UnitPortraitPanel, "Portrait", {
+    //     hittest: false,
+    //     unit: `portrait_`+unit_name,
+    //     particleonly: false
+    // });
 }
 
 (function () {
     InitPanel();
     // CreatePanel_ExpBar();
-    GameEvents.Subscribe("dota_player_update_selected_unit", UpdateLocalPlayer);
-    GameEvents.Subscribe("dota_player_update_query_unit", UpdateLocalPlayer);
+    // GameEvents.Subscribe("dota_player_update_selected_unit", UpdateLocalPlayer);
+    // GameEvents.Subscribe("dota_player_update_query_unit", UpdateLocalPlayer);
 })();

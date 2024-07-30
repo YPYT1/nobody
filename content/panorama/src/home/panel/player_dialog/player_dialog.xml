@@ -1,0 +1,22 @@
+<root>
+	<styles>
+		<include src="./player_dialog.less" />
+	</styles>
+	<scripts>
+		<include src="./player_dialog.tsx" />
+	</scripts>
+
+	<snippets>
+		<snippet name="PlayerRevivePanel">
+			<Panel class="PlayerRevivePanel">
+				<Panel class="ReviveLabels">
+					<Label class="Label" text="#复活中:"/>
+					<Label class="Time" text="{s:timer}s"/>
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="player_dialog">
+		<Panel id="PlayerReviveContainer" hittest="false"/>
+	</Panel>
+</root>

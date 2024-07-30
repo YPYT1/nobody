@@ -180,3 +180,7 @@ export class GameEvent {
         
     // }
 }
+
+export function ReloadModules(){
+    GameRules.CustomAttribute.Reload();
+}

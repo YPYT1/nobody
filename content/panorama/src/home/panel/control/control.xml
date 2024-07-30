@@ -73,10 +73,22 @@
 			</Panel>
             <Panel id="CenterPanel" hittest="false">
 				<Panel class="Content" hittest="false">
-					<Panel id="PortraitContainer" hittest="fasle">
-						<Panel id='PortraitGround' hittest="fasle" />
-						<Panel id='PortraitBorder' hittest="fasle">
-							<Panel id="UnitPortrait" />
+					<Panel id="PortraitContainer" hittest="false">
+						<Panel id='PortraitGround' hittest="false" />
+						<Panel id='PortraitBorder' hittest="false">
+							<DOTAScenePanel 
+								id="UnitPortrait" 
+								map="maps/custom_scene/hero_portrait.vmap" 
+								camera='hero_camera' 
+								light='light_frontpage' 
+								particleonly="false"
+								hittest="false"
+								deferredalpha="true"
+								renderdeferred="true"
+							/>
+							<Panel class="ReviveCountdown">
+								<Label text="99"/>
+							</Panel>
 						</Panel>
 					</Panel>
 					<!-- <Panel id="HpBar" hittest="fasle">
@@ -110,14 +122,14 @@
 				
 			</Panel>
         </Panel>
-		<Panel id="ArmsSelector" class="container">
+		<!-- <Panel id="ArmsSelector" class="container">
 			<Panel id="ArmsList"></Panel>
             <Panel id="ArmsOption">
                 <Button id="ArmsToggleButton" class="btn">
                     <Label text="#切换" />
                 </Button>
             </Panel>
-		</Panel>
+		</Panel> -->
 	</Panel>
 </root>
 

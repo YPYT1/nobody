@@ -6,6 +6,7 @@ import "./modifier/__init__";
 import "./global/__init__";
 import "./server/https/https_server_const";
 import "./server/https/https_server_api";
+import { ReloadModules } from './modules/game_event';
 
 Object.assign(getfenv(), {
     Activate: () => {
@@ -13,3 +14,5 @@ Object.assign(getfenv(), {
     },
     Precache: Precache,
 });
+
+ReloadModules()

@@ -33,7 +33,7 @@ interface HealtrBarPanelData {
 }
 
 const CMsg_GetEntityListHealthBar = (params: NetworkedData<CustomGameEventDeclarations["CMsg_GetEntityListHealthBar"]>) => {
-    $.Msg(["CMsg_GetEntityListHealthBar", params.data.boss_list])
+    // $.Msg(["CMsg_GetEntityListHealthBar", params.data.boss_list])
     // let boss_list: { [key: string]: EntityIndex; } =  ;
     overhead_boss_list = Object.values(params.data.boss_list);
 

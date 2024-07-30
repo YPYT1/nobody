@@ -29,7 +29,7 @@
 		</snippet>
 	</snippets>
 	<Panel class="Chapter">
-		<Panel id="ChapterContainer" >
+		<Panel id="ChapterContainer" class="Show">
 			<Panel id="ChapterBackground" />
 			<Panel id="ChapterSelect">
 				<Panel class="Header">

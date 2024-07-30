@@ -164,7 +164,7 @@ declare interface CustomGameEventDeclarations {
 
     GameInformation_GetPlayerDieData : {
         data: {
-            time : number
+            time : number[]
         }
     }
     //局内游戏时间

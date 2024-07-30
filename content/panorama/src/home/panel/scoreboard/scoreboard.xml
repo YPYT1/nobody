@@ -1,0 +1,37 @@
+<root>
+	<styles>
+		<include src="./scoreboard.less" />
+        <include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./scoreboard.tsx" />
+	</scripts>
+    <snippets>
+        <snippet name="PlayerScoreBoard">
+            <Panel class="PlayerScoreBoard">
+                <Panel class="PlayerAvatar">
+                    <DOTAAvatarImage id="AvatarImage" class="PanelClass" />
+                    <Button class="ReviveState">
+                        <Label text="{s:revive_timer}"/>
+                    </Button>
+                </Panel>
+                <Panel class="PlayerLabel">
+                    <Label class="PlayerName" text="{s:player_name}"/>
+                    <Panel id="PanelBar">
+                        <Panel class="BarVal"/>
+                    </Panel>
+                </Panel>
+            </Panel>
+        </snippet>
+    </snippets>
+	<Panel class="layout">
+        <Panel id="PlayerBoard">
+            <Panel class="Header">
+                <Label class="HeaderPlayerList" text="#custom_text_scoreboard_playerlist" />
+            </Panel>
+            <Panel id="PlayerList" class="PanelClass">
+                
+            </Panel>
+        </Panel>
+	</Panel>
+</root>

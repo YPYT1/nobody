@@ -3,8 +3,8 @@
         <include src="./script.tsx" />
     </scripts>
     <styles>
-        <!-- <include src="./../_styles/keyframes.less" />
-        <include src="./../_styles/styles.less" /> -->
+        <include src="./../_styles/keyframes.less" />
+        <include src="./../_styles/styles.less" />
         <include src="./styles.less" />
     </styles>
     <Panel class="home" hittest="false">
@@ -17,8 +17,10 @@
         <Panel id="message" hittest="false" />
         <Panel id="mystical_shop" hittest="false" />
         <Panel id="element_bond" hittest="false"/>
+        <Panel id="scoreboard" hittest="false"/>
         <Panel id="talent" hittest="false" />
         <Panel id="health_bar" hittest="false" />
+        <Panel id="player_dialog" hittest="false" />
         <Panel id="game_end" hittest="false" />
         <Panel id="game_logo" hittest="false" />
         <Panel id="development" hittest="false"/>

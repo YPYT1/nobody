@@ -56,7 +56,7 @@
         </snippet>
     </snippets>
 	<Panel class="GameEnd">
-		<Panel id="GameEndContainer">
+		<Panel id="GameEndContainer" hittest="false">
             <Panel class="Content">
                 <Panel class="LeftPanel">
                     <Panel id="MvpModelPanel">

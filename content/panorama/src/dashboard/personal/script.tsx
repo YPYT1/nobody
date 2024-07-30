@@ -1,5 +1,5 @@
 
-const Init = ()=>{
+export const Init = ()=>{
     $.Msg(["personal Layout"])
 }
 

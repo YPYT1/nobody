@@ -35,8 +35,8 @@ export class modifier_basic_move extends BaseModifier {
         if (params.DOWN) { this.move_down = params.DOWN == 1; }
         if (params.LEFT) { this.move_left = params.LEFT == 1; }
         if (params.RIGHT) { this.move_right = params.RIGHT == 1; }
-
-        this.StartIntervalThink(0.01)
+        this.OnIntervalThink()
+        this.StartIntervalThink(0.1)
     }
 
     OnIntervalThink(): void {
@@ -54,13 +54,18 @@ export class modifier_basic_move extends BaseModifier {
             return;
         }
 
+        let old_vect = this.parent.GetAbsOrigin();
         let origin = this.parent.GetAbsOrigin();
 
-        if (this.move_up) { origin.y += 50 }
-        if (this.move_down) { origin.y -= 50 }
-        if (this.move_left) { origin.x -= 50 }
-        if (this.move_right) { origin.x += 50 }
+        if (this.move_up) { origin.y += 48 }
+        if (this.move_down) { origin.y -= 48 }
+        if (this.move_left) { origin.x -= 48 }
+        if (this.move_right) { origin.x += 48 }
 
+        if (old_vect == origin) {
+            this.StartIntervalThink(-1)
+            return
+        }
         ExecuteOrderFromTable({
             UnitIndex: this.unit_index,
             OrderType: UnitOrder.MOVE_TO_POSITION,
@@ -76,8 +81,8 @@ export class modifier_basic_debug extends BaseModifier {
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
             // [ModifierState.ALLOW_PATHING_THROUGH_CLIFFS]:true,
-            [ModifierState.NO_UNIT_COLLISION]: true,
-            [ModifierState.FLYING_FOR_PATHING_PURPOSES_ONLY]: true,
+            // [ModifierState.NO_UNIT_COLLISION]: true,
+            // [ModifierState.FLYING_FOR_PATHING_PURPOSES_ONLY]: true,
         }
     }
 

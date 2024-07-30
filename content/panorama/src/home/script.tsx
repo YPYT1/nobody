@@ -103,7 +103,9 @@ export const Initialize = () => {
     $("#hero_selection").BLoadLayout(layout_path + "/hero_selection/hero_selection.xml", true, false);
     $("#health_bar").BLoadLayout(layout_path + "/health_bar/health_bar.xml", true, false);
     $("#game_end").BLoadLayout(layout_path + "/game_end/game_end.xml", true, false);
-    
+    $("#scoreboard").BLoadLayout(layout_path + "/scoreboard/scoreboard.xml", true, false);
+    $("#player_dialog").BLoadLayout(layout_path + "/player_dialog/player_dialog.xml", true, false);
+
     // talent
     $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", true, false);
     if (Game.IsInToolsMode()) {

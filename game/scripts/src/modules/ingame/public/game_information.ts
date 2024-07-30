@@ -9,21 +9,21 @@ export class GameInformation extends UIEventRegisterClass {
         super("GameInformation");
     }
 
-    player_life_list : number[] = [ 2 , 2 , 2 , 2 , 2 , 2];
+    player_life_list: number[] = [2, 2, 2, 2, 2, 2];
 
 
-    player_die_count : number[] = [ 0 , 0 , 0 , 0 , 0 , 0];
+    player_die_count: number[] = [0, 0, 0, 0, 0, 0];
 
-    player_die_time : number[] = [ 0 , 0 , 0 , 0 , 0 , 0];
-    
+    player_die_time: number[] = [0, 0, 0, 0, 0, 0];
+
     /**
      * 设置玩家生命数
      * @param player_id 
      * @param count 
      */
-    SetPlayerLife( player_id : PlayerID , count : number ){
+    SetPlayerLife(player_id: PlayerID, count: number) {
         GameRules.GameInformation.player_life_list[player_id] = count;
-        GameRules.GameInformation.GetPlayerLifeData(player_id , {})
+        GameRules.GameInformation.GetPlayerLifeData(player_id, {})
     }
 
     /**
@@ -31,47 +31,53 @@ export class GameInformation extends UIEventRegisterClass {
      * @param player_id 
      * @param count 
      */
-    AddPlayerLife( player_id : PlayerID , count : number ){
+    AddPlayerLife(player_id: PlayerID, count: number) {
         GameRules.GameInformation.player_life_list[player_id] += count;
-        GameRules.GameInformation.GetPlayerLifeData(player_id , {})
+        GameRules.GameInformation.GetPlayerLifeData(player_id, {})
     }
 
-    HeroDie( unit : CDOTA_BaseNPC_Hero) {
+    HeroDie(unit: CDOTA_BaseNPC_Hero) {
         let player_id = unit.GetPlayerOwnerID();
         let game_over = true;
         //检查全部英雄是否还有剩余生命
         let player_count = GetPlayerCount();
-        for (let index  = 0 as PlayerID; index < player_count; index++) {
+        for (let index = 0 as PlayerID; index < player_count; index++) {
             let hHero = PlayerResource.GetSelectedHeroEntity(index);
-            if(hHero.IsAlive()){
+            if (hHero.IsAlive()) {
                 game_over = false
                 break;
             }
         }
         //游戏结束
-        if(game_over == true){
+        if (game_over == true) {
             //取消所有玩家的定时器
-            for (let index  = 0 as PlayerID; index < player_count; index++) {
+            for (let index = 0 as PlayerID; index < player_count; index++) {
                 let hHero = PlayerResource.GetSelectedHeroEntity(index);
-                if(!hHero.IsAlive()){
+                if (!hHero.IsAlive()) {
                     hHero.StopThink("HeroDie");
                 }
             }
             GameRules.MapChapter.GameLoser()
-            return ;
+            return;
         }
-        this.player_die_count[player_id] ++ ;
+        this.player_die_count[player_id]++;
         let d_time = 10 + (this.player_die_count[player_id] * 5 * player_count);
-        let game_d_time = GameRules.GetDOTATime(false , false) + d_time;
-        this.player_die_time[player_id] = game_d_time ;
-        unit.SetContextThink("HeroDie", () => {
-                //减少玩家生命
-                unit.SetRespawnPosition(unit.GetAbsOrigin());
-                unit.RespawnHero(false, false);
-                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });    
-                return null;
-        }, d_time );
-        this.GetPlayerDieData(player_id , {})
+        let game_d_time = GameRules.GetDOTATime(false, false) + d_time;
+        this.player_die_time[player_id] = game_d_time;
+        // 这里创建一个救援thinker
+        let hAbility = unit.FindAbilityByName("public_attribute")
+        CreateModifierThinker(
+            unit,
+            hAbility,
+            "modifier_public_revive_thinker",
+            {
+                duration: d_time
+            },
+            unit.GetAbsOrigin(),
+            unit.GetTeamNumber(),
+            false
+        )
+        this.GetPlayerDieData(player_id, {})
 
         // if(this.player_life_list[player_id] > 0){
         //     //测试模式下死亡会增加生命
@@ -83,13 +89,13 @@ export class GameInformation extends UIEventRegisterClass {
         //         "你还剩【" + (this.player_life_list[player_id] - 1) + "】条生命,3秒后复活",
         //         {}
         //     );
-            // Timers.CreateTimer(3, () => {
-            //     //减少玩家生命
-            //     GameRules.GameInformation.AddPlayerLife(player_id , -1)
-            //     unit.SetRespawnPosition(unit.GetAbsOrigin());
-            //     unit.RespawnHero(false, false);
-            //     unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
-            // });
+        // Timers.CreateTimer(3, () => {
+        //     //减少玩家生命
+        //     GameRules.GameInformation.AddPlayerLife(player_id , -1)
+        //     unit.SetRespawnPosition(unit.GetAbsOrigin());
+        //     unit.RespawnHero(false, false);
+        //     unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+        // });
         // }else{
         //     GameRules.CMsg.SendCommonMsgToPlayer(
         //         player_id,
@@ -97,6 +103,23 @@ export class GameInformation extends UIEventRegisterClass {
         //         {}
         //     );
         // }
+    }
+
+    /** 重置死亡次数 */
+    ResetNumberofDeaths() {
+        for (let i = 0; i < this.player_die_count.length; i++) {
+            this.player_die_count[i] = 0
+        }
+    }
+
+    // modifier_public_revive_thinker
+    PlayerRevive(player_id: PlayerID) {
+        let unit = PlayerResource.GetSelectedHeroEntity(player_id);
+        unit.SetRespawnPosition(unit.GetAbsOrigin());
+        unit.RespawnHero(false, false);
+        unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+        this.player_die_time[player_id] = 0;
+        this.GetPlayerDieData(player_id, {})
     }
     /**
     * 获取玩家死亡倒计时
@@ -107,12 +130,12 @@ export class GameInformation extends UIEventRegisterClass {
             "GameInformation_GetPlayerDieData",
             {
                 data: {
-                    "time" : this.player_die_time[player_id]
+                    time: this.player_die_time
                 }
             }
         );
     }
-    
+
     /**
     * 获取所有玩家生命值
     */
@@ -122,7 +145,7 @@ export class GameInformation extends UIEventRegisterClass {
             "GameInformation_GetPlayerLifeData",
             {
                 data: {
-                    "player_life" : this.player_life_list[player_id]
+                    "player_life": this.player_life_list[player_id]
                 }
             }
         );
@@ -130,34 +153,34 @@ export class GameInformation extends UIEventRegisterClass {
     /**
      *  头部信息
      */
-    play_game_time : number  = 0;
+    play_game_time: number = 0;
 
-    SetPlayGameTime(time : number){
+    SetPlayGameTime(time: number) {
         GameRules.GameInformation.play_game_time = time;
-        GameRules.GameInformation.GetPlayGameHeadData( -1 , {})
+        GameRules.GameInformation.GetPlayGameHeadData(-1, {})
     }
 
     /**
     * 获取局内头部信息
     */
     GetPlayGameHeadData(player_id: PlayerID, params: CGED["GameInformation"]["GetPlayGameHeadData"]) {
-        if(player_id  == -1){
+        if (player_id == -1) {
             CustomGameEventManager.Send_ServerToAllClients(
                 "GameInformation_GetPlayGameHeadData",
                 {
                     data: {
-                        time : GameRules.GameInformation.play_game_time,
-                        difficulty : GameRules.MapChapter.GameDifficulty
+                        time: GameRules.GameInformation.play_game_time,
+                        difficulty: GameRules.MapChapter.GameDifficulty
                     }
                 }
             );
-        }else{
+        } else {
             CustomGameEventManager.Send_ServerToAllClients(
                 "GameInformation_GetPlayGameHeadData",
                 {
                     data: {
-                        time : GameRules.GameInformation.play_game_time,
-                        difficulty : GameRules.MapChapter.GameDifficulty
+                        time: GameRules.GameInformation.play_game_time,
+                        difficulty: GameRules.MapChapter.GameDifficulty
                     }
                 }
             );

@@ -25,6 +25,12 @@
 					m_vecOffset = [ 300.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 255.0, 255.0, 255.0 ]
+					m_entityName = "self"
+				},
 			]
 		},
 	]
@@ -328,6 +334,20 @@
 				}
 			}
 			m_nOutputField = 1
+		},
+		{
+			_class = "C_INIT_RemapTransformToVector"
+			m_nFieldOutput = 6
+			m_vInputMax = [ 255.0, 255.0, 255.0 ]
+			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
+			m_TransformInput = 
+			{
+				m_nControlPoint = 3
+			}
+			m_LocalSpaceTransform = 
+			{
+				m_nType = "PT_TYPE_INVALID"
+			}
 		},
 	]
 	m_Operators = 
