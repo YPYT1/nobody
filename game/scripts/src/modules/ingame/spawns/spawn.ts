@@ -793,6 +793,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn._map_elite_spawn_list = [];
             //清理boss
             if (this._map_boss_refresh && this._map_boss_unit != null) {
+                GameRules.CMsg.RemoveBossHealthBar(this._map_boss_unit);
                 GameRules.Spawn.CreepNormalRemoveSelf(this._map_boss_unit, 0.1);
                 this._map_boss_unit = null;
                 this._map_boss_refresh = false;
@@ -903,7 +904,6 @@ export class Spawn extends UIEventRegisterClass {
             "boss已被击杀",
             {}
         );
-        
         GameRules.CMsg.RemoveBossHealthBar(killed_unit);
         //击杀boss奖励
         this._map_boss_unit = null;

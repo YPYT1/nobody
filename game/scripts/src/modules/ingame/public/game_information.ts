@@ -10,6 +10,11 @@ export class GameInformation extends UIEventRegisterClass {
     }
 
     player_life_list : number[] = [ 2 , 2 , 2 , 2 , 2 , 2];
+
+
+    player_die_count : number[] = [ 0 , 0 , 0 , 0 , 0 , 0];
+
+    player_die_time : number[] = [ 0 , 0 , 0 , 0 , 0 , 0];
     
     /**
      * 设置玩家生命数
@@ -35,45 +40,79 @@ export class GameInformation extends UIEventRegisterClass {
         let player_id = unit.GetPlayerOwnerID();
         let game_over = true;
         //检查全部英雄是否还有剩余生命
-        let player_count = 1;
+        let player_count = GetPlayerCount();
         for (let index  = 0 as PlayerID; index < player_count; index++) {
-            const ps_life = this.player_life_list[index];
             let hHero = PlayerResource.GetSelectedHeroEntity(index);
-            if(ps_life > 0 || hHero.IsAlive()){
+            if(hHero.IsAlive()){
                 game_over = false
                 break;
             }
         }
         //游戏结束
         if(game_over == true){
+            //取消所有玩家的定时器
+            for (let index  = 0 as PlayerID; index < player_count; index++) {
+                let hHero = PlayerResource.GetSelectedHeroEntity(index);
+                if(!hHero.IsAlive()){
+                    hHero.StopThink("HeroDie");
+                }
+            }
             GameRules.MapChapter.GameLoser()
             return ;
         }
-        if(this.player_life_list[player_id] > 0){
-            //测试模式下死亡会增加生命
-            // if(IsInToolsMode()){
-            //     this.player_life_list[player_id] += 2;
-            // }
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                player_id,
-                "你还剩【" + (this.player_life_list[player_id] - 1) + "】条生命,3秒后复活",
-                {}
-            );
-            Timers.CreateTimer(3, () => {
+        this.player_die_count[player_id] ++ ;
+        let d_time = 10 + (this.player_die_count[player_id] * 5 * player_count);
+        let game_d_time = GameRules.GetDOTATime(false , false) + d_time;
+        this.player_die_time[player_id] = game_d_time ;
+        unit.SetContextThink("HeroDie", () => {
                 //减少玩家生命
-                GameRules.GameInformation.AddPlayerLife(player_id , -1)
                 unit.SetRespawnPosition(unit.GetAbsOrigin());
                 unit.RespawnHero(false, false);
-                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
-            });
-        }else{
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                player_id,
-                "你没有剩余生命。",
-                {}
-            );
-        }
+                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });    
+                return null;
+        }, d_time );
+        this.GetPlayerDieData(player_id , {})
+
+        // if(this.player_life_list[player_id] > 0){
+        //     //测试模式下死亡会增加生命
+        //     // if(IsInToolsMode()){
+        //     //     this.player_life_list[player_id] += 2;
+        //     // }
+        //     GameRules.CMsg.SendCommonMsgToPlayer(
+        //         player_id,
+        //         "你还剩【" + (this.player_life_list[player_id] - 1) + "】条生命,3秒后复活",
+        //         {}
+        //     );
+            // Timers.CreateTimer(3, () => {
+            //     //减少玩家生命
+            //     GameRules.GameInformation.AddPlayerLife(player_id , -1)
+            //     unit.SetRespawnPosition(unit.GetAbsOrigin());
+            //     unit.RespawnHero(false, false);
+            //     unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+            // });
+        // }else{
+        //     GameRules.CMsg.SendCommonMsgToPlayer(
+        //         player_id,
+        //         "你没有剩余生命。",
+        //         {}
+        //     );
+        // }
     }
+    /**
+    * 获取玩家死亡倒计时
+    */
+    GetPlayerDieData(player_id: PlayerID, params: CGED["GameInformation"]["GetPlayerDieData"]) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "GameInformation_GetPlayerDieData",
+            {
+                data: {
+                    "time" : this.player_die_time[player_id]
+                }
+            }
+        );
+    }
+    
     /**
     * 获取所有玩家生命值
     */
@@ -88,7 +127,6 @@ export class GameInformation extends UIEventRegisterClass {
             }
         );
     }
-
     /**
      *  头部信息
      */

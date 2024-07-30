@@ -152,6 +152,12 @@ declare interface CustomGameEventDeclarations {
             player_life : number
         }
     }
+
+    GameInformation_GetPlayerDieData : {
+        data: {
+            time : number
+        }
+    }
     //局内游戏时间
     GameInformation_GetPlayGameHeadData : {
         data : {
