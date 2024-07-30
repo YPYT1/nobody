@@ -186,6 +186,10 @@ declare interface CGED {
         GetPlayerLifeData : {
 
         }
+        //获取玩家死亡信息
+        GetPlayerDieData : {
+
+        }
         //获取局内头部信息
         GetPlayGameHeadData : {
 

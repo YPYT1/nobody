@@ -59,31 +59,6 @@ export class MapChapter extends UIEventRegisterClass {
     constructor() {
         super("MapChapter") 
         print("[MapChapter]:constructor")
-        
-        let sort_hero : { [key : number] : number} = {};
-        for (let [key, RowData] of pairs(NpcHeroesCustom)) {
-            if (RowData.Enable == 1) {
-                this.hero_list[RowData.HeroID] = key;
-                sort_hero[RowData.sort] = RowData.HeroID;
-            }
-        }
-        for (let index = 0; index < this.player_count; index++) {
-            let hero_key : MapSelectHeroData[] = [];
-            for (let index = 0; index < Object.keys(sort_hero).length; index++) {
-                hero_key.push({
-                    hero_id : sort_hero[index],
-                    lv : 1,
-                    star : 1,
-                })
-            }
-            this.player_hero_available.push(hero_key);
-            this.player_select_hero.push({
-                hero_id: hero_key[index].hero_id,
-                state: 0, //是否确认
-                star : 1,
-                lv : 1, 
-            });
-        }
     }
 
     InitChapterMap() {
@@ -108,6 +83,35 @@ export class MapChapter extends UIEventRegisterClass {
             difficulty_max: 305, // 地图最高难度
             map_key: "m3", //地图编号 m1 m2 
         }
+
+        this.player_count = GetPlayerCount();
+
+        let sort_hero : { [key : number] : number} = {};
+        for (let [key, RowData] of pairs(NpcHeroesCustom)) {
+            if (RowData.Enable == 1) {
+                this.hero_list[RowData.HeroID] = key;
+                sort_hero[RowData.sort] = RowData.HeroID;
+            }
+        }
+        for (let index = 0; index < this.player_count; index++) {
+            let hero_key : MapSelectHeroData[] = [];
+            for (let index = 0; index < Object.keys(sort_hero).length; index++) {
+                hero_key.push({
+                    hero_id : sort_hero[index],
+                    lv : 1,
+                    star : 1,
+                })
+            }
+            this.player_hero_available.push(hero_key);
+            this.player_select_hero.push({
+                hero_id: hero_key[0].hero_id,
+                state: 0, //是否确认
+                star : 1,
+                lv : 1, 
+            });
+        }
+
+        
 
         //创建游戏
         GameRules.ArchiveService.CreateGame();
@@ -252,11 +256,23 @@ export class MapChapter extends UIEventRegisterClass {
             //完成时间
             this.countdown_select_hero_time = GameRules.GetDOTATime(false, false) + this.select_hero_time;
             GameRules.GetGameModeEntity().SetContextThink("SELECT_HERO_AFFIRM", () => {
+                for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
+                    this.player_select_hero[index].state = 1;
+                }
                 GameRules.MapChapter.SelectHeroAffirm( 0 , {});
                 return null;
             }, this.select_hero_time);
+
             //发送选择英雄信息
             for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
+                let steam_id = PlayerResource.GetSteamAccountID(index);
+                print("steam_id : " , steam_id)
+                //清空玩家选择状态
+                if(steam_id == 0){
+                    this.player_select_hero[index].state = 1;
+                }else{
+                    this.player_select_hero[index].state = 0;
+                }
                 GameRules.MapChapter.GetPlayerHeroList(index, {})
             }
             
@@ -358,6 +374,7 @@ export class MapChapter extends UIEventRegisterClass {
             this.player_select_hero[player_id].state = 1;
             GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
         }
+        DeepPrintTable(this.player_select_hero);
         for (const date of this.player_select_hero) {
             if (date.state != 1) {
                 return
@@ -456,7 +473,14 @@ export class MapChapter extends UIEventRegisterClass {
                 this.vote_data.playervote = [];
                 let plyaer_count = GetPlayerCount()
                 for (let index = 0 as PlayerID ; index < plyaer_count ; index++) {
-                    this.vote_data.playervote.push(-1);
+                    
+                    let steam_id = PlayerResource.GetSteamAccountID(index);
+                    //清空玩家选择状态
+                    if(steam_id == 0){
+                        this.vote_data.playervote.push(1);
+                    }else{
+                        this.vote_data.playervote.push(-1);
+                    }
                 }
                 //完成时间
                 this.countdown_vote_time = GameRules.GetDOTATime(false, false) + this.vote_time;
@@ -625,18 +649,20 @@ export class MapChapter extends UIEventRegisterClass {
         let exp_list: number[] = [];
         let cj_list: string[] = [];
         let hero_list: string[] = [];
-        let player_count = GetPlayerCount();
-        for (let index: PlayerID = 0; index < player_count; index++) {
-            // let CPlayer = PlayerResource.GetPlayer(index as PlayerID);
-            let unit = PlayerResource.GetSelectedHeroEntity(index as PlayerID);
+        Timers.CreateTimer(3, () => {
+            let player_count = GetPlayerCount();
             let ChapterData = MapInfo[this.MapIndex];
             let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
-            if (!unit.IsAlive()) {
-                unit.SetRespawnPosition(vLocation);
-                unit.RespawnHero(false, false);
-                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+            for (let index = 0 as PlayerID; index < player_count; index++) {
+                let hHero = PlayerResource.GetSelectedHeroEntity(index);
+                if(hHero.IsAlive() == false){
+                    hHero.SetRespawnPosition(vLocation);
+                    hHero.RespawnHero(false, false);
+                    hHero.AddNewModifier(hHero, null, "modifier_state_invincible", { duration: 3 });
+                    break;
+                }
             }
-        }
+        })
         //通关结算
         GameRules.ArchiveService.GameOver(
             1,
@@ -656,18 +682,23 @@ export class MapChapter extends UIEventRegisterClass {
         let exp_list: number[] = [];
         let cj_list: string[] = [];
         let hero_list: string[] = [];
-        let player_count = GetPlayerCount();
-        let ChapterData = MapInfo[this.MapIndex];
-        let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
-        for (let index = 0 as PlayerID; index < player_count; index++) {
-            let hHero = PlayerResource.GetSelectedHeroEntity(index);
-            if(hHero.IsAlive() == false){
-                hHero.SetRespawnPosition(vLocation);
-                hHero.RespawnHero(false, false);
-                hHero.AddNewModifier(hHero, null, "modifier_state_invincible", { duration: 3 });
-                break;
+
+
+        Timers.CreateTimer(3, () => {
+            let player_count = GetPlayerCount();
+            let ChapterData = MapInfo[this.MapIndex];
+            let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
+            for (let index = 0 as PlayerID; index < player_count; index++) {
+                let hHero = PlayerResource.GetSelectedHeroEntity(index);
+                if(hHero.IsAlive() == false){
+                    hHero.SetRespawnPosition(vLocation);
+                    hHero.RespawnHero(false, false);
+                    hHero.AddNewModifier(hHero, null, "modifier_state_invincible", { duration: 3 });
+                    break;
+                }
             }
-        }
+        })
+        
         //通关结算
         GameRules.ArchiveService.GameOver(
             2,
@@ -720,6 +751,9 @@ export class MapChapter extends UIEventRegisterClass {
             print("GameRules.Spawn._game_start", GameRules.Spawn._game_start)
             print("this._game_select_phase", this._game_select_phase)
             this.ReturnSelectDifficulty(player_id, {})
+        }
+        if(cmd == "-getplayer"){
+            print(GetPlayerCount())
         }
     }
 }
