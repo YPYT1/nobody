@@ -24,7 +24,9 @@ export class MapChapter extends UIEventRegisterClass {
     hero_list: { [key: number]: string } = {}
 
     // 1 选择地图难度 2选择英雄 3游戏开始了
-    _game_select_phase: number = 0;
+    _game_select_phase: number = 0 ;
+    //地图数据
+    ChapterData  :  typeof MapInfo["m1"] = null;
     //根据等级可用地图
     _map_list : { [key : string ] : UserMapSelectDifficulty }  = {};
     //玩家已通关的难度  
@@ -133,15 +135,25 @@ export class MapChapter extends UIEventRegisterClass {
             GameRules.MapChapter.GetNewPlayerStatus( 0 , {})
         }
 
-        //完成时间
-        this.countdown_select_map_time = GameRules.GetDOTATime(false, false) + this.select_map_time;
+        //开始游戏确认功能
+        GameRules.MapChapter.SelectDifficultyAffirmThink();
+        
+    }
 
+
+    SelectDifficultyAffirmThink(){
+        let cd_select_map_time = this.select_map_time;
+        if(IsInToolsMode()){
+            cd_select_map_time =  this.select_map_time;
+        }else{
+            cd_select_map_time =  this.select_map_time * 10;
+        }
+        this.countdown_select_map_time = GameRules.GetDOTATime(false, false) + cd_select_map_time;
         GameRules.GetGameModeEntity().SetContextThink("SELECT_DIFFICULTY_AFFIRM", () => {
             GameRules.MapChapter.SelectDifficultyAffirm( 0 , {});
             return null;
-        }, this.select_map_time);
+        }, cd_select_map_time);
     }
-
     /** 生成营地 */
     OnCreatedCampMap() {
         if (this.CampMapHandle == null) {
@@ -389,7 +401,7 @@ export class MapChapter extends UIEventRegisterClass {
 
         GameRules.MapChapter.is_new_player = 0;
 
-        let ChapterData = MapInfo[this.MapIndex];
+        this.ChapterData = MapInfo[this.MapIndex];
 
         GameRules.GetGameModeEntity().StopThink("SELECT_HERO_AFFIRM");
 
@@ -404,9 +416,9 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.NewArmsEvolution.ArmsGlobalInit();
 
         GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
-        let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
+        let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
         this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
-            ChapterData.map_name,
+            this.ChapterData.map_name,
             vLocation,
             false,
             this.OnRoomReadyToSpawn,
@@ -429,13 +441,11 @@ export class MapChapter extends UIEventRegisterClass {
     //游戏地图创建后置
     OnSpawnRoomComplete(spawnGroupHandle: SpawnGroupHandle) {
         print("OnSpawnRoomComplete", spawnGroupHandle);
-        GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
-        let ChapterData = MapInfo[this.MapIndex];
-        let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
-
+        // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
+        let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
+        GameRules.GameInformation.ResetNumberofDeaths();
         for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
             let hHero = PlayerResource.GetSelectedHeroEntity(index);
-            GameRules.GameInformation.player_die_count[index] = 0;
             hHero.SetOrigin(vLocation);
             let hname = GameRules.MapChapter.hero_list[this.player_select_hero[index].hero_id];
             PlayerResource.ReplaceHeroWith(
@@ -452,7 +462,7 @@ export class MapChapter extends UIEventRegisterClass {
         this._game_select_phase = 3
         this.GetGameSelectPhase(-1, {})
         //初始化 刷怪地点
-        GameRules.Spawn.Init(ChapterData.map_centre_x, ChapterData.map_centre_y)
+        GameRules.Spawn.Init(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y)
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawn",
             () => {
@@ -682,15 +692,15 @@ export class MapChapter extends UIEventRegisterClass {
         let hero_list: string[] = [];
         Timers.CreateTimer(3, () => {
             let player_count = GetPlayerCount();
-            let ChapterData = MapInfo[this.MapIndex];
-            let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
+            let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
             for (let index = 0 as PlayerID; index < player_count; index++) {
                 let hHero = PlayerResource.GetSelectedHeroEntity(index);
                 if(hHero.IsAlive() == false){
                     hHero.SetRespawnPosition(vLocation);
                     hHero.RespawnHero(false, false);
                     hHero.AddNewModifier(hHero, null, "modifier_state_invincible", { duration: 3 });
-                    break;
+                }else{
+                    hHero.SetOrigin(vLocation);
                 }
             }
         })
@@ -714,18 +724,17 @@ export class MapChapter extends UIEventRegisterClass {
         let cj_list: string[] = [];
         let hero_list: string[] = [];
 
-
         Timers.CreateTimer(3, () => {
             let player_count = GetPlayerCount();
-            let ChapterData = MapInfo[this.MapIndex];
-            let vLocation = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 0);
+            let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
             for (let index = 0 as PlayerID; index < player_count; index++) {
                 let hHero = PlayerResource.GetSelectedHeroEntity(index);
                 if(hHero.IsAlive() == false){
                     hHero.SetRespawnPosition(vLocation);
                     hHero.RespawnHero(false, false);
                     hHero.AddNewModifier(hHero, null, "modifier_state_invincible", { duration: 3 });
-                    break;
+                }else{
+                    hHero.SetOrigin(vLocation);
                 }
             }
         })

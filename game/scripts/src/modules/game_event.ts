@@ -182,5 +182,38 @@ export class GameEvent {
 }
 
 export function ReloadModules(){
+    // @ts-expect-error @eslint-disable-next-line
+    if (!GameRules.ModuleActivated) {
+        return;
+    }
+    print("ReloadAllModules Reload");
+    //根据游戏进程选择更新某些模块
+    let State_Get = GameRules.State_Get();
     GameRules.CustomAttribute.Reload();
+    if (State_Get == GameState.INIT) { //初始化阶段---无UI
+
+    } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) { //加载阶段---无UI
+
+    } else if (State_Get == GameState.CUSTOM_GAME_SETUP) { //游戏设置阶段---队伍选择UI
+
+    } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段---英雄选择UI
+        
+    } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段---英雄选择UI
+
+    } else if (State_Get == GameState.TEAM_SHOWCASE) { //队伍展示阶段---英雄选择UI
+
+    } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段---无UI
+
+    } else if (State_Get == GameState.PRE_GAME) { //赛前阶段---无UI
+
+    } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段---无UI
+
+    } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段---游戏内UI
+
+    } else if (State_Get == GameState.POST_GAME) { //推送结果阶段---游戏内UI
+
+    } else if (State_Get == GameState.DISCONNECT) { //断开阶段---游戏内UI
+
+    }
+    
 }
