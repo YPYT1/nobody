@@ -104,7 +104,7 @@ declare interface CustomGameEventDeclarations {
     /**
      * 游戏次数
      */
-    MapChapter_NewPlayer : {
+    MapChapter_NewPlay : {
         data: {
             count : number,  //游戏次数
             extend : {} , //扩展参数
