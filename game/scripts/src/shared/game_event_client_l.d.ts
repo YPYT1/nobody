@@ -1,9 +1,5 @@
 
 declare interface CustomGameEventDeclarations {
-
-    TreasureSystem_GetShopsData: {
-        data: PlayerUpgradeSelectRetData;
-    };
     //技能选择功能
     NewArmsEvolution_GetArmssSelectData : {
         data: PlayerUpgradeSelectRetData;
@@ -16,18 +12,6 @@ declare interface CustomGameEventDeclarations {
     }
     NewArmsEvolution_GetArmssElementBondDateList : {
         data : ElementBondDateList;
-    }
-    //选择符文数据
-    RuneSystem_GetRuneSelectData: {
-        data: PlayerRuneSelectRetData;
-    };
-    //符文数据
-    RuneSystem_GetRuneData : {
-        data :  PlayerRuneDataProps 
-    }
-    //获得随机符文的信息 (用于播放动画) 
-    RuneSystem_GetRuneRandomData : {
-        data : string 
     }
     /**
      * 选择地图初始化数据
@@ -202,6 +186,21 @@ declare interface CustomGameEventDeclarations {
         data: CGEDGeneralGameOverDataPassData
     }
 
+    /**
+     * 玩家可选符文列表
+     */
+    RuneSystem_GetRuneSelectData: {
+        data: CGEDPlayerRuneSelectDataList;
+    };
+
+    /**
+     * 玩家拥有符文列表
+     */
+    RuneSystem_GetPlayerRuneData: {
+        data: {
+            [index: string]: CGEDPlayerRuneData;
+        };
+    };
 
 }
 
@@ -395,3 +394,41 @@ declare interface CGEDGeneralGameOverDataPassData {
         is_mvp : number , //是否为mvp
     }[],
 }
+
+
+
+declare interface CGEDPlayerRuneSelectServerData {
+    is_check: boolean,
+    level: number,
+    item_list: { [index: string]: CGEDPlayerRuneSelectData; },
+    check_index: number,
+    is_refresh: boolean;
+}
+declare interface CGEDPlayerRuneSelectDataList {
+    item_list: { [index: string]: CGEDPlayerRuneSelectData; }; //可选符文列表 无数据代表不可选 等级下标
+    is_new_fate_check: number, // 0可以挑战 1 还有未选择的符文 2 挑战中 -- 弃用 不通过战斗获取
+    refresh_count: number, //剩余刷新次数 主要通过这个来判断是否展示等 0 为没有次数
+    fate_level: number, // 玩家天命挑战成功次数 -即为挑战等级 -- 弃用 不通过战斗获取
+    player_refresh_count: number, // 剩余重随符文次数
+}
+
+
+declare interface CGEDPlayerRuneSelectData {
+    name: string,  //符文名字
+    level: number,  // 符文等级
+    level_index: number;  //符文下标
+}
+
+
+declare interface CGEDPlayerRuneData {
+    name: string, //符文名字
+    index: number, //物品位置id
+    level: number, //符文等级 只作为显示颜色
+    is_award: boolean, //是否为通过集齐其他符文获取的奖励符文
+    level_index: number, //符文等级下标
+    is_delete: boolean, // 是否删除
+    is_more_level: boolean, //是否有多个等级
+    is_level_up: boolean, //是否可以升级
+    is_level_max: boolean, //是否满级
+}
+

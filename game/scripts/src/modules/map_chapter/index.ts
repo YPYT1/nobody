@@ -654,7 +654,7 @@ export class MapChapter extends UIEventRegisterClass {
                 //初始化可选技能 == 清理
                 GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(index)
                 //初始化可用符文 == 清理
-                GameRules.RuneSystem.InitPlayerUpgradeStatus(index)
+                GameRules.RuneSystem.InitPlayerUpgradeStatus(index , 0)
                 //初始化神秘商店
                 GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(index)
 

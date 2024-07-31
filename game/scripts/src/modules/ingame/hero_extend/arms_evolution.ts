@@ -135,7 +135,7 @@ export class ArmsEvolution extends UIEventRegisterClass {
             this.PlayerSelectData[player_id].arms_list = ret_data;
             
         }
-        this.GetArmssSelectData(player_id, param);
+        // this.GetArmssSelectData(player_id, param);
     }
 
     /**
@@ -282,28 +282,28 @@ export class ArmsEvolution extends UIEventRegisterClass {
     /**
      * 获取物品信息初始化信息
      */
-    GetArmssSelectData(player_id: PlayerID, params: CGED["ArmsEvolution"]["GetArmssSelectData"]) {
-        //商店组成 1未刷新 2未挑战
-        let data : PlayerUpgradeSelectRetData = {
-            Data: this.PlayerSelectData[player_id] , //列表
-        };
-        DeepPrintTable(data);
-        DeepPrintTable(this.PlayerUpgradePool)
-        DeepPrintTable(this.PlayerArmsKeyList)
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "TreasureSystem_GetShopsData",
-            {
-                data
-            }
-        );
-    }
+    // GetArmssSelectData(player_id: PlayerID, params: CGED["ArmsEvolution"]["GetArmssSelectData"]) {
+    //     //商店组成 1未刷新 2未挑战
+    //     let data : PlayerUpgradeSelectRetData = {
+    //         Data: this.PlayerSelectData[player_id] , //列表
+    //     };
+    //     DeepPrintTable(data);
+    //     DeepPrintTable(this.PlayerUpgradePool)
+    //     DeepPrintTable(this.PlayerArmsKeyList)
+    //     CustomGameEventManager.Send_ServerToPlayer(
+    //         PlayerResource.GetPlayer(player_id),
+    //         "TreasureSystem_GetShopsData",
+    //         {
+    //             data
+    //         }
+    //     );
+    // }
     /**
      * 增加技能点
      */
     AddEvolutionPoint(player_id: PlayerID , count : number ){
         this.EvolutionPoint[player_id] += count;
-        this.GetArmssSelectData(player_id , {});
+        // this.GetArmssSelectData(player_id , {});
     }
 
 
@@ -355,7 +355,7 @@ export class ArmsEvolution extends UIEventRegisterClass {
             DeepPrintTable(this.EvolutionTable)
         }
         if (cmd == "-arms_getup" || cmd == "-ag") {
-            this.GetArmssSelectData(player_id, {});
+            // this.GetArmssSelectData(player_id, {});
         }
         if (cmd == "-arms_creat") {
             this.CreatArmssSelectData(player_id, {});

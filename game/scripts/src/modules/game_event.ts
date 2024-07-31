@@ -13,7 +13,6 @@ import { CustomMechanics } from './ingame/hero_extend/custom_mechanics';
 import { Spawn } from './ingame/spawns/spawn';
 import { CMsg } from './ingame/system/cmsg';
 import { NewArmsEvolution } from './ingame/hero_extend/new_arms_evolution';
-import { RuneSystem } from './ingame/system/rune_system';
 import { MysticalShopSystem } from './ingame/system/mystical_shop_system';
 import { ArchiveService } from '../server/https/archive_service';
 import { ServiceData } from '../server/https/service_data';
@@ -24,6 +23,7 @@ import { WarningMarker } from './ingame/system/warning_marker';
 import { DamageReduction } from './ingame/system/damage_reduction';
 import { HeroTalentSystem } from './ingame/hero_extend/hero_talent_system';
 import { NpcSystem } from './map_chapter/npc_system';
+import { RuneSystem } from './ingame/rune/rune_system';
 
 declare global {
 
@@ -146,7 +146,7 @@ export class GameEvent {
             //初始化可选技能
             GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id)
             //初始化可用符文
-            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id)
+            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id , 1)
             //初始化神秘商店
             GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
             

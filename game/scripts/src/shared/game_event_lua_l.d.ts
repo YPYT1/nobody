@@ -85,23 +85,30 @@ declare interface CGED {
     }
     //符文系统
     RuneSystem : {
-        CreatRuneSelectData : {
-            //生成符文可选列表
-        }
-        GetRuneSelectData : {//直接获取选列表
+        /**
+         * 获取符文是否可选信息
+         */
+        GetRuneSelectData: {
 
-        }
-        PostSelectRune : { //选择列表
-            index : number //选择的下标
-        }
-        //随机符文
-        RuneRandom : {
-            //随机获得一个符文
-        }
-        //获取当前玩家符文数据
-        GetRuneData : {
+        };
+        /**
+         * 获取玩家已有符文列表
+         */
+        GetPlayerRuneData: {
 
-        }
+        };
+        /**
+         * 选择符文
+         */
+        PostSelectRune: {
+            index: number;
+        };
+        /**
+         * 消耗次数刷新未选择符文的列表
+         */
+        ConsumeRefreshCount: {
+
+        };
     }
     //英雄天赋系统 : 
     HeroTalentSystem : {
