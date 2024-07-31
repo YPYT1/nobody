@@ -11,7 +11,6 @@ export class GameInformation extends UIEventRegisterClass {
 
     player_life_list: number[] = [2, 2, 2, 2, 2, 2];
 
-
     player_die_count: number[] = [0, 0, 0, 0, 0, 0];
 
     player_die_time: number[] = [0, 0, 0, 0, 0, 0];
@@ -61,11 +60,11 @@ export class GameInformation extends UIEventRegisterClass {
             return;
         }
         this.player_die_count[player_id]++;
-        let d_time = 10 + (this.player_die_count[player_id] * 5 * player_count);
+        let d_time = 10 + (this.player_die_count[player_id] * 5 * (player_count - 1));
         let game_d_time = GameRules.GetDOTATime(false, false) + d_time;
         this.player_die_time[player_id] = game_d_time;
         // 这里创建一个救援thinker
-        let hAbility = unit.FindAbilityByName("public_attribute")
+        let hAbility = unit.FindAbilityByName("public_attribute");
         CreateModifierThinker(
             unit,
             hAbility,
@@ -77,7 +76,7 @@ export class GameInformation extends UIEventRegisterClass {
             unit.GetTeamNumber(),
             false
         )
-        this.GetPlayerDieData(player_id, {})
+        this.GetPlayerDieData(-1, {})
 
         // if(this.player_life_list[player_id] > 0){
         //     //测试模式下死亡会增加生命
@@ -115,25 +114,43 @@ export class GameInformation extends UIEventRegisterClass {
     // modifier_public_revive_thinker
     PlayerRevive(player_id: PlayerID) {
         let unit = PlayerResource.GetSelectedHeroEntity(player_id);
-        unit.SetRespawnPosition(unit.GetAbsOrigin());
-        unit.RespawnHero(false, false);
-        unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+        let vLocation : Vector = null;
+        if(GameRules.MapChapter._game_select_phase == 999){
+            vLocation = Vector(GameRules.MapChapter.ChapterData.map_centre_x, GameRules.MapChapter.ChapterData.map_centre_y, 0);
+        }else{
+            vLocation = unit.GetAbsOrigin();
+            unit.SetRespawnPosition(vLocation)
+            unit.RespawnHero(false, false);
+            unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+        }
         this.player_die_time[player_id] = 0;
-        this.GetPlayerDieData(player_id, {})
+        this.GetPlayerDieData(-1, {})
+        
     }
     /**
     * 获取玩家死亡倒计时
     */
     GetPlayerDieData(player_id: PlayerID, params: CGED["GameInformation"]["GetPlayerDieData"]) {
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "GameInformation_GetPlayerDieData",
-            {
-                data: {
-                    time: this.player_die_time
+        if (player_id == -1) {
+            CustomGameEventManager.Send_ServerToAllClients(
+                "GameInformation_GetPlayerDieData",
+                {
+                    data: {
+                        time: this.player_die_time
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "GameInformation_GetPlayerDieData",
+                {
+                    data: {
+                        time: this.player_die_time
+                    }
+                }
+            );
+        }
     }
 
     /**
