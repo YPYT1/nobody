@@ -1,7 +1,9 @@
 const PlayerList = $("#PlayerList");
 
 export const Init = () => {
-    Create_Scoreboard();
+    PlayerList.RemoveAndDeleteChildren();
+    PlayerList.Data<PanelDataObject>().current_count = -1;
+    // Create_Scoreboard(-1);
     CustomSubscribe();
     StartThinkerLoop();
     GameEvents.SendCustomGameEventToServer("GameInformation", {
@@ -34,8 +36,11 @@ const UpdateScoreBoard = () => {
     }
 }
 
-const Create_Scoreboard = () => {
-    PlayerList.RemoveAndDeleteChildren();
+const Create_Scoreboard = (count: number) => {
+    let current_count: number = PlayerList.Data<PanelDataObject>().current_count
+    if (count == current_count) { return }
+    PlayerList.Data<PanelDataObject>().current_count = count;
+    PlayerList.RemoveAndDeleteChildren()
     let player_count = Game.GetAllPlayerIDs();
     for (let player_id of player_count) {
         let playerInfo = Game.GetPlayerInfo(player_id);
@@ -66,6 +71,11 @@ const CustomSubscribe = () => {
     })
 }
 
+GameEvents.Subscribe("MapChapter_NewPlay", event => {
+    let data = event.data;
+    let count = data.count;
 
+    Create_Scoreboard(count)
+})
 
 Init()

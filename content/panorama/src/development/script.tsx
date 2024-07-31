@@ -170,7 +170,7 @@ export const HeroDemo = () => {
 
                     <Panel className="row btn-group">
                         <Button className="btn" onactivate={() => UnitOperation("KillUnit")}>
-                            <Label text="自杀" />
+                            <Label text="击杀所选" />
                         </Button>
                         <Button className="btn" onactivate={() => UnitOperation("RespawnHero")}>
                             <Label text="复活" />

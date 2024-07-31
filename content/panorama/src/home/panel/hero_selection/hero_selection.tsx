@@ -21,27 +21,33 @@ function InitKvTable() {
 GameEvents.Subscribe("MapChapter_GetPlayerHeroList", event => {
     let heroes = event.data.hero_id;
     let time = event.data.time;
+    $.Msg(["MapChapter_GetPlayerHeroList",event.data])
     MainPanel.Data<PanelDataObject>().start_time = time;
 })
 
 
 GameEvents.Subscribe("MapChapter_GetPlayerSelectHeroList", event => {
     let data = event.data;
+    // $.Msg(["MapChapter_GetPlayerSelectHeroList",data])
     let hero_ids = Object.values(data.hero_ids)
     for (let player_id = 0 as PlayerID; player_id < hero_ids.length; player_id++) {
         let PlayerState = PlayerStateContainer.GetChild(player_id)!;
         let player_data = hero_ids[player_id];
         let hero_id = player_data.hero_id;
         let hero_name = HeroIdTable[hero_id];
+
+        let hero_data = NpcHeroesCustom[hero_name as keyof typeof NpcHeroesCustom];
+        let PortraitImage = hero_data.PortraitImage
         // $.Msg(["hero_name",hero_name]);
 
         let HeroIcon = PlayerState.FindChildTraverse("HeroIcon") as ImagePanel;
-        HeroIcon.SetImage(`file://{images}/heroes/selection/${hero_name}.png`)
+        // HeroIcon.SetImage(`file://{images}/heroes/selection/${hero_name}.png`)
+        HeroIcon.SetImage(`file://{images}/heroes/${PortraitImage}.png`)
         PlayerState.SetDialogVariable("hero_name", $.Localize(`#${hero_name}`))
 
 
         let HeroCardButton = HeroesList.FindChild(`${hero_id}`) as RadioButton;
-        HeroCardButton.checked = true
+        // HeroCardButton.checked = true
         // $.Msg(HeroCardButton)
 
         if (player_id == Game.GetLocalPlayerID()) {
@@ -93,13 +99,15 @@ function CreatePlayerStatePanel() {
 
         let HeroIcon = HeroCardButton.FindChildTraverse("HeroIcon") as ImagePanel;
         HeroIcon.SetImage(`file://{images}/heroes/selection/${hero_name}.png`)
-
+        
+        // 
         let HeroMovie = HeroCardButton.FindChildTraverse("HeroMovie") as HeroMovie;
         HeroMovie.heroname = hero_name;
 
         HeroCardButton.SetDialogVariableInt("level", 1)
 
         HeroCardButton.SetPanelEvent("onactivate", () => {
+            HeroCardButton.checked = true
             GameEvents.SendCustomGameEventToServer("MapChapter", {
                 event_name: "SelectHero",
                 params: {
@@ -134,8 +142,8 @@ function CreatePlayerStatePanel() {
             params: {}
         })
     })
-    StartLoopThinker()
 
+    StartLoopThinker()
 }
 
 export const Init = () => {
@@ -144,11 +152,20 @@ export const Init = () => {
     MainPanel.SetPanelEvent("onactivate", () => { })
     CreatePlayerStatePanel();
 
+
+    GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
+        let game_select_phase = event.data.game_select_phase;
+        if (game_select_phase == 1) {
+            HeroConfirm.enabled = true
+        }
+    })
+
     // 最后执行
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetPlayerHeroList",
         params: {}
     })
+
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetPlayerSelectHeroList",
         params: {}

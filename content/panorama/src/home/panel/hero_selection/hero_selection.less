@@ -6,6 +6,7 @@
     background-color: #16354e99;
     // opacity: 0.5;
     visibility: collapse;
+    // z-index: -1;
 }
 
 #Background {
@@ -76,12 +77,16 @@
             align: center center;
             // 
             background-image: url("file://{images}/custom_game/hud/hero_selection/hero_border.png");
-
+            overflow: clip;
 
             #HeroIcon {
-                width: 100%;
-                height: 100%;
+                width: 104px;
+                height: 104px;
+                // width: 128px;
+                // height: 72px;
                 margin: 4px;
+                horizontal-align: center;
+                vertical-align: middle;
                 border-radius: 50%;
                 // background-color: #b38627;
             }

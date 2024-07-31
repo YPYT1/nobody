@@ -33,7 +33,7 @@ export class modifier_public_attribute extends BaseModifier {
     PickItemFx: ParticleID;
     hParent: CDOTA_BaseNPC;
     hAbility: CDOTABaseAbility;
-
+    iParentEntity: EntityIndex;
     // timer: number;
     IsHidden(): boolean { return true }
     RemoveOnDeath(): boolean { return false; }
@@ -47,6 +47,7 @@ export class modifier_public_attribute extends BaseModifier {
         this.SetHasCustomTransmitterData(true);
         if (!IsServer()) { return; }
         this.hParent = this.GetParent();
+        this.iParentEntity = this.GetParent().entindex();
         // this.timer = 0;
         this.StartIntervalThink(0.1)
     }
@@ -62,7 +63,7 @@ export class modifier_public_attribute extends BaseModifier {
         if (!this.hParent.IsAlive()) { return }
         let vPos = this.hParent.GetAbsOrigin();
         let ExpItems = FindUnitsInRadius(
-            DotaTeam.GOODGUYS,
+            DotaTeam.NEUTRALS,
             vPos,
             null,
             this.AttributeData.PickItemRadius,
@@ -79,7 +80,9 @@ export class modifier_public_attribute extends BaseModifier {
                 && !ExpItem.HasModifier("modifier_pick_animation")
                 && !ExpItem.HasModifier("modifier_generic_arc_lua")
             ) {
-                ExpItem.AddNewModifier(this.hParent, this.hAbility, "modifier_pick_animation", {})
+                ExpItem.AddNewModifier(ExpItem, null, "modifier_pick_animation", {
+                    picker: this.iParentEntity,
+                })
             }
         }
 
@@ -215,7 +218,7 @@ export class modifier_public_revive_thinker extends BaseModifier {
         ParticleManager.SetParticleControl(cast_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
         ParticleManager.SetParticleControl(cast_fx, 1, Vector(duration, 0, 0))
         ParticleManager.SetParticleControl(cast_fx, 2, Vector(this.rescue_radius, 0, 0))
-        ParticleManager.SetParticleControl(cast_fx, 3, Vector(255, 0, 0))
+        ParticleManager.SetParticleControl(cast_fx, 3, Vector(0, 255, 0))
         // this.AddParticle(cast_fx, false, false, -1, false, false);
         this.rescue_time = GameRules.GetDOTATime(false, false) + duration / 2;
         this.cast_fx = cast_fx;

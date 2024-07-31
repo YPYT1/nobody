@@ -1,51 +1,92 @@
 
 const PlayerReviveContainer = $("#PlayerReviveContainer");
+const PlayerRuneContainer = $("#PlayerRuneContainer");
+const LocalPlayerRuneDialog = $("#LocalPlayerRuneDialog");
+const RuneSelectList = $("#RuneSelectList");
 const localPlayer = Game.GetLocalPlayerID();
+const BarHeight = 250
 
 const StartThinkerLoop = () => {
     // UpdateLocalPlayerReviveState()
+    UpdateLocalPlayerRuneDialog();
     $.Schedule(Game.GetGameFrameTime(), StartThinkerLoop)
 }
 
-const UpdateLocalPlayerReviveState = () => {
+const UpdateLocalPlayerRuneDialog = () => {
     const entity = Players.GetPlayerHeroEntityIndex(localPlayer);
-
-    let cur_panel = PlayerReviveContainer.FindChild(String(entity));
     const pos = Entities.GetAbsOrigin(entity);
+    // $.Msg(pos)
+    if (pos == null) { return }
     let fOffset = Entities.GetHealthBarOffset(entity);
-    fOffset = (fOffset === -1 || fOffset < 350) ? 350 : fOffset;
+    fOffset = (fOffset === -1 || fOffset < BarHeight) ? BarHeight : fOffset;
     let xUI = Game.WorldToScreenX(pos[0], pos[1], pos[2] + fOffset);
     let yUI = Game.WorldToScreenY(pos[0], pos[1], pos[2] + fOffset);
     if (xUI < 0 || xUI > Game.GetScreenWidth() || yUI < 0 || yUI > Game.GetScreenHeight()) {
-        if (cur_panel) { cur_panel.DeleteAsync(0); }
+        LocalPlayerRuneDialog.visible = false;
         return;
     }
-
-    if (cur_panel == null) {
-        cur_panel = $.CreatePanel('Panel', PlayerReviveContainer, String(entity));
-        cur_panel.BLoadLayoutSnippet("PlayerRevivePanel");
-    }
-
+    LocalPlayerRuneDialog.visible = true;
     const [clampX, clampY] = GameUI.WorldToScreenXYClamped(pos);
+    // $.Msg([clampX, clampY])
     const diffX = clampX - 0.5;
     const diffY = clampY - 0.5;
     xUI -= diffX * Game.GetScreenWidth() * 0.16;
     yUI -= diffY * Game.GetScreenHeight() * 0.10;
 
     let xoffset = 0;
-    let yoffset = 0;
-    cur_panel.SetPositionInPixels(
-        (xUI - cur_panel.actuallayoutwidth / 2 - xoffset) / cur_panel.actualuiscale_x,
-        (yUI - cur_panel.actuallayoutheight + yoffset) / cur_panel.actualuiscale_y,
+    let yoffset = -30;
+    LocalPlayerRuneDialog.SetPositionInPixels(
+        (xUI - LocalPlayerRuneDialog.actuallayoutwidth / 2 - xoffset) / LocalPlayerRuneDialog.actualuiscale_x,
+        (yUI - LocalPlayerRuneDialog.actuallayoutheight + yoffset) / LocalPlayerRuneDialog.actualuiscale_y,
         0,
     );
 }
 
+
+
 export const Init = () => {
-    PlayerReviveContainer.RemoveAndDeleteChildren();
-    // StartThinkerLoop()
+    // PlayerReviveContainer.RemoveAndDeleteChildren();
+    // PlayerRuneContainer.RemoveAndDeleteChildren()
+    StartThinkerLoop();
+
+    GameEvents.Subscribe("RuneSystem_GetRuneSelectData", event => {
+        let data = event.data;
+        $.Msg(["RuneSystem_GetRuneSelectData", data])
+        let is_new = data.is_new_fate_check == 1;
+        let rune_list = Object.values(data.item_list)
+        RuneSelectList.RemoveAndDeleteChildren();
+        let select_index = 0;
+        for (let rune_data of rune_list) {
+            let rune_name = rune_data.name;
+            let rune_level = rune_data.level;
+            let RuneInfo = $.CreatePanel("Panel", RuneSelectList, "");
+            RuneInfo.BLoadLayoutSnippet("RuneInfo");
+            // RuneInfo.SetHasClass("level_1",)
+            RuneInfo.SetDialogVariable("rune_desc", $.Localize(`#custom_${rune_name}_Description`))
+
+            let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Button;
+            let post_index = select_index
+            RuneIconBtn.SetPanelEvent("onactivate", () => {
+                $.Msg(["select_index", post_index])
+                GameEvents.SendCustomGameEventToServer("RuneSystem", {
+                    event_name: "PostSelectRune",
+                    params: {
+                        index: post_index
+                    }
+                })
+
+            })
+            select_index++
+        }
+        LocalPlayerRuneDialog.SetHasClass("Show", is_new)
+    })
+
+    GameEvents.SendCustomGameEventToServer("RuneSystem", {
+        event_name: "GetRuneSelectData",
+        params: {}
+    })
 }
 
 (function () {
-    // Init()
+    Init()
 })();

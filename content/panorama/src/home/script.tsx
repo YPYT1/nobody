@@ -1,6 +1,4 @@
-import { render } from "react-panorama-x";
 import { HideCustomTooltip, ShowCustomTooltip } from "../utils/custom_tooltip";
-// import "./panel/control/control";
 
 export const HideOfficialLayoutUI = () => {
 
@@ -19,7 +17,6 @@ export const HideOfficialLayoutUI = () => {
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_QUICKBUY, true);
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_COURIER, false);
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_AGHANIMS_STATUS, false);
-
 
 }
 
@@ -131,13 +128,19 @@ export const Initialize = () => {
         params: {}
     })
 
-    $.Msg(["GetGameSelectPhase Start"])
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetGameSelectPhase",
         params: {}
     })
 
+}
 
+const DelayLoadFunc = ()=>{
+    // MapChapter_NewPlay
+    GameEvents.SendCustomGameEventToServer("MapChapter",{
+        event_name:'NewPlay',
+        params:{}
+    })
 }
 
 (function () {
@@ -149,5 +152,7 @@ export const Initialize = () => {
     Initialize();
     HideOfficialLayoutUI();
     RegisterCustomTooltip();
+
+    DelayLoadFunc();
 })();
 

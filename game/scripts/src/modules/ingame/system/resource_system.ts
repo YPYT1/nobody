@@ -20,6 +20,7 @@ export class ResourceSystem extends UIEventRegisterClass {
     /** 上次更新 */
     last_updatetime: number[] = [];
 
+    exp_type_count = [2, 5, 10];
     constructor() {
         super("ResourceSystem")
         this.InitAllPlayer()
@@ -164,7 +165,7 @@ export class ResourceSystem extends UIEventRegisterClass {
 
     SendPlayerResource(player_id: PlayerID) {
         CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),    
+            PlayerResource.GetPlayer(player_id),
             "ResourceSystem_SendPlayerResources",
             {
                 data: this.player_resource[player_id]
@@ -192,10 +193,11 @@ export class ResourceSystem extends UIEventRegisterClass {
         this.player_cost_rate[player_id][resource] += value
     }
 
-    DropResourceItem(resource: PlayerResourceTyps, vPos: Vector, iCount: number) {
-        let exp_unit = CreateUnitByName("npc_exp", vPos, false, null, null, DotaTeam.GOODGUYS)
+    DropResourceItem(resource: PlayerResourceTyps, vPos: Vector, exp_type: number = 0) {
+        let exp_unit = CreateUnitByName("npc_exp", vPos, false, null, null, DotaTeam.NEUTRALS)
         // EmitSoundOn("Custom.ItemDrop", exp_unit)
-        exp_unit.SetMaterialGroup(`${RandomInt(0, 2)}`)
+        // print("DropResourceItem", resource, exp_type, DotaTeam.NOTEAM,exp_unit)
+        exp_unit.SetMaterialGroup(`${exp_type}`);
         exp_unit.is_picking = false;
         exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_state", {})
         exp_unit.AddNewModifier(exp_unit, null, "modifier_generic_arc_lua", {
@@ -207,24 +209,26 @@ export class ResourceSystem extends UIEventRegisterClass {
             // isStun: 1,
         })
         exp_unit.drop_resource_type = resource;
-        exp_unit.drop_resource_amount = iCount;
+        exp_unit.drop_resource_amount = this.exp_type_count[exp_type];
         exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_exp", {
-            duration: 30
+            // duration: 30
         })
     }
 
     RemoveAllDropItem() {
+        
         let hDropItemList = FindUnitsInRadius(
-            DotaTeam.GOODGUYS,
+            DotaTeam.NEUTRALS,
             Vector(0, 0, 0),
             null,
-            9999,
+            99999,
             UnitTargetTeam.FRIENDLY,
             UnitTargetType.OTHER,
             UnitTargetFlags.INVULNERABLE,
             FindOrder.ANY,
             false
         )
+        print("RemoveAllDropItem",hDropItemList.length)
         for (let hItem of hDropItemList) {
             UTIL_Remove(hItem)
         }

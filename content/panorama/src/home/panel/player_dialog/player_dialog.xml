@@ -1,6 +1,7 @@
 <root>
 	<styles>
 		<include src="./player_dialog.less" />
+		<include src="./../../../_styles/styles.less" /> 
 	</styles>
 	<scripts>
 		<include src="./player_dialog.tsx" />
@@ -15,8 +16,24 @@
 				</Panel>
 			</Panel>
 		</snippet>
+		
+		<snippet name="RuneInfo">
+			<Panel class="RuneInfo">
+				<Button id="RuneIconBtn">
+					<Image id="RuneImage" src="" />
+				</Button>
+				<Panel class="RuneDesc">
+					<Label text="{s:rune_desc}"/>
+				</Panel>
+			</Panel>
+		</snippet>
 	</snippets>
 	<Panel class="player_dialog">
-		<Panel id="PlayerReviveContainer" hittest="false"/>
+		<Panel id="PlayerReviveContainer" class="DialogContainer" hittest="false"/>
+		<Panel id="PlayerRuneContainer" class="DialogContainer" hittest="false">
+			<Panel id="LocalPlayerRuneDialog">
+				<Panel id="RuneSelectList" />
+			</Panel>
+		</Panel>
 	</Panel>
 </root>

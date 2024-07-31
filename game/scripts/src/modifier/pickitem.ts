@@ -35,6 +35,7 @@ export class modifier_pickitem_state extends BaseModifier {
             [ModifierState.INVULNERABLE]: true,
             [ModifierState.NO_UNIT_COLLISION]: true,
             [ModifierState.UNSELECTABLE]: true,
+            [ModifierState.PROVIDES_VISION]: false,
             // [ModifierState.INVISIBLE]: true,
         }
     }

@@ -49,6 +49,7 @@ export const UpdateLocalPlayer = () => {
     const { CurrentLevelXP, CurrentLevelUpXP } = GetLevelExpInfo(unit_level, current_exp, up_exp);
 
     const xp_percent = Math.floor(100 * CurrentLevelXP / CurrentLevelUpXP)
+    // $.Msg([ExpBarPanel,xp_percent])
     ExpBarPanel.value = xp_percent
 
 

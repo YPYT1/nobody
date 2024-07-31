@@ -18,6 +18,10 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     const hAttacker = params.attacker;
     const hTarget = params.victim;
     const iPlayerID = hAttacker.GetPlayerOwnerID();
+    // print("iPlayerID",iPlayerID)
+    if (iPlayerID == -1){
+        return ApplyDamage(params);
+    }
     let element_type = params.element_type ?? ElementTypes.NONE;
     let is_primary = params.is_primary ?? false;
     let damage_number = params.damage;

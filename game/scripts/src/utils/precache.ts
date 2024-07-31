@@ -14,6 +14,7 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/econ/items/mirana/mirana_persona/mirana_starstorm.vpcf',
             'particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray.vpcf',
             'particles/diy/pick_item_fx2.vpcf',
+            'particles/diy_particles/event_ring_anim/event_ring_anim.vpcf',
             ...drow_precache,
         ],
         context

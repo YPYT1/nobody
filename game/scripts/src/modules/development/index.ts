@@ -24,8 +24,10 @@ export class Development extends UIEventRegisterClass {
     }
 
     KillUnit(player_id: PlayerID, params: CGED["Development"]["KillUnit"]) {
+        let unit = params.unit;
+        let hUnit = EntIndexToHScript(unit) as CDOTA_BaseNPC;
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-        hHero.Kill(null, hHero)
+        hUnit.Kill(null, hHero)
         // hHero.ForceKill(true)
     }
 
@@ -220,8 +222,10 @@ export class Development extends UIEventRegisterClass {
 
         if (cmd == "-vis") {
             print("add vis")
+            let vHero = PlayerResource.GetSelectedHeroEntity(player_id);
             // GameRules.GetGameModeEntity().SetFogOfWarDisabled(false)
-            AddFOWViewer(DotaTeam.GOODGUYS, Vector(0, 0, 0), 5000, 3600, true)
+            let vi = AddFOWViewer(DotaTeam.GOODGUYS, vHero.GetAbsOrigin(),9999, 10, false)
+            // AddFOWViewer(DotaTeam.GOODGUYS, Vector(0, 0, 0), 5000, 3600, true)
         }
 
         if (cmd == "-hpbar") {
@@ -241,7 +245,7 @@ export class Development extends UIEventRegisterClass {
                 let vDrop = hHeroUnit.GetAbsOrigin() + RandomVector(600) as Vector;
                 vDrop.x += RandomInt(-600, 600)
                 vDrop.y += RandomInt(-600, 600)
-                GameRules.ResourceSystem.DropResourceItem("TeamExp", vDrop, 100);
+                GameRules.ResourceSystem.DropResourceItem("TeamExp", vDrop, RandomInt(0, 2));
             }
 
         }
@@ -277,7 +281,7 @@ export class Development extends UIEventRegisterClass {
             let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
             let vPos = hHeroUnit.GetAbsOrigin();
             let ExpItems = FindUnitsInRadius(
-                DotaTeam.GOODGUYS,
+                DotaTeam.NEUTRALS,
                 vPos,
                 null,
                 9999,
@@ -287,14 +291,15 @@ export class Development extends UIEventRegisterClass {
                 FindOrder.ANY,
                 false
             )
-            // print("ExpItems",ExpItems.length)
             for (let ExpItem of ExpItems) {
-                // print("RowName",ExpItem.GetUnitName())
+                print("RowName", ExpItem.GetUnitName())
                 if (ExpItem.GetUnitName() == "npc_exp") {
                     if (!ExpItem.HasModifier("modifier_pick_animation")) {
-                        ExpItem.AddNewModifier(hHeroUnit, null, "modifier_pick_animation", {
-
+                        // 无敌状态只能自己给自己上BUFF
+                        ExpItem.AddNewModifier(ExpItem, null, "modifier_pick_animation", {
+                            picker: hHeroUnit.entindex(),
                         })
+
                     }
                 }
 

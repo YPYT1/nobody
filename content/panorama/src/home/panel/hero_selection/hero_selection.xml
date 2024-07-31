@@ -13,7 +13,7 @@
 				<Panel class="HeroInfo">
 					<Panel class="SelectGlow"/>
 					<Panel class="HeroBorder">
-						<Image id="HeroIcon"/>
+						<Image id="HeroIcon" scaling='stretch-to-fit-y-preserve-aspect'/>
 					</Panel>
 					<Panel id="HeroStar" class="HeroStars">
 						<Panel class="Star Star1"/>

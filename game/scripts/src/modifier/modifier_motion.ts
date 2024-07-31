@@ -136,6 +136,7 @@ export class modifier_motion_bezier extends BaseModifierMotionBoth {
 export class modifier_pick_animation extends modifier_motion_bezier {
 
     parent: CDOTA_BaseNPC;
+    caster: CDOTA_BaseNPC;
     outer_point: Vector;
     back_start: Vector;
     launch_direction: Vector;
@@ -149,6 +150,7 @@ export class modifier_pick_animation extends modifier_motion_bezier {
     OnCreated(params: any): void {
         if (!IsServer()) { return; }
         const movespeed = params.movespeed ?? 450;
+        this.caster = EntIndexToHScript(params.picker) as CDOTA_BaseNPC;
         this.parent = this.GetParent();
         this.parent.is_picking = true;
         this.launch_acceleration = movespeed * 2;
@@ -157,7 +159,7 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         this.pre_ratio = 1;
         this._speed = movespeed;
         this._origin = this.GetParent().GetOrigin();
-        this._end_point = this.GetCaster().GetAbsOrigin();
+        this._end_point = this.caster.GetAbsOrigin();
 
 
         let direction = this._origin - this._end_point as Vector;
@@ -200,7 +202,7 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         let b1: Vector;
         // print("_pre_speed", this._pre_speed)
         // 贝塞尔曲线点
-        let vCaster = this.GetCaster().GetAbsOrigin()
+        let vCaster = this.caster.GetAbsOrigin()
 
         if (this._to_return) {
             this._value += this._pre_speed * dt * this.pre_ratio;
@@ -268,9 +270,10 @@ export class modifier_pick_animation extends modifier_motion_bezier {
 
     OnDestroy(): void {
         if (!IsServer()) { return; }
+        let hCaster = this.caster;
         let hParent = this.GetParent();
+        // print("OnDestroy", hCaster, hParent)
         if (hParent == null) { return }
-        let hCaster = this.GetCaster();
         if (hCaster == null) { return }
         let resource_type = hParent.drop_resource_type;
         let resource_amount = hParent.drop_resource_amount;
@@ -339,8 +342,8 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
     _base_entity: CDOTA_BaseNPC;
     _rote_value: number;
     _downswing: boolean;
-    parent:CDOTA_BaseNPC;
-    caster:CDOTA_BaseNPC;
+    parent: CDOTA_BaseNPC;
+    caster: CDOTA_BaseNPC;
 
     IsHidden(): boolean { return true; }
     IsPurgable() { return false; }
@@ -382,7 +385,7 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
             this.Destroy();
             return;
         }
-        
+
         this.StartIntervalThink(0.1);
         this.C_OnCreated(params);
     }

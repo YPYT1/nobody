@@ -47,9 +47,10 @@ class BasicAI {
             if (hPlayerHeroes.length == 0) {
                 return 1;
             }
-            this.me.SetForceAttackTarget(hPlayerHeroes[0]);
-            this.me.SetAttacking(hPlayerHeroes[0])
-            this.me.MoveToTargetToAttack(hPlayerHeroes[0]);
+            this.me.MoveToPosition(hPlayerHeroes[0].GetAbsOrigin())
+            // this.me.SetForceAttackTarget(hPlayerHeroes[0]);
+            // this.me.SetAttacking(hPlayerHeroes[0])
+            // this.me.MoveToTargetToAttack(hPlayerHeroes[0]);
             return 1
         }
         return 1

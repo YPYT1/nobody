@@ -89,6 +89,8 @@
 							<Panel class="ReviveCountdown">
 								<Label text="99"/>
 							</Panel>
+							<Button id="HeroInfoBtn" />
+							
 						</Panel>
 					</Panel>
 					<!-- <Panel id="HpBar" hittest="fasle">
