@@ -411,6 +411,7 @@ declare interface CGEDPlayerRuneSelectDataList {
     refresh_count: number, //剩余刷新次数 主要通过这个来判断是否展示等 0 为没有次数
     fate_level: number, // 玩家天命挑战成功次数 -即为挑战等级 -- 弃用 不通过战斗获取
     player_refresh_count: number, // 剩余重随符文次数
+    time : number , // 倒计时
 }
 
 

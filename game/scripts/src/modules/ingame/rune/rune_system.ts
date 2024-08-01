@@ -162,12 +162,14 @@ export class RuneSystem extends UIEventRegisterClass {
             is_new_fate_check : 0, // 0可以挑战 1 还有未选择的符文 2 挑战中
             refresh_count : 0,
             fate_level : this.player_challenge_number[player_id],
-            player_refresh_count: this.player_refresh_count[player_id]
+            player_refresh_count: this.player_refresh_count[player_id],
+            time : 0 ,
         };
         //当有数据才返回
         if (this.player_fate_data[player_id].length > this.player_fate_data_index[player_id]) {
             data.is_new_fate_check = 1;
             data.item_list = this.player_fate_data[player_id][this.player_fate_data_index[player_id]].item_list;
+            data.time = this.player_fate_data[player_id][this.player_fate_data_index[player_id]].time
         }
         data.refresh_count = this.player_fate_data[player_id].length - this.player_fate_data_index[player_id];
 
@@ -602,8 +604,8 @@ export class RuneSystem extends UIEventRegisterClass {
                     player_id as PlayerID,
                     "#custom_text_player_rune_up_1",
                     {
-                        player_id: player_id, //玩家id
-                        rune_name: _name,//符文名字
+                        player_id : player_id, //玩家id
+                        rune_name : _name,//符文名字
                     }
                 );
                 if (is_max) {
