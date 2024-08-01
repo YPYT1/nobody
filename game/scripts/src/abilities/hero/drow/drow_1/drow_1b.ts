@@ -15,13 +15,17 @@ export class drow_1b extends drow_1 {
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
         if (target) {
             let ability_damage = extraData.a as number;
+            let damage_vect = Vector(extraData.x, extraData.y, 0);
+            print("damage_vect", damage_vect)
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.GetCaster(),
                 damage: ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 ability: this,
-                element_type: ElementTypes.WIND
+                element_type: ElementTypes.WIND,
+                is_primary:true,
+                damage_vect: damage_vect,
             })
         }
     }
@@ -62,7 +66,7 @@ export class modifier_drow_1b extends modifier_drow_1 {
 
     LaunchArrows(vCaster: Vector, vVelocity: Vector, fDistance: number, ability_damage: number) {
         ProjectileManager.CreateLinearProjectile({
-            EffectName: "particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf",
+            EffectName: "particles/econ/items/windrunner/windranger_arcana/windranger_arcana_spell_powershot_combo.vpcf",//G_PorjLinear.wind,
             Ability: this.GetAbility(),
             vSpawnOrigin: vCaster,
             vVelocity: vVelocity,
@@ -75,6 +79,8 @@ export class modifier_drow_1b extends modifier_drow_1 {
             iUnitTargetFlags: UnitTargetFlags.NONE,
             ExtraData: {
                 a: ability_damage,
+                x: vCaster.x,
+                y: vCaster.y,
             }
         })
         // this.caster.GiveMana(5);

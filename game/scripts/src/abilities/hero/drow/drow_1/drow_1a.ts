@@ -36,7 +36,7 @@ export class drow_1a extends drow_1 {
 
             let vPos = target.GetAbsOrigin();
             let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (1 + (this.bonus_value) * 0.01)
-            let effect_name = "particles/econ/items/abaddon/abaddon_alliance/abaddon_death_coil_alliance_explosion.vpcf"
+            let effect_name = "particles/dev/hero/drow/drow_1/explosion_arrow.vpcf"
             if (RollPercentage(this.mul_chance)) {
                 ability_damage *= this.mul_value
             }
@@ -66,12 +66,12 @@ export class drow_1a extends drow_1 {
             }
 
             let cast_fx = ParticleManager.CreateParticle(
-                "particles/econ/items/abaddon/abaddon_alliance/abaddon_death_coil_alliance_explosion.vpcf",
+                effect_name,
                 ParticleAttachment.WORLDORIGIN,
                 null
             )
             ParticleManager.SetParticleControl(cast_fx, 0, vPos);
-            ParticleManager.SetParticleControl(cast_fx, 1, vPos);
+            ParticleManager.SetParticleControl(cast_fx, 1, Vector(this.aoe_radius,1,1));
             ParticleManager.ReleaseParticleIndex(cast_fx);
         }
     }
@@ -81,7 +81,7 @@ export class drow_1a extends drow_1 {
 export class modifier_drow_1a extends modifier_drow_1 {
 
     UpdataSpecialValue(): void {
-        this.tracking_proj_name = "particles/units/heroes/hero_clinkz/clinkz_searing_arrow.vpcf"
+        this.tracking_proj_name = G_PorjTrack.fire;
     }
 
 }

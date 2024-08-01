@@ -117,3 +117,13 @@ export class modifier_element_effect_thunder_immune extends BaseModifier {
     }
 
 }
+
+/** 雷:麻痹 */
+@registerModifier()
+export class modifier_element_effect_wind_immune extends BaseModifier {
+
+    IsHidden(): boolean {
+        return true
+    }
+
+}

@@ -65,7 +65,7 @@ export class modifier_drow_2b_b extends modifier_drow_2b {
     sp_chance: number;
 
     UpdataSpecialValue(): void {
-        this.proj_name = this.porj_linear.ice;
+        this.proj_name = G_PorjLinear.ice
         this.sp_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "22", "chance");
     }
 

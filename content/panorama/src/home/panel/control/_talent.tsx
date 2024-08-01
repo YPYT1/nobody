@@ -119,7 +119,7 @@ export const CreatePanel_Talent = () => {
 }
 
 const CreateHeroTalentTree = (heroname: string) => {
-    // $.Msg(["CreateHeroTalentTree", heroname])
+    $.Msg(["CreateHeroTalentTree", heroname])
     PlayerTalentTreeList.RemoveAndDeleteChildren();
     let hero_data = talent_data[heroname as keyof typeof talent_data];
     let talent_tree = FormatTalentTree(heroname, hero_data);

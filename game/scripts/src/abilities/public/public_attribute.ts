@@ -145,7 +145,13 @@ export class modifier_public_attribute extends BaseModifier {
             ModifierFunction.MANA_BONUS,
             ModifierFunction.MANA_REGEN_CONSTANT,
             ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
+            //@ts-ignore
+            // ModifierFunction.VISION_DEGREES_RESTRICTION,
         ]
+    }
+
+    GetVisionDegreeRestriction() {
+        return 90
     }
 
     GetModifierAttackRangeOverride(): number {

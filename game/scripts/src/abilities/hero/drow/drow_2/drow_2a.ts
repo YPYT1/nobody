@@ -41,21 +41,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
     proj_count: number;
     proj_speed: number;
     proj_width: number;
-
     proj_name: string;
-    /** 投射 */
-    porj_track = {
-        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
-        "fire": "fire",
-    }
-
-    /** 线型 */
-    porj_linear = {
-        "none": "particles/proj/linear/none/proj_linear_none.vpcf",
-        "fire": "particles/proj/linear/fire/proj_linear_fire.vpcf",
-        "ice": "particles/proj/linear/ice/proj_linear_ice.vpcf",
-        "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",
-    }
 
     UpdataAbilityValue(): void {
         const hAbility = this.GetAbility();
@@ -64,7 +50,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
         this.proj_speed = hAbility.GetSpecialValueFor("proj_speed");
         this.proj_width = hAbility.GetSpecialValueFor("proj_width");
         this.action_range = hAbility.GetSpecialValueFor("action_range");
-        this.proj_name = this.porj_linear.none;
+        this.proj_name = G_PorjLinear.none;
     }
 
 
@@ -114,6 +100,8 @@ export class modifier_drow_2a extends BaseHeroModifier {
                 iUnitTargetFlags: UnitTargetFlags.NONE,
                 ExtraData: {
                     a: ability_damage,
+                    x: vCaster.x,
+                    y: vCaster.y
                 }
             })
             count += 1;

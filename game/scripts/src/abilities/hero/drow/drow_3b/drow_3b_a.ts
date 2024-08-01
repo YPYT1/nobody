@@ -1,5 +1,5 @@
 import { registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { drow_3b, modifier_drow_3b, modifier_drow_3b_thinker } from "./drow_3b";
+import { drow_3b, modifier_drow_3b, modifier_drow_3b_thinker, modifier_drow_3b_thinker_arrow } from "./drow_3b";
 
 
 /**
@@ -26,9 +26,11 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
 
     extra_dmg_pct: number;
 
+
     OnCreated_Extends(): void {
         this.element_type = ElementTypes.FIRE;
         this.extra_dmg_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "drow_ranger", "36", "extra_dmg_pct")
+        this.arrow_thinker = "modifier_drow_3b_thinker_arrow_fire";
     }
 
     DoDamageTarget(target: CDOTA_BaseNPC, ability_damage: number): void {
@@ -48,4 +50,11 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
             return null
         }, 0.3)
     }
+}
+
+@registerModifier()
+export class modifier_drow_3b_a_thinker_arrow extends modifier_drow_3b_thinker_arrow {
+
+    arrow_name = "particles/dev/attack/attack_flame/attack_flame_1.vpcf";
+
 }

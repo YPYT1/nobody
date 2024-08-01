@@ -42,27 +42,13 @@ export class modifier_drow_2b extends BaseHeroModifier {
     proj_name: string;
     proj_distance: number;
 
-    /** 投射 */
-    porj_track = {
-        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
-        "fire": "fire",
-    }
-
-    /** 线型 */
-    porj_linear = {
-        "none": "particles/proj/linear/none/proj_linear_none.vpcf",
-        "fire": "particles/proj/linear/fire/proj_linear_fire.vpcf",
-        "ice": "particles/proj/linear/ice/proj_linear_ice.vpcf",
-        "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",
-    }
-
     UpdataAbilityValue(): void {
         this.base_value = this.ability.GetSpecialValueFor("base_value");
         this.arrow_count = this.ability.GetSpecialValueFor("arrow_count");
         this.arrow_angle = this.ability.GetSpecialValueFor("arrow_angle");
         this.proj_width = this.ability.GetSpecialValueFor("proj_width");
         this.proj_speed = this.caster.GetProjectileSpeed();
-        this.proj_name = this.porj_linear.none;
+        this.proj_name = G_PorjLinear.none;
         this.proj_distance = this.ability.GetSpecialValueFor("proj_distance");
         // this.StartIntervalThink(1)
     }

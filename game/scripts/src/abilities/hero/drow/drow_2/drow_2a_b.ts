@@ -100,5 +100,7 @@ export class drow_2a_b extends drow_2a {
 @registerModifier()
 export class modifier_drow_2a_b extends modifier_drow_2a {
 
-
+    UpdataSpecialValue(): void {
+        this.proj_name = G_PorjLinear.ice;
+    }
 }

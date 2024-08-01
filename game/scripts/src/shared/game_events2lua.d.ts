@@ -19,6 +19,10 @@ declare interface CGED {
             queryUnit: EntityIndex,
             ability_order: number,
         },
+        ToggleAbility:{
+            queryUnit: EntityIndex,
+            ability_order: number,
+        }
         CreatedItem: { item_name: string, queryUnit: EntityIndex };
         ModiyAttribute: { unit: EntityIndex, attr_object: CustomAttributeTableType }
         ModiyOverrideSpecialValue: {

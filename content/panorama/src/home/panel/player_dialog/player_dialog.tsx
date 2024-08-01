@@ -3,6 +3,7 @@ const PlayerReviveContainer = $("#PlayerReviveContainer");
 const PlayerRuneContainer = $("#PlayerRuneContainer");
 const LocalPlayerRuneDialog = $("#LocalPlayerRuneDialog");
 const RuneSelectList = $("#RuneSelectList");
+const RefreshBtn = $("#RefreshBtn") as Button;
 const localPlayer = Game.GetLocalPlayerID();
 const BarHeight = 250
 
@@ -40,6 +41,10 @@ const UpdateLocalPlayerRuneDialog = () => {
         (yUI - LocalPlayerRuneDialog.actuallayoutheight + yoffset) / LocalPlayerRuneDialog.actualuiscale_y,
         0,
     );
+    let game_time = Game.GetDOTATime(false, false);
+    let over_time = LocalPlayerRuneDialog.Data<PanelDataObject>().over_time;
+    let select_timer = Math.floor(over_time - game_time)
+    LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", select_timer)
 }
 
 
@@ -48,10 +53,22 @@ export const Init = () => {
     // PlayerReviveContainer.RemoveAndDeleteChildren();
     // PlayerRuneContainer.RemoveAndDeleteChildren()
     StartThinkerLoop();
+    LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", 99);
+    LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", 99);
+
+    RefreshBtn.SetPanelEvent("onactivate", () => {
+        GameEvents.SendCustomGameEventToServer("RuneSystem", {
+            event_name: "ConsumeRefreshCount",
+            params: {}
+        })
+    })
 
     GameEvents.Subscribe("RuneSystem_GetRuneSelectData", event => {
         let data = event.data;
-        $.Msg(["RuneSystem_GetRuneSelectData", data])
+        let time = data.time;
+        LocalPlayerRuneDialog.Data<PanelDataObject>().over_time = time
+        LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", data.player_refresh_count);
+        // $.Msg(["RuneSystem_GetRuneSelectData", data])
         let is_new = data.is_new_fate_check == 1;
         let rune_list = Object.values(data.item_list)
         RuneSelectList.RemoveAndDeleteChildren();
@@ -67,7 +84,7 @@ export const Init = () => {
             let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Button;
             let post_index = select_index
             RuneIconBtn.SetPanelEvent("onactivate", () => {
-                $.Msg(["select_index", post_index])
+                // $.Msg(["select_index", post_index])
                 GameEvents.SendCustomGameEventToServer("RuneSystem", {
                     event_name: "PostSelectRune",
                     params: {

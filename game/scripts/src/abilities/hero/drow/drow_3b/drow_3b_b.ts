@@ -1,6 +1,6 @@
 import { StackModifier } from "../../../../modifier/extends/modifier_stack";
 import { BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { drow_3b, modifier_drow_3b, modifier_drow_3b_thinker } from "./drow_3b";
+import { drow_3b, modifier_drow_3b, modifier_drow_3b_thinker, modifier_drow_3b_thinker_arrow } from "./drow_3b";
 
 
 /**
@@ -29,6 +29,7 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
     bonus_dmg: number;
     talent_37: boolean;
     talent_38: boolean;
+    // thinker_arrow = "modifier_drow_3b_b_thinker_arrow";
 
     OnCreated_Extends(): void {
         this.talent_37 = (this.GetCaster().hero_talent["37"] ?? 0) > 0;
@@ -38,6 +39,7 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
 
         if (this.talent_38) {
             this.element_type = ElementTypes.ICE;
+            this.arrow_thinker = "modifier_drow_3b_thinker_arrow_ice"
         }
     }
 

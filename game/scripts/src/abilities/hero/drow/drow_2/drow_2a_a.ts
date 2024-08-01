@@ -4,8 +4,8 @@ import { drow_2a, modifier_drow_2a } from "./drow_2a";
 /**
  * 
 1.连发（1/3）：连续射击的弓箭数量增加2/4/6支
-1.1.击破（1/3）.连续射击的每支箭都会使目标收到的伤害增加2%/3%/5%，持续3秒，最高10层效果。
-1.2.风箭《风》（1/2）：技能赋予风元素效果，伤害变为风元素伤害。
+13	击破	连续射击的每支箭都会使目标收到的伤害增加%value%%%，持续%duration%秒，最高%max_stack%层
+14	风箭	技能赋予风元素效果，伤害变为风元素伤害。（风元素伤害增加15%。2级才显示）
 （2/2）：风元素伤害增加15%。
  */
 @registerAbility()
@@ -27,6 +27,7 @@ export class drow_2a_a extends drow_2a {
         if (target) {
             let ability_damage = extraData.a;
             if (this.talent_14 > 0) {
+                let damage_vect = Vector(extraData.x, extraData.y, 0);
                 ApplyCustomDamage({
                     victim: target,
                     attacker: this.caster,
@@ -34,7 +35,8 @@ export class drow_2a_a extends drow_2a {
                     damage_type: DamageTypes.MAGICAL,
                     ability: this,
                     is_primary: true,
-                    element_type: ElementTypes.WIND
+                    element_type: ElementTypes.WIND,
+                    damage_vect: damage_vect,
                 })
             } else {
                 ApplyCustomDamage({
@@ -64,6 +66,8 @@ export class modifier_drow_2a_a extends modifier_drow_2a {
     UpdataSpecialValue(): void {
         this.proj_count = this.ability.GetSpecialValueFor("proj_count")
             + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "12", 'bonus_value');
+
+        this.proj_name = G_PorjLinear.wind;
     }
 }
 

@@ -31,9 +31,15 @@
 	<Panel class="player_dialog">
 		<Panel id="PlayerReviveContainer" class="DialogContainer" hittest="false"/>
 		<Panel id="PlayerRuneContainer" class="DialogContainer" hittest="false">
-			<Panel id="LocalPlayerRuneDialog">
+			<Panel id="LocalPlayerRuneDialog" hittest="false">
 				<Panel id="RuneSelectList" />
+				<Label class="SelectCountdownTimer" text="{d:select_timer}s"/>
+				<Panel class="RuneOptionBtn">
+					<Button id="RefreshBtn" />
+					<Label text="{d:refresh_count}" hittest="false"/>
+				</Panel>
 			</Panel>
+			
 		</Panel>
 	</Panel>
 </root>

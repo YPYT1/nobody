@@ -56,7 +56,7 @@ const Create_Scoreboard = (count: number) => {
 const CustomSubscribe = () => {
 
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
-        $.Msg(["MapChapter_GetGameSelectPhase", event])
+        // $.Msg(["MapChapter_GetGameSelectPhase", event])
     })
 
     GameEvents.Subscribe("GameInformation_GetPlayerDieData", event => {

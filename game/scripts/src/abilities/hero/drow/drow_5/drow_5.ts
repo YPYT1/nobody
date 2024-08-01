@@ -3,9 +3,6 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 
 /**
 54	复仇	引燃复仇之魂，获得40%伤害加成，持续15秒。cd：40秒,没有蓝耗。
-
-
-
  */
 @registerAbility()
 export class drow_5 extends BaseHeroAbility {
@@ -22,6 +19,7 @@ export const branch_mdf_list = [
     "modifier_drow_5_branch_b",
     "modifier_drow_5_branch_c",
 ]
+
 @registerModifier()
 export class modifier_drow_5 extends BaseHeroModifier {
 
@@ -49,14 +47,10 @@ export class modifier_drow_5 extends BaseHeroModifier {
     OnIntervalThink(): void {
         if (this.caster.IsAlive() && this.ability.IsCooldownReady()) {
             this.ability.UseResources(true, true, true, true)
-            this.caster.AddNewModifier(this.caster, this.ability, "modifier_drow_5_buff", {
+            this.caster.RemoveModifierByName("modifier_drow_5_buff");
+            this.caster.AddNewModifier(this.caster, this.ability, this.branch_mdf, {
                 duration: this.duration
             })
-            if (this.branch != 0) {
-                this.caster.AddNewModifier(this.caster, this.ability, this.branch_mdf, {
-                    duration: this.duration
-                })
-            }
         }
     }
 
@@ -66,6 +60,7 @@ export class modifier_drow_5 extends BaseHeroModifier {
 export class modifier_drow_5_buff extends BaseModifier {
 
     buff_key = "drow_5_buff";
+    particleName = "particles/dev/hero/drow/drow_4/vengeance.vpcf";
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
@@ -76,47 +71,62 @@ export class modifier_drow_5_buff extends BaseModifier {
                 "Base": dmg_bonus_pct
             }
         })
+        this.PlayEffect();
+    }
 
+    PlayEffect() {
+        let cast_fx = ParticleManager.CreateParticle(
+            this.particleName,
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            this.GetParent()
+        )
+        this.AddParticle(cast_fx, false, false, -1, false, false)
     }
 
     OnDestroy(): void {
         if (!IsServer()) { return }
         GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
     }
+
 }
 
 // 55	寒霜	"复仇获得冰元素之力，持续期间冰元素伤害提高50%，且免疫自身减速效果。"
 @registerModifier()
-export class modifier_drow_5_branch_a extends BaseModifier {
+export class modifier_drow_5_branch_a extends modifier_drow_5_buff {
 
     buff_key = "drow_5_branch_a";
+    particleName = "particles/dev/hero/drow/drow_4/vengeance_ice.vpcf";
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
+        let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
         let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "55", 'bonus_value');
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
+            'DamageBonusMul': {
+                "Base": dmg_bonus_pct
+            },
             'IceDamageBonus': {
                 "Base": bonus_value
             }
         })
+        this.PlayEffect()
     }
 
-    OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
-    }
+
 }
 
 // 56	追风	复仇获得风元素之力，攻击力提高50%，攻击速度及移动速度提高20%。
 @registerModifier()
-export class modifier_drow_5_branch_b extends BaseModifier {
+export class modifier_drow_5_branch_b extends modifier_drow_5_buff {
 
     buff_key = "drow_5_branch_a";
+    particleName = "particles/units/heroes/hero_brewmaster/brewmaster_drunken_stance_earth.vpcf";
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
+        let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
         let ad_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "56", 'ad_bonus_pct');
         let as_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "56", 'as_bonus_pct');
         // print("ad_bonus_pct",ad_bonus_pct,as_bonus_pct)
@@ -129,37 +139,36 @@ export class modifier_drow_5_branch_b extends BaseModifier {
             },
             'MoveSpeed': {
                 'BasePercent': as_bonus_pct
-            }
+            },
+            'DamageBonusMul': {
+                "Base": dmg_bonus_pct
+            },
         })
+        this.PlayEffect()
     }
-
-    OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
-    }
-
 }
 
 // 57	热烈	"复仇获得火元素之力，持续期间火元素伤害提高50%，且所有技能蓝量消耗降低50%。"
 @registerModifier()
-export class modifier_drow_5_branch_c extends BaseModifier {
+export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
 
     buff_key = "drow_5_branch_c";
+    particleName = "particles/units/heroes/hero_brewmaster/brewmaster_drunken_stance_fire.vpcf";
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
+        let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
         let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "57", 'bonus_value');
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             'FireDamageBonus': {
                 "Base": bonus_value
-            }
+            },
+            'DamageBonusMul': {
+                "Base": dmg_bonus_pct
+            },
         })
-    }
-
-    OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
+        this.PlayEffect()
     }
 
     DeclareFunctions(): modifierfunction[] {
@@ -172,6 +181,5 @@ export class modifier_drow_5_branch_c extends BaseModifier {
     GetModifierPercentageManacostStacking(): number {
         return 50
     }
-
 
 }

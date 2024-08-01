@@ -43,6 +43,15 @@ export class modifier_drow_3a_b_summoned extends modifier_drow_3a_summoned {
 
     ModifierAura = "modifier_drow_3a_b_summoned_collision";
 
+    C_OnCreated(params: any): void {
+        let cast_fx = ParticleManager.CreateParticle(
+            "particles/dev/tornado/tornado_4.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent()
+        );
+        ParticleManager.SetParticleControl(cast_fx, 1, Vector(this.aura_radius, 1, 1))
+        this.AddParticle(cast_fx, false, false, 1, false, false);
+    }
 }
 
 @registerModifier()
@@ -103,14 +112,21 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
         let hCaster = this.GetCaster();
         let hAbility = this.GetAbility();
         if (hCaster == null || hAbility == null) { return }
-        let cast_fx = ParticleManager.CreateParticle(
-            "particles/econ/items/lich/frozen_chains_ti6/lich_frozenchains_frostnova.vpcf",
-            ParticleAttachment.POINT,
-            hCaster
+        let ability_damage = math.min(hCaster.GetAverageTrueAttackDamage(null) * this.bx_limit_pct * 0.01, this.bx_record_dmg);
+        // print("baoxue ability_damage", ability_damage)
+        CreateModifierThinker(
+            hCaster,
+            hAbility,
+            "modifier_drow_3a_b_cowlofice",
+            {
+                duration: 2,
+                bx_radius: this.bx_radius,
+            },
+            hCaster.GetAbsOrigin(),
+            hCaster.GetTeamNumber(),
+            false
         )
 
-        let ability_damage = math.min(hCaster.GetAverageTrueAttackDamage(null) * this.bx_limit_pct * 0.01, this.bx_record_dmg);
-        print("ability_damage", ability_damage)
         let enemies = FindUnitsInRadius(
             hCaster.GetTeam(),
             hCaster.GetAbsOrigin(),
@@ -134,5 +150,30 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
             })
 
         }
+    }
+}
+
+@registerModifier()
+export class modifier_drow_3a_b_cowlofice extends BaseModifier {
+
+    cast_fx:ParticleID;
+    OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        let bx_radius = params.bx_radius
+        let cast_fx = ParticleManager.CreateParticle(
+            "particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf",
+            ParticleAttachment.POINT,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControl(cast_fx, 1, Vector(bx_radius, bx_radius, bx_radius))
+        this.cast_fx = cast_fx;
+        // ParticleManager.ReleaseParticleIndex(cast_fx);
+
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        ParticleManager.DestroyParticle(this.cast_fx,true);
+        UTIL_Remove(this.GetParent())
     }
 }

@@ -73,10 +73,12 @@ export class modifier_drow_3a extends BaseHeroModifier {
 @registerModifier()
 export class modifier_drow_3a_summoned extends modifier_motion_surround {
 
+    aura_radius = 300;
     ModifierAura = "modifier_drow_3a_summoned_collision";
 
+
     IsAura(): boolean { return true; }
-    GetAuraRadius(): number { return 300; }
+    GetAuraRadius(): number { return this.aura_radius; }
     IsAuraActiveOnDeath() { return false; }
     GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
     GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
@@ -95,10 +97,11 @@ export class modifier_drow_3a_summoned extends modifier_motion_surround {
 
     C_OnCreated(params: any): void {
         let cast_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf",
+            "particles/dev/tornado/tornado_1.vpcf",
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         );
+        ParticleManager.SetParticleControl(cast_fx, 1, Vector(this.aura_radius, 1, 1))
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 
@@ -150,6 +153,7 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
             ability: this.ability,
             element_type: this.element_type,
             is_primary: true,
+            damage_vect:this.GetParent().GetAbsOrigin(),
         })
     }
 }

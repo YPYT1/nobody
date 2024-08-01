@@ -34,20 +34,7 @@ export class drow_1 extends BaseHeroAbility {
 export class modifier_drow_1 extends BaseHeroModifier {
 
     proj_name: string;
-    /** 投射 */
-    porj_track = {
-        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
-        "fire": "fire",
-    }
-
-    /** 线型 */
-    porj_linear = {
-        "none": "particles/units/heroes/hero_drow/drow_multishot_proj_linear_proj.vpcf",
-        "fire": "particles/proj/linear/fire/proj_linear_fire.vpcf",
-        "ice": "particles/proj/linear/ice/proj_linear_ice.vpcf",
-        "wind": "particles/proj/linear/wind/proj_linear_wind.vpcf",
-    }
-
+   		
     fakeAttack: boolean;
     useProjectile: boolean;
     base_value: number = 0;
@@ -69,7 +56,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive()) {
+        if (this.caster.IsAlive() && this.ability.IsActivated()) {
             let attackrange = this.caster.Script_GetAttackRange() + 64;
             let enemies = FindUnitsInRadius(
                 this.team,

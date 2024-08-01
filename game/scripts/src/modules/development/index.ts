@@ -82,6 +82,13 @@ export class Development extends UIEventRegisterClass {
         // }
     }
 
+    ToggleAbility(player_id: PlayerID, params: CGED["Development"]["ToggleAbility"]){
+        let ability_order = params.ability_order;
+        let hUnit = EntIndexToHScript(params.queryUnit) as CDOTA_BaseNPC;
+        let hAbility = hUnit.GetAbilityByIndex(ability_order);
+        let state = hAbility.IsActivated();
+        hAbility.SetActivated(!state)
+    }
     // 创建物品到单位身上
     CreatedItem(player_id: PlayerID, params: CGED["Development"]["CreatedItem"]) {
         const queryUnit = params.queryUnit;

@@ -49,11 +49,11 @@ export class BaseHeroModifier extends BaseModifier {
         this.ability = this.GetAbility();
         this.ability_damage = 0;
         this.ability.IntrinsicMdf = this;
-        this.tracking_proj_name = this.caster.GetRangedProjectileName()
+        this.tracking_proj_name = G_PorjTrack.none;
         this.SetStackCount(0)
         this.C_OnCreated();
         this.OnRefresh(params)
-        this.StartIntervalThink(0.03)
+        this.StartIntervalThink(0.1)
     }
 
     C_OnCreated(): void {
@@ -78,6 +78,7 @@ export class BaseHeroModifier extends BaseModifier {
 
     PlayPerformAttack(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC, ability_damage: number, fakeAttack: boolean = false) {
         if (fakeAttack) { return }
+        // print("this",this.tracking_proj_name)
         ProjectileManager.CreateTrackingProjectile({
             Source: hCaster,
             Target: hTarget,

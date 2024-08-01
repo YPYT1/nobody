@@ -35,10 +35,12 @@ function UpdateAbility() {
 
     const have_nmana = Entities.GetMana(queryUnit);
 
-
+    const is_enabled = Abilities.IsActivated(m_Ability)
     const need_mana = Abilities.GetManaCost(m_Ability);
     const cooldown_ready = Abilities.IsCooldownReady(m_Ability)
     MainPanel.SetHasClass("insufficient_mana", have_nmana < need_mana);
+    MainPanel.SetHasClass("is_disable",!is_enabled);
+
     // cooldown
     const cooldownLength = Abilities.GetCooldownLength(m_Ability);
     const cooldownRemaining = Abilities.GetCooldownTimeRemaining(m_Ability);

@@ -43,8 +43,6 @@ export class modifier_drow_4a extends BaseHeroModifier {
             } else {
                 // 立即恢复
                 this.caster.GiveMana(this.recover_mana);
-                // 回蓝特效
-
             }
 
             if (this.recover_hp_pct > 0) {
@@ -52,7 +50,19 @@ export class modifier_drow_4a extends BaseHeroModifier {
                 let heal_amount = this.caster.GetMaxHealth() * this.recover_hp_pct * 0.01
                 this.caster.Heal(heal_amount, this.ability)
             }
+
+            this.PlayEffect({})
         }
+    }
+
+    PlayEffect(params: PlayEffectProps): void {
+        let cast_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_keeper_of_the_light/keeper_chakra_magic.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.caster
+        )
+        ParticleManager.SetParticleControl(cast_fx, 1, this.caster.GetAbsOrigin())
+        ParticleManager.ReleaseParticleIndex(cast_fx)
     }
 }
 
@@ -68,6 +78,12 @@ export class modifier_drow_4a_recover_mana extends BaseModifier {
         this.OnRefresh(params);
 
         // 持续回蓝
+        let cast_fx = ParticleManager.CreateParticle(
+            "particles/items_fx/healing_clarity.vpcf",
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            this.caster
+        )
+        this.AddParticle(cast_fx, false, false, -1, false, false)
     }
 
     OnRefresh(params: object): void {

@@ -90,7 +90,8 @@ export class modifier_drow_3b_thinker extends BaseModifier {
     ability_damage: number;
     radius: number;
     do_destroy: boolean;
-    ability:CDOTABaseAbility;
+    ability: CDOTABaseAbility;
+    arrow_thinker = "modifier_drow_3b_thinker_arrow";
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
@@ -112,12 +113,12 @@ export class modifier_drow_3b_thinker extends BaseModifier {
 
     OnIntervalThink(): void {
         this.StartIntervalThink(-1);
-        let arrow_fx = ParticleManager.CreateParticle(
-            "particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrows.vpcf",
-            ParticleAttachment.POINT,
-            this.GetParent()
-        )
-        ParticleManager.ReleaseParticleIndex(arrow_fx);
+        // let arrow_fx = ParticleManager.CreateParticle(
+        //     "particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrows.vpcf",
+        //     ParticleAttachment.POINT,
+        //     this.GetParent()
+        // )
+        // ParticleManager.ReleaseParticleIndex(arrow_fx);
         let enemies = FindUnitsInRadius(
             this.GetCaster().GetTeam(),
             this.GetParent().GetAbsOrigin(),
@@ -142,12 +143,22 @@ export class modifier_drow_3b_thinker extends BaseModifier {
                 }
                 let rand = RandomInt(0, enemies.length - 1);
                 let target = enemies[rand]
-                let cast_fx = ParticleManager.CreateParticle(
-                    "particles/econ/items/mirana/mirana_persona/mirana_starstorm.vpcf",
-                    ParticleAttachment.POINT,
-                    target,
+
+                let target_vect = target.GetAbsOrigin()
+
+                CreateModifierThinker(
+                    hCaster,
+                    hAbility,
+                    this.arrow_thinker,
+                    {
+                        duration: 0.5
+                    },
+                    target_vect,
+                    DotaTeam.GOODGUYS,
+                    false
                 )
-                ParticleManager.ReleaseParticleIndex(cast_fx);
+
+
                 this.DoDamageTarget(target, ability_damage)
                 count += 1;
                 if (count >= this.arrow_count) {
@@ -179,4 +190,45 @@ export class modifier_drow_3b_thinker extends BaseModifier {
         if (!IsServer()) { return }
         UTIL_Remove(this.GetParent())
     }
+}
+
+@registerModifier()
+export class modifier_drow_3b_thinker_arrow extends BaseModifier {
+
+    cast_fx: ParticleID;
+    arrow_name = "particles/dev/attack/attack_normal/attack_normal_1.vpcf";
+
+    OnCreated(params: object): void {
+        if (!IsServer()) return
+        let target_vect = this.GetParent().GetAbsOrigin()
+        let cast_fx = ParticleManager.CreateParticle(
+            this.arrow_name,
+            ParticleAttachment.CUSTOMORIGIN,
+            null,
+        )
+        ParticleManager.SetParticleControl(cast_fx, 0, Vector(target_vect.x + RandomInt(-500, 500), target_vect.y + RandomInt(-500, 500), 1500))
+        ParticleManager.SetParticleControl(cast_fx, 1, target_vect)
+        ParticleManager.SetParticleControl(cast_fx, 2, Vector(3000, 0, 0))
+        // ParticleManager.ReleaseParticleIndex(cast_fx);
+        this.AddParticle(cast_fx, false, false, -1, false, false)
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) return
+        UTIL_Remove(this.GetParent())
+    }
+}
+
+@registerModifier()
+export class modifier_drow_3b_thinker_arrow_ice extends modifier_drow_3b_thinker_arrow {
+
+    arrow_name = "particles/dev/attack/attack_ice/attack_ice_1.vpcf";
+
+}
+
+@registerModifier()
+export class modifier_drow_3b_thinker_arrow_fire extends modifier_drow_3b_thinker_arrow {
+
+    arrow_name = "particles/dev/attack/attack_flame/attack_flame_1.vpcf";
+    
 }

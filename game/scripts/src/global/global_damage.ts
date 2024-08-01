@@ -19,7 +19,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     const hTarget = params.victim;
     const iPlayerID = hAttacker.GetPlayerOwnerID();
     // print("iPlayerID",iPlayerID)
-    if (iPlayerID == -1){
+    if (iPlayerID == -1) {
         return ApplyDamage(params);
     }
     let element_type = params.element_type ?? ElementTypes.NONE;
@@ -75,31 +75,17 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
             // }
 
         } else if (element_type == ElementTypes.THUNDER) {
-            // let bond_count_thunder = BondElement[3];
-            // // 3 雷元素技能极速+10
-            // // 5 对麻痹的敌人额外+25%伤害
-            // if (bond_count_thunder >= 5 && params.victim.HasModifier("modifier_element_bond_thunder")) {
-            //     increased_injury += 25;
-            // }
-            // // 7 雷元素暴击概率+25%，雷元素抗性穿透+25%
-            // if (bond_count_thunder >= 7) {
-            //     crit_chance += 25
-            // }
+            if (is_primary) {
+                GameRules.ElementEffect.SetThunderPrimary(params.attacker, params.victim)
+            }
         } else if (element_type == ElementTypes.WIND) {
-            // let bond_count_wind = BondElement[4];
-            // /**
-            //  * 3风元素伤害+10%
-            //     4击退效果+50%
-            //     5风元素造成伤害之后3秒内，增伤+15%
-            //     6风元素抗性穿透+30%
-            //     7风元素暴击概率+25%，增伤持续时间改为5秒，增伤+35%
-            //  */
-            // // if (bond_count_wind >= 3) {
-            // //     increased_injury += 10
-            // // }
-            // let Wind_DamageMul = hAttacker.custom_attribute_value.Wind_DamageMul;
-            // // print("Wind_DamageMul",Wind_DamageMul)
-            // params.damage = params.damage * ( 1+ Wind_DamageMul * 0.01)
+            if (is_primary) {
+                print("wind damage_vect", params.damage_vect);
+                if (params.damage_vect) {
+                    GameRules.ElementEffect.SetWindPrimary(params.attacker, params.victim, params.damage_vect)
+                }
+
+            }
         } else if (element_type == ElementTypes.LIGHT) {
             // let bond_count_light = BondElement[5];
         } else if (element_type == ElementTypes.DARK) {

@@ -108,6 +108,19 @@ const UnitAbilityImage = ({ order }: { order: number }) => {
 
     }
 
+    const ToggleAbility = (e: Button) => {
+
+        GameEvents.SendCustomGameEventToServer("Development", {
+            event_name: "ToggleAbility",
+            params: {
+                queryUnit: Players.GetLocalPlayerPortraitUnit(),
+                ability_order: order,
+            }
+        })
+
+
+    }
+
     const UpgradeAbility = (e: Button) => {
 
         GameEvents.SendCustomGameEventToServer("Development", {
@@ -186,6 +199,9 @@ const UnitAbilityImage = ({ order }: { order: number }) => {
                 <Panel className="ImageRight">
                     <Button className="btn" onactivate={UpgradeAbility}>
                         <Label text="升级" />
+                    </Button>
+                    <Button className="btn" onactivate={ToggleAbility}>
+                        <Label text="禁用/启用" />
                     </Button>
                     <Button className="btn" onactivate={DeleteAbility}>
                         <Label text="删除" />

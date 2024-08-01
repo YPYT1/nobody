@@ -1,0 +1,14 @@
+const G_PorjTrack = {
+    "none": "particles/dev/attack/attack_normal/attack_normal_1.vpcf",
+    "fire": "particles/dev/attack/attack_flame/attack_flame_1.vpcf",
+    "wind": "particles/dev/attack/attack_wind/attack_wind_1.vpcf",
+    "ice": "particles/dev/attack/attack_ice/attack_ice_1.vpcf",
+}
+
+/** 线型 */
+const G_PorjLinear = {
+    "none": "particles/dev/attack/attack_normal/attack_normal_2.vpcf",
+    "fire": "particles/dev/attack/attack_flame/attack_flame_2.vpcf",
+    "wind": "particles/dev/attack/attack_wind/attack_wind_2.vpcf",
+    "ice": "particles/dev/attack/attack_ice/attack_ice_2.vpcf",
+}
