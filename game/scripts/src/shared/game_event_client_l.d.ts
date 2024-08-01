@@ -402,7 +402,8 @@ declare interface CGEDPlayerRuneSelectServerData {
     level: number,
     item_list: { [index: string]: CGEDPlayerRuneSelectData; },
     check_index: number,
-    is_refresh: boolean;
+    is_refresh: boolean,
+    time : number ,
 }
 declare interface CGEDPlayerRuneSelectDataList {
     item_list: { [index: string]: CGEDPlayerRuneSelectData; }; //可选符文列表 无数据代表不可选 等级下标
