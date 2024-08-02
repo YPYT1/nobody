@@ -115,8 +115,6 @@ export class MapChapter extends UIEventRegisterClass {
             });
         }
 
-        
-
         //创建游戏
         GameRules.ArchiveService.CreateGame();
         // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
@@ -154,6 +152,7 @@ export class MapChapter extends UIEventRegisterClass {
             return null;
         }, cd_select_map_time);
     }
+    
     /** 生成营地 */
     OnCreatedCampMap() {
         if (this.CampMapHandle == null) {
@@ -438,11 +437,13 @@ export class MapChapter extends UIEventRegisterClass {
         print("OnCampReadyToSpawn", spawnGroupHandle);
         ManuallyTriggerSpawnGroupCompletion(spawnGroupHandle)
     }
+    shiye : ViewerID;
     //游戏地图创建后置
     OnSpawnRoomComplete(spawnGroupHandle: SpawnGroupHandle) {
         print("OnSpawnRoomComplete", spawnGroupHandle);
         // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
         let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
+        this.shiye  = AddFOWViewer(DotaTeam.BADGUYS,vLocation , 9999 , 999999 , true);
         GameRules.GameInformation.ResetNumberofDeaths();
         for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
             let hHero = PlayerResource.GetSelectedHeroEntity(index);
@@ -630,6 +631,11 @@ export class MapChapter extends UIEventRegisterClass {
     //返回到营地
     ReturntoCamp() {
         GameRules.NpcSystem.RemoveNPC();
+        //删除视野
+        RemoveFOWViewer(DotaTeam.BADGUYS , this.shiye);
+        //开始游戏确认功能
+        GameRules.MapChapter.SelectDifficultyAffirmThink();
+
         let hDropItemList = FindUnitsInRadius(
             DotaTeam.GOODGUYS,
             Vector(0,0,0),
@@ -676,7 +682,7 @@ export class MapChapter extends UIEventRegisterClass {
     
             if (this.ChapterMapHandle) {
                 UnloadSpawnGroupByHandle(this.ChapterMapHandle)
-                this.ChapterMapHandle = null
+                this.ChapterMapHandle = null;
             }
             GameRules.MapChapter.SelectDifficulty( -1 , { difficulty : "-1"})
 
