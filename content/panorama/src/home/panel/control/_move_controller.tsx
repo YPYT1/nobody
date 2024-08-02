@@ -117,6 +117,17 @@ export function OnInitMoveHotkey() {
     // GameUI.SetCameraDistance(1300);
     // GameUI.SetCameraPitchMin(70);
     // GameUI.SetCameraPitchMax(70);
+
+
+    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+        // $.Msg([event, value])
+        if (value == 1) {
+            return true
+        } else {
+            return false
+        }
+
+    });
 }
 
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
@@ -242,8 +253,8 @@ const LoopCamera_Edgemove = () => {
         let CursorPosition = GameUI.GetCursorPosition();
         let CursorX = CursorPosition[0];
         let CursorY = CursorPosition[1];
-        if (ScreenX > 10000){
-            if (CursorX > 1400){
+        if (ScreenX > 10000) {
+            if (CursorX > 1400) {
                 GameUI.SetCameraTerrainAdjustmentEnabled(false)
             }
         }

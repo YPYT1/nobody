@@ -49,6 +49,7 @@ export class modifier_public_attribute extends BaseModifier {
         this.hParent = this.GetParent();
         this.iParentEntity = this.GetParent().entindex();
         // this.timer = 0;
+        this.hParent.AddNewModifier(this.hParent, null, "modifier_public_attribute_delay", {})
         this.StartIntervalThink(0.1)
     }
 
@@ -196,6 +197,26 @@ export class modifier_public_attribute extends BaseModifier {
         }
         return 0
     }
+}
+
+/** 延迟给一些无法初始化的属性值 比如蓝量 */
+@registerModifier()
+export class modifier_public_attribute_delay extends BaseModifier {
+
+    IsHidden(): boolean { return true }
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.StartIntervalThink(0.25)
+    }
+
+    OnIntervalThink(): void {
+        let hParent = this.GetParent();
+        hParent.GiveMana(hParent.GetMaxMana());
+        this.Destroy()
+        this.StartIntervalThink(-1)
+    }
+
 }
 
 @registerModifier()

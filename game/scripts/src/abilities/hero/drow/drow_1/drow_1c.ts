@@ -32,7 +32,8 @@ export class drow_1c extends drow_1 {
                 damage: ability_damage,
                 damage_type: damage_type,
                 ability: this,
-                element_type: element_type
+                element_type: element_type,
+                is_primary:true,
             })
         }
     }

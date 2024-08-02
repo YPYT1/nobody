@@ -86,6 +86,35 @@ export class modifier_element_effect_ice extends BaseModifier {
 
 }
 
+@registerModifier()
+export class modifier_element_effect_ice_frozen extends BaseModifier {
+
+    GetTexture(): string {
+        return "crystal_maiden_frostbite"
+    }
+    
+    IsDebuff(): boolean { return true }
+
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            [ModifierState.STUNNED]: true,
+            [ModifierState.FROZEN]: true,
+        }
+    }
+
+    GetEffectName(): string {
+        return "particles/custom/element/ice/ice_effect_frozen.vpcf"
+    }
+
+    GetEffectAttachType(): ParticleAttachment_t {
+        return ParticleAttachment.ABSORIGIN_FOLLOW
+    }
+
+    GetStatusEffectName(): string {
+        return "particles/status_fx/status_effect_lich_ice_age.vpcf"
+    }
+}
+
 /** 雷:麻痹 */
 @registerModifier()
 export class modifier_element_effect_thunder extends BaseModifier {
@@ -96,7 +125,7 @@ export class modifier_element_effect_thunder extends BaseModifier {
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.STUNNED]: true,
+            [ModifierState.ROOTED]: true,
         }
     }
 
@@ -106,6 +135,14 @@ export class modifier_element_effect_thunder extends BaseModifier {
         hParent.AddNewModifier(hParent, null, "modifier_element_effect_thunder_immune", {
             duration: 10
         })
+    }
+
+    GetEffectName(): string {
+        return "particles/custom/element/thunder/thunder_effect_debuff.vpcf"
+    }
+
+    GetEffectAttachType(): ParticleAttachment_t {
+        return ParticleAttachment.ABSORIGIN_FOLLOW
     }
 }
 

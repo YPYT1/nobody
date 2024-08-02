@@ -20,8 +20,15 @@ export class ElementEffect {
     }
 
     SetIcePrimary(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC) {
-        let hAbility = hCaster.FindAbilityByName("public_attribute");
-        hTarget.AddNewModifier(hCaster, hAbility, "modifier_element_effect_ice", {
+        if (hTarget.HasModifier("modifier_element_effect_ice")) {
+            if (RollPercentage(15)) {
+                hTarget.AddNewModifier(hCaster, null, "modifier_element_effect_ice_frozen", {
+                    duration: 1
+                })
+            }
+        }
+
+        hTarget.AddNewModifier(hCaster, null, "modifier_element_effect_ice", {
             duration: 3
         })
     }
@@ -32,11 +39,14 @@ export class ElementEffect {
      * @param hTarget 
      */
     SetThunderPrimary(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC) {
-
-        let hAbility = hCaster.FindAbilityByName("public_attribute");
-        hTarget.AddNewModifier(hCaster, hAbility, "modifier_element_effect_thunder", {
-            duration: 1
-        })
+        if (
+            !hTarget.HasModifier("modifier_element_effect_thunder_immune")
+            && !hTarget.HasModifier("modifier_element_effect_thunder")
+        ) {
+            hTarget.AddNewModifier(hCaster, null, "modifier_element_effect_thunder", {
+                duration: 1
+            })
+        }
     }
 
     SetWindPrimary(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC, origin: Vector) {
