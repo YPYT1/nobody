@@ -38,12 +38,17 @@ export const drow_range_wearable = {
             // "material": { grou_name: "arcana", group_value: 2, name: "drow_arcana_hair_style1" },
             "particle": [],
         },
+        {
+            "model": 'models/items/drow/drow_arcana/drow_arcana_frost_weapon.vmdl',
+            "particle": [],
+        }
     ],
 
     "Skin": 0,
     "unit_model": "models/items/drow/drow_arcana/drow_arcana.vmdl",
     "particle_create": [
         "particles/econ/items/drow/drow_arcana/drow_arcana_ambient.vpcf",
+        'particles/econ/items/drow/drow_arcana/drow_arcana_arm_aura.vpcf',
     ],
 
 }

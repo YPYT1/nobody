@@ -79,17 +79,9 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
                 GameRules.ElementEffect.SetThunderPrimary(params.attacker, params.victim)
             }
         } else if (element_type == ElementTypes.WIND) {
-            if (is_primary) {
-                print("wind damage_vect", params.damage_vect);
-                if (params.damage_vect) {
-                    GameRules.ElementEffect.SetWindPrimary(params.attacker, params.victim, params.damage_vect)
-                }
-
+            if (is_primary && params.damage_vect) {
+                GameRules.ElementEffect.SetWindPrimary(params.attacker, params.victim, params.damage_vect)
             }
-        } else if (element_type == ElementTypes.LIGHT) {
-            // let bond_count_light = BondElement[5];
-        } else if (element_type == ElementTypes.DARK) {
-            // let bond_count_dark = BondElement[6];
         }
 
 

@@ -38,7 +38,6 @@ export class CustomAttribute {
     }
 
     Reload() {
-        print("Reload")
         this.hero_wearable["npc_dota_hero_drow_ranger"] = drow_range_wearable
     }
 
@@ -530,6 +529,7 @@ export class CustomAttribute {
             hUnit.SetModel(wearable_data.unit_model);
             hUnit.SetSkin(WearableSkin)
             for (let particle_create of wearable_data.particle_create) {
+                // print("w_particle",particle_create)
                 let particle_index = ParticleManager.CreateParticle(
                     particle_create,
                     ParticleAttachment.ABSORIGIN_FOLLOW,
@@ -557,6 +557,7 @@ export class CustomAttribute {
 
                     // hWearable.SetRenderColor(255,0,0);
                     for (let w_particle of wearable.particle) {
+                       
                         let particle_index = ParticleManager.CreateParticle(
                             w_particle,
                             ParticleAttachment.POINT_FOLLOW,

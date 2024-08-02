@@ -262,8 +262,8 @@ export class Development extends UIEventRegisterClass {
             // print("bosshealthbar");
             let hHero = PlayerResource.GetSelectedHeroEntity(player_id)
             let boss_unit = CreateUnitByName(
-                `npc_creature_boss_0`,
-                hHero.GetAbsOrigin() + RandomVector(500) as Vector,
+                `npc_creature_boss_1`,
+                Vector(0,0,0),
                 true,
                 null,
                 null,
@@ -274,6 +274,9 @@ export class Development extends UIEventRegisterClass {
             GameRules.CMsg.SetBossHealthBar(boss_unit);
         }
 
+        if (cmd == "-rmhb"){
+            GameRules.CMsg.RemoveAllHealthBar()
+        }
         if (cmd == "-hbremove") {
             let unit_length = GameRules.CMsg.boss_list.length;
             // for(let i = 0;i<unit_length;i++ ){}

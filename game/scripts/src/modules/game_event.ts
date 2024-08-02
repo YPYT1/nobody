@@ -44,15 +44,15 @@ declare global {
         ArmsCombo: ArmsCombo;
         CMsg: CMsg;
         GameInformation: GameInformation;
-        NpcSystem : NpcSystem;
+        NpcSystem: NpcSystem;
 
         SummonedSystem: SummonedSystem;
         CustomMechanics: CustomMechanics;
         RuneSystem: RuneSystem;
         MysticalShopSystem: MysticalShopSystem;
-        HeroTalentSystem : HeroTalentSystem;
+        HeroTalentSystem: HeroTalentSystem;
         // 自定义系统
-        DamageReduction:DamageReduction;
+        DamageReduction: DamageReduction;
 
         //服务器相关功能
         ArchiveService: ArchiveService;
@@ -106,7 +106,10 @@ export class GameEvent {
             GameRules.WarningMarker = new WarningMarker();
             GameRules.DamageReduction = new DamageReduction();
             GameRules.HeroTalentSystem = new HeroTalentSystem();
-            GameRules.NpcSystem = new NpcSystem();  
+            GameRules.NpcSystem = new NpcSystem();
+            
+            // @ts-expect-error @eslint-disable-next-line
+            GameRules.ModuleActivated = true;
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
@@ -146,10 +149,10 @@ export class GameEvent {
             //初始化可选技能
             GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id)
             //初始化可用符文
-            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id , 1 , hUnit)
+            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id, 1, hUnit)
             //初始化神秘商店
             GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
-            
+
 
 
             let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
@@ -177,11 +180,11 @@ export class GameEvent {
     //     // DeepPrintTable(event)
     //     let hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
     //     // hHero.SetAbilityPoints(0);
-        
+
     // }
 }
 
-export function ReloadModules(){
+export function ReloadModules() {
     // @ts-expect-error @eslint-disable-next-line
     if (!GameRules.ModuleActivated) {
         return;
@@ -197,7 +200,7 @@ export function ReloadModules(){
     } else if (State_Get == GameState.CUSTOM_GAME_SETUP) { //游戏设置阶段---队伍选择UI
 
     } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段---英雄选择UI
-        
+
     } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段---英雄选择UI
 
     } else if (State_Get == GameState.TEAM_SHOWCASE) { //队伍展示阶段---英雄选择UI
@@ -215,5 +218,5 @@ export function ReloadModules(){
     } else if (State_Get == GameState.DISCONNECT) { //断开阶段---游戏内UI
 
     }
-    
+
 }

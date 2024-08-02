@@ -42,13 +42,8 @@ const CMsg_GetEntityListHealthBar = (params: NetworkedData<CustomGameEventDeclar
         let row_healthbar = TopHealthBarContent.GetChild(i);
         if (row_healthbar) {
             let entity = row_healthbar.Data<HealtrBarPanelData>().entitiy;
-            if (entity == 0) {
-                row_healthbar.SetHasClass("Closed", true);
-                row_healthbar.DeleteAsync(1);
-            } else if (!Entities.IsValidEntity(entity) || !Entities.IsAlive(entity)) {
-                if (overhead_panel_boss[entity]) {
-                    delete overhead_panel_boss[entity];
-                }
+            if (Entities.IsValidEntity(entity) || !Entities.IsAlive(entity)) {
+                // $.Msg(["remove bosshbar"])
                 row_healthbar.SetHasClass("Closed", true);
                 row_healthbar.DeleteAsync(1);
             }
@@ -78,13 +73,18 @@ function UpdateTopPanelBoss() {
             pPanel.BLoadLayoutSnippet("TopHealthBar");
             overhead_panel_boss[entity] = pPanel;
             let unitname = Entities.GetUnitName(entity);
-            let max_hp = Entities.GetMaxHealth(entity)
             pPanel.SetDialogVariable("boss_name", $.Localize("#" + unitname));
             pPanel.Data<HealtrBarPanelData>().entitiy = entity;
             pPanel.Data<HealtrBarPanelData>().update_time = Game.GetDOTATime(false, false) + UPDATE_PER_TIME;
             pPanel.Data<HealtrBarPanelData>().last_hp = 0;
             pPanel.Data<HealtrBarPanelData>().last_update = 0;
             pPanel.Data<HealtrBarPanelData>().curr_index = -1;
+            // let HudHeathBar_0 = pPanel.FindChildTraverse("HudHeathBar_0")!;
+            // let HudHeathBar_1 = pPanel.FindChildTraverse("HudHeathBar_1")!;
+            // let HudHeathBar_2 = pPanel.FindChildTraverse("HudHeathBar_2")!;
+            // HudHeathBar_1.style.width = `100%`;
+            // HudHeathBar_2.style.width = `100%`;
+            // HudHeathBar_2.style.washColor = `${color_list[0]}`;
         }
 
         let update_time = pPanel.Data<HealtrBarPanelData>().update_time;
@@ -92,11 +92,12 @@ function UpdateTopPanelBoss() {
 
         let unit_hp_max = Entities.GetMaxHealth(entity);
         let unit_hp_current = Entities.GetHealth(entity);
-
-        let mod_hp_value = Math.ceil(unit_hp_current / EVER_MAX_HP);
-        let mod_hp_max_value = Math.ceil(unit_hp_max / EVER_MAX_HP);
+        // $.Msg(["unit_hp_current",unit_hp_current,unit_hp_max])
+        let mod_hp_value = Math.ceil(unit_hp_current / EVER_MAX_HP); // 还有几根血条
+        let mod_hp_max_value = Math.ceil(unit_hp_max / EVER_MAX_HP); // 最大根数
         let color_index = (mod_hp_max_value - mod_hp_value) % TOTAL_COLOR_COUNT;
         let next_color_index = (mod_hp_max_value - mod_hp_value + 1) % TOTAL_COLOR_COUNT;
+
 
         let HudHeathBar_0 = pPanel.FindChildTraverse("HudHeathBar_0")!;
         if (mod_hp_value <= 1) {
@@ -106,11 +107,16 @@ function UpdateTopPanelBoss() {
         }
 
         let HudHeathBar_2 = pPanel.FindChildTraverse("HudHeathBar_2")!;
-        HudHeathBar_2.style.washColor = `${color_list[color_index]}`
-        let healthWidth = GetNumDecimals((unit_hp_current % EVER_MAX_HP) / EVER_MAX_HP * 100, 1);
+        HudHeathBar_2.style.washColor = `${color_list[color_index]}`;
 
+        // 当前HP -  unit_hp_current / EVER_MAX_HP
+        // 
+      
+        // 这里不是1000
+        let healthWidth = GetNumDecimals( (unit_hp_current - EVER_MAX_HP * (mod_hp_value - 1)) / EVER_MAX_HP * 100, 1);
+        // $.Msg([ Math.ceil( ( unit_hp_current - 1000) / EVER_MAX_HP) ])
         // $.Msg(["healthWidth",healthWidth])
-        pPanel.FindChildTraverse("HudHeathBar_2")!.style.width = `${healthWidth}%`;
+        HudHeathBar_2.style.width = `${healthWidth}%`;
         if (curr_index != mod_hp_value && mod_hp_value > 1) {
             pPanel.Data<HealtrBarPanelData>().curr_index = mod_hp_value;
             let HudHeathBar_0 = pPanel.FindChildTraverse("HudHeathBar_1")!;
@@ -149,7 +155,7 @@ function UpdateOverheadThinker() {
             }
             return;
         }
-        
+
         const pos = Entities.GetAbsOrigin(entity);
         let fOffset = Entities.GetHealthBarOffset(entity);
         fOffset = (fOffset === -1 || fOffset < 350) ? 350 : fOffset;
@@ -176,10 +182,10 @@ function UpdateOverheadThinker() {
         }
 
         const [clampX, clampY] = GameUI.WorldToScreenXYClamped(pos);
-		const diffX = clampX - 0.5;
-		const diffY = clampY - 0.5;
-		xUI -= diffX * Game.GetScreenWidth() * 0.16;
-		yUI -= diffY * Game.GetScreenHeight() * 0.10;
+        const diffX = clampX - 0.5;
+        const diffY = clampY - 0.5;
+        xUI -= diffX * Game.GetScreenWidth() * 0.16;
+        yUI -= diffY * Game.GetScreenHeight() * 0.10;
 
         let xoffset = 0;
         let yoffset = 30;

@@ -116,9 +116,10 @@ export class modifier_element_effect_thunder_immune extends BaseModifier {
         return true
     }
 
+
 }
 
-/** 雷:麻痹 */
+/** 风元素免疫 */
 @registerModifier()
 export class modifier_element_effect_wind_immune extends BaseModifier {
 

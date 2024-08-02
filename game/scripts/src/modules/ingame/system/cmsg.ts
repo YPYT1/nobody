@@ -108,6 +108,14 @@ export class CMsg extends UIEventRegisterClass {
         }
     }
 
+    RemoveAllHealthBar() {
+        for (let entity of this.boss_list) {
+            let hUnit = EntIndexToHScript(entity);
+            UTIL_Remove(hUnit);
+        }
+        this.boss_list = [];
+        this.GetEntityListHealthBar(-1, {});
+    }
     GetEntityListHealthBar(player_id: PlayerID, params: any) {
         if (player_id == -1) {
             CustomGameEventManager.Send_ServerToAllClients(

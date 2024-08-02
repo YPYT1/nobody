@@ -98,13 +98,13 @@ function Onkey_Backspace_Down() {
 function Onkey_Backspace_Up() { }
 
 export function OnInitMoveHotkey() {
-    GameUI.SetCameraTarget(-1 as EntityIndex);
+    // GameUI.SetCameraTarget(-1 as EntityIndex);
     // UPARROW
     SetHotKey("UPARROW", OnKey_Down_W, OnKey_Up_W);
     SetHotKey("LEFTARROW", OnKey_Down_A, OnKey_Up_A);
     SetHotKey("DOWNARROW", OnKey_Down_S, OnKey_Up_S);
     SetHotKey("RIGHTARROW", OnKey_Down_D, OnKey_Up_D);
-    SetHotKey("space", Onkey_Backspace_Down, Onkey_Backspace_Up);
+    // SetHotKey("space", Onkey_Backspace_Down, Onkey_Backspace_Up);
 
     SetHotKey("W", OnKey_Down_W, OnKey_Up_W);
     SetHotKey("A", OnKey_Down_A, OnKey_Up_A);
@@ -121,7 +121,9 @@ export function OnInitMoveHotkey() {
 
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
     let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    // GameUI.SetCameraTarget(hero_entity);
+    GameUI.SetCameraTarget(hero_entity);
+    // let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+    //     GameUI.SetCameraTarget(hero_entity);
     GameEvents.SendCustomGameEventToServer("BasicRules", {
         event_name: "MoveState",
         params: eventData
@@ -170,22 +172,22 @@ function ChangeCameraValue(value: number) {
 
 let camera_value = 1200;
 
-const CameraSetting = () => {
+// const CameraSetting = () => {
 
-    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-        if (value == 6 && camera_value < 1400) {
-            camera_value += 10;
-        } else if (value == 5 && camera_value > 800) {
-            camera_value -= 10;
-        }
-        ChangeCameraValue(camera_value);
-        return false;
-    });
+//     GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+//         if (value == 6 && camera_value < 1400) {
+//             camera_value += 10;
+//         } else if (value == 5 && camera_value > 800) {
+//             camera_value -= 10;
+//         }
+//         ChangeCameraValue(camera_value);
+//         return false;
+//     });
 
-    return (
-        <Panel id="CameraSetting" visible={false} />
-    );
-};
+//     return (
+//         <Panel id="CameraSetting" visible={false} />
+//     );
+// };
 /**
  * 设置热键
  * @param key 
