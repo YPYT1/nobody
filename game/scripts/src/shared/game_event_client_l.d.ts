@@ -156,6 +156,8 @@ declare interface CustomGameEventDeclarations {
         data : {
             time : number , 
             difficulty : string ,
+            round_index : number,
+            round_max : number,
         }
     }
 
@@ -374,6 +376,7 @@ declare interface CGEDServerSkillful {
 declare interface CGEDGeneralGameOverDataPassData {
     state : number // 通关状态 1通关  2未通关 
     time : number , //通关所用时间
+    game_count : number , //游戏次数
     player_list_data : {
         player_id : PlayerID,
         steam_id : number, //steam_id
@@ -411,7 +414,7 @@ declare interface CGEDPlayerRuneSelectDataList {
     refresh_count: number, //剩余刷新次数 主要通过这个来判断是否展示等 0 为没有次数
     fate_level: number, // 玩家天命挑战成功次数 -即为挑战等级 -- 弃用 不通过战斗获取
     player_refresh_count: number, // 剩余重随符文次数
-    time : number , // 倒计时
+    time : number , // 倒计时   
 }
 
 

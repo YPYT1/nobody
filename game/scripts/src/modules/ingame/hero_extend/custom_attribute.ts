@@ -49,7 +49,10 @@ export class CustomAttribute {
         const hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
         //增加天赋点
         GameRules.HeroTalentSystem.AddHeroTalent(event.player_id, 1);
-
+        //增加符文点
+        if(event.level % 10 == 0){
+            GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
+        }
         this.AttributeInLevelUp(hHero)
     }
 

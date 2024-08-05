@@ -18,14 +18,6 @@ export class EntityKilled {
             // 技能击杀
             // this.ArmsKillAbility(hAttacker, hKilled,hAbility)
             // 掉落经验
-            let vect = hKilled.GetAbsOrigin();
-            
-            GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, 2);
-
-            GameRules.ResourceSystem.ModifyResource(iPlayerID, {
-                "Soul": 10,
-                "Kills": 1,
-            })
 
             hKilled.SetContextThink("death_play", () => {
                 hKilled.RemoveSelf()

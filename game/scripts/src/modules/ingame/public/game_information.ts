@@ -187,7 +187,9 @@ export class GameInformation extends UIEventRegisterClass {
                 {
                     data: {
                         time: GameRules.GameInformation.play_game_time,
-                        difficulty: GameRules.MapChapter.GameDifficulty
+                        difficulty: GameRules.MapChapter.GameDifficulty,
+                        round_index : GameRules.Spawn._round_index,
+                        round_max : GameRules.Spawn._round_max,
                     }
                 }
             );
@@ -197,7 +199,9 @@ export class GameInformation extends UIEventRegisterClass {
                 {
                     data: {
                         time: GameRules.GameInformation.play_game_time,
-                        difficulty: GameRules.MapChapter.GameDifficulty
+                        difficulty: GameRules.MapChapter.GameDifficulty,
+                        round_index : GameRules.Spawn._round_index,
+                        round_max : GameRules.Spawn._round_max,
                     }
                 }
             );

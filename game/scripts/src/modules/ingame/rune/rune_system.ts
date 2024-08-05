@@ -30,7 +30,7 @@ export class RuneSystem extends UIEventRegisterClass {
     player_refresh_count_config : number = 0;
 
     //选择倒计时
-    count_down_time = 10;
+    count_down_time = 45;
 
     rune_keyvalue: typeof RuneConfig = RuneConfig;
     /**

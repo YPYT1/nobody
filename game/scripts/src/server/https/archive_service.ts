@@ -145,6 +145,8 @@ export class ArchiveService extends UIEventRegisterClass {
                     this.general_game_over_data_pass_data.state = state;
                     //通关评分
                     this.general_game_over_data_pass_data.time = 515;
+
+                    this.general_game_over_data_pass_data.game_count = GameRules.MapChapter.game_count;
                     //
                     this.general_game_over_data_pass_data.player_list_data.push({
                         "exp" : 200,
@@ -233,6 +235,7 @@ export class ArchiveService extends UIEventRegisterClass {
     general_game_over_data_pass_data : CGEDGeneralGameOverDataPassData = {
         state : 0,
         time : 0,
+        game_count : 0 ,
         player_list_data : [],
     };
 

@@ -215,6 +215,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 this.player_talent_list[player_id][skill_index].tm = tier_number;
             }
         }
+        
         //更新数据
         GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
         //增加技能

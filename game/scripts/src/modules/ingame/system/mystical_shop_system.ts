@@ -287,7 +287,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         
         if(GameRules.MapChapter._game_select_phase == 3){
             //继续游戏
-            GameRules.Spawn.StartSpawn()
+            GameRules.Spawn.StartSpawnControl()
         }
     }   
     /**

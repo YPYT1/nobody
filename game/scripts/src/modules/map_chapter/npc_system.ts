@@ -33,7 +33,6 @@ export class NpcSystem extends UIEventRegisterClass {
      */
     CreationNpc() {
         let index = 0;
-        DeepPrintTable(this.npc_collection_list);
         let ChapterData = MapInfo[GameRules.MapChapter.MapIndex];
         let map_centre_x = ChapterData.map_centre_x;
         let map_centre_y = ChapterData.map_centre_y;

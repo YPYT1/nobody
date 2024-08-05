@@ -22,6 +22,10 @@ declare global {
     }
 }
 
+// @ts-expect-error @eslint-disable-next-line
+GameRules.ModuleActivated = GameRules.ModuleActivated ?? false;
+
+
 /**
  * 这个方法会在game_mode实体生成之后调用，且仅调用一次
  * 因此在这里作为单例模式使用
@@ -36,6 +40,10 @@ export function ActivateModules() {
     GameRules.Development = new Development();
     GameRules.MapChapter = new MapChapter()
     GameRules.ElementEffect = new ElementEffect();
+
+    // @ts-expect-error @eslint-disable-next-line
+    GameRules.ModuleActivated = true;
+    
     // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
     new GameConfig();
     // 初始化测试模块xD

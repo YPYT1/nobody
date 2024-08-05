@@ -24,7 +24,7 @@ export class MapChapter extends UIEventRegisterClass {
     hero_list: { [key: number]: string } = {}
 
     // 1 选择地图难度 2选择英雄 3游戏开始了
-    _game_select_phase: number = 0 ;
+    _game_select_phase: number = 0;
     //地图数据
     ChapterData  :  typeof MapInfo["m1"] = null;
     //根据等级可用地图
@@ -36,7 +36,7 @@ export class MapChapter extends UIEventRegisterClass {
     //玩家选择英雄记录
     player_select_hero: MapSelectHeroList[] = [];
     //玩家数量
-    player_count: number = 1;
+    player_count : number = 1;
     //新玩家标记
     is_new_player : number = 0;
     //确认时间
@@ -48,7 +48,7 @@ export class MapChapter extends UIEventRegisterClass {
     //客服端确认时间
     countdown_select_hero_time : number = 0;
     //投票确认时间
-    vote_time : number = 60;
+    vote_time : number = 15;
     //客服端确认时间
     countdown_vote_time : number = 0;
     //玩家投票信息
@@ -144,7 +144,7 @@ export class MapChapter extends UIEventRegisterClass {
         if(IsInToolsMode()){
             cd_select_map_time =  this.select_map_time;
         }else{
-            cd_select_map_time =  this.select_map_time * 10;
+            cd_select_map_time =  999999;
         }
         this.countdown_select_map_time = GameRules.GetDOTATime(false, false) + cd_select_map_time;
         GameRules.GetGameModeEntity().SetContextThink("SELECT_DIFFICULTY_AFFIRM", () => {
@@ -468,7 +468,7 @@ export class MapChapter extends UIEventRegisterClass {
             "StartSpawn",
             () => {
                 GameRules.Spawn._game_start = true;
-                GameRules.Spawn.StartSpawn()
+                GameRules.Spawn.StartSpawnControl()
                 return null;
             },
             5
