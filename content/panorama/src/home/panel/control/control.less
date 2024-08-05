@@ -3,6 +3,7 @@
 @import "./_portrait.less";
 @import "./_arms_selector.less";
 @import "./_buff_list.less";
+@import "./_attribute_state";
 
 .control {
     width: 100%;
@@ -31,14 +32,14 @@
     // flow-children: down;
     vertical-align: bottom;
     // border: 1px solid #fff;
-    // margin-bottom: 300px;
+    // margin-bottom: 200px;
 
     // visibility: collapse;
     #CenterPanel {
         width: 767px;
         padding: 8px;
         // border: 1px solid #f00;
-
+        overflow: noclip;
         // height: 145px;
         // background-color: #302f3b;
         horizontal-align: center;
@@ -48,19 +49,23 @@
         background-position: 0% 100%;
         margin-bottom: 4px;
 
-        .Content {
-            margin-left: -64px;
-            flow-children: right;
-            overflow: noclip;
+        .HeroAbilityContainer {
+            transform: translateX(40px);
+            horizontal-align: center;
+            vertical-align: bottom;
             // border: 1px solid #fff;
-            // horizontal-align: center;
+            flow-children: right;
+        }
+
+        #PortraitContainer {
+            transform: translateX(-190px);
         }
     }
 
 }
 
 #AbilityPoint {
-    margin-left: -108px;
+    // margin-left: -108px;
     width: 67px;
     height: 70px;
     background-image: url("file://{images}/custom_game/hud/control/ability_point_bg.png");
@@ -179,7 +184,7 @@
         margin-left: 8px;
     }
 
-    .AttributeRows {
+    .HudAttributeRow {
         margin-left: 4px;
         // border: 1px solid #000000;
         // width: 100px;
@@ -187,23 +192,13 @@
         flow-children: right;
         tooltip-position: top;
 
-        .AttributeIcon {
+        .StatIcon {
             width: 20px;
             height: 20px;
+            background-size: 100%;
             vertical-align: bottom;
-            // background-color: #000000;
-            background-image: url("file://{images}/custom_game/icon/attribute/attack_damage.png");
-
-
         }
 
-        &.PhyicalArmor .AttributeIcon {
-            background-image: url("file://{images}/custom_game/icon/attribute/phyical_armor.png");
-        }
-
-        &.MoveSpeed .AttributeIcon {
-            background-image: url("file://{images}/custom_game/icon/attribute/move_speed.png");
-        }
 
         .AttributeValue {
             vertical-align: bottom;
@@ -222,7 +217,7 @@
     width: 100%;
     height: 100%;
     opacity: 0;
-
+    z-index: 9;
     &.Show {
         opacity: 1;
     }

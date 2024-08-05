@@ -1,6 +1,6 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../utils/dota_ts_adapter";
 
-import * as NpcAbilityCustom from "./../../json/npc_abilities_custom.json"
+// import * as NpcAbilityCustom from "./../../json/npc_abilities_custom.json"
 
 const UpdateAttributeKyes: AttributeMainKey[] = [
     "AttackRate",
@@ -8,9 +8,9 @@ const UpdateAttributeKyes: AttributeMainKey[] = [
     "AttackRange",
     "AttackSpeed",
     "MoveSpeed",
-    "HealthPoints",
+    "MaxHealth",
     "HealthRegen",
-    "ManaPoints",
+    "MaxMana",
     "ManaRegen",
     "PickItemRadius",
 ];
@@ -50,6 +50,7 @@ export class modifier_public_attribute extends BaseModifier {
         this.iParentEntity = this.GetParent().entindex();
         // this.timer = 0;
         this.hParent.AddNewModifier(this.hParent, null, "modifier_public_attribute_delay", {})
+        this.ForceRefresh()
         this.StartIntervalThink(0.1)
     }
 
@@ -57,7 +58,6 @@ export class modifier_public_attribute extends BaseModifier {
     OnRefresh(params: any): void {
         if (!IsServer()) { return; }
         this._UpdateAttribute();
-        // this.StartIntervalThink(0.1)
     }
 
     OnIntervalThink(): void {
@@ -94,7 +94,7 @@ export class modifier_public_attribute extends BaseModifier {
         let hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
         for (let k of UpdateAttributeKyes) {
             if (k == "PickItemRadius") {
-                this.AttributeData[k] = math.max(50, hUnit.custom_attribute_value[k]);
+                this.AttributeData[k] = math.max(10, hUnit.custom_attribute_value[k]);
                 // ParticleManager.SetParticleControl(this.PickItemFx, 1, Vector(this.AttributeData[k], 0, 0));
             } else {
                 this.AttributeData[k] = hUnit.custom_attribute_value[k];
@@ -159,10 +159,6 @@ export class modifier_public_attribute extends BaseModifier {
         return this.AttributeData.AttackRange
     }
 
-    // GetModifierOverrideAttackDamage
-    // GetModifierBaseAttack_BonusDamage(): number {
-    //     return this.AttributeData.AttackDamage
-    // }
     GetModifierBaseAttackTimeConstant(): number {
         return this.AttributeData.AttackRate
     }
@@ -176,7 +172,7 @@ export class modifier_public_attribute extends BaseModifier {
     }
 
     GetModifierHealthBonus(): number {
-        return math.max(0, (this.AttributeData.HealthPoints ?? 0) - this.BaseKvHp)
+        return math.max(0, (this.AttributeData.MaxHealth ?? 0) - this.BaseKvHp)
     }
 
     GetModifierConstantHealthRegen(): number {
@@ -184,7 +180,7 @@ export class modifier_public_attribute extends BaseModifier {
     }
 
     GetModifierManaBonus(): number {
-        return this.AttributeData.ManaPoints
+        return this.AttributeData.MaxMana
     }
 
     GetModifierConstantManaRegen(): number {
@@ -229,6 +225,7 @@ export class modifier_public_revive_thinker extends BaseModifier {
     state: boolean;
     rescue_time: number;
     rescue_radius: number;
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.rescue_radius = 225;

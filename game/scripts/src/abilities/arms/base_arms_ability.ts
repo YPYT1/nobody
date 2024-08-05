@@ -297,8 +297,8 @@ export class BaseArmsModifier extends BaseModifier {
             this.ability.buff = this;
             let hAbility = this.GetAbility() as BaseArmsAbility;
             hAbility.buff = this;
-            let ability_attr = GameRules.CustomAttribute.GetAbilityAttribute(this.GetAbility().GetAbilityName());
-            GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.item_key, ability_attr);
+            // let ability_attr = GameRules.CustomAttribute.GetAbilityAttribute(this.GetAbility().GetAbilityName());
+            // GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.item_key, ability_attr);
             this.C_UpdateKeyvalue()
             this.C_OnCreated(params)
         }

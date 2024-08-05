@@ -55,9 +55,9 @@
             </Panel>
         </snippet>
     </snippets>
-	<Panel class="GameEnd">
+	<Panel class="GameEnd" hittest="false">
 		<Panel id="GameEndContainer" hittest="false">
-            <Panel class="Content">
+            <Panel class="Content" hittest="false">
                 <Panel class="LeftPanel">
                     <Panel id="MvpModelPanel">
                         <DOTAScenePanel 

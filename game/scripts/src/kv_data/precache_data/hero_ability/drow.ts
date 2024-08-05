@@ -16,6 +16,8 @@ export const drow_precache = [
     'particles/dev/attack/attack_normal/attack_normal_2.vpcf',
     'particles/dev/attack/attack_wind/attack_wind_1.vpcf',
     'particles/dev/attack/attack_wind/attack_wind_2.vpcf',
+
+    'particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf',
     // 龙卷风
     'particles/dev/tornado/tornado_1.vpcf',
     'particles/dev/tornado/tornado_2.vpcf',

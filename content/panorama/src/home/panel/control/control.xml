@@ -7,9 +7,9 @@
 		<include src="./control.tsx" />
 	</scripts>
 	<snippets>
-		<snippet name="AttributeRows">
-			<Panel class='AttributeRows'>
-				<Panel class='AttributeIcon' />
+		<snippet name="HudAttributeRow">
+			<Panel class='HudAttributeRow'>
+				<Panel class='StatIcon' />
 				<Label class='AttributeValue' text="{s:attr_value}" />
 			</Panel>
 		</snippet>
@@ -54,6 +54,13 @@
 				
 			</Panel>
 		</snippet>
+		<snippet name="PanelAttributeRow">
+			<Panel class="PanelAttributeRow">
+				<Panel id="StatIcon" class="StatIcon" />
+				<Label class="StatLabel" text="{s:stat_label}"/>
+				<Label class="StatValue" text="{s:stat_value}"/>
+			</Panel>
+		</snippet>
 	</snippets>
 	<Panel class="control">
 		<Panel id="BuffContainer">
@@ -72,37 +79,32 @@
 				</Panel>
 			</Panel>
             <Panel id="CenterPanel" hittest="false">
-				<Panel class="Content" hittest="false">
-					<Panel id="PortraitContainer" hittest="false">
-						<Panel id='PortraitGround' hittest="false" />
-						<Panel id='PortraitBorder' hittest="false">
-							<DOTAScenePanel 
-								id="UnitPortrait" 
-								map="maps/custom_scene/hero_portrait.vmap" 
-								camera='hero_camera' 
-								light='light_frontpage' 
-								particleonly="false"
-								hittest="false"
-								deferredalpha="true"
-								renderdeferred="true"
-							/>
-							<Panel class="ReviveCountdown">
-								<Label text="99"/>
-							</Panel>
-							<Button id="HeroInfoBtn" />
-							
+				<Panel id="PortraitContainer" hittest="false">
+					<Panel id='PortraitGround' hittest="false" />
+					<Panel id='PortraitBorder' hittest="false">
+						<DOTAScenePanel 
+							id="UnitPortrait" 
+							map="maps/custom_scene/hero_portrait.vmap" 
+							camera='hero_camera' 
+							light='light_frontpage' 
+							particleonly="false"
+							hittest="false"
+							deferredalpha="true"
+							renderdeferred="true"
+						/>
+						<Panel class="ReviveCountdown">
+							<Label text="99"/>
 						</Panel>
+						<Button id="HeroInfoBtn" />
 					</Panel>
-					<!-- <Panel id="HpBar" hittest="fasle">
-						<Panel id="BarContent" / >
-					</Panel> -->
+				</Panel>
+				<Panel class="HeroAbilityContainer">
 					<Panel id="AbilityPoint">
 						<Label text="{d:point_count}"/>
 					</Panel>
-					<Panel id='AbilityList' hittest="false" / >
-					</Panel>
+					<Panel id='AbilityList' hittest="false" />
+				</Panel>
             </Panel>
-			
 			<Panel id="ExpStatusPanel">
 				<Panel id="ExpNumInfo">
 					<Label class="XPPercent" text="{s:exp_percent}%"/>
@@ -124,6 +126,19 @@
 				
 			</Panel>
         </Panel>
+		<Panel id="HeroAttributeContainer" hittest="false" >
+			<Panel class='Header' hittest="false" />
+			<Panel class="AttributeContainer" hittest="false" >
+				<Panel class="BaseAttribute AttributeCol">
+					<Panel class="AttributeHeader" />
+					<Panel id="BaseAttributeList" class="AttributeList" />
+				</Panel>
+				<Panel class="AdvAttribute AttributeCol">
+					<Panel class="AttributeHeader" />
+					<Panel id="AdvAttributeList" class="AttributeList" / >
+				</Panel>
+			</Panel>
+		</Panel>
 		<!-- <Panel id="ArmsSelector" class="container">
 			<Panel id="ArmsList"></Panel>
             <Panel id="ArmsOption">

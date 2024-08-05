@@ -7,11 +7,14 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     custom_attribute_show: CustomAttributeShowType;
     /** 自定义属性表 */
     custom_attribute_table: CustomAttributeTableType;
+    /** 乘算属性表 */
+    custom_mul_attribute: MulCustomAttributeTableType;
+    /** 自定义属性表 乘算 */
+    // custom_attribute_table_mul: { [key: string]: MulCustomAttributeTableType };
     /** 自定义属性表 */
     custom_attribute_key_table: { [key: string]: CustomAttributeTableType };
     /** 属性转换 */
     custom_attribute_conversion: CustomAttributeConversionType;
-
     /** 减伤百分比列表 */
     ReductionPct: { [key: string]: number; };
     /** 减伤百分比列表第二层 */

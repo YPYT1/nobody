@@ -118,3 +118,14 @@ export const FormatKeyValueToText = (main_key: string, sub_key: string, v: strin
 
     return text;
 };
+
+export const ConvertAttributeToLabel = (attr_key: AttributeMainKey, value: number = 0) => {
+    let is_pct = AttributeConst[attr_key].is_pct == 1;
+    let res_label = "0";
+    if (is_pct) {
+        res_label = `${value}%`
+    } else {
+        res_label = `${value}`
+    }
+    return res_label
+}

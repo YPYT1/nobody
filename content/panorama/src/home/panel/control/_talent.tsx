@@ -132,6 +132,7 @@ const CreateHeroTalentTree = (heroname: string) => {
         if (AbilityTreePanel == null) {
             AbilityTreePanel = $.CreatePanel("Button", PlayerTalentTreeList, tree_id);
             AbilityTreePanel.BLoadLayoutSnippet("AbilityTreePanel")
+            // AbilityTreePanel.AddClass("Show")
             AbilityTreePanel.SetPanelEvent("onactivate", () => { })
             let AbilityPanel = AbilityList.GetChild(index);
             // $.Msg(["AbilityPanel", AbilityPanel])

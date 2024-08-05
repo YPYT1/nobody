@@ -59,15 +59,17 @@ export class drow_2a_b extends drow_2a {
 
             // 减速的敌人有概率触发冰爆
             let is_slowed = UnitIsSlowed(target);
+            // print("bingbao",is_slowed)
             if (is_slowed && RollPercentage(this.bb_chance)) {
+                // print("bingbao chufa ")
                 let vPos = target.GetAbsOrigin()
                 let effect_fx = ParticleManager.CreateParticle(
-                    "particles/units/heroes/hero_drow/drow_frost_arrow_explosion.vpcf",
+                    "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf",
                     ParticleAttachment.CUSTOMORIGIN,
                     null
                 );
                 ParticleManager.SetParticleControl(effect_fx, 0, vPos);
-                ParticleManager.SetParticleControl(effect_fx, 3, vPos);
+                // ParticleManager.SetParticleControl(effect_fx, 3, vPos);
                 ParticleManager.ReleaseParticleIndex(effect_fx);
                 let enemies = FindUnitsInRadius(
                     this.caster.GetTeam(),
@@ -103,7 +105,7 @@ export class modifier_drow_2a_b extends modifier_drow_2a {
 
     UpdataSpecialValue(): void {
         let cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '16', 'cigu_value')
-        if (cigu_value) {
+        if (cigu_value > 0) {
             this.proj_name = G_PorjLinear.ice;
         }
     }

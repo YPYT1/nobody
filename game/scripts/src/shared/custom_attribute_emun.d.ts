@@ -1,31 +1,47 @@
 
 declare type AttributeMainKey = "AttackDamage"
-|"AttackSpeed"
-|"AttackRange"
-|"AttackRate"
-|"PhyicalArmor"
-|"HealthPoints"
-|"HealthRegen"
-|"ManaPoints"
-|"ManaRegen"
-|"MoveSpeed"
-|"AbilityHaste"
-|"CritProbAll"
-|"CritDmgAll"
-|"PickItemRadius"
-|"DamageBonusMul"
-|"FinalDamageMul"
-|"MeleeDmgPercent"
-|"RangedDmgPercent"
-|"BurningDmg"
-|"BurningDuration"
-|"FireDamageBonus"
-|"IceDamageBonus"
-|"ThunderDamageBonus"
-|"WindDamageBonus"
-|"LightDamageBonus"
-|"DarkDamageBonus"
-;
+    | "AttackSpeed"
+    | "AttackRange"
+    | "AttackRate"
+    | "PhyicalArmor"
+    | "MaxHealth"
+    | "HealthRegen"
+    | "MaxMana"
+    | "ManaRegen"
+    | "MoveSpeed"
+    | "AbilityHaste"
+    | "CriticalChance"
+    | "CriticalDamage"
+    | "PickItemRadius"
+    | "DamageBonusMul"
+    | "FinalDamageMul"
+    | "MeleeDmgPct"
+    | "RangedDmgPct"
+    | "BurningDmg"
+    | "BurningDuration"
+    | "FireDamageBonus"
+    | "IceDamageBonus"
+    | "ThunderDamageBonus"
+    | "WindDamageBonus"
+    | "LightDamageBonus"
+    | "DarkDamageBonus"
+    | "KillRestoreHp"
+    | "KillRestoreMp"
+    | "RestoreIncrease"
+    | "AllElementDamageBonus"
+    | "AllElementPent"
+    | "FirePent"
+    | "IcePent"
+    | "ThunderPent"
+    | "WindPent"
+    | "AllElementResist"
+    | "FireResist"
+    | "IceResist"
+    | "ThunderResist"
+    | "WindResist"
+    | "FixedDamage"
+    | "FixedDamageReduction"
+    ;
 
 
 
@@ -41,6 +57,7 @@ declare type AttributeSubKey = "Base"
     | "PreLvBase"
     | "PreLvBonus"
     | "PreLvFixed"
+    | "MulRegion"
     ;
 
 declare type CustomAttributeValueType = {
@@ -55,6 +72,10 @@ declare type CustomAttributeTableType = {
     [key1 in AttributeMainKey]?: {
         [key2 in AttributeSubKey]?: number
     }
+}
+
+declare type MulCustomAttributeTableType = {
+    [key1 in AttributeMainKey]?: { [key: string]: number }
 }
 
 declare type CustomAttributeConversionType = {
