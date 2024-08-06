@@ -28,7 +28,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     // PlayElementHitEffect(params.victim, element_type);
     let is_crit = 0;
     let increased_injury = 0;// 增伤乘区
-    let BondElement = GameRules.NewArmsEvolution.ElementBondDateList[iPlayerID].Element
+    let BondElement = GameRules.NewArmsEvolution.ElementBondDateCount[iPlayerID].Element
     // DeepPrintTable(BondElement)
 
 
@@ -101,7 +101,7 @@ function ElementSpecialEffect_Fire(hTarget: CDOTA_BaseNPC, hCaster: CDOTA_BaseNP
     let hAbility = hCaster.FindAbilityByName("public_arms");
     let iPlayerID = hCaster.GetPlayerOwnerID();
     let dot_buff = hTarget.FindModifierByNameAndCaster("modifier_element_bond_fire", hCaster);
-    let bond_count = GameRules.NewArmsEvolution.ElementBondDateList[iPlayerID].Element["1"];
+    let bond_count = GameRules.NewArmsEvolution.ElementBondDateCount[iPlayerID].Element["1"];
     let dot_duration = bond_count >= 6 ? 6 : 3;
     if (dot_buff == null) {
         dot_buff = hTarget.AddNewModifier(hCaster, hAbility, "modifier_element_bond_fire", {

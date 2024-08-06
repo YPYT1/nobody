@@ -639,7 +639,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     AddElement(player_id: PlayerID , param : { element_number : ElementTypeEnum , count : number} , key : string) {
         //更新数值
-        GameRules.NewArmsEvolution.SetElementBondDate(player_id , param.element_number , param.count , 0 , true)
+        GameRules.NewArmsEvolution.SetElementBondDate(player_id , param.element_number , param.count , 2)
     }
     /**
      * 增加具体buff
