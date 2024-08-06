@@ -1,61 +1,23 @@
 import { default as ArmsComboJson } from "./../../json/config/game/arms_combo.json";
 import { default as NpcAbilityCustom } from "./../../json/npc_abilities_custom.json";
-import { default as AbilitiesArms } from "./../../json/abilities/arms.json";
-import { default as ArmsTypesJson } from "./../../json/config/game/const/arms_types.json";
+// import { default as AbilitiesArms } from "./../../json/abilities/arms.json";
+import { default as AbilityTypesJson } from "./../../json/config/game/const/ability_types.json";
 
 import { SetAbilityDescription, GetAbilityRarity, GetAbilityTypeCategory, GetAbilityElementLabel } from '../../utils/ability_description';
 import { ConvertAttributeValues, GetAbilityAttribute } from '../../utils/attribute_method';
 import { GetTextureSrc } from '../../common/custom_kv_method';
 import { GetHeroTalentTreeObject, GetHeroTalentTreeRowData } from "../../common/custom_talent";
 import { FormatDescription } from "../../utils/method";
+import { ELEMENT_KEYS_LIST } from "../../utils/element_bond";
 
 
+// type xx = keyof typeof AbilityTypesJson
 let AbilityCategoryType = $("#AbilityCategoryType")
-const AbilityCategoryList: ArmsTypeCategory[] = [
-    "Aoe",
-    "Buff",
-    "Dot",
-    "Grow",
-    "Missile",
-    "Orb",
-    "Resource",
-    "Summon", "Surround",
-]
+
 
 const MainPanel = $.GetContextPanel();
 const TalentAbilityExtra = $("#TalentAbilityExtra");
-
-let m_CombiePanel: Panel[] = []
-
-export function InitAbilityCombo() {
-    let ComboTable: { [comb_key: string]: string[] } = {};
-    for (let name in AbilitiesArms) {
-        let row_data = AbilitiesArms[name as "arms_t0_1"];
-        if (row_data && row_data.Combo) {
-            let row_Combo = `${row_data.Combo}`.split(" ");
-            for (let Combo of row_Combo) {
-                let combe_key = Combo.split(",")
-                for (let key of combe_key) {
-                    if (ComboTable[key] == null) {
-                        ComboTable[key] = []
-                    }
-                    ComboTable[key].push(name)
-                }
-            }
-        }
-    }
-    return ComboTable
-}
-
-const ComboTable = InitAbilityCombo();
-
-function GetAbilityCombo(ability_name: string) {
-    let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
-    if (abilityData && abilityData.Combo) {
-        return `${abilityData.Combo}`.split(",");
-    }
-    return []
-}
+const AbilityElement = $("#AbilityElement");
 
 function GetCurrentAbilityGetState(ability_list: string[]) {
     let m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
@@ -120,84 +82,61 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
         // let mana_fra = Entities.ManaFraction(entityIndex)
         // $.Msg(["entityIndex",entityIndex,ability_mana])
     }
-    
+
     // 图标
     const AbilityIcon = MainPanel.FindChildTraverse("AbilityIcon") as ImagePanel;
 
     const img_src = abilityData ? GetTextureSrc(abilityData.AbilityTextureName) : "";
     AbilityIcon.SetImage(img_src)
 
-    // 类型
-    let type_category = GetAbilityTypeCategory(ability_name);
-    // $.Msg(["type_category",type_category])
-    for (let order_key in ArmsTypesJson) {
-        // let order_key = ArmsTypesJson[order as keyof typeof ArmsTypesJson];
-        // $.Msg(["order_key", order_key, type_category.indexOf(order_key) != -1])
-        AbilityCategoryType.SetHasClass(order_key, type_category.indexOf(order_key) != -1)
+    // 技能类型 技能元素
+    if (entityIndex > 0) {
+        let nt_data = CustomNetTables.GetTableValue("custom_ability_types", `${entityIndex}`)
+        if (nt_data) {
+            let skv_type = nt_data.skv_type
+            for (let order_key in skv_type) {
+                let is_has = skv_type[order_key as keyof typeof skv_type] == 1;
+                // $.Msg(["order_key", order_key, is_has])
+                AbilityCategoryType.SetHasClass(order_key, is_has)
+            }
+            let element_list = Object.values(nt_data.element_type);
+            for (let i = 1; i <= 6; i++) {
+                let element_key = ELEMENT_KEYS_LIST[i];
+                let has_element = element_list.indexOf(i) != -1;
+                // $.Msg(["element_key", element_key, has_element])
+                AbilityElement.SetHasClass(element_key, has_element)
+            }
+        } else {
+            ResetAbilityElementAndType()
+        }
+    } else {
+        ResetAbilityElementAndType()
     }
+
+    // let type_category = GetAbilityTypeCategory(ability_name);
+    // $.Msg(["type_category",type_category])
+    // for (let order_key in ArmsTypesJson) {
+    //     // let order_key = ArmsTypesJson[order as keyof typeof ArmsTypesJson];
+    //     // $.Msg(["order_key", order_key, type_category.indexOf(order_key) != -1])
+    //     AbilityCategoryType.SetHasClass(order_key, type_category.indexOf(order_key) != -1)
+    // }
+
     // 属性
     let AttributeObject = GetAbilityAttribute(ability_name);
     // let attr_list = ConvertAttributeValues(AttributeObject);
 
 
     // 稀有度
-    const rarity = GetAbilityRarity(ability_name)
-    for (let r = 1; r <= 7; r++) {
-        MainPanel.SetHasClass("rarity_" + r, rarity == r);
-    }
+    // const rarity = GetAbilityRarity(ability_name)
+    // for (let r = 1; r <= 7; r++) {
+    //     MainPanel.SetHasClass("rarity_" + r, rarity == r);
+    // }
 
     // 元素
-    const element = GetAbilityElementLabel(ability_name)
-    for (let e = 1; e <= 6; e++) {
-        MainPanel.SetHasClass("element_" + e, element == e);
-    }
-
-    // 羁绊
-    let ComboContainer = $("#ComboContainer");
-    let CombieList = GetAbilityCombo(ability_name);
-    let used = 0
-    for (let i = 0; i < CombieList.length; i++) {
-        if (i >= m_CombiePanel.length) {
-            let combiePanel = $.CreatePanel("Panel", ComboContainer, "");
-            combiePanel.BLoadLayoutSnippet("ArmsCombieRows");
-            m_CombiePanel.push(combiePanel)
-        }
-        let combe_key = CombieList[i];
-        let combePanel = m_CombiePanel[i];
-        combePanel.SetDialogVariable("combie_text", $.Localize("#CustomText_Combo_" + combe_key))
-        combePanel.visible = true;
-        let ability_list = ComboTable[combe_key] ?? [];
-        let combie_state = GetCurrentAbilityGetState(ability_list)
-        let combie_list_label = combie_state.label
-        combePanel.SetDialogVariable("combie_list", combie_list_label)
-
-        // arms_combie_desc
-        combePanel.SetHasClass("is_activate", combie_state.state)
-        if (combie_state.state) {
-            let arms_combo_key = "combo_" + combe_key;
-            let arms_combo_kv = ArmsComboJson[arms_combo_key as keyof typeof ArmsComboJson];
-            let AbilityValues = arms_combo_kv.AbilityValues as { [key: string]: number };
-
-            let combie_desc = $.Localize("#CustomText_" + arms_combo_key + "_Description")
-            for (let k in AbilityValues) {
-                let v = AbilityValues[k];
-                // $.Msg(["%" + k + "%",k, v])
-                combie_desc = combie_desc.replace(`%${k}%%%`, `<span class="hover">${v}%</span>`);
-                combie_desc = combie_desc.replace(`%${k}%`, `<span class="hover">${v}</span>`);
-
-            }
-            // $.Msg(["combie_desc", combie_desc])
-            combePanel.SetDialogVariable("combie_desc", combie_desc)
-        }
-
-        used++;
-    }
-
-    for (let i = used; i < m_CombiePanel.length; i++) {
-        let combiePanel = m_CombiePanel[i];
-        combiePanel.visible = false
-    }
-
+    // const element = GetAbilityElementLabel(ability_name)
+    // for (let e = 1; e <= 6; e++) {
+    //     MainPanel.SetHasClass("element_" + e, false);
+    // }
 
     MainPanel.SetDialogVariableInt("level", ability_level)
     MainPanel.SetDialogVariable("cooldown", `${ability_cooldown}`);
@@ -208,7 +147,18 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     MainPanel.SetDialogVariable("ability_name", ability_name_label);
 
     SetExtraAbilityDesc(ability_name, ability_level);
+}
 
+function ResetAbilityElementAndType() {
+    // 重置类型
+    for (let type_key in AbilityTypesJson) {
+        AbilityCategoryType.SetHasClass(type_key, false)
+    }
+    // 重置元素
+    for (let i = 1; i <= 6; i++) {
+        let element_key = ELEMENT_KEYS_LIST[i];
+        AbilityElement.SetHasClass(element_key, false)
+    }
 }
 
 function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
@@ -247,6 +197,9 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
                 extra_panel.SetDialogVariableInt("talent_level", level);
                 extra_panel.SetDialogVariableInt("talent_max", row_data.max_number);
 
+                let TalentIcon = extra_panel.FindChildTraverse("TalentIcon") as ImagePanel;
+                let texture = row_data.img;
+                TalentIcon.SetImage(GetTextureSrc(texture))
                 let title = $.Localize(`#custom_talent_${heroname}_${key}`)
                 extra_panel.SetDialogVariable("extra_title", title)
 
@@ -257,27 +210,6 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
             }
         }
     }
-
-    // $.Msg(["description", description])
-    // 解构天赋
-    // let reg = /@[\w:]*@/g;
-    // let res_text = description.match(reg)
-
-    // if (res_text) {
-    //     for (let row of res_text) {
-    //         let row_list = row.replaceAll("@", "").split(":");
-    //         let talent_level = 0;
-    //         let talent_text = $.Localize(`#custom_talent_${row_list[1]}_${row_list[2]}`);
-    //         let talent_desc = $.Localize(`#custom_talent_${row_list[1]}_${row_list[2]}_desc`)
-    //         let TalentData = GetHeroTalentTreeRowData(row_list[1], row_list[2])
-    //         let description_txt = FormatDescription(talent_desc, TalentData.AbilityValues, talent_level, true);
-    //         let is_enable = talent_level > 0 ? "enable" : "disble"
-    //         description = description.replace(
-    //             row,
-    //             `<br><span class="${is_enable}">${talent_text} (${talent_level}/${TalentData.max_number})<br>${description_txt}</span>`
-    //         )
-    //     }
-    // }
 
     MainPanel.SetDialogVariable("description", description);
 }
@@ -294,7 +226,7 @@ export function Init() {
 
     let ComboContainer = $("#ComboContainer");
     ComboContainer.RemoveAndDeleteChildren();
-    m_CombiePanel = [];
+    // m_CombiePanel = [];
 
     // const AbilityCategoryType = $("#AbilityCategoryType");
     // AbilityCategoryType.RemoveAndDeleteChildren();

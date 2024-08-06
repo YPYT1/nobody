@@ -25,6 +25,8 @@ export class modifier_drow_3a_b extends modifier_drow_3a {
 
     UpdataSpecialValue(): void {
         this.bonus_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "32", 'bonus_count')
+
+
     }
 
     ExtraEffect(): void {
@@ -156,7 +158,7 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
 @registerModifier()
 export class modifier_drow_3a_b_cowlofice extends BaseModifier {
 
-    cast_fx:ParticleID;
+    cast_fx: ParticleID;
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         let bx_radius = params.bx_radius
@@ -173,7 +175,7 @@ export class modifier_drow_3a_b_cowlofice extends BaseModifier {
 
     OnDestroy(): void {
         if (!IsServer()) { return }
-        ParticleManager.DestroyParticle(this.cast_fx,true);
+        ParticleManager.DestroyParticle(this.cast_fx, true);
         UTIL_Remove(this.GetParent())
     }
 }

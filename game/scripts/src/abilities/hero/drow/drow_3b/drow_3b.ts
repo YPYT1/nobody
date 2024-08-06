@@ -11,6 +11,7 @@ export class drow_3b extends BaseHeroAbility {
     GetIntrinsicModifierName(): string {
         return "modifier_drow_3b"
     }
+
 }
 
 @registerModifier()
@@ -230,5 +231,5 @@ export class modifier_drow_3b_thinker_arrow_ice extends modifier_drow_3b_thinker
 export class modifier_drow_3b_thinker_arrow_fire extends modifier_drow_3b_thinker_arrow {
 
     arrow_name = "particles/dev/attack/attack_flame/attack_flame_1.vpcf";
-    
+
 }

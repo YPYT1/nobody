@@ -11,6 +11,7 @@ export class BaseHeroAbility extends BaseAbility {
             this.init = true;
             this.caster = this.GetCaster();
             this.team = this.caster.GetTeamNumber();
+            this.InitCustomAbilityType();
         }
         this.UpdataOnUpgrade();
         this.UpdataAbilityValue()
@@ -24,6 +25,57 @@ export class BaseHeroAbility extends BaseAbility {
     /** 技能的特殊词条更新 */
     UpdataSpecialValue() { }
 
+    InitCustomAbilityType() {
+        this.custom_ability_types = {
+            skv_type: {
+                Summon: false,
+                Ring: false,
+                Surround: false,
+                Aoe: false,
+                Bounce: false,
+                Missile: false,
+                Targeting: false,
+                Dot: false,
+                Orb: false,
+                Resource: false,
+                Growth: false,
+                Buff: false,
+            },
+            element_type: [],
+        };
+        // this.PreLoadCustomAbilityType();
+        // this.LoadCustomAbilityType()
+    }
+
+    // PreLoadCustomAbilityType() { }
+    // /** 加载该技能的初始类型 */
+    // LoadCustomAbilityType() { }
+
+    SetCustomAbilityType(type_key: CustomHeroAbilityTypes, type_state: boolean) {
+        if (type_key == 'Null') { return }
+        if (this.custom_ability_types.skv_type[type_key] != type_state) {
+            this.custom_ability_types.skv_type[type_key] = type_state;
+            CustomNetTables.SetTableValue(
+                "custom_ability_types",
+                `${this.GetEntityIndex()}`,
+                this.custom_ability_types
+            );
+        }
+    }
+
+    /** 增加元素 */
+    AddCustomAbilityElement(element_key: ElementTypes, type_state: boolean = true) {
+        let index = this.custom_ability_types.element_type.indexOf(element_key);
+        if (index == -1 && type_state) {
+            this.custom_ability_types.element_type.push(element_key);
+            CustomNetTables.SetTableValue(
+                "custom_ability_types",
+                `${this.GetEntityIndex()}`,
+                this.custom_ability_types
+            );
+        }
+    }
+
 }
 
 
@@ -31,7 +83,7 @@ export class BaseHeroModifier extends BaseModifier {
 
     caster: CDOTA_BaseNPC;
     team: DotaTeam;
-    ability: CDOTABaseAbility;
+    ability: BaseHeroAbility;
     ability_damage: number;
 
     tracking_proj_name: string = "";
@@ -46,7 +98,7 @@ export class BaseHeroModifier extends BaseModifier {
         this.element_type = ElementTypes.NONE;
         this.damage_type = DamageTypes.PHYSICAL
         this.team = this.caster.GetTeamNumber();
-        this.ability = this.GetAbility();
+        this.ability = this.GetAbility() as BaseHeroAbility;
         this.ability_damage = 0;
         this.ability.IntrinsicMdf = this;
         this.tracking_proj_name = G_PorjTrack.none;

@@ -2,7 +2,7 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 import { drow_2a, modifier_drow_2a } from "./drow_2a";
 
 /**
- * 2.穿透（3/3）:连续射击可穿透目标，伤害提高20%/40%/60%
+ * 15.穿透（3/3）:连续射击可穿透目标，伤害提高20%/40%/60%
 16	刺骨	技能赋予冰元素效果，伤害变为冰元素伤害。（该技能冰元素减速效果增加至50%。2级才显示）
 17	冰爆	连续射击命中被减速的敌人时，有12%概率发生冰爆，对范围300码敌人造成攻击力160%/200%/250%冰元素伤害。
 
@@ -30,6 +30,7 @@ export class drow_2a_b extends drow_2a {
         this.bb_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "chance");
         this.bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "radius");
         this.bb_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "base_value");
+
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
@@ -108,5 +109,10 @@ export class modifier_drow_2a_b extends modifier_drow_2a {
         if (cigu_value > 0) {
             this.proj_name = G_PorjLinear.ice;
         }
+
+        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '15', 'bonus_value')
+
+        this.base_value += bonus_value
+
     }
 }

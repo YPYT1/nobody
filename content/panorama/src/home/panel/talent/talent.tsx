@@ -66,7 +66,7 @@ export const RecursionTalentTree = () => {
 export const CreateHeroTalentTreeUI = (heroname: string, NodePanel: Panel, index: string = "1") => {
     // TalentBackgroundHeight.RemoveAndDeleteChildren()
     let talent_tree = hero_talent_tree[heroname][index];
-    $.Msg(["talent_tree",talent_tree])
+    // $.Msg(["talent_tree",talent_tree])
     for (let row of talent_tree) {
         CreateTalentTreeNode(heroname, row, NodePanel)
     }

@@ -67,12 +67,27 @@
         // border: 1px solid #ff1919;
     }
 
-    .AbilityElement {
-        margin-left: 6px;
-        width: 22px;
-        height: 22px;
-        background-image: url("file://{images}/custom_game/icon/element/sm_1.png");
+    #AbilityElement {
         vertical-align: middle;
+        flow-children: right;
+        overflow: noclip;
+
+        .ElementIcon {
+            width: 35px;
+            height: 35px;
+            background-size: 100%;
+            visibility: collapse;
+            img-shadow: 0px 0px 2px 1.0 #2020202f;
+        }
+
+        &.fire .element_1,
+        &.ice .element_2,
+        &.thunder .element_3,
+        &.wind .element_4,
+        &.light .element_5,
+        &.dark .element_6 {
+            visibility: visible;
+        }
     }
 
     .AbilityNameLabel {
@@ -140,6 +155,10 @@
         .AbilityNameLabel {
             color: @rarity_color_7;
         }
+    }
+
+    &.element_1 .AbilityElement {
+        background-image: url("file://{images}/custom_game/icon/element/sm_1.png");
     }
 
     &.element_2 .AbilityElement {
@@ -281,7 +300,7 @@
 
         .AttributeVar {
             font-size: 19px;
-            
+
         }
     }
 
@@ -308,12 +327,8 @@
                 // background-color: #184418;
             }
 
-            #TalentIcon {
-                // margin-left: 12px;
-                width: 20px;
-                height: 20px;
-                border: 1px solid #000000;
-                background-color: #dddddd;
+            .TalentIcon {
+                visibility: visible;
             }
 
             .Title {
@@ -333,13 +348,21 @@
             background-repeat: no-repeat;
         }
 
-        #TalentIcon {
-            // margin-left: 8px;
-            // visibility: collapse;
-            // width: 16px;
-            // height: 16px;
-            // background-color: #fff;
+        .TalentIcon {
+            width: 28px;
+            height: 28px;
+            visibility: collapse;
             vertical-align: middle;
+            border: 1px solid #000000;
+            background-color: rgb(162, 178, 195);
+            padding: 1px;
+            border-radius: 4px;
+        }
+
+        #TalentIcon {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
         }
 
         .Title {
@@ -353,7 +376,7 @@
         .Level {
             margin-left: 4px;
             font-size: 18px;
-            color:#ffffff;
+            color: #ffffff;
             text-shadow: 0px 0px 2px 3.0 #000000;
             vertical-align: middle;
         }
@@ -372,7 +395,7 @@
             // wash-color: #ebbf31;
 
             .Current {
-                color:#ffde4b;
+                color: #ffde4b;
             }
         }
     }
@@ -461,7 +484,7 @@
         background-image: url("file://{images}/custom_game/tooltip/ability/tag/dot.png");
     }
 
-    &.Grow {
+    &.Growth {
         background-image: url("file://{images}/custom_game/tooltip/ability/tag/grow.png");
     }
 

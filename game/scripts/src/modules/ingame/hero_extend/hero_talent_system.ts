@@ -2,6 +2,7 @@ import { reloadable } from '../../../utils/tstl-utils';
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 import * as TalentConfig from "../../../json/config/game/hero/talent_config/talent_config.json";
 import * as DrowRanger from "../../../json/config/game/hero/talent_tree/drow_ranger.json";
+import { BaseHeroAbility } from '../../../abilities/hero/base_hero_ability';
 
 
 const TalentTreeObject = {
@@ -459,6 +460,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     }
                     //数据写入到网表
                     CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
+                    
                     /**
                      * 替换技能 / 更新等级
                      */
@@ -486,7 +488,20 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             }
                         }
                     }
-                    
+                    // 首次解锁天赋时
+                    if(hero.hero_talent[key] == 1){
+                        let ablname = HeroTalentCounfg.link_ability;
+                        let hHeroAbility = hero.FindAbilityByName(ablname) as BaseHeroAbility
+                        let mark_element = HeroTalentCounfg.mark_element;
+                        let mark_types = HeroTalentCounfg.mark_types as CustomHeroAbilityTypes;
+                        if (mark_element > 0){
+                            hHeroAbility.AddCustomAbilityElement(mark_element)
+                        }
+                        if (mark_types != "Null"){
+                            hHeroAbility.SetCustomAbilityType(mark_types,true)
+                        }
+                        // print("mark_element",mark_element,"mark_types",mark_types)
+                    }
                     // 更新点了天赋之后相关变动数值
                     GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
 

@@ -122,7 +122,7 @@ export class BaseArmsAbility extends BaseAbility {
             GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
             // GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, 1, this.slot_index);
             if (this.element_type != 0) {
-                GameRules.CustomOverrideAbility.UpdateOverrideAbility(this.caster, this.GetAbilityName());
+                // GameRules.CustomOverrideAbility.UpdateOverrideAbility(this.caster, this.GetAbilityName());
             }
 
             this.InitCustomAbilityData();

@@ -16,6 +16,7 @@ export class drow_3a extends BaseHeroAbility {
     GetIntrinsicModifierName(): string {
         return "modifier_drow_3a"
     }
+
 }
 
 @registerModifier()
@@ -153,7 +154,7 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
             ability: this.ability,
             element_type: this.element_type,
             is_primary: true,
-            damage_vect:this.GetParent().GetAbsOrigin(),
+            damage_vect: this.GetParent().GetAbsOrigin(),
         })
     }
 }

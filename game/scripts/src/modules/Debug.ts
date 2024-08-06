@@ -85,5 +85,6 @@ export class Debug {
         GameRules.HeroTalentSystem.Debug(cmd, args, keys.playerid)
         GameRules.ServiceInterface.Debug(cmd, args, keys.playerid)
         GameRules.NpcSystem.Debug(cmd, args, keys.playerid)
+        GameRules.CustomOverrideAbility.Debug(cmd, args, keys.playerid)
     }
 }

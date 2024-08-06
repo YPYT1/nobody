@@ -16,7 +16,7 @@ export class drow_1b extends drow_1 {
         if (target) {
             let ability_damage = extraData.a as number;
             let damage_vect = Vector(extraData.x, extraData.y, 0);
-            print("damage_vect", damage_vect)
+            // print("damage_vect", damage_vect)
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.GetCaster(),
@@ -24,7 +24,7 @@ export class drow_1b extends drow_1 {
                 damage_type: DamageTypes.MAGICAL,
                 ability: this,
                 element_type: ElementTypes.WIND,
-                is_primary:true,
+                is_primary: true,
                 damage_vect: damage_vect,
             })
         }

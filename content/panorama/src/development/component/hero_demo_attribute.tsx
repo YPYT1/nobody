@@ -177,16 +177,16 @@ const HeroDemoAttribute = () => {
                 </Panel>
                 <Panel className='table-body AttributeRowList'>
                     {
-                        Object.keys(attribute_const).map((v,k)=>{
-                            return <AttributeRows 
-                            attr_key={v as AttributeMainKey} 
-                            attr_value={AttributeValue} 
-                            attr_table={AttributeTable} 
-                            key={k}
+                        Object.keys(attribute_const).map((v, k) => {
+                            return <AttributeRows
+                                attr_key={v as AttributeMainKey}
+                                attr_value={AttributeValue}
+                                attr_table={AttributeTable}
+                                key={k}
                             />
                         })
                     }
-                    
+
                     {/* <AttributeRows attr_key="PhyicalArmor" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackRange" attr_value={AttributeValue} attr_table={AttributeTable} />
                     <AttributeRows attr_key="AttackSpeed" attr_value={AttributeValue} attr_table={AttributeTable} />
@@ -219,47 +219,14 @@ const AbilityButtonRow = ({ entity, Btnhandle }: { entity: AbilityEntityIndex, B
 
 const RowOverrideKvEditor = ({ kv_key }: { kv_key: string }) => {
 
-
-
-    // const [KvValue, setKvValue] = useState("")
-    const [value, setValue] = useState(0)
-    const [AttrSubKey, setAttrSubKey] = useState<OverrideSpecialBonusTypes>("Base");
-
-    useGameEvent("CustomOverrideAbility_UpdateSpecialValue", event => {
-        let data = event.data;
-        if (data == null) { return };
-        let kv_data = data[kv_key];
-        if (kv_data) {
-            let value = [
-                kv_data.base_value ?? 0,
-                kv_data.percent_value ?? 0,
-                kv_data.mul_value.toFixed(2) ?? 0,
-                kv_data.correct_value ?? 0
-            ]
-            // $.Msg(["has value",value,value.join("|")])
-            let mainPanel = $(`#AbilityKvRowEditor_${kv_key}`)
-
-            mainPanel.SetDialogVariable("kv_text", value.join(" | "))
-            // setKvValue()
-        }
-
-
-    })
-
-    // unit_special_value
-    // const netdata = CustomNetTables.GetTableValue("unit_special_value", `${LocalPlayerID}`) ?? {};
-    // $.Msg(["netdata",netdata])
-    // let kv_data = netdata[kv_key];
-    // let KvValue = 0
-    // if (kv_data) { KvValue = kv_data.cache_value ?? 0; }
-    // $.Msg(["KvValue", kv_key, KvValue]);
+    // $.Msg(["RowOverrideKvEditor", kv_key])
 
     return (
         <Panel
-            id={`AbilityKvRowEditor_${kv_key}`}
+            id={`${kv_key}`}
             className='AbilityKvRowEditor flow-right'
             onload={(e) => {
-                e.SetDialogVariable("kv_text", "0")
+                e.SetDialogVariable("kv_text", "0 | 0 | 0 | 0")
             }}
         >
             <Label className='KvKey'
@@ -278,7 +245,9 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: string }) => {
                 text={`0`}
                 ontextentrychange={(e) => {
                     let value = parseFloat(e.text);
-                    setValue(value)
+                    let mainPanel = e.GetParent()!;
+                    mainPanel.Data<PanelDataObject>().value = value
+                    // setValue(value)
                 }}
             />
             <Panel className='AttrList'>
@@ -290,7 +259,9 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: string }) => {
 
                     oninputsubmit={(e) => {
                         let sub_key = e.GetSelected().id as OverrideSpecialBonusTypes;
-                        setAttrSubKey(sub_key)
+                        let mainPanel = e.GetParent()?.GetParent()!;
+                        mainPanel.Data<PanelDataObject>().sub_key = sub_key
+                        // setAttrSubKey(sub_key)
                     }}
                 >
                     <Label id={"Base"} text={"Base"} />
@@ -302,12 +273,15 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: string }) => {
 
             <Button
                 className='btn'
-                onactivate={() => {
+                onactivate={(e) => {
+                    let mainPanel = e.GetParent()!;
+                    let value: number = mainPanel.Data<PanelDataObject>().value
+                    let sub_key: OverrideSpecialBonusTypes = mainPanel.Data<PanelDataObject>().sub_key
                     GameEvents.SendCustomGameEventToServer("Development", {
                         event_name: "ModiyOverrideSpecialValue",
                         params: {
                             special_key: kv_key as OverrideSpecialKeyTypes,
-                            special_type: AttrSubKey,
+                            special_type: sub_key,
                             special_value: value,
                         }
                     })
@@ -324,6 +298,27 @@ const RowOverrideKvEditor = ({ kv_key }: { kv_key: string }) => {
 const OverrideKeyList = Object.keys(special_keyvalue);
 const OverrideSpecialValueEditor = () => {
 
+    // const [skvValue, setSkvValue] = useState<OverrideSpecialValueProps>({});
+    let KeyValueTable: Panel;
+
+    useGameEvent("CustomOverrideAbility_UpdateSpecialValue", event => {
+        let data = event.data;
+        if (data == null) { return };
+        // setSkvValue(data)
+        let AbilityKeyValueEditor = $("#AbilityKeyValueEditor");
+        for(let k in data){
+            let RowOverrideKvEditor = AbilityKeyValueEditor.FindChildTraverse(k);
+            if(RowOverrideKvEditor){
+                let v = data[k];
+                RowOverrideKvEditor.SetDialogVariable(
+                    "kv_text", 
+                    `${v.base_value} | ${v.percent_value}% | ${v.mul_value}% | ${v.correct_value}%`
+                )
+            }
+        }
+
+    })
+
     // overri
     return (
         <Panel
@@ -335,7 +330,9 @@ const OverrideSpecialValueEditor = () => {
                 })
             }}
         >
-            <Panel className='KeyValueTable'>
+            <Panel id="KeyValueTable" className='KeyValueTable' onload={(e) => {
+                KeyValueTable = e;
+            }}>
                 {
                     Object.keys(special_keyvalue).map((v, k) => {
                         return <RowOverrideKvEditor key={k} kv_key={v as keyof typeof special_keyvalue} />

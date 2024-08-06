@@ -18,7 +18,10 @@
         <snippet name="ExtraAbility">
             <Panel class="ExtraAbility">
                 <Panel class="ExtraHeader">
-                    <Image id="TalentIcon"/>
+                    <Panel class="TalentIcon">
+                        <Image id="TalentIcon"/>
+                    </Panel>
+                    
                     <Label class="Title" text="{s:extra_title}"/>
                     <Label class="Level" text="({d:talent_level} / {d:talent_max})"/>
                 </Panel>
@@ -57,7 +60,14 @@
                 <Panel class='AbilityLabel'>
                     <Panel class="AbilityName">
                         <Label class='AbilityNameLabel' text="{s:ability_name}" />
-                        <Panel class='AbilityElement' />
+                        <Panel id='AbilityElement'>
+                            <Panel class="ElementIcon element_1"/>
+                            <Panel class="ElementIcon element_2"/>
+                            <Panel class="ElementIcon element_3"/>
+                            <Panel class="ElementIcon element_4"/>
+                            <Panel class="ElementIcon element_5"/>
+                            <Panel class="ElementIcon element_6"/>
+                        </Panel>
                         <Label class="AbilityLevel" text="Lv.{d:level}"/>
                     </Panel>
                     <Panel id='AbilityCategoryType'>

@@ -5,7 +5,7 @@ import * as AbilitiesArmsJson from "./../../../json/abilities/arms.json"
 
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 
-declare type AbilityCategoryTypes = keyof typeof ArmsTypesJson
+// declare type AbilityCategoryTypes = keyof typeof ArmsTypesJson
 
 declare type OverrideSpecialInputProps = {
     [primary in OverrideSpecialKeyTypes]?: {
@@ -19,9 +19,17 @@ declare type AbilitySpecialInputProps = {
     }
 }
 
-const SpecialvalueOfTable: { [cate: string]: string[] } = {
-    ["Missile"]: ["skv_missile_counts", "kv_missile_speed"],
-    ["Aoe"]: ["skv_aoe_radius", "skv_aoe_set1"],
+const SpecialvalueOfTable = {
+    "Missile": {
+        "skv_missile_count": 0,
+        "skv_missile_speed": 0,
+    },
+    "Aoe": {
+        "skv_aoe_radius": 0,
+        "skv_aoe_multiple": 0,
+        "skv_aoe_dmg": 0,
+    }
+
 
 }
 /** 修改技能 */
@@ -72,101 +80,9 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
         }
     }
 
-    /** 更新技能表 */
-    UpdateOverrideAbility(hUnit: CDOTA_BaseNPC, sAbilityName: string) {
-        let MinorAbilityUpgrades = hUnit.MinorAbilityUpgrades;
-        let hLastAbilityList = Object.keys(MinorAbilityUpgrades);
-        let hCurrentAbilityList: string[] = [];
-        for (let i = 0; i < 6; i++) {
-            let hAbility = hUnit.GetAbilityByIndex(i);
-            if (hAbility == null) { continue };
-            let ability_state = (hAbility.GetBehaviorInt() & AbilityBehavior.NOT_LEARNABLE) != AbilityBehavior.NOT_LEARNABLE;
-            let ability_name = hAbility.GetAbilityName();
-            if (ability_state) {
-                hCurrentAbilityList.push(ability_name);
-            }
-
-        }
-
-        // 先移除不存在的技能
-        for (let last_ability of hLastAbilityList) {
-            // 当前6个技能里面没有该技能时.移除
-            if (hCurrentAbilityList.indexOf(last_ability) == -1) {
-                MinorAbilityUpgrades[last_ability] = null;
-            }
-        }
-
-        // 加入新的技能
-        if (MinorAbilityUpgrades[sAbilityName] == null) {
-            MinorAbilityUpgrades[sAbilityName] = {};
-            // 根据技能类型加入对应的kv监听
-            let hKvData = AbilitiesArmsJson[sAbilityName as keyof typeof AbilitiesArmsJson];
-            if (hKvData) {
-                let sCategoryString = hKvData.Category;
-                if (sCategoryString != "Null") {
-                    let category_list = sCategoryString.split(",");
-                    for (let cate of category_list) {
-                        let override_key_list = this.SpecialCategoryTable[cate];
-                        for (let override_key of override_key_list) {
-                            MinorAbilityUpgrades[sAbilityName][override_key] = {
-                                base_value: 0,
-                                mul_value: 1,
-                                percent_value: 100,
-                                // result_value: 0,
-                                correct_value: 100,
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        this.UpdateSpecialValue(hUnit.GetPlayerOwnerID());
-    }
-
-
-    ModifySpecialValueOfAbility(player_id: PlayerID, abilityname: AbilityCategoryTypes, special_input: AbilitySpecialInputProps) {
-        if (this.AbilitySpecialMul[player_id][abilityname] == null) {
-            this.AbilitySpecialMul[player_id][abilityname] = {}
-            this.AbilitySpecialValue[player_id][abilityname] = {}
-        }
-
-        for (let override_key in special_input) {
-            if (this.AbilitySpecialMul[player_id][abilityname][override_key] == null) {
-                this.AbilitySpecialMul[player_id][abilityname][override_key] = { mul_list: [], }
-                this.AbilitySpecialValue[player_id][abilityname][override_key] = {
-                    base_value: 0,
-                    mul_value: 1,
-                    percent_value: 100,
-                    correct_value: 100,
-                }
-            }
-
-            let RowInput = special_input[override_key];
-            if (RowInput.Base) { this.AbilitySpecialValue[player_id][abilityname][override_key].base_value += RowInput.Base }
-            if (RowInput.Percent) {
-                this.AbilitySpecialValue[player_id][abilityname][override_key].percent_value += RowInput.Percent
-            }
-            if (RowInput.Multiple) {
-                let mul_input = (100 + RowInput.Multiple) * 0.01
-                this.OverrideSpecialMul[player_id][abilityname][override_key].mul_list.push(mul_input)
-                let mul_value = 1;
-                for (let row_value of this.OverrideSpecialMul[player_id][abilityname][override_key].mul_list) {
-                    mul_value *= row_value;
-                }
-                this.AbilitySpecialValue[player_id][abilityname][override_key].mul_value = mul_value
-            }
-            if (RowInput.Correct) {
-                this.AbilitySpecialValue[player_id][abilityname][override_key].correct_value += RowInput.Correct
-            }
-        }
-        this.UpdateSpecialValue(player_id, abilityname);
-    }
-
     ModifyOverrideSpecialValue(player_id: PlayerID, special_input: OverrideSpecialInputProps) {
         for (let override_key in special_input) {
-            if (this.OverrideSpecialMul[player_id][override_key] == null) {
-                this.OverrideSpecialMul[player_id][override_key] = { mul_list: [], }
+            if (this.OverrideSpecialValue[player_id][override_key] == null) {
                 this.OverrideSpecialValue[player_id][override_key] = {
                     base_value: 0,
                     mul_value: 1,
@@ -182,18 +98,19 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
             }
             if (RowInput.Multiple) {
                 let mul_input = (100 + RowInput.Multiple) * 0.01
-                this.OverrideSpecialMul[player_id][override_key].mul_list.push(mul_input)
-                let mul_value = 1;
-                for (let row_value of this.OverrideSpecialMul[player_id][override_key].mul_list) {
-                    mul_value *= row_value;
-                }
-                this.OverrideSpecialValue[player_id][override_key].mul_value = mul_value
+                this.OverrideSpecialValue[player_id][override_key].mul_value *= mul_input
             }
             if (RowInput.Correct) {
                 this.OverrideSpecialValue[player_id][override_key].correct_value += RowInput.Correct
             }
         }
-        this.UpdateSpecialValue(player_id);
+
+        // 刷新一次技能
+        GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
+
+
+        this.GetUpdateSpecialValue(player_id)
+
     }
 
     // CustomOverrideAbility_
@@ -266,14 +183,48 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
             }
         )
     }
+
     GetOverrideKeyValue(player_id: PlayerID, override_key: OverrideSpecialKeyTypes) {
+
+        // this.GetAbilityTypesAffixBonus(100, "Aoe", "skv_aoe_dmg",)
         return this.OverrideSpecialValue[player_id][override_key].cache_value
     }
 
+    /**
+     * 获得当前词条额外加成后的值
+     * @param value 
+     * @param skv_type 
+     * @param hAbility 
+     */
+    GetTypesAffixValue<
+        T1 extends keyof typeof SpecialvalueOfTable,
+        T2 extends keyof typeof SpecialvalueOfTable[T1]
+    >(flBaseValue: number, skv_affix: T1, skv_key: T2, hAbility: CDOTABaseAbility) {
+        let skv_type = hAbility.custom_ability_types.skv_type[skv_affix]
+        let player_id = hAbility.GetCaster().GetPlayerOwnerID();
+        const OverrideSpecialValue = this.OverrideSpecialValue[player_id];
+        // print('input value', value, "skv_affix", skv_affix, "skv_type", skv_type, "skv_key", skv_key)
+        if (!skv_type) { return flBaseValue }
+        // DeepPrintTable(OverrideSpecialValue)
+        const row_data = this.OverrideSpecialValue[player_id][skv_key as string]
+        if (row_data) {
+            // let flBaseValue = value;
+            let flAddResult = row_data.base_value;
+            let flMulResult = row_data.mul_value;
+            let flPercentResult = row_data.percent_value * 0.01;
+            let flCorrResult = math.max(0, row_data.correct_value * 0.01);
+            let flResult = math.floor((flBaseValue + flAddResult) * flPercentResult * flMulResult * flCorrResult);
+            return flResult
+        }
+        return flBaseValue
+
+    }
+
     Debug(cmd: string, args: string[], player_id: PlayerID) {
-        if (cmd == "-amrs2") {
+        if (cmd == "-coa") {
             this.ModifyOverrideSpecialValue(player_id, {
-                "skv_summon_duration": {
+                "skv_aoe_radius": {
+                    "Base": 10,
                     "Percent": 10,
                 }
             })

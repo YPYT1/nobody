@@ -1,5 +1,7 @@
 import { default as ElementBondConst } from "../json/config/game/element_bond.json";
 
+/** 六大元素关键词 */
+export const ELEMENT_KEYS_LIST: CElementType[] = ["null","fire", "ice", "thunder", "wind", "light", "dark"];
 
 type ElementBondTypeKey = keyof typeof ElementBondConst;
 type ElementBondTypeRowData = typeof ElementBondConst[ElementBondTypeKey]

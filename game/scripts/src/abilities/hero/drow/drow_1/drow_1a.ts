@@ -4,8 +4,8 @@ import { drow_1, modifier_drow_1 } from "./drow_1";
 /**
  * 攻击变为%aoe_radius%码范围伤害，伤害提高%bonus_value%%%，伤害变为火元素伤害。
  * 爆炸分支
- * A:浓缩（1/2）：爆炸箭有10%概率2.5倍伤害。（2/2）5倍伤害。
- * B:炸裂（1/2）：爆炸箭范围提高150码，灼烧伤害提高45%/90%。
+3	浓缩	爆炸箭有%mul_chance%%%概率%mul_value%倍伤害
+4	碎裂	爆炸箭范围提高%skv_aoe_radius%码，灼烧伤害提高%burn_dmg%%%。
  */
 @registerAbility()
 export class drow_1a extends drow_1 {
@@ -20,13 +20,21 @@ export class drow_1a extends drow_1 {
         return "modifier_drow_1a"
     }
 
+    // LoadCustomAbilityType(): void {
+    //     this.SetCustomAbilityType("Aoe", true)
+    //     this.AddCustomAbilityElement(ElementTypes.FIRE)
+    // }
+
     UpdataSpecialValue(): void {
-        // print("[UpdataSpecialValue]:",this.GetAbilityName())
+
+        // this.GetLevelSpecialValueNoOverride()
         this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
         this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
         this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");
-        this.aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "aoe_radius")
-            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "4", "aoe_radius");
+        let aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "skv_aoe_radius")
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "4", "skv_aoe_radius");
+
+        this.aoe_radius = GameRules.CustomOverrideAbility.GetTypesAffixValue(aoe_radius, "Aoe","skv_aoe_radius", this)
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
@@ -71,7 +79,7 @@ export class drow_1a extends drow_1 {
                 null
             )
             ParticleManager.SetParticleControl(cast_fx, 0, vPos);
-            ParticleManager.SetParticleControl(cast_fx, 1, Vector(this.aoe_radius,1,1));
+            ParticleManager.SetParticleControl(cast_fx, 1, Vector(this.aoe_radius, 1, 1));
             ParticleManager.ReleaseParticleIndex(cast_fx);
         }
     }

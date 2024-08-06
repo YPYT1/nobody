@@ -33,7 +33,7 @@ export class drow_1c extends drow_1 {
                 damage_type: damage_type,
                 ability: this,
                 element_type: element_type,
-                is_primary:true,
+                is_primary: true,
             })
         }
     }
@@ -52,6 +52,7 @@ export class modifier_drow_1c extends modifier_drow_1 {
             this.element_type = ElementTypes.ICE;
             this.damage_type = DamageTypes.MAGICAL;
             this.tracking_proj_name = G_PorjTrack.ice;
+            this.ability.AddCustomAbilityElement(ElementTypes.ICE)
         }
 
     }

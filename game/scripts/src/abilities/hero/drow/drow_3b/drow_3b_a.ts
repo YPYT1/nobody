@@ -13,6 +13,7 @@ export class drow_3b_a extends drow_3b {
     GetIntrinsicModifierName(): string {
         return "modifier_drow_3b_a"
     }
+
 }
 
 @registerModifier()

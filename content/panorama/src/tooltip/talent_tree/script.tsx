@@ -1,13 +1,15 @@
 import { GetTextureSrc } from "../../common/custom_kv_method";
 import { default as talent_tree_drow_ranger } from "../../json/config/game/hero/talent_tree/drow_ranger.json";
 import { FormatDescription } from "../../utils/method";
-
+import { default as AbilityTypesJson } from "./../../json/config/game/const/ability_types.json";
 let talent_tree = {
     ["drow_ranger"]: talent_tree_drow_ranger
 }
 
 let MainPanel = $.GetContextPanel();
 // let TalentIcon = $("#TalentIcon") as ImagePanel;
+let ExtraElement = $("#ExtraElement");
+let ExtraTypes = $("#ExtraTypes");
 
 export function Init() {
 
@@ -28,20 +30,28 @@ function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
     let talent_data = talent_tree[hero as keyof typeof talent_tree][key as "1"]
     let img = talent_data.img;
     let AbilityValues = talent_data.AbilityValues;
-
     MainPanel.SetDialogVariableInt("max", talent_data.max_number)
     MainPanel.SetDialogVariableInt("level", level)
-
     let talent_name = $.Localize(`#custom_talent_${hero}_${key}`)
     MainPanel.SetDialogVariable("talent_name", talent_name)
-
     let talent_desc = $.Localize(`#custom_talent_${hero}_${key}_desc`)
     let description_txt = FormatDescription(talent_desc, AbilityValues, level, true);
-
     MainPanel.SetDialogVariable("talent_desc", description_txt)
-
     // 风格
     MainPanel.SetHasClass("IsAbility", talent_data.is_ability == 1)
+    // extra
+    let has_element = talent_data.mark_element;
+    ExtraElement.SetHasClass("Show", has_element > 0 && level == 0);
+    for (let i = 1; i <= 6; i++) {
+        ExtraElement.SetHasClass("element_" + i, has_element == i)
+    }
+    let has_newTypes = talent_data.mark_types != "Null";
+    let types_value = talent_data.mark_types
+    ExtraTypes.SetHasClass("Show", has_newTypes && level == 0)
+    for (let type_key in AbilityTypesJson) {
+        ExtraTypes.SetHasClass(type_key, types_value == type_key)
+    }
+
 
 }
 function PlayerTalentUpdateCallback<

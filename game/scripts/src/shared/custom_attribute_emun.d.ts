@@ -86,26 +86,56 @@ declare type CustomAttributeConversionType = {
     }
 }
 
+declare type CustomHeroAbilityTypes = "Null" 
+    |"Summon"
+    | "Ring"
+    | "Surround"
+    | "Aoe"
+    | "Bounce"
+    | "Missile"
+    | "Targeting"
+    | "Dot"
+    | "Orb"
+    | "Resource"
+    | "Growth"
+    | "Buff"
+
 
 declare type OverrideSpecialKeyTypes = "skv_missile_count"
+    | "skv_missile_speed"
+    | "skv_missile_distance"
+    | "skv_missile_dmg"
     | "skv_aoe_radius"
+    | "skv_aoe_multiple"
+    | "skv_aoe_dmg"
     | "skv_dot_duration"
     | "skv_dot_interval"
-    | "skv_grow_income"
+    | "skv_grow_value"
     | "skv_surround_speed"
-    | "skv_surround_duration"
+    | "skv_surround_dmg"
     | "skv_surround_count"
+    | "skv_surround_distance"
     | "skv_ring_width"
     | "skv_ring_interval"
+    | "skv_ring_range"
+    | "skv_ring_width"
+    | "skv_ring_dmg"
     | "skv_bounce_count"
     | "skv_bounce_increase"
-    | "skv_target_count"
-    | "skv_resource_percent"
-    | "skv_buff_increase"
+    | "skv_bounce_reduction"
+    | "skv_targeting_count"
+    | "skv_resource_income"
     | "skv_orb_chance"
-    | "skv_orb_count"
+    | "skv_orb_required"
     | "skv_summon_duration"
     | "skv_summon_strength"
+    | "skv_summon_haste"
+    | "skv_growth_bonus"
+    | "skv_buff_increase"
+    | "skv_all_haste"
+    | "skv_all_dmg"
+    | "skv_all_manacost"
+    ;
 
 
 declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Multiple" | "Correct";
@@ -140,18 +170,6 @@ interface MinorAbilityUpgradesProps {
 
 /** 资源类型 */
 type PlayerResourceTyps = "Gold" | "Soul" | "Kills" | "TeamExp" | "SingleExp";
-
-/** 技能类型 */
-declare type ArmsTypeCategory = "Aoe" // 范围
-    | "Buff" // 强化
-    | "Dot" // 持续
-    | "Grow" // 成长
-    | "Missile" // 弹道
-    | "Orb" // 法球
-    | "Resource" // 理财
-    | "Summon" // 召唤
-    | "Surround" // 环绕
-    ;
 
 interface PlayEffectProps {
     /** 目标 */

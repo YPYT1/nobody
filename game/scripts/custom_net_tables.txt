@@ -7,5 +7,6 @@
         "unit_attribute_value",
         "unit_special_value",
         "hero_talent",
+        "custom_ability_types"
     ]
 }

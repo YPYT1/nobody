@@ -34,7 +34,7 @@ export class drow_1 extends BaseHeroAbility {
 export class modifier_drow_1 extends BaseHeroModifier {
 
     proj_name: string;
-   		
+
     fakeAttack: boolean;
     useProjectile: boolean;
     base_value: number = 0;

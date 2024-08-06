@@ -15,9 +15,13 @@
                     <Label class="TalentLevel" text="{d:level} / {d:max}"/>
                 </Panel>
                 <Panel class="TalentExtraInfo">
-                    <Label text="extra"/>
+                    <Panel id="ExtraElement">
+                        <Panel class="NewIcon" />
+                    </Panel>
+                    <Panel id="ExtraTypes" class="TypesIcon">
+                        <Panel class="NewIcon" />
+                    </Panel>
                 </Panel>
-
             </Panel>
             <Label class="TalentDesc" text="{s:talent_desc}" html="true" />
         </Panel>

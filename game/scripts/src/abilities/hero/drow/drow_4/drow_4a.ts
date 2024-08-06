@@ -42,7 +42,7 @@ export class modifier_drow_4a extends BaseHeroModifier {
                 })
             } else {
                 // 立即恢复
-                print("this.recover_mana",this.recover_mana)
+                print("this.recover_mana", this.recover_mana)
                 this.caster.GiveMana(this.recover_mana);
             }
 
@@ -98,7 +98,7 @@ export class modifier_drow_4a_recover_mana extends BaseModifier {
     }
 
     OnIntervalThink(): void {
-        print("this.sec_give_mana",this.sec_give_mana)
+        print("this.sec_give_mana", this.sec_give_mana)
         this.caster.GiveMana(this.sec_give_mana)
     }
 

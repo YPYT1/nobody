@@ -17,10 +17,18 @@ declare interface CustomNetTableDeclarations {
         [player_id: string]: MinorAbilityUpgradesProps;
     }
     //天赋信息
-    hero_talent : {
-        [player_id : string] : CGEDPlayerTalentSkillClientList
+    hero_talent: {
+        [player_id: string]: CGEDPlayerTalentSkillClientList
     }
 
+    custom_ability_types: {
+        [ability_entity: string]: {
+            skv_type: {
+                [key in CustomHeroAbilityTypes]?: boolean
+            },
+            element_type: ElementTypes[]
+        }
+    }
 }
 
 interface UnitAttributeNT {
