@@ -6,5 +6,6 @@ require('md5');
 require('popups');
 require('timers');
 require('tools');
+require('lfun');
 // rename SHA and make it global
 globalThis.SHA = require('sha');

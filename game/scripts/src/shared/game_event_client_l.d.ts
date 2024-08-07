@@ -363,13 +363,19 @@ declare interface CGEDPlayerTalentConfig {
 
 
 
-declare interface CGEDServerSkillful {
+declare interface PlayerServerSkillLevelCount {
     level : { [ key : string] : {
         lv : number, //等级
         exp : number, //经验
         type : number, //类型
         cur_exp : number , //当前经验   
     }};
+}
+
+declare interface CGEDServerSkillTypeLevel {
+    [ key : string ] : {
+        lv : number, //等级
+    };
 }
 
 

@@ -539,7 +539,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * @param player_id 玩家id
      * @param Element 元素
      * @param count 数量
-     * @param SkillIndex 技能位置
+     * @param type  元素来源类型 1 技能 可重置 2 额外 不可重置
      */
     SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number , type : number = 1){ //1 为技能（技能要重置） 2为额外不重置
         //先处理光暗特殊情况
@@ -604,16 +604,16 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         }else{
             this.ElementBondDateExtra[player_id].Element[Element] += count;
         }
-        
+
         this.UpdateElementBondEffect(player_id);
 
         this.GetArmssElementBondDateList(player_id, {})
     }
     /**
-     * 初始化技能上的元素信息
+     * 初始化来源于技能上的元素属性
      * @param player_id 
      */
-    ElementSkillInit(player_id: PlayerID , ){
+    ElementSkillInit(player_id: PlayerID){
 
         this.ElementBondDateSkill[player_id] = {
             "Element": {
