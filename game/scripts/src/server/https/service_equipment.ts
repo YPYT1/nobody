@@ -33,14 +33,13 @@ export class ServiceEquipment extends UIEventRegisterClass {
     Puzzle_Attr_SEAEP: { [key: string]: number[]; } = {};
     //词条key数据   
     Puzzle_Attr_SEAEKEY: { [key: string]: string[]; } = {};
-
+    
     //词条概率数据 
     Main_Attr_SEAEP: { [key: string]: number[]; } = {};
     //词条key数据   
     Main_Attr_SEAEKEY: { [key: string]: string[]; } = {};
     //是否显示装备加载信息
     is_show_show_log : boolean = false; 
-
 
     //套装信息
     ServerEquipDeputy: typeof ServerEquipDeputy;    

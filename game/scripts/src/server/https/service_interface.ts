@@ -21,8 +21,19 @@ export class ServiceInterface extends UIEventRegisterClass{
         //初始化分支等级
         for (let index = 0; index < 6; index++) {
             this.PlayerServerSkillTypeLevel.push({})
+            //英雄星级
+            //需要删除
+            this.player_hero_star.push({
+                6 : 3
+            })
         }
+
+        
     }
+    //玩家对应英雄等级
+    player_hero_star : {
+        [hero_id : string] : number
+    }[] = [];
     //游戏激活状态
     _game_activate = 0;
     //获取游戏是否激活
@@ -37,6 +48,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             }
         );
     }
+
     //激活游戏
     PlyaerGameActivate(player_id: PlayerID, params: any, callback?) {
         let key:string = params.key;
@@ -46,6 +58,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     PlayerServerSkillLevelCount : PlayerServerSkillLevelCount[] = [];
     //分支等级
     PlayerServerSkillTypeLevel : CGEDServerSkillTypeLevel[] = [];
+    
     /**
      * 经验值转等级
      * @param key 
@@ -146,8 +159,6 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
             }
         }
-
-
         DeepPrintTable(this.PlayerServerSkillTypeLevel[player_id]);
     }
 

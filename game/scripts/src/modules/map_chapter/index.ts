@@ -16,6 +16,8 @@ export class MapChapter extends UIEventRegisterClass {
     ChapterMapHandle: SpawnGroupHandle;
 
     GameDifficulty: keyof typeof MapInfoDifficulty = "101";
+    //难度数字类型
+    GameDifficultyNumber : number = 101;
 
     MapIndex: keyof typeof MapInfo = "m1";
 
@@ -41,7 +43,7 @@ export class MapChapter extends UIEventRegisterClass {
     is_new_player : number = 0;
     //确认时间
     select_map_time : number = 60;
-    //客服端确认时间
+    //客服端确认时间    
     countdown_select_map_time : number = 0;
     //确认英雄时间
     select_hero_time : number = 60;
@@ -73,13 +75,13 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.MapChapter.OnCreatedCampMap();
 
         this._map_list["c1"] = {
-            user_difficulty: 103, // 玩家最高可选难度
-            difficulty_max: 105, // 地图最高难度
+            user_difficulty: 108, // 玩家最高可选难度
+            difficulty_max: 108, // 地图最高难度
             map_key: "m1", //地图编号 m1 m2 
         };
         this._map_list["c2"] = {
-            user_difficulty: 202, // 玩家最高可选难度
-            difficulty_max: 205, // 地图最高难度
+            user_difficulty: 208, // 玩家最高可选难度
+            difficulty_max: 208, // 地图最高难度    
             map_key: "m2", //地图编号 m1 m2 
         }
         this._map_list["c3"] = {
@@ -218,6 +220,7 @@ export class MapChapter extends UIEventRegisterClass {
     SelectDifficulty(player_id: PlayerID, params: CGED["MapChapter"]["SelectDifficulty"]) {
         if (this._game_select_phase == 0 && player_id == 0 && params.difficulty != "-1") {
             this.GameDifficulty = params.difficulty as keyof typeof MapInfoDifficulty;
+            this.GameDifficultyNumber = tonumber(this.GameDifficulty);
             this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
         }
         CustomGameEventManager.Send_ServerToAllClients(

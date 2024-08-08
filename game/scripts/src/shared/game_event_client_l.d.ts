@@ -359,6 +359,7 @@ declare interface CGEDPlayerTalentSkillPoints {
 
 declare interface CGEDPlayerTalentConfig {
     unlock_count : { [ key : number] : number};
+    unlock_level : { [ key : number] : number};
 }
 
 

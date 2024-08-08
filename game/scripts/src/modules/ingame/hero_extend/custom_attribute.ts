@@ -34,7 +34,6 @@ export class CustomAttribute {
         this.hero_wearable = {};
         this.update_delay = 0.25;
         this.hero_wearable["npc_dota_hero_drow_ranger"] = drow_range_wearable
-
         ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
     }
 
@@ -53,6 +52,8 @@ export class CustomAttribute {
         if(event.level % 10 == 0){
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
         }
+        //等级检查
+        GameRules.HeroTalentSystem.TalentUnlockLevel(event.player_id, event.level);
         this.AttributeInLevelUp(hHero)
     }
 
@@ -243,8 +244,6 @@ export class CustomAttribute {
                 }, this.update_delay);
             }
         }
-
-
     }
 
     /**
