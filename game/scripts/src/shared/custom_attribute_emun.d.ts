@@ -86,8 +86,8 @@ declare type CustomAttributeConversionType = {
     }
 }
 
-declare type CustomHeroAbilityTypes = "Null" 
-    |"Summon"
+declare type CustomHeroAbilityTypes = "Null"
+    | "Summon"
     | "Ring"
     | "Surround"
     | "Aoe"
@@ -99,22 +99,25 @@ declare type CustomHeroAbilityTypes = "Null"
     | "Resource"
     | "Growth"
     | "Buff"
-
+    | "All"
 
 declare type OverrideSpecialKeyTypes = "skv_missile_count"
     | "skv_missile_speed"
     | "skv_missile_distance"
     | "skv_missile_dmg"
     | "skv_aoe_radius"
-    | "skv_aoe_multiple"
+    | "skv_aoe_chance"
+    | "skv_aoe_correct"
     | "skv_aoe_dmg"
     | "skv_dot_duration"
     | "skv_dot_interval"
+    | "skv_dot_dmg"
     | "skv_grow_value"
     | "skv_surround_speed"
     | "skv_surround_dmg"
     | "skv_surround_count"
     | "skv_surround_distance"
+    | "skv_surround_dmg"
     | "skv_ring_width"
     | "skv_ring_interval"
     | "skv_ring_range"
@@ -123,18 +126,26 @@ declare type OverrideSpecialKeyTypes = "skv_missile_count"
     | "skv_bounce_count"
     | "skv_bounce_increase"
     | "skv_bounce_reduction"
+    | "skv_bounce_dmg"
     | "skv_targeting_count"
+    | "skv_targeting_dmg"
+    | "skv_targeting_multiple1"
+    | "skv_targeting_multiple2"
+    | "skv_targeting_multiple3"
     | "skv_resource_income"
     | "skv_orb_chance"
     | "skv_orb_required"
+    | "skv_orb_dmg"
     | "skv_summon_duration"
     | "skv_summon_strength"
     | "skv_summon_haste"
+    | "skv_summon_dmg"
     | "skv_growth_bonus"
     | "skv_buff_increase"
     | "skv_all_haste"
     | "skv_all_dmg"
     | "skv_all_manacost"
+
     ;
 
 
@@ -188,4 +199,87 @@ interface PlayEffectProps {
     bonus_pct?: number;
     /** 临时单位组 */
     unit_list?: CDOTA_BaseNPC[]
+}
+
+
+/**
+ * 技能类型修正类型,对应支持的修改值类型 `基础` `百分比加成` `独立乘算` `修正值`
+ */
+interface SpecialvalueOfTableProps {
+
+    Missile: {
+        skv_missile_count: { Base, Percent, Multiple, Correct };
+        skv_missile_speed: number;
+        skv_missile_distance: number;
+        skv_missile_dmg: number;
+    };
+    Aoe: {
+        skv_aoe_radius: number;
+        skv_aoe_chance: number; // 多重概率
+        skv_aoe_dmg: number;
+        skv_aoe_correct: number; // AOE伤害独立乘区
+    };
+    Targeting: {
+        skv_targeting_count: number;
+        skv_targeting_dmg: number;
+        skv_targeting_multiple1: number;
+        skv_targeting_multiple2: number;
+        skv_targeting_multiple3: number;
+    };
+    Dot: {
+        skv_dot_duration: number;
+        skv_dot_interval: number;
+        skv_dot_dmg: number;
+
+    };
+    Growth: {
+        skv_growth_bonus: number;
+    };
+    Surround: {
+        skv_surround_speed: number;
+        skv_surround_dmg: number;
+        skv_surround_count: number;
+        skv_surround_distance: number;
+    };
+    Buff: {
+        skv_buff_increase: number;
+    };
+    Resource: {
+        skv_resource_income: number;
+    };
+    Summon: {
+        skv_summon_duration: number;
+        skv_summon_strength: number;
+        skv_summon_haste: number;
+        skv_summon_dmg: number;
+    };
+    Orb: {
+        skv_orb_chance: number;
+        skv_orb_required: number;
+        skv_orb_dmg: number;
+    };
+    Ring: {
+        skv_ring_interval: number;
+        skv_ring_range: number;
+        skv_ring_width: number;
+        skv_ring_dmg: number;
+    };
+    Bounce: {
+        skv_bounce_count: number;
+        skv_bounce_increase: number;
+        skv_bounce_reduction: number;
+        skv_bounce_dmg: number;
+    };
+}
+
+
+interface SpecialvalueOfTableSpecialProps {
+
+    Aoe: {
+        skv_targeting_multiple: {
+            skv_targeting_multiple1: number;
+            skv_targeting_multiple2: number;
+            skv_targeting_multiple3: number;
+        }
+    }
 }

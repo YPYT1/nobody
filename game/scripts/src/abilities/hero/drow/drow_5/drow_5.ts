@@ -2,7 +2,7 @@ import { BaseModifier, registerAbility, registerModifier } from "../../../../uti
 import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 
 /**
-54	复仇	引燃复仇之魂，获得40%伤害加成，持续15秒。cd：40秒,没有蓝耗。
+54	复仇【增益型】	引燃复仇之魂，获得40%伤害加成，持续15秒。cd：40秒,没有蓝耗。
  */
 @registerAbility()
 export class drow_5 extends BaseHeroAbility {
@@ -64,14 +64,19 @@ export class modifier_drow_5_buff extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.OnRefresh(params)
+        this.PlayEffect();
+    }
+
+    OnRefresh(params: object): void {
         let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
+        dmg_bonus_pct = this.GetAbility().GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase")
         let hParent = this.GetParent();
         GameRules.CustomAttribute.SetAttributeInKey(hParent, this.buff_key, {
             'DamageBonusMul': {
                 "Base": dmg_bonus_pct
             }
         })
-        this.PlayEffect();
     }
 
     PlayEffect() {
@@ -97,11 +102,13 @@ export class modifier_drow_5_branch_a extends modifier_drow_5_buff {
     buff_key = "drow_5_branch_a";
     particleName = "particles/dev/hero/drow/drow_4/vengeance_ice.vpcf";
 
-    OnCreated(params: object): void {
+    OnRefresh(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
-        let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
+        let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct");
+        dmg_bonus_pct = this.GetAbility().GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase");
         let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "55", 'bonus_value');
+        bonus_value = this.GetAbility().GetTypesAffixValue(bonus_value, "Buff", "skv_buff_increase");
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             'DamageBonusMul': {
                 "Base": dmg_bonus_pct
@@ -110,7 +117,6 @@ export class modifier_drow_5_branch_a extends modifier_drow_5_buff {
                 "Base": bonus_value
             }
         })
-        this.PlayEffect()
     }
 
 
@@ -123,12 +129,15 @@ export class modifier_drow_5_branch_b extends modifier_drow_5_buff {
     buff_key = "drow_5_branch_a";
     particleName = "particles/units/heroes/hero_brewmaster/brewmaster_drunken_stance_earth.vpcf";
 
-    OnCreated(params: object): void {
+    OnRefresh(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
+        dmg_bonus_pct = this.GetAbility().GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase")
         let ad_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "56", 'ad_bonus_pct');
+        ad_bonus_pct = this.GetAbility().GetTypesAffixValue(ad_bonus_pct, "Buff", "skv_buff_increase")
         let as_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "56", 'as_bonus_pct');
+        as_bonus_pct = this.GetAbility().GetTypesAffixValue(as_bonus_pct, "Buff", "skv_buff_increase")
         // print("ad_bonus_pct",ad_bonus_pct,as_bonus_pct)
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             'AttackDamage': {
@@ -144,7 +153,6 @@ export class modifier_drow_5_branch_b extends modifier_drow_5_buff {
                 "Base": dmg_bonus_pct
             },
         })
-        this.PlayEffect()
     }
 }
 
@@ -154,11 +162,16 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
 
     buff_key = "drow_5_branch_c";
     particleName = "particles/units/heroes/hero_brewmaster/brewmaster_drunken_stance_fire.vpcf";
+    mana_pct: number = 100;
 
-    OnCreated(params: object): void {
+    OnRefresh(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
-        let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
+        let hAbility = this.GetAbility()
+        let mana_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "57", "mana_pct");
+        this.mana_pct = hAbility.GetTypesAffixValue(mana_pct, "Buff", "skv_buff_increase");
+        let dmg_bonus_pct = hAbility.GetSpecialValueFor("dmg_bonus_pct")
+        dmg_bonus_pct = hAbility.GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase")
         let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "57", 'bonus_value');
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             'FireDamageBonus': {
@@ -168,8 +181,9 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
                 "Base": dmg_bonus_pct
             },
         })
-        this.PlayEffect()
+
     }
+
 
     DeclareFunctions(): modifierfunction[] {
         return [
@@ -177,9 +191,8 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
         ]
     }
 
-
     GetModifierPercentageManacostStacking(): number {
-        return 50
+        return this.mana_pct
     }
 
 }

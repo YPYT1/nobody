@@ -17,6 +17,9 @@ export class drow_3a extends BaseHeroAbility {
         return "modifier_drow_3a"
     }
 
+    UpdataAbilityValue(): void {
+        this.SetCustomAbilityType("Surround", true)
+    }
 }
 
 @registerModifier()
@@ -41,8 +44,13 @@ export class modifier_drow_3a extends BaseHeroModifier {
             this.ability.UseResources(true, true, true, true);
             this.ExtraEffect()
             let total_count = this.base_count + this.bonus_count;
+            let skv_surround_count = this.ability.GetTypesAffixValue(0, "Surround", "skv_surround_count");
+            // print("skv_surround_count", skv_surround_count)
+            total_count += this.ability.GetTypesAffixValue(0, "Surround", "skv_surround_count");
             // 1个 面向 2个对角 3
             let pre_angle = 360 / total_count;
+            let surround_speed = this.ability.GetTypesAffixValue(300, "Surround", "skv_surround_speed");
+            let surround_distance = this.ability.GetTypesAffixValue(500, "Surround", "skv_surround_distance")
             for (let i = 0; i < total_count; i++) {
                 let surround_qangle = i * pre_angle;
                 let hSpirit = GameRules.SummonedSystem.CreatedUnit(
@@ -55,9 +63,9 @@ export class modifier_drow_3a extends BaseHeroModifier {
 
                 hSpirit.AddNewModifier(this.caster, this.ability, this.surround_mdf, {
                     duration: this.surround_duration,
-                    surround_distance: 500,
+                    surround_distance: surround_distance,
                     surround_qangle: surround_qangle,
-                    surround_speed: 300,
+                    surround_speed: surround_speed,
                     surround_entity: this.caster.entindex(),
                 });
             }
@@ -76,7 +84,6 @@ export class modifier_drow_3a_summoned extends modifier_motion_surround {
 
     aura_radius = 300;
     ModifierAura = "modifier_drow_3a_summoned_collision";
-
 
     IsAura(): boolean { return true; }
     GetAuraRadius(): number { return this.aura_radius; }
@@ -125,6 +132,14 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
     element_type: ElementTypes;
     interval: number;
 
+    GetAttributes(): DOTAModifierAttribute_t {
+        return ModifierAttribute.MULTIPLE
+    }
+
+    IsHidden(): boolean {
+        return true
+    }
+    
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
@@ -136,7 +151,6 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
         this.OnCreated_Extends();
         this.OnIntervalThink();
         this.StartIntervalThink(this.interval);
-
     }
 
     OnCreated_Extends() {

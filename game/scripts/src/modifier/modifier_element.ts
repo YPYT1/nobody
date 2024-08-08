@@ -22,13 +22,16 @@ export class modifier_element_effect_fire extends BaseModifier {
         this.element_type = ElementTypes.FIRE;
         this.OnRefresh(params)
         this.C_OnCreated(params);
-        this.dot_interval = 1;
-        this.StartIntervalThink(this.dot_interval)
+
+        let interval_increase: number = params.interval_increase ?? 0;
+        let base_interval = params.base_interval ?? 1;
+        let interval = base_interval / (1 + interval_increase * 0.01);
+        this.StartIntervalThink(interval)
     }
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
-        let burn_percent = this.caster.custom_attribute_value.BurningDmg;
+        let burn_percent = this.caster.custom_attribute_value["BurningDmg"];
         this.dot_damage = math.floor(this.caster.GetAverageTrueAttackDamage(null) * burn_percent * 0.01);
     }
 
@@ -41,7 +44,7 @@ export class modifier_element_effect_fire extends BaseModifier {
             damage: this.dot_damage,
             damage_type: DamageTypes.MAGICAL,
             ability: this.GetAbility(),
-            element_type: this.element_type,
+            element_type: ElementTypes.FIRE,
             is_primary: false,
             special_effect: true,
         });
@@ -92,7 +95,7 @@ export class modifier_element_effect_ice_frozen extends BaseModifier {
     GetTexture(): string {
         return "crystal_maiden_frostbite"
     }
-    
+
     IsDebuff(): boolean { return true }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {

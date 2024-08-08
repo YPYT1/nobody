@@ -23,9 +23,11 @@ export class drow_2a_a extends drow_2a {
         this.talent_13 = this.caster.hero_talent["13"] ?? 0;
     }
 
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
+            let bp_ingame = extraData.bp_ingame;
+            let bp_server = extraData.bp_server;
             if (this.talent_14 > 0) {
                 let damage_vect = Vector(extraData.x, extraData.y, 0);
                 ApplyCustomDamage({
@@ -37,6 +39,8 @@ export class drow_2a_a extends drow_2a {
                     is_primary: true,
                     element_type: ElementTypes.WIND,
                     damage_vect: damage_vect,
+                    bp_ingame: bp_ingame,
+                    bp_server: bp_server,
                 })
             } else {
                 ApplyCustomDamage({
@@ -46,14 +50,16 @@ export class drow_2a_a extends drow_2a {
                     damage_type: DamageTypes.MAGICAL,
                     ability: this,
                     is_primary: true,
+                    bp_ingame: bp_ingame,
+                    bp_server: bp_server,
                 })
             }
+
             if (this.talent_13 > 0) {
                 target.AddNewModifier(this.caster, this, "modifier_drow_2a_a_debuff", {
                     duration: 3
                 })
             }
-
             return true
         }
     }
@@ -94,13 +100,4 @@ export class modifier_drow_2a_a_debuff extends BaseModifier {
         }
     }
 
-    DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
-        ]
-    }
-
-    GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
-        return this.GetStackCount() * this.stack_income
-    }
 }

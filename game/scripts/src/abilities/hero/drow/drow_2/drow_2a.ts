@@ -16,9 +16,11 @@ export class drow_2a extends BaseHeroAbility {
         return "modifier_drow_2a"
     }
 
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
+            let bp_ingame = extraData.bp_ingame;
+            let bp_server = extraData.bp_server;
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -26,6 +28,8 @@ export class drow_2a extends BaseHeroAbility {
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
                 is_primary: true,
+                bp_ingame: bp_ingame,
+                bp_server: bp_server,
             })
             return true
         }
@@ -46,7 +50,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
     UpdataAbilityValue(): void {
         const hAbility = this.GetAbility();
         this.base_value = hAbility.GetSpecialValueFor("base_value");
-        this.proj_count = hAbility.GetSpecialValueFor("proj_count");
+        this.proj_count = hAbility.GetSpecialValueForTypes("proj_count", "Targeting", "skv_targeting_count");
         this.proj_speed = hAbility.GetSpecialValueFor("proj_speed");
         this.proj_width = hAbility.GetSpecialValueFor("proj_width");
         this.action_range = hAbility.GetSpecialValueFor("action_range");
@@ -78,7 +82,9 @@ export class modifier_drow_2a extends BaseHeroModifier {
         let hTarget = params.hTarget;
         let vTarget = hTarget.GetAbsOrigin();
         let count = 0;
-        let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
+        let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
+        let bp_ingame = (this.base_value - 100);
+        let bp_server = 0;
         this.caster.SetContextThink("drow_2a_shot", () => {
             // print("proj_width",this.proj_width)
             let vCaster = this.caster.GetAbsOrigin() + RandomVector(100) as Vector;
@@ -99,10 +105,12 @@ export class modifier_drow_2a extends BaseHeroModifier {
                 iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
                 iUnitTargetFlags: UnitTargetFlags.NONE,
                 ExtraData: {
-                    a: ability_damage,
+                    a: attack_damage,
                     x: vCaster.x,
-                    y: vCaster.y
-                }
+                    y: vCaster.y,
+                    bp_ingame: bp_ingame,
+                    bp_server: bp_server,
+                } as ProjectileExtraData
             })
             count += 1;
             if (count >= this.proj_count) {

@@ -14,8 +14,9 @@ export class ElementEffect {
     /** 设置火元素效果 */
     SetFirePrimary(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC) {
         let hAbility = hCaster.FindAbilityByName("public_attribute");
+        let burning_duration = hCaster.custom_attribute_value["BurningDuration"];
         hTarget.AddNewModifier(hCaster, hAbility, "modifier_element_effect_fire", {
-            duration: 3
+            duration: burning_duration,
         })
     }
 

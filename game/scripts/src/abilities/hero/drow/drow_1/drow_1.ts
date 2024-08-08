@@ -14,13 +14,13 @@ export class drow_1 extends BaseHeroAbility {
         return "modifier_drow_1"
     }
 
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: object): boolean | void {
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            let ability_damage = this.caster.GetAverageTrueAttackDamage(null);
+            // let bonus_pct: number = extraData.bp;
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
-                damage: ability_damage,
+                damage: this.caster.GetAverageTrueAttackDamage(null),
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
                 element_type: ElementTypes.NONE,
@@ -34,8 +34,6 @@ export class drow_1 extends BaseHeroAbility {
 export class modifier_drow_1 extends BaseHeroModifier {
 
     proj_name: string;
-
-    fakeAttack: boolean;
     useProjectile: boolean;
     base_value: number = 0;
     bonus_value: number = 0;
@@ -71,24 +69,44 @@ export class modifier_drow_1 extends BaseHeroModifier {
             )
             if (enemies.length <= 0) { return }
             let hTarget = enemies[0];
-            this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * (this.base_value + this.bonus_value) * 0.01
-            this.caster.in_process_attack = true;
+            let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
             this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
             this.caster.StartGesture(GameActivity.DOTA_ATTACK);
             this.caster.GiveMana(this.give_mana);
-            this.PlayPerformAttack(this.caster, hTarget, this.ability_damage, this.fakeAttack);
+            this.PlayPerformAttack(this.caster, hTarget, attack_damage, 0, 0);
             this.PlayAttackStart({ hTarget: hTarget })
-            this.caster.in_process_attack = false;
             let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
-
-            // print("attack_rate", attack_rate)
             this.StartIntervalThink(attack_rate)
         }
     }
 
 
-    PlayAttackStart(params: PlayEffectProps) {
+    PlayAttackStart(params: PlayEffectProps) { }
 
+    PlayPerformAttack(
+        hCaster: CDOTA_BaseNPC,
+        hTarget: CDOTA_BaseNPC,
+        attack_damage: number,
+        bp_ingame: number,
+        bp_server: number,
+    ) {
+        if (this.fakeAttack) { return }
+        // print("this",this.tracking_proj_name)
+        ProjectileManager.CreateTrackingProjectile({
+            Source: hCaster,
+            Target: hTarget,
+            Ability: this.GetAbility(),
+            EffectName: this.tracking_proj_name,
+            iSourceAttachment: ProjectileAttachment.HITLOCATION,
+            vSourceLoc: hCaster.GetAbsOrigin(),
+            iMoveSpeed: hCaster.GetProjectileSpeed(),
+            ExtraData: {
+                a: attack_damage,
+                bp_ingame: bp_ingame,
+                bp_server: bp_server,
+                et: this.element_type,
+                dt: this.damage_type,
+            } as ProjectileExtraData
+        })
     }
-
 }

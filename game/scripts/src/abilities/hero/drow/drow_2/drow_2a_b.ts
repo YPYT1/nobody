@@ -28,9 +28,9 @@ export class drow_2a_b extends drow_2a {
         this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '15', 'bonus_value')
         this.cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '16', 'cigu_value')
         this.bb_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "chance");
-        this.bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "radius");
         this.bb_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "base_value");
-
+        let bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "radius");
+        this.bb_radius = this.GetTypesAffixValue(this.bb_chance, "Aoe", "skv_aoe_radius")
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
@@ -62,41 +62,56 @@ export class drow_2a_b extends drow_2a {
             let is_slowed = UnitIsSlowed(target);
             // print("bingbao",is_slowed)
             if (is_slowed && RollPercentage(this.bb_chance)) {
-                // print("bingbao chufa ")
                 let vPos = target.GetAbsOrigin()
-                let effect_fx = ParticleManager.CreateParticle(
-                    "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf",
-                    ParticleAttachment.CUSTOMORIGIN,
-                    null
-                );
-                ParticleManager.SetParticleControl(effect_fx, 0, vPos);
-                // ParticleManager.SetParticleControl(effect_fx, 3, vPos);
-                ParticleManager.ReleaseParticleIndex(effect_fx);
-                let enemies = FindUnitsInRadius(
-                    this.caster.GetTeam(),
-                    vPos,
-                    null,
-                    this.bb_radius,
-                    UnitTargetTeam.ENEMY,
-                    UnitTargetType.BASIC + UnitTargetType.HERO,
-                    UnitTargetFlags.NONE,
-                    FindOrder.ANY,
-                    false
-                );
-                let damage = this.caster.GetAverageTrueAttackDamage(null) * this.bb_value * 0.01;
-                for (let enemy of enemies) {
-                    ApplyCustomDamage({
-                        victim: enemy,
-                        attacker: this.caster,
-                        damage: damage,
-                        damage_type: DamageTypes.MAGICAL,
-                        ability: this,
-                        element_type: ElementTypes.ICE,
-                        is_primary: true,
-                    })
+                let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+                this.PlayEffectAoe(vPos, attack_damage);
+
+                let aoe_multiple = this.GetTypesAffixValue(1, "Aoe", "skv_aoe_chance") - 1;
+                if (RollPercentage(aoe_multiple)) {
+                    let vPos2 = Vector(
+                        vPos.x + RandomInt(-this.bb_radius, this.bb_radius),
+                        vPos.y + RandomInt(-this.bb_radius, this.bb_radius),
+                        vPos.z
+                    );
+                    this.PlayEffectAoe(vPos2, attack_damage);
                 }
+
             }
             return false
+        }
+    }
+
+    PlayEffectAoe(vPos: Vector, attack_damage: number) {
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf",
+            ParticleAttachment.CUSTOMORIGIN,
+            null
+        );
+        ParticleManager.SetParticleControl(effect_fx, 0, vPos);
+        ParticleManager.ReleaseParticleIndex(effect_fx);
+        let enemies = FindUnitsInRadius(
+            this.caster.GetTeam(),
+            vPos,
+            null,
+            this.bb_radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+
+        for (let enemy of enemies) {
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.caster,
+                damage: attack_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: ElementTypes.ICE,
+                is_primary: true,
+                // bonus_percent: this.bb_value
+            })
         }
     }
 }
@@ -109,9 +124,7 @@ export class modifier_drow_2a_b extends modifier_drow_2a {
         if (cigu_value > 0) {
             this.proj_name = G_PorjLinear.ice;
         }
-
         let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '15', 'bonus_value')
-
         this.base_value += bonus_value
 
     }

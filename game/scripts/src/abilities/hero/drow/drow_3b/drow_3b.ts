@@ -56,24 +56,25 @@ export class modifier_drow_3b extends BaseHeroModifier {
 
     PlayEffect(params: PlayEffectProps): void {
         let vPos = this.caster.GetAbsOrigin();
-
         let cast_fx = ParticleManager.CreateParticle(
             "particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf",
             ParticleAttachment.POINT,
             this.caster,
         )
         ParticleManager.ReleaseParticleIndex(cast_fx)
-
-        let ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
+        let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
+        let bp_ingame = this.base_value - 100
+        let bp_server = 0;
         CreateModifierThinker(
             this.caster,
             this.ability,
             this.mdf_thinker,
             {
-                // duration: 3,
                 radius: this.radius,
                 arrow_count: this.arrow_count,
-                ability_damage: ability_damage,
+                ability_damage: attack_damage,
+                bp_ingame: bp_ingame,
+                bp_server: bp_server,
             },
             vPos,
             this.team,
@@ -92,11 +93,15 @@ export class modifier_drow_3b_thinker extends BaseModifier {
     radius: number;
     do_destroy: boolean;
     ability: CDOTABaseAbility;
+    bp_ingame: number;
+    bp_server: number;
     arrow_thinker = "modifier_drow_3b_thinker_arrow";
-
+    
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.do_destroy = false;
+        this.bp_ingame = params.bp_ingame;
+        this.bp_server = params.bp_server;
         this.caster = this.GetCaster();
         this.ability = this.GetAbility();
         this.arrow_count = params.arrow_count;
@@ -114,12 +119,6 @@ export class modifier_drow_3b_thinker extends BaseModifier {
 
     OnIntervalThink(): void {
         this.StartIntervalThink(-1);
-        // let arrow_fx = ParticleManager.CreateParticle(
-        //     "particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrows.vpcf",
-        //     ParticleAttachment.POINT,
-        //     this.GetParent()
-        // )
-        // ParticleManager.ReleaseParticleIndex(arrow_fx);
         let enemies = FindUnitsInRadius(
             this.GetCaster().GetTeam(),
             this.GetParent().GetAbsOrigin(),
@@ -144,9 +143,7 @@ export class modifier_drow_3b_thinker extends BaseModifier {
                 }
                 let rand = RandomInt(0, enemies.length - 1);
                 let target = enemies[rand]
-
                 let target_vect = target.GetAbsOrigin()
-
                 CreateModifierThinker(
                     hCaster,
                     hAbility,
@@ -158,8 +155,6 @@ export class modifier_drow_3b_thinker extends BaseModifier {
                     DotaTeam.GOODGUYS,
                     false
                 )
-
-
                 this.DoDamageTarget(target, ability_damage)
                 count += 1;
                 if (count >= this.arrow_count) {
@@ -183,6 +178,8 @@ export class modifier_drow_3b_thinker extends BaseModifier {
                 element_type: this.element_type,
                 ability: this.ability,
                 is_primary: true,
+                bp_ingame: this.bp_ingame,
+                bp_server: this.bp_server,
             });
             return null
         }, 0.3)
@@ -210,7 +207,6 @@ export class modifier_drow_3b_thinker_arrow extends BaseModifier {
         ParticleManager.SetParticleControl(cast_fx, 0, Vector(target_vect.x + RandomInt(-500, 500), target_vect.y + RandomInt(-500, 500), 1500))
         ParticleManager.SetParticleControl(cast_fx, 1, target_vect)
         ParticleManager.SetParticleControl(cast_fx, 2, Vector(3000, 0, 0))
-        // ParticleManager.ReleaseParticleIndex(cast_fx);
         this.AddParticle(cast_fx, false, false, -1, false, false)
     }
 

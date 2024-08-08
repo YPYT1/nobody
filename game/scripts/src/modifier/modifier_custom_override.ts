@@ -50,13 +50,13 @@ export class modifier_custom_override extends BaseModifier {
     }
 
 
-    DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.OVERRIDE_ABILITY_SPECIAL,
-            ModifierFunction.OVERRIDE_ABILITY_SPECIAL_VALUE,
-            ModifierFunction.COOLDOWN_PERCENTAGE,
-        ]
-    }
+    // DeclareFunctions(): ModifierFunction[] {
+    //     return [
+    //         ModifierFunction.OVERRIDE_ABILITY_SPECIAL,
+    //         ModifierFunction.OVERRIDE_ABILITY_SPECIAL_VALUE,
+    //         ModifierFunction.COOLDOWN_PERCENTAGE,
+    //     ]
+    // }
 
     GetModifierOverrideAbilitySpecial(event: ModifierOverrideAbilitySpecialEvent): 0 | 1 {
         // print("GetModifierOverrideAbilitySpecial:",event.ability.GetAbilityName())

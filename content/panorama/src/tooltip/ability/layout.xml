@@ -80,6 +80,7 @@
                         <Panel class="AbilityTag Resource"/>
                         <Panel class="AbilityTag Summon"/>
                         <Panel class="AbilityTag Surround"/>
+                        <Panel class="AbilityTag Targeting"/>
                     </Panel>
                     <Panel id="CurrentItemCosts">
                         <Panel id="ManaCost" class="CostsRows">

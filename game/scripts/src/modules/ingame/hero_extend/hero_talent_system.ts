@@ -3,14 +3,12 @@ import { UIEventRegisterClass } from "../../class_extends/ui_event_register_clas
 import * as TalentConfig from "../../../json/config/game/hero/talent_config/talent_config.json";
 import * as DrowRanger from "../../../json/config/game/hero/talent_tree/drow_ranger.json";
 import { BaseHeroAbility } from '../../../abilities/hero/base_hero_ability';
+import { HeroTalentObject } from '../../../kv_data/hero_talent_object';
 
+// 引用 HeroTalentObject
+const TalentTreeObject = HeroTalentObject
 
-const TalentTreeObject = {
-    ["drow_ranger"]: DrowRanger,
-    ["lina"]: DrowRanger,
-}
-
-type HeroName = keyof typeof TalentTreeObject;
+type HeroName = keyof typeof HeroTalentObject;
 
 
 @reloadable
@@ -560,7 +558,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         }
                     }
                     // 首次解锁天赋时
-                    if(hero.hero_talent[key] == 1){
+                    let ablname = HeroTalentCounfg.link_ability;
+                    if(hero.hero_talent[key] == 1 && ablname != "null"){
                         let ablname = HeroTalentCounfg.link_ability;
                         let hHeroAbility = hero.FindAbilityByName(ablname) as BaseHeroAbility
                         let mark_element = HeroTalentCounfg.mark_element;

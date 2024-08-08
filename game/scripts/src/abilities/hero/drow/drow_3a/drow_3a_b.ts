@@ -25,8 +25,6 @@ export class modifier_drow_3a_b extends modifier_drow_3a {
 
     UpdataSpecialValue(): void {
         this.bonus_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "32", 'bonus_count')
-
-
     }
 
     ExtraEffect(): void {
@@ -68,7 +66,7 @@ export class modifier_drow_3a_b_summoned_collision extends modifier_drow_3a_summ
     }
 
     OnIntervalThink(): void {
-        ApplyCustomDamage({
+        let real_damage = ApplyCustomDamage({
             victim: this.GetParent(),
             attacker: this.caster,
             damage: this.ability_damage,
@@ -78,7 +76,7 @@ export class modifier_drow_3a_b_summoned_collision extends modifier_drow_3a_summ
             is_primary: true,
         })
         if (this.storage_buff) {
-            this.storage_buff.DoAction({ value: this.ability_damage })
+            this.storage_buff.DoAction({ value: real_damage })
         }
     }
 }
@@ -101,7 +99,9 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
         this.bx_record_dmg = 0;
         this.bx_record_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', "record_pct")
         this.bx_limit_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'limit_pct')
-        this.bx_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'radius')
+        let bx_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'radius')
+        let hAbility = this.GetAbility()
+        this.bx_radius = hAbility.GetTypesAffixValue(bx_radius, "Aoe", "skv_aoe_radius")
     }
 
 
@@ -114,8 +114,25 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
         let hCaster = this.GetCaster();
         let hAbility = this.GetAbility();
         if (hCaster == null || hAbility == null) { return }
+        let vPos = hCaster.GetAbsOrigin();
+        this.PlayEffectAoe(vPos);
+
+        let aoe_multiple = hAbility.GetTypesAffixValue(1, "Aoe", "skv_aoe_chance") - 1;
+        if (RollPercentage(aoe_multiple)) {
+            let vPos2 = Vector(
+                vPos.x + RandomInt(-this.bx_radius, this.bx_radius),
+                vPos.y + RandomInt(-this.bx_radius, this.bx_radius),
+                vPos.z
+            );
+            this.PlayEffectAoe(vPos2);
+        }
+
+    }
+
+    PlayEffectAoe(vPos: Vector) {
+        let hCaster = this.GetCaster();
+        let hAbility = this.GetAbility();
         let ability_damage = math.min(hCaster.GetAverageTrueAttackDamage(null) * this.bx_limit_pct * 0.01, this.bx_record_dmg);
-        // print("baoxue ability_damage", ability_damage)
         CreateModifierThinker(
             hCaster,
             hAbility,
@@ -124,14 +141,14 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
                 duration: 2,
                 bx_radius: this.bx_radius,
             },
-            hCaster.GetAbsOrigin(),
+            vPos,
             hCaster.GetTeamNumber(),
             false
         )
 
         let enemies = FindUnitsInRadius(
             hCaster.GetTeam(),
-            hCaster.GetAbsOrigin(),
+            vPos,
             null,
             this.bx_radius,
             UnitTargetTeam.ENEMY,
@@ -148,7 +165,6 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
                 damage_type: DamageTypes.MAGICAL,
                 ability: hAbility,
                 element_type: ElementTypes.ICE,
-                // is_primary: true,
             })
 
         }
@@ -159,6 +175,7 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
 export class modifier_drow_3a_b_cowlofice extends BaseModifier {
 
     cast_fx: ParticleID;
+
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         let bx_radius = params.bx_radius

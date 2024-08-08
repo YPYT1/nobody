@@ -471,6 +471,7 @@
     height: 22px;
     vertical-align: middle;
     visibility: collapse;
+    border: 1px solid #000000;
 
     &.Aoe {
         background-image: url("file://{images}/custom_game/tooltip/ability/tag/aoe.png");
@@ -507,6 +508,11 @@
     &.Surround {
         background-image: url("file://{images}/custom_game/tooltip/ability/tag/Surround.png");
     }
+
+    &.Targeting {
+        background-image: url("file://{images}/custom_game/tooltip/ability/tag/Targeting.png");
+        background-color: #00ff00;
+    }
 }
 
 #AbilityCategoryType {
@@ -514,6 +520,7 @@
     flow-children: right;
     // border: 1px solid #ffffff;
 
+    &.Targeting .Targeting,
     &.Surround .Surround,
     &.Summon .Summon,
     &.Resource .Resource,

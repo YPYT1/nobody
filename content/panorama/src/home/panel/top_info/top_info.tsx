@@ -35,16 +35,17 @@ export const Init = () => {
     MainPanel.Data<PanelDataObject>().timer_loop = false;
     MainPanel.Data<PanelDataObject>().GameSelectPhase = -1;
     MainPanel.SetDialogVariable("stage", "-");
-    MainPanel.SetDialogVariableInt("life", 0);
+    // MainPanel.SetDialogVariableInt("life", 0);
     MainPanel.SetDialogVariable("time_label", "0:0");
     MainPanel.SetDialogVariableInt("round", 0);
-    MainPanel.SetDialogVariableInt("max_round", 15);
+    MainPanel.SetDialogVariableInt("max_round", 99);
     GameEvents.Subscribe("GameInformation_GetPlayGameHeadData", event => {
         let data = event.data;
         RoundGameStartTime = data.time;
         RoundGameDifficulty = data.difficulty;
         MainPanel.SetDialogVariable("stage", RoundGameDifficulty);
-
+        MainPanel.SetDialogVariableInt("max_round", data.round_max);
+        MainPanel.SetDialogVariableInt("round", data.round_index);
 
     });
 

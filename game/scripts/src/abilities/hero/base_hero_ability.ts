@@ -1,3 +1,5 @@
+
+import { HeroTalentObject } from "../../kv_data/hero_talent_object";
 import { BaseAbility, BaseModifier } from "../../utils/dota_ts_adapter";
 
 export class BaseHeroAbility extends BaseAbility {
@@ -5,11 +7,19 @@ export class BaseHeroAbility extends BaseAbility {
     init: boolean;
     caster: CDOTA_BaseNPC;
     team: DotaTeam;
+    player_id: PlayerID;
+
+    bp_server: number = 0;
+    bp_ingame: number = 0;
+
+    hero_talent: keyof typeof HeroTalentObject = "drow_ranger";
 
     OnUpgrade(): void {
+
         if (this.init != true) {
             this.init = true;
             this.caster = this.GetCaster();
+            this.player_id = this.caster.GetPlayerOwnerID()
             this.team = this.caster.GetTeamNumber();
             this.InitCustomAbilityType();
         }
@@ -28,6 +38,8 @@ export class BaseHeroAbility extends BaseAbility {
     InitCustomAbilityType() {
         this.custom_ability_types = {
             skv_type: {
+                All: false,
+                Null: false,
                 Summon: false,
                 Ring: false,
                 Surround: false,
@@ -43,13 +55,51 @@ export class BaseHeroAbility extends BaseAbility {
             },
             element_type: [],
         };
-        // this.PreLoadCustomAbilityType();
-        // this.LoadCustomAbilityType()
     }
 
-    // PreLoadCustomAbilityType() { }
-    // /** 加载该技能的初始类型 */
-    // LoadCustomAbilityType() { }
+    GetTypesAffixValue<T1 extends keyof SpecialvalueOfTableProps, T2 extends keyof SpecialvalueOfTableProps[T1]>(
+        flBaseValue: number, skv_affix: T1, skv_key: T2
+    ) {
+        if (this.custom_ability_types == null) { return 0 }
+        let skv_type = this.custom_ability_types.skv_type[skv_affix]
+        if (!skv_type) { return flBaseValue }
+        const row_data = GameRules.CustomOverrideAbility.OverrideSpecialValue[this.player_id][skv_key as string]
+        if (row_data) {
+            // let flBaseValue = value;
+            let flAddResult = row_data.base_value;
+            let flMulResult = row_data.mul_value;
+            let flPercentResult = row_data.percent_value * 0.01;
+            let flCorrResult = math.max(0, row_data.correct_value * 0.01);
+            let flResult = math.floor((flBaseValue + flAddResult) * flPercentResult * flMulResult * flCorrResult);
+            return flResult
+        }
+        return flBaseValue
+    }
+
+    /** 获取特殊型字段值 */
+    GetTypesAffixSpecialValue<T1 extends keyof typeof SpecialvalueOfTableSpecialObject, T2 extends keyof typeof SpecialvalueOfTableSpecialObject[T1]>(
+        skv_affix: T1, skv_key: T2
+    ) {
+        if (this.custom_ability_types == null) { return [] }
+        let skv_type = this.custom_ability_types.skv_type[skv_affix];
+        if (!skv_type) { return [] }
+        let skv_key_list = SpecialvalueOfTableSpecialObject[skv_affix][skv_key];
+        let value_list: number[] = [];
+        for (let _key in skv_key_list) {
+            let value = this.GetTypesAffixValue(0, skv_affix, _key as any);
+            value_list.push(value)
+        }
+        return value_list
+    }
+
+    GetSpecialValueForTypes
+        <T1 extends keyof SpecialvalueOfTableProps, T2 extends keyof SpecialvalueOfTableProps[T1]>(
+            name: string,
+            skv_affix: T1,
+            skv_key: T2
+        ): number {
+        return this.GetTypesAffixValue(this.GetSpecialValueFor(name), skv_affix, skv_key)
+    }
 
     SetCustomAbilityType(type_key: CustomHeroAbilityTypes, type_state: boolean) {
         if (type_key == 'Null') { return }
@@ -63,6 +113,17 @@ export class BaseHeroAbility extends BaseAbility {
         }
     }
 
+    GetCustomAbilityType() {
+        let type_list: CustomHeroAbilityTypes[] = [];
+        for (let _key in this.custom_ability_types.skv_type) {
+            let type_key = _key as CustomHeroAbilityTypes
+            let type_state = this.custom_ability_types.skv_type[type_key];
+            if (type_state) {
+                type_list.push(type_key)
+            }
+        }
+        return type_list
+    }
     /** 增加元素 */
     AddCustomAbilityElement(element_key: ElementTypes, type_state: boolean = true) {
         let index = this.custom_ability_types.element_type.indexOf(element_key);
@@ -76,6 +137,32 @@ export class BaseHeroAbility extends BaseAbility {
         }
     }
 
+    /** 获取存档技能等级特殊效果 */
+    GetServerSkillEffect(key: string, input_value: number) {
+        let skill_level_ojbect = GameRules.ServiceInterface.PlayerServerSkillTypeLevel[this.player_id];
+        if (skill_level_ojbect == null) { return 0 }
+        let test_mode = true;
+        let ss_level = skill_level_ojbect[key].lv;
+        let ability_types = this.custom_ability_types.skv_type
+        if ((ability_types.Targeting && ss_level > 0) || test_mode) {
+            if (key == "21") {
+                //  21	目标·命运	目标型技能根据释放时的额外目标数量，提升技能伤害55%*额外目标数
+                return input_value * 55
+            }
+        }
+
+        return 0
+
+
+    }
+
+    GetTalentKv(talent_key:string,talent_special:string){
+        // GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, this.hero_talent, "", "bonus_value");
+    }
+
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: ProjectileExtraData): void | boolean {
+
+    }
 }
 
 
@@ -85,7 +172,7 @@ export class BaseHeroModifier extends BaseModifier {
     team: DotaTeam;
     ability: BaseHeroAbility;
     ability_damage: number;
-
+    fakeAttack: boolean = false;
     tracking_proj_name: string = "";
 
     IsHidden(): boolean {
@@ -128,22 +215,17 @@ export class BaseHeroModifier extends BaseModifier {
 
     PlayEffect(params: PlayEffectProps) { }
 
-    PlayPerformAttack(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC, ability_damage: number, fakeAttack: boolean = false) {
-        if (fakeAttack) { return }
-        // print("this",this.tracking_proj_name)
-        ProjectileManager.CreateTrackingProjectile({
-            Source: hCaster,
-            Target: hTarget,
-            Ability: this.GetAbility(),
-            EffectName: this.tracking_proj_name,
-            iSourceAttachment: ProjectileAttachment.HITLOCATION,
-            vSourceLoc: hCaster.GetAbsOrigin(),
-            iMoveSpeed: hCaster.GetProjectileSpeed(),
-            ExtraData: {
-                a: ability_damage,
-                et: this.element_type,
-                dt: this.damage_type,
-            }
-        })
+
+
+}
+
+const SpecialvalueOfTableSpecialObject = {
+
+    Targeting: {
+        skv_targeting_multiple: {
+            skv_targeting_multiple1: 0,
+            skv_targeting_multiple2: 0,
+            skv_targeting_multiple3: 0,
+        }
     }
 }

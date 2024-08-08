@@ -45,10 +45,14 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
 
     DoDamageTarget(target: CDOTA_BaseNPC, ability_damage: number): void {
         target.SetContextThink(DoUniqueString("drow3_b_delay"), () => {
+            let bp_ingame = 0
             if (this.talent_37) {
                 // 集火
                 let stack = target.GetModifierStackCount("modifier_drow_3b_b_stack", this.GetCaster());
-                ability_damage *= (1 + stack * this.bonus_dmg * 0.01);
+                let buff_increase = this.ability.GetTypesAffixValue(stack, "Buff", "skv_buff_increase");
+                // print("stack", stack, buff_increase)
+                // ability_damage *= (1 + stack * this.bonus_dmg * 0.01);
+                bp_ingame += stack * this.bonus_dmg
                 target.AddNewModifier(this.caster, this.GetAbility(), "modifier_drow_3b_b_stack", {
                     duration: 3,
                     limit_stack: this.limit_stack,
@@ -62,6 +66,8 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
                 element_type: this.element_type,
                 ability: this.GetAbility(),
                 is_primary: true,
+                bp_ingame: this.bp_ingame + bp_ingame,
+                bp_server: this.bp_server,
             });
             return null
         }, 0.3)

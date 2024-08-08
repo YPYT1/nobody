@@ -41,10 +41,14 @@ declare interface ApplyCustomDamageOptions {
     damage_vect?: Vector;
     /** 暴击判定 -1必定不暴击 0默认 1必定暴击  */
     critical_flasg?: -1 | 0 | 1;
-    /** 额外伤害`整数` 后续会转为百分比小数  */
-    extra_percent?: number;
+    /** 额外伤害 `当局系数` 后续会转为百分比小数  */
+    bp_ingame?: number;
+    /** 额外伤害 `存档系数`*/
+    bp_server?: number;
+    // extra_percent?: number;
     /** 元素类型 */
     element_type?: ElementTypes;
+    // ability_type?: CustomHeroAbilityTypes;
     /** 技能类型 */
     // ability_category?: ArmsAbilityCategory;
     /** 是否为固定值,不吃任何加成 */
@@ -53,4 +57,16 @@ declare interface ApplyCustomDamageOptions {
     crit_chance?: number;
     /** 额外暴击伤害 */
     crit_bonus_dmg?: number;
+}
+
+declare interface ProjectileExtraData {
+    a: number;
+    bp_ingame: number;
+    bp_server: number;
+    et?: ElementTypes;
+    dt?: DamageTypes;
+    /** x坐标 */
+    x?:number;
+    /** Y坐标 */
+    y?:number;
 }

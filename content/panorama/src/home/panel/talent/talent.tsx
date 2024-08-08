@@ -168,5 +168,5 @@ export const Init = () => {
 
 
 (function () {
-    // Init()
+    Init()
 })();

@@ -4,8 +4,8 @@ import { drow_2b, modifier_drow_2b } from "./drow_2b";
 /**
  * 双喷【范围型】《冰》（3/3）：
 散射技能赋予冰元素效果，伤害变为冰元素伤害。有25%/30%/40%概率再次释放一次。（不可套娃）
-重创【增益型】（2/2）：散射对距离越近的单位造成伤害越高。最近判定25码。最高提高伤害100%/200%。"
-痛击（3/3）：散射对被降低移速的敌人造成的伤害提高30%/60%/100%。"
+23.重创【增益型】（2/2）：散射对距离越近的单位造成伤害越高。最近判定25码。最高提高伤害100%/200%。"
+24.痛击（3/3）：散射对被降低移速的敌人造成的伤害提高30%/60%/100%。"
 
  */
 @registerAbility()
@@ -23,27 +23,25 @@ export class drow_2b_b extends drow_2b {
     UpdataSpecialValue(): void {
         this.closest_distance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "23", "closest_distance");
         this.zc_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "23", "bonus_value");
-
         this.tj_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "24", "bonus_value");
-
     }
 
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
+            let bp_ingame = extraData.bp_ingame;
+            let bp_server = extraData.bp_server;
             if (this.zc_value > 0) {
                 let vOrigin = Vector(extraData.x, extraData.y, 0);
                 let vTarget = target.GetAbsOrigin();
                 let distance = math.max(this.closest_distance, (vOrigin - vTarget as Vector).Length2D());
                 // 散射对距离越近的单位造成伤害越高。最近25码
-                // 伤害衰减
-                // print("diff", (distance - this.closest_distance) / 1000);
-                let dmg_reduce = 1 + (1 - (distance - this.closest_distance) / 1000) * this.zc_value * 0.01;
-                ability_damage *= dmg_reduce;
-                // print(ability_damage, dmg_reduce, distance)
+                let dmg_bonus = (1 - (distance - this.closest_distance) / 1000) * this.zc_value;
+                bp_ingame += dmg_bonus
             }
             if (this.tj_value > 0 && UnitIsSlowed(target)) {
-                ability_damage *= (1 + this.tj_value * 0.01)
+                bp_ingame += this.tj_value
+
             }
             ApplyCustomDamage({
                 victim: target,
@@ -53,8 +51,10 @@ export class drow_2b_b extends drow_2b {
                 ability: this,
                 element_type: ElementTypes.ICE,
                 is_primary: true,
+                bp_ingame: bp_ingame,
+                bp_server: bp_server,
             })
-            return false
+            return true
         }
     }
 }
@@ -71,7 +71,6 @@ export class modifier_drow_2b_b extends modifier_drow_2b {
 
     PlayEffect(params: PlayEffectProps): void {
         this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01
-        print("base_val", this.base_value)
         let vTarget = params.hTarget.GetAbsOrigin()
         this.MultiShot(vTarget);
         if (RollPercentage(this.sp_chance)) {

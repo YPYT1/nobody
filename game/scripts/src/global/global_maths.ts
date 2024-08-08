@@ -135,3 +135,38 @@ function FindUnitsInRing(
 
     return _targets
 }
+
+/**
+ * 通过数组概率获得一个索引
+ * @param list_value 数组值
+ * @param is100 以100%作为概率?
+ * @returns 
+ */
+function GetRandomListIndex(list_value: number[], is100: boolean = true) {
+    let base_chance = 0;
+    let max = 0;
+    if (!is100) {
+        for (let v of list_value) {
+            max += v
+        }
+    } else {
+        max = 100
+    }
+    let rand = RandomInt(0, max - 1);
+    // 如果以100%时,获得的值超过100%时则必定成功
+    if (is100 && rand >= 99) {
+        return list_value.length - 1
+    }
+    let index = 0;
+    let value = -1;
+    for (let v of list_value) {
+        base_chance += v;
+        if (rand < base_chance) {
+            value = list_value[index]
+            return index
+        }
+        index += 1;
+    }
+    // 
+    return -1;
+}

@@ -33,7 +33,8 @@ export class modifier_drow_4b extends BaseHeroModifier {
     ability_cd_reduce: number;
 
     UpdataAbilityValue(): void {
-        this.duration = this.ability.GetSpecialValueFor("duration");
+        let duration = this.ability.GetSpecialValueFor("duration");
+        this.duration = this.ability.GetTypesAffixValue(duration, "Dot", "skv_dot_duration");
         this.ability_cd_reduce = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "49", 'ability_cd_reduce')
     }
 

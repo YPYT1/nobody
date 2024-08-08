@@ -17,19 +17,48 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     if (params.attacker == null) { return }
     const hAttacker = params.attacker;
     const hTarget = params.victim;
+    if (hAttacker == null || IsValid(hAttacker)) { return 0 }
     const iPlayerID = hAttacker.GetPlayerOwnerID();
     // print("iPlayerID",iPlayerID)
     if (iPlayerID == -1) {
+        // 这里走敌人伤害方法
         return ApplyDamage(params);
     }
+
+    let hAbility = params.ability;
+    if (hAbility) {
+
+    }
+
     let element_type = params.element_type ?? ElementTypes.NONE;
     let is_primary = params.is_primary ?? false;
-    let damage_number = params.damage;
-    // PlayElementHitEffect(params.victim, element_type);
     let is_crit = 0;
-    let increased_injury = 0;// 增伤乘区
-    let BondElement = GameRules.NewArmsEvolution.ElementBondDateCount[iPlayerID].Element
-    // DeepPrintTable(BondElement)
+
+    // 乘区计算
+    let bp_ingame = params.bp_ingame ?? 0;
+    let bp_server = params.bp_server ?? 0;
+    // 存档乘区
+    bp_server += hAttacker.custom_attribute_value.DamageBonusMul
+
+    // 当局加成乘区
+    let drow_13_stack_buff = hTarget.FindModifierByName("modifier_drow_2a_a_debuff")
+    if (drow_13_stack_buff) {
+        let stack = drow_13_stack_buff.GetStackCount();
+        let stack_income = GameRules.HeroTalentSystem.GetTalentKvOfUnit(
+            drow_13_stack_buff.GetCaster(),
+            "drow_ranger",
+            "13",
+            'value'
+        )
+        bp_ingame += stack * stack_income
+    }
+
+    /** 综合乘区 */
+
+
+    // let BondElement = GameRules.NewArmsEvolution.ElementBondDateCount[iPlayerID].Element
+
+
 
 
     if (params.damage_type == DamageTypes.PHYSICAL) {
@@ -88,7 +117,9 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     } else {
 
     }
-    PopupDamageNumber(hAttacker, hTarget, params.damage_type, damage_number, is_crit, element_type)
+    let increased_injury = (1 + bp_ingame * 0.01) * (1 + bp_server * 0.01); // 
+    params.damage = math.floor(params.damage * increased_injury);
+    PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type)
     return ApplyDamage(params);
 }
 

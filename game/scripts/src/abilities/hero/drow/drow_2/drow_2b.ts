@@ -14,9 +14,12 @@ export class drow_2b extends BaseHeroAbility {
         return "modifier_drow_2b"
     }
 
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
+            let bp_ingame = extraData.bp_ingame;
+            let bp_server = extraData.bp_server
+
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -24,6 +27,8 @@ export class drow_2b extends BaseHeroAbility {
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
                 is_primary: true,
+                bp_ingame: bp_ingame,
+                bp_server: bp_server,
             })
             return true
         }
@@ -34,6 +39,7 @@ export class drow_2b extends BaseHeroAbility {
 export class modifier_drow_2b extends BaseHeroModifier {
 
     base_value: number;
+    bonus_value: number = 0;
     arrow_count: number;
     arrow_angle: number;
 
@@ -75,7 +81,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
     }
 
     PlayEffect(params: PlayEffectProps): void {
-        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
+        // this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
         let vTarget = params.hTarget.GetAbsOrigin()
         this.MultiShot(vTarget);
     }
@@ -85,6 +91,9 @@ export class modifier_drow_2b extends BaseHeroModifier {
         let direction = vTarget - vCaster as Vector;
         direction.z = 0;
         direction = direction.Normalized();
+        let attack_game = this.caster.GetAverageTrueAttackDamage(null);
+        let bp_ingame = (this.base_value - 100) + this.bonus_value;
+        let bp_server = 0;
         ProjectileManager.CreateLinearProjectile({
             // EffectName: "particles/heroes/windrunner/passive_proj.vpcf",
             EffectName: this.proj_name,
@@ -99,9 +108,11 @@ export class modifier_drow_2b extends BaseHeroModifier {
             iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,
             iUnitTargetFlags: UnitTargetFlags.NONE,
             ExtraData: {
-                a: this.ability_damage,
+                a: attack_game,
                 x: vCaster.x,
                 y: vCaster.y,
+                bp_ingame: bp_ingame,
+                bp_server: bp_server,
             }
         });
         let last_count = this.arrow_count - 1
@@ -126,9 +137,11 @@ export class modifier_drow_2b extends BaseHeroModifier {
                 iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,
                 iUnitTargetFlags: UnitTargetFlags.NONE,
                 ExtraData: {
-                    a: this.ability_damage,
+                    a: attack_game,
                     x: vCaster.x,
                     y: vCaster.y,
+                    bp_ingame: bp_ingame,
+                    bp_server: bp_server,
                 }
             });
         }

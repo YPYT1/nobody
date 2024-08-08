@@ -20,20 +20,25 @@ export class drow_1c extends drow_1 {
         this.add_mana = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '10', 'add_mana')
     }
 
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: any): boolean | void {
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             this.caster.GiveMana(this.add_mana)
-            let ability_damage: number = extraData.a;
+            let attack_damage = extraData.a;
             let element_type = extraData.et;
             let damage_type = extraData.dt;
+            let bp_ingame = extraData.bp_ingame;
+            let bp_server = extraData.bp_server;
+
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
-                damage: ability_damage,
+                damage: attack_damage,
                 damage_type: damage_type,
                 ability: this,
                 element_type: element_type,
                 is_primary: true,
+                bp_ingame: bp_ingame,
+                bp_server: bp_server,
             })
         }
     }
@@ -46,20 +51,28 @@ export class modifier_drow_1c extends modifier_drow_1 {
     targes: number;
 
     UpdataSpecialValue(): void {
+        this.fakeAttack = true;
         this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "8", 'targes');
         this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "9", "bonus_value");
         if (this.bonus_value > 0) {
             this.element_type = ElementTypes.ICE;
             this.damage_type = DamageTypes.MAGICAL;
             this.tracking_proj_name = G_PorjTrack.ice;
-            this.ability.AddCustomAbilityElement(ElementTypes.ICE)
         }
 
     }
 
     PlayAttackStart(params: PlayEffectProps): void {
         let hTarget = params.hTarget;
-        // let ability_damage = math.floor(this.caster.GetAverageTrueAttackDamage(null) * (1 + this.bonus_value * 0.01))
+        let targets_chance_list = this.ability.GetTypesAffixSpecialValue("Targeting", "skv_targeting_multiple");
+        let bonus_targets = this.ability.GetTypesAffixValue(0, "Targeting", "skv_targeting_count");
+        let extra_index = GetRandomListIndex(targets_chance_list);
+        if (extra_index != -1) {
+            bonus_targets += (extra_index + 1)
+        }
+        let bp_ingame = (this.base_value - 100) + this.bonus_value;
+        let bp_server = this.ability.GetServerSkillEffect("21", bonus_targets);
+        let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
         let enemies = FindUnitsInRadius(
             this.team,
             this.caster.GetAbsOrigin(),
@@ -71,56 +84,19 @@ export class modifier_drow_1c extends modifier_drow_1 {
             FindOrder.ANY,
             false
         )
+        this.fakeAttack = false;
         let count = 0;
+        this.PlayPerformAttack(this.caster, hTarget, attack_damage, bp_ingame, bp_server)
         for (let enemy of enemies) {
             if (enemy != hTarget) {
                 count += 1;
-                this.PlayPerformAttack(this.caster, enemy, this.ability_damage)
+                this.PlayPerformAttack(this.caster, enemy, attack_damage, bp_ingame, bp_server)
             }
-            if (count >= this.targes) {
+            if (count >= this.targes + bonus_targets) {
                 break
             }
         }
+        this.fakeAttack = true;
     }
 
-    // PlayPerformAttack(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC, fakeAttack: boolean = false) {
-    //     if (fakeAttack) { return }
-    //     ProjectileManager.CreateTrackingProjectile({
-    //         Source: hCaster,
-    //         Target: hTarget,
-    //         Ability: this.GetAbility(),
-    //         EffectName: this.tracking_proj_name,
-    //         iSourceAttachment: ProjectileAttachment.HITLOCATION,
-    //         vSourceLoc: hCaster.GetAbsOrigin(),
-    //         iMoveSpeed: hCaster.GetProjectileSpeed(),
-    //         ExtraData: {
-    //             attack: 1,
-
-    //         }
-    //     })
-    // }
-
-    // GetModifierProcAttack_Feedback(event: ModifierAttackEvent): number {
-    //     if (this.talent_10 > 0) {
-    //         // 额外回蓝
-    //         this.caster.GiveMana(2);
-    //     }
-    //     // 寒冰箭150 / 300
-    //     if (this.talent_9 > 0) {
-    //         ApplyCustomDamage({
-    //             victim: event.target,
-    //             attacker: this.GetCaster(),
-    //             damage: this.ability_damage,
-    //             damage_type: DamageTypes.MAGICAL,
-    //             ability: this.ability,
-    //             element_type: ElementTypes.ICE
-    //         })
-    //         return -1 * event.original_damage
-    //     }
-    //     return 0
-    // }
-
-    // GetModifierProjectileName(): string {
-    //     return "particles/econ/items/drow/drow_arcana/drow_arcana_frost_arrow.vpcf"
-    // }
 }
