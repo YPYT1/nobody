@@ -72,9 +72,9 @@ export class modifier_drow_2a extends BaseHeroModifier {
                 false
             );
             if (enemies.length == 0) { return }
-            this.ability.UseResources(true, true, true, true)
+            let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             let hTarget = enemies[0];
-            this.PlayEffect({ hTarget: hTarget })
+            this.PlayEffect({ hTarget: hTarget, value: manacost_bonus })
         }
     }
 
@@ -83,7 +83,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
         let vTarget = hTarget.GetAbsOrigin();
         let count = 0;
         let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
-        let bp_ingame = (this.base_value - 100);
+        let bp_ingame = (this.base_value - 100) + params.value;
         let bp_server = 0;
         this.caster.SetContextThink("drow_2a_shot", () => {
             // print("proj_width",this.proj_width)

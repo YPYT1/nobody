@@ -10,3 +10,4 @@ import "./modifier_summoned";
 import "./modifier_knockback_lua";
 import "./modifier_element";
 import "./modifier_state";
+import "./modifier_rune_effect";

@@ -48,7 +48,7 @@ export const FormatIntToString = (value: number) => {
 
 export function FormatDescription(
     original_description_txt: string,
-    AbilityValues: AbilityValuesProps,
+    AbilityValues: CAPropAbilityValues,
     curr_level: number = 1,
     show_all: boolean = true,
 ) {
@@ -70,7 +70,7 @@ export function FormatDescription(
 
             for (let i = 1; i <= special_num.length; i++) {
                 let class_name = i == curr_level ? "Current" : "OtherVariable";
-                if (curr_level >= i && i == special_num.length){
+                if (curr_level >= i && i == special_num.length) {
                     class_name = "Current"
                 }
                 let value = special_num[i - 1]
@@ -81,11 +81,11 @@ export function FormatDescription(
 
             original_description_txt = original_description_txt.replaceAll(
                 `%${key}%%%`,
-                `<span class="GameplayVariable">${special_value.join("/")}</span>`
+                `<span class="GameplayVariable">${special_value.join("<span class='Separator'> / </span>")}</span>`
             );
             original_description_txt = original_description_txt.replaceAll(
                 `%${key}%`,
-                `<span class="GameplayVariable">${special_value.join("/")}</span>`
+                `<span class="GameplayVariable">${special_value.join("<span class='Separator'> / </span>")}</span>`
             );
         } else {
             if (curr_level <= 0) { curr_level = 1; }
@@ -134,4 +134,69 @@ export function UnitHasModifier(unit: EntityIndex, modifier_name: string) {
     }
     // $.Msg(["modifier_name", modifier_name, false]);
     return false;
+}
+
+export function FormatDescriptionExtra(
+    description_txt: string,
+    ObjectValues: CAPropObjectValues,
+    curr_level: number = 1,
+    show_all: boolean = true,
+) {
+
+    for (let key in ObjectValues) {
+        for (let sub_key in ObjectValues[key]) {
+            let special_key = ObjectValues[key][sub_key];
+            let special_num: number[] = [];
+            if (typeof (special_key) == "string") {
+                let _arr = special_key.split(" ").map((v, k) => { return parseFloat(v); });
+                special_num = _arr
+            } else {
+                special_num = [special_key]
+            }
+
+            let is_percent = description_txt.indexOf(`%${key}.${sub_key}%%%`) != -1;
+            // $.Msg(["is_percent", is_percent, key])
+            if (show_all) {
+                let special_value: string[] = [];
+
+                for (let i = 1; i <= special_num.length; i++) {
+                    let class_name = i == curr_level ? "Current" : "OtherVariable";
+                    if (curr_level >= i && i == special_num.length) {
+                        class_name = "Current"
+                    }
+                    let value = special_num[i - 1]
+                    let is_negative = value < 0;
+                    let col_value = `<span class="${class_name} ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
+                    special_value.push(col_value)
+                }
+
+                description_txt = description_txt.replaceAll(
+                    `%${key}.${sub_key}%%%`,
+                    `<span class="GameplayVariable">${special_value.join(" / ")}</span>`
+                );
+                description_txt = description_txt.replaceAll(
+                    `%${key}.${sub_key}%`,
+                    `<span class="GameplayVariable">${special_value.join(" / ")}</span>`
+                );
+            } else {
+                if (curr_level <= 0) { curr_level = 1; }
+                curr_level = Math.min(curr_level, special_num.length)
+                let value = special_num[curr_level - 1];
+                // $.Msg(["value",value])
+                let is_negative = value < 0;
+                let col_value = `<span class="GameplayVariable Current ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
+                description_txt = description_txt.replaceAll(
+                    `%${key}.${sub_key}%%%`,
+                    col_value
+                );
+                description_txt = description_txt.replaceAll(
+                    `%${key}.${sub_key}%`,
+                    col_value
+                );
+            }
+        }
+    }
+    
+    description_txt = description_txt.replaceAll("\n", "<br>");
+    return description_txt;
 }

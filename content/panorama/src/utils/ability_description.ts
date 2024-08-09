@@ -1,5 +1,5 @@
 import { default as NpcAbilityCustom } from "./../json/npc_abilities_custom.json";
-import { FormatDescription } from "./method";
+import { FormatDescription, FormatDescriptionExtra } from "./method";
 
 
 const DamageTypeLabel: { [key: string]: string; } = {
@@ -69,7 +69,7 @@ export function SetAbilityDescription(
 
     let abilityData = NpcAbilityCustom[ability_name as "public_template"];
     if (abilityData == null) { return "" }
-    let AbilityValues: AbilityValuesProps = abilityData.AbilityValues;
+    let AbilityValues: CAPropAbilityValues = abilityData.AbilityValues;
     let description_txt = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}_Description`);
     let original_description_txt = FormatDescription(description_txt, AbilityValues, level, show_all);
     if (original_description_txt.search("#") == 0) { return ""; }
@@ -140,4 +140,20 @@ export const GetAbilityElementLabel = (ability_name: string) => {
     } else {
         return 0
     }
+}
+
+export const SetLabelDescriptionExtra = (
+    text: string,
+    index: number,
+    AbilityValues: CAPropAbilityValues,
+    ObjectValues: CAPropObjectValues,
+    showAll: boolean = false
+) => {
+    if (AbilityValues) {
+        text = FormatDescription(text, AbilityValues, index + 1, showAll)
+    }
+    if (ObjectValues) {
+        text = FormatDescriptionExtra(text, ObjectValues, index + 1, showAll)
+    }
+    return text
 }

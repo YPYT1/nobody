@@ -28,9 +28,9 @@ export class modifier_drow_3a_a_summoned extends modifier_drow_3a_summoned {
     ModifierAura = "modifier_drow_3a_a_summoned_collision";
 
     C_OnCreated(params: any): void {
-        let cover_to_wind = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "31", 'cover_to_wind');
         let tornado_name = "particles/dev/tornado/tornado_1.vpcf";
-        if (cover_to_wind > 0) {
+        let talent_31 = this.caster.hero_talent["31"] ?? 0;
+        if (talent_31 > 0) {
             tornado_name = "particles/dev/tornado/tornado_3.vpcf";
         }
         let cast_fx = ParticleManager.CreateParticle(

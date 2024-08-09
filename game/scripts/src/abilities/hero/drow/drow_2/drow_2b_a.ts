@@ -68,8 +68,8 @@ export class modifier_drow_2b_a extends modifier_drow_2b {
         this.proj_name = G_PorjLinear.fire
     }
 
-    PlayEffect(params: PlayEffectProps): void {
-        let vTarget = params.hTarget.GetAbsOrigin()
-        this.MultiShot(vTarget);
-    }
+    // PlayEffect(params: PlayEffectProps): void {
+    //     let vTarget = params.hTarget.GetAbsOrigin()
+    //     this.MultiShot(vTarget,);
+    // }
 }

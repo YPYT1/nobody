@@ -23,7 +23,7 @@
 					<Image id="RuneImage" src="" />
 				</Button>
 				<Panel class="RuneDesc">
-					<Label text="{s:rune_desc}"/>
+					<Label text="{s:rune_desc}" html="true"/>
 				</Panel>
 			</Panel>
 		</snippet>
@@ -32,12 +32,17 @@
 		<Panel id="PlayerReviveContainer" class="DialogContainer" hittest="false"/>
 		<Panel id="PlayerRuneContainer" class="DialogContainer" hittest="false">
 			<Panel id="LocalPlayerRuneDialog" hittest="false">
-				<Panel id="RuneSelectList" />
-				<Label class="SelectCountdownTimer" text="{d:select_timer}s"/>
-				<Panel class="RuneOptionBtn">
-					<Button id="RefreshBtn" />
-					<Label text="{d:refresh_count}" hittest="false"/>
+				<Panel class="Header">
+					<Label class="SelectCountdownTimer" text="{d:select_timer}s"/>
 				</Panel>
+				<Panel class="Content">
+					<Panel id="RuneSelectList" />
+					<Panel class="RuneOptionBtn">
+						<Button id="RefreshBtn" />
+						<Label text="{d:refresh_count}" hittest="false"/>
+					</Panel>
+				</Panel>
+				
 			</Panel>
 			
 		</Panel>

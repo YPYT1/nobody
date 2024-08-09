@@ -34,7 +34,6 @@ export class modifier_innate_omniknight extends BaseModifier {
             return
         }
         if (!this.ability.IsCooldownReady()) { return }
-        // this.ability.UseResources(false, false, false, true);
         this.ability.StartCooldown(4)
         let cast_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_omniknight/omniknight_purification.vpcf",

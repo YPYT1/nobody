@@ -49,8 +49,9 @@ export class modifier_drow_3b extends BaseHeroModifier {
                 false
             );
             if (enemies.length == 0) { return }
-            this.ability.UseResources(true, true, true, true)
-            this.PlayEffect({})
+            let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
+            // this.ability.UseResources(true, true, true, true)
+            this.PlayEffect({ value: manacost_bonus })
         }
     }
 
@@ -96,7 +97,7 @@ export class modifier_drow_3b_thinker extends BaseModifier {
     bp_ingame: number;
     bp_server: number;
     arrow_thinker = "modifier_drow_3b_thinker_arrow";
-    
+
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.do_destroy = false;

@@ -1,7 +1,8 @@
 
-declare interface AbilityValuesProps { [key: string]: string | number; }
-declare interface KeyValueProps { [key: string]: number }
+declare interface AbilityValuesProps { [key: string]: number; }
 
+declare interface CAPropAbilityValues { [attr: string]: string | number }
+declare interface CAPropObjectValues { [attr: string]: { [attr_type: string]: string | number } }
 /**
  * 数据驱动技能类参数
  */
@@ -66,7 +67,7 @@ declare interface ProjectileExtraData {
     et?: ElementTypes;
     dt?: DamageTypes;
     /** x坐标 */
-    x?:number;
+    x?: number;
     /** Y坐标 */
-    y?:number;
+    y?: number;
 }

@@ -14,6 +14,7 @@ declare type AttributeMainKey = "AttackDamage"
     | "CriticalDamage"
     | "PickItemRadius"
     | "DamageBonusMul"
+    | "DamageServerMul"
     | "FinalDamageMul"
     | "MeleeDmgPct"
     | "RangedDmgPct"
@@ -41,11 +42,9 @@ declare type AttributeMainKey = "AttackDamage"
     | "WindResist"
     | "FixedDamage"
     | "FixedDamageReduction"
+    | "SingleExpeIncrease"
+    | "SacredEqiopSkillDmg"
     ;
-
-
-
-
 
 /** 自定义属性子类 */
 declare type AttributeSubKey = "Base"
@@ -283,3 +282,4 @@ interface SpecialvalueOfTableSpecialProps {
         }
     }
 }
+

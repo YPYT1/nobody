@@ -74,6 +74,7 @@ export class modifier_drow_3a_b_summoned_collision extends modifier_drow_3a_summ
             ability: this.ability,
             element_type: this.element_type,
             is_primary: true,
+            bp_ingame: this.base_value,
         })
         if (this.storage_buff) {
             this.storage_buff.DoAction({ value: real_damage })

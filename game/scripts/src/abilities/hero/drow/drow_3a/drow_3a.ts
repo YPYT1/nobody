@@ -41,7 +41,8 @@ export class modifier_drow_3a extends BaseHeroModifier {
 
     OnIntervalThink() {
         if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(0)) {
-            this.ability.UseResources(true, true, true, true);
+            // this.ability.UseResources(true, true, true, true);
+            let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             this.ExtraEffect()
             let total_count = this.base_count + this.bonus_count;
             let skv_surround_count = this.ability.GetTypesAffixValue(0, "Surround", "skv_surround_count");
@@ -147,7 +148,7 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
         this.interval = this.GetAbility().GetSpecialValueFor("interval");
         this.team = this.caster.GetTeamNumber();
         this.ability = this.GetAbility();
-        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
+        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.OnCreated_Extends();
         this.OnIntervalThink();
         this.StartIntervalThink(this.interval);
@@ -168,6 +169,7 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
             ability: this.ability,
             element_type: this.element_type,
             is_primary: true,
+            bp_ingame:this.base_value,
             damage_vect: this.GetParent().GetAbsOrigin(),
         })
     }

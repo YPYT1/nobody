@@ -74,25 +74,25 @@ export class modifier_drow_2b extends BaseHeroModifier {
                 false
             );
             if (enemies.length == 0) { return }
-            this.ability.UseResources(true, true, true, true)
+            // this.ability.UseResources(true, true, true, true)
+            let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             let hTarget = enemies[0];
-            this.PlayEffect({ hTarget: hTarget })
+            this.PlayEffect({ hTarget: hTarget, value: manacost_bonus })
         }
     }
 
     PlayEffect(params: PlayEffectProps): void {
-        // this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01;
         let vTarget = params.hTarget.GetAbsOrigin()
-        this.MultiShot(vTarget);
+        this.MultiShot(vTarget, params.value);
     }
 
-    MultiShot(vTarget: Vector) {
+    MultiShot(vTarget: Vector, bonus_pct: number) {
         let vCaster = this.caster.GetAbsOrigin();
         let direction = vTarget - vCaster as Vector;
         direction.z = 0;
         direction = direction.Normalized();
         let attack_game = this.caster.GetAverageTrueAttackDamage(null);
-        let bp_ingame = (this.base_value - 100) + this.bonus_value;
+        let bp_ingame = (this.base_value - 100) + this.bonus_value + bonus_pct;
         let bp_server = 0;
         ProjectileManager.CreateLinearProjectile({
             // EffectName: "particles/heroes/windrunner/passive_proj.vpcf",

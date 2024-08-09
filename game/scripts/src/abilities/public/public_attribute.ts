@@ -48,7 +48,7 @@ export class modifier_public_attribute extends BaseModifier {
         if (!IsServer()) { return; }
         this.hParent = this.GetParent();
         this.iParentEntity = this.GetParent().entindex();
-        // this.timer = 0;
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_rune_effect", {})
         this.hParent.AddNewModifier(this.hParent, null, "modifier_public_attribute_delay", {})
         this.ForceRefresh()
         this.StartIntervalThink(0.1)

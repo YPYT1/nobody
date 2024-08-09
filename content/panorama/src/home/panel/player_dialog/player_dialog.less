@@ -16,41 +16,53 @@
 }
 
 #LocalPlayerRuneDialog {
-    width: 644px;
-    height: 212px;
-    background-image: url("file://{images}/custom_game/hud/player_dialog/rune_select_dialog.png");
     opacity: 0;
+    flow-children: down;
 
     &.Show {
         opacity: 1;
     }
 
-    .SelectCountdownTimer {
-        width: 100px;
-        font-size: 20px;
+    .Header {
+        width: 164px;
+        height: 36px;
+        background-image: url("file://{images}/custom_game/hud/player_dialog/rune_select_timer.png");
         horizontal-align: center;
-        color:#ff0000;
-        text-shadow: 0px 0px 2px 2.0 #000;
-        background-color: #00000099;
+    }
+
+    .Content {
+        width: 644px;
+        height: 212px;
+        background-image: url("file://{images}/custom_game/hud/player_dialog/rune_select_dialog.png");
+        background-repeat: no-repeat;
+        border: 1px solid #ffffff;
+    }
+
+    .SelectCountdownTimer {
+        align: center center;
+        font-size: 24px;
+        color: #ff5252;
         padding: 4px;
         text-align: center;
-        border-color: #ffffff;
-        border-style: solid;
-        border-bottom-width:  1px;
-        border-top-width: 1px ;
+
     }
-    
+
     #RuneSelectList {
-        // border: 1px solid #fff;
+        border: 1px solid #fff;
         horizontal-align: center;
-        vertical-align: middle;
+        // vertical-align: top;
+        // height: 300px;
+        // vertical-align: middle;
         flow-children: right;
+        // margin-bottom: 56px;
 
         .RuneInfo {
+            // border: 1px solid #ffffff;
             flow-children: down;
-            // border: 1px solid #fff;
+            border: 1px solid #973030;
+
             padding: 4px;
-            margin: 0px 8px;
+            // margin: 0px 8px;
 
             #RuneIconBtn {
                 width: 64px;
@@ -69,27 +81,50 @@
             }
 
             .RuneDesc {
-                margin-top: 8px;
-                width: 128px;
-                height: 96px;
+                width: 148px;
+                height: 128px;
                 font-size: 16px;
                 border: 1px solid #fff;
                 padding: 2px;
+// white-space: nowrap;
+                Label {
+                    white-space: normal;
+                    color: #efefef;
+                }
+
+                .GameplayVariable {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #585858;
+
+                    .Separator {
+                        font-size: 12px;
+                        color:#4d5fc0;
+                    }
+                }
+
+                
+                .Current {
+                    color: #ffe031;
+                }
             }
+
+
 
 
         }
     }
 
     .RuneOptionBtn {
+        // visibility: collapse;
         horizontal-align: right;
         vertical-align: middle;
         width: 87px;
         height: 87px;
 
         #RefreshBtn {
-            width: 77px ;
-            height: 77px ;
+            width: 77px;
+            height: 77px;
             horizontal-align: center;
             background-image: url("file://{images}/custom_game/hud/player_dialog/rune_refresh_btn.png");
             background-size: 100%;
@@ -99,13 +134,15 @@
                     brightness: 2;
                 }
             }
+
             &:disabled {
                 saturation: 0.2;
                 brightness: 0.2;
             }
 
-            
+
         }
+
         Label {
             width: 24px;
             height: 24px;

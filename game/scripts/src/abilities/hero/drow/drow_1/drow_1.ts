@@ -14,6 +14,11 @@ export class drow_1 extends BaseHeroAbility {
         return "modifier_drow_1"
     }
 
+    UpdataAbilityValue(): void {
+        // let ability_point = GameRules.NewArmsEvolution.EvolutionPoint[this.player_id]
+        // this.ability_bonus_ingame = this.caster.rune_passive_type[""];
+    }
+
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             // let bonus_pct: number = extraData.bp;
@@ -43,6 +48,8 @@ export class modifier_drow_1 extends BaseHeroModifier {
     proj_width: number;
     proj_speed: number;
 
+    
+
     C_OnCreated(): void {
         this.fakeAttack = false;
         this.useProjectile = true;
@@ -51,6 +58,8 @@ export class modifier_drow_1 extends BaseHeroModifier {
     UpdataAbilityValue(): void {
         this.base_value = this.ability.GetSpecialValueFor("base_value");
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
+
+
     }
 
     OnIntervalThink(): void {

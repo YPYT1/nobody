@@ -13,7 +13,7 @@ export class EntityKilled {
             let iPlayerID = hAttacker.GetPlayerOwnerID();
             let hHero = PlayerResource.GetSelectedHeroEntity(iPlayerID);
 
-            this.KilledOnMdf(hAttacker, hKilled)
+            // this.KilledOnMdf(hAttacker, hKilled)
             // let hAbility = EntIndexToHScript(entindex_inflictor) as CDOTABaseAbility;
             // 技能击杀
             // this.ArmsKillAbility(hAttacker, hKilled,hAbility)
@@ -28,13 +28,13 @@ export class EntityKilled {
     }
 
     // 击杀关联的MDF
-    KilledOnMdf(hAttacker: CDOTA_BaseNPC, hDeathUnit: CDOTA_BaseNPC) {
-        for (let mdf of hAttacker.KillOnMdfList) {
-            mdf.C_OnKilled(hDeathUnit);
-        }
-    }
+    // KilledOnMdf(hAttacker: CDOTA_BaseNPC, hDeathUnit: CDOTA_BaseNPC) {
+    //     for (let mdf of hAttacker.KillOnMdfList) {
+    //         mdf.C_OnKilled(hDeathUnit);
+    //     }
+    // }
 
-    ArmsKillAbility(hAttacker: CDOTA_BaseNPC, hDeathUnit: CDOTA_BaseNPC, hAbility: CDOTA_BaseNPC) {
-        // 技能击杀
-    }
+    // ArmsKillAbility(hAttacker: CDOTA_BaseNPC, hDeathUnit: CDOTA_BaseNPC, hAbility: CDOTA_BaseNPC) {
+    //     // 技能击杀
+    // }
 }

@@ -1,3 +1,7 @@
+import { SetLabelDescriptionExtra } from "../../../utils/ability_description";
+import { default as RuneConfigJson } from "./../../../json/config/game/rune/rune_config.json"
+
+type runeName = keyof typeof RuneConfigJson
 
 const PlayerReviveContainer = $("#PlayerReviveContainer");
 const PlayerRuneContainer = $("#PlayerRuneContainer");
@@ -73,13 +77,18 @@ export const Init = () => {
         let rune_list = Object.values(data.item_list)
         RuneSelectList.RemoveAndDeleteChildren();
         let select_index = 0;
-        for (let rune_data of rune_list) {
-            let rune_name = rune_data.name;
-            let rune_level = rune_data.level;
+        for (let _data of rune_list) {
+            let level = _data.level;
+            let index = _data.level_index;
+            let name = _data.name as runeName;
             let RuneInfo = $.CreatePanel("Panel", RuneSelectList, "");
             RuneInfo.BLoadLayoutSnippet("RuneInfo");
-            // RuneInfo.SetHasClass("level_1",)
-            RuneInfo.SetDialogVariable("rune_desc", $.Localize(`#custom_${rune_name}_Description`))
+            let row_rune_data = RuneConfigJson[name];
+            let ObjectValues = row_rune_data.ObjectValues;
+            let AbilityValues = row_rune_data.AbilityValues;
+            let rune_desc = SetLabelDescriptionExtra($.Localize(`#custom_${name}_Description`), index, AbilityValues, ObjectValues);
+            $.Msg(["rune_desc", rune_desc])
+            RuneInfo.SetDialogVariable("rune_desc", rune_desc)
 
             let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Button;
             let post_index = select_index

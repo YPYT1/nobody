@@ -45,7 +45,7 @@ export class modifier_drow_4a extends BaseHeroModifier {
                 })
             } else {
                 // 立即恢复
-                print("this.recover_mana", this.recover_mana)
+                // print("this.recover_mana", this.recover_mana)
                 this.caster.GiveMana(this.recover_mana);
             }
 

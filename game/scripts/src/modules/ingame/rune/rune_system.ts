@@ -464,7 +464,7 @@ export class RuneSystem extends UIEventRegisterClass {
      * 获取符文
      */
     GetRune(player_id: PlayerID, params: { item_name: string; level?: number; charges?: number; item_index?: number; }, level_index: number = 0) {
-        let item_name = params.item_name;
+        let item_name = params.item_name as keyof typeof RuneConfig;
         let rune_index = 0;
         if (!params.hasOwnProperty("item_index")) {
             for (let index = 1; index <= 99; index++) {
@@ -476,6 +476,7 @@ export class RuneSystem extends UIEventRegisterClass {
         } else {
             rune_index = params.item_index;
         }
+        let row_rune_data = RuneConfig[item_name]
         let is_more_level = RuneConfig[item_name as keyof typeof RuneConfig].is_item_level == 1 ? true : false;
         let is_level_up = RuneConfig[item_name as keyof typeof RuneConfig].is_level_up == 1 ? true : false;
         if (is_more_level && params.level) {
@@ -521,6 +522,19 @@ export class RuneSystem extends UIEventRegisterClass {
         // }
         //增加通过其他符文获取的符文数量
         this.player_rune_count[player_id] ++;
+
+        // 更新符文MDF
+        let rune_mdf = hHero.FindModifierByName("modifier_rune_effect");
+        if(rune_mdf){
+            let AbilityValues = row_rune_data.AbilityValues;
+            let InputAbilityValues: AbilityValuesProps = {};
+            for(let k in AbilityValues){
+                let run_k = k; //as keyof typeof AbilityValues;
+                let value = this.GetKvOfUnit(hHero,item_name as "rune_2",run_k as "value")
+                InputAbilityValues[run_k] = value
+            }
+            rune_mdf.Rune_InputAbilityValues(item_name,InputAbilityValues)
+        }
     }
     //获得符文属性
     GetRuneValues(player_id: PlayerID, rune_name: string, level_index: number) {
@@ -619,7 +633,7 @@ export class RuneSystem extends UIEventRegisterClass {
      * @param k2 
      * @returns 
      */
-    GetTalentKvOfUnit<
+    GetKvOfUnit<
         Key extends keyof typeof RuneConfig,
         T2 extends typeof RuneConfig[Key],
     >(hUnit: CDOTA_BaseNPC,rune_name: Key, ability_key : keyof T2["AbilityValues"]) {
@@ -656,7 +670,7 @@ export class RuneSystem extends UIEventRegisterClass {
      * @param k2 
      * @returns 
      */
-    GetTalentKvOfUnit_V2<
+    GetKvOfUnit_V2<
         Key extends keyof typeof RuneConfig,
         T2 extends typeof RuneConfig[Key],
     >(hUnit: CDOTA_BaseNPC,rune_name: Key, ability_key : keyof T2["AbilityValues"] ) {

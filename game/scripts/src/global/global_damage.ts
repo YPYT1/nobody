@@ -38,7 +38,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     let bp_ingame = params.bp_ingame ?? 0;
     let bp_server = params.bp_server ?? 0;
     // 存档乘区
-    bp_server += hAttacker.custom_attribute_value.DamageBonusMul
+    bp_server += hAttacker.custom_attribute_value.DamageServerMul
 
     // 当局加成乘区
     let drow_13_stack_buff = hTarget.FindModifierByName("modifier_drow_2a_a_debuff")

@@ -72,10 +72,10 @@ export class modifier_drow_2b_b extends modifier_drow_2b {
     PlayEffect(params: PlayEffectProps): void {
         this.ability_damage = this.caster.GetAverageTrueAttackDamage(null) * this.base_value * 0.01
         let vTarget = params.hTarget.GetAbsOrigin()
-        this.MultiShot(vTarget);
+        this.MultiShot(vTarget, params.value);
         if (RollPercentage(this.sp_chance)) {
             this.caster.SetContextThink(DoUniqueString("sp_chance"), () => {
-                this.MultiShot(vTarget);
+                this.MultiShot(vTarget, params.value);
                 return null
             }, 0.15)
         }

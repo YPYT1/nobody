@@ -12,10 +12,12 @@ export class BaseHeroAbility extends BaseAbility {
     bp_server: number = 0;
     bp_ingame: number = 0;
 
+    /** 技能增伤 */
+    ability_bonus: number = 0;
+    manacost_bonus: number = 0;
     hero_talent: keyof typeof HeroTalentObject = "drow_ranger";
 
     OnUpgrade(): void {
-
         if (this.init != true) {
             this.init = true;
             this.caster = this.GetCaster();
@@ -156,10 +158,22 @@ export class BaseHeroAbility extends BaseAbility {
 
     }
 
-    GetTalentKv(talent_key:string,talent_special:string){
+    GetTalentKv(talent_key: string, talent_special: string) {
         // GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, this.hero_talent, "", "bonus_value");
     }
 
+    ManaCostAndConverDmgBonus() {
+        this.UseResources(true, true, true, true)
+        if (this.caster.rune_passive_type["rune_4"]) {
+            let cost_mana = this.GetManaCost(-1);
+            let max_mana = this.caster.GetMaxMana();
+            let cost_percent = math.floor((100 * cost_mana) / max_mana);
+            let value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_4", "value")
+            print("has rune_4", 'cost_percent', cost_percent, 'value', value)
+            return value * cost_percent
+        }
+        return 0
+    }
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: ProjectileExtraData): void | boolean {
 
     }
