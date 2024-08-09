@@ -3,7 +3,6 @@ import * as RuneConfig from "../../../json/config/game/rune/rune_config.json";
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 //符文系统
-
 @reloadable
 export class RuneSystem extends UIEventRegisterClass {
     //每个玩家掉落列表
@@ -47,6 +46,12 @@ export class RuneSystem extends UIEventRegisterClass {
     //玩家符文列表
     player_rune_list: { [index: string]: CGEDPlayerRuneData; }[] = [{}, {}, {}, {}, {}, {}];
 
+    rune_ability_values: {
+        [name: string]: {
+            [key: string]: number[];
+        };
+    } = {};
+
     constructor() {
         super("RuneSystem");
         for (let index = 0; index < 6 ; index++) {
@@ -61,6 +66,21 @@ export class RuneSystem extends UIEventRegisterClass {
             this.player_challenge_number.push(1);
             this.player_select_rune_max.push(100);
             this.player_select_amount.push(3);
+        }
+
+        for (let i_key in RuneConfig) {
+            let data = RuneConfig[i_key as keyof typeof RuneConfig];
+            this.rune_ability_values[i_key] = {};
+            //技能数组
+            for (const A_key in data.AbilityValues) {
+                let str = tostring(data.AbilityValues[A_key]);
+                let strlist = str.split(" ");
+                let numlist: number[] = [];
+                for (let value of strlist) {
+                    numlist.push(tonumber(value));
+                }
+                this.rune_ability_values[i_key][A_key] = numlist;
+            }
         }
     }
     InitPlayerUpgradeStatus( player_id : PlayerID , hero_id : number , hHero: CDOTA_BaseNPC = null) {
@@ -564,6 +584,87 @@ export class RuneSystem extends UIEventRegisterClass {
         //     }
         // }
     }
+
+    
+    /**
+     * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)
+     * @param name 符文名
+     * @param key 技能键
+     * @param level_index 等级下标
+     */
+    GetTKV<
+        Key extends keyof typeof RuneConfig,
+        T2 extends typeof RuneConfig[Key],
+    >( rune_name: Key, key : keyof T2["AbilityValues"], level_index: number = 0) {
+        let value_key = key as string;
+        let length = this.rune_ability_values[rune_name][value_key].length;
+        if (length > 0) {
+            if (level_index < 0) {
+                return this.rune_ability_values[rune_name][value_key][0];
+            } else if ((level_index + 1) > length) {
+                return this.rune_ability_values[rune_name][value_key][length - 1];
+            } else {
+                return this.rune_ability_values[rune_name][value_key][level_index];
+            }
+        } else {
+            return this.rune_ability_values[rune_name][value_key][level_index];
+        }
+    }
+    /**
+     * 符文数据获取
+     * @param hUnit 
+     * @param hero 
+     * @param key 
+     * @param ability_key 
+     * @param k2 
+     * @returns 
+     */
+    GetTalentKvOfUnit<
+        Key extends keyof typeof RuneConfig,
+        T2 extends typeof RuneConfig[Key],
+    >(hUnit: CDOTA_BaseNPC,rune_name: Key, ability_key : keyof T2["AbilityValues"]) {
+        if(IsServer()){
+            let level_index = hUnit.rune_level_index[rune_name]
+            if (level_index == null) {
+                return 0
+            } else {
+                return this.GetTKV(rune_name, ability_key, level_index - 1)
+            }
+        } else {
+            // let player_id = hUnit.GetPlayerOwnerID();
+            // let netdata = CustomNetTables.GetTableValue("hero_rune",`${player_id}`);
+            // if(netdata && netdata[index_key]){
+            //     let level_index  = netdata[index_key].uc;
+            //     if(level_index > 0){
+            //         return this.GetTKV(rune_name, ability_key, level_index - 1)
+            //     } else {
+            //         return 0
+            //     }
+            // } else {
+            //     return 0
+            // }
+        }
+    }
+
+
+    /**
+     * 符文获取 最低都是1级
+     * @param hUnit 
+     * @param hero 
+     * @param key 
+     * @param ability_key 
+     * @param k2 
+     * @returns 
+     */
+    GetTalentKvOfUnit_V2<
+        Key extends keyof typeof RuneConfig,
+        T2 extends typeof RuneConfig[Key],
+    >(hUnit: CDOTA_BaseNPC,rune_name: Key, ability_key : keyof T2["AbilityValues"] ) {
+        let level_index = hUnit.rune_level_index[rune_name] ?? 0
+        return this.GetTKV(rune_name, ability_key, level_index);
+    }
+
+
     /**
      * 随机升级符文或指定升级符文
      * @param player_id 
