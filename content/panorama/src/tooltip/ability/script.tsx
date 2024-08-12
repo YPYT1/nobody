@@ -93,7 +93,7 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     // 技能类型 技能元素
     if (entityIndex > 0) {
         let nt_data = CustomNetTables.GetTableValue("custom_ability_types", `${entityIndex}`)
-        $.Msg(nt_data)
+        // $.Msg(nt_data)
         if (nt_data) {
             let skv_type = nt_data.skv_type
             for (let order_key in skv_type) {

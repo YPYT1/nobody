@@ -2,6 +2,7 @@ import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { FormatTalentTree, GetAllHeroTalentTree, GetHeroTalentTreeObject, HeroTreeObject } from "../../../common/custom_talent";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 
+const CenterStatsContainer = $("#CenterStatsContainer");
 const UnitPortraitPanel = $("#UnitPortrait") as ScenePanel;
 const PlayerTalentTreeList = $("#PlayerTalentTreeList");
 let AbilityList = $("#AbilityList");
@@ -121,6 +122,9 @@ export const CreatePanel_Talent = () => {
 const CreateHeroTalentTree = (heroname: string) => {
     $.Msg(["CreateHeroTalentTree", heroname])
     PlayerTalentTreeList.RemoveAndDeleteChildren();
+    const ALPos = AbilityList.GetPositionWithinWindow();
+
+
     let hero_data = talent_data[heroname as keyof typeof talent_data];
     let talent_tree = FormatTalentTree(heroname, hero_data);
     let index = 0;
@@ -183,18 +187,25 @@ const CreateHeroTalentTree = (heroname: string) => {
 
     $.Schedule(0, () => {
         let abi_pos = AbilityList.GetPositionWithinWindow();
+        // let ap_pos = AbilityList.GetChild(0)!.FindChildTraverse("LevelUpBtn")!.GetPositionWithinWindow();
+        // $.Msg(['cc_pos1:',  abi_pos,ap_pos])
+        // 549 604
+        // 716 771
+        // 173 
         // let tree_id = `ability_index_${index + 1}`;
         for (let i = 0; i < PlayerTalentTreeList.GetChildCount(); i++) {
             let AbilityTreePanel = PlayerTalentTreeList.GetChild(i)!;
             AbilityTreePanel.style.marginLeft = `${abi_pos.x + 68.4 * i + 16}px`
+            // AbilityTreePanel.style.marginTop = `0px`;
+            // transform: translateY(-86px);
         }
     })
 
     //
     let entity = `portrait_` + heroname;
-    
+
     UnitPortraitPanel.FireEntityInput('portrait_drow_ranger', "Enable", "1")
-    UnitPortraitPanel.SetPanelEvent("onload",()=>{
+    UnitPortraitPanel.SetPanelEvent("onload", () => {
         UnitPortraitPanel.FireEntityInput('portrait_drow_ranger', "Enable", "1")
     })
 }
