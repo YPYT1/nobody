@@ -1,11 +1,6 @@
 import { reloadable } from "../../../utils/tstl-utils";
 import * as SpecialKeyvalueJson from "./../../../json/config/game/special_keyvalue.json"
-import * as ArmsTypesJson from "./../../../json/config/game/const/arms_types.json"
-import * as AbilitiesArmsJson from "./../../../json/abilities/arms.json"
-
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
-
-// declare type AbilityCategoryTypes = keyof typeof ArmsTypesJson
 
 declare type OverrideSpecialInputProps = {
     [primary in OverrideSpecialKeyTypes]?: {
