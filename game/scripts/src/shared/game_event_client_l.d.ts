@@ -276,9 +276,10 @@ declare interface ShopStateData {
 declare interface CGEDGetEquipListInfo {
     id: string, //唯一id
     n: string, //装备key
-    r: number, //稀有度 0 1 2 3 => n,r,sr,ssr
+    r: number, //稀有度 0 1 2 3 4 => C B A S SS
     zl: number, //装备等级
     t : number , //装备部位
+    i : number , //强化数
     ma: { //主attr属性
         k: string, //键
         v: number, //值
@@ -300,6 +301,7 @@ declare interface ServerEquip {
     n: string, //装备key
     r: number, //稀有度 0 1 2 3 => n,r,sr,ssr
     zl: number, //装备等级
+    i : number , //强化数
     ma : string, //装备主属性
     pa : string, // 装备拼图属性
     s : string, //套装数据  

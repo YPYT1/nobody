@@ -71,7 +71,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
 
             });
             this.player_hero_name.push("");
-            this.player_talent_index_max.push({});
+            this.player_talent_index_max.push({});  
             this.player_hero_star.push(0);
         }
 
@@ -133,13 +133,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         if(BaseNPC.IsHero()){
             hero_id = BaseNPC.GetHeroID();
         }
-        
         this.player_hero_star[player_id] = GameRules.ServiceInterface.player_hero_star[player_id][hero_id];
-
-
-        GameRules.MapChapter.GameDifficultyNumber = 150;
-        
-
         this.player_hero_name[player_id] = unitname;
         this.player_talent_list[player_id] = {};
         this.player_talent_data_client[player_id] = {};

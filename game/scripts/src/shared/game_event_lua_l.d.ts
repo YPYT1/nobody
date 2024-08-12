@@ -219,7 +219,13 @@ declare interface CGED {
             equip_id : string, 
             index : number,
         }
-
+        EquipIntensify : {
+            equip_id : string,
+        }
+        //预先获取分解数据信息
+        GetResolveEquipData : {
+            id_list : string[],
+        }
     }
 
 }

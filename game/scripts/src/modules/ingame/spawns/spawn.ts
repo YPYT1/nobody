@@ -208,7 +208,6 @@ export class Spawn extends UIEventRegisterClass {
                     elite_name : TwiceMapInfoRoundInit.elite_name,
                     elite_count : TwiceMapInfoRoundInit.elite_count,
                     boss_name_list : TwiceMapInfoRoundInit.boss_name,
-
                 }
             }
         }
