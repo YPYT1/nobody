@@ -86,31 +86,31 @@ export class ServiceEquipment extends UIEventRegisterClass {
         // this.ServerEquipDeputy = ServerEquipDeputy;
 
         //强化数据汇总
-        let C_qhs = 0;
-        let B_qhs = 0;
-        let A_qhs = 0;
-        let S_qhs = 0;
-        let SS_qhs = 0;
-        let C_gold = 0;
-        let B_gold = 0;
-        let A_gold = 0;
-        let S_gold = 0;
-        let SS_gold = 0;
+        // let C_qhs = 0;
+        // let B_qhs = 0;
+        // let A_qhs = 0;
+        // let S_qhs = 0;
+        // let SS_qhs = 0;
+        // let C_gold = 0;
+        // let B_gold = 0;
+        // let A_gold = 0;
+        // let S_gold = 0;
+        // let SS_gold = 0;
 
-        for (let index = 1; index <= Object.keys(ServerAttrIntensifyConfig).length ; index++) {
-            let key = tostring(index);
-            let data =  ServerAttrIntensifyConfig[key as keyof typeof ServerAttrIntensifyConfig];
-            C_qhs += data["0_qhs"];
-            B_qhs += data["1_qhs"];
-            A_qhs += data["2_qhs"];
-            S_qhs += data["3_qhs"];
-            SS_qhs += data["4_qhs"];
-            C_gold += data["0_gold"];
-            B_gold += data["1_gold"];
-            A_gold += data["2_gold"];
-            S_gold += data["3_gold"];
-            SS_gold += data["4_gold"];
-        }
+        // for (let index = 1; index <= Object.keys(ServerAttrIntensifyConfig).length ; index++) {
+        //     let key = tostring(index);
+        //     let data =  ServerAttrIntensifyConfig[key as keyof typeof ServerAttrIntensifyConfig];
+        //     C_qhs += data["0_qhs"];
+        //     B_qhs += data["1_qhs"];
+        //     A_qhs += data["2_qhs"];
+        //     S_qhs += data["3_qhs"];
+        //     SS_qhs += data["4_qhs"];
+        //     C_gold += data["0_gold"];
+        //     B_gold += data["1_gold"];
+        //     A_gold += data["2_gold"];
+        //     S_gold += data["3_gold"];
+        //     SS_gold += data["4_gold"];
+        // }
     }
     Init() {
         // let player_count = GetPlayerCount();
