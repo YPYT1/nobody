@@ -47,6 +47,7 @@ export class modifier_drow_5 extends BaseHeroModifier {
     OnIntervalThink(): void {
         if (this.caster.IsAlive() && this.ability.IsCooldownReady()) {
             this.ability.UseResources(true, true, true, true)
+            this.DoExecutedAbility()
             this.caster.RemoveModifierByName("modifier_drow_5_buff");
             this.caster.AddNewModifier(this.caster, this.ability, this.branch_mdf, {
                 duration: this.duration

@@ -24,6 +24,12 @@ export class drow_1a extends drow_1 {
         this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
         this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
         this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");
+
+        if (this.caster.rune_passive_type["rune_27"]) {
+            this.mul_chance = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_27", 'mul_chance')
+            this.mul_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_27", 'mul_value')
+        }
+
         let aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "skv_aoe_radius")
             + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "4", "skv_aoe_radius");
         this.aoe_radius = this.GetTypesAffixValue(aoe_radius, "Aoe", "skv_aoe_radius")
@@ -51,7 +57,9 @@ export class drow_1a extends drow_1 {
     }
 
     PlayEffectAoe(vPos: Vector, aoe_damage: number, bp_ingame: number, bp_server: number, second: boolean = false,) {
-        if (RollPercentage(this.mul_chance)) { aoe_damage *= this.mul_value }
+        if (RollPercentage(this.mul_chance)) {
+            aoe_damage *= this.mul_value
+        }
         let has_pojun = false;
 
         let enemies = FindUnitsInRadius(

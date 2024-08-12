@@ -50,7 +50,7 @@ export class CustomAttribute {
         //增加天赋点
         GameRules.HeroTalentSystem.AddHeroTalent(event.player_id, 1);
         //增加符文点
-        if(event.level % 10 == 0){
+        if (event.level % 10 == 0) {
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
         }
         GameRules.HeroTalentSystem.TalentUnlockLevel(event.player_id, event.level);
@@ -199,14 +199,13 @@ export class CustomAttribute {
             if (!is_mul) {
                 // 非乘算属性
                 let SubAttr = hUnit.custom_attribute_table[main_key as keyof typeof hUnit.custom_attribute_table];
-                // DeepPrintTable(SubAttr)
-                let MainAttrValue = ((SubAttr["Base"]) * (1 + SubAttr["BasePercent"] * 0.01) + SubAttr["Bonus"])
+                let TotalAttrValue = ((SubAttr["Base"]) * (1 + SubAttr["BasePercent"] * 0.01) + SubAttr["Bonus"])
                     * (1 + SubAttr["TotalPercent"] * 0.01)
                     + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                     + (SubAttr["Fixed"]);
-                hUnit.custom_attribute_value[main_key] = MainAttrValue;
+                hUnit.custom_attribute_value[main_key] = TotalAttrValue;
                 hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
-                hUnit.custom_attribute_show[main_key][1] = MainAttrValue - SubAttr["Base"]
+                hUnit.custom_attribute_show[main_key][1] = TotalAttrValue - SubAttr["Base"]
             } else {
                 // 乘算属性处理
                 if (hUnit.custom_mul_attribute[main_key]) {
@@ -694,6 +693,9 @@ export class CustomAttribute {
                     },
                     "FireResist": {
                         "Base": 10,
+                    },
+                    "AbilityCooldown": {
+                        "Base": 5,
                     }
                 }, i * 0.15)
             }

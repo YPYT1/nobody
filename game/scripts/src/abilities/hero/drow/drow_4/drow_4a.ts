@@ -37,6 +37,7 @@ export class modifier_drow_4a extends BaseHeroModifier {
 
     OnIntervalThink(): void {
         if (this.caster.IsAlive() && this.ability.IsCooldownReady()) {
+            this.DoExecutedAbility()
             this.ability.UseResources(true, true, true, true)
             if (this.talent_46) {
                 // 逐渐恢复

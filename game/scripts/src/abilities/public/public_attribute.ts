@@ -13,6 +13,8 @@ const UpdateAttributeKyes: AttributeMainKey[] = [
     "MaxMana",
     "ManaRegen",
     "PickItemRadius",
+    'AbilityHaste',
+    'AbilityCooldown',
 ];
 
 // 属性
@@ -148,11 +150,12 @@ export class modifier_public_attribute extends BaseModifier {
             ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
             //@ts-ignore
             // ModifierFunction.VISION_DEGREES_RESTRICTION,
-        ]
-    }
+            ModifierFunction.COOLDOWN_PERCENTAGE,
+            // ModifierFunction.MANACOST_PERCENTAGE,
+            // ModifierFunction.MANACOST_PERCENTAGE_STACKING,
+            // ModifierFunction.MANACOST_REDUCTION_CONSTANT,
 
-    GetVisionDegreeRestriction() {
-        return 90
+        ]
     }
 
     GetModifierAttackRangeOverride(): number {
@@ -193,6 +196,25 @@ export class modifier_public_attribute extends BaseModifier {
         }
         return 0
     }
+
+    GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
+        // print(event.ability.GetAbilityName())
+        let base_cd = 100;
+        let AbilityHaste = this.AttributeData.AbilityHaste ?? 0;
+        let ability_cd = math.min(0.55, AbilityHaste / (AbilityHaste + 150))
+        let AbilityCooldown = (this.AttributeData.AbilityCooldown ?? 0) * 0.01;
+        // print("AbilityCooldown",AbilityCooldown)
+        base_cd *= (1 - ability_cd);
+        base_cd *= (1 - AbilityCooldown)
+        // print("finl_cd", base_cd)
+        // print('AbilityHaste', AbilityHaste, ability_cd, 'AbilityCooldown', AbilityCooldown)
+        return 100 - base_cd
+    }
+
+
+    // GetModifierPercentageManacostStacking(): number {
+    //     return -100
+    // }
 }
 
 /** 延迟给一些无法初始化的属性值 比如蓝量 */

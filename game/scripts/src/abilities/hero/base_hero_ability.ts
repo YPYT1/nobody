@@ -1,5 +1,6 @@
 
 import { HeroTalentObject } from "../../kv_data/hero_talent_object";
+import { modifier_rune_effect } from "../../modifier/modifier_rune_effect";
 import { BaseAbility, BaseModifier } from "../../utils/dota_ts_adapter";
 
 export class BaseHeroAbility extends BaseAbility {
@@ -16,6 +17,27 @@ export class BaseHeroAbility extends BaseAbility {
     ability_bonus: number = 0;
     manacost_bonus: number = 0;
     hero_talent: keyof typeof HeroTalentObject = "drow_ranger";
+
+    GetManaCost(level: number): number {
+        if (IsServer()) {
+            if (this.caster.custom_attribute_value == null) {
+                return super.GetManaCost(-1)
+            } else {
+                let ManaCostRate = this.caster.custom_attribute_value.ManaCostRate * 0.01
+                return super.GetManaCost(-1) * ManaCostRate
+            }
+
+
+        } else {
+            let netdata = CustomNetTables.GetTableValue("unit_attribute", `${this.GetCaster().GetEntityIndex()}`)
+            let cost_rate = 1;
+            if (netdata) {
+                cost_rate = netdata.value.ManaCostRate * 0.01
+            }
+            return super.GetManaCost(-1) * cost_rate
+        }
+
+    }
 
     OnUpgrade(): void {
         if (this.init != true) {
@@ -142,7 +164,7 @@ export class BaseHeroAbility extends BaseAbility {
     /** 获取存档技能等级特殊效果 */
     GetServerSkillEffect(key: string, input_value: number) {
         let skill_level_ojbect = GameRules.ServiceInterface.PlayerServerSkillTypeLevel[this.player_id];
-        if (skill_level_ojbect == null) { return 0 }
+        if (skill_level_ojbect == null || skill_level_ojbect[key] == null) { return 0 }
         let test_mode = true;
         let ss_level = skill_level_ojbect[key].lv;
         let ability_types = this.custom_ability_types.skv_type
@@ -163,9 +185,9 @@ export class BaseHeroAbility extends BaseAbility {
     }
 
     ManaCostAndConverDmgBonus() {
+        let cost_mana = this.GetManaCost(-1);
         this.UseResources(true, true, true, true)
-        if (this.caster.rune_passive_type["rune_4"]) {
-            let cost_mana = this.GetManaCost(-1);
+        if (this.caster.rune_passive_type && this.caster.rune_passive_type["rune_4"]) {
             let max_mana = this.caster.GetMaxMana();
             let cost_percent = math.floor((100 * cost_mana) / max_mana);
             let value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_4", "value")
@@ -229,6 +251,13 @@ export class BaseHeroModifier extends BaseModifier {
 
     PlayEffect(params: PlayEffectProps) { }
 
+    /** 使用技能 */
+    DoExecutedAbility() {
+        let buff = this.caster.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
+        if (buff) {
+            buff.Rune_ExecutedAbility({})
+        }
+    }
 
 
 }

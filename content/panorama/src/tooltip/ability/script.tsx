@@ -83,6 +83,7 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
         // $.Msg(["entityIndex",entityIndex,ability_mana])
     }
 
+    
     // 图标
     const AbilityIcon = MainPanel.FindChildTraverse("AbilityIcon") as ImagePanel;
 

@@ -74,6 +74,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
             if (enemies.length == 0) { return }
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             let hTarget = enemies[0];
+            this.DoExecutedAbility()
             this.PlayEffect({ hTarget: hTarget, value: manacost_bonus })
         }
     }

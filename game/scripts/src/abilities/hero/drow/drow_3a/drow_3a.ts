@@ -42,6 +42,7 @@ export class modifier_drow_3a extends BaseHeroModifier {
     OnIntervalThink() {
         if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(0)) {
             // this.ability.UseResources(true, true, true, true);
+            this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             this.ExtraEffect()
             let total_count = this.base_count + this.bonus_count;

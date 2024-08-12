@@ -48,7 +48,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
     proj_width: number;
     proj_speed: number;
 
-    
+
 
     C_OnCreated(): void {
         this.fakeAttack = false;
@@ -56,7 +56,9 @@ export class modifier_drow_1 extends BaseHeroModifier {
     }
 
     UpdataAbilityValue(): void {
-        this.base_value = this.ability.GetSpecialValueFor("base_value");
+        this.base_value = this.ability.GetSpecialValueFor("base_value")
+            + (this.caster.custom_attribute_value.BasicAbilityDmg ?? 0);
+
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
 
 

@@ -17,4 +17,9 @@ export class BasicRules extends UIEventRegisterClass {
             [Direction]: State
         })
     }
+
+    /** 治疗触发 */
+    Heal(hCaster: CDOTA_BaseNPC, fHealAmount: number, hAbility: CDOTABaseAbility | undefined) {
+        hCaster.Heal(fHealAmount, hAbility)
+    }
 }
