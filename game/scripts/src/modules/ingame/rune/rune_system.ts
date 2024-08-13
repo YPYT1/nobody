@@ -359,7 +359,7 @@ export class RuneSystem extends UIEventRegisterClass {
     TimeSelectRune(player_id : PlayerID){
         let hero = PlayerResource.GetSelectedHeroEntity(player_id);
         //暂停定时器
-        hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + this.player_fate_data_index[player_id]);
+        hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id + "_" + this.player_fate_data_index[player_id]);
 
         let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
         
@@ -541,21 +541,35 @@ export class RuneSystem extends UIEventRegisterClass {
         print("================GetRuneValues=================");
         print("rune_name", rune_name);
         print("level_index", level_index);
-        // let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-        // let AttrValues = RuneConfig[rune_name as keyof typeof RuneConfig].AttrValues;
-        // DeepPrintTable(AttrValues);
-        // for (let key in AttrValues) {
-        //     let attr_values = this.GetKVAttr(rune_name, key, level_index);
-        //     print("attr_key :", key, " attr_values :", attr_values);
-        //     if (attr_values) {
-        //         if (GameRules.PlayerHeroAttributeData["rune_attribute"][hHero.GetEntityIndex()].hasOwnProperty(key)) {
-        //             GameRules.PlayerHeroAttributeData["rune_attribute"][hHero.GetEntityIndex()][key as CUnitAttributeType] += attr_values;
-        //         } else {
-        //             GameRules.PlayerHeroAttributeData["rune_attribute"][hHero.GetEntityIndex()][key as CUnitAttributeType] = attr_values;
-        //         }
-        //     }
-        // }
-    }
+
+
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let ObjectValues = RuneConfig[rune_name as keyof typeof RuneConfig].ObjectValues;
+        let attr_count : CustomAttributeTableType = {};
+        for (let Attr in ObjectValues) {
+            // let attr_values = this.GetKVAttr(rune_name, key, level_index);
+            if(!attr_count.hasOwnProperty(Attr)){
+                attr_count[Attr] = {};
+            }
+            for (const AttrType in ObjectValues[Attr]) {
+                if(typeof ObjectValues[Attr][AttrType] == "number"){
+                    attr_count[Attr][AttrType] = ObjectValues[Attr][AttrType];
+                }else{
+                    let Str = ObjectValues[Attr][AttrType] as string;
+                    let Str_List = Str.split(" ");
+                    let value = 0;
+                    if(Str_List.length <= (level_index + 1)){ // 2  2
+                        value = tonumber(Str_List[Str_List.length - 1])
+                    }else{
+                        value = tonumber(Str_List[level_index])
+                    }
+                    attr_count[Attr][AttrType] = value;
+                }
+            }
+        }
+        DeepPrintTable(attr_count);
+        GameRules.CustomAttribute.SetAttributeInKey(hHero , "r_s_" + rune_name , attr_count)
+    } 
 
     //失去符文属性
     LoseRuneValues(player_id: PlayerID, rune_name: string, level_index: number) {
