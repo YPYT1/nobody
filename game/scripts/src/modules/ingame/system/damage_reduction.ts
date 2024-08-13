@@ -54,7 +54,17 @@ export class DamageReduction {
     }
 
     /** 获取该目标的最终伤害减免 */
-    GetReductionPercent(hUnit: CDOTA_BaseNPC) {
-        return 0
+    GetReductionPercent(hUnit: CDOTA_BaseNPC, damage: number, damage_type: DamageTypes, element_type?: ElementTypes) {
+        let custom_attribute = hUnit.custom_attribute_value;
+        if (element_type == ElementTypes.NONE) {
+            // 物理护甲 碰撞伤害
+            let PhyicalArmor = custom_attribute.PhyicalArmor;
+            let armor_dmg_reduction = PhyicalArmor / (100 + math.abs(PhyicalArmor));
+            damage = damage * (1 - armor_dmg_reduction)
+        } else {
+
+        }
+        // print(damage, "element_type", element_type)
+        return damage
     }
 }

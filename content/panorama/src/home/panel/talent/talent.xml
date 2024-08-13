@@ -25,11 +25,11 @@
         </snippet>
     </snippets>
 	<Panel class="talent">
-		<Panel class="TalentContainer">
-            <Panel id="TalentBackgroundHeight">
-                <Panel class="BackgroundNode"/>
-                <Panel class="BackgroundNode"/>
-                <Panel class="BackgroundNode"/>
+		<Panel id="TalentContainer">
+            <Panel class="Header">
+                <Button id="ToggleBtn" />
+
+                
             </Panel>
             <Panel id="TalentNodeList">
                 

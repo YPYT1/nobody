@@ -147,14 +147,7 @@ export class modifier_public_attribute extends BaseModifier {
             ModifierFunction.HEALTH_REGEN_CONSTANT,
             ModifierFunction.MANA_BONUS,
             ModifierFunction.MANA_REGEN_CONSTANT,
-            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
-            //@ts-ignore
-            // ModifierFunction.VISION_DEGREES_RESTRICTION,
             ModifierFunction.COOLDOWN_PERCENTAGE,
-            // ModifierFunction.MANACOST_PERCENTAGE,
-            // ModifierFunction.MANACOST_PERCENTAGE_STACKING,
-            // ModifierFunction.MANACOST_REDUCTION_CONSTANT,
-
         ]
     }
 
@@ -190,12 +183,12 @@ export class modifier_public_attribute extends BaseModifier {
         return this.AttributeData.ManaRegen
     }
 
-    GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
-        if (event.damage_type != DamageTypes.PURE) {
-            return GameRules.DamageReduction.GetTotalReductionPct(event)
-        }
-        return 0
-    }
+    // GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
+    //     if (event.damage_type != DamageTypes.PURE) {
+    //         return GameRules.DamageReduction.GetTotalReductionPct(event)
+    //     }
+    //     return 0
+    // }
 
     GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
         // print(event.ability.GetAbilityName())

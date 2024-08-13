@@ -10,13 +10,13 @@ import { drow_range_wearable } from "../../../kv_data/hero_wearable/drow_range";
 
 type HeroWearable = typeof drow_range_wearable
 
-interface HeroWearableProps {
-    wearables: {
-        model: string;
-        particle: string;
-    }[];
-    particle_create: string[];
-}
+// interface HeroWearableProps {
+//     wearables: {
+//         model: string;
+//         particle: string;
+//     }[];
+//     particle_create: string[];
+// }
 /** 自定义属性系统 */
 @reloadable
 export class CustomAttribute {
@@ -155,12 +155,12 @@ export class CustomAttribute {
                         }
                     }
                     // 属性转换表加载
-                    if (attribute_conversion[attr_key] == null) { attribute_conversion[attr_key] = {} }
-                    const ConversionValue = AttributeConst[attr_key]["ConversionValue"];
-                    for (let conver_key in ConversionValue) {
-                        let data = ConversionValue[conver_key]
-                        attribute_conversion[attr_key][conver_key] = data
-                    }
+                    // if (attribute_conversion[attr_key] == null) { attribute_conversion[attr_key] = {} }
+                    // const ConversionValue = AttributeConst[attr_key]["ConversionValue"];
+                    // for (let conver_key in ConversionValue) {
+                    //     let data = ConversionValue[conver_key]
+                    //     attribute_conversion[attr_key][conver_key] = data
+                    // }
                 }
 
                 hUnit.custom_attribute_table = attribute_table;
@@ -179,7 +179,7 @@ export class CustomAttribute {
         //});
     }
 
-    InitHeroAbility(hUnit: CDOTA_BaseNPC) {
+    InitHeroAbility(hUnit: CDOTA_BaseNPC, heroName?: string) {
         // print("InitHeroAbility");
         hUnit.AddAbility("arms_passive_0").SetLevel(1);
         hUnit.AddAbility("arms_passive_1").SetLevel(1);
@@ -682,22 +682,13 @@ export class CustomAttribute {
         }
 
         if (cmd == "-mulattr") {
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 1; i++) {
                 let mul_key = DoUniqueString("mul_key");
                 this.SetAttributeInKey(hHero, mul_key, {
-                    "FirePent": {
-                        "Base": 10,
-                    },
-                    "MaxHealth": {
-                        "Base": 10,
-                    },
-                    "FireResist": {
-                        "Base": 10,
-                    },
-                    "AbilityCooldown": {
-                        "Base": 5,
+                    'EvasionProb': {
+                        "Base": 50,
                     }
-                }, i * 0.15)
+                }, 5)
             }
 
         }

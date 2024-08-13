@@ -20,11 +20,18 @@
 		<snippet name="RuneInfo">
 			<Panel class="RuneInfo">
 				<Button id="RuneIconBtn">
-					<Image id="RuneImage" src="" />
+
 				</Button>
 				<Panel class="RuneDesc">
 					<Label text="{s:rune_desc}" html="true"/>
 				</Panel>
+			</Panel>
+		</snippet>
+
+		<snippet name="HeroState">
+			<Panel class="HeroState">
+				<Label class="Health" text="{d:hp}/ {d:max_hp}"/>
+				<Label class="Mana" text="{d:mp}/ {d:max_mp}"/>
 			</Panel>
 		</snippet>
 	</snippets>
@@ -42,9 +49,10 @@
 						<Label text="{d:refresh_count}" hittest="false"/>
 					</Panel>
 				</Panel>
-				
 			</Panel>
-			
+		</Panel>
+		<Panel id="PlayerStateContainer" class="DialogContainer" hittest="false">
+			<Panel id="HeroState"/>
 		</Panel>
 	</Panel>
 </root>

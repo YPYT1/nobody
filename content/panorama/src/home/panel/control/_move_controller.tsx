@@ -104,7 +104,7 @@ export function OnInitMoveHotkey() {
     SetHotKey("LEFTARROW", OnKey_Down_A, OnKey_Up_A);
     SetHotKey("DOWNARROW", OnKey_Down_S, OnKey_Up_S);
     SetHotKey("RIGHTARROW", OnKey_Down_D, OnKey_Up_D);
-    // SetHotKey("space", Onkey_Backspace_Down, Onkey_Backspace_Up);
+    SetHotKey("space", Onkey_Backspace_Down, Onkey_Backspace_Up);
 
     SetHotKey("W", OnKey_Down_W, OnKey_Up_W);
     SetHotKey("A", OnKey_Down_A, OnKey_Up_A);

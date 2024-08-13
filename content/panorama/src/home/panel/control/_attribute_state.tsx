@@ -13,6 +13,7 @@ const base_attribute_list: AttributeMainKey[] = [
     "PhyicalArmor",
     "MoveSpeed",
     "AbilityHaste",
+    "EvasionProb",
 ]
 
 const adv_attribute_list: AttributeMainKey[] = [

@@ -3,7 +3,7 @@ import * as RuneConfig from "../json/config/game/rune/rune_config.json";
 
 type runeName = keyof typeof RuneConfig;
 
-/** 符文效果 */
+/** 通用符文效果 */
 @registerModifier()
 export class modifier_rune_effect extends BaseModifier {
 

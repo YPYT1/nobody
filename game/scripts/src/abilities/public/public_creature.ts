@@ -22,8 +22,12 @@ export class modifier_public_creature extends BaseModifier {
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
-        this.attack_damage = this.caster.GetAverageTrueAttackDamage(null)
         this.StartIntervalThink(1)
+    }
+
+    OnRefresh(params: object): void {
+        if (!IsServer()) { return }
+
     }
 
     OnIntervalThink(): void {
@@ -38,20 +42,29 @@ export class modifier_public_creature extends BaseModifier {
             FindOrder.ANY,
             false
         );
-        for (let enemy of enemies) {
-            ApplyCustomDamage({
-                victim: enemy,
-                attacker: this.caster,
-                damage: this.attack_damage,
-                damage_type: DamageTypes.PHYSICAL,
-                ability: this.GetAbility(),
-                element_type: ElementTypes.NONE,
-                // is_primary: true,
-            })
+        if (enemies.length > 0) {
+            let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+            // print("attack_damage",attack_damage)
+            for (let enemy of enemies) {
+                ApplyCustomDamage({
+                    victim: enemy,
+                    attacker: this.caster,
+                    damage: attack_damage,
+                    damage_type: DamageTypes.MAGICAL,
+                    ability: this.GetAbility(),
+                    element_type: ElementTypes.NONE,
+                    // is_primary: true,
+                })
+            }
             // 播放声音
 
+            // 动作
+            this.caster.StartGesture(GameActivity.DOTA_ATTACK)
         }
+
     }
+
+
     DeclareFunctions(): modifierfunction[] {
         return [
             ModifierFunction.ATTACKSPEED_BASE_OVERRIDE
@@ -61,10 +74,11 @@ export class modifier_public_creature extends BaseModifier {
     GetModifierAttackSpeedBaseOverride(): number {
         return 0.001
     }
+
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
             [ModifierState.NO_HEALTH_BAR]: true,
-            [ModifierState.FORCED_FLYING_VISION]: true,
+            // [ModifierState.FORCED_FLYING_VISION]: true,
             // [ModifierState.DISARMED]: true,
         }
     }

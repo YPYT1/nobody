@@ -1,6 +1,6 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../utils/dota_ts_adapter";
 
-// 相位移动
+// 傀儡单位
 @registerAbility()
 export class public_dummy extends BaseAbility {
 
@@ -17,13 +17,25 @@ export class modifier_public_dummy extends BaseModifier {
         return true
     }
 
+    OnIntervalThink(): void {
+        this.StartIntervalThink(-1)
+        let hParent = this.GetParent()
+        hParent.SetHealth(hParent.GetMaxHealth())
+    }
+
     DeclareFunctions(): ModifierFunction[] {
         return [
-            ModifierFunction.MIN_HEALTH
+            ModifierFunction.MIN_HEALTH,
+            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
         ]
     }
 
     GetMinHealth(): number {
         return 1
+    }
+
+    GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
+        this.StartIntervalThink(5);
+        return 0
     }
 }

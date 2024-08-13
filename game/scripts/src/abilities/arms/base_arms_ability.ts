@@ -463,19 +463,8 @@ export class modifier_public_arms extends BaseModifier {
 
     DeclareFunctions(): ModifierFunction[] {
         return [
-            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
             // ModifierFunction.ON_ABILITY_EXECUTED
         ]
-    }
-
-    GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
-        let fGameTime = GameRules.GetDOTATime(false, false);
-        for (let hAffectedAbility of this.hAbility.AffectedList) {
-            if ((hAffectedAbility.AffectedActTime ?? 0) <= fGameTime) {
-                (hAffectedAbility as BaseArmsAbility)._AffectedEffectStart(event)
-            }
-        }
-        return 0
     }
 
 }

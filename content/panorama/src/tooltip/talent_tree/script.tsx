@@ -1,5 +1,6 @@
 import { GetTextureSrc } from "../../common/custom_kv_method";
 import { default as talent_tree_drow_ranger } from "../../json/config/game/hero/talent_tree/drow_ranger.json";
+import { SetLabelDescriptionExtra } from "../../utils/ability_description";
 import { FormatDescription } from "../../utils/method";
 import { default as AbilityTypesJson } from "./../../json/config/game/const/ability_types.json";
 let talent_tree = {
@@ -30,12 +31,13 @@ function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
     let talent_data = talent_tree[hero as keyof typeof talent_tree][key as "1"]
     let img = talent_data.img;
     let AbilityValues = talent_data.AbilityValues;
+    let ObjectValues = talent_data.ObjectValues;
     MainPanel.SetDialogVariableInt("max", talent_data.max_number)
     MainPanel.SetDialogVariableInt("level", level)
     let talent_name = $.Localize(`#custom_talent_${hero}_${key}`)
     MainPanel.SetDialogVariable("talent_name", talent_name)
     let talent_desc = $.Localize(`#custom_talent_${hero}_${key}_desc`)
-    let description_txt = FormatDescription(talent_desc, AbilityValues, level, true);
+    let description_txt = SetLabelDescriptionExtra(talent_desc, level, AbilityValues, ObjectValues, true);
     MainPanel.SetDialogVariable("talent_desc", description_txt)
     // 风格
     MainPanel.SetHasClass("IsAbility", talent_data.is_ability == 1)

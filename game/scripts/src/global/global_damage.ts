@@ -20,8 +20,31 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     if (hAttacker == null || IsValid(hAttacker)) { return 0 }
     const iPlayerID = hAttacker.GetPlayerOwnerID();
     // print("iPlayerID",iPlayerID)
-    if (iPlayerID == -1) {
+    if (hAttacker.GetTeam() == DotaTeam.BADGUYS) {
         // 这里走敌人伤害方法
+
+        // 闪避判定
+        let custom_attribute_value = hTarget.custom_attribute_value;
+        if (custom_attribute_value == null) {
+            return ApplyDamage(params);
+        }
+        let EvasionProb = custom_attribute_value ? custom_attribute_value.EvasionProb : 0;
+        if (RollPercentage(EvasionProb)) {
+            // 闪避
+            PopupMiss(hTarget)
+            return 0
+        }
+        // 护甲
+
+        let armor = custom_attribute_value.PhyicalArmor ?? 0;
+        params.damage = GameRules.DamageReduction.GetReductionPercent(
+            hTarget, 
+            params.damage, 
+            params.damage_type, 
+            params.element_type
+        );
+        // print("damage",params.damage)
+        params.damage_type = DamageTypes.PURE;
         return ApplyDamage(params);
     }
 

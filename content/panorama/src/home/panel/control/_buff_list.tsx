@@ -3,13 +3,11 @@ import { GetTextureSrc } from "../../../common/custom_kv_method";
 let m_BuffPanels: Panel[] = [];
 let m_DeBuffPanels: Panel[] = [];
 
-export let BuffListPanel: Panel;
-export let DeBuffListPanel: Panel;
+let BuffListPanel = $("#BuffList");
+let DeBuffListPanel = $("#DeBuffList");
 
 export const CreatePanel_BuffList = () => {
-    BuffListPanel = $("#BuffList");
     BuffListPanel.RemoveAndDeleteChildren()
-    DeBuffListPanel = $("#DeBuffList");
     DeBuffListPanel.RemoveAndDeleteChildren();
     m_BuffPanels = [];
     m_DeBuffPanels = [];

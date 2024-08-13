@@ -3,8 +3,7 @@
     // width: 600px;
     // height: 400px;
     // pre-transform-scale2d: 0.75;
-    border: 1px solid #ffffff;
-    background-color: #000000;
+
     horizontal-align: right;
     vertical-align: bottom;
     flow-children: down;
@@ -12,8 +11,33 @@
     // visibility: collapse;
 }
 
-.TalentContainer {
+#TalentContainer {
     // width: 100%;
+    flow-children: down;
+    transform: translateX(380px);
+    border: 1px solid #ffffff;
+    background-color: #000000;
+
+    transition-property:transform ;
+    transition-duration: 0.1s;
+    
+    &.Show {
+        transform: translateY(0px);
+    }
+
+    .Header {
+        width: 100%;
+
+        #ToggleBtn {
+            width: 64px;
+            height: 24px;
+            background-color: #ffffff;
+
+            &:hover {
+                background-color: #ffaf02;
+            }
+        }
+    }
 
     .TalentLabel {
         horizontal-align: center;
@@ -39,16 +63,20 @@
             flow-children: right;
         }
 
+        .TalentName {
+            font-size: 14px;
+        }
+
         .TalentNode {
             horizontal-align: center;
             // border: 1px solid #ffffff;
             flow-children: down;
-            margin: 8px;
+            margin: 6px;
             // margin-top: 20px;
 
             .TalentInfo {
-                width: 80px;
-                height: 80px;
+                width: 64px;
+                height: 64px;
                 horizontal-align: center;
                 // border: 1px solid #bd8181;
             }
@@ -56,8 +84,8 @@
             #TalentNodeButton {
                 horizontal-align: center;
                 // vertical-align: middle;
-                width: 56px;
-                height: 56px;
+                width: 52px;
+                height: 52px;
                 border: 2px solid #ffaf02;
 
                 &:enabled {

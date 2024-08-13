@@ -4,7 +4,8 @@ import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tool
 
 let TalentBackgroundHeight = $("#TalentBackgroundHeight");
 let TalentNodeList = $("#TalentNodeList");
-
+let TalentContainer = $("#TalentContainer");
+let ToggleBtn = $("#ToggleBtn");
 let hero_talent_tree: { [hero: string]: TalentTreeProps } = {};
 
 interface TalentTreeObject {
@@ -65,6 +66,7 @@ export const RecursionTalentTree = () => {
 
 export const CreateHeroTalentTreeUI = (heroname: string, NodePanel: Panel, index: string = "1") => {
     // TalentBackgroundHeight.RemoveAndDeleteChildren()
+    if (hero_talent_tree[heroname] == null) { return }
     let talent_tree = hero_talent_tree[heroname][index];
     // $.Msg(["talent_tree",talent_tree])
     for (let row of talent_tree) {
@@ -130,8 +132,9 @@ export const GameEventsSubscribe = () => {
         // $.Msg(["hero_talent_list", hero_talent_list])
         for (let id in hero_talent_list) {
             let data = hero_talent_list[id];
-            let TalentNode = TalentNodeList.FindChildTraverse(id)!;
-            TalentNode.Data<PanelDataObject>().used = data.uc
+            let TalentNode = TalentNodeList.FindChildTraverse(id);
+            if (TalentNode == null) { continue }
+            TalentNode.Data<PanelDataObject>().used = data.uc;
             TalentNode.SetDialogVariableInt("used", data.uc)
             let TalentNodeButton = TalentNode.FindChildTraverse("TalentNodeButton") as Button;
             TalentNodeButton.enabled = data.iu == 1;
@@ -154,6 +157,10 @@ export const CreateHeroTalent = (heroname: string) => {
 
 export const Init = () => {
 
+    ToggleBtn.SetPanelEvent("onactivate",()=>{
+        TalentContainer.ToggleClass("Show")
+    })
+    
     GameEventsSubscribe()
     // 英雄天赋树
     hero_talent_tree["drow_ranger"] = FormatTalentTree("drow_ranger", talent_tree_drow_ranger);
@@ -168,5 +175,5 @@ export const Init = () => {
 
 
 (function () {
-    // Init()
+    Init()
 })();

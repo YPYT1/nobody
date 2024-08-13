@@ -1,3 +1,4 @@
+import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { SetLabelDescriptionExtra } from "../../../utils/ability_description";
 import { default as RuneConfigJson } from "./../../../json/config/game/rune/rune_config.json"
 
@@ -11,13 +12,15 @@ const RefreshBtn = $("#RefreshBtn") as Button;
 const localPlayer = Game.GetLocalPlayerID();
 const BarHeight = 250
 
+const HeroState = $("#HeroState");
 const StartThinkerLoop = () => {
     // UpdateLocalPlayerReviveState()
+    UpdateHeroStateDialog()
     UpdateLocalPlayerRuneDialog();
     $.Schedule(Game.GetGameFrameTime(), StartThinkerLoop)
 }
 
-const UpdateLocalPlayerRuneDialog = () => {
+const UpdateHeroStateDialog = () => {
     const entity = Players.GetPlayerHeroEntityIndex(localPlayer);
     const pos = Entities.GetAbsOrigin(entity);
     // $.Msg(pos)
@@ -27,26 +30,63 @@ const UpdateLocalPlayerRuneDialog = () => {
     let xUI = Game.WorldToScreenX(pos[0], pos[1], pos[2] + fOffset);
     let yUI = Game.WorldToScreenY(pos[0], pos[1], pos[2] + fOffset);
     if (xUI < 0 || xUI > Game.GetScreenWidth() || yUI < 0 || yUI > Game.GetScreenHeight()) {
-        LocalPlayerRuneDialog.visible = false;
+        HeroState.visible = false;
         return;
     }
-    LocalPlayerRuneDialog.visible = true;
+    HeroState.visible = true;
     const [clampX, clampY] = GameUI.WorldToScreenXYClamped(pos);
-    // $.Msg([clampX, clampY])
     const diffX = clampX - 0.5;
     const diffY = clampY - 0.5;
     xUI -= diffX * Game.GetScreenWidth() * 0.16;
     yUI -= diffY * Game.GetScreenHeight() * 0.10;
 
     let xoffset = 0;
-    let yoffset = -30;
-    LocalPlayerRuneDialog.SetPositionInPixels(
-        (xUI - LocalPlayerRuneDialog.actuallayoutwidth / 2 - xoffset) / LocalPlayerRuneDialog.actualuiscale_x,
-        (yUI - LocalPlayerRuneDialog.actuallayoutheight + yoffset) / LocalPlayerRuneDialog.actualuiscale_y,
+    let yoffset = 160;
+    HeroState.SetPositionInPixels(
+        (xUI - HeroState.actuallayoutwidth / 2 - xoffset) / HeroState.actualuiscale_x,
+        (yUI - HeroState.actuallayoutheight + yoffset) / HeroState.actualuiscale_y,
         0,
     );
+    // 生命属性
+    let hp = Entities.GetHealth(entity)
+    let max_hp = Entities.GetMaxHealth(entity)
+    let mp = Entities.GetMana(entity)
+    let max_mp = Entities.GetMaxMana(entity)
+    HeroState.SetDialogVariableInt("hp", hp)
+    HeroState.SetDialogVariableInt("max_hp", max_hp)
+    HeroState.SetDialogVariableInt("mp", mp)
+    HeroState.SetDialogVariableInt("max_mp", max_mp)
+}
+const UpdateLocalPlayerRuneDialog = () => {
+    // const entity = Players.GetPlayerHeroEntityIndex(localPlayer);
+    // const pos = Entities.GetAbsOrigin(entity);
+    // // $.Msg(pos)
+    // if (pos == null) { return }
+    // let fOffset = Entities.GetHealthBarOffset(entity);
+    // fOffset = (fOffset === -1 || fOffset < BarHeight) ? BarHeight : fOffset;
+    // let xUI = Game.WorldToScreenX(pos[0], pos[1], pos[2] + fOffset);
+    // let yUI = Game.WorldToScreenY(pos[0], pos[1], pos[2] + fOffset);
+    // if (xUI < 0 || xUI > Game.GetScreenWidth() || yUI < 0 || yUI > Game.GetScreenHeight()) {
+    //     LocalPlayerRuneDialog.visible = false;
+    //     return;
+    // }
+    // LocalPlayerRuneDialog.visible = true;
+    // const [clampX, clampY] = GameUI.WorldToScreenXYClamped(pos);
+    // // $.Msg([clampX, clampY])
+    // const diffX = clampX - 0.5;
+    // const diffY = clampY - 0.5;
+    // xUI -= diffX * Game.GetScreenWidth() * 0.16;
+    // yUI -= diffY * Game.GetScreenHeight() * 0.10;
+
+    // let xoffset = 0;
+    // let yoffset = -30;
+    // LocalPlayerRuneDialog.SetPositionInPixels(
+    //     (xUI - LocalPlayerRuneDialog.actuallayoutwidth / 2 - xoffset) / LocalPlayerRuneDialog.actualuiscale_x,
+    //     (yUI - LocalPlayerRuneDialog.actuallayoutheight + yoffset) / LocalPlayerRuneDialog.actualuiscale_y,
+    //     0,
+    // );
     let game_time = Game.GetDOTATime(false, false);
-    let over_time = LocalPlayerRuneDialog.Data<PanelDataObject>().over_time;
+    let over_time = LocalPlayerRuneDialog.Data<PanelDataObject>().over_time ?? 0;
     let select_timer = Math.floor(over_time - game_time)
     LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", select_timer)
 }
@@ -54,8 +94,9 @@ const UpdateLocalPlayerRuneDialog = () => {
 
 
 export const Init = () => {
-    // PlayerReviveContainer.RemoveAndDeleteChildren();
-    // PlayerRuneContainer.RemoveAndDeleteChildren()
+    HeroState.RemoveAndDeleteChildren();
+    HeroState.BLoadLayoutSnippet("HeroState");
+
     StartThinkerLoop();
     LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", 99);
     LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", 99);
@@ -78,20 +119,39 @@ export const Init = () => {
         RuneSelectList.RemoveAndDeleteChildren();
         let select_index = 0;
         for (let _data of rune_list) {
+            let post_index = select_index
             let level = _data.level;
             let index = _data.level_index;
+            // $.Msg(_data)
             let name = _data.name as runeName;
             let RuneInfo = $.CreatePanel("Panel", RuneSelectList, "");
             RuneInfo.BLoadLayoutSnippet("RuneInfo");
             let row_rune_data = RuneConfigJson[name];
             let ObjectValues = row_rune_data.ObjectValues;
             let AbilityValues = row_rune_data.AbilityValues;
+            let textrue = row_rune_data.AbilityTextureName;
             let rune_desc = SetLabelDescriptionExtra($.Localize(`#custom_${name}_Description`), index, AbilityValues, ObjectValues);
-            $.Msg(["rune_desc", rune_desc])
             RuneInfo.SetDialogVariable("rune_desc", rune_desc)
+            RuneInfo.SetHasClass("rarity_1", level == 1)
+            RuneInfo.SetHasClass("rarity_2", level == 2)
+            RuneInfo.SetHasClass("rarity_3", level == 3)
 
+            // $.Msg(["textrue",textrue])
+            // textrue = "item_rune/" + (select_index + 1);
+            let img_src = GetTextureSrc(textrue)
+            // $.Msg(["img_src", img_src])
             let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Button;
-            let post_index = select_index
+            RuneIconBtn.RemoveAndDeleteChildren()
+            let rune_image_id = `RuneImage${post_index}`
+            let RuneImage = $.CreatePanel("Image", RuneIconBtn, rune_image_id, {
+                class: "RuneImage"
+            });
+            RuneImage.SetImage(img_src)
+            let RunImageShwdow = $.CreatePanel("Image", RuneIconBtn, "", {
+                class: "RunImageShwdow",
+            });
+            // let RunImageShwdow = RuneInfo.FindChildTraverse("RunImageShwdow") as ImagePanel;
+            RunImageShwdow.SetImage(`Panel://${rune_image_id}`);
             RuneIconBtn.SetPanelEvent("onactivate", () => {
                 // $.Msg(["select_index", post_index])
                 GameEvents.SendCustomGameEventToServer("RuneSystem", {
@@ -100,8 +160,8 @@ export const Init = () => {
                         index: post_index
                     }
                 })
-
             })
+
             select_index++
         }
         LocalPlayerRuneDialog.SetHasClass("Show", is_new)

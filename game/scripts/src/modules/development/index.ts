@@ -82,7 +82,7 @@ export class Development extends UIEventRegisterClass {
         // }
     }
 
-    ToggleAbility(player_id: PlayerID, params: CGED["Development"]["ToggleAbility"]){
+    ToggleAbility(player_id: PlayerID, params: CGED["Development"]["ToggleAbility"]) {
         let ability_order = params.ability_order;
         let hUnit = EntIndexToHScript(params.queryUnit) as CDOTA_BaseNPC;
         let hAbility = hUnit.GetAbilityByIndex(ability_order);
@@ -208,6 +208,7 @@ export class Development extends UIEventRegisterClass {
 
     /** Debug命令 */
     DebugChat(cmd: string, args: string[], player_id: PlayerID) {
+        let vHero = PlayerResource.GetSelectedHeroEntity(player_id);
         if (cmd == "-reset") {
             // let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
             PlayerResource.ReplaceHeroWith(player_id, "npc_dota_hero_sniper", 0, 0)
@@ -229,14 +230,30 @@ export class Development extends UIEventRegisterClass {
 
         if (cmd == "-vis") {
             print("add vis")
-            let vHero = PlayerResource.GetSelectedHeroEntity(player_id);
+
             // GameRules.GetGameModeEntity().SetFogOfWarDisabled(false)
-            let vi = AddFOWViewer(DotaTeam.GOODGUYS, vHero.GetAbsOrigin(),9999, 10, false)
+            let vi = AddFOWViewer(DotaTeam.GOODGUYS, vHero.GetAbsOrigin(), 9999, 10, false)
             // AddFOWViewer(DotaTeam.GOODGUYS, Vector(0, 0, 0), 5000, 3600, true)
         }
 
         if (cmd == "-hpbar") {
             SendToConsole("dota_hud_healthbars 1")
+        }
+
+        if (cmd == "-sg") {
+
+            let hUnit = CreateUnitByName(
+                `npc_monster_normal_2`,
+                vHero.GetAbsOrigin() + RandomVector(600) as Vector,
+                true,
+                null,
+                null,
+                DotaTeam.BADGUYS
+            );
+            hUnit.SetBaseDamageMax(100);
+            hUnit.SetBaseDamageMin(100);
+            // let ability1 = hUnit.GetAbilityByIndex(0);
+            
         }
 
         if (cmd == "-fuhuo") {
@@ -263,7 +280,7 @@ export class Development extends UIEventRegisterClass {
             let hHero = PlayerResource.GetSelectedHeroEntity(player_id)
             let boss_unit = CreateUnitByName(
                 `npc_creature_boss_1`,
-                Vector(0,0,0),
+                Vector(0, 0, 0),
                 true,
                 null,
                 null,
@@ -274,7 +291,7 @@ export class Development extends UIEventRegisterClass {
             GameRules.CMsg.SetBossHealthBar(boss_unit);
         }
 
-        if (cmd == "-rmhb"){
+        if (cmd == "-rmhb") {
             GameRules.CMsg.RemoveAllHealthBar()
         }
         if (cmd == "-hbremove") {
