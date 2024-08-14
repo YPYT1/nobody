@@ -56,10 +56,15 @@ export class modifier_drow_3a_a_summoned_collision extends modifier_drow_3a_summ
         let talent_31 = this.caster.hero_talent["31"] ?? 0;
         if (talent_31 > 0) {
             this.damage_type = DamageTypes.MAGICAL;
-            this.element_type = ElementTypes.WIND
+            this.element_type = ElementTypes.WIND;
+             // rune_41	游侠#16	风暴环绕【疾风】生效时，风元素伤害增加50%
+            this.ElementDmgMul = GameRules.RuneSystem.GetKvOfUnit(this.caster,'rune_41','wind_bonus')
         } else {
             this.damage_type = DamageTypes.PHYSICAL;
             this.element_type = ElementTypes.NONE
         }
+
+       
+        
     }
 }

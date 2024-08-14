@@ -19,7 +19,7 @@ export class modifier_drow_3b extends BaseHeroModifier {
 
     radius: number;
     arrow_count: number;
-    base_value: number;
+
 
     mdf_thinker = "modifier_drow_3b_thinker";
 
@@ -28,14 +28,24 @@ export class modifier_drow_3b extends BaseHeroModifier {
         this.radius = hAbility.GetSpecialValueFor("radius");
         this.arrow_count = hAbility.GetSpecialValueFor("arrow_count")
             + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "38", 'bonus_arrow')
-            ;
-        this.base_value = hAbility.GetSpecialValueFor("base_value");
 
+        this.SelfAbilityMul = hAbility.GetSpecialValueFor("base_value");
+        // rune_44	游侠#19	箭雨的基础伤害提高50%
+        this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_44', 'base_value');
+        // rune_47	游侠#22	箭雨【急冻】生效时，额外增加的5支箭
+        if (this.caster.rune_passive_type["rune_47"]) {
+            this.arrow_count += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_47', 'jidong_bonus')
+        }
 
+        this.DamageBonusMul = 0;
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(-1)) {
+        if (this.caster.IsAlive()
+            && this.ability.IsActivated()
+            && this.ability.IsCooldownReady()
+            && this.ability.IsOwnersManaEnough()
+        ) {
             // print("this.r",this.radius)
             let enemies = FindUnitsInRadius(
                 this.team,
@@ -63,10 +73,10 @@ export class modifier_drow_3b extends BaseHeroModifier {
             ParticleAttachment.POINT,
             this.caster,
         )
-        ParticleManager.ReleaseParticleIndex(cast_fx)
-        let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
-        let bp_ingame = this.base_value - 100
-        let bp_server = 0;
+        ParticleManager.ReleaseParticleIndex(cast_fx);
+        let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+        // let bp_ingame = this.base_value - 100
+        // let bp_server = 0;
         CreateModifierThinker(
             this.caster,
             this.ability,
@@ -75,8 +85,8 @@ export class modifier_drow_3b extends BaseHeroModifier {
                 radius: this.radius,
                 arrow_count: this.arrow_count,
                 ability_damage: attack_damage,
-                bp_ingame: bp_ingame,
-                bp_server: bp_server,
+                SelfAbilityMul: this.SelfAbilityMul,
+                DamageBonusMul: this.DamageBonusMul,
             },
             vPos,
             this.team,
@@ -95,15 +105,15 @@ export class modifier_drow_3b_thinker extends BaseModifier {
     radius: number;
     do_destroy: boolean;
     ability: CDOTABaseAbility;
-    bp_ingame: number;
-    bp_server: number;
+    SelfAbilityMul: number;
+    DamageBonusMul: number;
     arrow_thinker = "modifier_drow_3b_thinker_arrow";
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.do_destroy = false;
-        this.bp_ingame = params.bp_ingame;
-        this.bp_server = params.bp_server;
+        this.SelfAbilityMul = params.SelfAbilityMul;
+        this.DamageBonusMul = params.DamageBonusMul;
         this.caster = this.GetCaster();
         this.ability = this.GetAbility();
         this.arrow_count = params.arrow_count;
@@ -180,12 +190,12 @@ export class modifier_drow_3b_thinker extends BaseModifier {
                 element_type: this.element_type,
                 ability: this.ability,
                 is_primary: true,
-                bp_ingame: this.bp_ingame,
-                bp_server: this.bp_server,
+                SelfAbilityMul: this.SelfAbilityMul,
             });
             return null
         }, 0.3)
     }
+
     OnDestroy(): void {
         if (!IsServer()) { return }
         UTIL_Remove(this.GetParent())

@@ -405,8 +405,10 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
             this.Destroy();
             return;
         }
+        this._OnIntervalThink();
     }
 
+    _OnIntervalThink() { }
     OnDestroy(): void {
         if (!IsServer()) { return; }
         this.GetParent().RemoveHorizontalMotionController(this);

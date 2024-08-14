@@ -39,7 +39,11 @@ export class modifier_drow_4b extends BaseHeroModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() > this.ability.GetManaCost(-1)) {
+        if (this.ability.IsActivated()
+            && this.caster.IsAlive()
+            && this.ability.IsCooldownReady()
+            && this.ability.IsOwnersManaEnough()
+        ) {
             this.ability.UseResources(true, true, true, true);
             this.DoExecutedAbility()
             this.caster.AddNewModifier(this.caster, this.ability, "modifier_drow_4b_buff", {

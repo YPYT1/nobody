@@ -24,7 +24,7 @@ export class drow_2b_a extends drow_2b {
     GetManaCost(level: number): number {
         let player_id = this.GetCaster().GetPlayerOwnerID();
         let nettable = CustomNetTables.GetTableValue("hero_talent", `${player_id}`);
-        if (nettable && nettable["20"].uc) {
+        if (nettable && nettable["20"]) {
             let cost = nettable["20"].uc * 5;
             return super.GetManaCost(level) - cost;
         }
@@ -34,16 +34,19 @@ export class drow_2b_a extends drow_2b {
     UpdataSpecialValue(): void {
         this.yazhi_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "21", "bonus_value");
         this.yazhi_hp_heighest = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "21", "hp_heighest");
+
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
-            let bp_ingame = extraData.bp_ingame;
-            let bp_server = extraData.bp_server;
+            let SelfAbilityMul = extraData.SelfAbilityMul;
+            let DamageBonusMul = extraData.DamageBonusMul;
+            let ElementDmgMul = extraData.ElementDmgMul;
             if (this.yazhi_value > 0 && target.GetHealthPercent() > this.yazhi_hp_heighest) {
-                bp_ingame += this.yazhi_value
+                DamageBonusMul += this.yazhi_value
             }
+
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -52,8 +55,9 @@ export class drow_2b_a extends drow_2b {
                 ability: this,
                 element_type: ElementTypes.FIRE,
                 is_primary: true,
-                bp_ingame: bp_ingame,
-                bp_server: bp_server,
+                SelfAbilityMul: SelfAbilityMul,
+                DamageBonusMul: DamageBonusMul,
+                ElementDmgMul: ElementDmgMul,
             })
             return true
         }
@@ -64,12 +68,11 @@ export class drow_2b_a extends drow_2b {
 export class modifier_drow_2b_a extends modifier_drow_2b {
 
     UpdataSpecialValue(): void {
-        this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "19", "bonus_value");
-        this.proj_name = G_PorjLinear.fire
+        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "19", "bonus_value");
+        this.proj_name = G_PorjLinear.fire;
+
+        // rune_37	游侠#12	散射【火力覆盖】火元素伤害提高50%
+        this.ElementDmgMul = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_37', 'fire_bonus');
     }
 
-    // PlayEffect(params: PlayEffectProps): void {
-    //     let vTarget = params.hTarget.GetAbsOrigin()
-    //     this.MultiShot(vTarget,);
-    // }
 }

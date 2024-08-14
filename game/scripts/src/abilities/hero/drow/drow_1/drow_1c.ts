@@ -11,34 +11,37 @@ import { drow_1, modifier_drow_1 } from "./drow_1";
 export class drow_1c extends drow_1 {
 
     add_mana: number = 0;
-
+    rune_31_bonus = 0;
     GetIntrinsicModifierName(): string {
         return "modifier_drow_1c"
     }
 
     UpdataSpecialValue(): void {
-        this.add_mana = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '10', 'add_mana')
+        this.add_mana = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '10', 'add_mana');
+        // rune_31	游侠#6	分裂箭对减速的敌人造成的伤害提高200%
+        this.rune_31_bonus = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_31', 'slow_bonus_value');
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             this.caster.GiveMana(this.add_mana)
-            let attack_damage = extraData.a;
-            let element_type = extraData.et;
-            let damage_type = extraData.dt;
-            let bp_ingame = extraData.bp_ingame;
-            let bp_server = extraData.bp_server;
-
+            let SelfAbilityMul = extraData.SelfAbilityMul;
+            let DamageBonusMul = extraData.DamageBonusMul;
+            if (this.rune_31_bonus > 0 && UnitIsSlowed(target)) {
+                DamageBonusMul += this.rune_31_bonus
+            }
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
-                damage: attack_damage,
-                damage_type: damage_type,
                 ability: this,
-                element_type: element_type,
+                damage: extraData.a,
+                damage_type: extraData.dt,
+                element_type: extraData.et,
                 is_primary: true,
-                bp_ingame: bp_ingame,
-                bp_server: bp_server,
+                SelfAbilityMul: SelfAbilityMul,
+                DamageBonusMul: DamageBonusMul,
+                // bp_ingame: bp_ingame,
+                // bp_server: bp_server,
             })
         }
     }
@@ -53,13 +56,14 @@ export class modifier_drow_1c extends modifier_drow_1 {
     UpdataSpecialValue(): void {
         this.fakeAttack = true;
         this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "8", 'targes');
-        this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "9", "bonus_value");
+        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "9", "bonus_value");
         if (this.bonus_value > 0) {
             this.element_type = ElementTypes.ICE;
             this.damage_type = DamageTypes.MAGICAL;
             this.tracking_proj_name = G_PorjTrack.ice;
         }
-
+        // rune_30	游侠#5	分裂箭的基础伤害提高200%
+        this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_30', 'base_value');
     }
 
     PlayAttackStart(params: PlayEffectProps): void {
@@ -70,9 +74,9 @@ export class modifier_drow_1c extends modifier_drow_1 {
         if (extra_index != -1) {
             bonus_targets += (extra_index + 1)
         }
-        let bp_ingame = (this.base_value - 100) + this.bonus_value;
-        let bp_server = this.ability.GetServerSkillEffect("21", bonus_targets);
         let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+        let ssk_21_bonus = this.ability.GetServerSkillEffect("21", bonus_targets);
+        let DamageBonusMul = this.DamageBonusMul + ssk_21_bonus
         let enemies = FindUnitsInRadius(
             this.team,
             this.caster.GetAbsOrigin(),
@@ -86,11 +90,11 @@ export class modifier_drow_1c extends modifier_drow_1 {
         )
         this.fakeAttack = false;
         let count = 0;
-        this.PlayPerformAttack(this.caster, hTarget, attack_damage, bp_ingame, bp_server)
+        this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, DamageBonusMul)
         for (let enemy of enemies) {
             if (enemy != hTarget) {
                 count += 1;
-                this.PlayPerformAttack(this.caster, enemy, attack_damage, bp_ingame, bp_server)
+                this.PlayPerformAttack(this.caster, enemy, attack_damage, this.SelfAbilityMul, DamageBonusMul)
             }
             if (count >= this.targes + bonus_targets) {
                 break

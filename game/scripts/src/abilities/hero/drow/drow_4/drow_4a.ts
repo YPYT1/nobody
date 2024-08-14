@@ -33,10 +33,11 @@ export class modifier_drow_4a extends BaseHeroModifier {
         this.recover_hp_pct = this.ability.GetTypesAffixValue(recover_hp_pct, "Buff", "skv_buff_increase");
         this.recover_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "46", "duration");
 
+
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive() && this.ability.IsCooldownReady()) {
+        if (this.ability.IsActivated() && this.caster.IsAlive() && this.ability.IsCooldownReady()) {
             this.DoExecutedAbility()
             this.ability.UseResources(true, true, true, true)
             if (this.talent_46) {
@@ -55,8 +56,28 @@ export class modifier_drow_4a extends BaseHeroModifier {
                 let heal_amount = this.caster.GetMaxHealth() * this.recover_hp_pct * 0.01
                 this.caster.Heal(heal_amount, this.ability)
             }
+            this.PlayEffect({});
+            // rune_48	游侠#23	使用能量回复后，获得35%伤害减免，持续15秒
+            if (this.caster.rune_passive_type["rune_48"]) {
+                let dmg_reduction = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_48', 'dmg_reduction')
+                let duration = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_48', 'duration');
+                GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_48_effect", {
+                    "DmgReductionPct": {
+                        "Base": dmg_reduction
+                    }
+                }, duration)
+            }
 
-            this.PlayEffect({})
+            // rune_49	游侠#24	使用能量回复后，获得35% 伤害加成 ，持续15秒
+            if (this.caster.rune_passive_type["rune_49"]) {
+                let bonus_ingame = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_49', 'bonus_ingame')
+                let duration = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_49', 'duration');
+                GameRules.CustomAttribute.SetAttributeInKey(this.caster, 'rune_49_effect', {
+                    'DamageBonusMul': {
+                        "Base": bonus_ingame
+                    }
+                }, duration)
+            }
         }
     }
 

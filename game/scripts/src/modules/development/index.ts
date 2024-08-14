@@ -241,19 +241,23 @@ export class Development extends UIEventRegisterClass {
         }
 
         if (cmd == "-sg") {
+            for (let i = 0; i < 10; i++) {
+                let hUnit = CreateUnitByName(
+                    `npc_monster_normal_2`,
+                    vHero.GetAbsOrigin() + RandomVector(600) as Vector,
+                    true,
+                    null,
+                    null,
+                    DotaTeam.BADGUYS
+                );
+                hUnit.SetBaseMaxHealth(10000)
+                hUnit.SetMaxHealth(10000)
+                hUnit.SetHealth(10000)
+            }
 
-            let hUnit = CreateUnitByName(
-                `npc_monster_normal_2`,
-                vHero.GetAbsOrigin() + RandomVector(600) as Vector,
-                true,
-                null,
-                null,
-                DotaTeam.BADGUYS
-            );
-            hUnit.SetBaseDamageMax(100);
-            hUnit.SetBaseDamageMin(100);
+
             // let ability1 = hUnit.GetAbilityByIndex(0);
-            
+
         }
 
         if (cmd == "-fuhuo") {

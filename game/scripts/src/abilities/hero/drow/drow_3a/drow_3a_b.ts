@@ -25,12 +25,13 @@ export class modifier_drow_3a_b extends modifier_drow_3a {
 
     UpdataSpecialValue(): void {
         this.bonus_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "32", 'bonus_count')
+
     }
 
     ExtraEffect(): void {
         let bx_state = (this.caster.hero_talent["33"] ?? 0) > 0;
         if (bx_state) {
-            this.caster.RemoveModifierByName("modifier_drow_3a_b_storage")
+            // this.caster.RemoveModifierByName("modifier_drow_3a_b_storage")
             this.caster.AddNewModifier(this.caster, this.ability, "modifier_drow_3a_b_storage", {
                 duration: this.surround_duration + 0.1,
             })
@@ -43,6 +44,8 @@ export class modifier_drow_3a_b_summoned extends modifier_drow_3a_summoned {
 
     ModifierAura = "modifier_drow_3a_b_summoned_collision";
 
+    xifu: boolean = false;
+
     C_OnCreated(params: any): void {
         let cast_fx = ParticleManager.CreateParticle(
             "particles/dev/tornado/tornado_4.vpcf",
@@ -51,6 +54,46 @@ export class modifier_drow_3a_b_summoned extends modifier_drow_3a_summoned {
         );
         ParticleManager.SetParticleControl(cast_fx, 1, Vector(this.aura_radius, 1, 1))
         this.AddParticle(cast_fx, false, false, 1, false, false);
+        // rune_42	游侠#17	风暴环绕【冰雹】会吸附敌人
+        this.xifu = this.caster.rune_passive_type["run_42"] != null;
+
+        this.StartIntervalThink(0.03)
+    }
+
+    _OnIntervalThink(): void {
+        if (this.xifu) {
+            let origin = this.parent.GetAbsOrigin();
+            let enemies = FindUnitsInRadius(
+                DotaTeam.GOODGUYS,
+                origin,
+                null,
+                this.aura_radius,
+                UnitTargetTeam.ENEMY,
+                UnitTargetType.BASIC + UnitTargetType.HERO,
+                UnitTargetFlags.NONE,
+                FindOrder.ANY,
+                false
+            )
+            // 黑洞吸附效果
+            for (let enemy of enemies) {
+                if (enemy.IsBossCreature()) {
+                    continue
+                }
+                let target_vect = enemy.GetAbsOrigin();
+                let direction = target_vect - origin as Vector;
+                let distance = direction.Length2D();
+                direction = direction.Normalized();
+                if (distance >= 40) {
+                    // 速度跟龙
+                    FindClearSpaceForUnit(enemy, target_vect - direction * 20 as Vector, false)
+                    // enemy.SetAbsOrigin()
+                } else {
+                    // enemy.SetAbsOrigin(origin)
+                    FindClearSpaceForUnit(enemy, origin, false)
+                }
+            }
+        }
+
     }
 }
 
@@ -58,6 +101,8 @@ export class modifier_drow_3a_b_summoned extends modifier_drow_3a_summoned {
 export class modifier_drow_3a_b_summoned_collision extends modifier_drow_3a_summoned_collision {
 
     storage_buff: modifier_drow_3a_b_storage;
+
+    aura_unit: CDOTA_BaseNPC;
 
     OnCreated_Extends(): void {
         this.damage_type = DamageTypes.MAGICAL;
@@ -68,14 +113,17 @@ export class modifier_drow_3a_b_summoned_collision extends modifier_drow_3a_summ
     OnIntervalThink(): void {
         let real_damage = ApplyCustomDamage({
             victim: this.GetParent(),
-            attacker: this.caster,
+            attacker: this.GetCaster(),
             damage: this.ability_damage,
             damage_type: this.damage_type,
             ability: this.ability,
             element_type: this.element_type,
             is_primary: true,
-            bp_ingame: this.base_value,
+            SelfAbilityMul: this.SelfAbilityMul,
+            DamageBonusMul: this.DamageBonusMul,
+            ElementDmgMul: this.ElementDmgMul,
         })
+
         if (this.storage_buff) {
             this.storage_buff.DoAction({ value: real_damage })
         }
@@ -90,16 +138,25 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
     bx_limit_pct: number;
     bx_radius: number;
 
-    // IsHidden(): boolean {
-    //     return true
-    // }
+    IsHidden(): boolean {
+        return true
+    }
+
+    GetAttributes(): DOTAModifierAttribute_t {
+        return ModifierAttribute.MULTIPLE
+    }
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         let hCaster = this.GetCaster()
+        this.caster = this.GetCaster();
         this.bx_record_dmg = 0;
-        this.bx_record_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', "record_pct")
-        this.bx_limit_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'limit_pct')
+        this.bx_record_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', "record_pct");
+        this.bx_limit_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'limit_pct');
+        // rune_43	游侠#18	风暴环绕 【暴雪】记录值提高100%
+        if (this.caster.rune_passive_type["rune_43"]) {
+            this.bx_limit_pct += GameRules.RuneSystem.GetKvOfUnit(hCaster, 'rune_43', 'record_pct_bonus')
+        }
         let bx_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'radius')
         let hAbility = this.GetAbility()
         this.bx_radius = hAbility.GetTypesAffixValue(bx_radius, "Aoe", "skv_aoe_radius")

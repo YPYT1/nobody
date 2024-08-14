@@ -47,7 +47,7 @@ declare type AttributeMainKey = "AttackDamage"
     | "SingleExpeIncrease"
     | "SacredEquipSkillDmg"
     | "ManaCostRate"
-    | "BasicAbilityDmg"
+    | "AbilityImproved"
     | "EvasionProb"
     ;
 

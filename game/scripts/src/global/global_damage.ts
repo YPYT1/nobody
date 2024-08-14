@@ -35,35 +35,35 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
             return 0
         }
         // 护甲
-
         let armor = custom_attribute_value.PhyicalArmor ?? 0;
         params.damage = GameRules.DamageReduction.GetReductionPercent(
-            hTarget, 
-            params.damage, 
-            params.damage_type, 
+            hTarget,
+            params.damage,
+            params.damage_type,
             params.element_type
         );
-        // print("damage",params.damage)
         params.damage_type = DamageTypes.PURE;
         return ApplyDamage(params);
     }
 
     let hAbility = params.ability;
-    if (hAbility) {
 
-    }
 
     let element_type = params.element_type ?? ElementTypes.NONE;
     let is_primary = params.is_primary ?? false;
     let is_crit = 0;
 
     // 乘区计算
-    let bp_ingame = params.bp_ingame ?? 0;
-    let bp_server = params.bp_server ?? 0;
+    let SelfAbilityMul = (params.SelfAbilityMul ?? 100) * 0.01;
+    let DamageBonusMul = (params.DamageBonusMul ?? 0);
+    let AbilityImproved = (params.AbilityImproved ?? 0);
+    let ElementDmgMul = (params.ElementDmgMul ?? 0);
+    let FinalDamageMul = (params.FinalDamageMul ?? 0);
     // 存档乘区
-    bp_server += hAttacker.custom_attribute_value.DamageServerMul
 
     // 当局加成乘区
+
+    // 游侠天赋击破效果
     let drow_13_stack_buff = hTarget.FindModifierByName("modifier_drow_2a_a_debuff")
     if (drow_13_stack_buff) {
         let stack = drow_13_stack_buff.GetStackCount();
@@ -73,7 +73,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
             "13",
             'value'
         )
-        bp_ingame += stack * stack_income
+        DamageBonusMul += stack * stack_income
     }
 
     /** 综合乘区 */
@@ -140,7 +140,19 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
     } else {
 
     }
-    let increased_injury = (1 + bp_ingame * 0.01) * (1 + bp_server * 0.01); // 
+
+    /**
+     * 造成伤害1=(攻击者攻击力*【1+攻击力加成百分比】*对应技能伤害)*伤害加成*(1+最终伤害)*技能增强*元素伤害百分比*远程或近战伤害增加百分比
+        造成伤害2=固定伤害（=攻击者固定伤害-受攻击者固定伤害减免）【造成伤害最小值1】
+     */
+    let increased_injury = 1
+        * SelfAbilityMul
+        * (1 + DamageBonusMul * 0.01)
+        * (1 + AbilityImproved * 0.01)
+        * (1 + ElementDmgMul * 0.01)
+        * (1 + FinalDamageMul * 0.01)
+    ;
+
     params.damage = math.floor(params.damage * increased_injury);
     PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type)
     return ApplyDamage(params);

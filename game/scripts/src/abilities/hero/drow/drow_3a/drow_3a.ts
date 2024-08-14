@@ -40,7 +40,10 @@ export class modifier_drow_3a extends BaseHeroModifier {
     }
 
     OnIntervalThink() {
-        if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(0)) {
+        if (this.caster.IsAlive()
+            && this.ability.IsCooldownReady()
+            && this.ability.IsOwnersManaEnough()
+        ) {
             // this.ability.UseResources(true, true, true, true);
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
@@ -129,7 +132,7 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
     ability_damage: number;
     ability: CDOTABaseAbility;
     radius: number;
-    base_value: number;
+
     damage_type: DamageTypes;
     element_type: ElementTypes;
     interval: number;
@@ -141,11 +144,15 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
     IsHidden(): boolean {
         return true
     }
-    
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
-        this.base_value = this.GetAbility().GetSpecialValueFor("base_value");
+        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
+        // rune_40	游侠#15	风暴环绕的基础伤害提高100%
+        this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_40', 'base_value');
+        this.ElementDmgMul = 0;
+        this.DamageBonusMul = 0;
         this.interval = this.GetAbility().GetSpecialValueFor("interval");
         this.team = this.caster.GetTeamNumber();
         this.ability = this.GetAbility();
@@ -170,8 +177,10 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
             ability: this.ability,
             element_type: this.element_type,
             is_primary: true,
-            bp_ingame:this.base_value,
             damage_vect: this.GetParent().GetAbsOrigin(),
+            SelfAbilityMul: this.SelfAbilityMul,
+            DamageBonusMul: this.DamageBonusMul,
+            ElementDmgMul: this.ElementDmgMul,
         })
     }
 }

@@ -19,8 +19,8 @@ export class drow_2a extends BaseHeroAbility {
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
-            let bp_ingame = extraData.bp_ingame;
-            let bp_server = extraData.bp_server;
+            // let bp_ingame = extraData.bp_ingame;
+            // let bp_server = extraData.bp_server;
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -28,8 +28,8 @@ export class drow_2a extends BaseHeroAbility {
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
                 is_primary: true,
-                bp_ingame: bp_ingame,
-                bp_server: bp_server,
+                // bp_ingame: bp_ingame,
+                // bp_server: bp_server,
             })
             return true
         }
@@ -39,7 +39,8 @@ export class drow_2a extends BaseHeroAbility {
 @registerModifier()
 export class modifier_drow_2a extends BaseHeroModifier {
 
-    base_value: number;
+    // base_value: number;
+    // bonus_value: number = 0;
 
     action_range: number;
     proj_count: number;
@@ -49,7 +50,11 @@ export class modifier_drow_2a extends BaseHeroModifier {
 
     UpdataAbilityValue(): void {
         const hAbility = this.GetAbility();
-        this.base_value = hAbility.GetSpecialValueFor("base_value");
+        this.SelfAbilityMul = hAbility.GetSpecialValueFor("base_value");
+        this.ElementDmgMul = 0;
+        // rune_32	游侠#7	连续射击的基础伤害提高200%
+        this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_32', 'base_value')
+        this.DamageBonusMul = 0;
         this.proj_count = hAbility.GetSpecialValueForTypes("proj_count", "Targeting", "skv_targeting_count");
         this.proj_speed = hAbility.GetSpecialValueFor("proj_speed");
         this.proj_width = hAbility.GetSpecialValueFor("proj_width");
@@ -59,7 +64,11 @@ export class modifier_drow_2a extends BaseHeroModifier {
 
 
     OnIntervalThink() {
-        if (this.caster.IsAlive() && this.ability.IsCooldownReady() && this.caster.GetMana() >= this.ability.GetManaCost(0)) {
+        if (this.caster.IsAlive()
+            && this.ability.IsActivated()
+            && this.ability.IsCooldownReady()
+            && this.ability.IsOwnersManaEnough()
+        ) {
             let enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.GetAbsOrigin(),
@@ -84,8 +93,6 @@ export class modifier_drow_2a extends BaseHeroModifier {
         let vTarget = hTarget.GetAbsOrigin();
         let count = 0;
         let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
-        let bp_ingame = (this.base_value - 100) + params.value;
-        let bp_server = 0;
         this.caster.SetContextThink("drow_2a_shot", () => {
             // print("proj_width",this.proj_width)
             let vCaster = this.caster.GetAbsOrigin() + RandomVector(100) as Vector;
@@ -109,8 +116,9 @@ export class modifier_drow_2a extends BaseHeroModifier {
                     a: attack_damage,
                     x: vCaster.x,
                     y: vCaster.y,
-                    bp_ingame: bp_ingame,
-                    bp_server: bp_server,
+                    SelfAbilityMul: this.SelfAbilityMul,
+                    DamageBonusMul: this.DamageBonusMul + params.value,
+                    ElementDmgMul: this.ElementDmgMul,
                 } as ProjectileExtraData
             })
             count += 1;

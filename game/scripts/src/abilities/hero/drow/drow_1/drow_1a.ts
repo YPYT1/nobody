@@ -14,18 +14,18 @@ export class drow_1a extends drow_1 {
     mul_value: number;
 
     aoe_radius: number;
-    bonus_value: number;
+
 
     GetIntrinsicModifierName(): string {
         return "modifier_drow_1a"
     }
 
     UpdataSpecialValue(): void {
-        this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
+        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
         this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
         this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");
-
-        if (this.caster.rune_passive_type["rune_27"]) {
+        // rune_27	游侠#2	爆裂箭【浓缩】的触发概率提高至30%，伤害提高至10倍
+        if (this.mul_chance > 0 && this.caster.rune_passive_type["rune_27"]) {
             this.mul_chance = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_27", 'mul_chance')
             this.mul_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_27", 'mul_value')
         }
@@ -38,10 +38,8 @@ export class drow_1a extends drow_1 {
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let aoe_damage = this.caster.GetAverageTrueAttackDamage(null);
-            let bp_ingame = this.bonus_value;
-            let bp_server = 0;
             let vPos = target.GetAbsOrigin();
-            this.PlayEffectAoe(vPos, aoe_damage, bp_ingame, bp_server);
+            this.PlayEffectAoe(vPos, aoe_damage);
 
             let aoe_multiple = this.GetTypesAffixValue(1, "Aoe", "skv_aoe_chance") - 1;
             // print("aoe_multiple",aoe_multiple)
@@ -51,12 +49,13 @@ export class drow_1a extends drow_1 {
                     vPos.y + RandomInt(-this.aoe_radius, this.aoe_radius),
                     vPos.z
                 );
-                this.PlayEffectAoe(vPos2, aoe_damage, bp_ingame, bp_server, true);
+                this.PlayEffectAoe(vPos2, aoe_damage, true);
             }
         }
     }
 
-    PlayEffectAoe(vPos: Vector, aoe_damage: number, bp_ingame: number, bp_server: number, second: boolean = false,) {
+    PlayEffectAoe(vPos: Vector, aoe_damage: number, second: boolean = false,) {
+        // 浓缩伤害
         if (RollPercentage(this.mul_chance)) {
             aoe_damage *= this.mul_value
         }
@@ -73,8 +72,16 @@ export class drow_1a extends drow_1 {
             FindOrder.ANY,
             false
         );
-
+        // rune_26	游侠#1	爆炸箭对生命值高于30%的敌人伤害提高100%
+        let has_rune26 = this.caster.rune_passive_type["rune_26"] != null;
+        let run26_bonus = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_26", 'bonus_value');
+        let run26_hp_pct = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_26", 'hp_pct');
         for (let enemy of enemies) {
+            let bonus = 0
+            if (has_rune26 && enemy.GetHealthPercent() > run26_hp_pct) {
+                bonus += run26_bonus
+            }
+
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.caster,
@@ -83,8 +90,8 @@ export class drow_1a extends drow_1 {
                 element_type: ElementTypes.FIRE,
                 ability: this,
                 is_primary: true,
-                bp_ingame: bp_ingame,
-                bp_server: bp_server,
+                SelfAbilityMul: this.SelfAbilityMul,
+                DamageBonusMul: this.DamageBonusMul + bonus,
                 // bonus_percent: bonus_percent,
             })
         }
@@ -105,7 +112,6 @@ export class modifier_drow_1a extends modifier_drow_1 {
 
     UpdataSpecialValue(): void {
         this.tracking_proj_name = G_PorjTrack.fire;
-
     }
 
 }

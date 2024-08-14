@@ -15,21 +15,30 @@ export class drow_1 extends BaseHeroAbility {
     }
 
     UpdataAbilityValue(): void {
+        // this.self_bonus = this.GetSpecialValueFor("")
         // let ability_point = GameRules.NewArmsEvolution.EvolutionPoint[this.player_id]
         // this.ability_bonus_ingame = this.caster.rune_passive_type[""];
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            // let bonus_pct: number = extraData.bp;
+            let attack_damage = extraData.a;
+            let SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
+
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
-                damage: this.caster.GetAverageTrueAttackDamage(null),
+                damage: attack_damage,
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
                 element_type: ElementTypes.NONE,
                 is_primary: true,
+
+                // 增伤
+                SelfAbilityMul: SelfAbilityMul,
+                DamageBonusMul: extraData.DamageBonusMul,
+                // DamageBonusMul:0,
+
             })
         }
     }
@@ -44,11 +53,8 @@ export class modifier_drow_1 extends BaseHeroModifier {
     bonus_value: number = 0;
     give_mana: number;
 
-
     proj_width: number;
     proj_speed: number;
-
-
 
     C_OnCreated(): void {
         this.fakeAttack = false;
@@ -56,8 +62,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
     }
 
     UpdataAbilityValue(): void {
-        this.base_value = this.ability.GetSpecialValueFor("base_value")
-            + (this.caster.custom_attribute_value.BasicAbilityDmg ?? 0);
+        this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value")
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
     }
 
@@ -91,12 +96,21 @@ export class modifier_drow_1 extends BaseHeroModifier {
 
     PlayAttackStart(params: PlayEffectProps) { }
 
+    /**
+     * 发射箭矢
+     * @param hCaster 施法者 
+     * @param hTarget 目标
+     * @param attack_damage 攻击力 
+     * @param SelfAbilityMul 技能伤害乘区
+     * @param DamageBonusMul 伤害加成
+     * @returns 
+     */
     PlayPerformAttack(
         hCaster: CDOTA_BaseNPC,
         hTarget: CDOTA_BaseNPC,
         attack_damage: number,
-        bp_ingame: number,
-        bp_server: number,
+        SelfAbilityMul: number,
+        DamageBonusMul: number,
     ) {
         if (this.fakeAttack) { return }
         // print("this",this.tracking_proj_name)
@@ -110,10 +124,11 @@ export class modifier_drow_1 extends BaseHeroModifier {
             iMoveSpeed: hCaster.GetProjectileSpeed(),
             ExtraData: {
                 a: attack_damage,
-                bp_ingame: bp_ingame,
-                bp_server: bp_server,
                 et: this.element_type,
                 dt: this.damage_type,
+
+                SelfAbilityMul: SelfAbilityMul,
+                DamageBonusMul: DamageBonusMul,
             } as ProjectileExtraData
         })
     }

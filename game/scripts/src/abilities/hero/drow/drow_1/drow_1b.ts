@@ -8,17 +8,26 @@ import { drow_1, modifier_drow_1 } from "./drow_1";
 @registerAbility()
 export class drow_1b extends drow_1 {
 
+    rune_29_chance = 0;
+    rune_29_mul = 1;
+
     GetIntrinsicModifierName(): string {
         return "modifier_drow_1b"
+    }
+
+    UpdataSpecialValue(): void {
+        this.rune_29_chance = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_29", 'chance');
+        this.rune_29_mul = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_29", 'bonus_mul');
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let ability_damage = extraData.a;
-            let bp_ingame = extraData.bp_ingame;
-            let bp_server = extraData.bp_server;
             let damage_vect = Vector(extraData.x, extraData.y, 0);
-            // print("damage_vect", damage_vect)
+            // rune_29	游侠#4	穿透箭命中时有40%概率造成5倍伤害
+            if (RollPercentage(this.rune_29_chance)) {
+                ability_damage *= this.rune_29_mul
+            }
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.GetCaster(),
@@ -28,8 +37,8 @@ export class drow_1b extends drow_1 {
                 element_type: ElementTypes.WIND,
                 is_primary: true,
                 damage_vect: damage_vect,
-                bp_ingame: bp_ingame,
-                bp_server: bp_server,
+                SelfAbilityMul: extraData.SelfAbilityMul ?? 100,
+                DamageBonusMul: extraData.DamageBonusMul ?? 0,
                 // bonus_percent: bonus_percent,
             })
         }
@@ -52,6 +61,8 @@ export class modifier_drow_1b extends modifier_drow_1 {
         this.proj_speed = this.ability.GetTypesAffixValue(this.caster.GetProjectileSpeed(), "Missile", "skv_missile_speed");
         let attackrange = this.caster.Script_GetAttackRange() + 64;
         this.missile_distance = this.ability.GetTypesAffixValue(attackrange, "Missile", "skv_missile_distance");
+        // rune_28	游侠#3	穿透箭基础伤害提高200%
+        this.base_value += GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_28", 'base_value');
     }
 
     PlayAttackStart(params: PlayEffectProps): void {
@@ -63,11 +74,11 @@ export class modifier_drow_1b extends modifier_drow_1 {
         vDirection.z = 0;
         let vVelocity = vDirection * this.proj_speed as Vector;
 
-        print(this.base_value, this.bonus_value)
-        let bp_ingame = (this.base_value - 100) + this.bonus_value;
-        let bp_server = 0;
+        // print(this.base_value, this.bonus_value)
+        // let bp_ingame = (this.base_value - 100) + this.bonus_value;
 
-        this.LaunchArrows(vCaster, vVelocity, attack_damage, bp_ingame, bp_server);
+
+        this.LaunchArrows(vCaster, vVelocity, attack_damage);
 
         if (this.missile_count > 1) {
             for (let i = 0; i < this.missile_count - 1; i++) {
@@ -75,20 +86,20 @@ export class modifier_drow_1b extends modifier_drow_1 {
                 let vDirection2 = (vTarget2 - vCaster as Vector).Normalized();
                 vDirection2.z = 0;
                 let vVelocity2 = vDirection2 * this.proj_speed as Vector;
-                this.LaunchArrows(vCaster, vVelocity2, attack_damage, bp_ingame, bp_server);
+                this.LaunchArrows(vCaster, vVelocity2, attack_damage);
             }
         }
 
 
         if (RollPercentage(this.lianshe_chance)) {
             this.caster.SetContextThink(DoUniqueString("shot"), () => {
-                this.LaunchArrows(vCaster, vVelocity, attack_damage, bp_ingame, bp_server);
+                this.LaunchArrows(vCaster, vVelocity, attack_damage);
                 return null
             }, 0.15)
         }
     }
 
-    LaunchArrows(vCaster: Vector, vVelocity: Vector, attack_damage: number, bp_ingame: number, bp_server: number) {
+    LaunchArrows(vCaster: Vector, vVelocity: Vector, attack_damage: number) {
         ProjectileManager.CreateLinearProjectile({
             EffectName: "particles/econ/items/windrunner/windranger_arcana/windranger_arcana_spell_powershot_combo.vpcf",//G_PorjLinear.wind,
             Ability: this.GetAbility(),
@@ -103,10 +114,9 @@ export class modifier_drow_1b extends modifier_drow_1 {
             iUnitTargetFlags: UnitTargetFlags.NONE,
             ExtraData: {
                 a: attack_damage,
-                bp_ingame: bp_ingame,
-                bp_server: bp_server,
                 x: vCaster.x,
                 y: vCaster.y,
+                SelfAbilityMul: this.base_value + this.bonus_value,
 
             } as ProjectileExtraData
         })

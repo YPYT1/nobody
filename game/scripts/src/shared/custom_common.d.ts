@@ -41,11 +41,9 @@ declare interface ApplyCustomDamageOptions {
     /** 伤害来源点 */
     damage_vect?: Vector;
     /** 暴击判定 -1必定不暴击 0默认 1必定暴击  */
-    critical_flasg?: -1 | 0 | 1;
-    /** 额外伤害 `当局系数` 后续会转为百分比小数  */
-    bp_ingame?: number;
-    /** 额外伤害 `存档系数`*/
-    bp_server?: number;
+    critical_flag?: -1 | 0 | 1;
+
+
     // extra_percent?: number;
     /** 元素类型 */
     element_type?: ElementTypes;
@@ -58,16 +56,42 @@ declare interface ApplyCustomDamageOptions {
     crit_chance?: number;
     /** 额外暴击伤害 */
     crit_bonus_dmg?: number;
+
+    /** 对应技能伤害加成  */
+    SelfAbilityMul?: number;
+    /** `伤害加成` 后续会转为百分比小数  */
+    DamageBonusMul?: number;
+    /** `最终伤害` */
+    FinalDamageMul?: number;
+    /**  技能增强*/
+    AbilityImproved?: number;
+    /** 对应元素伤害百分比*/
+    ElementDmgMul?: number;
+    /** 远程/近战 */
+    MeleeDmgPct?: number;
+    RangedDmgPct?: number;
 }
 
 declare interface ProjectileExtraData {
     a: number;
-    bp_ingame: number;
-    bp_server: number;
     et?: ElementTypes;
     dt?: DamageTypes;
     /** x坐标 */
     x?: number;
     /** Y坐标 */
     y?: number;
+
+    /** 对应技能伤害加成  */
+    SelfAbilityMul?: number;
+    /** `伤害加成` 后续会转为百分比小数  */
+    DamageBonusMul?: number;
+    /** `最终伤害` */
+    FinalDamageMul?: number;
+    /**  技能增强*/
+    AbilityImproved?: number;
+    /** 对应元素伤害百分比*/
+    ElementDmgMul?: number;
+    /** 远程/近战 */
+    MeleeDmgPct?: number;
+    RangedDmgPct?: number;
 }

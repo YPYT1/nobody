@@ -10,13 +10,27 @@ export class BaseHeroAbility extends BaseAbility {
     team: DotaTeam;
     player_id: PlayerID;
 
-    bp_server: number = 0;
-    bp_ingame: number = 0;
+    // element_bonus: number = 0;
 
     /** 技能增伤 */
     ability_bonus: number = 0;
     manacost_bonus: number = 0;
-    hero_talent: keyof typeof HeroTalentObject = "drow_ranger";
+
+    /** `该技能加成` */
+    SelfAbilityMul = 100;
+    /** `伤害加成` 后续会转为百分比小数  */
+    DamageBonusMul = 0;
+    /** `最终伤害` */
+    FinalDamageMul = 0;
+    /**  技能增强*/
+    AbilityImproved = 0;
+    /** 对应元素伤害百分比*/
+    ElementDmgMul = 0;
+    /** 近战 */
+    MeleeDmgPct = 0;
+    /** 远程增伤 / */
+    RangedDmgPct = 0;
+    // hero_talent: keyof typeof HeroTalentObject = "drow_ranger";
 
     GetManaCost(level: number): number {
         if (IsServer()) {
@@ -26,8 +40,6 @@ export class BaseHeroAbility extends BaseAbility {
                 let ManaCostRate = this.caster.custom_attribute_value.ManaCostRate * 0.01
                 return super.GetManaCost(-1) * ManaCostRate
             }
-
-
         } else {
             let netdata = CustomNetTables.GetTableValue("unit_attribute", `${this.GetCaster().GetEntityIndex()}`)
             let cost_rate = 1;
@@ -148,6 +160,7 @@ export class BaseHeroAbility extends BaseAbility {
         }
         return type_list
     }
+
     /** 增加元素 */
     AddCustomAbilityElement(element_key: ElementTypes, type_state: boolean = true) {
         let index = this.custom_ability_types.element_type.indexOf(element_key);
@@ -211,6 +224,21 @@ export class BaseHeroModifier extends BaseModifier {
     fakeAttack: boolean = false;
     tracking_proj_name: string = "";
 
+    /** `该技能加成` */
+    SelfAbilityMul = 100;
+    /** `伤害加成` 后续会转为百分比小数  */
+    DamageBonusMul = 0;
+    /** `最终伤害` */
+    FinalDamageMul = 0;
+    /**  技能增强*/
+    AbilityImproved = 0;
+    /** 对应元素伤害百分比*/
+    ElementDmgMul = 0;
+    /** 近战 */
+    MeleeDmgPct = 0;
+    /** 远程增伤 / */
+    RangedDmgPct = 0;
+    
     IsHidden(): boolean {
         return true
     }

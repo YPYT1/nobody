@@ -11,6 +11,10 @@ export class drow_5 extends BaseHeroAbility {
         return "modifier_drow_5"
     }
 
+    GetCooldown(level: number): number {
+        return super.GetCooldown(level)
+    }
+
 }
 
 export const branch_mdf_list = [
@@ -29,7 +33,6 @@ export class modifier_drow_5 extends BaseHeroModifier {
 
     UpdataAbilityValue(): void {
         this.duration = this.ability.GetSpecialValueFor("duration");
-
         if (this.caster.hero_talent["55"]) {
             this.branch = 1
         } else if (this.caster.hero_talent["56"]) {
@@ -45,13 +48,22 @@ export class modifier_drow_5 extends BaseHeroModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive() && this.ability.IsCooldownReady()) {
+        if (this.ability.IsActivated()
+            && this.caster.IsAlive()
+            && this.ability.IsCooldownReady()
+        ) {
             this.ability.UseResources(true, true, true, true)
             this.DoExecutedAbility()
             this.caster.RemoveModifierByName("modifier_drow_5_buff");
             this.caster.AddNewModifier(this.caster, this.ability, this.branch_mdf, {
                 duration: this.duration
             })
+            // rune_50	游侠#25	复仇持续期间，基础技能的伤害提高1倍
+            if (this.caster.rune_passive_type["rune_50"]) {
+                this.caster.AddNewModifier(this.caster, this.ability, 'modifier_drow_5_buff_rune50', {
+                    duration: this.duration
+                })
+            }
         }
     }
 
@@ -65,6 +77,7 @@ export class modifier_drow_5_buff extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.caster = this.GetCaster();
         this.OnRefresh(params)
         this.PlayEffect();
     }
@@ -194,6 +207,15 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
 
     GetModifierPercentageManacostStacking(): number {
         return this.mana_pct
+    }
+
+}
+
+@registerModifier()
+export class modifier_drow_5_buff_rune50 extends BaseModifier {
+
+    IsHidden(): boolean {
+        return true
     }
 
 }
