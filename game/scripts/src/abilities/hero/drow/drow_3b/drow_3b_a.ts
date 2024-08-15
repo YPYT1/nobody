@@ -41,7 +41,7 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
         let level = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "drow_ranger", "35", "level");
         this.is_primary = level < 2;
         // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升至200%，持续时间延长至10秒
-        if (this.caster.rune_passive_type["rune_45"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_45")) {
             this.dot_duration = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_duration');
         } else {
             // drow_35 燃烧
@@ -101,7 +101,7 @@ export class modifier_drow_3b_a_dot extends modifier_element_effect_fire {
         if (!IsServer()) { return }
         let base_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '35', 'burn_dmg')
         // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升至200%，持续时间延长至10秒
-        if (this.caster.rune_passive_type["rune_45"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_45")) {
             base_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_to_dmg')
         }
         base_value += this.caster.custom_attribute_value["BurningDmg"]

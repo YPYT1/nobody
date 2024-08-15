@@ -18,6 +18,7 @@ export class BaseHeroAbility extends BaseAbility {
 
     /** `该技能加成` */
     SelfAbilityMul = 100;
+    SelfAbilityPow = 1;
     /** `伤害加成` 后续会转为百分比小数  */
     DamageBonusMul = 0;
     /** `最终伤害` */
@@ -200,11 +201,11 @@ export class BaseHeroAbility extends BaseAbility {
     ManaCostAndConverDmgBonus() {
         let cost_mana = this.GetManaCost(-1);
         this.UseResources(true, true, true, true)
-        if (this.caster.rune_passive_type && this.caster.rune_passive_type["rune_4"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_4")) {
             let max_mana = this.caster.GetMaxMana();
             let cost_percent = math.floor((100 * cost_mana) / max_mana);
             let value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_4", "value")
-            print("has rune_4", 'cost_percent', cost_percent, 'value', value)
+            // print("has rune_4", 'cost_percent', cost_percent, 'value', value)
             return value * cost_percent
         }
         return 0

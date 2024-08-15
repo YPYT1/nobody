@@ -32,8 +32,6 @@ export class modifier_drow_4a extends BaseHeroModifier {
         let recover_hp_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "47", "recover_hp_pct");
         this.recover_hp_pct = this.ability.GetTypesAffixValue(recover_hp_pct, "Buff", "skv_buff_increase");
         this.recover_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "46", "duration");
-
-
     }
 
     OnIntervalThink(): void {
@@ -58,7 +56,7 @@ export class modifier_drow_4a extends BaseHeroModifier {
             }
             this.PlayEffect({});
             // rune_48	游侠#23	使用能量回复后，获得35%伤害减免，持续15秒
-            if (this.caster.rune_passive_type["rune_48"]) {
+            if (this.caster.rune_level_index.hasOwnProperty("rune_48")) {
                 let dmg_reduction = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_48', 'dmg_reduction')
                 let duration = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_48', 'duration');
                 GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_48_effect", {
@@ -69,9 +67,10 @@ export class modifier_drow_4a extends BaseHeroModifier {
             }
 
             // rune_49	游侠#24	使用能量回复后，获得35% 伤害加成 ，持续15秒
-            if (this.caster.rune_passive_type["rune_49"]) {
+            if (this.caster.rune_level_index.hasOwnProperty("rune_49")) {
                 let bonus_ingame = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_49', 'bonus_ingame')
                 let duration = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_49', 'duration');
+                print("bonus_ingame", bonus_ingame, "duration", duration)
                 GameRules.CustomAttribute.SetAttributeInKey(this.caster, 'rune_49_effect', {
                     'DamageBonusMul': {
                         "Base": bonus_ingame

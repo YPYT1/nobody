@@ -24,7 +24,7 @@ export class drow_2a_a extends drow_2a {
         this.talent_13 = this.caster.hero_talent["13"] ?? 0;
         if (this.talent_13 > 0) {
             // rune_33	游侠#8	连续射击【击破】最大层数提高至30层
-            if (this.caster.rune_passive_type["rune_33"]) {
+            if (this.caster.rune_level_index.hasOwnProperty("rune_33")) {
                 this.max_stack = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_33", "max_stack")
             } else {
                 this.max_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '13', 'max_stack');

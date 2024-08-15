@@ -69,6 +69,7 @@ export class CustomAttribute {
         hUnit.custom_attribute_key_table = {};
         hUnit.custom_attribute_conversion = {};
         hUnit.rune_passive_type = {};
+        hUnit.rune_level_index = {};
         hUnit.last_attribute_update = 0;
 
         GameRules.CustomOverrideAbility.InitOverrideSpecialTable(player_id, hUnit);

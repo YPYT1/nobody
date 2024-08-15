@@ -36,7 +36,7 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
         this.talent_38 = (this.GetCaster().hero_talent["38"] ?? 0) > 0;
         this.limit_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "drow_ranger", "37", "limit_stack");
         // rune_46	游侠#21	箭雨【集火】最高可叠加层数增加至20层
-        if (this.caster.rune_passive_type["rune_46"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_46")) {
             this.limit_stack = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_46', 'jihuo_stack')
         }
         this.bonus_dmg = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "drow_ranger", "37", "bonus_dmg");
@@ -54,10 +54,11 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
                 // 集火
                 let stack = target.GetModifierStackCount("modifier_drow_3b_b_stack", this.GetCaster());
                 let buff_increase = this.ability.GetTypesAffixValue(stack, "Buff", "skv_buff_increase");
+                // print("talent_37", buff_increase, this.bonus_dmg)
                 DamageBonusMul += buff_increase * this.bonus_dmg
                 target.AddNewModifier(this.caster, this.GetAbility(), "modifier_drow_3b_b_stack", {
-                    duration: 3,
-                    limit_stack: this.limit_stack,
+                    duration: 2,
+                    max_stack: this.limit_stack,
                 })
             }
             ApplyCustomDamage({
@@ -79,4 +80,9 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
 }
 
 @registerModifier()
-export class modifier_drow_3b_b_stack extends StackModifier { }
+export class modifier_drow_3b_b_stack extends StackModifier {
+
+    IsHidden(): boolean {
+        return true
+    }
+}

@@ -122,7 +122,7 @@ export const Init = () => {
             let post_index = select_index
             let level = _data.level;
             let index = _data.level_index;
-            // $.Msg(_data)
+            $.Msg(_data)
             let name = _data.name as runeName;
             let RuneInfo = $.CreatePanel("Panel", RuneSelectList, "");
             RuneInfo.BLoadLayoutSnippet("RuneInfo");
@@ -132,14 +132,13 @@ export const Init = () => {
             let textrue = row_rune_data.AbilityTextureName;
             let rune_desc = SetLabelDescriptionExtra($.Localize(`#custom_${name}_Description`), index, AbilityValues, ObjectValues);
             RuneInfo.SetDialogVariable("rune_desc", rune_desc)
+            let level_label = Array(level + 1).join("I");
+            // $.Msg(["index",index,level_label])
+            RuneInfo.SetDialogVariable("rune_name", $.Localize(`#custom_${name}`) + " " + level_label)
             RuneInfo.SetHasClass("rarity_1", level == 1)
             RuneInfo.SetHasClass("rarity_2", level == 2)
             RuneInfo.SetHasClass("rarity_3", level == 3)
-
-            // $.Msg(["textrue",textrue])
-            // textrue = "item_rune/" + (select_index + 1);
             let img_src = GetTextureSrc(textrue)
-            // $.Msg(["img_src", img_src])
             let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Button;
             RuneIconBtn.RemoveAndDeleteChildren()
             let rune_image_id = `RuneImage${post_index}`

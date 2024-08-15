@@ -40,8 +40,6 @@ export class drow_1c extends drow_1 {
                 is_primary: true,
                 SelfAbilityMul: SelfAbilityMul,
                 DamageBonusMul: DamageBonusMul,
-                // bp_ingame: bp_ingame,
-                // bp_server: bp_server,
             })
         }
     }

@@ -79,6 +79,12 @@
                 height: 64px;
                 horizontal-align: center;
                 // border: 1px solid #bd8181;
+                
+                &:hover #TalentNodeButton{
+                    border: 2px solid #ffaf02;
+                    // border-color: #ffda8a;
+                }
+                
             }
 
             #TalentNodeButton {
@@ -86,21 +92,16 @@
                 // vertical-align: middle;
                 width: 52px;
                 height: 52px;
-                border: 2px solid #ffaf02;
+                border: 2px solid #8b8b8b;
 
                 &:enabled {
                     saturation: 1;
                     brightness: 1;
-
-                    &:hover {
-                        border-color: #ffda8a;
-                    }
                 }
 
                 &:disabled {
-                    saturation: 0.1;
-                    brightness: 0.1;
-
+                    saturation: 0.5;
+                    brightness: 0.5;
                 }
 
                 #TalentIcon {

@@ -26,13 +26,13 @@ export class drow_2a_b extends drow_2a {
         this.bb_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "chance");
         this.bb_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "base_value");
         // rune_34	游侠#9	连续射击【冰爆】的伤害提升至500%
-        if (this.caster.rune_passive_type["rune_34"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_34")){
             this.bb_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_34', 'bb_dmg')
         }
         let bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "radius");
         this.bb_radius = this.GetTypesAffixValue(this.bb_chance, "Aoe", "skv_aoe_radius")
         // rune_35	游侠#10	连续射击【冰爆】的范围提高50%，且必定触发冰爆
-        if (this.caster.rune_passive_type["rune_35"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_35")) {
             let bb_radius_bonus_pct = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_35', 'bb_radius_bonus_pct') * 0.01;
             this.bb_radius *= (1 + bb_radius_bonus_pct)
             this.bb_state = true;

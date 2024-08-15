@@ -55,8 +55,9 @@ export class modifier_drow_3a_b_summoned extends modifier_drow_3a_summoned {
         ParticleManager.SetParticleControl(cast_fx, 1, Vector(this.aura_radius, 1, 1))
         this.AddParticle(cast_fx, false, false, 1, false, false);
         // rune_42	游侠#17	风暴环绕【冰雹】会吸附敌人
-        this.xifu = this.caster.rune_passive_type["run_42"] != null;
-
+        this.xifu = this.caster.rune_level_index.hasOwnProperty("rune_42");
+        // DeepPrintTable(this.caster.rune_level_index)
+        print("xifu",this.xifu)
         this.StartIntervalThink(0.03)
     }
 
@@ -85,12 +86,9 @@ export class modifier_drow_3a_b_summoned extends modifier_drow_3a_summoned {
                 direction = direction.Normalized();
                 if (distance >= 40) {
                     // 速度跟龙
-                    FindClearSpaceForUnit(enemy, target_vect - direction * 20 as Vector, false)
+                    FindClearSpaceForUnit(enemy, target_vect - direction * 15 as Vector, false)
                     // enemy.SetAbsOrigin()
-                } else {
-                    // enemy.SetAbsOrigin(origin)
-                    FindClearSpaceForUnit(enemy, origin, false)
-                }
+                } 
             }
         }
 
@@ -154,7 +152,7 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
         this.bx_record_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', "record_pct");
         this.bx_limit_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'limit_pct');
         // rune_43	游侠#18	风暴环绕 【暴雪】记录值提高100%
-        if (this.caster.rune_passive_type["rune_43"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_43")) {
             this.bx_limit_pct += GameRules.RuneSystem.GetKvOfUnit(hCaster, 'rune_43', 'record_pct_bonus')
         }
         let bx_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'radius')

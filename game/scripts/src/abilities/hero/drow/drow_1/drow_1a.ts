@@ -25,7 +25,7 @@ export class drow_1a extends drow_1 {
         this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
         this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");
         // rune_27	游侠#2	爆裂箭【浓缩】的触发概率提高至30%，伤害提高至10倍
-        if (this.mul_chance > 0 && this.caster.rune_passive_type["rune_27"]) {
+        if (this.mul_chance > 0 && this.caster.rune_level_index.hasOwnProperty("rune_27")) {
             this.mul_chance = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_27", 'mul_chance')
             this.mul_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_27", 'mul_value')
         }
@@ -37,19 +37,20 @@ export class drow_1a extends drow_1 {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            let aoe_damage = this.caster.GetAverageTrueAttackDamage(null);
+            let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+            let has_run50buff = this.caster.HasModifier("modifier_drow_5_buff_rune50");
+            if (has_run50buff) { attack_damage *= 2 }
             let vPos = target.GetAbsOrigin();
-            this.PlayEffectAoe(vPos, aoe_damage);
+            this.PlayEffectAoe(vPos, attack_damage);
 
             let aoe_multiple = this.GetTypesAffixValue(1, "Aoe", "skv_aoe_chance") - 1;
-            // print("aoe_multiple",aoe_multiple)
             if (RollPercentage(aoe_multiple)) {
                 let vPos2 = Vector(
                     vPos.x + RandomInt(-this.aoe_radius, this.aoe_radius),
                     vPos.y + RandomInt(-this.aoe_radius, this.aoe_radius),
                     vPos.z
                 );
-                this.PlayEffectAoe(vPos2, aoe_damage, true);
+                this.PlayEffectAoe(vPos2, attack_damage, true);
             }
         }
     }
@@ -73,7 +74,8 @@ export class drow_1a extends drow_1 {
             false
         );
         // rune_26	游侠#1	爆炸箭对生命值高于30%的敌人伤害提高100%
-        let has_rune26 = this.caster.rune_passive_type["rune_26"] != null;
+        let has_rune26 = this.caster.rune_level_index.hasOwnProperty('rune_26');
+        print("has_rune26", has_rune26)
         let run26_bonus = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_26", 'bonus_value');
         let run26_hp_pct = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_26", 'hp_pct');
         for (let enemy of enemies) {

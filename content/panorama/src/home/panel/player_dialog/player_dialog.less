@@ -34,9 +34,11 @@
     }
 
     .Content {
-        width: 644px;
-        height: 212px;
+        min-width: 784px;
+        // width: 644px;
+        min-height: 278px;
         background-image: url("file://{images}/custom_game/hud/player_dialog/rune_select_dialog.png");
+        background-position: 50% 50%;
         background-repeat: no-repeat;
         // border: 1px solid #ffffff;
     }
@@ -62,51 +64,91 @@
         .RuneInfo {
             // border: 1px solid #ffffff;
             flow-children: down;
+            width: 192px;
+            height: 264px;
             // border: 1px solid #973030;
+            // 
+            background-image: url("file://{images}/custom_game/hud/player_dialog/rune_hover.png");
+            background-size: 100%;
+            background-img-opacity: 0;
 
-            padding: 4px;
+            &:hover {
+                background-img-opacity: 1;
+            }
+            padding: 8px;
+            margin-left: -4px;
+            margin-right: -4px;
 
             // margin: 0px 8px;
             #RuneIconBtn {
-                width: 72px;
-                height: 72px;
+                margin-top: 16px;
+                width: 68px;
+                height: 68px;
                 padding: 1px;
-                // border: 1px solid #ffffff;
+                border: 2px solid #ffffff;
+                border-radius: 4px;
+                box-shadow: #000000aa 0px 0px 8px 4px;
+                // background-color: #1b2642;
                 // background-color: rgb(17, 26, 38);
-                background-image: url("file://{images}/custom_game/icon/server_item/rare_4.png");
-                background-size: 100%;
-                // overflow: clip;
-                // padding: 1px;
                 // background-color: gradient(radial, 0% 100%, 0px 0px, 50% 50%, from(#000000),  to(#242726));
                 horizontal-align: center;
+            }
 
-                &:hover {
-                    box-shadow: #fde403aa 0px 0px 8px 0px;
+            .RuneName {
+                margin-top: 12px;
+                horizontal-align: center;
+                flow-children: right;
+
+                Label {
+                    margin-left: 4px;
+                    margin-right: 4px;
+                    font-size: 18px;
+                    color:#ffffff;
+                    text-shadow: 0px 0px 1px 1.0 #000;
                 }
 
-            }
+                .NameDecorate {
+                    width: 28px;
+                    height: 7px;
+                    vertical-align: middle;
+                    background-image: url("file://{images}/custom_game/hud/player_dialog/name_decorate.png");
 
-            &.rarity_1 .RuneImage {
-                // opacity-brush: gradient(linear, 0% 0%, 100% 0%, from(#5eff50), to(#b9dcff));
-                // opacity-brush: gradient(linear, 0% 50%, 100% 0%, from(#FF0000),
-                //         color-stop(0.2, #FF7F00),
-                //         color-stop(0.35, #FFFF00),
-                //         color-stop(0.5, #00FF00),
-                //         color-stop(0.65, #00FFFF),
-                //         color-stop(0.8, #0000FF),
-                //         to(#8B00FF));
-                opacity-brush: gradient(radial, 50% 50%, 0px 0px, 50% 50%, from(#c850ff), to(#c850ff00));
-            }
+                    &.Right {
+                        transform: rotateY(180deg);
+                    }
+                }
+            }   
 
-            &.rarity_2 .RuneImage {
-                // opacity-brush: gradient(linear, 0% 0%, 100% 50%, from(#0c92ff), to(#ffffff));
-                opacity-brush: gradient(radial, 50% 50%, 0px 0px, 50% 50%, from(#ff9900), to(#ff990000));
+            &.rarity_1 #RuneIconBtn {
+                border-color: rgb(148,75,255);
             }
+            &.rarity_2 #RuneIconBtn {
+                border-color: rgb(255,202,60);
+            }
+            &.rarity_3 #RuneIconBtn {
+                border-color: rgb(255,79,77);
+            }
+            // &.rarity_1 .RuneImage {
+            //     // opacity-brush: gradient(linear, 0% 0%, 100% 0%, from(#5eff50), to(#b9dcff));
+            //     // opacity-brush: gradient(linear, 0% 50%, 100% 0%, from(#FF0000),
+            //     //         color-stop(0.2, #FF7F00),
+            //     //         color-stop(0.35, #FFFF00),
+            //     //         color-stop(0.5, #00FF00),
+            //     //         color-stop(0.65, #00FFFF),
+            //     //         color-stop(0.8, #0000FF),
+            //     //         to(#8B00FF));
+            //     opacity-brush: gradient(radial, 50% 50%, 0px 0px, 50% 50%, from(#c850ff), to(#c850ff00));
+            // }
 
-            &.rarity_3 .RuneImage {
-                // opacity-brush: gradient(linear, 0% 0%, 100% 10%, from(#ff0000), to(#b9dcff));
-                opacity-brush: gradient(radial, 50% 50%, 0px 0px, 50% 50%, from(#ff0202), to(#ff7676));
-            }
+            // &.rarity_2 .RuneImage {
+            //     // opacity-brush: gradient(linear, 0% 0%, 100% 50%, from(#0c92ff), to(#ffffff));
+            //     opacity-brush: gradient(radial, 50% 50%, 0px 0px, 50% 50%, from(#ff9900), to(#ff990000));
+            // }
+
+            // &.rarity_3 .RuneImage {
+            //     // opacity-brush: gradient(linear, 0% 0%, 100% 10%, from(#ff0000), to(#b9dcff));
+            //     opacity-brush: gradient(radial, 50% 50%, 0px 0px, 50% 50%, from(#ff0202), to(#ff7676));
+            // }
 
             .RuneImage {
                 horizontal-align: center;
@@ -151,12 +193,13 @@
             }
 
             .RuneDesc {
-                margin-top: 4px;
-                width: 148px;
-                height: 108px;
+                horizontal-align: center;
+                margin-top: 8px;
+                // width: 148px;
+                // height: 108px;
                 font-size: 16px;
-                border: 1px solid #fff;
-                padding: 2px;
+                // border: 1px solid #fff;
+                padding: 12px;
 
                 Label {
                     white-space: normal;

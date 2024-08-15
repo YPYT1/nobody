@@ -43,6 +43,7 @@ export class modifier_public_attribute extends BaseModifier {
 
     /** 初始化属性 */
     OnCreated(params: any): void {
+        this.caster = this.GetCaster();
         this.AttributeData = {}
         this.hAbility = this.GetAbility();
         this.BaseKvHp = this.GetParent().GetMaxHealth();
@@ -191,16 +192,17 @@ export class modifier_public_attribute extends BaseModifier {
     // }
 
     GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
-        // print(event.ability.GetAbilityName())
+        if (event.ability == null) { return 100 }
+        let ability_name = event.ability.GetAbilityName()
         let base_cd = 100;
         let AbilityHaste = this.AttributeData.AbilityHaste ?? 0;
         let ability_cd = math.min(0.55, AbilityHaste / (AbilityHaste + 150))
         let AbilityCooldown = (this.AttributeData.AbilityCooldown ?? 0) * 0.01;
-        // print("AbilityCooldown",AbilityCooldown)
-        base_cd *= (1 - ability_cd);
-        base_cd *= (1 - AbilityCooldown)
-        // print("finl_cd", base_cd)
-        // print('AbilityHaste', AbilityHaste, ability_cd, 'AbilityCooldown', AbilityCooldown)
+        base_cd *= (1 - math.min(0.55, ability_cd + AbilityCooldown));
+        if (ability_name == "drow_5" && this.caster.rune_level_index.hasOwnProperty("rune_51")) {
+            let fuchou_cd = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_51', 'fuchou_cd') * 0.01;
+            base_cd *= (1 - fuchou_cd)
+        }
         return 100 - base_cd
     }
 

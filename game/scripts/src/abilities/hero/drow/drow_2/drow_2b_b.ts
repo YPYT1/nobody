@@ -26,7 +26,7 @@ export class drow_2b_b extends drow_2b {
         this.zc_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "23", "bonus_value");
         this.tj_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "24", "bonus_value");
         // rune_39	游侠#14	"散射【痛击】生效时，造成伤害提供至500%，但该次伤害不会再暴击"
-        if (this.caster.rune_passive_type["rune_36"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_36")) {
             this.rune_36_state = true;
             this.tj_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_39', 'tj_dmg')
         }
@@ -48,12 +48,12 @@ export class drow_2b_b extends drow_2b {
                 let dmg_bonus = (1 - (distance - this.closest_distance) / 1000) * this.zc_value;
                 DamageBonusMul += dmg_bonus
             }
+
             if (this.tj_value > 0 && UnitIsSlowed(target)) {
-                DamageBonusMul += this.tj_value
+                DamageBonusMul += this.tj_value;
                 if (this.rune_36_state) {
                     critical_flag = -1;
                 }
-
             }
 
             ApplyCustomDamage({
@@ -92,6 +92,7 @@ export class modifier_drow_2b_b extends modifier_drow_2b {
 
         if (RollPercentage(this.sp_chance)) {
             this.caster.SetContextThink(DoUniqueString("sp_chance"), () => {
+                print("this.sp_extra",this.sp_extra ,this.sp_extra > 0)
                 if (this.sp_extra > 0) {
                     this.PlayEffect(params);
                 } else {

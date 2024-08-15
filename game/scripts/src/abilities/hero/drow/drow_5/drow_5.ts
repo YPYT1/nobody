@@ -11,10 +11,6 @@ export class drow_5 extends BaseHeroAbility {
         return "modifier_drow_5"
     }
 
-    GetCooldown(level: number): number {
-        return super.GetCooldown(level)
-    }
-
 }
 
 export const branch_mdf_list = [
@@ -59,7 +55,7 @@ export class modifier_drow_5 extends BaseHeroModifier {
                 duration: this.duration
             })
             // rune_50	游侠#25	复仇持续期间，基础技能的伤害提高1倍
-            if (this.caster.rune_passive_type["rune_50"]) {
+            if (this.caster.rune_level_index.hasOwnProperty("rune_50")) {
                 this.caster.AddNewModifier(this.caster, this.ability, 'modifier_drow_5_buff_rune50', {
                     duration: this.duration
                 })

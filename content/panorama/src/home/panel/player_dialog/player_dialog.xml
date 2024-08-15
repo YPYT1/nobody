@@ -20,8 +20,12 @@
 		<snippet name="RuneInfo">
 			<Panel class="RuneInfo">
 				<Button id="RuneIconBtn">
-
 				</Button>
+				<Panel class="RuneName">
+					<Panel class="NameDecorate Left"/>	
+					<Label text="{s:rune_name}"/>
+					<Panel class="NameDecorate Right"/>	
+				</Panel>
 				<Panel class="RuneDesc">
 					<Label text="{s:rune_desc}" html="true"/>
 				</Panel>

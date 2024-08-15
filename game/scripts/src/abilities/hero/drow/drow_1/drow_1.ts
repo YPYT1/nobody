@@ -15,16 +15,15 @@ export class drow_1 extends BaseHeroAbility {
     }
 
     UpdataAbilityValue(): void {
-        // this.self_bonus = this.GetSpecialValueFor("")
-        // let ability_point = GameRules.NewArmsEvolution.EvolutionPoint[this.player_id]
-        // this.ability_bonus_ingame = this.caster.rune_passive_type[""];
+
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let attack_damage = extraData.a;
             let SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
-
+            let has_run50buff = this.caster.HasModifier("modifier_drow_5_buff_rune50");
+            if (has_run50buff) { attack_damage *= 2 }
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -49,20 +48,25 @@ export class modifier_drow_1 extends BaseHeroModifier {
 
     proj_name: string;
     useProjectile: boolean;
-    base_value: number = 0;
+    // base_value: number = 0;
     bonus_value: number = 0;
     give_mana: number;
 
     proj_width: number;
     proj_speed: number;
 
+    SelfAbilityPow: number;
+
     C_OnCreated(): void {
         this.fakeAttack = false;
         this.useProjectile = true;
+        this.SelfAbilityPow = 1;
     }
 
     UpdataAbilityValue(): void {
         this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value")
+            + this.caster.custom_attribute_value.BasicAbilityDmg;
+
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
     }
 
@@ -86,7 +90,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
             this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
             this.caster.StartGesture(GameActivity.DOTA_ATTACK);
             this.caster.GiveMana(this.give_mana);
-            this.PlayPerformAttack(this.caster, hTarget, attack_damage, 0, 0);
+            this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, 0);
             this.PlayAttackStart({ hTarget: hTarget })
             let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
             this.StartIntervalThink(attack_rate)
@@ -126,7 +130,6 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 a: attack_damage,
                 et: this.element_type,
                 dt: this.damage_type,
-
                 SelfAbilityMul: SelfAbilityMul,
                 DamageBonusMul: DamageBonusMul,
             } as ProjectileExtraData

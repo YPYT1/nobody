@@ -21,6 +21,8 @@ export class drow_2a extends BaseHeroAbility {
             let ability_damage = extraData.a;
             // let bp_ingame = extraData.bp_ingame;
             // let bp_server = extraData.bp_server;
+            let SelfAbilityMul = extraData.SelfAbilityMul;
+            let DamageBonusMul = extraData.DamageBonusMul;
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -28,6 +30,8 @@ export class drow_2a extends BaseHeroAbility {
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
                 is_primary: true,
+                SelfAbilityMul:SelfAbilityMul,
+                DamageBonusMul:DamageBonusMul,
                 // bp_ingame: bp_ingame,
                 // bp_server: bp_server,
             })

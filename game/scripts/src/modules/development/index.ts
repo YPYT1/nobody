@@ -208,7 +208,8 @@ export class Development extends UIEventRegisterClass {
 
     /** Debug命令 */
     DebugChat(cmd: string, args: string[], player_id: PlayerID) {
-        let vHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        // let vHero = PlayerResource.GetSelectedHeroEntity(player_id);
         if (cmd == "-reset") {
             // let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
             PlayerResource.ReplaceHeroWith(player_id, "npc_dota_hero_sniper", 0, 0)
@@ -230,10 +231,7 @@ export class Development extends UIEventRegisterClass {
 
         if (cmd == "-vis") {
             print("add vis")
-
-            // GameRules.GetGameModeEntity().SetFogOfWarDisabled(false)
-            let vi = AddFOWViewer(DotaTeam.GOODGUYS, vHero.GetAbsOrigin(), 9999, 10, false)
-            // AddFOWViewer(DotaTeam.GOODGUYS, Vector(0, 0, 0), 5000, 3600, true)
+            AddFOWViewer(DotaTeam.GOODGUYS, hHero.GetAbsOrigin(), 9999, 10, false)
         }
 
         if (cmd == "-hpbar") {
@@ -244,7 +242,7 @@ export class Development extends UIEventRegisterClass {
             for (let i = 0; i < 10; i++) {
                 let hUnit = CreateUnitByName(
                     `npc_monster_normal_2`,
-                    vHero.GetAbsOrigin() + RandomVector(600) as Vector,
+                    hHero.GetAbsOrigin() + RandomVector(600) as Vector,
                     true,
                     null,
                     null,
@@ -260,17 +258,26 @@ export class Development extends UIEventRegisterClass {
 
         }
 
+        if (cmd == "-fullr") {
+            // 英雄符文全满
+            let order = 1;
+            for (let i = 26; i <= 51; i++) {
+                GameRules.RuneSystem.GetRune(player_id, { item_name: "rune_" + i, item_index: order }, 0);
+                order++
+            }
+            GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
+            DeepPrintTable(hHero.rune_level_index)
+        }
+
         if (cmd == "-fuhuo") {
-            let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
-            hHeroUnit.SetRespawnPosition(hHeroUnit.GetAbsOrigin());
-            hHeroUnit.RespawnHero(false, false);
+            hHero.SetRespawnPosition(hHero.GetAbsOrigin());
+            hHero.RespawnHero(false, false);
         }
 
         if (cmd == "-exp") {
-            let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
             const count = tonumber(args[0] ?? "1");
             for (let i = 0; i < count; i++) {
-                let vDrop = hHeroUnit.GetAbsOrigin() + RandomVector(600) as Vector;
+                let vDrop = hHero.GetAbsOrigin() + RandomVector(600) as Vector;
                 vDrop.x += RandomInt(-600, 600)
                 vDrop.y += RandomInt(-600, 600)
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vDrop, RandomInt(0, 2));
@@ -281,7 +288,7 @@ export class Development extends UIEventRegisterClass {
         if (cmd == "-hb") {
             // let index = command[1] ?? "1";
             // print("bosshealthbar");
-            let hHero = PlayerResource.GetSelectedHeroEntity(player_id)
+            // let hHero = PlayerResource.GetSelectedHeroEntity(player_id)
             let boss_unit = CreateUnitByName(
                 `npc_creature_boss_1`,
                 Vector(0, 0, 0),
@@ -309,8 +316,8 @@ export class Development extends UIEventRegisterClass {
         }
 
         if (cmd == "-getall") {
-            let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
-            let vPos = hHeroUnit.GetAbsOrigin();
+            // let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
+            let vPos = hHero.GetAbsOrigin();
             let ExpItems = FindUnitsInRadius(
                 DotaTeam.NEUTRALS,
                 vPos,
@@ -328,7 +335,7 @@ export class Development extends UIEventRegisterClass {
                     if (!ExpItem.HasModifier("modifier_pick_animation")) {
                         // 无敌状态只能自己给自己上BUFF
                         ExpItem.AddNewModifier(ExpItem, null, "modifier_pick_animation", {
-                            picker: hHeroUnit.entindex(),
+                            picker: hHero.entindex(),
                         })
 
                     }

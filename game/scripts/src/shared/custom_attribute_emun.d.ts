@@ -49,6 +49,7 @@ declare type AttributeMainKey = "AttackDamage"
     | "ManaCostRate"
     | "AbilityImproved"
     | "EvasionProb"
+    | "BasicAbilityDmg"
     ;
 
 /** 自定义属性子类 */

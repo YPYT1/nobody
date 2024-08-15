@@ -10,7 +10,7 @@
     <snippets>
         <snippet name="TalentNode">
             <Panel class="TalentNode">
-                <Panel class="TalentInfo">
+                <Panel class="TalentInfo" hittest="false">
                     <Button id="TalentNodeButton">
                         <Image id="TalentIcon"/>
                     </Button>

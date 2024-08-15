@@ -796,11 +796,11 @@ export class RuneSystem extends UIEventRegisterClass {
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         if (cmd == "-tjfw") { 
             //添加一个符文
-            let select = tonumber(args[1]) ?? 1;
-            let level_index = tonumber(args[2]) ?? 0;
+            let select = tonumber(args[0]) ?? 1;
+            let level_index = tonumber(args[1]) ?? 0;
             let playerid = tonumber(args[2]) as PlayerID ?? -1;
             GameRules.RuneSystem.GetRune(playerid != -1 ? playerid : player_id, {
-                item_name: "rune_null_" + select
+                item_name: "rune_" + select
             }, level_index);
             
         } else if (cmd == "-fwxz") { //获取一个符文选择机会

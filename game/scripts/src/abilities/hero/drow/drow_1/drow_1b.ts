@@ -57,12 +57,12 @@ export class modifier_drow_1b extends modifier_drow_1 {
         this.fakeAttack = true;
         this.lianshe_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "6", 'lianshe_chance');
         this.missile_count = this.ability.GetTypesAffixValue(1, "Missile", "skv_missile_count");
-        this.bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "5", "bonus_value");
+        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "5", "bonus_value");
         this.proj_speed = this.ability.GetTypesAffixValue(this.caster.GetProjectileSpeed(), "Missile", "skv_missile_speed");
         let attackrange = this.caster.Script_GetAttackRange() + 64;
         this.missile_distance = this.ability.GetTypesAffixValue(attackrange, "Missile", "skv_missile_distance");
         // rune_28	游侠#3	穿透箭基础伤害提高200%
-        this.base_value += GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_28", 'base_value');
+        this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_28", 'base_value');
     }
 
     PlayAttackStart(params: PlayEffectProps): void {
@@ -73,10 +73,10 @@ export class modifier_drow_1b extends modifier_drow_1 {
         let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
         vDirection.z = 0;
         let vVelocity = vDirection * this.proj_speed as Vector;
-
+        let has_run50buff = this.caster.HasModifier("modifier_drow_5_buff_rune50");
+        if (has_run50buff) { attack_damage *= 2 }
         // print(this.base_value, this.bonus_value)
         // let bp_ingame = (this.base_value - 100) + this.bonus_value;
-
 
         this.LaunchArrows(vCaster, vVelocity, attack_damage);
 
@@ -116,7 +116,8 @@ export class modifier_drow_1b extends modifier_drow_1 {
                 a: attack_damage,
                 x: vCaster.x,
                 y: vCaster.y,
-                SelfAbilityMul: this.base_value + this.bonus_value,
+                SelfAbilityMul: this.SelfAbilityMul,
+                DamageBonusMul: this.DamageBonusMul,
 
             } as ProjectileExtraData
         })

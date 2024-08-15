@@ -58,7 +58,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
         this.proj_distance = this.ability.GetSpecialValueFor("proj_distance");
 
         // rune_36	游侠#11	散射的基础伤害提高200%
-        if (this.caster.rune_passive_type["rune_36"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_36")) {
             this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_36', 'base_value')
         }
     }

@@ -55,7 +55,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
 
     // 乘区计算
     let SelfAbilityMul = (params.SelfAbilityMul ?? 100) * 0.01;
-    let DamageBonusMul = (params.DamageBonusMul ?? 0);
+    let DamageBonusMul = (params.DamageBonusMul ?? 0) + hAttacker.custom_attribute_value.DamageBonusMul;
     let AbilityImproved = (params.AbilityImproved ?? 0);
     let ElementDmgMul = (params.ElementDmgMul ?? 0);
     let FinalDamageMul = (params.FinalDamageMul ?? 0);
@@ -141,6 +141,8 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
 
     }
 
+    // print(params.damage, SelfAbilityMul, DamageBonusMul, AbilityImproved, ElementDmgMul, FinalDamageMul,'damagetype',params.damage_type)
+
     /**
      * 造成伤害1=(攻击者攻击力*【1+攻击力加成百分比】*对应技能伤害)*伤害加成*(1+最终伤害)*技能增强*元素伤害百分比*远程或近战伤害增加百分比
         造成伤害2=固定伤害（=攻击者固定伤害-受攻击者固定伤害减免）【造成伤害最小值1】
@@ -151,7 +153,7 @@ function ApplyCustomDamage(params: ApplyCustomDamageOptions) {
         * (1 + AbilityImproved * 0.01)
         * (1 + ElementDmgMul * 0.01)
         * (1 + FinalDamageMul * 0.01)
-    ;
+        ;
 
     params.damage = math.floor(params.damage * increased_injury);
     PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type)

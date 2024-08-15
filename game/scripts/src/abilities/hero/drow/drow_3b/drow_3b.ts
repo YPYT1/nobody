@@ -33,7 +33,7 @@ export class modifier_drow_3b extends BaseHeroModifier {
         // rune_44	游侠#19	箭雨的基础伤害提高50%
         this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_44', 'base_value');
         // rune_47	游侠#22	箭雨【急冻】生效时，额外增加的5支箭
-        if (this.caster.rune_passive_type["rune_47"]) {
+        if (this.caster.rune_level_index.hasOwnProperty("rune_47")) {
             this.arrow_count += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_47', 'jidong_bonus')
         }
 
@@ -191,6 +191,7 @@ export class modifier_drow_3b_thinker extends BaseModifier {
                 ability: this.ability,
                 is_primary: true,
                 SelfAbilityMul: this.SelfAbilityMul,
+                DamageBonusMul: this.DamageBonusMul
             });
             return null
         }, 0.3)
