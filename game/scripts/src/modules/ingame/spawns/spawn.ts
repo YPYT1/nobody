@@ -245,7 +245,7 @@ export class Spawn extends UIEventRegisterClass {
             }
             this._map_coord.push(target_Vector);
         }
-        return null
+        return null;
     }
     /**
      *  怪物初始化
@@ -274,16 +274,14 @@ export class Spawn extends UIEventRegisterClass {
             }
             return 60;
         },0)
-
     }
     //普通小怪刷怪器
     CreateMonsterTime(){
         let player_count = GetPlayerCount();
         this._player_round_sum_kill = [];
-        for (let index: PlayerID = 0; index < player_count; index++) {
+        for (let index : PlayerID = 0; index < player_count; index++) {
             this._player_round_sum_kill.push(0);
         }
-
         //怪物数量 
         this._monster_count = 0;
         this._monster_count_interval = {};
@@ -417,7 +415,7 @@ export class Spawn extends UIEventRegisterClass {
     CreateBoss(): CDOTA_BaseNPC {
         if(this._map_boss_refresh == false){
             let unit = GameRules.Spawn.CreepNormalCreate("npc_creature_boss_1", this.StageBossVector);
-            this.MonsterAmend(unit, "boss", 1, 1);  
+            this.MonsterAmend(unit, "boss", 1, 1);
 
             GameRules.CMsg.SetBossHealthBar(unit);
 
@@ -556,7 +554,6 @@ export class Spawn extends UIEventRegisterClass {
                         bs_spawn_name = this.map_info_round[_round_index].monster_list[index.toString()]
                         break;
                     }
-
                 }
                 let unit = GameRules.Spawn.CreateMonster(bs_spawn_name, target_Vector, _round_index, true, false);
                 // unit.task_name = task_name;
@@ -709,7 +706,6 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.MysticalShopSystem.RefreshMysticalShopItem();
             return null
         }, 0)
-
     }
 
     
@@ -766,6 +762,12 @@ export class Spawn extends UIEventRegisterClass {
         }
         if(cmd == "-boss"){
             GameRules.Spawn.CreateBoss();
+        }
+        if(cmd == "-sg"){
+            GameRules.Spawn.CreateMonsterTime()
+        }
+        if(cmd == "-st"){
+
         }
         if(cmd == "--_player_sum_kill"){
             print("_player_sum_kill :")

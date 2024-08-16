@@ -203,7 +203,35 @@ declare interface CustomGameEventDeclarations {
             [index: string]: CGEDPlayerRuneData;
         };
     };
-
+    /**
+     * //选英雄的时候使用  修改时 使用单条数据最好
+     */
+    ServiceEquipment_GetEquipConfig: { 
+        data: {
+            server: CGEDEquipConfigInfo, // 服务器
+            local: CGEDEquipConfigInfo, // 本地配置
+        };
+    },
+    /**
+     * 装备列表
+     */
+    ServiceEquipment_GetEquipList: { //装备信息
+        data: {
+            list: {
+                [eq_id: string]: CGEDGetEquipListInfo;
+            };
+        };
+    };
+    /**
+     * 获取分解信息
+     */
+    ServiceEquipment_GetResolveEquipData: {
+        data: {
+            list: { //分解物品列表
+                [item_id: string]: number;
+            },
+        };
+    };
 }
 
 

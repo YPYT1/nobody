@@ -33,17 +33,17 @@ export class ArchiveService extends UIEventRegisterClass {
     }
 
     //创建游戏
-    CreateGame() {  
+    CreateGame() {
         let param_data = <CreateGameParam>{
             steamids: []
         }
         let player_count = 6;
         let steam_id = PlayerResource.GetSteamAccountID(0);
         param_data.steamids.push(steam_id);
-        HttpRequest.AM2Post(ACTION_CREATE_GAME ,
+        HttpRequest.AM2Post(ACTION_CREATE_GAME,
             {
                 param : param_data 
-            } ,
+            },
             (data: CreateGameReturn) => {
                 if(data.code == 200){
                     this._game_id = data.data.game_id;
@@ -127,7 +127,7 @@ export class ArchiveService extends UIEventRegisterClass {
      * @param player_id 
      */
     GameOver( state : number , exp : number[] = [] ,cj : string[] = [], hero : string []  = [], is_endless : number = -1 , is_nianshou : number = -1){
-        print("==============游戏结束================")
+        print("==============游戏结束================");
         let param_data = <GameOverParam>{
             state: 1,
         }
@@ -215,7 +215,7 @@ export class ArchiveService extends UIEventRegisterClass {
         )
     }
 
-    /**o
+    /**
      * 获取天赋选择列表
      */
     GetPlayerGameOverData(player_id: PlayerID, params: CGED["ArchiveService"]["GetPlayerGameOverData"], callback?) {
@@ -323,6 +323,38 @@ export class ArchiveService extends UIEventRegisterClass {
                 }
             },  
             (code: number, body: string) => {
+            }
+        )
+    }
+
+    //配置装备
+    EquipCfgModify(player_id: PlayerID , Equip_cfg_obj : CGEDEquipConfigInfo,) {
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        if(this.player_is_debug == true){
+            steam_id = this.debug_steam_id[player_id];
+        }
+        let param_data = {
+            gid: this._game_id,
+            sid : steam_id.toString(),
+            Equip_cfg : JSON.encode(Equip_cfg_obj),
+        }
+        HttpRequest.AM2Post(ACTION_EQUIP_CFG_MODIFY,
+            {
+                param: param_data
+            },
+            (data: any) => {
+                if(data.code == 1){
+                    GameRules.ServiceEquipment.server_player_equip_config[player_id] = CustomDeepCopy(Equip_cfg_obj) as CGEDEquipConfigInfo;
+                }else{
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id , "配置装备: 未知错误")
+                }
+                GameRules.ServiceEquipment.GetEquipConfig(player_id , {})
+            },      
+            (code: number, body: string) => {
+                print("code : " ,code)
+                print("body : " ,body) 
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "配置装备: 未知错误")
+                GameRules.ServiceEquipment.GetEquipConfig(player_id , {})
             }
         )
     }

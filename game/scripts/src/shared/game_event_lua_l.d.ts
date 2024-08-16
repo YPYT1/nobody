@@ -211,20 +211,67 @@ declare interface CGED {
     ServiceEquipment : {
         //拼图升级
         PuzzleUpgrade : {
-            equip_id : string, 
-            index : number,
+            equip_id : string, //装备id
+            index : number, //拼图词条下标
         }
         //拼图降级
         PuzzleLower : {
-            equip_id : string, 
-            index : number,
+            equip_id : string, //装备id
+            index : number, //拼图词条下标
         }
+        //装备强化
         EquipIntensify : {
-            equip_id : string,
+            equip_id : string, //装备id
+        }
+        //强化转移
+        IntensifyTransfer : {
+            source_equip_id : string, //来源装备id（清除强化的装备）
+            target_equip_id : string, //目标装备id（增加强化的装备）
+        }
+
+        //魂石转移 必要转移规则 来源装备品质 >= 目标装备品质 否则会出现设定悖论
+        PuzzleTransfer : { 
+            source_equip_id : string, //来源装备id（清除魂石的装备）
+            target_equip_id : string, //目标装备id（增加魂石的装备）
         }
         //预先获取分解数据信息
         GetResolveEquipData : {
-            id_list : string[],
+            id_list : string[], //分解装备id信息
+        }
+        //确认分解
+        ResolveEquip : {
+            id_list : string[], //分解装备id信息
+        }
+        //穿戴装备
+        InstallEquip : {
+            equip_id : string, //装备id
+            hero_id : number, //英雄id
+            t: number, // 装备栏位 从1开始
+        }
+        //获取玩家装备穿戴信息
+        GetEquipConfig : {
+            
+        }
+        //保存装备信息到服务器
+        SaveEquipConfig : {
+
+        }
+        //
+         //还原装备穿戴
+        RestoreEquipConfig: {
+            t: number, // 装备栏位 从1开始
+            hero_id: string;  // 英雄
+        };
+        //解除装备
+        UninstallEquip: {
+            t: number, // 装备栏位 从1开始
+            equip_type: number, // 装备位置 
+            hero_id : string;// 英雄
+        };
+
+        //获取玩家所有装备
+        GetEquipList : {
+
         }
     }
 

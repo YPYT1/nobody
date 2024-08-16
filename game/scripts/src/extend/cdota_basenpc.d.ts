@@ -63,8 +63,11 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     //天赋分配情况
     hero_talent : { [key : string ] : number };
     //符文被动
-    rune_passive_type : { [key : string ] : number };
+    rune_passive_type : { [key in RuneName ] ? : number };
 
     rune_level_index: { [key in RuneName]?: number }; //值是技能下标志
+
+    prop_level_index : { [key in PropName]?: number } //值是等级下标
+    
 }
 

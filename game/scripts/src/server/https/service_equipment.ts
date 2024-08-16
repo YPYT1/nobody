@@ -17,7 +17,6 @@ import * as ServerAttrIntensifyConfig from "../../json/config/server/equip/serve
 
 import * as ServerEquipRarity from "../../json/config/server/equip/server_equip_rarity.json";
 
-
 @reloadable
 export class ServiceEquipment extends UIEventRegisterClass {
     //装备背包信息
@@ -27,10 +26,9 @@ export class ServiceEquipment extends UIEventRegisterClass {
     //装备配置
     player_equip_config : CGEDEquipConfigInfo[] = [];
     //server装备配置
-    server_player_equi_config: CGEDEquipConfigInfo[] = [];
+    server_player_equip_config: CGEDEquipConfigInfo[] = [];
     //装备生成唯一标识
     request_flag_list : number[] = [ 0 , 0 , 0 , 0 , 0 , 0 ];
-
     //词条概率数据 
     Puzzle_Attr_SEAEP: { [key: string]: number[]; } = {};
     //词条key数据   
@@ -46,22 +44,22 @@ export class ServiceEquipment extends UIEventRegisterClass {
     //强化数据总量
     PlayerIntensifyResource : { [r : string ] : {
         [ level : number] : {
-            "qhs" : number,
-            "gold" : number,
+            "qhs" : number ,
+            "gold" : number ,
         }
     } } = {};
 
     constructor() {
         super("ServiceEquipment");
         for (let index = 0; index < 6; index++) {
-            this.player_equip_list.push({});
+            this.player_equip_list.push({});    
         }
         //拼图词条
         for (let key in ServerEquipPuzzleAttr) {
             let SEAE_data = ServerEquipPuzzleAttr[key as keyof typeof ServerEquipPuzzleAttr];
             if (this.Puzzle_Attr_SEAEP[SEAE_data.box_type]) {
                 this.Puzzle_Attr_SEAEP[SEAE_data.box_type].push(SEAE_data.item_probability);
-                this.Puzzle_Attr_SEAEKEY[SEAE_data.box_type].push(key);
+                this.Puzzle_Attr_SEAEKEY[SEAE_data.box_type].push(key); 
             } else {
                 this.Puzzle_Attr_SEAEP[SEAE_data.box_type] = [];
                 this.Puzzle_Attr_SEAEP[SEAE_data.box_type].push(SEAE_data.item_probability);
@@ -76,7 +74,7 @@ export class ServiceEquipment extends UIEventRegisterClass {
                 this.Main_Attr_SEAEP[SEAE_Main_data.box_type].push(SEAE_Main_data.item_probability);
                 this.Main_Attr_SEAEKEY[SEAE_Main_data.box_type].push(key);
             } else {
-                this.Main_Attr_SEAEP[SEAE_Main_data.box_type] = [];
+                this.Main_Attr_SEAEP[SEAE_Main_data.box_type] = []; 
                 this.Main_Attr_SEAEP[SEAE_Main_data.box_type].push(SEAE_Main_data.item_probability);
                 this.Main_Attr_SEAEKEY[SEAE_Main_data.box_type] = [];
                 this.Main_Attr_SEAEKEY[SEAE_Main_data.box_type].push(key);
@@ -85,32 +83,58 @@ export class ServiceEquipment extends UIEventRegisterClass {
         
         // this.ServerEquipDeputy = ServerEquipDeputy;
 
-        //强化数据汇总
-        // let C_qhs = 0;
-        // let B_qhs = 0;
-        // let A_qhs = 0;
-        // let S_qhs = 0;
-        // let SS_qhs = 0;
-        // let C_gold = 0;
-        // let B_gold = 0;
-        // let A_gold = 0;
-        // let S_gold = 0;
-        // let SS_gold = 0;
+        // 强化数据汇总
+        let C_qhs = 0;
+        let B_qhs = 0;
+        let A_qhs = 0;
+        let S_qhs = 0;
+        let SS_qhs = 0;
+        let C_gold = 0;
+        let B_gold = 0;
+        let A_gold = 0;
+        let S_gold = 0;
+        let SS_gold = 0;
+        this.PlayerIntensifyResource["0"] = {}
+        this.PlayerIntensifyResource["1"] = {}
+        this.PlayerIntensifyResource["2"] = {}
+        this.PlayerIntensifyResource["3"] = {}
+        this.PlayerIntensifyResource["4"] = {}
 
-        // for (let index = 1; index <= Object.keys(ServerAttrIntensifyConfig).length ; index++) {
-        //     let key = tostring(index);
-        //     let data =  ServerAttrIntensifyConfig[key as keyof typeof ServerAttrIntensifyConfig];
-        //     C_qhs += data["0_qhs"];
-        //     B_qhs += data["1_qhs"];
-        //     A_qhs += data["2_qhs"];
-        //     S_qhs += data["3_qhs"];
-        //     SS_qhs += data["4_qhs"];
-        //     C_gold += data["0_gold"];
-        //     B_gold += data["1_gold"];
-        //     A_gold += data["2_gold"];
-        //     S_gold += data["3_gold"];
-        //     SS_gold += data["4_gold"];
-        // }
+        for (let index = 1; index <= Object.keys(ServerAttrIntensifyConfig).length ; index++) {
+            let key = tostring(index);
+            let data =  ServerAttrIntensifyConfig[key as keyof typeof ServerAttrIntensifyConfig];
+            C_qhs += data["0_qhs"];
+            B_qhs += data["1_qhs"];
+            A_qhs += data["2_qhs"];
+            S_qhs += data["3_qhs"];
+            SS_qhs += data["4_qhs"];
+            C_gold += data["0_gold"];
+            B_gold += data["1_gold"];
+            A_gold += data["2_gold"];
+            S_gold += data["3_gold"];
+            SS_gold += data["4_gold"];
+            this.PlayerIntensifyResource["0"][index] = {
+                "gold" : C_gold,
+                "qhs" : C_qhs ,
+            }
+            this.PlayerIntensifyResource["1"][index] = {
+                "gold" : B_gold,
+                "qhs" : B_qhs ,
+            }
+            this.PlayerIntensifyResource["2"][index] = {
+                "gold" : A_gold,
+                "qhs" : A_qhs ,
+            }
+            this.PlayerIntensifyResource["3"][index] = {
+                "gold" : S_gold,
+                "qhs" : S_qhs ,
+            }
+            this.PlayerIntensifyResource["4"][index] = {
+                "gold" : SS_gold,
+                "qhs" : SS_qhs ,
+            }
+        }
+        DeepPrintTable(this.PlayerIntensifyResource);
     }
     Init() {
         // let player_count = GetPlayerCount();
@@ -235,7 +259,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
         if(EquipString.s && EquipString.s != ""){
             object.s = JSON.decode(EquipString.s) 
         }
-
         return object;
     }
 
@@ -611,7 +634,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
         }
     }
 
-
     /**
      * 区间值百分比提升方法
      */
@@ -639,12 +661,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
     // ConstructionEquip(player_id: PlayerID) : ServerEquip[]{
         
     // }
-
-
-
-
-
-
 
     /**
      * 随机副词条方法
@@ -716,31 +732,36 @@ export class ServiceEquipment extends UIEventRegisterClass {
     //     }
     // }
 
-    // //获取玩家装备配置
-    // GetEquipConfig(player_id: PlayerID, params: GEFPD["ServiceEquipment"]["GetEquipConfig"], callback?) {
-    //     CustomGameEventManager.Send_ServerToPlayer(
-    //         PlayerResource.GetPlayer(player_id),
-    //         "ServiceEquipment_GetEquipConfig",
-    //         {
-    //             data: {
-    //                 server: this.server_player_equi_config[player_id],
-    //                 local: this.player_equi_config[player_id]
-    //             }
-    //         }
-    //     );
-    // }
-    // //获取玩家背包装备列表
-    // GetEquipList(player_id: PlayerID, params: GEFPD["ServiceEquipment"]["GetEquipList"], callback?) {
-    //     CustomGameEventManager.Send_ServerToPlayer(
-    //         PlayerResource.GetPlayer(player_id),
-    //         "ServiceEquipment_GetEquipList",
-    //         {
-    //             data: {
-    //                 list: this.player_equi_list[player_id]
-    //             }
-    //         }
-    //     );
-    // }
+    //获取玩家装备配置
+    GetEquipConfig(player_id: PlayerID, params: CGED["ServiceEquipment"]["GetEquipConfig"], callback?) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceEquipment_GetEquipConfig",
+            {
+                data: {
+                    server: this.server_player_equip_config[player_id],
+                    local: this.player_equip_config[player_id]
+                }
+            }
+        );
+    }
+    /**
+     * 获取玩家背包装备列表
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetEquipList(player_id: PlayerID, params: CGED["ServiceEquipment"]["GetEquipList"], callback?) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceEquipment_GetEquipList",
+            {
+                data: {
+                    list: this.player_equip_list[player_id]
+                }
+            }
+        );
+    }
     // //获取装备洗练结果
     // GetEquipResetEntry(player_id: PlayerID, data: CGEDGetEquipListInfo) {
     //     CustomGameEventManager.Send_ServerToPlayer(
@@ -1405,8 +1426,11 @@ export class ServiceEquipment extends UIEventRegisterClass {
         let equip_id = params.equip_id;
         if( GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(equip_id)){
             let equipobj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][equip_id]) as CGEDGetEquipListInfo;
-            let EquipConfig = ServerEquipInfo[equipobj.n as keyof typeof ServerEquipInfo];
+            DeepPrintTable(equipobj);
             let level_max = Object.keys(ServerAttrIntensifyConfig).length;
+            if(!equipobj.i){
+                equipobj.i = 0;
+            }
             if(equipobj.i < level_max){ //最大等级
                 //tudo 需要扣除材料
                 let target_level = equipobj.i + 1;
@@ -1425,20 +1449,69 @@ export class ServiceEquipment extends UIEventRegisterClass {
                     }
                 }
                 //tudo 需要扣除材料
-
-
                 let server_equip : ServerEquip = {
-                    id : equipobj.id,
-                    n: equipobj.n, //装备key
-                    r: equipobj.r, //稀有度 0 1 2 3 => n,r,sr,ssr
-                    zl: equipobj.zl, //装备等级
-                    i : equipobj.i + 1,
-                    ma : this.EquipTDecode(equipobj.ma), //装备主属性
-                    pa : this.EquipTDecode(equipobj.pa), // 装备拼图属性
-                    s : this.EquipTDecode(equipobj.s), //套装数据
+                    id : equipobj.id ,
+                    n: equipobj.n , //装备key
+                    r: equipobj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
+                    zl: equipobj.zl , //装备等级
+                    i : equipobj.i ,
+                    ma : this.EquipTDecode(equipobj.ma) , //装备主属性
+                    pa : this.EquipTDecode(equipobj.pa) , // 装备拼图属性
+                    s : this.EquipTDecode(equipobj.s) , //套装数据
                     lk : equipobj.lk, //装备锁
                     t : equipobj.t, //套装位置
                 };
+                DeepPrintTable(server_equip);
+                GameRules.ArchiveService.UpdateEquip(player_id , server_equip)
+            }else{
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "装备强化已达到最大等级.")    
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "装备不存在...")
+        }
+    }
+
+    //装备强化
+    IntensifyTransfer(player_id: PlayerID, params: CGED["ServiceEquipment"]["EquipIntensify"], callback?) {
+        let equip_id = params.equip_id;
+        if( GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(equip_id)){
+            let equipobj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][equip_id]) as CGEDGetEquipListInfo;
+            DeepPrintTable(equipobj);
+            let level_max = Object.keys(ServerAttrIntensifyConfig).length;
+            if(!equipobj.i){
+                equipobj.i = 0;
+            }
+            if(equipobj.i < level_max){ //最大等级
+                //tudo 需要扣除材料
+                let target_level = equipobj.i + 1;
+                //获取目标key
+                let IntensifyConfig = ServerAttrIntensifyConfig[tostring(target_level) as keyof typeof ServerAttrIntensifyConfig];
+                //强化石需要数量
+                let qhs_count = IntensifyConfig[equipobj.r + "_qhs"];
+                //金币需要数量
+                let gold_count = IntensifyConfig[equipobj.r + "_gold"];
+                //强化成功失败
+                if(RollPercentage(IntensifyConfig.probability)){
+                    equipobj.i ++;
+                }else{
+                    if(IntensifyConfig.is_demotion == 1){
+                        equipobj.i --;
+                    }
+                }
+                //tudo 需要扣除材料
+                let server_equip : ServerEquip = {
+                    id : equipobj.id ,
+                    n: equipobj.n , //装备key
+                    r: equipobj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
+                    zl: equipobj.zl , //装备等级
+                    i : equipobj.i ,
+                    ma : this.EquipTDecode(equipobj.ma) , //装备主属性
+                    pa : this.EquipTDecode(equipobj.pa) , // 装备拼图属性
+                    s : this.EquipTDecode(equipobj.s) , //套装数据
+                    lk : equipobj.lk, //装备锁
+                    t : equipobj.t, //套装位置
+                };
+                DeepPrintTable(server_equip);
                 GameRules.ArchiveService.UpdateEquip(player_id , server_equip)
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "装备强化已达到最大等级.")    
@@ -1448,77 +1521,48 @@ export class ServiceEquipment extends UIEventRegisterClass {
         }
     }
     // //安装装备
-    // InstallEquip(player_id: PlayerID, params: GEFPD["ServiceEquipment"]["InstallEquip"], callback?) {
-    //     let eq_id = params.id;
-    //     let equi_data = this.player_equi_list[player_id][eq_id];
-    //     if (equi_data.id != eq_id) {
-    //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "穿戴装备:装备信息错误...");
-    //     } else {
-    //         if (params.type == 1) { //通用穿戴
-    //             let e_d = ServerEquipInfo[equi_data.n as keyof typeof ServerEquipInfo];
-    //             this.player_equi_config[player_id].public[params.t - 1][e_d.equi_type] = equi_data.id;
-
-    //         } else if (params.type == 2) { //专用穿戴
-    //             if (!params.hero_name) {
-    //                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "穿戴装备:角色错误....");
-    //             } else {
-    //                 if (!this.player_equi_config[player_id].hero[params.hero_name]) {
-    //                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "穿戴装备:未找到角色...");
-    //                 } else {
-    //                     let e_d = ServerEquipInfo[equi_data.n as keyof typeof ServerEquipInfo];
-    //                     this.player_equi_config[player_id].hero[params.hero_name][params.t - 1][e_d.equi_type] = equi_data.id;
-    //                 }
-    //             }
-    //         } else {
-    //             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "穿戴装备:配置选项错误...");
-    //         }
-    //     }
-    //     this.GetEquipConfig(player_id, {});
-    // }
-    // //保存装备
-    // SaveEquipConfig(player_id: PlayerID, params: GEFPD["ServiceEquipment"]["SaveEquipConfig"], callback?) {
-    //     GameRules.ArchiveService.EquipCfgModify(player_id, this.player_equi_config[player_id]);
-    // }
-    // //还原装备配置装备
-    // RestoreEquipConfig(player_id: PlayerID, params: GEFPD["ServiceEquipment"]["RestoreEquipConfig"], callback?) {
-    //     if (params.type == 1) { //通用穿戴
-    //         this.player_equi_config[player_id].public[params.t - 1] =
-    //             CustomDeepCopy(this.server_player_equi_config[player_id].public[params.t - 1]) as string[];
-    //     } else if (params.type == 2) { //专用穿戴
-    //         if (!params.hero_name) {
-    //             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "还原配装:角色错误....");
-    //         } else {
-    //             if (!this.player_equi_config[player_id].hero[params.hero_name]) {
-    //                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "还原配装:未找到角色...");
-    //             } else {
-    //                 this.player_equi_config[player_id].hero[params.hero_name][params.t - 1] =
-    //                     CustomDeepCopy(this.server_player_equi_config[player_id].hero[params.hero_name][params.t - 1]) as string[];
-    //             }
-    //         }
-    //     } else {
-    //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "还原配装:配置选项错误...");
-    //     }
-    //     this.GetEquipConfig(player_id, {});
-    // }
-    // //解除装备
-    // UninstallEquip(player_id: PlayerID, params: GEFPD["ServiceEquipment"]["UninstallEquip"], callback?) {
-    //     if (params.type == 1) { //通用穿戴
-    //         this.player_equi_config[player_id].public[params.t - 1][params.equip_type] = "";
-    //     } else if (params.type == 2) { //专用穿戴
-    //         if (!params.hero_name) {
-    //             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "解除装备:角色错误....");
-    //         } else {
-    //             if (!this.player_equi_config[player_id].hero[params.hero_name]) {
-    //                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "解除装备:未找到角色...");
-    //             } else {
-    //                 this.player_equi_config[player_id].hero[params.hero_name][params.t - 1][params.equip_type] = "";
-    //             }
-    //         }
-    //     } else {
-    //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "解除装备:配置选项错误...");
-    //     }
-    //     this.GetEquipConfig(player_id, {});
-    // }
+    InstallEquip(player_id: PlayerID, params: CGED["ServiceEquipment"]["InstallEquip"], callback?) {
+        let equip_id = params.equip_id;
+        let equi_data = this.player_equip_list[player_id][equip_id];
+        if (equi_data.id != equip_id) {
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "穿戴装备:装备信息错误...");
+        } else {
+            if (!params.hero_id) {
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "穿戴装备:角色错误....");
+            } else {
+                if (!this.player_equip_list[player_id].hero[params.hero_id]) {
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "穿戴装备:未找到角色...");
+                } else {
+                    let e_d = ServerEquipInfo[equi_data.n as keyof typeof ServerEquipInfo];
+                    this.player_equip_list[player_id].hero[params.hero_id][params.t - 1][e_d.type] = equi_data.id;
+                }
+            }
+        }
+        this.GetEquipConfig(player_id, {});
+    }
+    //保存装备
+    SaveEquipConfig(player_id: PlayerID, params: CGED["ServiceEquipment"]["SaveEquipConfig"], callback?) {
+        GameRules.ArchiveService.EquipCfgModify(player_id, this.player_equip_config[player_id]);
+    }
+    //还原装备配置装备
+    RestoreEquipConfig(player_id: PlayerID, params: CGED["ServiceEquipment"]["RestoreEquipConfig"], callback?) {
+        if (!this.player_equip_config[player_id].hero[params.hero_id]) {
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "还原配装:未找到角色...");
+        } else {
+            this.player_equip_config[player_id].hero[params.hero_id][params.t - 1] =
+                CustomDeepCopy(this.server_player_equip_config[player_id].hero[params.hero_id][params.t - 1]) as string[];
+        }
+        this.GetEquipConfig(player_id, {});
+    }
+    //解除装备
+    UninstallEquip(player_id: PlayerID, params: CGED["ServiceEquipment"]["UninstallEquip"], callback?) {
+        if (!this.player_equip_config[player_id].hero[params.hero_id]) {
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "解除装备:未找到角色...");
+        } else {
+            this.player_equip_config[player_id].hero[params.hero_id][params.t - 1][params.equip_type] = "";
+        }
+        this.GetEquipConfig(player_id, {});
+    }
     // //分解数量
     GetResolveEquipItems( player_id :PlayerID , l_list : {
         [index : string] : string
@@ -1645,100 +1689,95 @@ export class ServiceEquipment extends UIEventRegisterClass {
         }
         let ret_data = this.GetResolveEquipItems(player_id , id_list_obj);
         let add_item_list = ret_data.add_item_list;
-        // CustomGameEventManager.Send_ServerToPlayer(
-        //     PlayerResource.GetPlayer(player_id),
-        //     "ServiceEquipment_GetResolveEquipData",
-        //     {
-        //         data: {
-        //             list: add_item_list
-        //         }
-        //     }
-        // );
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceEquipment_GetResolveEquipData",
+            {
+                data: {
+                    list: add_item_list
+                }
+            }
+        );
     }
-    // /**
-    //  * //分解装备
-    //  * @param player_id 
-    //  * @param params 
-    //  * @param callback 
-    //  */
-    // ResolveEquip(player_id: PlayerID, params: GEFPD["ServiceEquipment"]["ResolveEquip"], callback?) {
-    //     let id_list = params.id_list as any;
-    //     let id_list_obj = id_list as {
-    //         [index : string] : string
-    //     }
-
-        
-        
-    //     let add_list_string = "";
-    //     let server_log = "FJ_"
-    //     let ResolveEquipData = this.GetResolveEquipItems(player_id , id_list_obj)
-    //     let add_list_count = ResolveEquipData.add_list_count;
-    //     let add_item_list = ResolveEquipData.add_item_list;
-    //     let del_list_id = ResolveEquipData.del_list_id;
-    //     if (del_list_id != "") {
-    //         for (const key in add_item_list) {
-    //             add_list_string += add_list_string == "" ? key + "_" + math.floor(add_item_list[key]) : "," + key + "_" + math.floor(add_item_list[key]);
-    //         }
-    //         server_log += "C:" + add_list_count + ";"
-    //         server_log += "CL:" + add_list_string + ";"
-
-
-    //         // let item : AM2_Server_ToGetLog[] = [];
-    //         // let add_list_list = add_list_string.split(",");
-    //         // for(const add_list_info of add_list_list){
-    //         //     if(add_list_info.includes("_")){
-    //         //         let add_list_info_list = add_list_info.split("_");
-    //         //         let add_item_key = tonumber(add_list_info_list[0]);
-    //         //         let add_item_count = tonumber(add_list_info_list[1]);
-    //         //         let ItemData = ServerItemList[add_item_key.toString() as keyof typeof ServerItemList];
-    //         //         item.push({
-    //         //             types  : ItemData.affiliation_class, // 物品表类型
-    //         //             number : add_item_count, //数量
-    //         //             item_id : add_item_key, // 物品id
-    //         //             lv : ItemData.lv , //等级
-    //         //             fj : 0, // 是否有子类 0无 1有
-    //         //         })
-    //         //         // let is_new_item = true;
+    /**
+     * //分解装备
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    ResolveEquip(player_id: PlayerID, params: CGED["ServiceEquipment"]["ResolveEquip"], callback?) {
+        let id_list = params.id_list as any;
+        let id_list_obj = id_list as {
+            [index : string] : string
+        }
+        let add_list_string = "";
+        let server_log = "FJ_"
+        let ResolveEquipData = this.GetResolveEquipItems(player_id , id_list_obj)
+        let add_list_count = ResolveEquipData.add_list_count;
+        let add_item_list = ResolveEquipData.add_item_list;
+        let del_list_id = ResolveEquipData.del_list_id;
+        if (del_list_id != "") {
+            for (const key in add_item_list) {
+                add_list_string += add_list_string == "" ? key + "_" + math.floor(add_item_list[key]) : "," + key + "_" + math.floor(add_item_list[key]);
+            }
+            server_log += "C:" + add_list_count + ";"
+            server_log += "CL:" + add_list_string + ";"
+            // let item : AM2_Server_ToGetLog[] = [];
+            // let add_list_list = add_list_string.split(",");
+            // for(const add_list_info of add_list_list){
+            //     if(add_list_info.includes("_")){
+            //         let add_list_info_list = add_list_info.split("_");
+            //         let add_item_key = tonumber(add_list_info_list[0]);
+            //         let add_item_count = tonumber(add_list_info_list[1]);
+            //         let ItemData = ServerItemList[add_item_key.toString() as keyof typeof ServerItemList];
+            //         item.push({
+            //             types  : ItemData.affiliation_class, // 物品表类型
+            //             number : add_item_count, //数量
+            //             item_id : add_item_key, // 物品id
+            //             lv : ItemData.lv , //等级
+            //             fj : 0, // 是否有子类 0无 1有
+            //         })
+            //         // let is_new_item = true;
                     
-    //         //         // GameRules.ArchiveService.server_package_list[player_id].map((v)=>{
-    //         //         //     if(v.item_id == add_item_key){
-    //         //         //         v.number += add_item_count;
-    //         //         //         is_new_item = false;
-    //         //         //     }
-    //         //         // })
-    //         //         // if(is_new_item == true){
-    //         //         //         if(add_item_key == 1){
-    //         //         //             GameRules.ArchiveService.player_currency[player_id].zuan_shi += add_item_count;
-    //         //         //     }else if(add_item_key == 2){
-    //         //         //         GameRules.ArchiveService.player_currency[player_id].jing_hua += add_item_count;
-    //         //         //     }else if(add_item_key == 8){
-    //         //         //         GameRules.ArchiveService.player_currency[player_id].jian_hun += add_item_count;
-    //         //         //     }else{
-    //         //         //         GameRules.ArchiveService.server_package_list[player_id].push({
-    //         //         //             id : "0" ,
-    //         //         //             item_id : add_item_key,	//物品表唯一id
-    //         //         //             class :ItemData.affiliation_class,	//物品表分类
-    //         //         //             lv  : ItemData.lv,	//物品等级
-    //         //         //             number :add_item_count,	//物品数量
-    //         //         //             customs : "", //自定义字段
-    //         //         //         })
-    //         //         //     }
-    //         //         // }
-    //         //     }
-    //         // }
-    //         // GameRules.ServiceEquipment.GetEquipList(player_id , {});
-    //         //     GameRules.ServiceInterface.GetPlayerBase(player_id , {});
-    //         //     GameRules.ServiceInterface.GetPlayerServerPackageData( player_id , {})
-    //         //     GameRules.ServiceInterface.SendPlayerShoppingBuyData( player_id , 1 , "" , item);
-    //         // return
+            //         // GameRules.ArchiveService.server_package_list[player_id].map((v)=>{
+            //         //     if(v.item_id == add_item_key){
+            //         //         v.number += add_item_count;
+            //         //         is_new_item = false;
+            //         //     }
+            //         // })
+            //         // if(is_new_item == true){
+            //         //         if(add_item_key == 1){
+            //         //             GameRules.ArchiveService.player_currency[player_id].zuan_shi += add_item_count;
+            //         //     }else if(add_item_key == 2){
+            //         //         GameRules.ArchiveService.player_currency[player_id].jing_hua += add_item_count;
+            //         //     }else if(add_item_key == 8){
+            //         //         GameRules.ArchiveService.player_currency[player_id].jian_hun += add_item_count;
+            //         //     }else{
+            //         //         GameRules.ArchiveService.server_package_list[player_id].push({
+            //         //             id : "0" ,
+            //         //             item_id : add_item_key,	//物品表唯一id
+            //         //             class :ItemData.affiliation_class,	//物品表分类
+            //         //             lv  : ItemData.lv,	//物品等级
+            //         //             number :add_item_count,	//物品数量
+            //         //             customs : "", //自定义字段
+            //         //         })
+            //         //     }
+            //         // }
+            //     }
+            // }
+            // GameRules.ServiceEquipment.GetEquipList(player_id , {});
+            //     GameRules.ServiceInterface.GetPlayerBase(player_id , {});
+            //     GameRules.ServiceInterface.GetPlayerServerPackageData( player_id , {})
+            //     GameRules.ServiceInterface.SendPlayerShoppingBuyData( player_id , 1 , "" , item);
+            // return
 
 
-    //         GameRules.ArchiveService.DelPlayerEquip(player_id, del_list_id, add_list_string , server_log);
-    //     } else {
-    //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "分解装备:无效的装备");
-    //         GameRules.ServiceEquipment.GetEquipList(player_id, {});
-    //     }
-    // }
+            // GameRules.ArchiveService.DelPlayerEquip(player_id, del_list_id, add_list_string , server_log);
+        } else {
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "分解装备:无效的装备");
+            GameRules.ServiceEquipment.GetEquipList(player_id, {});
+        }
+    }
 
     // /**
     //  * //通过吸取印记进行分解装备
@@ -3031,5 +3070,17 @@ export class ServiceEquipment extends UIEventRegisterClass {
         if(cmd == "!PU"){
             this.PuzzleUpgrade( player_id , {"equip_id" : "202406051920108345010000" , "index" : 0})
         }
+        if(cmd == "!pub"){
+            this.PuzzleUpgrade( player_id , {"equip_id" : "202406051920108345010000" , "index" : 0})
+        }
+        if(cmd == "-getequip"){
+            DeepPrintTable(GameRules.ServiceEquipment.player_equip_list[player_id]);
+        }
+        if(cmd == "-EquipIntensify"){ //装备强化
+            this.EquipIntensify(player_id , {
+                equip_id : "202406051920108345010000"
+            })
+        }
+        
     }
 }

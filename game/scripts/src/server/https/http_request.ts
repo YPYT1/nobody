@@ -4,9 +4,9 @@
 
 export class HttpRequest{
     //调试模式
-    static is_debug = false; 
+    static is_debug = true; 
     //
-    static is_official = IsInToolsMode() ? true : true;
+    static is_official = IsInToolsMode() ? false : true;
     /**
      * 标准的GET请求
      * @param url  请求地址

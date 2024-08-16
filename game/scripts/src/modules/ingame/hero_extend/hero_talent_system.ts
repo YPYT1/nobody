@@ -100,14 +100,14 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     player_hero_star : number[] = [];
 
     /**
-     * 注册英雄天赋
+     * 注册英雄天赋 - 可使用重置功能 会返还技能点
      * @param BaseNPC //使用的英雄
      * @param IsReset //是否为重置
      */
     RegisterHeroTalent(BaseNPC: CDOTA_BaseNPC , IsReset : boolean = false ) {
         let unitname = BaseNPC.GetUnitName();
-    
-        //获取注册英雄星级
+        
+            //获取注册英雄星级
         
         let HeroTalentCounfg: {
             [key: string]: {
