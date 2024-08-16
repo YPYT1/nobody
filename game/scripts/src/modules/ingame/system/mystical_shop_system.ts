@@ -107,6 +107,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     refresh_limit : number = 10;
     //玩家灵魂消耗率
 
+    prop_ability_values: {
+        [name: string]: {
+            [key: string]: number[];
+        };
+    } = {};
+
     /**
      * 玩家神秘商店栏位数量
      */
@@ -139,6 +145,21 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         //购买时间
         this.MYSTICAL_SHOP_BUY_ITEM = GameRules.PUBLIC_CONST.MYSTICAL_SHOP_BUY_ITEM;
 
+        //初始化
+        for (let i_key in MysteriousShopConfig) {
+            let data = MysteriousShopConfig[i_key as keyof typeof MysteriousShopConfig];
+            this.prop_ability_values[i_key] = {};
+            //技能数组
+            for (const A_key in data.AbilityValues) {
+                let str = tostring(data.AbilityValues[A_key]);
+                let strlist = str.split(" ");
+                let numlist: number[] = [];
+                for (let value of strlist) {
+                    numlist.push(tonumber(value));
+                }
+                this.prop_ability_values[i_key][A_key] = numlist;
+            }
+        }
 
         //整体刷新价格
         // for (let index = 0 as PlayerID; index < this.player_count; index++) {
@@ -540,9 +561,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         let ItemData = MysteriousShopConfig[name as keyof typeof MysteriousShopConfig];
                         let ret_action_string = ItemData.ret_action;
                         let param = ItemData.AbilityValues;
-                        
-                        //执行后续处理....
-                        GameRules.MysticalShopSystem[ret_action_string](player_id, param , name);
+                        if(ret_action_string != "Null" && ret_action_string != 1){
+                            //执行后续处理....
+                            GameRules.MysticalShopSystem[ret_action_string](player_id, param , name);
+                        }
+                        let hero = PlayerResource.GetSelectedHeroEntity(player_id)
+                        hero.prop_level_index[name] = 0;
                     } else {
                         
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
@@ -735,7 +759,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         let player_count = GetPlayerCount();
         let all_ready = true;
         for (let index = 0 as PlayerID; index < player_count; index++) {
-            let is_ready = this.shop_state_data[index].is_ready;    
+            let is_ready = this.shop_state_data[index].is_ready;
             if(is_ready == 0){
                 all_ready = false;
                 break
@@ -751,7 +775,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 GameRules.GetGameModeEntity().StopThink("MYSTICAL_SHOP_BUY_ITEM");
 
                 GameRules.GetGameModeEntity().SetContextThink("MYSTICAL_SHOP_BUY_ITEM", () => {
-                    GameRules.MysticalShopSystem.StopShopSystem();
+                    GameRules.MysticalShopSystem.StopShopSystem();  
                     return null;
                 }, this.MYSTICAL_SHOP_AWAIT);
 
@@ -761,6 +785,90 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             GameRules.MysticalShopSystem.GetShopState(-1 , {})
         }
     }
+
+    /**
+     * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)
+     * @param name 符文名
+     * @param key 技能键
+     * @param level_index 等级下标
+     */
+    GetTKV<
+        Key extends keyof typeof MysteriousShopConfig,
+        T2 extends typeof MysteriousShopConfig[Key],
+    >( prop_name: Key, key : keyof T2["AbilityValues"], level_index: number = 0) {
+        let value_key = key as string;
+
+        //因为只有 1级 所以全部返回 0 的下标
+        return this.prop_ability_values[prop_name][value_key][0];
+
+
+        let length = this.prop_ability_values[prop_name][value_key].length;
+        if (length > 0) {
+            if (level_index < 0) {
+                return this.prop_ability_values[prop_name][value_key][0];
+            } else if ((level_index + 1) > length) {
+                return this.prop_ability_values[prop_name][value_key][length - 1];
+            } else {
+                return this.prop_ability_values[prop_name][value_key][level_index];
+            }
+        } else {
+            return this.prop_ability_values[prop_name][value_key][level_index];
+            
+        }
+    }
+    /**
+     * 商店Ability数据获取 ----> GameRules.MysticalShopSystem.GetKvOfUnit
+     * @param hUnit // 英雄实体
+     * @param prop_name // 道具名
+     * @param ability_key //道具ability key
+     * @returns 
+     */
+    GetKvOfUnit<
+        Key extends keyof typeof MysteriousShopConfig,
+        T2 extends typeof MysteriousShopConfig[Key],
+    >(hUnit: CDOTA_BaseNPC,prop_name: Key, ability_key : keyof T2["AbilityValues"]) {
+        if(IsServer()){
+            let level_index = hUnit.prop_level_index[prop_name]
+            if (level_index == null) {
+                return 0
+            } else {
+                return this.GetTKV(prop_name, ability_key, level_index - 1)
+            }
+        } else {
+            // let player_id = hUnit.GetPlayerOwnerID();
+            // let netdata = CustomNetTables.GetTableValue("hero_rune",`${player_id}`);
+            // if(netdata && netdata[index_key]){
+            //     let level_index  = netdata[index_key].uc;
+            //     if(level_index > 0){
+            //         return this.GetTKV(rune_name, ability_key, level_index - 1)
+            //     } else {
+            //         return 0
+            //     }
+            // } else {
+            //     return 0
+            // }
+        }
+    }
+
+
+    /**
+     * 符文获取 最低都是1级
+     * @param hUnit 
+     * @param hero 
+     * @param key 
+     * @param ability_key 
+     * @param k2 
+     * @returns 
+     */
+    GetKvOfUnit_V2<
+        Key extends keyof typeof MysteriousShopConfig,
+        T2 extends typeof MysteriousShopConfig[Key],
+    >(hUnit: CDOTA_BaseNPC,prop_name: Key, ability_key : keyof T2["AbilityValues"] ) {
+        let level_index = hUnit.prop_level_index[prop_name] ?? 0
+        return this.GetTKV(prop_name, ability_key, level_index);
+    }
+
+
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         //开始售卖
         if(cmd == "-RefreshMysticalShopItem"){
@@ -786,7 +894,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         if(cmd == "-RefreshOneItemBySoul"){
             this.RefreshOneItemBySoul(player_id , { index : 0 } )
         }
-        //直接停止神秘商店
+        //直接停止神秘商店  
         if(cmd == "-StopShopSystem"){
             this.StopShopSystem()
         }
