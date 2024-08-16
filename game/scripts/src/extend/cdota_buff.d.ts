@@ -20,10 +20,10 @@ declare interface CDOTA_Buff {
     /** 远程增伤 / */
     RangedDmgPct: number;
 
-    /** 符文击杀事件 */
-    Rune_OnKilled(hTarget: CDOTA_BaseNPC): void;
-    /** */
-    Rune_InputAbilityValues(rune: string, rune_input: AbilityValuesProps): void;
+    // /** 符文击杀事件 */
+    // Rune_OnKilled(hTarget: CDOTA_BaseNPC): void;
+    // /** */
+    // Rune_InputAbilityValues(rune: string, rune_input: AbilityValuesProps): void;
     // AM2_OnDeath(data?: any);
 
     // /** 吞噬效果 */

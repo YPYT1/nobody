@@ -62,7 +62,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
         this.proj_count = hAbility.GetSpecialValueForTypes("proj_count", "Targeting", "skv_targeting_count");
         this.proj_speed = hAbility.GetSpecialValueFor("proj_speed");
         this.proj_width = hAbility.GetSpecialValueFor("proj_width");
-        this.action_range = hAbility.GetSpecialValueFor("action_range");
+        this.action_range = this.caster.Script_GetAttackRange();
         this.proj_name = G_PorjLinear.none;
     }
 
@@ -71,7 +71,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
         if (this.caster.IsAlive()
             && this.ability.IsActivated()
             && this.ability.IsCooldownReady()
-            && this.ability.IsOwnersManaEnough()
+            && this.ability.IsMeetCastCondition()
         ) {
             let enemies = FindUnitsInRadius(
                 this.team,

@@ -245,6 +245,11 @@
             &.Mana {
                 background-image: url("file://{images}/custom_game/tooltip/ability/mana_cost.png");
             }
+
+            &.Health {
+                wash-color: #ff0000;
+                background-image: url("file://{images}/custom_game/tooltip/ability/mana_cost.png");
+            }
         }
 
         .CostsRows {
@@ -532,6 +537,20 @@
     &.Aoe .Aoe {
         visibility: visible;
     }
+}
+
+.blood_mage {
+    #ManaCost {
+        visibility: collapse;
+    }
+
+    #HealthCost {
+        visibility: visible;
+    }
+}
+
+#HealthCost {
+    visibility: collapse;
 }
 
 // ss=\"GameplayVariable \"

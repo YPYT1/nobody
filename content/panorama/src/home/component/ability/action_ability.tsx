@@ -38,7 +38,16 @@ function UpdateAbility() {
     const is_enabled = Abilities.IsActivated(m_Ability)
     const need_mana = Abilities.GetManaCost(m_Ability);
     const cooldown_ready = Abilities.IsCooldownReady(m_Ability)
-    MainPanel.SetHasClass("insufficient_mana", have_nmana < need_mana);
+
+    const is_blood_mage = Entities.GetAbilityByName(queryUnit,"special_blood_mage") != -1;
+   
+    if(is_blood_mage){
+        const health_pct = Entities.GetHealthPercent(queryUnit)
+        MainPanel.SetHasClass("insufficient_mana", health_pct < 10);
+    } else {
+        MainPanel.SetHasClass("insufficient_mana", have_nmana < need_mana);
+    }
+    
     MainPanel.SetHasClass("is_disable",!is_enabled);
 
     // cooldown

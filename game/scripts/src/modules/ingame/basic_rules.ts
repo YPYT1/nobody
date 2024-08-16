@@ -22,4 +22,39 @@ export class BasicRules extends UIEventRegisterClass {
     Heal(hCaster: CDOTA_BaseNPC, fHealAmount: number, hAbility: CDOTABaseAbility | undefined) {
         hCaster.Heal(fHealAmount, hAbility)
     }
+
+    /**
+     * 扣除生命
+     * @param hCaster 
+     * @param fAmount 
+     * @param bInjured 
+     */
+    CostHealth(hCaster: CDOTA_BaseNPC, fAmount: number, bInjured: boolean = false) {
+        hCaster.SetHealth(hCaster.GetHealth() - fAmount)
+    }
+
+
+    PickAllExp(hUnit: CDOTA_BaseNPC) {
+        let ExpItems = FindUnitsInRadius(
+            DotaTeam.NEUTRALS,
+            hUnit.GetAbsOrigin(),
+            null,
+            99999,
+            UnitTargetTeam.FRIENDLY,
+            UnitTargetType.OTHER,
+            UnitTargetFlags.INVULNERABLE,
+            FindOrder.ANY,
+            false
+        )
+        for (let ExpItem of ExpItems) {
+            if (ExpItem.GetUnitName() == "npc_exp") {
+                if (!ExpItem.HasModifier("modifier_pick_animation")) {
+                    // 无敌状态只能自己给自己上BUFF
+                    ExpItem.AddNewModifier(ExpItem, null, "modifier_pick_animation", {
+                        picker: hUnit.entindex(),
+                    })
+                }
+            }
+        }
+    }
 }

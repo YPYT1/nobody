@@ -193,7 +193,7 @@ export class ResourceSystem extends UIEventRegisterClass {
         this.player_cost_rate[player_id][resource] += value
     }
 
-    DropResourceItem(resource: PlayerResourceTyps, vPos: Vector, exp_type: number = 0) {
+    DropResourceItem(resource: PlayerResourceTyps, vPos: Vector, exp_type: number = 0, killer?: CDOTA_BaseNPC) {
         let exp_unit = CreateUnitByName("npc_exp", vPos, false, null, null, DotaTeam.NEUTRALS)
         // EmitSoundOn("Custom.ItemDrop", exp_unit)
         // print("DropResourceItem", resource, exp_type, DotaTeam.NOTEAM,exp_unit)
@@ -210,13 +210,15 @@ export class ResourceSystem extends UIEventRegisterClass {
         })
         exp_unit.drop_resource_type = resource;
         exp_unit.drop_resource_amount = this.exp_type_count[exp_type];
-        exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_exp", {
-            // duration: 30
-        })
+        exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_exp", {})
+        if (killer) {
+            // 如果有击杀者和对应的符文
+            
+        }
     }
 
     RemoveAllDropItem() {
-        
+
         let hDropItemList = FindUnitsInRadius(
             DotaTeam.NEUTRALS,
             Vector(0, 0, 0),
@@ -228,7 +230,7 @@ export class ResourceSystem extends UIEventRegisterClass {
             FindOrder.ANY,
             false
         )
-        print("RemoveAllDropItem",hDropItemList.length)
+        print("RemoveAllDropItem", hDropItemList.length)
         for (let hItem of hDropItemList) {
             UTIL_Remove(hItem)
         }

@@ -337,10 +337,8 @@ export class Development extends UIEventRegisterClass {
                         ExpItem.AddNewModifier(ExpItem, null, "modifier_pick_animation", {
                             picker: hHero.entindex(),
                         })
-
                     }
                 }
-
             }
 
         }

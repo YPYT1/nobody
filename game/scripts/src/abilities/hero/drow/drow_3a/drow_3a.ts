@@ -43,9 +43,8 @@ export class modifier_drow_3a extends BaseHeroModifier {
         if (this.caster.IsAlive()
             && this.ability.IsActivated()
             && this.ability.IsCooldownReady()
-            && this.ability.IsOwnersManaEnough()
+            && this.ability.IsMeetCastCondition()
         ) {
-            // this.ability.UseResources(true, true, true, true);
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             this.ExtraEffect()

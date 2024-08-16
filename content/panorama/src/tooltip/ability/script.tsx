@@ -1,10 +1,9 @@
 import { default as ArmsComboJson } from "./../../json/config/game/arms_combo.json";
 import { default as NpcAbilityCustom } from "./../../json/npc_abilities_custom.json";
-// import { default as AbilitiesArms } from "./../../json/abilities/arms.json";
 import { default as AbilityTypesJson } from "./../../json/config/game/const/ability_types.json";
 
-import { SetAbilityDescription, GetAbilityRarity, GetAbilityTypeCategory, GetAbilityElementLabel } from '../../utils/ability_description';
-import { ConvertAttributeValues, GetAbilityAttribute } from '../../utils/attribute_method';
+import { SetAbilityDescription, GetAbilityRarity } from '../../utils/ability_description';
+import { ConvertAttributeValues } from '../../utils/attribute_method';
 import { GetTextureSrc } from '../../common/custom_kv_method';
 import { GetHeroTalentTreeObject, GetHeroTalentTreeRowData } from "../../common/custom_talent";
 import { FormatDescription } from "../../utils/method";
@@ -56,7 +55,7 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
         ability_name = name;
     }
     // $.Msg([ability_name,entityIndex])
-    const abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
+    const abilityData = NpcAbilityCustom[ability_name as "drow_1"];
     let ability_mana = 0;
     if (entityIndex <= 0) {
         // cooldown
@@ -124,7 +123,7 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     // }
 
     // 属性
-    let AttributeObject = GetAbilityAttribute(ability_name);
+    // let AttributeObject = GetAbilityAttribute(ability_name);
     // let attr_list = ConvertAttributeValues(AttributeObject);
 
 
@@ -142,7 +141,18 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
 
     MainPanel.SetDialogVariableInt("level", ability_level)
     MainPanel.SetDialogVariable("cooldown", `${ability_cooldown}`);
-    MainPanel.SetDialogVariable("mana", `${ability_mana}`);
+
+    // 耗蓝耗血
+    const queryUnit = Players.GetLocalPlayerPortraitUnit();
+    const is_blood_mage = Entities.GetAbilityByName(queryUnit,"special_blood_mage") != -1;
+    MainPanel.SetHasClass("blood_mage",is_blood_mage)
+    if (is_blood_mage){
+        let health_cost = Entities.GetMaxHealth(queryUnit) * 0.01
+        MainPanel.SetDialogVariable("health", `${health_cost.toFixed(0)}`);
+    } else {
+        MainPanel.SetDialogVariable("mana", `${ability_mana}`);
+    }
+    
 
     // 名字与描述
     let ability_name_label = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}`)

@@ -1,7 +1,7 @@
 #base "custom_datadriven.txt"
 
 #base "abilities/public.txt"
-#base "abilities/arms.txt"
+#base "abilities/special.txt"
 
 #base "abilities/hero/drow_skill.txt"
 

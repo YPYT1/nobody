@@ -87,6 +87,11 @@
                             <Panel class="Icon Mana"/>
                             <Label text="{s:mana}" />
                         </Panel>
+                        <Panel id="HealthCost" class="CostsRows">
+                            <Panel class="Icon Health"/>
+                            <Label text="{s:health}" />
+                        </Panel>
+
                         <Panel id="Cooldown" class="CostsRows">
                             <Panel class="Icon Cooldown"/>
                             <Label text="{s:cooldown}" />

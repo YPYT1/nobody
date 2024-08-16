@@ -15,16 +15,16 @@ export const GetItemAttribute = (item_name: string) => {
 
 }
 
-export const GetAbilityAttribute = (name: string) => {
-    let ability_data = NpcAbilitiesCustom[name as "arms_t0_1"];
-    if (ability_data != null && ability_data.AttributeValues) {
-        let AttributeValues = ability_data.AttributeValues as CustomAttributeTableType
-        return AttributeValues
-    } else {
-        return {}
-    }
+// export const GetAbilityAttribute = (name: string) => {
+//     let ability_data = NpcAbilitiesCustom[name as "arms_t0_1"];
+//     if (ability_data != null && ability_data.AttributeValues) {
+//         let AttributeValues = ability_data.AttributeValues as CustomAttributeTableType
+//         return AttributeValues
+//     } else {
+//         return {}
+//     }
 
-}
+// }
 /**
  * 转化KV数据
  * @param keyValue 

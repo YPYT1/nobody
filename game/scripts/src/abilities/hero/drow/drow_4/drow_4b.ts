@@ -42,10 +42,10 @@ export class modifier_drow_4b extends BaseHeroModifier {
         if (this.ability.IsActivated()
             && this.caster.IsAlive()
             && this.ability.IsCooldownReady()
-            && this.ability.IsOwnersManaEnough()
+            && this.ability.IsMeetCastCondition()
         ) {
-            this.ability.UseResources(true, true, true, true);
             this.DoExecutedAbility()
+            this.ability.ManaCostAndConverDmgBonus()
             this.caster.AddNewModifier(this.caster, this.ability, "modifier_drow_4b_buff", {
                 duration: this.duration
             })

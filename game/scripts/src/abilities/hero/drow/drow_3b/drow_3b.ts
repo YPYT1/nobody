@@ -44,7 +44,7 @@ export class modifier_drow_3b extends BaseHeroModifier {
         if (this.caster.IsAlive()
             && this.ability.IsActivated()
             && this.ability.IsCooldownReady()
-            && this.ability.IsOwnersManaEnough()
+            && this.ability.IsMeetCastCondition()
         ) {
             // print("this.r",this.radius)
             let enemies = FindUnitsInRadius(
@@ -61,7 +61,6 @@ export class modifier_drow_3b extends BaseHeroModifier {
             if (enemies.length == 0) { return }
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
-            // this.ability.UseResources(true, true, true, true)
             this.PlayEffect({ value: manacost_bonus })
         }
     }

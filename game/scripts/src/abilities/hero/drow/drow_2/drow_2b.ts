@@ -68,7 +68,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
         if (this.caster.IsAlive()
             && this.ability.IsActivated()
             && this.ability.IsCooldownReady()
-            && this.ability.IsOwnersManaEnough()
+            && this.ability.IsMeetCastCondition()
         ) {
             let enemies = FindUnitsInRadius(
                 this.team,

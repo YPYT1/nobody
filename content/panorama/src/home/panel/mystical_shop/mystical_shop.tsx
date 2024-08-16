@@ -12,85 +12,93 @@ let PopupModal = $("#PopupModal");
 let PurchaseConfirm = $("#PurchaseConfirm")
 let BtnConfirm = $("#BtnConfirm") as Button;
 
-GameEvents.Subscribe("MysticalShopSystem_GetShopState", event => {
-    let data = event.data;
-    start_buy_state = data.start_buy_state;
-    // $.Msg(["data", data])
-    // 页面显示
-    MainPanel.SetHasClass("Show", start_buy_state == 1);
-    // 结束倒计时
-    MysticalShop.Data<PanelDataObject>().countdown_timer = data.countdown_timer;
-    // 更新玩家状态
-    let ReadyList = Object.values(data.shop_state_data);
-    let is_ready = ReadyList[localPlayer].is_ready == 1;
-    // $.Msg(["ready_state",ready_state])
-    let ReadyBtn = $("#ReadyBtn") as Button;
-    ReadyBtn.enabled = !is_ready;
-    ShopItemList.SetHasClass("IsReady", is_ready);
-    // @TODO 准备之后无法购买、无法刷新。但可以锁定\取消锁定。
-
-    // if (is_ready) {
-    //     for (let i = 0; i < SHOP_ITEM_COUNT; i++) {
-    //         let ShopItem = ShopItemList.GetChild(i)!;
-    //         const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
-    //         RefreshBtn.enabled = false;
-    //         const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
-    //         ShopItemCard.enabled = false;
-    //         const is_vip = ShopItem.BHasClass("IsVip")
-    //         const is_lock = ShopItem.BHasClass("IsLock")
-    //         const LockBtn = ShopItem.FindChildTraverse("LockBtn")!;
-    //         LockBtn.enabled
-    //     }
-    // }
-
-})
-
-GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
-    let data = event.data;
-    // $.Msg(["MysticalShopSystem_GetShopData", data])
-    const local_vip = 0;// data.player_vip_status;
-    // ShopItemList.RemoveAndDeleteChildren();
-    let shop_field_list = data.shop_field_list;
-    for (let k in shop_field_list) {
-        let index = parseInt(k) - 1;
-        let row_data = shop_field_list[k];
-        // $.Msg(["row_data", row_data])
-        let shop_key = row_data.key
-        let ShopItem = ShopItemList.GetChild(index)!;
-        // ShopItem.BLoadLayoutSnippet("ShopItem")
-        let is_vip = (local_vip < row_data.is_vip);
-        ShopItem.Data<PanelDataObject>().is_vip = is_vip
-        // ShopItem.Data<PanelDataObject>().is_buy = vip_row_data.is_buy == 1lock
-        ShopItem.SetHasClass("IsVip", is_vip);
-        ShopItem.SetHasClass("IsBuy", row_data.is_buy == 1);
-        ShopItem.SetHasClass("IsLock", row_data.is_lock == 1);
-        const is_enabled = row_data.is_lock == 0 && local_vip >= row_data.is_vip && row_data.is_buy == 0;
-        ShopItem.SetHasClass("Enabled", is_enabled)
-
-        ShopItem.SetDialogVariableInt("cost", row_data.soul);
-        ShopItem.SetDialogVariableInt("refresh_cost", row_data.refresh_soul);
-        ShopItem.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${row_data.key}`));
-        ShopItem.SetDialogVariable("item_desc", $.Localize(`#custom_shopitem_${row_data.key}_Description`));
 
 
+const GameEventsSubscribeInit = () => {
 
-        const ItemIcon = ShopItem.FindChildTraverse("ItemIcon") as ImagePanel;
-        const ShopItemJson = MysteriousShopConfig[shop_key as keyof typeof MysteriousShopConfig];
-        const ItemSrc = ShopItemJson ? GetTextureSrc(ShopItemJson.AbilityTextureName) : "";
-        ItemIcon.SetImage(ItemSrc)
+    GameEvents.Subscribe("MysticalShopSystem_GetShopState", event => {
+        let data = event.data;
+        start_buy_state = data.start_buy_state;
+        $.Msg(["data", data])
+        // 页面显示
+        MainPanel.SetHasClass("Show", start_buy_state == 1);
+        // 结束倒计时
+        MysticalShop.Data<PanelDataObject>().countdown_timer = data.countdown_timer;
+        // 更新玩家状态
+        let ReadyList = Object.values(data.shop_state_data);
+        let is_ready = ReadyList[localPlayer].is_ready == 1;
+        // $.Msg(["ready_state",ready_state])
+        let ReadyBtn = $("#ReadyBtn") as Button;
+        ReadyBtn.enabled = !is_ready;
+        ShopItemList.SetHasClass("IsReady", is_ready);
 
-        const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
-        ShopItemCard.enabled = row_data.is_buy == 0 && row_data.is_lock == 0 && !is_vip;
+        // 触发商店时,弹窗
+        MysticalShop.SetHasClass("Open",true)
+        // @TODO 准备之后无法购买、无法刷新。但可以锁定\取消锁定。
 
-        const LockBtn = ShopItem.FindChildTraverse("LockBtn")!;
-        LockBtn.enabled = row_data.is_buy == 0 && !is_vip;
+        // if (is_ready) {
+        //     for (let i = 0; i < SHOP_ITEM_COUNT; i++) {
+        //         let ShopItem = ShopItemList.GetChild(i)!;
+        //         const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
+        //         RefreshBtn.enabled = false;
+        //         const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
+        //         ShopItemCard.enabled = false;
+        //         const is_vip = ShopItem.BHasClass("IsVip")
+        //         const is_lock = ShopItem.BHasClass("IsLock")
+        //         const LockBtn = ShopItem.FindChildTraverse("LockBtn")!;
+        //         LockBtn.enabled
+        //     }
+        // }
 
-        const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
-        RefreshBtn.enabled = row_data.is_lock == 0 && !is_vip;
-    }
+    })
 
-})
+    GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
+        let data = event.data;
+        $.Msg(["MysticalShopSystem_GetShopData", data])
+        const local_vip = 0;// data.player_vip_status;
+        // ShopItemList.RemoveAndDeleteChildren();
 
+        let shop_field_list = data.shop_field_list;
+        for (let k in shop_field_list) {
+            let index = parseInt(k) - 1;
+            let row_data = shop_field_list[k];
+            // $.Msg(["row_data", row_data])
+            let shop_key = row_data.key
+            let ShopItem = ShopItemList.GetChild(index)!;
+            // ShopItem.BLoadLayoutSnippet("ShopItem")
+            let is_vip = (local_vip < row_data.is_vip);
+            ShopItem.Data<PanelDataObject>().is_vip = is_vip
+            // ShopItem.Data<PanelDataObject>().is_buy = vip_row_data.is_buy == 1lock
+            ShopItem.SetHasClass("IsVip", is_vip);
+            ShopItem.SetHasClass("IsBuy", row_data.is_buy == 1);
+            ShopItem.SetHasClass("IsLock", row_data.is_lock == 1);
+            const is_enabled = row_data.is_lock == 0 && local_vip >= row_data.is_vip && row_data.is_buy == 0;
+            ShopItem.SetHasClass("Enabled", is_enabled)
+
+            ShopItem.SetDialogVariableInt("cost", row_data.soul);
+            ShopItem.SetDialogVariableInt("refresh_cost", row_data.refresh_soul);
+            ShopItem.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${row_data.key}`));
+            ShopItem.SetDialogVariable("item_desc", $.Localize(`#custom_shopitem_${row_data.key}_Description`));
+
+
+
+            const ItemIcon = ShopItem.FindChildTraverse("ItemIcon") as ImagePanel;
+            const ShopItemJson = MysteriousShopConfig[shop_key as keyof typeof MysteriousShopConfig];
+            const ItemSrc = ShopItemJson ? GetTextureSrc(ShopItemJson.AbilityTextureName) : "";
+            ItemIcon.SetImage(ItemSrc)
+
+            const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
+            ShopItemCard.enabled = row_data.is_buy == 0 && row_data.is_lock == 0 && !is_vip;
+
+            const LockBtn = ShopItem.FindChildTraverse("LockBtn")!;
+            LockBtn.enabled = row_data.is_buy == 0 && !is_vip;
+
+            const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
+            RefreshBtn.enabled = row_data.is_lock == 0 && !is_vip;
+        }
+
+    })
+}
 /**
  * 弹窗购物
  * @param item_order 
@@ -196,6 +204,7 @@ export const CreatePanel = () => {
 }
 
 export const Init = () => {
+    GameEventsSubscribeInit()
     CreatePanel();
     MysticalShop.Data<PanelDataObject>().countdown_timer = 0;
     GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {

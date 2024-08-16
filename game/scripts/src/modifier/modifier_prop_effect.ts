@@ -1,0 +1,134 @@
+import { BaseAbility, BaseModifier, registerModifier } from "../utils/dota_ts_adapter";
+import * as MysteriousShopConfig from "../json/config/game/shop/mysterious_shop_config.json";
+
+type runeName = keyof typeof MysteriousShopConfig;
+
+/** 通用神秘商店效果 */
+@registerModifier()
+export class modifier_prop_effect extends BaseModifier {
+
+    caster: CDOTA_BaseNPC;
+    ability: CDOTABaseAbility;
+
+    object: { [rune: string]: AbilityValuesProps };
+
+
+    timer_prop_43: number;
+    timer_prop_45: number;
+
+    IsHidden(): boolean { return true }
+    IsPermanent(): boolean { return true }
+    RemoveOnDeath(): boolean { return false }
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.caster = this.GetCaster();
+        this.ability = this.GetAbility();
+        this.object = {}
+
+        // 部分定时器
+        this.timer_prop_43 = 0;
+        this.timer_prop_45 = 0;
+        this.OnRefresh(params);
+        this.StartIntervalThink(1)
+    }
+
+    Prop_Object<
+        Key extends keyof typeof MysteriousShopConfig,
+        T2 extends typeof MysteriousShopConfig[Key]
+    >(rune_name: Key, rune_key: keyof T2["AbilityValues"]) {
+        return this.object[rune_name as string][rune_key as string]
+    }
+
+    Prop_InputAbilityValues(rune_name: string, rune_input: AbilityValuesProps): void {
+        this.object[rune_name] = rune_input
+    }
+
+    Prop_OnKilled(hTarget: CDOTA_BaseNPC): void {
+        this.Prop_Object("prop_1", 'value')
+    }
+
+    OnIntervalThink(): void {
+        if (!this.caster.IsAlive()) { return }
+        // prop_10	【生人勿进】	对自身250码范围内的敌人造成的伤害提升25%
+
+        // prop_12	【勇气勋章】	生命值大于50%，攻击力提高20%；生命值低于50%，防御力提高20%
+        if (this.object["prop_12"]) {
+            let heal_pct = this.Prop_Object("prop_12", 'heal_pct');
+            if (this.caster.GetHealthPercent() > heal_pct) {
+                let attack_pct = this.Prop_Object('prop_12', 'attack_pct')
+                GameRules.CustomAttribute.SetAttributeInKey(this.caster, "prop_12_effect", {
+                    'AttackDamage': {
+                        "BasePercent": attack_pct
+                    },
+                    'PhyicalArmor': {
+                        "BasePercent": 0,
+                    }
+                })
+            } else {
+                let armor_pct = this.Prop_Object('prop_12', 'armor_pct')
+                GameRules.CustomAttribute.SetAttributeInKey(this.caster, "prop_12_effect", {
+                    'AttackDamage': {
+                        "BasePercent": 0
+                    },
+                    'PhyicalArmor': {
+                        "BasePercent": armor_pct,
+                    }
+                })
+            }
+        }
+
+        // prop_15	【走钢索】	血量越低伤害越高，最低临界值10%血量，提高伤害100%
+        if (this.object["prop_15"]) {
+            let heal_pct = this.Prop_Object('prop_15', 'heal_pct');
+            let damage_bonus_max = this.Prop_Object('prop_15', 'damage_bonus_max');
+            let curr_pct = math.max(heal_pct, this.caster.GetHealthPercent())
+            let bonus_damage = (100 - curr_pct) / 0.9;
+            GameRules.CustomAttribute.SetAttributeInKey(this.caster, "prop_15_effect", {
+                'DamageBonusMul': {
+                    "Base": bonus_damage
+                },
+            })
+
+        }
+
+        // prop_43	【定时收获】	自己无法拾取经验球，但每过120秒会自动拾取全地图的经验球
+        if (this.object["prop_43"]) {
+            this.timer_prop_43 += 1;
+            if (this.timer_prop_43 >= this.Prop_Object("prop_43", 'auto_pick_interval')) {
+                // 拾取全部经验球
+                this.timer_prop_43 = 0;
+                GameRules.BasicRules.PickAllExp(this.caster)
+            }
+        }
+
+        // prop_45	【冰霜之心】	每过10秒，冻结自身半径500码敌人1秒
+        if (this.object["prop_45"]) {
+            this.timer_prop_45 += 1
+            if (this.timer_prop_45 >= this.Prop_Object("prop_45", 'interval')) {
+                let radius = this.Prop_Object('prop_45', 'root_radius');
+                let duration = this.Prop_Object('prop_45', 'root_duration');
+                let enemies = FindUnitsInRadius(
+                    DotaTeam.GOODGUYS,
+                    this.caster.GetAbsOrigin(),
+                    null,
+                    radius,
+                    UnitTargetTeam.ENEMY,
+                    UnitTargetType.BASIC + UnitTargetType.HERO,
+                    UnitTargetFlags.NONE,
+                    FindOrder.ANY,
+                    false
+                )
+
+                for (let enemy of enemies) {
+                    // enemy.IsCreepHero
+                    GameRules.BuffManager.AddGeneralDebuff(this.caster, enemy, DebuffTypes.rooted, duration)
+                }
+
+
+                // effect
+                // let effect_fx = ParticleManager.CreateParticle("")
+            }
+        }
+    }
+}

@@ -1,4 +1,5 @@
 import * as RuneConfig from "../../../json/config/game/rune/rune_config.json";
+import { modifier_rune_effect } from "../../../modifier/modifier_rune_effect";
 
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
@@ -524,7 +525,7 @@ export class RuneSystem extends UIEventRegisterClass {
         this.player_rune_count[player_id] ++;
 
         // 更新符文MDF
-        let rune_mdf = hHero.FindModifierByName("modifier_rune_effect");
+        let rune_mdf = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
         if(rune_mdf){
             let AbilityValues = row_rune_data.AbilityValues;
             let InputAbilityValues: AbilityValuesProps = {};

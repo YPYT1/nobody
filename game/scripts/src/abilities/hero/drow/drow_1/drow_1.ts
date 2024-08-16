@@ -71,7 +71,10 @@ export class modifier_drow_1 extends BaseHeroModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive() && this.ability.IsActivated()) {
+        if (this.caster.IsAlive()
+            && this.ability.IsActivated()
+            && this.ability.IsMeetCastCondition()
+        ) {
             let attackrange = this.caster.Script_GetAttackRange() + 64;
             let enemies = FindUnitsInRadius(
                 this.team,
@@ -87,6 +90,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
             if (enemies.length <= 0) { return }
             let hTarget = enemies[0];
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
+            this.ability.ManaCostAndConverDmgBonus()
             this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
             this.caster.StartGesture(GameActivity.DOTA_ATTACK);
             this.caster.GiveMana(this.give_mana);
@@ -123,8 +127,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
             Target: hTarget,
             Ability: this.GetAbility(),
             EffectName: this.tracking_proj_name,
-            iSourceAttachment: ProjectileAttachment.HITLOCATION,
-            vSourceLoc: hCaster.GetAbsOrigin(),
+            iSourceAttachment: ProjectileAttachment.ATTACK_1,
             iMoveSpeed: hCaster.GetProjectileSpeed(),
             ExtraData: {
                 a: attack_damage,

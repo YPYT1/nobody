@@ -183,11 +183,11 @@ export class CustomAttribute {
 
     InitHeroAbility(hUnit: CDOTA_BaseNPC, heroName?: string) {
         // print("InitHeroAbility");
-        hUnit.AddAbility("arms_passive_0").SetLevel(1);
-        hUnit.AddAbility("arms_passive_1").SetLevel(1);
-        hUnit.AddAbility("arms_passive_2").SetLevel(1);
-        hUnit.AddAbility("arms_passive_3").SetLevel(1);
-        hUnit.AddAbility("arms_passive_4").SetLevel(1);
+        hUnit.AddAbility("public_null_1").SetLevel(1);
+        hUnit.AddAbility("public_null_2").SetLevel(1);
+        hUnit.AddAbility("public_null_3").SetLevel(1);
+        hUnit.AddAbility("public_null_4").SetLevel(1);
+        hUnit.AddAbility("public_null_5").SetLevel(1);
 
         hUnit.AddAbility("public_arms").SetLevel(1);
         hUnit.AddAbility("public_attribute").SetLevel(1);

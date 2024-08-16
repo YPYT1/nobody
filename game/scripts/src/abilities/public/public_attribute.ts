@@ -64,7 +64,7 @@ export class modifier_public_attribute extends BaseModifier {
     }
 
     OnIntervalThink(): void {
-        if (!this.hParent.IsAlive()) { return }
+        if (!this.hParent.IsAlive() || this.AttributeData.PickItemRadius < 1) { return }
         let vPos = this.hParent.GetAbsOrigin();
         let ExpItems = FindUnitsInRadius(
             DotaTeam.NEUTRALS,

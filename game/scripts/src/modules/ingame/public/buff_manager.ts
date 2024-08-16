@@ -60,7 +60,6 @@ export class BuffManager {
             // hUnit.buff_queue.push({ mdf_name: mdf_name, mdf_object: mdf_object, })
             hUnit.SetThink((e) => {
                 if (hUnit.IsAlive()) {
-                    print("Add Mdf")
                     hUnit.AddNewModifier(hCaster, hAbility, mdf_name, mdf_object);
                     return null
                 }

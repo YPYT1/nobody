@@ -200,16 +200,39 @@ export class BaseHeroAbility extends BaseAbility {
 
     ManaCostAndConverDmgBonus() {
         let cost_mana = this.GetManaCost(-1);
-        this.UseResources(true, true, true, true)
-        if (this.caster.rune_level_index.hasOwnProperty("rune_4")) {
-            let max_mana = this.caster.GetMaxMana();
-            let cost_percent = math.floor((100 * cost_mana) / max_mana);
-            let value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_4", "value")
-            // print("has rune_4", 'cost_percent', cost_percent, 'value', value)
-            return value * cost_percent
+        let blood_mage = this.caster.HasAbility("special_blood_mage");
+        if (blood_mage) {
+            this.UseResources(false, false, false, true);
+            let cost_health = this.caster.GetMaxHealth() * 0.01;
+            GameRules.BasicRules.CostHealth(this.caster, cost_health)
+            return 0
+        } else {
+            this.UseResources(true, true, true, true)
+            if (this.caster.rune_level_index.hasOwnProperty("rune_4")) {
+                let max_mana = this.caster.GetMaxMana();
+                let cost_percent = math.floor((100 * cost_mana) / max_mana);
+                let value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_4", "value")
+                // print("has rune_4", 'cost_percent', cost_percent, 'value', value)
+                return value * cost_percent
+            }
         }
+
         return 0
     }
+
+    /** 满足施法条件 */
+    IsMeetCastCondition() {
+        // 是否为血法师
+        let blood_mage = this.caster.HasAbility("special_blood_mage");
+        if (blood_mage) {
+            let enough_hp = this.caster.GetHealthPercent() > 10;
+            return enough_hp
+            // let hp_moret_han = 
+        } else {
+            return this.IsOwnersManaEnough()
+        }
+    }
+
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: ProjectileExtraData): void | boolean {
 
     }
@@ -239,7 +262,7 @@ export class BaseHeroModifier extends BaseModifier {
     MeleeDmgPct = 0;
     /** 远程增伤 / */
     RangedDmgPct = 0;
-    
+
     IsHidden(): boolean {
         return true
     }
@@ -287,7 +310,6 @@ export class BaseHeroModifier extends BaseModifier {
             buff.Rune_ExecutedAbility({})
         }
     }
-
 
 }
 

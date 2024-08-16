@@ -35,9 +35,14 @@ export class modifier_drow_4a extends BaseHeroModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.ability.IsActivated() && this.caster.IsAlive() && this.ability.IsCooldownReady()) {
+        if (this.ability.IsActivated()
+            && this.caster.IsAlive()
+            && this.ability.IsCooldownReady()
+            && this.ability.IsMeetCastCondition()
+        ) {
             this.DoExecutedAbility()
-            this.ability.UseResources(true, true, true, true)
+            this.ability.ManaCostAndConverDmgBonus()
+
             if (this.talent_46) {
                 // 逐渐恢复
                 this.caster.AddNewModifier(this.caster, this.ability, "modifier_drow_4a_recover_mana", {

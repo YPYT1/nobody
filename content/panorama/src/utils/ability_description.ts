@@ -77,17 +77,17 @@ export function SetAbilityDescription(
         "%AbilityCooldown%",
         `<span class="GameplayVariable">${abilityData.AbilityCooldown ?? 0}</span>`
     );
-    if (abilityData.DamageFormula || abilityData.DamageFormula == "0") {
-        // $("#AbilityDamageType")?.SetHasClass("Hidden", false);
-        let damage_formula = abilityData.DamageFormula;
-        if (damage_formula) {
-            // $.Msg(["damage_formula",damage_formula])
-            let damageFormula_desc = HeroPassiveDamageFormula(ability_name, `${damage_formula}`, level, abilityData.Element ?? "0");
-            original_description_txt = original_description_txt.replaceAll("%DamageFormula%", damageFormula_desc);
-        } else {
-            original_description_txt = original_description_txt.replaceAll("%DamageFormula%", "0");
-        }
-    }
+    // if (abilityData.DamageFormula || abilityData.DamageFormula == "0") {
+    //     // $("#AbilityDamageType")?.SetHasClass("Hidden", false);
+    //     let damage_formula = abilityData.DamageFormula;
+    //     if (damage_formula) {
+    //         // $.Msg(["damage_formula",damage_formula])
+    //         let damageFormula_desc = HeroPassiveDamageFormula(ability_name, `${damage_formula}`, level, abilityData.Element ?? "0");
+    //         original_description_txt = original_description_txt.replaceAll("%DamageFormula%", damageFormula_desc);
+    //     } else {
+    //         original_description_txt = original_description_txt.replaceAll("%DamageFormula%", "0");
+    //     }
+    // }
 
     return original_description_txt;
 }
@@ -114,33 +114,33 @@ export const GetAbilityRarity = (ability_name: string) => {
     }
 }
 
-export const GetAbilityTypeCategory = (ability_name: string) => {
-    let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
-    if (abilityData != null && abilityData.Category) {
-        let category_str = `${abilityData.Category}`;
-        let cate_list = category_str.split(",");
-        let cate_label: string[] = [];
-        cate_list.map((v, k) => {
-            cate_label.push(v)
-        })
-        return cate_label
-    } else {
-        return ["null"]
-    }
-}
+// export const GetAbilityTypeCategory = (ability_name: string) => {
+//     let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
+//     if (abilityData != null && abilityData.Category) {
+//         let category_str = `${abilityData.Category}`;
+//         let cate_list = category_str.split(",");
+//         let cate_label: string[] = [];
+//         cate_list.map((v, k) => {
+//             cate_label.push(v)
+//         })
+//         return cate_label
+//     } else {
+//         return ["null"]
+//     }
+// }
 
-export const GetAbilityElementLabel = (ability_name: string) => {
-    let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
-    if (abilityData != null && abilityData.Element) {
-        if (abilityData.Element != 0) {
-            return abilityData.Element
-        } else {
-            return 0
-        }
-    } else {
-        return 0
-    }
-}
+// export const GetAbilityElementLabel = (ability_name: string) => {
+//     let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
+//     if (abilityData != null && abilityData.Element) {
+//         if (abilityData.Element != 0) {
+//             return abilityData.Element
+//         } else {
+//             return 0
+//         }
+//     } else {
+//         return 0
+//     }
+// }
 
 export const SetLabelDescriptionExtra = (
     text: string,
