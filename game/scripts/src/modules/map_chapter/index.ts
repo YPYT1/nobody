@@ -143,16 +143,15 @@ export class MapChapter extends UIEventRegisterClass {
 
     SelectDifficultyAffirmThink(){
         let cd_select_map_time = this.select_map_time;
-        if(IsInToolsMode()){
-            cd_select_map_time =  this.select_map_time;
+        if(!IsInToolsMode()){
+            this.countdown_select_map_time = GameRules.GetDOTATime(false, false) + cd_select_map_time;
+            GameRules.GetGameModeEntity().SetContextThink("SELECT_DIFFICULTY_AFFIRM", () => {
+                GameRules.MapChapter.SelectDifficultyAffirm( 0 , {});
+                return null;
+            }, cd_select_map_time);
         }else{
-            cd_select_map_time =  999999;
+            this.countdown_select_map_time = 9999999;
         }
-        this.countdown_select_map_time = GameRules.GetDOTATime(false, false) + cd_select_map_time;
-        GameRules.GetGameModeEntity().SetContextThink("SELECT_DIFFICULTY_AFFIRM", () => {
-            GameRules.MapChapter.SelectDifficultyAffirm( 0 , {});
-            return null;
-        }, cd_select_map_time);
     }
     
     /** 生成营地 */
