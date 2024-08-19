@@ -52,7 +52,7 @@ export class BaseArmsAbility extends BaseAbility {
             this.trigger_distance,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
+            UnitTargetFlags.FOW_VISIBLE,
             FindOrder.ANY,
             false
         );
@@ -76,7 +76,7 @@ export class BaseArmsAbility extends BaseAbility {
             this.trigger_distance,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
+            UnitTargetFlags.FOW_VISIBLE,
             FindOrder.ANY,
             false
         );
@@ -437,22 +437,6 @@ export class modifier_public_arms extends BaseModifier {
     OnIntervalThink(): void {
         let hParent = this.GetParent();
         if (!hParent.IsAlive()) { this.StartIntervalThink(-1) }
-        // let enemies = FindUnitsInRadius(
-        //     this.team,
-        //     this.caster.GetAbsOrigin(),
-        //     null,
-        //     1200,
-        //     UnitTargetTeam.ENEMY,
-        //     UnitTargetType.BASIC + UnitTargetType.HERO,
-        //     UnitTargetFlags.NONE,
-        //     FindOrder.CLOSEST,
-        //     false
-        // );
-        // let min_distance = 0
-        // if (enemies.length > 0) {
-        //     min_distance = (this.caster.GetAbsOrigin() - enemies[0].GetAbsOrigin() as Vector).Length2D();
-        // }
-
         let fGameTime = GameRules.GetDOTATime(false, false);
         for (let [index, hArmsAbility] of ipairs(this.hAbility.ArmsList)) {
             if ((hArmsAbility.ArmsActTime ?? 0) <= fGameTime) {

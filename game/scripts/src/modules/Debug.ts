@@ -74,7 +74,7 @@ export class Debug {
         GameRules.CustomAttribute.Debug(cmd, args, keys.playerid)
         GameRules.MapChapter.Debug(cmd, args, keys.playerid)
         GameRules.NewArmsEvolution.Debug(cmd, args, keys.playerid)
-        GameRules.ArmsCombo.Debug(cmd, args, keys.playerid)
+        // GameRules.ArmsCombo.Debug(cmd, args, keys.playerid)
         GameRules.Spawn.Debug(cmd, args, keys.playerid)
         GameRules.RuneSystem.Debug(cmd, args, keys.playerid)
         GameRules.MysticalShopSystem.Debug(cmd, args, keys.playerid)

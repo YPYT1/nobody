@@ -1,5 +1,5 @@
 import * as RuneConfig from "../../../json/config/game/rune/rune_config.json";
-import { modifier_rune_effect } from "../../../modifier/modifier_rune_effect";
+import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_rune_effect";
 
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
@@ -330,15 +330,15 @@ export class RuneSystem extends UIEventRegisterClass {
                         level_index = GetCommonProbability(RuneConfig[item_name as keyof typeof RuneConfig].item_level_pro);
                         level_info = RuneConfig[item_name as keyof typeof RuneConfig].item_level_section[level_index];
                         //品质升级
-                        if (hHero.rune_passive_type["item_rune_null_93_buff_1"]) {
-                            if (RollPercentage(15)) {
-                                let item_level_section_length = GameRules.RuneSystem.rune_keyvalue[item_name as keyof typeof GameRules.RuneSystem.rune_keyvalue].item_level_section.length;
-                                if ((item_level_section_length - 1) > level_index) {
-                                    level_info++;
-                                    level_index++;
-                                }
-                            }
-                        }
+                        // if (hHero.rune_passive_type["item_rune_null_93_buff_1"]) {
+                        //     if (RollPercentage(15)) {
+                        //         let item_level_section_length = GameRules.RuneSystem.rune_keyvalue[item_name as keyof typeof GameRules.RuneSystem.rune_keyvalue].item_level_section.length;
+                        //         if ((item_level_section_length - 1) > level_index) {
+                        //             level_info++;
+                        //             level_index++;
+                        //         }
+                        //     }
+                        // }
                     }
                     ret_data[index] = { name: item_name, level: level_info, level_index: level_index };
                     shop_wp_list.push(item_name);

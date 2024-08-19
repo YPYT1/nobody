@@ -1,22 +1,13 @@
 import * as AttributeConst from "../../../json/config/game/attribute_const.json";
 import * as AttributeSub from "../../../json/config/game/attribute_sub.json";
 import * as NpcHeroesCustom from "../../../json/npc_heroes_custom.json";
-// import * as ItemArmsJson from "../../../json/items/item_arms.json";
-// import * as AbilitiesArmsJson from "../../../json/abilities/arms.json";
-
 
 import { reloadable } from "../../../utils/tstl-utils";
 import { drow_range_wearable } from "../../../kv_data/hero_wearable/drow_range";
 
 type HeroWearable = typeof drow_range_wearable
 
-// interface HeroWearableProps {
-//     wearables: {
-//         model: string;
-//         particle: string;
-//     }[];
-//     particle_create: string[];
-// }
+
 /** 自定义属性系统 */
 @reloadable
 export class CustomAttribute {
@@ -68,13 +59,14 @@ export class CustomAttribute {
         hUnit.custom_attribute_show = {};
         hUnit.custom_attribute_key_table = {};
         hUnit.custom_attribute_conversion = {};
-        hUnit.rune_passive_type = {};
-        hUnit.rune_level_index = {};
         hUnit.last_attribute_update = 0;
 
+        hUnit.prop_level_index = {};
+        hUnit.hero_talent = {};
+        hUnit.rune_level_index = {};
+
+
         GameRules.CustomOverrideAbility.InitOverrideSpecialTable(player_id, hUnit);
-
-
         //PrecacheUnitByNameAsync(heroname, () => {
         print("InitHeroAttribute", hHeroKvData)
         if (hHeroKvData) {
@@ -205,7 +197,7 @@ export class CustomAttribute {
                     * (1 + SubAttr["TotalPercent"] * 0.01)
                     + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                     + (SubAttr["Fixed"]);
-                hUnit.custom_attribute_value[main_key] = TotalAttrValue;
+                hUnit.custom_attribute_value[main_key] = math.max(0, TotalAttrValue);
                 hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
                 hUnit.custom_attribute_show[main_key][1] = TotalAttrValue - SubAttr["Base"]
             } else {
@@ -388,6 +380,8 @@ export class CustomAttribute {
      */
     SetAttributeInKey(hUnit: CDOTA_BaseNPC, key: string, attr_list: CustomAttributeTableType, timer: number = -1) {
         // 乘算属性处理 直接覆盖
+        print("SetAttributeInKey ", key)
+        // DeepPrintTable(attr_list)
         for (let _key in attr_list) {
             let attr_key = _key as AttributeMainKey
             let is_mul = AttributeConst[attr_key].is_mul == 1;
@@ -639,12 +633,9 @@ export class CustomAttribute {
                     // hWearable.SetSkin(1)
                 }
             }
-
         }
-
-
-
     }
+
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
@@ -654,7 +645,8 @@ export class CustomAttribute {
         }
 
         if (cmd == "-attr") {
-
+            DeepPrintTable(hHero.custom_attribute_value)
+            DeepPrintTable(hHero.custom_attribute_table)
         }
 
         if (cmd == "-setattr") {
@@ -693,6 +685,12 @@ export class CustomAttribute {
                 }, 5)
             }
 
+        }
+
+        if (cmd == '-debuff') {
+            let debuff_emu = tonumber(args[0] ?? "1") as DebuffTypes;
+            let debuff_duration = 2;
+            GameRules.BuffManager.AddGeneralDebuff(hHero, hHero, debuff_emu, debuff_duration)
         }
     }
 }

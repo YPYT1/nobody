@@ -7,6 +7,7 @@ import { XNetTable } from './xnet-table';
 
 import * as public_const from "../json/config/public_const.json";
 import { ElementEffect } from './ingame/system/element_effect';
+import { DamageSystem } from './ingame/system/damage_system';
 
 declare global {
 
@@ -16,8 +17,9 @@ declare global {
         XNetTable: XNetTable;
         Development: Development;
         MapChapter: MapChapter;
-        ElementEffect:ElementEffect;
-         /**常量 */
+        ElementEffect: ElementEffect;
+        DamageSystem: DamageSystem;
+        /**常量 */
         PUBLIC_CONST: typeof public_const;
     }
 }
@@ -40,10 +42,10 @@ export function ActivateModules() {
     GameRules.Development = new Development();
     GameRules.MapChapter = new MapChapter()
     GameRules.ElementEffect = new ElementEffect();
-
+    GameRules.DamageSystem = new DamageSystem();
     // @ts-expect-error @eslint-disable-next-line
     GameRules.ModuleActivated = true;
-    
+
     // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
     new GameConfig();
     // 初始化测试模块xD

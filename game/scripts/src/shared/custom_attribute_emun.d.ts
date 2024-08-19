@@ -57,7 +57,20 @@ declare type AttributeMainKey = "AttackDamage"
     | "VisionRange"
 
     ;
-
+declare type EnemyAttributeKey = "AllElementResist"
+    | "FireResist"
+    | "IceResist"
+    | "ThunderResist"
+    | "WindResist"
+    | "FixedDamage"
+    | "DmgReductionFixed"
+    | "CriticalChanceResist"
+    | "CriticalDamageReduction"
+    | "DmgReductionPct"
+    | "AbilityHaste"
+    | "DamageBonusMul"
+    | "RestoreIncrease"
+    ;
 /** 自定义属性子类 */
 declare type AttributeSubKey = "Base"
     | "Bonus"
@@ -70,24 +83,42 @@ declare type AttributeSubKey = "Base"
     | "PreLvFixed"
     | "MulRegion"
     ;
+    
+/** 敌人属性 */
+declare type EnemyAttributeValueType = {
+    [key1 in EnemyAttributeKey]?: {
+        [key2 in AttributeSubKey]?: number
+    };
+}
 
+declare type EnemyAttributeTableType = {
+    [key1 in EnemyAttributeKey]?: {
+        [key2 in AttributeSubKey]?: number
+    }
+}
+
+
+/** 英雄属性 */
 declare type CustomAttributeValueType = {
-    [key1 in AttributeMainKey]?: number;
+    [key1 in AttributeMainKey | EnemyAttributeKey]?: number;
 }
 
 declare type CustomAttributeShowType = {
     [key1 in AttributeMainKey]?: Record<number, number>;
 }
 
+/** 通用属性表 */
 declare type CustomAttributeTableType = {
-    [key1 in AttributeMainKey]?: {
+    [key1 in AttributeMainKey | EnemyAttributeKey]?: {
         [key2 in AttributeSubKey]?: number
     }
 }
 
 declare type MulCustomAttributeTableType = {
-    [key1 in AttributeMainKey]?: { [key: string]: number }
+    [key1 in AttributeMainKey | EnemyAttributeKey ]?: { [key: string]: number }
 }
+
+
 
 declare type CustomAttributeConversionType = {
     [key1 in AttributeMainKey]?: {

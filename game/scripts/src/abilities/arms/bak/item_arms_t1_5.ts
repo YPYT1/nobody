@@ -16,17 +16,7 @@
 //         const vPoint = this.caster.GetOrigin();
 //         const projectile_distance = 600;
 
-//         let enemies = FindUnitsInRadius(
-//             this.caster.GetTeam(),
-//             vPoint,
-//             null,
-//             projectile_distance,
-//             UnitTargetTeam.ENEMY,
-//             UnitTargetType.BASIC + UnitTargetType.HERO,
-//             UnitTargetFlags.NONE,
-//             FindOrder.ANY,
-//             false
-//         );
+
 //         let target_vect: Vector;
 //         if (enemies.length > 0) {
 //             target_vect = enemies[0].GetOrigin();

@@ -9,10 +9,13 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     custom_attribute_table: CustomAttributeTableType;
     /** 乘算属性表 */
     custom_mul_attribute: MulCustomAttributeTableType;
-    /** 自定义属性表 乘算 */
-    // custom_attribute_table_mul: { [key: string]: MulCustomAttributeTableType };
     /** 自定义属性表 */
     custom_attribute_key_table: { [key: string]: CustomAttributeTableType };
+
+    /** 怪物属性 */
+    enemy_attribute_value: CustomAttributeValueType;
+    enemy_attribute_table: CustomAttributeTableType;
+    enemy_attribute_table_key: { [key: string]: EnemyAttributeValueType }
     /** 属性转换 */
     custom_attribute_conversion: CustomAttributeConversionType;
     /** 减伤百分比列表 */
@@ -21,19 +24,19 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     ReductionPct2: { [key: string]: number; };
     /** 减伤百分比列表第三层 */
     ReductionPct3: { [key: string]: number; };
-    
+
     /** 减伤最终结果 */
     ReductionResult: number;
     /** 第二层减伤 */
     ReductionResult2: number;
     /** 第三层减伤 */
     ReductionResult3: number;
-    
+
     // AbilityUpgrades: AbilitySpecialValueProps;
     /** 肉鸽专用词条词条 */
     // OverrideSpecial: MinorAbilityUpgradesProps;
-    MinorAbilityUpgrades:MinorAbilityUpgradesProps;
-    
+    MinorAbilityUpgrades: MinorAbilityUpgradesProps;
+
     is_picking: boolean;
     /** 所有技能的内置冷却相应 */
     CDResp: { [key: string]: number }
@@ -54,20 +57,21 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     OnKillList: CDOTABaseAbility[];
 
     /** 法球状态 */
-    OrbStatus:boolean;
-    in_process_attack:boolean;
-    
+    OrbStatus: boolean;
+    in_process_attack: boolean;
+
     //英雄定时器
     CustomVariables: { [key: string]: number; };
-
+    /** 特殊标记 */
+    SpecialMark: { [key: string]: number; };
     //天赋分配情况
-    hero_talent : { [key : string ] : number };
+    hero_talent: { [key: string]: number };
     //符文被动
-    rune_passive_type : { [key in RuneName ] ? : number };
+    // rune_passive_type : { [key in RuneName ] ? : number };
 
     rune_level_index: { [key in RuneName]?: number }; //值是技能下标志
 
-    prop_level_index : { [key in PropName]?: number } //值是等级下标
-    
+    prop_level_index: { [key in PropName]?: number } //值是等级下标
+
 }
 

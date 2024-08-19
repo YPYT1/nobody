@@ -70,5 +70,6 @@ declare const enum DebuffTypes {
     feared = 9,
     /** 麻痹 [禁止移动,攻速降低50%,]*/
     paralysis = 10,
-
+    /** 混乱 `反方向移动` */
+    chaos = 11,
 }

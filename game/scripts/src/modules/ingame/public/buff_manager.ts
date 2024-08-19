@@ -43,9 +43,11 @@ export class BuffManager {
             // let debuff = hUnit.FindModifierByName("modifier_debuff_paralysis");
             // let current_duration = debuff ? debuff.GetDuration() : 0;
             hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
+        } else if (state == DebuffTypes.chaos){
+            hUnit.AddNewModifier(hCaster, null, "modifier_debuff_chaos", { duration: duration, });
         }
     }
-
+    
     AddPermanentMdf(
         hCaster: CDOTA_BaseNPC,
         hUnit: CDOTA_BaseNPC,

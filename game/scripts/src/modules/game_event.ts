@@ -20,10 +20,10 @@ import { ServiceInterface } from '../server/https/service_interface';
 import { ServiceEquipment } from '../server/https/service_equipment';
 import { GameInformation } from './ingame/public/game_information';
 import { WarningMarker } from './ingame/system/warning_marker';
-import { DamageReduction } from './ingame/system/damage_reduction';
 import { HeroTalentSystem } from './ingame/hero_extend/hero_talent_system';
 import { NpcSystem } from './map_chapter/npc_system';
 import { RuneSystem } from './ingame/rune/rune_system';
+import { EnemyAttribute } from './ingame/hero_extend/enemy_attribute';
 
 declare global {
 
@@ -38,6 +38,7 @@ declare global {
         CustomOverrideAbility: CustomOverrideAbility;
         //局内相关
         EntityKilled: EntityKilled;
+        EnemyAttribute: EnemyAttribute;
         ResourceSystem: ResourceSystem;
         ItemArmsSystem: ItemArmsSystem;
         Spawn: Spawn;
@@ -51,8 +52,6 @@ declare global {
         RuneSystem: RuneSystem;
         MysticalShopSystem: MysticalShopSystem;
         HeroTalentSystem: HeroTalentSystem;
-        // 自定义系统
-        DamageReduction: DamageReduction;
 
         //服务器相关功能
         ArchiveService: ArchiveService;
@@ -95,7 +94,7 @@ export class GameEvent {
             GameRules.ItemArmsSystem = new ItemArmsSystem();
             GameRules.Spawn = new Spawn();
             GameRules.ResourceSystem = new ResourceSystem();
-            GameRules.ArmsCombo = new ArmsCombo();
+            // GameRules.ArmsCombo = new ArmsCombo();
             GameRules.SummonedSystem = new SummonedSystem();
             GameRules.CMsg = new CMsg();
             GameRules.RuneSystem = new RuneSystem();
@@ -104,7 +103,6 @@ export class GameEvent {
             GameRules.ServiceEquipment = new ServiceEquipment();
             GameRules.GameInformation = new GameInformation();
             GameRules.WarningMarker = new WarningMarker();
-            GameRules.DamageReduction = new DamageReduction();
             GameRules.HeroTalentSystem = new HeroTalentSystem();
             GameRules.NpcSystem = new NpcSystem();
             
@@ -125,7 +123,7 @@ export class GameEvent {
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段
 
         } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段
-
+            GameRules.EnemyAttribute = new EnemyAttribute();
         } else if (State_Get == GameState.POST_GAME) { //推送结果阶段
 
         } else if (State_Get == GameState.DISCONNECT) { //断开阶段
@@ -212,7 +210,7 @@ export function ReloadModules() {
     } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段---无UI
 
     } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段---游戏内UI
-
+        GameRules.EnemyAttribute = new EnemyAttribute();
     } else if (State_Get == GameState.POST_GAME) { //推送结果阶段---游戏内UI
 
     } else if (State_Get == GameState.DISCONNECT) { //断开阶段---游戏内UI

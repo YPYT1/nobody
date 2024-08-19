@@ -1,5 +1,7 @@
-import { BaseAbility, BaseModifier, registerModifier } from "../utils/dota_ts_adapter";
-import * as RuneConfig from "../json/config/game/rune/rune_config.json";
+import { BaseAbility, BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
+import * as RuneConfig from "../../json/config/game/rune/rune_config.json";
+
+// LinkLuaModifier("modifier_shop_prop_10", "modifiers/prop_effect/modifier_shop_prop_10", LuaModifierMotionType.NONE);
 
 type runeName = keyof typeof RuneConfig;
 

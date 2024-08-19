@@ -212,8 +212,12 @@ export class ResourceSystem extends UIEventRegisterClass {
         exp_unit.drop_resource_amount = this.exp_type_count[exp_type];
         exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_exp", {})
         if (killer) {
-            // 如果有击杀者和对应的符文
-            
+            // prop_16	【迈达斯之手】	自动拾取被自身击杀的怪物掉落的经验值（超稀有）
+            if (killer.prop_level_index["prop_16"]) {
+                exp_unit.AddNewModifier(exp_unit, null, "modifier_pick_animation", {
+                    picker: killer.entindex(),
+                })
+            }
         }
     }
 

@@ -719,7 +719,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      */
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-        this.GetTalentKvOfUnit(hHero, "drow_ranger", "1", "base_value")
         if (cmd == "-atf") {
             let number = tonumber(args[0]) ?? 1;
             this.AddHeroTalent(player_id, number)

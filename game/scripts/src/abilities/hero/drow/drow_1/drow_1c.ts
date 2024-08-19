@@ -55,7 +55,7 @@ export class modifier_drow_1c extends modifier_drow_1 {
         this.fakeAttack = true;
         this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "8", 'targes');
         this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "9", "bonus_value");
-        if (this.bonus_value > 0) {
+        if (this.DamageBonusMul > 0) {
             this.element_type = ElementTypes.ICE;
             this.damage_type = DamageTypes.MAGICAL;
             this.tracking_proj_name = G_PorjTrack.ice;
@@ -82,7 +82,7 @@ export class modifier_drow_1c extends modifier_drow_1 {
             this.caster.Script_GetAttackRange() + 64,
             UnitTargetTeam.ENEMY,
             UnitTargetType.HERO + UnitTargetType.BASIC,
-            UnitTargetFlags.NONE,
+            UnitTargetFlags.FOW_VISIBLE,
             FindOrder.ANY,
             false
         )

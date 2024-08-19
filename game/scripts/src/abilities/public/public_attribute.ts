@@ -2,6 +2,7 @@ import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "..
 
 // import * as NpcAbilityCustom from "./../../json/npc_abilities_custom.json"
 
+/** 需要同步的数据 */
 const UpdateAttributeKyes: AttributeMainKey[] = [
     "AttackRate",
     "AttackDamage",
@@ -15,6 +16,7 @@ const UpdateAttributeKyes: AttributeMainKey[] = [
     "PickItemRadius",
     'AbilityHaste',
     'AbilityCooldown',
+    'AbilityCooldown2',
 ];
 
 // 属性
@@ -52,7 +54,10 @@ export class modifier_public_attribute extends BaseModifier {
         this.hParent = this.GetParent();
         this.iParentEntity = this.GetParent().entindex();
         this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_rune_effect", {})
-        this.hParent.AddNewModifier(this.hParent, null, "modifier_public_attribute_delay", {})
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_prop_effect", {})
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_public_attribute_delay", {})
+
+
         this.ForceRefresh()
         this.StartIntervalThink(0.1)
     }
@@ -184,13 +189,6 @@ export class modifier_public_attribute extends BaseModifier {
         return this.AttributeData.ManaRegen
     }
 
-    // GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
-    //     if (event.damage_type != DamageTypes.PURE) {
-    //         return GameRules.DamageReduction.GetTotalReductionPct(event)
-    //     }
-    //     return 0
-    // }
-
     GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
         if (event.ability == null) { return 100 }
         let ability_name = event.ability.GetAbilityName()
@@ -198,7 +196,10 @@ export class modifier_public_attribute extends BaseModifier {
         let AbilityHaste = this.AttributeData.AbilityHaste ?? 0;
         let ability_cd = math.min(0.55, AbilityHaste / (AbilityHaste + 150))
         let AbilityCooldown = (this.AttributeData.AbilityCooldown ?? 0) * 0.01;
-        base_cd *= (1 - math.min(0.55, ability_cd + AbilityCooldown));
+        let NormalCd = math.min(0.55, ability_cd + AbilityCooldown)
+        let AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01;
+        let TotalCooldown = math.min(0.99, NormalCd + AbilityCooldown2);
+        base_cd *= (1 - TotalCooldown);
         if (ability_name == "drow_5" && this.caster.rune_level_index.hasOwnProperty("rune_51")) {
             let fuchou_cd = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_51', 'fuchou_cd') * 0.01;
             base_cd *= (1 - fuchou_cd)
@@ -220,7 +221,7 @@ export class modifier_public_attribute_delay extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
-        this.StartIntervalThink(0.25)
+        this.StartIntervalThink(0.1)
     }
 
     OnIntervalThink(): void {

@@ -690,3 +690,25 @@ export class modifier_debuff_paralysis extends modifier_debuff_debuff_template {
         return ParticleAttachment.POINT_FOLLOW
     }
 }
+
+/** 混乱 */
+@registerModifier()
+export class modifier_debuff_chaos extends modifier_debuff_debuff_template {
+
+    GetTexture(): string {
+        return "life_stealer_control"
+    }
+
+    GetStatusEffectName(): string {
+        return "particles/status_fx/status_effect_dark_willow_wisp_fear.vpcf";
+    }
+
+    GetEffectName(): string {
+        return "particles/units/heroes/hero_dark_willow/dark_willow_wisp_spell_debuff.vpcf";
+    }
+
+    GetEffectAttachType(): ParticleAttachment {
+        return ParticleAttachment.OVERHEAD_FOLLOW
+    }
+
+}

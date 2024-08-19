@@ -1,5 +1,5 @@
-import { BaseAbility, BaseModifier, registerModifier } from "../utils/dota_ts_adapter";
-import * as MysteriousShopConfig from "../json/config/game/shop/mysterious_shop_config.json";
+import { BaseAbility, BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
+import * as MysteriousShopConfig from "../../json/config/game/shop/mysterious_shop_config.json";
 
 type runeName = keyof typeof MysteriousShopConfig;
 
@@ -36,12 +36,12 @@ export class modifier_prop_effect extends BaseModifier {
     Prop_Object<
         Key extends keyof typeof MysteriousShopConfig,
         T2 extends typeof MysteriousShopConfig[Key]
-    >(rune_name: Key, rune_key: keyof T2["AbilityValues"]) {
-        return this.object[rune_name as string][rune_key as string]
+    >(prop_name: Key, rune_key: keyof T2["AbilityValues"]) {
+        return this.object[prop_name as string][rune_key as string]
     }
 
-    Prop_InputAbilityValues(rune_name: string, rune_input: AbilityValuesProps): void {
-        this.object[rune_name] = rune_input
+    Prop_InputAbilityValues(prop_name: string, rune_input: AbilityValuesProps): void {
+        this.object[prop_name] = rune_input
     }
 
     Prop_OnKilled(hTarget: CDOTA_BaseNPC): void {
@@ -50,6 +50,7 @@ export class modifier_prop_effect extends BaseModifier {
 
     OnIntervalThink(): void {
         if (!this.caster.IsAlive()) { return }
+        GameRules.MysticalShopSystem.BuyItem
         // prop_10	【生人勿进】	对自身250码范围内的敌人造成的伤害提升25%
 
         // prop_12	【勇气勋章】	生命值大于50%，攻击力提高20%；生命值低于50%，防御力提高20%
@@ -83,7 +84,7 @@ export class modifier_prop_effect extends BaseModifier {
             let heal_pct = this.Prop_Object('prop_15', 'heal_pct');
             let damage_bonus_max = this.Prop_Object('prop_15', 'damage_bonus_max');
             let curr_pct = math.max(heal_pct, this.caster.GetHealthPercent())
-            let bonus_damage = (100 - curr_pct) / 0.9;
+            let bonus_damage = math.floor((100 - curr_pct) / 0.9);
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, "prop_15_effect", {
                 'DamageBonusMul': {
                     "Base": bonus_damage
@@ -95,6 +96,7 @@ export class modifier_prop_effect extends BaseModifier {
         // prop_43	【定时收获】	自己无法拾取经验球，但每过120秒会自动拾取全地图的经验球
         if (this.object["prop_43"]) {
             this.timer_prop_43 += 1;
+
             if (this.timer_prop_43 >= this.Prop_Object("prop_43", 'auto_pick_interval')) {
                 // 拾取全部经验球
                 this.timer_prop_43 = 0;

@@ -139,7 +139,7 @@ export const Init = () => {
             RuneInfo.SetHasClass("rarity_2", level == 2)
             RuneInfo.SetHasClass("rarity_3", level == 3)
             let img_src = GetTextureSrc(textrue)
-            let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Button;
+            let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Panel;
             RuneIconBtn.RemoveAndDeleteChildren()
             let rune_image_id = `RuneImage${post_index}`
             let RuneImage = $.CreatePanel("Image", RuneIconBtn, rune_image_id, {
@@ -151,7 +151,7 @@ export const Init = () => {
             });
             // let RunImageShwdow = RuneInfo.FindChildTraverse("RunImageShwdow") as ImagePanel;
             RunImageShwdow.SetImage(`Panel://${rune_image_id}`);
-            RuneIconBtn.SetPanelEvent("onactivate", () => {
+            RuneInfo.SetPanelEvent("onactivate", () => {
                 // $.Msg(["select_index", post_index])
                 GameEvents.SendCustomGameEventToServer("RuneSystem", {
                     event_name: "PostSelectRune",

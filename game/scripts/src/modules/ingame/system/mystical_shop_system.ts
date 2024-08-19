@@ -1,6 +1,7 @@
 ﻿import { reloadable } from '../../../utils/tstl-utils';
 import { UIEventRegisterClass } from '../../class_extends/ui_event_register_class';
 import * as MysteriousShopConfig from "../../../json/config/game/shop/mysterious_shop_config.json";
+import { modifier_prop_effect } from '../../../modifier/prop_effect/modifier_prop_effect';
 // import * as ItemsCustom from "../../../json/npc_items_custom.json";
 // import * as ItemBlueprint from "../../../json/items/item_blueprint.json";
 // import * as ItemEquipOriginConfig from "../../../json/Items/item_equip_origin.json";
@@ -540,6 +541,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     BuyItem(player_id: PlayerID, params: CGED["MysticalShopSystem"]["BuyItem"], callback?: string) {
+        
         if(this.shop_state_data[player_id].is_ready == 0){
             let item_index = params.index;
             if (this.shop_field_list[player_id][item_index]) {
@@ -558,17 +560,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         }else{
                             this.player_shop_buy_data[player_id][name] = 1;
                         }
-                        let ItemData = MysteriousShopConfig[name as keyof typeof MysteriousShopConfig];
-                        let ret_action_string = ItemData.ret_action;
-                        let param = ItemData.AbilityValues;
-                        if(ret_action_string != "Null" && ret_action_string != 1){
-                            //执行后续处理....
-                            GameRules.MysticalShopSystem[ret_action_string](player_id, param , name);
-                        }
-                        let hero = PlayerResource.GetSelectedHeroEntity(player_id)
-                        hero.prop_level_index[name] = 0;
+                        this.AddPropAttribute(player_id,name)
                     } else {
-                        
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
                     }
                 } else {
@@ -581,6 +574,31 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             this.GetShopData(player_id, {});
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "玩家准备后无法购买.");
+        }
+    }
+
+    /** 添加商店物品数据 */
+    AddPropAttribute(player_id:PlayerID,prop_name:string){
+        const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        hHero.prop_level_index[prop_name] = 0;
+        let prop_buff = hHero.FindModifierByName("modifier_prop_effect") as modifier_prop_effect
+        let ItemData = MysteriousShopConfig[prop_name as keyof typeof MysteriousShopConfig];
+        if(prop_buff){
+            let AbilityValues = ItemData.AbilityValues;
+            prop_buff.Prop_InputAbilityValues(prop_name,AbilityValues)
+        }
+        
+        let ObjectValues = ItemData.ObjectValues as CustomAttributeTableType;
+        let attr_key = "attr_"+prop_name;
+        // print("SetAttributeInKey",attr_key)
+        GameRules.CustomAttribute.SetAttributeInKey(hHero,attr_key,ObjectValues);
+
+
+        let ret_action_string = ItemData.ret_action;
+        let param = ItemData.AbilityValues;
+        if(ret_action_string != "Null" && ret_action_string != 1){
+            //执行后续处理....
+            GameRules.MysticalShopSystem[ret_action_string](player_id, param , prop_name);
         }
     }
 

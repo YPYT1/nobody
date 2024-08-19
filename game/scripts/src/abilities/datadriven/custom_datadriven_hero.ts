@@ -37,27 +37,6 @@ export const OnAttack = (params: CGDatadrivenProps) => {
 
 export const OnAttackStart = (params: CGDatadrivenProps) => {
     // print("OnAttackStart")
-    
-
-    // 分裂箭
-    // let count = 0;
-    // let enemies = FindUnitsInRadius(
-    //     DotaTeam.GOODGUYS,
-    //     params.caster.GetAbsOrigin(),
-    //     null,
-    //     params.caster.Script_GetAttackRange(),
-    //     UnitTargetTeam.ENEMY,
-    //     UnitTargetType.HERO + UnitTargetType.BASIC,
-    //     UnitTargetFlags.NONE,
-    //     FindOrder.ANY,
-    //     false
-    // )
-    // for (let enemy of enemies) {
-    //     if (count < 3 && enemy != params.target) {
-    //         params.caster.PerformAttack(enemy, true, true, true, true, true, false, false);
-    //         count += 1;
-    //     }
-    // }
 }
 
 export const OnAttackLanded = (params: CGDatadrivenProps) => {

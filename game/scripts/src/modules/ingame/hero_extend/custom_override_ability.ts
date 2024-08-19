@@ -24,11 +24,7 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
     // PlayerUpgradesTable:{}; // 玩家升级树
     constructor() {
         super("CustomOverrideAbility");
-        // print("[CustomOverrideAbility]:constructor")
-        // this.OverrideSpecialMul = {};
         this.OverrideSpecialValue = {};
-        // this.AbilitySpecialValue = {};
-        // this.AbilitySpecialMul = {}
     }
 
     /** 初始化玩家的special key 值 */

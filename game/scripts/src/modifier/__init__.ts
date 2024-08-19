@@ -10,4 +10,7 @@ import "./modifier_summoned";
 import "./modifier_knockback_lua";
 import "./modifier_element";
 import "./modifier_state";
-import "./modifier_rune_effect";
+import "./rune_effect/modifier_rune_effect";
+
+import "./rune_effect/__init__";
+import "./prop_effect/__init__";

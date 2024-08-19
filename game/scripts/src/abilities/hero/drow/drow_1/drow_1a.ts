@@ -75,7 +75,7 @@ export class drow_1a extends drow_1 {
         );
         // rune_26	游侠#1	爆炸箭对生命值高于30%的敌人伤害提高100%
         let has_rune26 = this.caster.rune_level_index.hasOwnProperty('rune_26');
-        print("has_rune26", has_rune26)
+        // print("has_rune26", has_rune26)
         let run26_bonus = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_26", 'bonus_value');
         let run26_hp_pct = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_26", 'hp_pct');
         for (let enemy of enemies) {

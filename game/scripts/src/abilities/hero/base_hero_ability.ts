@@ -1,6 +1,6 @@
 
 import { HeroTalentObject } from "../../kv_data/hero_talent_object";
-import { modifier_rune_effect } from "../../modifier/modifier_rune_effect";
+import { modifier_rune_effect } from "../../modifier/rune_effect/modifier_rune_effect";
 import { BaseAbility, BaseModifier } from "../../utils/dota_ts_adapter";
 
 export class BaseHeroAbility extends BaseAbility {

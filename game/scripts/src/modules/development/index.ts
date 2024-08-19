@@ -110,7 +110,8 @@ export class Development extends UIEventRegisterClass {
     AddDummy(player_id: PlayerID, params: CGED["Development"]["AddDummy"]) {
         let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
         let origin = hHeroUnit.GetAbsOrigin() + RandomVector(150) as Vector;
-        let Dummy = CreateUnitByName("npc_public_dummy", origin, true, null, null, DotaTeam.BADGUYS);
+        let Dummy = GameRules.Spawn.CreepNormalCreate("npc_public_dummy", origin)
+        // let Dummy = CreateUnitByName(, origin, true, null, null, DotaTeam.BADGUYS);
         Dummy.CDResp = {};
         Dummy.SetControllableByPlayer(player_id, false)
     }
@@ -238,19 +239,16 @@ export class Development extends UIEventRegisterClass {
             SendToConsole("dota_hud_healthbars 1")
         }
 
-        if (cmd == "-sg") {
-            for (let i = 0; i < 10; i++) {
-                let hUnit = CreateUnitByName(
-                    `npc_monster_normal_2`,
-                    hHero.GetAbsOrigin() + RandomVector(600) as Vector,
-                    true,
-                    null,
-                    null,
-                    DotaTeam.BADGUYS
-                );
-                hUnit.SetBaseMaxHealth(10000)
-                hUnit.SetMaxHealth(10000)
-                hUnit.SetHealth(10000)
+        if (cmd == "-shuag") {
+            print("-shuag")
+            for (let i = 0; i < 50; i++) {
+                let hUnit = GameRules.Spawn.CreepNormalCreate(
+                    `npc_monster_normal_1`,
+                    hHero.GetAbsOrigin() + RandomVector(600) as Vector
+                )
+                hUnit.SetBaseMaxHealth(1)
+                hUnit.SetMaxHealth(1)
+                hUnit.SetHealth(1)
             }
 
 
@@ -258,6 +256,23 @@ export class Development extends UIEventRegisterClass {
 
         }
 
+        if (cmd == "-prop") {
+            GameRules.MysticalShopSystem.RefreshMysticalShopItem();
+            if (args[0]) {
+                print("add prop_id arg", ...args)
+                GameRules.MysticalShopSystem.AddPropAttribute(player_id, "prop_" + args[0])
+            } else {
+                print("add prop all")
+                let hAbility = hHero.FindAbilityByName("public_attribute");
+                // for (let prop_id = 1; prop_id <= 60; prop_id++) {
+                //     let prop_name = "prop_" + prop_id;
+                //     GameRules.MysticalShopSystem.AddPropAttribute(player_id, prop_name)
+                // }
+                let buff = hHero.AddNewModifier(hHero, hAbility, "modifier_shop_prop_10", {})
+                print(buff)
+            }
+
+        }
         if (cmd == "-fullr") {
             // 英雄符文全满
             let order = 1;
@@ -315,6 +330,15 @@ export class Development extends UIEventRegisterClass {
             }
         }
 
+        if (cmd == '-allt') {
+            let heroname = hHero.GetUnitName().replace("npc_dota_hero_", "")
+            for (let i = 1; i <= 57; i++) {
+                hHero.hero_talent[heroname][`${i}`] = 5;
+                // hHero.rune_level_index
+
+            }
+            GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
+        }
         if (cmd == "-getall") {
             // let hHeroUnit = PlayerResource.GetSelectedHeroEntity(player_id);
             let vPos = hHero.GetAbsOrigin();

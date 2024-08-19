@@ -83,7 +83,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 attackrange,
                 UnitTargetTeam.ENEMY,
                 UnitTargetType.HERO + UnitTargetType.BASIC,
-                UnitTargetFlags.NONE,
+                UnitTargetFlags.FOW_VISIBLE,
                 FindOrder.CLOSEST,
                 false
             )

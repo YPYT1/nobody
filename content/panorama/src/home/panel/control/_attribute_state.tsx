@@ -13,7 +13,9 @@ const base_attribute_list: AttributeMainKey[] = [
     "PhyicalArmor",
     "MoveSpeed",
     "AbilityHaste",
-    "EvasionProb",
+    // "AbilityCooldown",
+    // "AbilityCooldown2",
+    // "EvasionProb",
 ]
 
 const adv_attribute_list: AttributeMainKey[] = [
@@ -51,7 +53,7 @@ const UpdataAttributeData = () => {
     let show = netdata.show;
     let value = netdata.value
     // $.Msg(["show",show.AttackDamage])
-
+    // $.Msg(netdata.value.AbilityCooldown2)
     for (let _key in AttributeRowsList) {
         let attr_key = _key as AttributeMainKey
         let attrPanel = AttributeRowsList[attr_key];
@@ -104,6 +106,8 @@ const InitHeroDetailsPanel = () => {
         let PanelAttributeRow = $.CreatePanel("Panel", BaseAttributeList, _attr);
         PanelAttributeRow.BLoadLayoutSnippet("PanelAttributeRow")
         PanelAttributeRow.SetDialogVariable("stat_label", $.Localize(`#custom_attribute_${_attr}`).replace("%", ""))
+
+       
         PanelAttributeRow.SetDialogVariable("stat_value", ConvertAttributeToLabel(_attr, 0))
 
     }

@@ -18,9 +18,9 @@
 		</snippet>
 		
 		<snippet name="RuneInfo">
-			<Panel class="RuneInfo">
-				<Button id="RuneIconBtn">
-				</Button>
+			<Button class="RuneInfo">
+				<Panel id="RuneIconBtn" />
+	
 				<Panel class="RuneName">
 					<Panel class="NameDecorate Left"/>	
 					<Label text="{s:rune_name}"/>
@@ -29,7 +29,7 @@
 				<Panel class="RuneDesc">
 					<Label text="{s:rune_desc}" html="true"/>
 				</Panel>
-			</Panel>
+			</Button>
 		</snippet>
 
 		<snippet name="HeroState">
