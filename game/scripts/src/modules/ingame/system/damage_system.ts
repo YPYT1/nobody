@@ -94,9 +94,7 @@ export class DamageSystem {
         /** 元素伤害 */
         let ElementResist = 100;
         // 乘区
-
         DamageBonusMul + this.GetBonusDamageFromProp(params)
-
         // 游侠天赋击破效果
         let drow_13_stack_buff = hTarget.FindModifierByName("modifier_drow_2a_a_debuff")
         if (drow_13_stack_buff) {
@@ -120,6 +118,16 @@ export class DamageSystem {
                     // 添加灼烧
                     GameRules.ElementEffect.SetFirePrimary(params.attacker, params.victim)
                 }
+                // prop_3	【啊，是火！】	火元素技能造成伤害的灼烧会额外增加攻击力40%的伤害，并降低火元素抗性20%，持续3秒。
+                if (params.attacker.prop_level_index["prop_3"]) {
+                    let FireResist = GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_3', 'FireResist');
+                    let duration = GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_3', 'duration');
+                    GameRules.EnemyAttribute.SetAttributeInKey(params.victim, "prop_3_effect", {
+                        "FireResist": {
+                            "Base": duration
+                        }
+                    }, 3)
+                }
 
 
             } else if (element_type == ElementTypes.ICE) {
@@ -133,18 +141,8 @@ export class DamageSystem {
                 }
 
             } else if (element_type == ElementTypes.THUNDER) {
-                // prop_22	【雷神之锤】	雷元素技能命中敌人时，50%概率额外追加3秒麻痹效果（相同敌人只受到一次效果）
-                if (hTarget.SpecialMark["prop_22"] == null && hAttacker.prop_level_index["prop_22"]) {
-                    let chance = GameRules.MysticalShopSystem.GetKvOfUnit(hAttacker, "prop_22", 'chance');
-                    if (RollPercentage(chance)) {
-                        hTarget.SpecialMark["prop_22"] = 1;
-                        let duration = GameRules.MysticalShopSystem.GetKvOfUnit(hAttacker, "prop_22", 'duration');
-                        // 强化麻痹效果
-                        hTarget.AddNewModifier(hTarget, null, "modifier_element_effect_thunder", {
-                            duration: duration
-                        })
-                    }
-                }
+                
+                
                 if (is_primary) {
                     GameRules.ElementEffect.SetThunderPrimary(params.attacker, params.victim)
                 }
@@ -153,10 +151,10 @@ export class DamageSystem {
                     GameRules.ElementEffect.SetWindPrimary(params.attacker, params.victim, params.damage_vect)
                 }
             }
-
-
         } else {
-
+            // 真实伤害
+            PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type)
+            return ApplyDamage(params);
         }
 
         // print(params.damage, SelfAbilityMul, DamageBonusMul, AbilityImproved, ElementDmgMul, FinalDamageMul,'damagetype',params.damage_type)
@@ -190,6 +188,7 @@ export class DamageSystem {
         if (custom_attribute_value == null) {
             return ApplyDamage(params);
         }
+
         let EvasionProb = custom_attribute_value ? custom_attribute_value.EvasionProb : 0;
         if (RollPercentage(EvasionProb)) {
             // 闪避
@@ -221,6 +220,23 @@ export class DamageSystem {
             })
         }
 
+        // prop_20	【你的滑板孩】	常驻移动速度+25%，但在受到伤害后变为移动速度降低50%持续3秒
+        if (params.victim.prop_level_index["prop_20"]) {
+            let move_speed_pct = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_20', 'move_speed_pct');
+            let duration = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_20', 'duration');
+            GameRules.CustomAttribute.SetAttributeInKey(params.victim, "prop_20_debuff", {
+                'MoveSpeed': {
+                    'BasePercent': move_speed_pct
+                }
+            }, duration)
+        }
+
+        // prop_27	【永世法衣】	增加40%技能强度，受到伤害时回复5点法力值（超稀有）
+        if (params.victim.prop_level_index["prop_27"]) {
+            let restore_mana = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_27', 'restore_mana');
+            GameRules.BasicRules.RestoreMana(params.victim, restore_mana)
+        }
+
         // prop_38	【缚灵索】	攻击自身的敌人会被束缚1秒
         if (params.victim.prop_level_index["prop_38"]) {
             let root_duration = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_38', 'root_duration');
@@ -236,6 +252,13 @@ export class DamageSystem {
     GetBonusDamageFromProp(params: ApplyCustomDamageOptions) {
         let bonus = 0;
         let distance = (params.attacker.GetAbsOrigin() - params.victim.GetAbsOrigin() as Vector).Length2D();
+        // prop_8	【否定信仰】	队伍对有控制状态效果的人额外造成15%伤害
+        let prop_8_count = GameRules.MysticalShopSystem.GetTeamPropCount("prop_8");
+        if (prop_8_count > 0) {
+            let prop_8_value = GameRules.MysticalShopSystem.GetTKV('prop_8', 'value', 0);
+            bonus += (prop_8_count * prop_8_value)
+        }
+
         // prop_10	【生人勿进】	对自身250码范围内的敌人造成的伤害提升25%
         if (params.attacker.prop_level_index["prop_10"] && distance < 250) {
             bonus += GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_10', 'harm')
@@ -254,6 +277,24 @@ export class DamageSystem {
                 bonus += GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_18', 'damage_bonus')
             }
         }
+
+        // prop_24	【无极】	队伍对有负面效果的人额外造成15%伤害
+        let prop_24_count = GameRules.MysticalShopSystem.GetTeamPropCount("prop_24");
+        if (prop_24_count > 0) {
+            let mdf_list = params.victim.FindAllModifiers()
+            let has_debuff = false;
+            for (let mdf of mdf_list) {
+                if (mdf.IsDebuff()) {
+                    has_debuff = true
+                    break;
+                }
+            }
+            if (has_debuff) {
+                bonus += (prop_24_count * GameRules.MysticalShopSystem.GetTKV('prop_24', 'value'))
+            }
+        }
+
+
         return bonus
     }
 }

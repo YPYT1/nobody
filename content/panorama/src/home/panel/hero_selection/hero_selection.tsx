@@ -1,5 +1,6 @@
 import { default as NpcHeroesCustom } from "../../../json/npc_heroes_custom.json";
-import { FormatNumberToTime } from "../development/development";
+import { FormatNumberToTime } from "../../../utils/method";
+// import { FormatNumberToTime } from "../development/development";
 
 const MainPanel = $.GetContextPanel();
 const PlayerStateContainer = $("#PlayerStateContainer");
@@ -151,7 +152,6 @@ export const Init = () => {
     MainPanel.Data<PanelDataObject>().start_time = -1;
     MainPanel.SetPanelEvent("onactivate", () => { })
     CreatePlayerStatePanel();
-
 
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
         let game_select_phase = event.data.game_select_phase;

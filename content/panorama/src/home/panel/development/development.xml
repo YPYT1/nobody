@@ -5,8 +5,21 @@
 	<scripts>
 		<include src="./development.tsx" />
 	</scripts>
+	<snippets>
+		<snippet name="AttributeRow">
+			<Panel class="AttributeRow">
+				<Label class="Name" text="{s:attr_name}"/>
+				<Label class="Value" text="{s:attr_value}"/>
+			</Panel>
+		</snippet>
+	</snippets>
 	<Panel class="development">
-        <Label id="GamePhase" text="GamePhase:{d:game_phase}"/>
-        <Label id="DotaGameTime" text="DotaTime:<span class='time'>{s:dota_time}</span>" html="true"/>
+		<Panel class="GameInfoLabel">
+			<Label id="GamePhase" text="GamePhase:{d:game_phase}"/>
+        	<Label id="DotaGameTime" text="DotaTime:<span class='time'>{s:dota_time}</span>" html="true"/>
+		</Panel>
+        
+		<Panel id="DevCustomAttributeList">
+		</Panel>
 	</Panel>
 </root>

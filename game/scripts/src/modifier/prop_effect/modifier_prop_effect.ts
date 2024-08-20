@@ -12,9 +12,10 @@ export class modifier_prop_effect extends BaseModifier {
 
     object: { [rune: string]: AbilityValuesProps };
 
-
+    timer_prop_42: number;
     timer_prop_43: number;
     timer_prop_45: number;
+
 
     IsHidden(): boolean { return true }
     IsPermanent(): boolean { return true }
@@ -27,6 +28,7 @@ export class modifier_prop_effect extends BaseModifier {
         this.object = {}
 
         // 部分定时器
+        this.timer_prop_42 = 0;
         this.timer_prop_43 = 0;
         this.timer_prop_45 = 0;
         this.OnRefresh(params);
@@ -50,9 +52,6 @@ export class modifier_prop_effect extends BaseModifier {
 
     OnIntervalThink(): void {
         if (!this.caster.IsAlive()) { return }
-        GameRules.MysticalShopSystem.BuyItem
-        // prop_10	【生人勿进】	对自身250码范围内的敌人造成的伤害提升25%
-
         // prop_12	【勇气勋章】	生命值大于50%，攻击力提高20%；生命值低于50%，防御力提高20%
         if (this.object["prop_12"]) {
             let heal_pct = this.Prop_Object("prop_12", 'heal_pct');
@@ -92,7 +91,17 @@ export class modifier_prop_effect extends BaseModifier {
             })
 
         }
+        // prop_42	【神罚】	
+        if (this.object["prop_42"]) {
+            this.timer_prop_42 += 1;
+            if (this.timer_prop_42 >= this.Prop_Object("prop_42", 'interval')) {
+                this.timer_prop_42 = 0;
 
+                this.Effect_Prop42()
+
+                // GameRules.BasicRules.PickAllExp(this.caster)
+            }
+        }
         // prop_43	【定时收获】	自己无法拾取经验球，但每过120秒会自动拾取全地图的经验球
         if (this.object["prop_43"]) {
             this.timer_prop_43 += 1;
@@ -132,5 +141,67 @@ export class modifier_prop_effect extends BaseModifier {
                 // let effect_fx = ParticleManager.CreateParticle("")
             }
         }
+    }
+
+
+    /** 神罚效果 */
+    Effect_Prop42() {
+        let origin = this.caster.GetAbsOrigin();
+        let radius = this.Prop_Object("prop_42", 'radius');
+        let cast_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf",
+            ParticleAttachment.POINT,
+            null
+        )
+        ParticleManager.SetParticleControl(cast_fx, 1, origin)
+        ParticleManager.SetParticleControl(cast_fx, 0, origin + Vector(0, 0, 999) as Vector)
+        ParticleManager.ReleaseParticleIndex(cast_fx)
+
+        let aoe_cast_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf",
+            ParticleAttachment.POINT,
+            null
+        )
+        ParticleManager.SetParticleControl(aoe_cast_fx, 0, origin)
+        ParticleManager.SetParticleControl(aoe_cast_fx, 1, Vector(radius, 1, 1))
+        ParticleManager.ReleaseParticleIndex(aoe_cast_fx)
+
+        let damage_ratio = this.Prop_Object('prop_42', 'damage_ratio');
+        let aoe_damage = this.caster.GetAverageTrueAttackDamage(null) * damage_ratio * 0.01;
+        let enemies = FindUnitsInRadius(
+            DotaTeam.GOODGUYS,
+            origin,
+            null,
+            radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.HERO + UnitTargetType.BASIC,
+            UnitTargetFlags.FOW_VISIBLE,
+            FindOrder.ANY,
+            false
+        )
+        for (let enemy of enemies) {
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.caster,
+                damage: aoe_damage,
+                damage_type: DamageTypes.PURE,
+                element_type: ElementTypes.NONE,
+                ability: this.ability,
+                is_primary: false,
+            })
+        }
+
+        // 对自身造成伤害
+        let self_ratio = this.Prop_Object('prop_42', 'self_ratio');
+        let self_damage = this.caster.GetAverageTrueAttackDamage(null) * self_ratio * 0.01;
+        ApplyCustomDamage({
+            victim: this.caster,
+            attacker: this.caster,
+            damage: self_damage,
+            damage_type: DamageTypes.PURE,
+            element_type: ElementTypes.NONE,
+            ability: this.ability,
+            is_primary: false,
+        })
     }
 }

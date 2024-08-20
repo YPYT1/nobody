@@ -21,7 +21,14 @@ export class BasicRules extends UIEventRegisterClass {
     /** 治疗触发 */
     Heal(hCaster: CDOTA_BaseNPC, fHealAmount: number, hAbility: CDOTABaseAbility | undefined) {
         hCaster.Heal(fHealAmount, hAbility)
+
     }
+
+    /** 回蓝 */
+    RestoreMana(hCaster: CDOTA_BaseNPC, fManaAmount: number, hAbility?: CDOTABaseAbility) {
+        hCaster.GiveMana(fManaAmount)
+    }
+
 
     /**
      * 扣除生命

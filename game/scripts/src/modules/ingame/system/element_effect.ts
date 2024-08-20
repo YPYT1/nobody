@@ -50,9 +50,27 @@ export class ElementEffect {
             !hTarget.HasModifier("modifier_element_effect_thunder_immune")
             && !hTarget.HasModifier("modifier_element_effect_thunder")
         ) {
-            hTarget.AddNewModifier(hTarget, null, "modifier_element_effect_thunder", {
-                duration: 1
-            })
+            // prop_22	【雷神之锤】	雷元素技能命中敌人时，50%概率额外追加3秒麻痹效果（相同敌人只受到一次效果）
+            if (hTarget.SpecialMark["prop_22"] == null && hCaster.prop_level_index["prop_22"]) {
+                let chance = GameRules.MysticalShopSystem.GetKvOfUnit(hCaster, "prop_22", 'chance');
+                if (RollPercentage(chance)) {
+                    hTarget.SpecialMark["prop_22"] = 1;
+                    let duration = GameRules.MysticalShopSystem.GetKvOfUnit(hCaster, "prop_22", 'duration');
+                    // 强化麻痹效果
+                    hTarget.AddNewModifier(hTarget, null, "modifier_element_effect_thunder", {
+                        duration: duration + 1
+                    })
+                } else {
+                    hTarget.AddNewModifier(hTarget, null, "modifier_element_effect_thunder", {
+                        duration: 1
+                    })
+                }
+            } else {
+                hTarget.AddNewModifier(hTarget, null, "modifier_element_effect_thunder", {
+                    duration: 1
+                })
+            }
+
         }
     }
 
@@ -83,7 +101,7 @@ export class ElementEffect {
             }, stun)
             GameRules.BuffManager.AddGeneralDebuff(hCaster, hTarget, DebuffTypes.stunned, stun)
         }
-        
+
         // if(hCaster.CustomVariables["wind_element_features"] )
     }
 

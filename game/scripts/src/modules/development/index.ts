@@ -264,12 +264,12 @@ export class Development extends UIEventRegisterClass {
             } else {
                 print("add prop all")
                 let hAbility = hHero.FindAbilityByName("public_attribute");
-                // for (let prop_id = 1; prop_id <= 60; prop_id++) {
-                //     let prop_name = "prop_" + prop_id;
-                //     GameRules.MysticalShopSystem.AddPropAttribute(player_id, prop_name)
-                // }
-                let buff = hHero.AddNewModifier(hHero, hAbility, "modifier_shop_prop_10", {})
-                print(buff)
+                for (let prop_id = 1; prop_id <= 60; prop_id++) {
+                    let prop_name = "prop_" + prop_id;
+                    GameRules.MysticalShopSystem.AddPropAttribute(player_id, prop_name)
+                }
+                // let buff = hHero.AddNewModifier(hHero, hAbility, "modifier_shop_prop_10", {})
+                // print(buff)
             }
 
         }

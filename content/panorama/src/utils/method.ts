@@ -200,3 +200,10 @@ export function FormatDescriptionExtra(
     description_txt = description_txt.replaceAll("\n", "<br>");
     return description_txt;
 }
+
+export function FormatNumberToTime(time: number) {
+    let min = Math.floor(time / 60);
+    let sec_num = Math.floor(time % 60);
+    let sec = sec_num < 10 ? `0${sec_num}` : `${sec_num}`;
+    return [min, sec];
+}

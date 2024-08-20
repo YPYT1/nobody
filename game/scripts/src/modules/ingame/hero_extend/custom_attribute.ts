@@ -191,26 +191,41 @@ export class CustomAttribute {
         for (let main_key of attr_key) {
             let is_mul = AttributeConst[main_key].is_mul == 1;
             if (!is_mul) {
+                let mul_value = 1;
+                if (hUnit.custom_mul_attribute[main_key]) {
+                    let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
+                    let base_value = 100;
+                    for (let value of attr_values) {
+                        base_value *= (100 + value) * 0.01;
+                    }
+                    mul_value = base_value * 0.01;
+                }
+                // print("mul_value",mul_value)
                 // 非乘算属性
                 let SubAttr = hUnit.custom_attribute_table[main_key as keyof typeof hUnit.custom_attribute_table];
                 let TotalAttrValue = ((SubAttr["Base"]) * (1 + SubAttr["BasePercent"] * 0.01) + SubAttr["Bonus"])
                     * (1 + SubAttr["TotalPercent"] * 0.01)
                     + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                     + (SubAttr["Fixed"]);
+                TotalAttrValue = TotalAttrValue * mul_value
                 hUnit.custom_attribute_value[main_key] = math.max(0, TotalAttrValue);
                 hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
                 hUnit.custom_attribute_show[main_key][1] = TotalAttrValue - SubAttr["Base"]
+
+                hUnit.custom_attribute_table[main_key].MulRegion = mul_value
             } else {
                 // 乘算属性处理
+                let mul_value = 1;
                 if (hUnit.custom_mul_attribute[main_key]) {
                     let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
                     let base_value = 100;
                     for (let value of attr_values) {
-                        base_value *= (100 - value) * 0.01;
+                        base_value *= (100 + value) * 0.01;
                     }
-                    hUnit.custom_attribute_value[main_key] = math.floor(100 - base_value);
+                    mul_value = base_value * 0.01;
+                    hUnit.custom_attribute_value[main_key] = base_value;
                 }
-
+                hUnit.custom_attribute_table[main_key].MulRegion = mul_value
             }
         }
 
@@ -349,8 +364,11 @@ export class CustomAttribute {
                 let is_mul = AttributeConst[attr_key].is_mul == 1;
                 if (!is_mul) {
                     for (let k2 in AttrList[key]) {
-                        let value = AttrList[key][k2] as number;
-                        hUnit.custom_attribute_table[key][k2] += value
+                        if (k2 != "MulRegion") {
+                            let value = AttrList[key][k2] as number;
+                            hUnit.custom_attribute_table[key][k2] += value
+                        }
+
                     }
                 }
 
@@ -361,8 +379,11 @@ export class CustomAttribute {
                 let is_mul = AttributeConst[attr_key].is_mul == 1;
                 if (!is_mul) {
                     for (let k2 in AttrList[key]) {
-                        let value = AttrList[key][k2] as number;
-                        hUnit.custom_attribute_table[key][k2] -= value
+                        if (k2 != "MulRegion") {
+                            let value = AttrList[key][k2] as number;
+                            hUnit.custom_attribute_table[key][k2] -= value
+                        }
+
                     }
                 }
             }
@@ -380,16 +401,23 @@ export class CustomAttribute {
      */
     SetAttributeInKey(hUnit: CDOTA_BaseNPC, key: string, attr_list: CustomAttributeTableType, timer: number = -1) {
         // 乘算属性处理 直接覆盖
-        print("SetAttributeInKey ", key)
+        // print("SetAttributeInKey ", key)
+        // DeepPrintTable(attr_list)
         // DeepPrintTable(attr_list)
         for (let _key in attr_list) {
             let attr_key = _key as AttributeMainKey
             let is_mul = AttributeConst[attr_key].is_mul == 1;
+            let row_input = attr_list[attr_key]
             if (is_mul) {
                 if (hUnit.custom_mul_attribute[attr_key] == null) {
                     hUnit.custom_mul_attribute[attr_key] = {}
                 }
                 hUnit.custom_mul_attribute[attr_key][key] = (attr_list[attr_key].Base ?? 0)
+            } else if (row_input.MulRegion != null) {
+                if (hUnit.custom_mul_attribute[attr_key] == null) {
+                    hUnit.custom_mul_attribute[attr_key] = {}
+                }
+                hUnit.custom_mul_attribute[attr_key][key] = (attr_list[attr_key].MulRegion ?? 0)
             }
         }
 

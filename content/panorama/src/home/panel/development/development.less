@@ -1,8 +1,12 @@
+@import "./../../../_styles/styles.less";
+
 .development {
-    horizontal-align: right;
-    vertical-align: bottom;
-    flow-children: down;
-    margin-bottom: 32px;
+    width: 100%;
+    height: 100%;
+    // horizontal-align: right;
+    // vertical-align: bottom;
+    // flow-children: down;
+    // 
 
     Label {
         font-size: 18px;
@@ -13,5 +17,51 @@
     .time {
         font-weight: bold;
         color:#ffd54a;
+    }
+}
+
+.GameInfoLabel {
+    horizontal-align: right;
+    vertical-align: bottom;
+    flow-children: down;
+    margin-bottom: 32px;
+}
+
+#DotaGameTime,
+#GamePhase {
+    horizontal-align: right;
+    vertical-align: bottom;
+}
+
+#DevCustomAttributeList {
+    margin-top: 96px;
+    horizontal-align: left;
+    flow-children: right-wrap;
+    border: 1px solid #000000;
+    background-color: #1d1d1d;
+    width: 440px;
+    z-index: 99;
+    opacity: 0;
+
+    &.Show {
+        opacity: 1;
+    }
+    .AttributeRow {
+        border-bottom: 1px solid #4b4b4b;
+        margin-left: 1px;
+        margin-right: 1px;
+        // width: 200px;
+        padding: 2px;
+        flow-children: right;
+
+        .Name {
+            width: 130px;
+        }
+
+        .Value {
+            color:#ffd54a;
+            font-weight: bold;
+            width: 80px;
+        }
     }
 }

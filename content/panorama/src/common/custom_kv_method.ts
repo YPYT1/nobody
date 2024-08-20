@@ -30,6 +30,7 @@ export function GetTextureSrc(texture: string, func: string = "123") {
             || cut_arr[0] == "store"
             || cut_arr[0] == "rune"
             || cut_arr[0] == "server"
+            || cut_arr[0] == "prop"
         ) {
             return `${ITEM_PATH_CUSTOM}${cut_texture}.png`;
         } else {

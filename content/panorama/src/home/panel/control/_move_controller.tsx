@@ -205,7 +205,7 @@ let camera_value = 1200;
  * @param down_func 按下
  * @param up_func 松开
  */
-export function SetHotKey(key: string, down_func: Function, up_func: Function) {
+export function SetHotKey(key: string, down_func: Function, up_func?: Function) {
     let command_string = `On${key}${Date.now()}`;
     Game.CreateCustomKeyBind(key, `+${command_string}`);
     Game.AddCommand(
