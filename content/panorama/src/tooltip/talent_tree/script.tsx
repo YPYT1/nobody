@@ -1,11 +1,9 @@
 import { GetTextureSrc } from "../../common/custom_kv_method";
-import { default as talent_tree_drow_ranger } from "../../json/config/game/hero/talent_tree/drow_ranger.json";
+import { default as talent_tree } from "../../json/config/game/hero/talent_tree/talent_tree_config.json";
 import { SetLabelDescriptionExtra } from "../../utils/ability_description";
 import { FormatDescription } from "../../utils/method";
 import { default as AbilityTypesJson } from "./../../json/config/game/const/ability_types.json";
-let talent_tree = {
-    ["drow_ranger"]: talent_tree_drow_ranger
-}
+
 
 let MainPanel = $.GetContextPanel();
 // let TalentIcon = $("#TalentIcon") as ImagePanel;
@@ -28,15 +26,16 @@ export function Init() {
 }
 
 function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
-    let talent_data = talent_tree[hero as keyof typeof talent_tree][key as "1"]
+    let talent_data = talent_tree[key as "1"];
+    // $.Msg(["talent_data",key,talent_data])
     let img = talent_data.img;
     let AbilityValues = talent_data.AbilityValues;
     let ObjectValues = talent_data.ObjectValues;
     MainPanel.SetDialogVariableInt("max", talent_data.max_number)
     MainPanel.SetDialogVariableInt("level", level)
-    let talent_name = $.Localize(`#custom_talent_${hero}_${key}`)
+    let talent_name = $.Localize(`#custom_talent_${key}`)
     MainPanel.SetDialogVariable("talent_name", talent_name)
-    let talent_desc = $.Localize(`#custom_talent_${hero}_${key}_desc`)
+    let talent_desc = $.Localize(`#custom_talent_${key}_desc`)
     let description_txt = SetLabelDescriptionExtra(talent_desc, level, AbilityValues, ObjectValues, true);
     MainPanel.SetDialogVariable("talent_desc", description_txt)
     // 风格
@@ -80,6 +79,7 @@ function UpdateTooltip() {
     let key = MainPanel.GetAttributeString("key", "1");
     let level = MainPanel.GetAttributeInt("level", 0);
 
+    // $.Msg([hero,key,level])
     MainPanel.Data<PanelDataObject>().hero = hero
     MainPanel.Data<PanelDataObject>().key = key
     UpdateTalentTootipDesc(hero, key, level)

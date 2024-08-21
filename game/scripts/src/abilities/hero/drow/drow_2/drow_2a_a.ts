@@ -20,8 +20,8 @@ export class drow_2a_a extends drow_2a {
     }
 
     UpdataSpecialValue(): void {
-        this.talent_14 = this.caster.hero_talent['drow_ranger']["14"] ?? 0;
-        this.talent_13 = this.caster.hero_talent['drow_ranger']["13"] ?? 0;
+        this.talent_14 = this.caster.hero_talent["14"] ?? 0;
+        this.talent_13 = this.caster.hero_talent["13"] ?? 0;
         if (this.talent_13 > 0) {
             // rune_33	游侠#8	连续射击【击破】最大层数提高至30层
             if (this.caster.rune_level_index.hasOwnProperty("rune_33")) {

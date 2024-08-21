@@ -183,7 +183,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
         return
     }
     let heroname = Entities.GetUnitName(QueryUnit).replace("npc_dota_hero_", "")
-    let talent_data = GetHeroTalentTreeObject(heroname);
+    let talent_data = GetHeroTalentTreeObject();
 
     TalentAbilityExtra.RemoveAndDeleteChildren();
 
@@ -215,7 +215,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
                 let title = $.Localize(`#custom_talent_${heroname}_${key}`)
                 extra_panel.SetDialogVariable("extra_title", title)
 
-                let TalentData = GetHeroTalentTreeRowData(heroname, key);
+                let TalentData = GetHeroTalentTreeRowData( key);
                 let talent_desc = $.Localize(`#custom_talent_${heroname}_${key}_desc`)
                 let extra_desc = FormatDescription(talent_desc, TalentData.AbilityValues, level, true);
                 extra_panel.SetDialogVariable("extra_desc", extra_desc)

@@ -423,6 +423,35 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     //添加到英雄天赋去
                     hero.hero_talent[key] = this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc;
 
+                    // 添加99层数被动属性
+                    
+                    if (tier_number == 99){
+                        let tire_level = hero.hero_talent[key]
+                        let ObjectValues  = HeroTalentCounfg.ObjectValues;
+                        let attr_count : CustomAttributeTableType = {};
+                        for (let Attr in ObjectValues) {
+                            // let attr_values = this.GetKVAttr(rune_name, key, level_index);
+                            if(!attr_count.hasOwnProperty(Attr)){
+                                attr_count[Attr] = {};
+                            }
+                            for (const AttrType in ObjectValues[Attr]) {
+                                if(typeof ObjectValues[Attr][AttrType] == "number"){
+                                    attr_count[Attr][AttrType] = ObjectValues[Attr][AttrType];
+                                }else{
+                                    let Str = ObjectValues[Attr][AttrType] as string;
+                                    let Str_List = Str.split(" ");
+                                    let value = 0;
+                                    if(Str_List.length <= (tire_level)){ // 2  2
+                                        value = tonumber(Str_List[Str_List.length - 1])
+                                    }else{
+                                        value = tonumber(Str_List[tire_level - 1])
+                                    }
+                                    attr_count[Attr][AttrType] = value;
+                                }
+                            }
+                        }
+                        GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_"+key,attr_count)
+                    }
                     if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
                         this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
                     }

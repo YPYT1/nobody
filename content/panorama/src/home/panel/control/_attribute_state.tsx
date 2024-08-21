@@ -58,7 +58,7 @@ const UpdataAttributeData = () => {
         let attr_key = _key as AttributeMainKey
         let attrPanel = AttributeRowsList[attr_key];
         if (attrPanel) {
-            attrPanel.SetDialogVariable("attr_value", `${value[attr_key] ?? 0}`)
+            attrPanel.SetDialogVariable("attr_value", ConvertAttributeToLabel(attr_key,value[attr_key]))
         }
     }
 

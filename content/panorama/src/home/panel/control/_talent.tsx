@@ -1,5 +1,5 @@
 import { GetTextureSrc } from "../../../common/custom_kv_method";
-import { FormatTalentTree, GetAllHeroTalentTree, GetHeroTalentTreeObject, HeroTreeObject } from "../../../common/custom_talent";
+import { FormatTalentTree, GetAllHeroTalentTree, HeroTreeObject } from "../../../common/custom_talent";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 
 const CenterStatsContainer = $("#CenterStatsContainer");
@@ -113,23 +113,23 @@ const TogglePlayerTalentTreeList = (bShow: boolean) => {
 
 export const CreatePanel_Talent = () => {
     let local_hero = Players.GetPlayerHeroEntityIndex(local_player);
-    let hero_name = Entities.GetUnitName(local_hero).replace("npc_dota_hero_", "");
+    // let hero_name = Entities.GetUnitName(local_hero).replace("npc_dota_hero_", "");
     MainPanel.SetDialogVariableInt("point_count", 0)
-    CreateHeroTalentTree(hero_name)
+    CreateHeroTalentTree(6 as HeroID)
     GameEventsSubscribe()
 }
 
-const CreateHeroTalentTree = (heroname: string) => {
-    $.Msg(["CreateHeroTalentTree", heroname])
+const CreateHeroTalentTree = (heroId: HeroID) => {
+    $.Msg(["CreateHeroTalentTree", heroId])
     PlayerTalentTreeList.RemoveAndDeleteChildren();
     const ALPos = AbilityList.GetPositionWithinWindow();
 
 
-    let hero_data = talent_data[heroname as keyof typeof talent_data];
-    let talent_tree = FormatTalentTree(heroname, hero_data);
+    // let hero_data = talent_data[heroname as keyof typeof talent_data];
+    let talent_tree = FormatTalentTree(talent_data, heroId);
     let index = 0;
-    for (let id in hero_data) {
-        let row_data = hero_data[id as keyof typeof hero_data];
+    for (let id in talent_data) {
+        let row_data = talent_data[id as keyof typeof talent_data];
         let tree_id = `ability_index_${row_data.index}`;
         let talent_id = `talent_${id}`;
         let AbilityTreePanel = PlayerTalentTreeList.FindChildTraverse(tree_id);
@@ -149,7 +149,6 @@ const CreateHeroTalentTree = (heroname: string) => {
                     // OpenCurrentAbilityTree(LevelUpBtn, curr_index)
                 })
             }
-
             index++;
         }
 
@@ -178,7 +177,8 @@ const CreateHeroTalentTree = (heroname: string) => {
 
         TalentNodeButton.SetPanelEvent("onmouseover", () => {
             let level = TalentNode.Data<PanelDataObject>().used as number;
-            ShowCustomTooltip(TalentNodeButton, "talent_tree", heroname, id, level)
+            $.Msg(["ShowCustomTooltip TalentNodeButton", id, level])
+            ShowCustomTooltip(TalentNodeButton, "talent_tree", "", id, level)
         })
 
         TalentNodeButton.SetPanelEvent("onmouseout", () => {
@@ -188,22 +188,14 @@ const CreateHeroTalentTree = (heroname: string) => {
 
     $.Schedule(0, () => {
         let abi_pos = AbilityList.GetPositionWithinWindow();
-        // let ap_pos = AbilityList.GetChild(0)!.FindChildTraverse("LevelUpBtn")!.GetPositionWithinWindow();
-        // $.Msg(['cc_pos1:',  abi_pos,ap_pos])
-        // 549 604
-        // 716 771
-        // 173 
-        // let tree_id = `ability_index_${index + 1}`;
         for (let i = 0; i < PlayerTalentTreeList.GetChildCount(); i++) {
             let AbilityTreePanel = PlayerTalentTreeList.GetChild(i)!;
             AbilityTreePanel.style.marginLeft = `${abi_pos.x + 68.4 * i + 16}px`
-            // AbilityTreePanel.style.marginTop = `0px`;
-            // transform: translateY(-86px);
         }
     })
 
     //
-    let entity = `portrait_` + heroname;
+    // let entity = `portrait_` + heroname;
 
     UnitPortraitPanel.FireEntityInput('portrait_drow_ranger', "Enable", "1")
     UnitPortraitPanel.SetPanelEvent("onload", () => {
@@ -212,33 +204,14 @@ const CreateHeroTalentTree = (heroname: string) => {
 }
 
 
-// const OpenCurrentAbilityTree = (e: Panel, node_index: number) => {
-//     ToggleAbilityTreePanle(node_index,true);
-//     // $.Msg(["OpenCurrentAbilityTree", index])
-//     // for (let i = 0; i < PlayerTalentTreeList.GetChildCount(); i++) {
-//     //     let AbilityTreePanel = PlayerTalentTreeList.GetChild(i)!;
-//     //     if (i == index) {
-//     //         let last_state = AbilityTreePanel.BHasClass("Show");
-//     //         AbilityTreePanel.SetHasClass("Show", !last_state);
-//     //         PlayerTalentTreeList.SetHasClass("Show", !last_state)
-//     //         for (let j = 0; j < AbilityList.GetChildCount(); j++) {
-//     //             let AbilityPanel = AbilityList.GetChild(j)!;
-//     //             AbilityPanel.SetHasClass("CanUpgrade", last_state)
-//     //         }
-//     //     } else {
-//     //         AbilityTreePanel.SetHasClass("Show", i == index);
-//     //     }
-//     // }
-
-
-// }
-
 const GameEventsSubscribe = () => {
 
     GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
         let data = event.data;
-        let hero_name = data.hero_name.replace("npc_dota_hero_", "");
-        CreateHeroTalentTree(hero_name)
+        let player_info = Game.GetPlayerInfo(Players.GetLocalPlayer())
+        let heroid = player_info.player_selected_hero_id;
+        // let hero_name = data.hero_name.replace("npc_dota_hero_", "");
+        CreateHeroTalentTree(heroid)
     })
 
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
@@ -249,16 +222,15 @@ const GameEventsSubscribe = () => {
         MainPanel.SetDialogVariableInt("point_count", talent_points);
         let hero_name = Entities.GetUnitName(local_hero).replace("npc_dota_hero_", "");
         if (talent_points > 0) {
-
-            let hero_data = talent_data[hero_name as keyof typeof talent_data];
+            // let hero_data = talent_data[hero_name as keyof typeof talent_data];
             for (let id in hero_talent_list) {
                 let talent_id = `talent_${id}`;
                 let TalentNode = PlayerTalentTreeList.FindChildTraverse(talent_id);
                 if (TalentNode) {
                     let _data = hero_talent_list[id];
                     let is_unlock = _data.iu == 1;
-                    let row_hero_data = hero_data[id as keyof typeof hero_data]
-                    let is_max = _data.uc >= hero_data[id as keyof typeof hero_data].max_number
+                    let row_hero_data = talent_data[id as keyof typeof talent_data]
+                    let is_max = _data.uc >= talent_data[id as keyof typeof talent_data].max_number
                     let is_show = is_unlock && !is_max;
                     TalentNode.Data<PanelDataObject>().used = _data.uc
                     TalentNode.SetHasClass("Show", is_show)
@@ -266,6 +238,7 @@ const GameEventsSubscribe = () => {
                     TalentNode.SetHasClass("IsUp", _data.uc > 0)
                 }
             }
+
             $.Schedule(0, () => {
                 // 显示按钮
                 // 验证是否有打开的页面

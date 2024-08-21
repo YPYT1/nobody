@@ -123,9 +123,9 @@ export const ConvertAttributeToLabel = (attr_key: AttributeMainKey, value: numbe
     let is_pct = AttributeConst[attr_key].is_pct == 1;
     let res_label = "0";
     if (is_pct) {
-        res_label = `${value}%`
+        res_label = `${value.toFixed(2)}%`
     } else {
-        res_label = `${value}`
+        res_label = `${Math.floor(value) }`
     }
     return res_label
 }

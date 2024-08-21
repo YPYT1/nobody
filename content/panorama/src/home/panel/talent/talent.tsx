@@ -1,12 +1,13 @@
 import { GetTextureSrc } from "../../../common/custom_kv_method";
-import { default as talent_tree_drow_ranger } from "../../../json/config/game/hero/talent_tree/drow_ranger.json";
+import { FormatTalentTree, HeroTreeObject } from "../../../common/custom_talent";
+// import { default as talent_tree_drow_ranger } from "../../../json/config/game/hero/talent_tree/drow_ranger.json";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
 
 let TalentBackgroundHeight = $("#TalentBackgroundHeight");
 let TalentNodeList = $("#TalentNodeList");
 let TalentContainer = $("#TalentContainer");
 let ToggleBtn = $("#ToggleBtn");
-let hero_talent_tree: { [hero: string]: TalentTreeProps } = {};
+
 
 interface TalentTreeObject {
     name: string,
@@ -19,59 +20,23 @@ interface TalentTreeProps {
     [index: string]: TalentTreeObject[];
 }
 
-
-
-export const FormatTalentTree = (hero_name: string, talent_tree_obj: any) => {
-    let temp_tree: TalentTreeProps = {};
-    for (let k in talent_tree_obj) {
-        let row_data = talent_tree_obj[k];
-        let parent_node = `` + row_data.parent_node;
-        let index = row_data.index;
-
-        if (temp_tree[index] == null) { temp_tree[index] = []; }
-        let temp_obj = { name: k, max: row_data.max_number, img: row_data.img, sub: [] }
-        if (parent_node == "0") {
-            temp_tree[index].push(temp_obj)
-        } else {
-            for (let sub_tree of temp_tree[index]) {
-                if (sub_tree.name == parent_node) {
-                    sub_tree.sub.push(temp_obj)
-                    break
-                }
-                for (let sub_tree2 of sub_tree.sub) {
-                    if (sub_tree2.name == parent_node) {
-                        sub_tree2.sub.push(temp_obj)
-                        break
-                    }
-                    for (let sub_tree3 of sub_tree2.sub) {
-                        if (sub_tree3.name == parent_node) {
-                            sub_tree3.sub.push(temp_obj)
-                            break
-                        }
-                    }
-                }
-            }
-
-        }
-
-    }
-
-    return temp_tree
-    // hero_talent_tree[hero_name] =
-}
-
 export const RecursionTalentTree = () => {
 
 }
 
 export const CreateHeroTalentTreeUI = (heroname: string, NodePanel: Panel, index: string = "1") => {
     // TalentBackgroundHeight.RemoveAndDeleteChildren()
-    if (hero_talent_tree[heroname] == null) { return }
-    let talent_tree = hero_talent_tree[heroname][index];
-    // $.Msg(["talent_tree",talent_tree])
-    for (let row of talent_tree) {
+    // if (hero_talent_tree[heroname] == null) { return }
+
+    let hero_talent_tree = FormatTalentTree(HeroTreeObject,6);
+    let row_data = hero_talent_tree[index as keyof typeof hero_talent_tree];
+        // row_data.
+    for(let row of row_data){
         CreateTalentTreeNode(heroname, row, NodePanel)
     }
+    // $.Msg(row_data)
+   
+    
 
 }
 
@@ -129,7 +94,7 @@ export const GameEventsSubscribe = () => {
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
         let data = event.data;
         let hero_talent_list = data.hero_talent_list;
-        // $.Msg(["hero_talent_list", hero_talent_list])
+        $.Msg(["hero_talent_list", hero_talent_list])
         for (let id in hero_talent_list) {
             let data = hero_talent_list[id];
             let TalentNode = TalentNodeList.FindChildTraverse(id);
@@ -146,7 +111,7 @@ export const GameEventsSubscribe = () => {
 }
 
 export const CreateHeroTalent = (heroname: string) => {
-    // $.Msg(["CreateHeroTalent", heroname])
+    $.Msg(["CreateHeroTalent", heroname])
     TalentNodeList.RemoveAndDeleteChildren();
     for (let i = 1; i <= 5; i++) {
         let row_node = $.CreatePanel("Panel", TalentNodeList, `Node_${i}`);

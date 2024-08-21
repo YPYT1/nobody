@@ -1,14 +1,11 @@
-import { default as talent_tree_drow_ranger } from "./../json/config/game/hero/talent_tree/drow_ranger.json";
+import { default as TalentTreeConfig } from "./../json/config/game/hero/talent_tree/talent_tree_config.json";
 
 
 
-export const HeroTreeObject = {
-    ["drow_ranger"]: talent_tree_drow_ranger,
-    ["lina"]: talent_tree_drow_ranger,
-}
+export const HeroTreeObject = TalentTreeConfig
 
-type HeroName = keyof typeof HeroTreeObject;
-type TalentTreeRowProps = typeof HeroTreeObject[HeroName]["1"];
+// type HeroName = keyof typeof HeroTreeObject;
+type TalentTreeRowProps = typeof HeroTreeObject["1"];
 
 // interface HeroTalentObject = {
         
@@ -17,8 +14,8 @@ type TalentTreeRowProps = typeof HeroTreeObject[HeroName]["1"];
 export const GetAllHeroTalentTree = ()=>{
     return HeroTreeObject
 }
-export const GetHeroTalentTreeObject = (heroname: string) => {
-    let res_obj = HeroTreeObject[heroname as keyof typeof HeroTreeObject]
+export const GetHeroTalentTreeObject = () => {
+    let res_obj = HeroTreeObject
     if (res_obj) {
         return res_obj
     } else {
@@ -27,8 +24,8 @@ export const GetHeroTalentTreeObject = (heroname: string) => {
 }
 
 
-export const GetHeroTalentTreeRowData = (heroname: string, key: string) => {
-    let res_obj = HeroTreeObject[heroname as keyof typeof HeroTreeObject]
+export const GetHeroTalentTreeRowData = (key: string) => {
+    let res_obj = HeroTreeObject
     return res_obj[key as "1"]
 }
 
@@ -43,10 +40,11 @@ interface TalentTreeProps {
     [index: string]: TalentTreeObject[];
 }
 
-export const FormatTalentTree = (hero_name: string, talent_tree_obj: any) => {
+export const FormatTalentTree = (talent_tree_obj: any , hero_id:number) => {
     let temp_tree: TalentTreeProps = {};
     for (let k in talent_tree_obj) {
         let row_data = talent_tree_obj[k];
+        if (row_data.hero_id != hero_id){ continue}
         let parent_node = `` + row_data.parent_node;
         let index = row_data.index;
 
