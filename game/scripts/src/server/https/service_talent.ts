@@ -100,42 +100,42 @@ export class ServiceTalent extends UIEventRegisterClass{
      * @param params 
      * @param callback 
      */
-    ClickTalent(player_id: PlayerID, params: CGED["ServiceTalent"]["ClickTalent"], callback?) {
-        let hero_id = params.hero_id;
-        let key = params.key;
-        if (talent.iu != 1) {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前天赋未解锁...");
-        } else {
-            if (key) {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "key 不存在....");
-            } else if(!hero_id){
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "hero_id 不存在....");
-            } else {
-                if (!this.player_talent_list[player_id][hero_id].talent[key]) {
-                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "未找到数据...");
-                } else {
-                    let talent = this.player_talent_list[player_id][hero_id].talent[key];
-                    let e_d = ServerEquipInfo[equi_data.n as keyof typeof ServerEquipInfo];
-                    this.player_equip_list[player_id].hero[params.hero_id][params.t - 1][e_d.type] = equi_data.id;
-                }
-            }
-        }
-        this.GetPlayerServerTalent(player_id, {});
-    }
-    //保存天赋
-    SaveTalentConfig(player_id: PlayerID, params: CGED["ServiceTalent"]["SaveTalentConfig"], callback?) {
-        GameRules.ArchiveService.EquipCfgModify(player_id, this.player_equip_config[player_id]);
-    }
-    //还原天赋
-    RestoreTalentConfig(player_id: PlayerID, params: CGED["ServiceTalent"]["RestoreTalentConfig"], callback?) {
-        if (!this.player_equip_config[player_id].hero[params.hero_id]) {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "还原配装:未找到角色...");
-        } else {
-            this.player_equip_config[player_id].hero[params.hero_id][params.t - 1] =
-                CustomDeepCopy(this.server_player_equip_config[player_id].hero[params.hero_id][params.t - 1]) as string[];
-        }
-        this.GetEquipConfig(player_id, {});
-    }
+    // ClickTalent(player_id: PlayerID, params: CGED["ServiceTalent"]["ClickTalent"], callback?) {
+    //     let hero_id = params.hero_id;
+    //     let key = params.key;
+    //     if (talent.iu != 1) {
+    //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前天赋未解锁...");
+    //     } else {
+    //         if (key) {
+    //             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "key 不存在....");
+    //         } else if(!hero_id){
+    //             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "hero_id 不存在....");
+    //         } else {
+    //             if (!this.player_talent_list[player_id][hero_id].talent[key]) {
+    //                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "未找到数据...");
+    //             } else {
+    //                 let talent = this.player_talent_list[player_id][hero_id].talent[key];
+    //                 let e_d = ServerEquipInfo[equi_data.n as keyof typeof ServerEquipInfo];
+    //                 this.player_equip_list[player_id].hero[params.hero_id][params.t - 1][e_d.type] = equi_data.id;
+    //             }
+    //         }
+    //     }
+    //     this.GetPlayerServerTalent(player_id, {});
+    // }
+    // //保存天赋
+    // SaveTalentConfig(player_id: PlayerID, params: CGED["ServiceTalent"]["SaveTalentConfig"], callback?) {
+    //     GameRules.ArchiveService.EquipCfgModify(player_id, this.player_equip_config[player_id]);
+    // }
+    // //还原天赋
+    // RestoreTalentConfig(player_id: PlayerID, params: CGED["ServiceTalent"]["RestoreTalentConfig"], callback?) {
+    //     if (!this.player_equip_config[player_id].hero[params.hero_id]) {
+    //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "还原配装:未找到角色...");
+    //     } else {
+    //         this.player_equip_config[player_id].hero[params.hero_id][params.t - 1] =
+    //             CustomDeepCopy(this.server_player_equip_config[player_id].hero[params.hero_id][params.t - 1]) as string[];
+    //     }
+    //     this.GetEquipConfig(player_id, {});
+    // }
 
     // //获取玩家装备配置
     // GetEquipConfig(player_id: PlayerID, params: CGED["ServiceEquipment"]["GetEquipConfig"], callback?) {
