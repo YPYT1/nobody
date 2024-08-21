@@ -27,8 +27,6 @@ export class ServiceInterface extends UIEventRegisterClass{
                 6 : 3
             })
         }
-
-        
     }
     //玩家对应英雄等级
     player_hero_star : {
@@ -161,6 +159,9 @@ export class ServiceInterface extends UIEventRegisterClass{
         }
         DeepPrintTable(this.PlayerServerSkillTypeLevel[player_id]);
     }
+
+    //存档天赋系统
+    
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         if(cmd == "-LoadSkillfulLevel"){

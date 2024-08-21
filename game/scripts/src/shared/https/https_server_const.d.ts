@@ -156,7 +156,7 @@ declare interface GetEquipReturn {
  */
 declare interface UpdateEquipParam {
 	sid : string , //steamid
-    equipdata : ServerEquip , //装备信息
+    equipdatalist : { [equip_id : string] : ServerEquip} , //装备信息
 }
 /**
  * 更新装备信息返回
@@ -164,7 +164,7 @@ declare interface UpdateEquipParam {
 declare interface UpdateEquipReturn {
     code : number, //状态码
     msg : string, //服务器消息
-    data :  ServerEquip
+    data :  { [equip_id : string] : ServerEquip}
 }
 
 
