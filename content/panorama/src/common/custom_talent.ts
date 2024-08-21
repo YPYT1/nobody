@@ -11,7 +11,7 @@ type HeroName = keyof typeof HeroTreeObject;
 type TalentTreeRowProps = typeof HeroTreeObject[HeroName]["1"];
 
 // interface HeroTalentObject = {
-    
+        
 // }
 
 export const GetAllHeroTalentTree = ()=>{

@@ -32,8 +32,8 @@ export class drow_2b_a extends drow_2b {
     }
 
     UpdataSpecialValue(): void {
-        this.yazhi_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "21", "bonus_value");
-        this.yazhi_hp_heighest = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "21", "hp_heighest");
+        this.yazhi_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "21", "bonus_value");
+        this.yazhi_hp_heighest = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "21", "hp_heighest");
 
     }
 
@@ -68,7 +68,7 @@ export class drow_2b_a extends drow_2b {
 export class modifier_drow_2b_a extends modifier_drow_2b {
 
     UpdataSpecialValue(): void {
-        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "19", "bonus_value");
+        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "19", "bonus_value");
         this.proj_name = G_PorjLinear.fire;
 
         // rune_37	游侠#12	散射【火力覆盖】火元素伤害提高50%

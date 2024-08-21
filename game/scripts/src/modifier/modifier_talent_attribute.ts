@@ -1,5 +1,5 @@
 import { BaseModifier, registerModifier } from "./../utils/dota_ts_adapter";
-import * as HeroTalentTree from "./../json/config/game/hero/talent_tree/drow_ranger.json";
+import * as HeroTalentTree from "./../json/config/game/hero/talent_tree/talent_tree_config.json";
 
 /** 天赋属性 */
 @registerModifier()

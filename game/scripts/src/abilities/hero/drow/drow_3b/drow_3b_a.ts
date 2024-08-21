@@ -34,18 +34,18 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
 
     OnCreated_Extends(): void {
         this.element_type = ElementTypes.FIRE;
-        let extra_dmg_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "drow_ranger", "36", "extra_dmg_pct")
+        let extra_dmg_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(),  "36", "extra_dmg_pct")
         if (extra_dmg_pct > 0) {
             this.extra_dmg_pct = this.ability.GetTypesAffixValue(extra_dmg_pct, "Buff", "skv_buff_increase");
         }
-        let level = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "drow_ranger", "35", "level");
+        let level = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(),  "35", "level");
         this.is_primary = level < 2;
         // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升至200%，持续时间延长至10秒
         if (this.caster.rune_level_index.hasOwnProperty("rune_45")) {
             this.dot_duration = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_duration');
         } else {
             // drow_35 燃烧
-            this.dot_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '35', 'burn_duration');
+            this.dot_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '35', 'burn_duration');
         }
         this.dot_duration += this.caster.custom_attribute_value["BurningDuration"];
 
@@ -99,7 +99,7 @@ export class modifier_drow_3b_a_dot extends modifier_element_effect_fire {
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
-        let base_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '35', 'burn_dmg')
+        let base_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '35', 'burn_dmg')
         // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升至200%，持续时间延长至10秒
         if (this.caster.rune_level_index.hasOwnProperty("rune_45")) {
             base_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_to_dmg')

@@ -101,7 +101,7 @@ export class DamageSystem {
             let stack = drow_13_stack_buff.GetStackCount();
             let stack_income = GameRules.HeroTalentSystem.GetTalentKvOfUnit(
                 drow_13_stack_buff.GetCaster(),
-                "drow_ranger",
+                
                 "13",
                 'value'
             )

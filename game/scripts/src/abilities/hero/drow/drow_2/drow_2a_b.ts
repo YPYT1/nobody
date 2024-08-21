@@ -21,15 +21,15 @@ export class drow_2a_b extends drow_2a {
     }
 
     UpdataSpecialValue(): void {
-        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '15', 'bonus_value')
-        this.cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '16', 'cigu_value')
-        this.bb_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "chance");
-        this.bb_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "base_value");
+        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  '15', 'bonus_value')
+        this.cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  '16', 'cigu_value')
+        this.bb_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "17", "chance");
+        this.bb_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "17", "base_value");
         // rune_34	游侠#9	连续射击【冰爆】的伤害提升至500%
         if (this.caster.rune_level_index.hasOwnProperty("rune_34")){
             this.bb_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_34', 'bb_dmg')
         }
-        let bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "17", "radius");
+        let bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "17", "radius");
         this.bb_radius = this.GetTypesAffixValue(this.bb_chance, "Aoe", "skv_aoe_radius")
         // rune_35	游侠#10	连续射击【冰爆】的范围提高50%，且必定触发冰爆
         if (this.caster.rune_level_index.hasOwnProperty("rune_35")) {
@@ -137,11 +137,11 @@ export class drow_2a_b extends drow_2a {
 export class modifier_drow_2a_b extends modifier_drow_2a {
 
     UpdataSpecialValue(): void {
-        let cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '16', 'cigu_value')
+        let cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  '16', 'cigu_value')
         if (cigu_value > 0) {
             this.proj_name = G_PorjLinear.ice;
         }
-        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", '15', 'bonus_value')
+        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  '15', 'bonus_value')
 
     }
 }

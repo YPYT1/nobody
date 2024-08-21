@@ -29,9 +29,9 @@ export class modifier_drow_4a extends BaseHeroModifier {
         let recover_mana = this.ability.GetSpecialValueFor("recover_mana")
         this.recover_mana = this.ability.GetTypesAffixValue(recover_mana, "Buff", "skv_buff_increase");
         this.talent_46 = (this.caster.hero_talent["46"] ?? 0) > 0;
-        let recover_hp_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "47", "recover_hp_pct");
+        let recover_hp_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "47", "recover_hp_pct");
         this.recover_hp_pct = this.ability.GetTypesAffixValue(recover_hp_pct, "Buff", "skv_buff_increase");
-        this.recover_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "46", "duration");
+        this.recover_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "46", "duration");
     }
 
     OnIntervalThink(): void {
@@ -119,7 +119,7 @@ export class modifier_drow_4a_recover_mana extends BaseModifier {
     OnRefresh(params: object): void {
         if (!IsServer()) { return }
         let inter_value = 0.25
-        let total_recover_mana = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "46", "recover_mana");
+        let total_recover_mana = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "46", "recover_mana");
         total_recover_mana = this.GetAbility().GetTypesAffixValue(total_recover_mana, "Buff", "skv_buff_increase");
         let duration = this.GetDuration();
         this.sec_give_mana = total_recover_mana / duration * inter_value

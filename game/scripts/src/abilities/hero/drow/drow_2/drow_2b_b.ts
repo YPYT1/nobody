@@ -22,9 +22,9 @@ export class drow_2b_b extends drow_2b {
     }
 
     UpdataSpecialValue(): void {
-        this.closest_distance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "23", "closest_distance");
-        this.zc_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "23", "bonus_value");
-        this.tj_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "24", "bonus_value");
+        this.closest_distance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "23", "closest_distance");
+        this.zc_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "23", "bonus_value");
+        this.tj_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "24", "bonus_value");
         // rune_39	游侠#14	"散射【痛击】生效时，造成伤害提供至500%，但该次伤害不会再暴击"
         if (this.caster.rune_level_index.hasOwnProperty("rune_36")) {
             this.rune_36_state = true;
@@ -80,7 +80,7 @@ export class modifier_drow_2b_b extends modifier_drow_2b {
     sp_extra: number;
     UpdataSpecialValue(): void {
         this.proj_name = G_PorjLinear.ice
-        this.sp_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "22", "chance");
+        this.sp_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "22", "chance");
         // rune_38	游侠#13	双喷再次释放时可以再次触发效果（可套娃）
         this.sp_extra = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_38', 'sp_extra');
     }

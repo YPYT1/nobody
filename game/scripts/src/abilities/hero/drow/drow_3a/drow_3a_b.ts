@@ -24,7 +24,7 @@ export class modifier_drow_3a_b extends modifier_drow_3a {
     surround_mdf = "modifier_drow_3a_b_summoned";
 
     UpdataSpecialValue(): void {
-        this.bonus_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "32", 'bonus_count')
+        this.bonus_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "32", 'bonus_count')
 
     }
 
@@ -149,13 +149,13 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
         let hCaster = this.GetCaster()
         this.caster = this.GetCaster();
         this.bx_record_dmg = 0;
-        this.bx_record_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', "record_pct");
-        this.bx_limit_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'limit_pct');
+        this.bx_record_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '33', "record_pct");
+        this.bx_limit_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '33', 'limit_pct');
         // rune_43	游侠#18	风暴环绕 【暴雪】记录值提高100%
         if (this.caster.rune_level_index.hasOwnProperty("rune_43")) {
             this.bx_limit_pct += GameRules.RuneSystem.GetKvOfUnit(hCaster, 'rune_43', 'record_pct_bonus')
         }
-        let bx_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, 'drow_ranger', '33', 'radius')
+        let bx_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '33', 'radius')
         let hAbility = this.GetAbility()
         this.bx_radius = hAbility.GetTypesAffixValue(bx_radius, "Aoe", "skv_aoe_radius")
     }

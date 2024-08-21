@@ -17,7 +17,7 @@ export class drow_1c extends drow_1 {
     }
 
     UpdataSpecialValue(): void {
-        this.add_mana = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '10', 'add_mana');
+        this.add_mana = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '10', 'add_mana');
         // rune_31	游侠#6	分裂箭对减速的敌人造成的伤害提高200%
         this.rune_31_bonus = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_31', 'slow_bonus_value');
     }
@@ -53,8 +53,8 @@ export class modifier_drow_1c extends modifier_drow_1 {
 
     UpdataSpecialValue(): void {
         this.fakeAttack = true;
-        this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "8", 'targes');
-        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "9", "bonus_value");
+        this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "8", 'targes');
+        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "9", "bonus_value");
         if (this.DamageBonusMul > 0) {
             this.element_type = ElementTypes.ICE;
             this.damage_type = DamageTypes.MAGICAL;

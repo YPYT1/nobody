@@ -55,9 +55,9 @@ export class modifier_drow_1b extends modifier_drow_1 {
     UpdataSpecialValue(): void {
         this.proj_width = 90;
         this.fakeAttack = true;
-        this.lianshe_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "6", 'lianshe_chance');
+        this.lianshe_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "6", 'lianshe_chance');
         this.missile_count = this.ability.GetTypesAffixValue(1, "Missile", "skv_missile_count");
-        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "5", "bonus_value");
+        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "5", "bonus_value");
         this.proj_speed = this.ability.GetTypesAffixValue(this.caster.GetProjectileSpeed(), "Missile", "skv_missile_speed");
         let attackrange = this.caster.Script_GetAttackRange() + 64;
         this.missile_distance = this.ability.GetTypesAffixValue(attackrange, "Missile", "skv_missile_distance");

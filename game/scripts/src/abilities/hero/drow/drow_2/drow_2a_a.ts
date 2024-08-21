@@ -27,7 +27,7 @@ export class drow_2a_a extends drow_2a {
             if (this.caster.rune_level_index.hasOwnProperty("rune_33")) {
                 this.max_stack = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_33", "max_stack")
             } else {
-                this.max_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', '13', 'max_stack');
+                this.max_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '13', 'max_stack');
             }
         }
     }
@@ -87,9 +87,9 @@ export class modifier_drow_2a_a extends modifier_drow_2a {
 
     UpdataSpecialValue(): void {
         this.proj_count = this.ability.GetSpecialValueFor("proj_count")
-            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "12", 'bonus_value');
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "12", 'bonus_value');
         this.proj_name = G_PorjLinear.wind;
-        this.ElementDmgMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,'drow_ranger','14','wind_dmg_pct')
+        this.ElementDmgMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,'14','wind_dmg_pct')
     }
 }
 

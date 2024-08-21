@@ -118,7 +118,7 @@ export class modifier_drow_5_branch_a extends modifier_drow_5_buff {
         this.caster = this.GetCaster();
         let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct");
         dmg_bonus_pct = this.GetAbility().GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase");
-        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "55", 'bonus_value');
+        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "55", 'bonus_value');
         bonus_value = this.GetAbility().GetTypesAffixValue(bonus_value, "Buff", "skv_buff_increase");
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             'DamageBonusMul': {
@@ -145,9 +145,9 @@ export class modifier_drow_5_branch_b extends modifier_drow_5_buff {
         this.caster = this.GetCaster();
         let dmg_bonus_pct = this.GetAbility().GetSpecialValueFor("dmg_bonus_pct")
         dmg_bonus_pct = this.GetAbility().GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase")
-        let ad_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "56", 'ad_bonus_pct');
+        let ad_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "56", 'ad_bonus_pct');
         ad_bonus_pct = this.GetAbility().GetTypesAffixValue(ad_bonus_pct, "Buff", "skv_buff_increase")
-        let as_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "56", 'as_bonus_pct');
+        let as_bonus_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "56", 'as_bonus_pct');
         as_bonus_pct = this.GetAbility().GetTypesAffixValue(as_bonus_pct, "Buff", "skv_buff_increase")
         // print("ad_bonus_pct",ad_bonus_pct,as_bonus_pct)
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
@@ -179,11 +179,11 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         let hAbility = this.GetAbility()
-        let mana_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "57", "mana_pct");
+        let mana_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "57", "mana_pct");
         this.mana_pct = hAbility.GetTypesAffixValue(mana_pct, "Buff", "skv_buff_increase");
         let dmg_bonus_pct = hAbility.GetSpecialValueFor("dmg_bonus_pct")
         dmg_bonus_pct = hAbility.GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase")
-        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, 'drow_ranger', "57", 'bonus_value');
+        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "57", 'bonus_value');
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             'FireDamageBonus': {
                 "Base": bonus_value

@@ -1,6 +1,3 @@
-import * as DrowRanger from "../json/config/game/hero/talent_tree/drow_ranger.json";
+import * as TalentTreeConfig from "../json/config/game/hero/talent_tree/talent_tree_config.json";
 
-export const HeroTalentObject = {
-    ["drow_ranger"]: DrowRanger,
-    ["lina"]: DrowRanger,
-}
+export const HeroTalentObject = TalentTreeConfig

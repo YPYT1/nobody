@@ -45,7 +45,7 @@ export class ServiceTalent extends UIEventRegisterClass{
                     use_count : 0 , //总投入点 用于反算可以使用的点
                     count : 0 , //可用天赋点
                     talent : {}
-                }
+                } 
 
                 for( const Tkey in ServerTalentData){
                     let TalentData  = ServerTalentData[Tkey as keyof typeof ServerTalentData];

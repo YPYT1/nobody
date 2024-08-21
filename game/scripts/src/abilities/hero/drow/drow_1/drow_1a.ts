@@ -21,17 +21,17 @@ export class drow_1a extends drow_1 {
     }
 
     UpdataSpecialValue(): void {
-        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "bonus_value");
-        this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_chance");
-        this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "3", "mul_value");
+        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "2", "bonus_value");
+        this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "3", "mul_chance");
+        this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "3", "mul_value");
         // rune_27	游侠#2	爆裂箭【浓缩】的触发概率提高至30%，伤害提高至10倍
         if (this.mul_chance > 0 && this.caster.rune_level_index.hasOwnProperty("rune_27")) {
             this.mul_chance = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_27", 'mul_chance')
             this.mul_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_27", 'mul_value')
         }
 
-        let aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "2", "skv_aoe_radius")
-            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "4", "skv_aoe_radius");
+        let aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "2", "skv_aoe_radius")
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "4", "skv_aoe_radius");
         this.aoe_radius = this.GetTypesAffixValue(aoe_radius, "Aoe", "skv_aoe_radius")
     }
 

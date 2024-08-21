@@ -50,7 +50,7 @@ export class modifier_drow_3a_a_summoned_collision extends modifier_drow_3a_summ
 
     OnCreated_Extends(): void {
         let base_interval = this.ability.GetSpecialValueFor("interval");
-        let interval_increase = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "drow_ranger", "30", "interval_increase");
+        let interval_increase = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "30", "interval_increase");
         interval_increase = this.ability.GetTypesAffixValue(interval_increase, "Buff", "skv_buff_increase");
         this.interval = base_interval / (1 + interval_increase * 0.01);
         let talent_31 = this.caster.hero_talent["31"] ?? 0;
