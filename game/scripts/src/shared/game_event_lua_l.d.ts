@@ -275,6 +275,26 @@ declare interface CGED {
 
         }
     }
+    //存档天赋功能
+    ServiceTalent : {
+        //点天赋
+        ClickTalent : {
+            hero_id : number , //英雄id
+            key : string , //天赋key
+        }
+        //获取存档天赋
+        GetPlayerServerTalent : {
+
+        }
+        //保存存档天赋
+        SaveTalentConfig : {
+
+        }
+        //还原存档天赋
+        RestoreTalentConfig : {
+
+        }
+    }
 
 }
 

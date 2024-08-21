@@ -306,11 +306,11 @@ export class ArchiveService extends UIEventRegisterClass {
      * @param player_id 
      * @param equipdata
      */
-    UpdateEquip(player_id : PlayerID , equipdata : ServerEquip , red_list : string = ""){
+    UpdateEquip(player_id : PlayerID , equipdatalist : { [equip_id : string] : ServerEquip} , red_list : string = ""){
         let steam_id = PlayerResource.GetSteamAccountID(player_id);
         let param_data = <UpdateEquipParam>{
             sid: steam_id.toString(),
-            equipdata : equipdata,
+            equipdatalist : equipdatalist,
         }
         HttpRequest.AM2Post(ACTION_UPDATE_EQUIP,
             {
@@ -319,7 +319,10 @@ export class ArchiveService extends UIEventRegisterClass {
             (data: UpdateEquipReturn) => {
                 print("==============获得返回数据================")
                 if (data.code == 200) {
-                    GameRules.ServiceEquipment.player_equip_list[player_id][data.data.id] = GameRules.ServiceEquipment.EquipTEncode(data.data);
+                    for (const key in data.data) {
+                        let equipdata = data.data[key];
+                        GameRules.ServiceEquipment.player_equip_list[player_id][equipdata.id] = GameRules.ServiceEquipment.EquipTEncode(equipdata);
+                    }
                 }
             },  
             (code: number, body: string) => {

@@ -129,6 +129,20 @@ declare interface CustomGameEventDeclarations {
      */
     
     //服务器相关
+
+    /**
+     * 获取存档天赋数据
+     */
+    ServiceTalent_GetPlayerServerTalent: {
+        data: {
+            server: {
+                [hero_id: number]: CGEDGetTalentListInfo; //服务器存档数据
+            },
+            local: {
+                [hero_id: number]: CGEDGetTalentListInfo; //临时数据
+            },
+        };
+    };
     /**
      * 游戏激活状态
      */
@@ -301,6 +315,31 @@ declare interface ShopStateData {
 }
 
     
+declare interface CGEDGetTalentListInfo {
+    use_count : number , //总投入点 用于反算可以使用的点
+    count : number , //可用天赋点
+    talent : {
+        [talent_key : string] :  {
+            iu: number, //是否解锁
+            uc : number , //投入点
+        },
+    }
+}
+
+declare interface ServerEquip {
+    id?: string, //唯一id
+    n: string, //装备key
+    r: number, //稀有度 0 1 2 3 => n,r,sr,ssr
+    zl: number, //装备等级
+    i : number , //强化数
+    ma : string, //装备主属性
+    pa : string, // 装备拼图属性
+    s : string, //套装数据  
+    lk? : number , //装备锁
+    created_at ? : number , //创建时间
+    t : number , //装备部位
+}
+
 declare interface CGEDGetEquipListInfo {
     id: string, //唯一id
     n: string, //装备key
@@ -324,22 +363,6 @@ declare interface CGEDGetEquipListInfo {
     lk? : number , //装备锁
 }
 
-declare interface ServerEquip {
-    id?: string, //唯一id
-    n: string, //装备key
-    r: number, //稀有度 0 1 2 3 => n,r,sr,ssr
-    zl: number, //装备等级
-    i : number , //强化数
-    ma : string, //装备主属性
-    pa : string, // 装备拼图属性
-    s : string, //套装数据  
-    lk? : number , //装备锁
-    created_at ? : number , //创建时间
-    t : number , //装备部位
-}
-
-
-
 declare interface CGEDEquipConfigInfo {
     hero: {
         [heroid: string]: string[][],
@@ -361,7 +384,6 @@ declare interface CGEDPlayerTalentList {
             //天赋key
             si : {
                 [index: string]: CGEDPlayerTalentDataSkill;
-
             }
         };
     }

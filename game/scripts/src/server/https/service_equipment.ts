@@ -134,7 +134,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
                 "qhs" : SS_qhs ,
             }
         }
-        DeepPrintTable(this.PlayerIntensifyResource);
     }
     Init() {
         // let player_count = GetPlayerCount();
@@ -551,18 +550,19 @@ export class ServiceEquipment extends UIEventRegisterClass {
                     //tudo 需要扣除材料
 
                     //保存至服务器
-
-                    let server_equip : ServerEquip = {
-                        id : equipobj.id,
-                        n: equipobj.n, //装备key
-                        r: equipobj.r, //稀有度 0 1 2 3 => n,r,sr,ssr
-                        zl: equipobj.zl, //装备等级
-                        i : equipobj.i, //强化等级
-                        ma : this.EquipTDecode(equipobj.ma), //装备主属性
-                        pa : this.EquipTDecode(equipobj.pa), // 装备拼图属性
-                        s : this.EquipTDecode(equipobj.s), //套装数据
-                        lk : equipobj.lk, //装备锁
-                        t : equipobj.t, //套装位置
+                    let server_equip : { [equip_id : string] : ServerEquip} = {
+                        [equipobj.id] : {
+                            id : equipobj.id,
+                            n: equipobj.n, //装备key
+                            r: equipobj.r, //稀有度 0 1 2 3 => n,r,sr,ssr
+                            zl: equipobj.zl, //装备等级
+                            i : equipobj.i, //强化等级
+                            ma : this.EquipTDecode(equipobj.ma), //装备主属性
+                            pa : this.EquipTDecode(equipobj.pa), // 装备拼图属性
+                            s : this.EquipTDecode(equipobj.s), //套装数据
+                            lk : equipobj.lk, //装备锁
+                            t : equipobj.t, //套装位置
+                        }
                     };
                     GameRules.ArchiveService.UpdateEquip(player_id , server_equip)
                 }else{
@@ -604,23 +604,22 @@ export class ServiceEquipment extends UIEventRegisterClass {
                         equipobj.pa[index].v -= red_value;
                     }
                     equipobj.pa[index].l --;
-
                     //tudo 需要扣除材料
-
                     //保存至服务器
-
-                    let server_equip : ServerEquip = {
-                        id : equipobj.id,
-                        n: equipobj.n, //装备key
-                        r: equipobj.r, //稀有度 0 1 2 3 => n,r,sr,ssr
-                        zl: equipobj.zl, //装备等级
-                        i : equipobj.i , //强化等级
-                        ma : this.EquipTDecode(equipobj.ma), //装备主属性
-                        pa : this.EquipTDecode(equipobj.pa), // 装备拼图属性
-                        s : this.EquipTDecode(equipobj.s), //套装数据
-                        lk : equipobj.lk, //装备锁
-                        t : equipobj.t, //套装位置
-                    };
+                    let server_equip : { [equip_id : string] : ServerEquip} = {
+                        [equipobj.id] : {
+                            id : equipobj.id,
+                            n: equipobj.n, //装备key
+                            r: equipobj.r, //稀有度 0 1 2 3 => n,r,sr,ssr
+                            zl: equipobj.zl, //装备等级
+                            i : equipobj.i , //强化等级
+                            ma : this.EquipTDecode(equipobj.ma), //装备主属性
+                            pa : this.EquipTDecode(equipobj.pa), // 装备拼图属性
+                            s : this.EquipTDecode(equipobj.s), //套装数据
+                            lk : equipobj.lk, //装备锁
+                            t : equipobj.t, //套装位置
+                        }
+                    }
                     GameRules.ArchiveService.UpdateEquip(player_id , server_equip)
                 }else{
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id , "装备低于最低等级")    
@@ -1449,18 +1448,20 @@ export class ServiceEquipment extends UIEventRegisterClass {
                     }
                 }
                 //tudo 需要扣除材料
-                let server_equip : ServerEquip = {
-                    id : equipobj.id ,
-                    n: equipobj.n , //装备key
-                    r: equipobj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
-                    zl: equipobj.zl , //装备等级
-                    i : equipobj.i ,
-                    ma : this.EquipTDecode(equipobj.ma) , //装备主属性
-                    pa : this.EquipTDecode(equipobj.pa) , // 装备拼图属性
-                    s : this.EquipTDecode(equipobj.s) , //套装数据
-                    lk : equipobj.lk, //装备锁
-                    t : equipobj.t, //套装位置
-                };
+                let server_equip : { [equip_id : string] : ServerEquip} = {
+                    [equipobj.id] : {
+                        id : equipobj.id ,
+                        n: equipobj.n , //装备key
+                        r: equipobj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
+                        zl: equipobj.zl , //装备等级
+                        i : equipobj.i ,
+                        ma : this.EquipTDecode(equipobj.ma) , //装备主属性
+                        pa : this.EquipTDecode(equipobj.pa) , // 装备拼图属性
+                        s : this.EquipTDecode(equipobj.s) , //套装数据
+                        lk : equipobj.lk, //装备锁
+                        t : equipobj.t, //套装位置
+                    }
+                }
                 DeepPrintTable(server_equip);
                 GameRules.ArchiveService.UpdateEquip(player_id , server_equip)
             }else{
@@ -1471,55 +1472,107 @@ export class ServiceEquipment extends UIEventRegisterClass {
         }
     }
 
-    //装备强化
-    IntensifyTransfer(player_id: PlayerID, params: CGED["ServiceEquipment"]["EquipIntensify"], callback?) {
-        let equip_id = params.equip_id;
-        if( GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(equip_id)){
-            let equipobj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][equip_id]) as CGEDGetEquipListInfo;
-            DeepPrintTable(equipobj);
-            let level_max = Object.keys(ServerAttrIntensifyConfig).length;
-            if(!equipobj.i){
-                equipobj.i = 0;
-            }
-            if(equipobj.i < level_max){ //最大等级
-                //tudo 需要扣除材料
-                let target_level = equipobj.i + 1;
-                //获取目标key
-                let IntensifyConfig = ServerAttrIntensifyConfig[tostring(target_level) as keyof typeof ServerAttrIntensifyConfig];
-                //强化石需要数量
-                let qhs_count = IntensifyConfig[equipobj.r + "_qhs"];
-                //金币需要数量
-                let gold_count = IntensifyConfig[equipobj.r + "_gold"];
-                //强化成功失败
-                if(RollPercentage(IntensifyConfig.probability)){
-                    equipobj.i ++;
-                }else{
-                    if(IntensifyConfig.is_demotion == 1){
-                        equipobj.i --;
-                    }
-                }
-                //tudo 需要扣除材料
-                let server_equip : ServerEquip = {
-                    id : equipobj.id ,
-                    n: equipobj.n , //装备key
-                    r: equipobj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
-                    zl: equipobj.zl , //装备等级
-                    i : equipobj.i ,
-                    ma : this.EquipTDecode(equipobj.ma) , //装备主属性
-                    pa : this.EquipTDecode(equipobj.pa) , // 装备拼图属性
-                    s : this.EquipTDecode(equipobj.s) , //套装数据
-                    lk : equipobj.lk, //装备锁
-                    t : equipobj.t, //套装位置
-                };
-                DeepPrintTable(server_equip);
-                GameRules.ArchiveService.UpdateEquip(player_id , server_equip)
-            }else{
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "装备强化已达到最大等级.")    
-            }
-        }else{
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "装备不存在...")
+    //强化转移
+    IntensifyTransfer(player_id: PlayerID, params: CGED["ServiceEquipment"]["IntensifyTransfer"], callback?) {
+        let source_equip_id  = params.source_equip_id ; //来源装备
+        let target_equip_id  = params.source_equip_id ; //目标装备id（增加强化的装备）
+        if(!GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(source_equip_id)){
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "来源装备不存在...")
+            return 
         }
+        if(!GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(target_equip_id)){
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "目标装备不存在...")
+            return 
+        }
+
+        let source_equip_obj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][source_equip_id]) as CGEDGetEquipListInfo;
+        let target_equip_obj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][target_equip_id]) as CGEDGetEquipListInfo;
+        //tudo 需要扣除材料
+        let server_equip : { [equip_id : string] : ServerEquip} = {};
+        server_equip[source_equip_obj.id] = {
+            id : source_equip_obj.id ,
+            n: source_equip_obj.n , //装备key
+            r: source_equip_obj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
+            zl: source_equip_obj.zl , //装备等级    
+            i :  target_equip_obj.i, //交换强化等级
+            ma : this.EquipTDecode(source_equip_obj.ma) , //装备主属性
+            pa : this.EquipTDecode(source_equip_obj.pa) , // 装备拼图属性
+            s : this.EquipTDecode(source_equip_obj.s) , //套装数据
+            lk : source_equip_obj.lk, //装备锁
+            t : source_equip_obj.t, //套装位置
+        }
+        server_equip[target_equip_obj.id] = {
+            id : target_equip_obj.id ,
+            n: target_equip_obj.n , //装备key
+            r: target_equip_obj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
+            zl: target_equip_obj.zl , //装备等级    
+            i : source_equip_obj.i ,//交换强化等级
+            ma : this.EquipTDecode(target_equip_obj.ma) , //装备主属性
+            pa : this.EquipTDecode(target_equip_obj.pa) , // 装备拼图属性
+            s : this.EquipTDecode(target_equip_obj.s) , //套装数据
+            lk : target_equip_obj.lk, //装备锁
+            t : target_equip_obj.t, //套装位置
+        }
+        DeepPrintTable(server_equip);
+        GameRules.ArchiveService.UpdateEquip(player_id , server_equip)
     }
+
+    /**
+     * 混石转移
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     * @returns 
+     */
+    PuzzleTransfer(player_id: PlayerID, params: CGED["ServiceEquipment"]["PuzzleTransfer"], callback?) {
+        let source_equip_id  = params.source_equip_id ; //来源装备
+        let target_equip_id  = params.source_equip_id ; //目标装备id（增加强化的装备）
+        if(!GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(source_equip_id)){
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "来源装备不存在...")
+            return 
+        }
+        if(!GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(target_equip_id)){
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "目标装备不存在...")
+            return 
+        }
+
+        let source_equip_obj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][source_equip_id]) as CGEDGetEquipListInfo;
+        let target_equip_obj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][target_equip_id]) as CGEDGetEquipListInfo;
+        //来源的装备必须大于目标
+        if(source_equip_obj.n < target_equip_obj.n){
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "来源装备品质必须大于目标装备...")
+            return 
+        }
+        //tudo 需要扣除材料
+        let server_equip : { [equip_id : string] : ServerEquip} = {};
+        server_equip[source_equip_obj.id] = {
+            id : source_equip_obj.id ,
+            n: source_equip_obj.n , //装备key
+            r: source_equip_obj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
+            zl: source_equip_obj.zl , //装备等级    
+            i :  source_equip_obj.i, //交换强化等级
+            ma : this.EquipTDecode(source_equip_obj.ma) , //装备主属性
+            pa : this.EquipTDecode([]) , // 装备拼图属性
+            s : this.EquipTDecode(source_equip_obj.s) , //套装数据
+            lk : source_equip_obj.lk, //装备锁
+            t : source_equip_obj.t, //套装位置
+        }
+        server_equip[target_equip_obj.id] = {
+            id : target_equip_obj.id ,
+            n: target_equip_obj.n , //装备key
+            r: target_equip_obj.r , //稀有度 0 1 2 3 => n,r,sr,ssr
+            zl: target_equip_obj.zl , //装备等级    
+            i : target_equip_obj.i ,//交换强化等级
+            ma : this.EquipTDecode(target_equip_obj.ma) , //装备主属性
+            pa : this.EquipTDecode(source_equip_obj.pa) , // 装备拼图属性
+            s : this.EquipTDecode(target_equip_obj.s) , //套装数据
+            lk : target_equip_obj.lk, //装备锁
+            t : target_equip_obj.t, //套装位置
+        }
+        DeepPrintTable(server_equip);
+        GameRules.ArchiveService.UpdateEquip(player_id , server_equip)
+    }
+
     // //安装装备
     InstallEquip(player_id: PlayerID, params: CGED["ServiceEquipment"]["InstallEquip"], callback?) {
         let equip_id = params.equip_id;
