@@ -1,0 +1,34 @@
+<root>
+	<styles>
+		<include src="./npc_interact.less" />
+        <include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./npc_interact.tsx" />
+	</scripts>
+    <snippets>
+        <snippet name="ConfirmWindow">
+            <Panel class="ConfirmWindow">
+                <Panel class="Extra_CountdownTimer">
+                    <Label class="Timer" text="{s:timer}s" />
+                </Panel>
+                <Panel class="ConfirmContent">
+                    <Label class="Title" text="{s:confirm_title}" />
+                    <Panel class="ButtonGroup">
+                        <Button id="BtnConfirm" class="btn confirm" >
+                            <Label text="{s:btn_text_confirm}" />
+                        </Button>
+                        <Button id="BtnCancel" class="btn cancel" >
+                            <Label text="{s:btn_text_cancel}"/>
+                        </Button>
+                    </Panel>
+                </Panel>
+                
+            </Panel>
+        </snippet>
+    </snippets>
+	<Panel class="npc_interact">
+        <Panel id="NpcInteract_GameRestart" />
+        <Panel id="GameRestartVote"  />
+	</Panel>
+</root>

@@ -466,10 +466,10 @@ export class MapChapter extends UIEventRegisterClass {
         this.GetGameSelectPhase(-1, {})
         //初始化 刷怪地点
         GameRules.Spawn.Init(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y)
+        GameRules.Spawn._game_start = true;
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawn",
             () => {
-                GameRules.Spawn._game_start = true;
                 GameRules.Spawn.StartSpawnControl()
                 return null;
             },
@@ -520,11 +520,11 @@ export class MapChapter extends UIEventRegisterClass {
                     
                     let steam_id = PlayerResource.GetSteamAccountID(index);
                     //清空玩家选择状态
-                    if(steam_id == 0){
-                        this.vote_data.playervote.push(1);
-                    }else{
-                        this.vote_data.playervote.push(-1);
-                    }
+                    // if(steam_id == 0){
+                    //     this.vote_data.playervote.push(1);
+                    // }else{
+                    this.vote_data.playervote.push(-1);
+                    // }
                 }
                 //完成时间
                 this.countdown_vote_time = GameRules.GetDOTATime(false, false) + this.vote_time;
@@ -534,6 +534,12 @@ export class MapChapter extends UIEventRegisterClass {
                     GameRules.MapChapter.VoteTimeLose();
                     return null;
                 }, this.vote_time);
+                this.GetPlayerVoteData(-1 , {});
+                GameRules.CMsg.SendCommonMsgToPlayer(
+                    -1,
+                    "主机开机投票",
+                    {}
+                );
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(
                     player_id,
@@ -553,9 +559,18 @@ export class MapChapter extends UIEventRegisterClass {
     //玩家投票
     PlayerVote(player_id: PlayerID, params: CGED["MapChapter"]["PlayerVote"]) {
         if(this.is_reopen && this._game_select_phase == 999){
-            if(this.vote_data.playervote[player_id] == 0){
+            if(this.vote_data.playervote[player_id] == -1){
                 if(params.vote == 1){
                     this.vote_data.playervote[player_id] = params.vote;
+
+                    GameRules.CMsg.SendCommonMsgToPlayer(
+                        -1,
+                        "{s:player_id} 玩家同意重开",
+                        {
+                            player_id: player_id
+                        }
+                    );
+
                     let plyaer_count = GetPlayerCount()
                     for (let index = 0 as PlayerID ; index < plyaer_count ; index++) {
                         if(this.vote_data.playervote[index] != 1){
@@ -563,10 +578,17 @@ export class MapChapter extends UIEventRegisterClass {
                             return 
                         }
                     }
-                    this.VoteTimeSucceed();
+                    GameRules.MapChapter.VoteTimeSucceed();
                 }else{
                     this.vote_data.playervote[player_id] = params.vote;
-                    this.VoteTimeLose();
+                    GameRules.CMsg.SendCommonMsgToPlayer(
+                        -1,
+                        "{s:player_id} 玩家拒绝重开",
+                        {
+                            player_id: player_id
+                        }
+                    );
+                    GameRules.MapChapter.VoteTimeLose();
                 }
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(
@@ -590,6 +612,7 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().StopThink("VOTE_TIME");
         this.is_reopen = false;
         this.vote_data.state = 0;
+        GameRules.Spawn._game_start = false;
         this.GetPlayerVoteData(-1 , {});
     }
 
@@ -598,6 +621,7 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().StopThink("VOTE_TIME");
         this.is_reopen = false;
         this.vote_data.state = 0;
+        GameRules.Spawn._game_start = false;
         this.GetPlayerVoteData(-1 , {});
         this.ReturntoCamp();
     }
@@ -654,6 +678,7 @@ export class MapChapter extends UIEventRegisterClass {
         }
         // let unitlist = Entities.FindAllByClassname("npc_exp");
         // print("unitlist", unitlist.length)
+        print("GameRules.Spawn._game_start : " , GameRules.Spawn._game_start)
         if (GameRules.Spawn._game_start == false && this._game_select_phase == 999) {
             this._game_select_phase = 0;
             this.GetGameSelectPhase(-1, {})
@@ -794,6 +819,9 @@ export class MapChapter extends UIEventRegisterClass {
         }
         if(cmd == "-loser"){
             GameRules.MapChapter.GameLoser()
+        }
+        if(cmd == "-VoteTimeSucceed"){
+            GameRules.MapChapter.VoteTimeSucceed();
         }
         if (cmd == "-mapinfo") {
             print("GameRules.Spawn._game_start", GameRules.Spawn._game_start)

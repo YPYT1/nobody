@@ -177,7 +177,8 @@ declare interface CGED {
         }
         //玩家重开投票
         PlayerVote : {
-            vote : number , // 0 拒绝 1 通过
+            /** 0 拒绝 1 通过 */
+            vote : number ,
         }
         //玩家投票信息
         GetPlayerVoteData : {

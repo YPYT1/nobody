@@ -1,8 +1,9 @@
 const PlayerList = $("#PlayerList");
 
 export const Init = () => {
-    PlayerList.RemoveAndDeleteChildren();
-    PlayerList.Data<PanelDataObject>().current_count = -1;
+    // PlayerList.RemoveAndDeleteChildren();
+    Create_Scoreboard(4)
+    // PlayerList.Data<PanelDataObject>().current_count = -1;
     // Create_Scoreboard(-1);
     CustomSubscribe();
     StartThinkerLoop();
@@ -11,7 +12,19 @@ export const Init = () => {
         params: {}
     })
 
+    // 要删除
+    GameEvents.SendCustomGameEventToServer("MapChapter", {
+        event_name: "GetPlayerVoteData",
+        params: {}
+    })
 
+    GameEvents.Subscribe("player_connect", event => {
+        $.Msg(["player_connect", event])
+    })
+
+    GameEvents.Subscribe("player_disconnect", event => {
+        $.Msg(["player_disconnect", event])
+    })
 }
 
 const StartThinkerLoop = () => {
@@ -50,9 +63,15 @@ const Create_Scoreboard = (count: number) => {
         AvatarImage.steamid = playerInfo.player_steamid
         PlayerScoreBoard.SetDialogVariable("player_name", playerInfo.player_name);
         PlayerScoreBoard.Data<PanelDataObject>().revive_time = 0;
+
+        let connect = playerInfo.player_connection_state;
+
     }
 }
 
+const UpdateScoreBoardPlayers = () => {
+
+}
 const CustomSubscribe = () => {
 
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
@@ -69,13 +88,30 @@ const CustomSubscribe = () => {
             }
         }
     })
+
+
+    GameEvents.Subscribe("MapChapter_GetPlayerVoteData", event => {
+        // $.Msg(["MapChapter_GetPlayerVoteData", event])
+        let state = event.data.vote_data.state;
+        PlayerList.SetHasClass("ShowState", state == 1)
+        if (state == 1) {
+            let playervote = Object.values(event.data.vote_data.playervote);
+            for (let i = 0; i < playervote.length; i++) {
+                let PlayerScoreBoard = PlayerList.GetChild(i);
+                if (PlayerScoreBoard) {
+                    PlayerScoreBoard.SetHasClass("Waiting", playervote[i] == -1)
+                    PlayerScoreBoard.SetHasClass("Cancel", playervote[i] == 0)
+                    PlayerScoreBoard.SetHasClass("Confirm", playervote[i] == 1)
+                }
+            }
+        }
+    })
+
+    GameEvents.Subscribe("MapChapter_NewPlay", event => {
+        let data = event.data;
+        let count = data.count;
+        // Create_Scoreboard(count)
+    })
 }
-
-GameEvents.Subscribe("MapChapter_NewPlay", event => {
-    let data = event.data;
-    let count = data.count;
-
-    Create_Scoreboard(count)
-})
 
 Init()

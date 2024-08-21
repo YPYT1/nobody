@@ -21,6 +21,9 @@
                         <Panel class="BarVal"/>
                     </Panel>
                 </Panel>
+                <Panel class="PlayerState">
+                    <Panel class="StateIcon" />
+                </Panel>
             </Panel>
         </snippet>
     </snippets>

@@ -20,6 +20,7 @@
         <Panel id="scoreboard" hittest="false"/>
         <Panel id="talent" hittest="false" />
         <Panel id="health_bar" hittest="false" />
+        <Panel id="npc_interact" hittest="false" />
         <Panel id="player_dialog" hittest="false" />
         <Panel id="game_end" hittest="false" />
         <Panel id="game_logo" hittest="false" />

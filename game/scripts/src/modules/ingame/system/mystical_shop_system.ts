@@ -876,7 +876,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         let count = 0;
         for (let player_id = 0 as PlayerID; player_id < 4; player_id++) {
             let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-            if(hHero.prop_level_index[prop_name]){
+            if(hHero && hHero.prop_level_index[prop_name]){
                 count += 1
             }
         }

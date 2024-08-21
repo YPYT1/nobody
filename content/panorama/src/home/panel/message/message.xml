@@ -1,6 +1,7 @@
 <root>
 	<styles>
 		<include src="./message.less" />
+        <include src="./../../../_styles/styles.less" />
 	</styles>
 	<scripts>
 		<include src="./message.tsx" />

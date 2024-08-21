@@ -1,6 +1,6 @@
-.GameSelectPhase_3 #PlayerBoard {
-    visibility: visible;
-}
+// .GameSelectPhase_3 #PlayerBoard {
+//     visibility: visible;
+// }
 
 #PlayerBoard {
     width: 284px;
@@ -8,9 +8,9 @@
     background-image: url("file://{images}/custom_game/hud/scoreboard/player_board_border.png");
     margin-top: 120px;
     flow-children: down;
-    visibility: collapse;
+    visibility: visible;
     // opacity: 0;
-    
+
     .Header {
         margin-top: 8px;
         width: 100%;
@@ -46,7 +46,7 @@
 
             Label {
                 font-size: 16px;
-                color:#f00;
+                color: #f00;
                 font-weight: bold;
                 vertical-align: middle;
                 horizontal-align: center;
@@ -75,7 +75,7 @@
                 background-color: #000000;
             }
 
-            
+
         }
 
         .PlayerLabel {
@@ -86,7 +86,7 @@
 
             .PlayerName {
                 font-size: 16px;
-                
+
             }
 
             #PanelBar {
@@ -104,5 +104,45 @@
                 }
             }
         }
+
+        .PlayerState {
+            margin-left: 12px;
+            // border: 1px solid #000000;
+            width: 40px;
+            height: 40px;
+            overflow: noclip;
+            opacity: 0;
+            transition-property: opacity;
+            transition-duration: 0.1s;
+
+            .StateIcon {
+                width: 40px;
+                height: 40px;
+                align: center center;
+
+                background-position: 50%;
+                background-size: 140%;
+                transition-property: background-image;
+                background-repeat: no-repeat;
+                transition-duration: 0.2s;
+            }
+
+        }
+
+        &.Waiting .StateIcon {
+            background-image: url("file://{images}/custom_game/hud/scoreboard/state_waiting.png");
+        }
+
+        &.Cancel .StateIcon {
+            background-image: url("file://{images}/custom_game/hud/scoreboard/state_cancel.png");
+        }
+
+        &.Confirm .StateIcon {
+            background-image: url("file://{images}/custom_game/hud/scoreboard/state_confirm.png");
+        }
+    }
+
+    .ShowState .PlayerState {
+        opacity: 1;
     }
 }

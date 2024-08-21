@@ -102,7 +102,8 @@ export const Initialize = () => {
     $("#game_end").BLoadLayout(layout_path + "/game_end/game_end.xml", true, false);
     $("#scoreboard").BLoadLayout(layout_path + "/scoreboard/scoreboard.xml", true, false);
     $("#player_dialog").BLoadLayout(layout_path + "/player_dialog/player_dialog.xml", true, false);
-
+    $("#npc_interact").BLoadLayout(layout_path + "/npc_interact/npc_interact.xml", true, false);
+    
     // talent
     $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", true, false);
     if (Game.IsInToolsMode()) {
