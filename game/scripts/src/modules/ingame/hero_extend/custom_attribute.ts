@@ -186,6 +186,12 @@ export class CustomAttribute {
         hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
     }
 
+    /**
+     * 在游戏中初始化技能
+     */
+    InitAbility(hUnit: CDOTA_BaseNPC){
+        
+    }
     /** 计算属性 */
     AttributeCalculate(hUnit: CDOTA_BaseNPC, attr_key: AttributeMainKey[], is_init: boolean = false) {
         for (let main_key of attr_key) {

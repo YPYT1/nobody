@@ -98,6 +98,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * @param IsReset //是否为重置
      */
     RegisterHeroTalent(BaseNPC: CDOTA_BaseNPC , IsReset : boolean = false ) {
+
+        //游戏中初始化技能
+        if(IsReset){
+            GameRules.CustomAttribute.InitAbility(BaseNPC)
+        }
         let unitname = BaseNPC.GetUnitName();
         //获取注册英雄星级
         let player_id = BaseNPC.GetPlayerOwnerID(); 
