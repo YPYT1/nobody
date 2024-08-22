@@ -163,8 +163,7 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
         let TalentNodeButton = TalentNode.FindChildTraverse("TalentNodeButton") as Button;
         TalentNodeButton.SetPanelEvent("onactivate", () => {
             // 点击后关闭所有页面
-            // TogglePlayerTalentTreeList(false);
-
+            TogglePlayerTalentTreeList(false);
             GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
                 event_name: "HeroSelectTalent",
                 params: {

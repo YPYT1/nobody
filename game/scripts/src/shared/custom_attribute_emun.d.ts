@@ -82,8 +82,9 @@ declare type AttributeSubKey = "Base"
     | "PreLvBonus"
     | "PreLvFixed"
     | "MulRegion"
+    | "Limit"
     ;
-    
+
 /** 敌人属性 */
 declare type EnemyAttributeValueType = {
     [key1 in EnemyAttributeKey]?: {
@@ -115,7 +116,7 @@ declare type CustomAttributeTableType = {
 }
 
 declare type MulCustomAttributeTableType = {
-    [key1 in AttributeMainKey | EnemyAttributeKey ]?: { [key: string]: number }
+    [key1 in AttributeMainKey | EnemyAttributeKey]?: { [key: string]: number }
 }
 
 

@@ -14,6 +14,9 @@ export default function Precache(context: CScriptPrecacheContext) {
             // 元素效果特效
             'particles/custom/element/ice/ice_effect_frozen.vpcf',
             'particles/custom/element/thunder/thunder_effect_debuff.vpcf',
+            'particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf',
+            'particles/units/heroes/hero_zuus/zuus_lightning_bolt_aoe.vpcf',
+
             ...drow_precache,
         ],
         context

@@ -191,19 +191,25 @@ export class modifier_public_attribute extends BaseModifier {
 
     GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
         if (event.ability == null) { return 100 }
+        let hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
         let ability_name = event.ability.GetAbilityName()
+        let ability_cd_limit = 55;
         let base_cd = 100;
-        let AbilityHaste = this.AttributeData.AbilityHaste ?? 0;
-        let ability_cd = math.min(0.55, AbilityHaste / (AbilityHaste + 150))
-        let AbilityCooldown = (this.AttributeData.AbilityCooldown ?? 0) * 0.01;
-        let NormalCd = math.min(0.55, ability_cd + AbilityCooldown)
-        let AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01;
-        let TotalCooldown = math.min(0.99, NormalCd + AbilityCooldown2);
-        base_cd *= (1 - TotalCooldown);
-        if (ability_name == "drow_5" && this.caster.rune_level_index.hasOwnProperty("rune_51")) {
-            let fuchou_cd = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_51', 'fuchou_cd') * 0.01;
-            base_cd *= (1 - fuchou_cd)
+        if (IsServer()) {
+            ability_cd_limit = hUnit.custom_attribute_table.AbilityCooldown.Limit
+            // 复仇冷却
+            if (ability_name == "drow_5" && this.caster.rune_level_index.hasOwnProperty("rune_51")) {
+                let fuchou_cd = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_51', 'fuchou_cd') * 0.01;
+                base_cd *= (1 - fuchou_cd)
+            }
         }
+
+
+        let AbilityHaste = this.AttributeData.AbilityHaste ?? 0;
+        let ability_cd = math.min(ability_cd_limit * 0.01, AbilityHaste / (AbilityHaste + 150))
+        let AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01;
+        let TotalCooldown = math.min(0.99, ability_cd + AbilityCooldown2);
+        base_cd *= (1 - TotalCooldown);
         return 100 - base_cd
     }
 

@@ -91,22 +91,35 @@ export class modifier_basic_move extends BaseModifier {
     }
 
     OnMoveStateChange(state: boolean) {
+        if (state == false) {
+            this.move_up = false;
+            this.move_down = false;
+            this.move_left = false;
+            this.move_right = false;
+        }
         // print("OnMoveStateChange", state)
-        // prop_30	【极速护符】	原地不动时，技能冷却+15%（可突破上限）
+        // prop_30	【极速护符】	原地不动时，技能急速加成提高15%,冷却上限提高15%
         if (this.parent.prop_level_index['prop_30']) {
             if (state) {
                 // 移动
                 GameRules.CustomAttribute.SetAttributeInKey(this.parent, "prop_30", {
-                    'AbilityCooldown2': {
-                        "Base": 0
+                    'AbilityCooldown': {
+                        'Limit': 0
+                    },
+                    "AbilityHaste": {
+                        'BasePercent': 0
                     }
                 })
             } else {
                 // 停止移动
-                let ability_cd_pct = GameRules.MysticalShopSystem.GetKvOfUnit(this.parent, 'prop_30', 'ability_cd_pct')
+                let ability_cd_pct = GameRules.MysticalShopSystem.GetKvOfUnit(this.parent, 'prop_30', 'ability_haste_pct')
+                let cooldown_limit = GameRules.MysticalShopSystem.GetKvOfUnit(this.parent, 'prop_30', 'cooldown_limit')
                 GameRules.CustomAttribute.SetAttributeInKey(this.parent, "prop_30", {
-                    'AbilityCooldown2': {
-                        "Base": ability_cd_pct
+                    'AbilityCooldown': {
+                        'Limit': cooldown_limit
+                    },
+                    "AbilityHaste": {
+                        'BasePercent': ability_cd_pct
                     }
                 })
             }

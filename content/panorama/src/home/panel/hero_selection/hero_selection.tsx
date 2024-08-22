@@ -1,12 +1,15 @@
 import { default as NpcHeroesCustom } from "../../../json/npc_heroes_custom.json";
 import { FormatNumberToTime } from "../../../utils/method";
 // import { FormatNumberToTime } from "../development/development";
-
+// 
+// map=
+const HeroBackground = $("#HeroBackground")
 const MainPanel = $.GetContextPanel();
 const PlayerStateContainer = $("#PlayerStateContainer");
 const HeroesList = $("#HeroesList");
 const HeaderTabList = $("#HeaderTabList");
 const FocusedHeroSetPreview = $("#FocusedHeroSetPreview");
+const HeroScenePanel = $("#HeroScenePanel") as ScenePanel;
 const HeroConfirm = $("#HeroConfirm") as Button;
 let heroModel: ScenePanel;
 let HeroIdTable: { [key: number]: string } = {}
@@ -22,7 +25,7 @@ function InitKvTable() {
 GameEvents.Subscribe("MapChapter_GetPlayerHeroList", event => {
     let heroes = event.data.hero_id;
     let time = event.data.time;
-    $.Msg(["MapChapter_GetPlayerHeroList",event.data])
+    // $.Msg(["MapChapter_GetPlayerHeroList", event.data])
     MainPanel.Data<PanelDataObject>().start_time = time;
 })
 
@@ -46,15 +49,27 @@ GameEvents.Subscribe("MapChapter_GetPlayerSelectHeroList", event => {
         HeroIcon.SetImage(`file://{images}/heroes/${PortraitImage}.png`)
         PlayerState.SetDialogVariable("hero_name", $.Localize(`#${hero_name}`))
 
-
         let HeroCardButton = HeroesList.FindChild(`${hero_id}`) as RadioButton;
         // HeroCardButton.checked = true
         // $.Msg(HeroCardButton)
-
+        let is_enable = hero_data.Enable == 1;
+        // $.Msg(["is_enable",is_enable])
         if (player_id == Game.GetLocalPlayerID()) {
-            heroModel.SetScenePanelToLocalHero(hero_id as HeroID);
+
+
+            for (let i = 0; i < HeroBackground.GetChildCount(); i++) {
+                let row_panel = HeroBackground.GetChild(i) as ScenePanel;
+                let row_id = row_panel.id;
+                // row_panel.ReloadScene();
+                row_panel.SetHasClass("Show", row_id == `${hero_id}`)
+                row_panel.FireEntityInput("hero_camera_driver", "SetAnimation", "debut_camera_anim")
+                // row_panel.FireEntityInput("hero_camera_driver","start","")
+            }
+            // HeroScenePanel.SetUnit
+            // HeroScenePanel.map = 
+            // heroModel.SetScenePanelToLocalHero(hero_id as HeroID);
             let is_ready = player_data.state == 1;
-            HeroConfirm.enabled = !is_ready;
+            HeroConfirm.enabled = !is_ready && is_enable;
         }
     }
     // HeroesList
@@ -95,12 +110,13 @@ function CreatePlayerStatePanel() {
         let hero_data = NpcHeroesCustom[key as keyof typeof NpcHeroesCustom];
         let hero_id = hero_data.HeroID;
         let hero_name = hero_data.override_hero;
+        let Enable = hero_data.Enable == 1;
         let HeroCardButton = $.CreatePanel("RadioButton", HeroesList, `${hero_id}`);
         HeroCardButton.BLoadLayoutSnippet("HeroCardButton");
 
         let HeroIcon = HeroCardButton.FindChildTraverse("HeroIcon") as ImagePanel;
         HeroIcon.SetImage(`file://{images}/heroes/selection/${hero_name}.png`)
-        
+
         // 
         let HeroMovie = HeroCardButton.FindChildTraverse("HeroMovie") as HeroMovie;
         HeroMovie.heroname = hero_name;
@@ -108,33 +124,43 @@ function CreatePlayerStatePanel() {
         HeroCardButton.SetDialogVariableInt("level", 1)
 
         HeroCardButton.SetPanelEvent("onactivate", () => {
-            HeroCardButton.checked = true
+            // let is_check = HeroCardButton.Data<PanelDataObject>().is_check ?? false;
+            // if (is_check) { return }
+            // HeroCardButton.Data<PanelDataObject>().is_check = true;
             GameEvents.SendCustomGameEventToServer("MapChapter", {
                 event_name: "SelectHero",
                 params: {
                     hero_id: hero_id
                 }
-            })
+            });
+
+            // const RowButton = HeroesList.FindChild(`${hero_id}`) as RadioButton;
+            // $.Msg(["HeroCardButton.checked", RowButton.checked])
+            // if (RowButton.checked) { return }
+            for (let i = 0; i < HeroesList.GetChildCount(); i++) {
+                let row_panel = HeroesList.GetChild(i) as RadioButton;
+                row_panel.enabled = row_panel.id != `${hero_id}`
+                // row_panel.Data<PanelDataObject>().is_check = row_panel.id == `${hero_id}`;
+            }
+
+
         })
     }
 
-
-    FocusedHeroSetPreview.RemoveAndDeleteChildren()
-    let Scene = $.CreatePanel("DOTAUIEconSetPreview", FocusedHeroSetPreview, "", {
-        class: 'Use3DPreview EconSetPreview full-screen',
-        hittest: false,
-        // map: "maps/ui/dota_hud/loadout_2022",
-        camera: "default_camera",
-
-        displaymode: "loadout_small",
-        // light: "global_light",
-        allowrotation: true,
-        drawbackground: true,
-        particleonly: false,
-        renderdeferred: true,
-    });
-    heroModel = Scene.FindChildTraverse('Preview3DItems') as ScenePanel;
-
+    // FocusedHeroSetPreview.RemoveAndDeleteChildren()
+    // let Scene = $.CreatePanel("DOTAUIEconSetPreview", FocusedHeroSetPreview, "", {
+    //     class: 'Use3DPreview EconSetPreview full-screen',
+    //     hittest: false,
+    //     // map: "maps/ui/dota_hud/loadout_2022",
+    //     camera: "default_camera",
+    //     displaymode: "loadout_small",
+    //     // light: "global_light",
+    //     allowrotation: true,
+    //     drawbackground: true,
+    //     particleonly: false,
+    //     renderdeferred: true,
+    // });
+    // heroModel = Scene.FindChildTraverse('Preview3DItems') as ScenePanel;
 
     HeroConfirm.SetPanelEvent("onactivate", () => {
         HeroConfirm.enabled = false;

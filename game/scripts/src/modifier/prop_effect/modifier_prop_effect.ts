@@ -8,6 +8,7 @@ type runeName = keyof typeof MysteriousShopConfig;
 export class modifier_prop_effect extends BaseModifier {
 
     caster: CDOTA_BaseNPC;
+    player_id: PlayerID;
     ability: CDOTABaseAbility;
 
     object: { [rune: string]: AbilityValuesProps };
@@ -25,6 +26,7 @@ export class modifier_prop_effect extends BaseModifier {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         this.ability = this.GetAbility();
+        this.player_id = this.caster.GetPlayerOwnerID();
         this.object = {}
 
         // 部分定时器
@@ -89,17 +91,25 @@ export class modifier_prop_effect extends BaseModifier {
                     "Base": bonus_damage
                 },
             })
-
         }
+
+        // prop_40	【急不可耐】	每秒钟获得1点灵魂（上限10）
+        if (this.object["prop_40"]) {
+            let count = GameRules.MysticalShopSystem.player_shop_buy_data[this.player_id]["prop_40"];
+            let limit = this.Prop_Object("prop_40", "limit");
+            let value = this.Prop_Object("prop_40", "value");
+            GameRules.ResourceSystem.ModifyResource(this.player_id, {
+                "Soul": value * math.min(count, limit)
+            })
+        }
+
         // prop_42	【神罚】	
         if (this.object["prop_42"]) {
             this.timer_prop_42 += 1;
+            print("this.timer_prop_42",this.timer_prop_42)
             if (this.timer_prop_42 >= this.Prop_Object("prop_42", 'interval')) {
                 this.timer_prop_42 = 0;
-
                 this.Effect_Prop42()
-
-                // GameRules.BasicRules.PickAllExp(this.caster)
             }
         }
         // prop_43	【定时收获】	自己无法拾取经验球，但每过120秒会自动拾取全地图的经验球
@@ -151,16 +161,16 @@ export class modifier_prop_effect extends BaseModifier {
         let cast_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf",
             ParticleAttachment.POINT,
-            null
+            this.caster
         )
         ParticleManager.SetParticleControl(cast_fx, 1, origin)
         ParticleManager.SetParticleControl(cast_fx, 0, origin + Vector(0, 0, 999) as Vector)
         ParticleManager.ReleaseParticleIndex(cast_fx)
 
         let aoe_cast_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf",
+            "particles/units/heroes/hero_zuus/zuus_lightning_bolt_aoe.vpcf",
             ParticleAttachment.POINT,
-            null
+            this.caster
         )
         ParticleManager.SetParticleControl(aoe_cast_fx, 0, origin)
         ParticleManager.SetParticleControl(aoe_cast_fx, 1, Vector(radius, 1, 1))

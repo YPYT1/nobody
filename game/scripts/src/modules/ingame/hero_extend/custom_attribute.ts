@@ -407,9 +407,6 @@ export class CustomAttribute {
      */
     SetAttributeInKey(hUnit: CDOTA_BaseNPC, key: string, attr_list: CustomAttributeTableType, timer: number = -1) {
         // 乘算属性处理 直接覆盖
-        // print("SetAttributeInKey ", key)
-        // DeepPrintTable(attr_list)
-        // DeepPrintTable(attr_list)
         for (let _key in attr_list) {
             let attr_key = _key as AttributeMainKey
             let is_mul = AttributeConst[attr_key].is_mul == 1;

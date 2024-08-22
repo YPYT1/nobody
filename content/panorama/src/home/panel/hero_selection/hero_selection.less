@@ -7,6 +7,7 @@
     // opacity: 0.5;
     visibility: collapse;
     // z-index: -1;
+    z-index: 8;
 }
 
 #Background {
@@ -358,5 +359,22 @@
     vertical-align: bottom;
     opacity-mask: url("s2r://panorama/images/masks/hero_model_preview_mask_loadout_psd.vtex");
     overflow: noclip;
+
+}
+
+#HeroBackground {
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+
+    .hero_backgroud {
+        transition-property: opacity;
+        transition-duration: 0.5s;
+        opacity: 0;
+
+        &.Show {
+            opacity: 1;
+        }
+    }
 
 }

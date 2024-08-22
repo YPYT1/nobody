@@ -111,6 +111,7 @@ export class modifier_rune_effect extends BaseModifier {
         // rune_12	通用符文12	获得50%伤害加成，作为代价，在生命值高于30%时，每秒扣除10%最大生命值
         if (this._rune_object["rune_12"]) {
             let is_above30pct = this.caster.GetHealthPercent() > 30;
+            // print("rune_12", is_above30pct)
             if (is_above30pct) {
                 let lost_hp_value = this.caster.GetMaxHealth() * 0.1;
                 this.caster.SetHealth(this.caster.GetHealth() - lost_hp_value);
