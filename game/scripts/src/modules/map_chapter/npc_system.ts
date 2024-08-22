@@ -21,10 +21,12 @@ export class NpcSystem extends UIEventRegisterClass {
     constructor() {
         super("NpcSystem");
         for (let [key, RowData] of pairs(Interact)) {
-            this.npc_collection_list[key] = {
-                unit : null,
-                is_refresh : false,
-            };
+            if(RowData.is_enable == 1){
+                this.npc_collection_list[key] = {
+                    unit : null,
+                    is_refresh : false,
+                };
+            }
         }
     }
     // npc_collection

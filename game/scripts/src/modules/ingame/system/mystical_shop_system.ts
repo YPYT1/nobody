@@ -219,7 +219,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             //     count: this.player_refresh_data[index].refresh_count, 
             // };
             // let refresh_soul = math.ceil(eval(this.STORE_REFRESHES_SOUL_FORMULA, eval_param));
-            // this.player_refresh_data[index].soul = refresh_soul; 技嘉 gaming ac d4
+            // this.player_refresh_data[index].soul = refresh_soul;
             this.shop_state_data[index].is_ready = 0;
         }
         //开始售卖
@@ -358,7 +358,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 shop_wp_list.push(this.shop_field_list[player_id][index].key);
                 continue;
             }
-
             if (shop_wp_list.includes(item_name)) {
                 //跳过本次 
                 index--;
@@ -374,6 +373,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (item_name && item_name != "") {
                 //是否全局唯一
                 let ItemsCustomInfo = MysteriousShopConfig[item_name as "prop_1"];
+                if(ItemsCustomInfo.buy_count_max >= 1){
+                    if (this.player_shop_buy_data[player_id].hasOwnProperty(item_name)) {
+                        index--;
+                        continue;
+                    }
+                }
                 let buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id]) / 100);
                 this.shop_field_list[player_id][index].key = item_name;
                 this.shop_field_list[player_id][index].soul = buysoul;
@@ -397,9 +402,11 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param index     
      */
     private OneItemRefresh(player_id: PlayerID, index: number) {
+        let shop_wp_list: string[] = [];
         //回归池子
         if (this.shop_field_list[player_id][index]) {
             let item_data = this.shop_field_list[player_id][index];
+            shop_wp_list.push(item_data.key);
             //卖了不会回归池子
             if (item_data.is_buy == 1) {
 
@@ -414,9 +421,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 }
             }
         }
-
-        let shop_wp_list: string[] = [];
-
         //循环计数器
         let amount_count = 0;
         let amount_max = 50;
@@ -447,6 +451,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (item_name && item_name != "") {
                 //是否全局唯一
                 let ItemsCustomInfo = MysteriousShopConfig[item_name as "prop_1"];
+                if(ItemsCustomInfo.buy_count_max >= 1){
+                    if (this.player_shop_buy_data[player_id].hasOwnProperty(item_name)) {
+                        index--;
+                        continue;
+                    }
+                }
                 let buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id]) / 100);
                 this.shop_field_list[player_id][index].key = item_name;
                 this.shop_field_list[player_id][index].soul = buysoul;
@@ -541,7 +551,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     BuyItem(player_id: PlayerID, params: CGED["MysticalShopSystem"]["BuyItem"], callback?: string) {
-
         if (this.shop_state_data[player_id].is_ready == 0) {
             let item_index = params.index;
             if (this.shop_field_list[player_id][item_index]) {
