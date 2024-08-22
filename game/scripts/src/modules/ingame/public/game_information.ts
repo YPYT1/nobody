@@ -35,9 +35,24 @@ export class GameInformation extends UIEventRegisterClass {
         GameRules.GameInformation.GetPlayerLifeData(player_id, {})
     }
 
-    HeroDie(unit: CDOTA_BaseNPC_Hero) {
+    HeroDie(unit: CDOTA_BaseNPC_Hero , killer: CDOTA_BaseNPC) {
         let player_id = unit.GetPlayerOwnerID();
+        //圣剑处理
+        if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_14"]){
+            delete GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_14"];
+            GameRules.CustomAttribute.DelAttributeInKey(unit, "prop_14_SaintSword");
+        }
+        //不朽之守护
+        if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] && GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] >= 1){
+            GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] --;
+            unit.SetRespawnPosition(unit.GetAbsOrigin());
+            unit.RespawnHero(false, false);
+            unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+            return 
+        }
         let game_over = true;
+
+        
         //检查全部英雄是否还有剩余生命
         let player_count = GetPlayerCount();
         for (let index = 0 as PlayerID; index < player_count; index++) {
@@ -59,6 +74,11 @@ export class GameInformation extends UIEventRegisterClass {
             GameRules.MapChapter.GameLoser()
             return;
         }
+        //游戏没结束才能触发大宗师
+        if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_36"]){
+            killer.Kill( null , unit );
+        }
+
         this.player_die_count[player_id]++;
         let d_time = 10 + (this.player_die_count[player_id] * 5 * (player_count - 1));
         let game_d_time = GameRules.GetDOTATime(false, false) + d_time;

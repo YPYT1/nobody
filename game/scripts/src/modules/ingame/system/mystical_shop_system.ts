@@ -724,6 +724,48 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         }
     }
     /**
+     * 圣剑
+     * @param player_id 
+     * @param param 
+     * @param key 
+     */
+    SaintSword(player_id: PlayerID, param: { AttackBasePer :  number }, key: string){
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let count = param.AttackBasePer * this.player_shop_buy_data[player_id]["prop_14"];
+        let attr_key = "prop_14_SaintSword";
+        let ObjectValues = {
+            "AttackDamage": {
+              "BasePercent": count
+            }
+        }   
+        GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
+    }
+    /**
+     * 给全队蓝
+     */
+    AddAttrOfAll(player_id: PlayerID, param: { ManaRegenBase :  number }, key: string){
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let TeamPropCount = this.GetTeamPropCount("prop_35")
+        let count = param.ManaRegenBase * TeamPropCount;
+        let attr_key = "prop_35_aoshuzhihuan";
+        let ObjectValues = {
+            "ManaRegen": {
+              "Base": count
+            }
+        }   
+        GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
+    }
+    /**
+     * 重置天赋
+     * @param player_id 
+     * @param param 
+     * @param key 
+     */
+    ResetSkill(player_id: PlayerID, param: { ManaRegenBase :  number }, key: string){
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        GameRules.HeroTalentSystem.RegisterHeroTalent(hHero , true)
+    }
+    /**
      * 增加属性
      * @param player_id 
      * @param buffname 
@@ -877,7 +919,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         for (let player_id = 0 as PlayerID; player_id < 4; player_id++) {
             let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
             if(hHero && hHero.prop_level_index[prop_name]){
-                count += 1
+                count += this.player_shop_buy_data[player_id][prop_name]
             }
         }
         return count

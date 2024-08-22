@@ -813,7 +813,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn.MapUnitKilled(target, killer);
         } else if (target.IsHero()) {
             //英雄单位死亡处理
-            GameRules.GameInformation.HeroDie(target);
+            GameRules.GameInformation.HeroDie(target , killer);
         }
     }
 
