@@ -18,13 +18,13 @@
                     <Panel id="ExtraElement">
                         <Panel class="NewIcon" />
                     </Panel>
-                    <Panel id="ExtraTypes" class="TypesIcon">
+                    <Panel id="ExtraTypes">
+                        <Label id="TypesLabel" class="TypeLabel" text="{s:type_label}"/>
                         <Panel class="NewIcon" />
                     </Panel>
                 </Panel>
             </Panel>
             <Label class="TalentDesc" text="{s:talent_desc}" html="true" />
         </Panel>
-        
     </Panel>
 </root>

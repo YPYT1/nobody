@@ -87,7 +87,7 @@
 			<DOTAScenePanel
 				id="2"
 				class='full hero_backgroud'
-				map='maps/backgrounds/hero_showcase_qop_arcana'
+				map='maps/scenes/hero_showcase_axe'
 				camera='herocamera'
 				light='light_frontpage'
 				particleonly="false"
@@ -96,9 +96,9 @@
 			<DOTAScenePanel
 				id="8"
 				class='full hero_backgroud'
-				map='maps/backgrounds/hero_showcase_juggernaut_arcana'
+				map='maps/scenes/hero_showcase_juggernaut'
 				camera='herocamera'
-				light='light_frontpage'
+				light='hero_light'
 				particleonly="false"
 				renderdeferred="true"
             />

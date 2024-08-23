@@ -63,13 +63,17 @@ GameEvents.Subscribe("MapChapter_GetPlayerSelectHeroList", event => {
                 // row_panel.ReloadScene();
                 row_panel.SetHasClass("Show", row_id == `${hero_id}`)
                 row_panel.FireEntityInput("hero_camera_driver", "SetAnimation", "debut_camera_anim")
+                // row_panel.FireEntityInput("qop_arcana","Disable","0")
+                row_panel.FireEntityInput("qop_arcana","mapunitname","npc_dota_hero_axe")
+
+                
                 // row_panel.FireEntityInput("hero_camera_driver","start","")
             }
             // HeroScenePanel.SetUnit
             // HeroScenePanel.map = 
             // heroModel.SetScenePanelToLocalHero(hero_id as HeroID);
             let is_ready = player_data.state == 1;
-            HeroConfirm.enabled = !is_ready && is_enable;
+            HeroConfirm.enabled = !is_ready ;
         }
     }
     // HeroesList

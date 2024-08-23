@@ -210,6 +210,7 @@ const GetNumDecimals = (num: number, count: number) => {
 const Init = () => {
     TopHealthBarContent.RemoveAndDeleteChildren();
     OverheadBarContainer.RemoveAndDeleteChildren();
+
     GameEvents.Subscribe('CMsg_GetEntityListHealthBar', CMsg_GetEntityListHealthBar);
     GameEvents.SendCustomGameEventToServer('CMsg', {
         event_name: "GetEntityListHealthBar",

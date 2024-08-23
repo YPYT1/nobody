@@ -9,6 +9,7 @@ let MainPanel = $.GetContextPanel();
 // let TalentIcon = $("#TalentIcon") as ImagePanel;
 let ExtraElement = $("#ExtraElement");
 let ExtraTypes = $("#ExtraTypes");
+let TypesLabel = $("#TypesLabel");
 
 export function Init() {
 
@@ -49,8 +50,10 @@ function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
     let has_newTypes = talent_data.mark_types != "Null";
     let types_value = talent_data.mark_types
     ExtraTypes.SetHasClass("Show", has_newTypes && level == 0)
+
+    // TypesLabel.SetHasClass("Show",true)
     for (let type_key in AbilityTypesJson) {
-        ExtraTypes.SetHasClass(type_key, types_value == type_key)
+        TypesLabel.SetHasClass(type_key, types_value == type_key)
     }
 
 

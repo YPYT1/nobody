@@ -101,7 +101,7 @@ export class DamageSystem {
             let stack = drow_13_stack_buff.GetStackCount();
             let stack_income = GameRules.HeroTalentSystem.GetTalentKvOfUnit(
                 drow_13_stack_buff.GetCaster(),
-                
+
                 "13",
                 'value'
             )
@@ -114,6 +114,7 @@ export class DamageSystem {
         } else if (params.damage_type == DamageTypes.MAGICAL) {
 
             if (element_type == ElementTypes.FIRE) {
+                ElementDmgMul += params.attacker.custom_attribute_value.FireDamageBonus;
                 if (is_primary) {
                     // 添加灼烧
                     GameRules.ElementEffect.SetFirePrimary(params.attacker, params.victim)
@@ -131,6 +132,7 @@ export class DamageSystem {
 
 
             } else if (element_type == ElementTypes.ICE) {
+                ElementDmgMul += params.attacker.custom_attribute_value.IceDamageBonus;
                 // 受到伤害=造成伤害*（1-元素抗性百分比（=受伤害者元素抗性-攻击者元素穿透）最小值0）*（1-伤害减免百分比）+造成伤害2【总值最小为0】
                 let IcePent = params.attacker.custom_attribute_value.IcePent ?? 0;
                 let IceResist = params.victim.enemy_attribute_value.IceResist ?? 0;
@@ -140,13 +142,15 @@ export class DamageSystem {
                     GameRules.ElementEffect.SetIcePrimary(params.attacker, params.victim)
                 }
 
+
             } else if (element_type == ElementTypes.THUNDER) {
-                
-                
+                ElementDmgMul += params.attacker.custom_attribute_value.ThunderDamageBonus;
+
                 if (is_primary) {
                     GameRules.ElementEffect.SetThunderPrimary(params.attacker, params.victim)
                 }
             } else if (element_type == ElementTypes.WIND) {
+                ElementDmgMul += params.attacker.custom_attribute_value.WindDamageBonus;
                 if (is_primary && params.damage_vect) {
                     GameRules.ElementEffect.SetWindPrimary(params.attacker, params.victim, params.damage_vect)
                 }

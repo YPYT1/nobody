@@ -42,9 +42,10 @@ const UpdateHeroStateDialog = () => {
 
     let xoffset = 0;
     let yoffset = 160;
+
     HeroState.SetPositionInPixels(
-        (xUI - HeroState.actuallayoutwidth / 2 - xoffset) / HeroState.actualuiscale_x,
-        (yUI - HeroState.actuallayoutheight + yoffset) / HeroState.actualuiscale_y,
+        Math.floor((xUI - HeroState.actuallayoutwidth / 2 - xoffset) / HeroState.actualuiscale_x),
+        Math.floor((yUI - HeroState.actuallayoutheight + yoffset) / HeroState.actualuiscale_y),
         0,
     );
     // 生命属性

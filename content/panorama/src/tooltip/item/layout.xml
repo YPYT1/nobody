@@ -7,5 +7,9 @@
         <include src="./../../_styles/styles.less" />
         <include src="./styles.less" />
     </styles>
-    <Panel class="tooltip_item" hittest="false"/>
+    <Panel class="tooltip_item" hittest="false">
+        <Panel class="TooltipContent">
+            
+        </Panel>
+    </Panel>
 </root>

@@ -86,7 +86,7 @@ export class CMsg extends UIEventRegisterClass {
      */
     SetBossHealthBar(hUnit: CDOTA_BaseNPC, barTypes: TopHealthBarTyps = "Boss") {
         let unit_entity = hUnit.GetEntityIndex();
-        print("unit_entity",unit_entity)
+        // print("unit_entity",unit_entity)
         this.boss_list.push(unit_entity);
         this.GetEntityListHealthBar(-1, {});
     }
@@ -95,7 +95,7 @@ export class CMsg extends UIEventRegisterClass {
         if (hUnit == null || IsValid(hUnit)) { return; }
         let unit_entity = hUnit.GetEntityIndex();
         let index = this.boss_list.indexOf(unit_entity);
-        print("RemoveBossHealthBar", index, unit_entity)
+        // print("RemoveBossHealthBar", index, unit_entity)
         if (index > -1) {
             table.remove(this.boss_list, index + 1);
             this.GetEntityListHealthBar(-1, {});

@@ -1,0 +1,42 @@
+<root>
+	<styles>
+		<include src="./right_items.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./right_items.tsx" />
+	</scripts>
+	<snippets>
+		<snippet name="ItemBorder">
+			<Panel class="ItemBorder">
+				<Panel class="ItemInfo">
+					<Image id="ItemImage" />
+				</Panel>
+				<Label class="CountLabel" text="{d:count}"/>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="right_items">
+		<Panel id="RightItemsContainer" class="">
+			<Button id="BtnAboutShop" class="AboutBtn" >
+				<Panel class="Icon"/>
+			</Button>
+			<Button id="BtnAboutRune" class="AboutBtn" >
+				<Panel class="Icon"/>
+			</Button>
+			
+        </Panel>
+
+		<Panel id="AboutPanleList" hittest="false">
+			<Panel id="AboutShop" class="AboutListClass">
+				<Panel id="ItemList_Shop" class="ItemListClass" />
+			</Panel>
+			<Panel id="AboutRune" class="AboutListClass">
+				<Panel id="ItemList_Rune" class="ItemListClass" />
+			</Panel>
+
+			
+		</Panel>
+		
+	</Panel>
+</root>

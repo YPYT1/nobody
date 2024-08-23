@@ -619,7 +619,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         }
 
         let ObjectValues = ItemData.ObjectValues as CustomAttributeTableType;
-        let attr_key = "attr_" + prop_name;
+        let attr_key = "attr_" + prop_name + GameRules.GetDOTATime(false , false);
         // print("SetAttributeInKey",attr_key)
         GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
 

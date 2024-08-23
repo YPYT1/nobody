@@ -71,16 +71,16 @@
                         <Label class="AbilityLevel" text="Lv.{d:level}"/>
                     </Panel>
                     <Panel id='AbilityCategoryType'>
-                        <Panel class="AbilityTag Aoe"/>
-                        <Panel class="AbilityTag Buff"/>
-                        <Panel class="AbilityTag Dot"/>
-                        <Panel class="AbilityTag Grow"/>
-                        <Panel class="AbilityTag Missile"/>
-                        <Panel class="AbilityTag Orb"/>
-                        <Panel class="AbilityTag Resource"/>
-                        <Panel class="AbilityTag Summon"/>
-                        <Panel class="AbilityTag Surround"/>
-                        <Panel class="AbilityTag Targeting"/>
+                        <Label class="TypeLabel Aoe" text="范围型"/>
+                        <Label class="TypeLabel Buff" text="增益型"/>
+                        <Label class="TypeLabel Dot" text="持续型"/>
+                        <Label class="TypeLabel Grow" text="成长性"/>
+                        <Label class="TypeLabel Missile" text="弹道型"/>
+                        <Label class="TypeLabel Orb" text="法球型"/>
+                        <Label class="TypeLabel Resource" text="理财型"/>
+                        <Label class="TypeLabel Summon" text="召唤型"/>
+                        <Label class="TypeLabel Surround" text="环绕型"/>
+                        <Label class="TypeLabel Targeting" text="目标型"/>
                     </Panel>
                     <Panel id="CurrentItemCosts">
                         <Panel id="ManaCost" class="CostsRows">
