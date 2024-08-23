@@ -257,6 +257,7 @@ export class Spawn extends UIEventRegisterClass {
     //刷怪总控
     StartSpawnControl() {
         GameRules.GetGameModeEntity().SetContextThink("StartSpawnControl", () => {
+            print("StartSpawnControl ---------------")
             GameRules.Spawn._round_index++;
             GameRules.GameInformation.GetPlayGameHeadData(-1, {})
             if (GameRules.Spawn._round_index) {
@@ -272,7 +273,14 @@ export class Spawn extends UIEventRegisterClass {
                 //精英刷怪器
                 GameRules.Spawn.CreateBossTime();
             }
-            return 60;
+            let boss_name_list = this.map_info_round[this._round_index].boss_name_list;
+            let boss_name_list_index = RandomInt(0, boss_name_list.length - 1);
+            let boss_name = boss_name_list[boss_name_list_index];
+            if (boss_name == "null") {
+                return 60;
+            }else{
+                return 120;
+            }
         }, 0)
     }
     //普通小怪刷怪器
@@ -387,15 +395,41 @@ export class Spawn extends UIEventRegisterClass {
         if (boss_name == "null") {
             return
         }
+        //半分钟提示
+        GameRules.GetGameModeEntity().SetContextThink("BossHint" + "_" + this._round_index, () => {
+            if(this._round_index >= this._round_max){
+                GameRules.CMsg.SendCommonMsgToPlayer(
+                    -1 as PlayerID,
+                    "关底 BOSS即将来袭 ",
+                    {}
+                );
+            }else{
+                GameRules.CMsg.SendCommonMsgToPlayer(
+                    -1 as PlayerID,
+                    "BOSS即将来袭",
+                    {}
+                );
+            }
+            
+            return null;
+        }, 30)
+        //登场
         GameRules.GetGameModeEntity().SetContextThink("CreateBossTime" + "_" + this._round_index, () => {
             GameRules.Spawn.CreateBoss();
             return null;
-        }, 0)
-
+        }, 57)
+        //结束
         GameRules.GetGameModeEntity().SetContextThink("GameOverTime", () => {
+            //切换成正常倒计时
+            GameRules.GetGameModeEntity().SetContextThink("CreateBossKillTime" + "_" + this._round_index, () => {
+                //重新设置时间
+                GameRules.GameInformation.boss_time = 0;
+                GameRules.GameInformation.SetPlayGameTime(1);
+                return null;
+            }, 3)
             GameRules.MapChapter.GameLoser()
             return null;
-        }, 60);
+        }, 120);
     }
 
     /**
@@ -414,10 +448,48 @@ export class Spawn extends UIEventRegisterClass {
     //刷新游戏boss
     CreateBoss(): CDOTA_BaseNPC {
         if (this._map_boss_refresh == false) {
+
+            GameRules.CMsg.SendCommonMsgToPlayer(
+                -1 as PlayerID,
+                "强力 boss即将来袭…… ",
+                {}
+            );
+
             let unit = GameRules.Spawn.CreepNormalCreate("npc_creature_boss_1", this.StageBossVector);
+
             this.MonsterAmend(unit, "boss", 1, 1);
 
+            unit.AddNewModifier(unit, null, "modifier_custom_appearance_underground", { duration: 3 });
+
             GameRules.CMsg.SetBossHealthBar(unit);
+
+            //切换成boss倒计时
+            GameRules.GetGameModeEntity().SetContextThink("CreateBossTimeComeOnStage" + "_" + this._round_index, () => {
+                //重新设置时间
+                GameRules.GameInformation.boss_time = GameRules.GetDOTATime(false, false) + 60;
+                GameRules.GameInformation.SetPlayGameTime(1);
+                //击杀所有怪物 并停止怪物刷新
+                GameRules.GetGameModeEntity().StopThink("CreateMonsterTime" + "_" + this._round_index);
+                GameRules.GetGameModeEntity().StopThink("CreateEliteTime" + "_" + this._round_index);
+                // boss击杀小怪
+                for (let xgunit of GameRules.Spawn._map_Spawn_list) {
+                    print("xgunit : " , xgunit)
+                    if (xgunit.IsNull() == false) {
+                        xgunit.Kill(null , unit)
+                    }
+                }
+                GameRules.Spawn._spawn_count = 0;
+                GameRules.Spawn._map_Spawn_list = [];
+                // boss击杀精英
+                for (let jyunit of GameRules.Spawn._map_elite_spawn_list) {
+                    print("jyunit : " , jyunit)
+                    if (jyunit.IsNull() == false) {
+                        jyunit.Kill(null , unit)
+                    }
+                }
+                GameRules.Spawn._map_Spawn_list = [];
+                return null;
+            }, 3)
 
             this._map_boss_unit = unit;
             this._map_boss_refresh = true;
@@ -703,7 +775,23 @@ export class Spawn extends UIEventRegisterClass {
                     this._map_Spawn_list = [];
                 }
             }
-            GameRules.MysticalShopSystem.RefreshMysticalShopItem();
+            //清理精英
+            for (let unit of GameRules.Spawn._map_elite_spawn_list) {
+                if (unit.IsNull() == false) {
+                    //是通过击杀boss    
+                    GameRules.Spawn.CreepNormalRemoveSelf(unit, 0.1);
+                }
+            }
+            GameRules.CMsg.SendCommonMsgToPlayer(
+                -1 as PlayerID,
+                "即将开启灵魂商店，可自行购买灵魂道具…… ",
+                {}
+            );
+            GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
+                //重新设置时间
+                GameRules.MysticalShopSystem.RefreshMysticalShopItem();
+                return null;
+            }, 3)
             return null
         }, 0)
     }
@@ -772,6 +860,11 @@ export class Spawn extends UIEventRegisterClass {
         if (cmd == "--_player_sum_kill") {
             print("_player_sum_kill :")
             DeepPrintTable(this._player_sum_kill)
+        }
+
+        if(cmd == "--StartSpawnControl"){
+            GameRules.Spawn._round_index = 4;
+            GameRules.Spawn.StartSpawnControl();
         }
     }
 
@@ -886,6 +979,13 @@ export class Spawn extends UIEventRegisterClass {
             "boss已被击杀",
             {}
         );
+        //切换成boss倒计时
+        GameRules.GetGameModeEntity().SetContextThink("CreateBossKillTime" + "_" + this._round_index, () => {
+            //重新设置时间
+            GameRules.GameInformation.boss_time = 0;
+            GameRules.GameInformation.SetPlayGameTime(1);
+            return null;
+        }, 3)
         GameRules.CMsg.RemoveBossHealthBar(killed_unit);
         //击杀boss奖励
         this._map_boss_unit = null;
@@ -893,7 +993,7 @@ export class Spawn extends UIEventRegisterClass {
         if (GameRules.Spawn._round_index < GameRules.Spawn._round_max) {
             GameRules.Spawn.TemporarilyStopTheGame();
         } else {
-            GameRules.MapChapter.GameWin()
+            GameRules.MapChapter.GameWin();
         }
     }
 

@@ -15,6 +15,11 @@ export class GameInformation extends UIEventRegisterClass {
 
     player_die_time: number[] = [0, 0, 0, 0, 0, 0];
 
+    //传输状态
+    play_game_head_type : number = 0;
+    //boss倒计时时间
+    boss_time : number = 0 ; //boss时间
+
     /**
      * 设置玩家生命数
      * @param player_id 
@@ -192,8 +197,8 @@ export class GameInformation extends UIEventRegisterClass {
      */
     play_game_time: number = 0;
 
-    SetPlayGameTime(time: number) {
-        GameRules.GameInformation.play_game_time = time;
+    SetPlayGameTime(play_game_head_type : number) {
+        GameRules.GameInformation.play_game_head_type = 0;
         GameRules.GameInformation.GetPlayGameHeadData(-1, {})
     }
 
@@ -210,6 +215,8 @@ export class GameInformation extends UIEventRegisterClass {
                         difficulty: GameRules.MapChapter.GameDifficulty,
                         round_index : GameRules.Spawn._round_index,
                         round_max : GameRules.Spawn._round_max,
+                        type : GameRules.GameInformation.play_game_head_type ,  // 
+                        boss_time : GameRules.GameInformation.boss_time ,
                     }
                 }
             );
@@ -222,6 +229,8 @@ export class GameInformation extends UIEventRegisterClass {
                         difficulty: GameRules.MapChapter.GameDifficulty,
                         round_index : GameRules.Spawn._round_index,
                         round_max : GameRules.Spawn._round_max,
+                        type : GameRules.GameInformation.play_game_head_type ,  
+                        boss_time : GameRules.GameInformation.boss_time ,
                     }
                 }
             );

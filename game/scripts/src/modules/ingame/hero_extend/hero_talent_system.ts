@@ -278,6 +278,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      */
     AddHeroTalent(player_id: PlayerID, count: number = 1) {
         this.player_talent_data[player_id].points += count;
+        //监听技能技能变化
+        this.PointsChange(player_id);
         this.GetHeroTalentListData(player_id, {});
     }
     /**
@@ -421,7 +423,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     //处理技能
                     this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc++;
                     //减少技能点
-                    this.player_talent_data[player_id].points--;
+                    this.AddHeroTalent(player_id , -1)
                     //增加使用记录
                     this.player_talent_data[player_id].use_count++;
                     this.player_talent_data_client[player_id][key].uc++;
@@ -592,6 +594,22 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         } else {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能未解锁");
+        }
+    }
+    /**
+     * 技能点变化方法
+     */
+    PointsChange(player_id : PlayerID ){
+        let hero = PlayerResource.GetSelectedHeroEntity(player_id)
+        //是否有 锁技
+        if(hero.rune_level_index["rune_2"] && this.player_talent_data[player_id].points > 0){
+            let value = GameRules.RuneSystem.GetKvOfUnit(hero , "rune_2" ,"value");
+            let attr = value * this.player_talent_data[player_id].points;
+            GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_rune_2_bianhua",{
+                "DamageBonusMul" : {
+                    "Base" : attr,
+                }
+            })
         }
     }
     /**

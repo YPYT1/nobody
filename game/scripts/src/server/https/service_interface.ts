@@ -91,10 +91,7 @@ export class ServiceInterface extends UIEventRegisterClass{
         this.PlayerServerSkillLevelCount[player_id] = {
             level : {}
         }
-
         this.PlayerServerSkillTypeLevel[player_id] = {};
-
-        
         let level_obj : { [ key : string] : number } =  {};
         for (let index = 1; index <= 15; index++) {
             level_obj[index.toString()] = RandomInt(10000 , 920000);

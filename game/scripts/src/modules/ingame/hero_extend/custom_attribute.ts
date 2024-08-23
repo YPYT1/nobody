@@ -41,7 +41,7 @@ export class CustomAttribute {
         //增加天赋点
         GameRules.HeroTalentSystem.AddHeroTalent(event.player_id, 1);
         //增加符文点
-        if (event.level % 10 == 0) {
+        if (event.level % 5 == 0) {
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
         }
         GameRules.HeroTalentSystem.TalentUnlockLevel(event.player_id, event.level);

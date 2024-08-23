@@ -117,11 +117,11 @@ declare interface CustomGameEventDeclarations {
         };
     };
     /**
-     * 神秘商店购买流程
+     * 神秘商店购买数据
      */
     MysticalShopSystem_GetPlayerShopBuyData : {
         data : {
-            player_shop_buy_data : { [key : string ] : number }
+            player_shop_buy_data : { item_key: string , count : number }[]
         }
     }
     /**
@@ -172,6 +172,8 @@ declare interface CustomGameEventDeclarations {
             difficulty : string ,
             round_index : number,
             round_max : number,
+            type : number , // 0 普通显示 1 boss显示 
+            boss_time : number , //boss倒计时时间
         }
     }
 

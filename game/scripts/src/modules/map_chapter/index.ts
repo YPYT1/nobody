@@ -413,7 +413,8 @@ export class MapChapter extends UIEventRegisterClass {
         //todo 需要修改成流程中
 
         //重新设置时间
-        GameRules.GameInformation.SetPlayGameTime(GameRules.GetDOTATime(false, false))
+        GameRules.GameInformation.play_game_time = GameRules.GetDOTATime(false, false);
+        GameRules.GameInformation.SetPlayGameTime(0);
 
         //初始化技能全局可用数量
         GameRules.NewArmsEvolution.ArmsGlobalInit();
@@ -469,10 +470,24 @@ export class MapChapter extends UIEventRegisterClass {
         //初始化 刷怪地点
         GameRules.Spawn.Init(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y)
         GameRules.Spawn._game_start = true;
+
+        GameRules.GetGameModeEntity().SetContextThink(
+            "StartSpawnHint",
+            () => {
+                GameRules.CMsg.SendCommonMsgToPlayer(
+                    -1 as PlayerID,
+                    "海量怪物即将来袭，是男人就坚持下去……",
+                    {}
+                );
+                return null;
+            },
+            2
+        );
+
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawn",
             () => {
-                GameRules.Spawn.StartSpawnControl()
+                // GameRules.Spawn.StartSpawnControl()
                 return null;
             },
             5

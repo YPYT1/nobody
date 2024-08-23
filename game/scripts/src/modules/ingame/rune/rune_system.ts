@@ -206,7 +206,7 @@ export class RuneSystem extends UIEventRegisterClass {
     /**
      * 获取符文列表
      */
-    GetPlayerRuneData(player_id: PlayerID, params: CGED["RuneSystem"]["ConsumeRefreshCount"], callback?) {
+    GetPlayerRuneData(player_id: PlayerID, params: CGED["RuneSystem"]["GetPlayerRuneData"], callback?) {
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "RuneSystem_GetPlayerRuneData",
@@ -494,7 +494,6 @@ export class RuneSystem extends UIEventRegisterClass {
         if (level_index >= (item_level_section_length - 1)) {
             is_level_max = true;
         }
-
         //写入装备信息
         this.player_rune_list[player_id][rune_index] = {
             name: item_name,

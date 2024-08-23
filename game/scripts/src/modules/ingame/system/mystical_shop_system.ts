@@ -88,8 +88,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     /**
      * 玩家购买记录
      */
-    player_shop_buy_data: { [item_key: string]: number }[] = [];//购买的物品/数量
+    player_shop_buy_data : { [item_key: string]: number }[] = []; //购买的物品
 
+    /**
+     * 玩家购买记录
+     */
+    player_shop_buy_client : { item_key: string , count : number }[][] = [];//购买的物品
     /**
      * 初始灵魂刷新价格
      */
@@ -140,6 +144,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             this.player_get_soul_double_pro.push(0);
             //玩家商店已购买的数据  
             this.player_shop_buy_data.push({});
+            //
+            this.player_shop_buy_client.push([]);
             //玩家vip状态
             this.player_vip_status.push(0);
         }
@@ -181,6 +187,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         print("MysticalShopSystem InitPlayerUpgradeStatus")
         this.shop_field_list[player_id] = [];
         this.player_shop_buy_data[player_id] = {};
+        this.player_shop_buy_client[player_id] = []
         this.player_shop_discount[player_id] = 100;
         this.player_get_soul_double_pro[player_id] = 0;
         this.player_shop_field_count[player_id] = this.shop_field_max + this.shop_field_max_vip;
@@ -308,8 +315,17 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         GameRules.MysticalShopSystem.GetShopState(-1, {})
 
         if (GameRules.MapChapter._game_select_phase == 3) {
+            GameRules.CMsg.SendCommonMsgToPlayer(
+                -1 as PlayerID,
+                "他们又来了，他们更强了……",
+                {}
+            );
             //继续游戏
-            GameRules.Spawn.StartSpawnControl()
+            GameRules.GetGameModeEntity().SetContextThink("StartSpawnControlStartSpawnControl", () => {
+                GameRules.Spawn.StartSpawnControl()
+                return null;
+            }, this.MYSTICAL_SHOP_AWAIT);
+            
         }
     }
     /**
@@ -569,6 +585,11 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         } else {
                             this.player_shop_buy_data[player_id][name] = 1;
                         }
+                        //给客服端发送数据
+                        this.player_shop_buy_client[player_id].push(
+                            {"count" : 1, "item_key" : name}
+                        );
+                        this.GetPlayerShopBuyData(player_id , {})
                         this.AddPropAttribute(player_id, name)
                     } else {
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
@@ -623,7 +644,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             "MysticalShopSystem_GetPlayerShopBuyData",
             {
                 data: {
-                    player_shop_buy_data: this.player_shop_buy_data[player_id],
+                    player_shop_buy_data: this.player_shop_buy_client[player_id],
                 }
             }
         );
