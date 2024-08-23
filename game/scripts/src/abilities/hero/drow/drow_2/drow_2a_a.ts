@@ -37,7 +37,7 @@ export class drow_2a_a extends drow_2a {
             let ability_damage = extraData.a;
             let SelfAbilityMul = extraData.SelfAbilityMul;
             let DamageBonusMul = extraData.DamageBonusMul;
-           
+
             if (this.talent_14 > 0) {
                 let ElementDmgMul = extraData.ElementDmgMul;
                 let damage_vect = Vector(extraData.x, extraData.y, 0);
@@ -52,7 +52,7 @@ export class drow_2a_a extends drow_2a {
                     damage_vect: damage_vect,
                     SelfAbilityMul: SelfAbilityMul,
                     DamageBonusMul: DamageBonusMul,
-                    ElementDmgMul : ElementDmgMul
+                    ElementDmgMul: ElementDmgMul
                 })
             } else {
                 ApplyCustomDamage({
@@ -87,9 +87,13 @@ export class modifier_drow_2a_a extends modifier_drow_2a {
 
     UpdataSpecialValue(): void {
         this.proj_count = this.ability.GetSpecialValueFor("proj_count")
-            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "12", 'bonus_value');
-        this.proj_name = G_PorjLinear.wind;
-        this.ElementDmgMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,'14','wind_dmg_pct')
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "12", 'bonus_value');
+
+        if (this.caster.hero_talent.hasOwnProperty("14")) {
+            this.proj_name = G_PorjLinear.wind;
+        }
+
+        this.ElementDmgMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '14', 'wind_dmg_pct')
     }
 }
 

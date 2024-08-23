@@ -60,7 +60,7 @@ declare const enum DebuffTypes {
     rooted = 4,
     /** 缴械 [无法攻击]*/
     disarmed = 5,
-    /**魅惑 [缓慢靠近施法者]*/  
+    /** 魅惑 [缓慢靠近施法者]*/  
     charm = 6,
     /** 破坏 [被动失效]*/
     break = 7,

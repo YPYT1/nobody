@@ -21,6 +21,7 @@ export class ElementEffect {
     }
 
     SetIcePrimary(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC) {
+        if (hTarget.IsBossCreature()) { return }
         if (hTarget.HasModifier("modifier_element_effect_ice")) {
             if (RollPercentage(15)) {
                 hTarget.AddNewModifier(hCaster, null, "modifier_element_effect_ice_frozen", {
@@ -46,6 +47,7 @@ export class ElementEffect {
      * @param hTarget 
      */
     SetThunderPrimary(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC) {
+        if (hTarget.IsBossCreature()) { return }
         if (
             !hTarget.HasModifier("modifier_element_effect_thunder_immune")
             && !hTarget.HasModifier("modifier_element_effect_thunder")
@@ -76,6 +78,7 @@ export class ElementEffect {
 
     SetWindPrimary(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC, origin: Vector) {
         // 风系击退,内置CD
+        if (hTarget.IsBossCreature()) { return }
         if (hTarget.HasModifier("modifier_element_effect_wind_immune")) { return }
         hTarget.AddNewModifier(hTarget, null, "modifier_element_effect_wind_immune", {
             duration: 10

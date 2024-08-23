@@ -676,8 +676,8 @@ export class CustomAttribute {
         }
 
         if (cmd == "-attr") {
-            DeepPrintTable(hHero.custom_attribute_value)
-            DeepPrintTable(hHero.custom_attribute_table)
+            // DeepPrintTable(hHero.custom_attribute_value)
+            DeepPrintTable(hHero.custom_attribute_key_table)
         }
 
         if (cmd == "-setattr") {

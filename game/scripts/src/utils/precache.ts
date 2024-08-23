@@ -16,6 +16,8 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/custom/element/thunder/thunder_effect_debuff.vpcf',
             'particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf',
             'particles/units/heroes/hero_zuus/zuus_lightning_bolt_aoe.vpcf',
+            'particles/econ/events/fall_2021/teleport_end_fall_2021_lvl1.vpcf',
+            'particles/units/heroes/hero_ursa/ursa_earthshock.vpcf',
 
             ...drow_precache,
         ],

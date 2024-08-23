@@ -86,26 +86,28 @@ export class CMsg extends UIEventRegisterClass {
      */
     SetBossHealthBar(hUnit: CDOTA_BaseNPC, barTypes: TopHealthBarTyps = "Boss") {
         let unit_entity = hUnit.GetEntityIndex();
+        print("unit_entity",unit_entity)
         this.boss_list.push(unit_entity);
         this.GetEntityListHealthBar(-1, {});
     }
 
     RemoveBossHealthBar(hUnit: CDOTA_BaseNPC) {
-        if (hUnit == null || IsValid(hUnit) || hUnit.UnitCanRespawn()) { return; }
+        if (hUnit == null || IsValid(hUnit)) { return; }
         let unit_entity = hUnit.GetEntityIndex();
         let index = this.boss_list.indexOf(unit_entity);
+        print("RemoveBossHealthBar", index, unit_entity)
         if (index > -1) {
             table.remove(this.boss_list, index + 1);
             this.GetEntityListHealthBar(-1, {});
             return
         }
 
-        let index2 = this.king_list.indexOf(unit_entity);
-        if (index2 > -1) {
-            table.remove(this.king_list, index2 + 1);
-            this.GetEntityListHealthBar(-1, {});
-            return
-        }
+        // let index2 = this.king_list.indexOf(unit_entity);
+        // if (index2 > -1) {
+        //     table.remove(this.king_list, index2 + 1);
+        //     this.GetEntityListHealthBar(-1, {});
+        //     return
+        // }
     }
 
     RemoveAllHealthBar() {
@@ -116,6 +118,7 @@ export class CMsg extends UIEventRegisterClass {
         this.boss_list = [];
         this.GetEntityListHealthBar(-1, {});
     }
+
     GetEntityListHealthBar(player_id: PlayerID, params: any) {
         if (player_id == -1) {
             CustomGameEventManager.Send_ServerToAllClients(

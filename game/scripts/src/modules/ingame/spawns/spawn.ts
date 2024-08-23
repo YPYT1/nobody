@@ -839,8 +839,8 @@ export class Spawn extends UIEventRegisterClass {
 
     /**
      * 通关前同一击杀处理
-     * @param target 
-     * @param killer     
+     * @param target 目标
+     * @param killer 击杀者
      */
     MapUnitKilled(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
         let player_id = killer.GetPlayerOwnerID();
@@ -872,7 +872,7 @@ export class Spawn extends UIEventRegisterClass {
                 "Kills": 1,
             })
         } else if (unit_label == "creature_boss") {//boss
-            GameRules.Spawn.BossKill(killer);
+            GameRules.Spawn.BossKill(target);
         }
         // 单位回收
         // GameRules.Spawn.CreepNormalRecovery(killed_unit);

@@ -73,7 +73,7 @@ export class GameConfig {
         // GameRules.wear
         // 自定义游戏加载事件
         GameRules.SetCustomGameSetupTimeout(-1);
-        GameRules.SetCustomGameSetupAutoLaunchDelay(9999);
+        GameRules.SetCustomGameSetupAutoLaunchDelay(10);
 
         GameRules.SetStartingGold(0);
         GameRules.SetHeroRespawnEnabled(false);

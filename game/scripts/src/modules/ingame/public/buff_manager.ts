@@ -24,30 +24,28 @@ export class BuffManager {
         duration: number = 1,
         value: number = 1,
     ) {
+        if (hUnit.IsBossCreature()) { return; }
         if (state == DebuffTypes.stunned) {
             // 判断眩晕
-            if (hUnit.IsBossCreature()) { return; }
             let debuff = hUnit.FindModifierByName("modifier_debuff_stunned");
             let current_duration = debuff ? debuff.GetDuration() : 0;
             if (duration > current_duration) {
                 hUnit.AddNewModifier(hCaster, null, "modifier_debuff_stunned", { duration: duration });
             }
-
         } else if (state == DebuffTypes.rooted) {
+
             let debuff = hUnit.FindModifierByName("modifier_debuff_rooted");
             let current_duration = debuff ? debuff.GetDuration() : 0;
             if (duration > current_duration) {
                 hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
             }
         } else if (state == DebuffTypes.paralysis) {
-            // let debuff = hUnit.FindModifierByName("modifier_debuff_paralysis");
-            // let current_duration = debuff ? debuff.GetDuration() : 0;
             hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
-        } else if (state == DebuffTypes.chaos){
+        } else if (state == DebuffTypes.chaos) {
             hUnit.AddNewModifier(hCaster, null, "modifier_debuff_chaos", { duration: duration, });
         }
     }
-    
+
     AddPermanentMdf(
         hCaster: CDOTA_BaseNPC,
         hUnit: CDOTA_BaseNPC,
