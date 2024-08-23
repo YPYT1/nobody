@@ -487,7 +487,7 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawn",
             () => {
-                // GameRules.Spawn.StartSpawnControl()
+                GameRules.Spawn.StartSpawnControl()
                 return null;
             },
             5

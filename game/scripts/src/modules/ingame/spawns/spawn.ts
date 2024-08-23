@@ -257,7 +257,6 @@ export class Spawn extends UIEventRegisterClass {
     //刷怪总控
     StartSpawnControl() {
         GameRules.GetGameModeEntity().SetContextThink("StartSpawnControl", () => {
-            print("StartSpawnControl ---------------")
             GameRules.Spawn._round_index++;
             GameRules.GameInformation.GetPlayGameHeadData(-1, {})
             if (GameRules.Spawn._round_index) {
@@ -802,6 +801,12 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("StopAllSpawnAndMonster", () => {
             GameRules.Spawn._game_start = false;
             GameRules.MapChapter._game_select_phase = 999;
+            //禁用英雄技能
+            for (const hero of HeroList.GetAllHeroes()) {
+                for (let index = 0; index < 5; index++) {
+                    hero.GetAbilityByIndex(index).SetActivated(false);
+                }
+            }
             //移除物品
             GameRules.ResourceSystem.RemoveAllDropItem()
             GameRules.MapChapter.GetGameSelectPhase(-1, {})
@@ -918,16 +923,18 @@ export class Spawn extends UIEventRegisterClass {
      * @param killer 
      */
     MapUnitKilledCalculate(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
-        let player_id = killer.GetPlayerOwnerID();
-        let unit_label = target.GetUnitLabel();
-        //普通怪处理
-        if (unit_label == "creatur_normal") {
-            //击杀普通怪数量减少
-            GameRules.Spawn._spawn_count--;
+        if(killer.IsHero()){
+            let player_id = killer.GetPlayerOwnerID();
+            let unit_label = target.GetUnitLabel();
+            //普通怪处理
+            if (unit_label == "creatur_normal") {
+                //击杀普通怪数量减少
+                GameRules.Spawn._spawn_count--;
+            }
+            //计数器 用于计算每个玩家击杀怪物数量
+            GameRules.Spawn._player_sum_kill[player_id]++;
+            GameRules.Spawn._player_round_sum_kill[player_id]++;
         }
-        //计数器 用于计算每个玩家击杀怪物数量
-        GameRules.Spawn._player_sum_kill[player_id]++;
-        GameRules.Spawn._player_round_sum_kill[player_id]++;
     }
 
     /**
@@ -936,6 +943,21 @@ export class Spawn extends UIEventRegisterClass {
      * @param killer 击杀者
      */
     MapUnitKilled(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
+        //非英雄击杀
+        if(!killer.IsHero()){
+            let unit_label = target.GetUnitLabel();
+            let name = target.GetUnitName();
+            let KillExpDrop = UnitNormal[name as keyof typeof UnitNormal].KillExpDrop;
+            let vect = target.GetAbsOrigin();
+            if (unit_label == "creatur_normal") {
+                let ExpType = GetCommonProbability(KillExpDrop);
+                GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
+            } else if (unit_label == "unit_elite"){
+                let ExpType = GetCommonProbability(KillExpDrop);
+                GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
+            }
+            return 
+        }
         let player_id = killer.GetPlayerOwnerID();
         let unit_label = target.GetUnitLabel();
         //普通怪处理
