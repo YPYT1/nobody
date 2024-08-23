@@ -220,6 +220,8 @@ export class MapChapter extends UIEventRegisterClass {
         if (this._game_select_phase == 0 && player_id == 0 && params.difficulty != "-1") {
             this.GameDifficulty = params.difficulty as keyof typeof MapInfoDifficulty;
             this.GameDifficultyNumber = tonumber(this.GameDifficulty);
+            //强制默认为 134
+            this.GameDifficultyNumber = 134;
             this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
         }
         CustomGameEventManager.Send_ServerToAllClients(

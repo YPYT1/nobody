@@ -628,6 +628,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     }
                 }
             }
+            this.GetHeroTalentListData(player_id, {});
         }
         
     }
