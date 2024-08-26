@@ -28,6 +28,7 @@ export const UpdateTopInfoTime = () => {
     const netdata = CustomNetTables.GetTableValue("unit_attribute", `${queryUnit}`)
     if (netdata == null) { return }
     let valueData = netdata.value;
+    // $.Msg(valueData)
     let objectData = netdata.table;
     for (let _attr in valueData) {
         let attr_key = _attr as AttributeMainKey

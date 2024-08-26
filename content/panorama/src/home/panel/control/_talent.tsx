@@ -188,8 +188,11 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
     $.Schedule(0, () => {
         let abi_pos = AbilityList.GetPositionWithinWindow();
         for (let i = 0; i < PlayerTalentTreeList.GetChildCount(); i++) {
-            let AbilityTreePanel = PlayerTalentTreeList.GetChild(i)!;
-            AbilityTreePanel.style.marginLeft = `${abi_pos.x + 68.4 * i + 16}px`
+            let AbilityTreePanel = PlayerTalentTreeList.GetChild(i);
+            if (AbilityTreePanel) {
+                AbilityTreePanel.style.marginLeft = `${abi_pos.x + 68.4 * i + 16}px`
+            }
+
         }
     })
 

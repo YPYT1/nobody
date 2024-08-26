@@ -8,8 +8,16 @@
         <include src="./styles.less" />
     </styles>
     <Panel class="tooltip_item" hittest="false">
+        <Panel class="Background">
+            <Panel class="Header">
+                <Panel class="Top"/>
+                <Panel class="Mid"/>
+            </Panel>
+        </Panel>
+        <Panel class="Bot" />
         <Panel class="TooltipContent">
             
+            <Label class="TalentDesc" text="{s:talent_desc}" html="true" />
         </Panel>
     </Panel>
 </root>

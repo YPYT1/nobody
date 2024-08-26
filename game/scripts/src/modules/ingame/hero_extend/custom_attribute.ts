@@ -214,7 +214,7 @@ export class CustomAttribute {
                     + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                     + (SubAttr["Fixed"]);
                 TotalAttrValue = TotalAttrValue * mul_value
-                hUnit.custom_attribute_value[main_key] = math.max(0, TotalAttrValue);
+                hUnit.custom_attribute_value[main_key] = TotalAttrValue;
                 hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
                 hUnit.custom_attribute_show[main_key][1] = TotalAttrValue - SubAttr["Base"]
 

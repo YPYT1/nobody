@@ -1,12 +1,12 @@
 @import url("./../../_styles/variables/_variables.less");
-@width: 182px;
+@width: 198px;
 
 #Contents {
     // padding: 0px;
     border: 0px solid #00000000;
     background-color: #00000000;
     box-shadow: none;
-    padding: 0px 0px 0px 0px;
+    padding: 0px 0px 44px 0px;
 
     &.Tooltip {
         background-color: #00000000;
@@ -16,13 +16,13 @@
     }
 }
 
-.tooltip_rune {
+.tooltip_prop {
 
     // padding-bottom: 32px;
     // border: 1px solid #ff1919;
     // 
     .Background {
-        // margin-top: 18px;
+        margin-top: 18px;
         width: 100%;
         height: 100%;
         flow-children: down;
@@ -41,24 +41,26 @@
 
     .Top {
         width: @width;
-        height: 52px;
-        background-image: url("file://{images}/custom_game/tooltip/rune/rune_tips_1.png");
+        height: 145px;
+        background-image: url("file://{images}/custom_game/tooltip/prop/prop_tips_bg_1.png");
         // border: 1px solid #bcffaf;
     }
 
     .Mid {
         width: @width;
         height: 100%;
-        background-image: url("file://{images}/custom_game/tooltip/rune/rune_tips_2.png");
+        background-image: url("file://{images}/custom_game/tooltip/prop/prop_tips_bg_2.png");
         // border: 1px solid #7c94ff;
         // margin-bottom: 12px;
     }
 
     .Bot {
         width: @width;
-        height: 76px;
-        background-image: url("file://{images}/custom_game/tooltip/rune/rune_tips_3.png");
+        height: 73px;
+        background-image: url("file://{images}/custom_game/tooltip/prop/prop_tips_bg_3.png");
         vertical-align: bottom;
+        transform: translateY(40px);
+        // border: 1px solid #ff1919;
     }
 }
 
@@ -67,22 +69,21 @@
     min-height: 222px;
     flow-children: down;
 
-    .Image {
-        margin-top: 12px;
+    .PropImage {
         horizontal-align: center;
         width: 62px;
         height: 62px;
         border: 2px solid #000000;
         padding: 2px;
 
-        #Image {
+        #PropImage {
             width: 100%;
             height: 100%;
             background-color: fade(#000000, 90%);
         }
     }
 
-    .Title {
+    .PropTitle {
         margin-top: 22px;
         horizontal-align: center;
 
@@ -91,7 +92,7 @@
         }
     }
 
-    .Description {
+    .PropDescription {
         margin-top: 8px;
         horizontal-align: center;
         padding: 12px;
@@ -106,14 +107,14 @@
 
     .Bot,
     .Background {
-        wash-color: fade(@rarity_color_3, 85%);
+        wash-color: fade(@rarity_color_3, 75%);
     }
 
-    .Image {
+    .PropImage {
         background-color: @rarity_color_3;
     }
 
-    .Title Label {
+    .PropTitle Label {
         color: @rarity_color_3;
     }
 }
@@ -122,14 +123,14 @@
 
     .Bot,
     .Background {
-        wash-color: fade(@rarity_color_4, 85%);
+        wash-color: fade(@rarity_color_4, 75%);
     }
 
-    .Image {
+    .PropImage {
         background-color: @rarity_color_4;
     }
 
-    .Title Label {
+    .PropTitle Label {
         color: @rarity_color_4;
     }
 }
@@ -138,18 +139,14 @@
 
     .Bot,
     .Background {
-        wash-color: fade(@rarity_color_6, 85%);
+        wash-color: fade(@rarity_color_6, 75%);
     }
 
-    .Image {
+    .PropImage {
         background-color: @rarity_color_6;
     }
 
-    .Title Label {
-        color: @rarity_color_5;
+    .PropTitle Label {
+        color: @rarity_color_6;
     }
-}
-
-.GameplayVariable.Current {
-    color:rgb(53,162,72);
 }

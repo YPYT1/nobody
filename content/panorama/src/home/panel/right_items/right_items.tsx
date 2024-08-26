@@ -19,8 +19,15 @@ const OpenAboutList = (list_type: PanleListType) => {
         let row_id = rowPanel.id;
         let has_show = rowPanel.BHasClass("Show");
         // $.Msg([row_id, row_id == list_type, !has_show])
-        rowPanel.SetHasClass("Show", row_id == list_type && !has_show)
+        rowPanel.SetHasClass("Show", row_id == list_type && !has_show);
+
+        const AboutBtn = RightItemsContainer.GetChild(i);
+        if (AboutBtn) {
+            AboutBtn.SetHasClass("Check", row_id == list_type && !has_show)
+        }
     }
+
+
 }
 const CustomGameEventsSubscribe = () => {
     ItemList_Rune.RemoveAndDeleteChildren();
@@ -38,13 +45,30 @@ const CustomGameEventsSubscribe = () => {
         let list_data = Object.values(event.data);
 
         for (let row of list_data) {
+            $.Msg(row)
             let name = row.name;
             let ItemBorder = ItemList_Rune.FindChildTraverse(name);
             if (ItemBorder == null) {
                 let ItemBorder = $.CreatePanel("Panel", ItemList_Rune, name);
                 ItemBorder.BLoadLayoutSnippet("ItemBorder")
+                // ItemBorder.AddClass("NoCount")
+
+                let ItemData = RuneConfigJson[name as keyof typeof RuneConfigJson];
+                let ItemImage = ItemBorder.FindChildTraverse("ItemImage") as ImagePanel;
+                let textrue = ItemData.AbilityTextureName;
+                ItemImage.SetImage(GetTextureSrc(textrue));
+                ItemBorder.SetHasClass("rare_" + row.level, true)
+                ItemBorder?.SetDialogVariableInt("count", row.level)
+                ItemBorder.SetPanelEvent("onmouseover", () => {
+                    ShowCustomTooltip(ItemBorder, "rune", name, -1, row.level)
+
+                })
+                ItemBorder.SetPanelEvent("onmouseout", () => {
+                    HideCustomTooltip()
+                })
             }
-            let ItemData = RuneConfigJson[name as keyof typeof RuneConfigJson];
+            // $.Msg(["row.level",row.level])
+            
             // ItemBorder.SetDialogVariableInt("count", row.);
         }
 
@@ -54,7 +78,9 @@ const CustomGameEventsSubscribe = () => {
     GameEvents.Subscribe("MysticalShopSystem_GetPlayerShopBuyData", event => {
         let list_data = Object.values(event.data.player_shop_buy_data);
         // $.Msg(list_data)
+        let prop_count: { [key: string]: number } = {}
         for (let row of list_data) {
+            // $.Msg(row)
             let item_key = row.item_key;
             let count = row.count;
             let ItemData = MysteriousShopConfig[item_key as keyof typeof MysteriousShopConfig];
@@ -67,14 +93,23 @@ const CustomGameEventsSubscribe = () => {
                 ItemImage.SetImage(GetTextureSrc(textrue));
                 ItemBorder.SetHasClass("rare_" + ItemData.rarity, true)
                 ItemBorder.SetPanelEvent("onmouseover", () => {
-                    ShowCustomTextTooltip(ItemBorder, "#custom_shopitem_" + item_key)
-                    // ShowCustomTooltip(ItemBorder, "item", item_key)
+                    ShowCustomTooltip(ItemBorder, "prop", item_key, -1, ItemData.rarity)
                 })
                 ItemBorder.SetPanelEvent("onmouseout", () => {
                     HideCustomTooltip()
                 })
+                // ItemBorder.SetDialogVariableInt("count", count);
+                // ItemBorder.Data<PanelDataObject>().count = count
             }
-            ItemBorder.SetDialogVariableInt("count", count);
+            if (prop_count[item_key] == null) {
+                prop_count[item_key] = count
+            } else {
+                prop_count[item_key] += count
+            }
+
+            ItemBorder.SetDialogVariableInt("count", prop_count[item_key]);
+
+
             // ItemBorder.SetDialogVariableInt("count", row.);
         }
 

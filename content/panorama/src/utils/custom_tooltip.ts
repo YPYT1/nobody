@@ -19,9 +19,11 @@ export function HideCustomTooltip() {
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_item");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_element_syenrgy");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_talent_tree");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_prop");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_rune");
 }
 
-declare type TooltipType = "ability" | "item" | "element_syenrgy" | "talent_tree";
+declare type TooltipType = "ability" | "item" | "element_syenrgy" | "talent_tree" | "prop" | "rune";
 
 export function ShowCustomTooltip(
     panel: Panel,
@@ -59,8 +61,7 @@ export function ShowCustomTooltip(
             panel,
             "custom_tooltip_element_syenrgy",
             "file://{resources}/layout/custom_game/tooltip/element_syenrgy/layout.xml",
-            "element_type=" + item_level
-            + "&element_count=" + value
+            "element_type=" + item_level + "&element_count=" + value
         );
     } else if (tooltip_type == "talent_tree") {
         $.DispatchEvent(
@@ -69,6 +70,22 @@ export function ShowCustomTooltip(
             "custom_tooltip_talent_tree",
             "file://{resources}/layout/custom_game/tooltip/talent_tree/layout.xml",
             `hero=${name}&key=${entityIndex}&level=${item_level}`,
+        );
+    } else if (tooltip_type == "prop") {
+        $.DispatchEvent(
+            "UIShowCustomLayoutParametersTooltip",
+            panel,
+            "custom_tooltip_prop",
+            "file://{resources}/layout/custom_game/tooltip/" + tooltip_type + "/layout.xml",
+            "name=" + name
+        );
+    } else if (tooltip_type == "rune") {
+        $.DispatchEvent(
+            "UIShowCustomLayoutParametersTooltip",
+            panel,
+            "custom_tooltip_rune",
+            "file://{resources}/layout/custom_game/tooltip/" + tooltip_type + "/layout.xml",
+            `name=${name}&level=${item_level}`,
         );
     }
 }

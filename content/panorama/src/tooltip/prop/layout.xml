@@ -7,7 +7,7 @@
         <include src="./../../_styles/styles.less" />
         <include src="./styles.less" />
     </styles>
-    <Panel class="tooltip_rune" hittest="false">
+    <Panel class="tooltip_prop" hittest="false">
         <Panel class="Background">
             <Panel class="Header">
                 <Panel class="Top"/>
@@ -17,14 +17,14 @@
         </Panel>
         <Panel class="Bot" />
         <Panel class="TooltipContent">
-            <Panel class="Image">
-                <Image id="Image" />
+            <Panel class="PropImage">
+                <Image id="PropImage" />
             </Panel>
-            <Panel class="Title">
-                <Label text="{s:title}"/>
+            <Panel class="PropTitle">
+                <Label text="{s:prop_title}"/>
             </Panel>
-            <Panel class="Description">
-                <Label text="{s:desc}" html="true" />
+            <Panel class="PropDescription">
+                <Label text="{s:prop_desc}" html="true" />
             </Panel>
         </Panel>
     </Panel>
