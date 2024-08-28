@@ -124,6 +124,16 @@ declare interface CustomGameEventDeclarations {
             player_shop_buy_data : { item_key: string , count : number }[]
         }
     }
+
+    /**
+     * 发送消息给全体
+     */
+    CMsg_SendMsgToAll: {
+        data: {
+            event_type: CGMessageEventType,
+            message: "",
+        };
+    };
     /**
      *  神秘商店
      */

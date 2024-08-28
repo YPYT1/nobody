@@ -462,6 +462,10 @@ export class MapChapter extends UIEventRegisterClass {
             );
             UTIL_Remove(hHero)
         }
+
+        for (const hero of HeroList.GetAllHeroes()) {
+            GameRules.BuffManager.AddGeneralDebuff(hero,hero,DebuffTypes.rooted , 3); 
+        }
         this.game_count ++;
         this.NewPlay(-1 , {});
         
@@ -479,18 +483,26 @@ export class MapChapter extends UIEventRegisterClass {
                     "海量怪物即将来袭，是男人就坚持下去……",
                     {}
                 );
+                GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE1);
+                
                 return null;
             },
-            2
+            1
         );
 
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawn",
             () => {
+                GameRules.CMsg.SendCommonMsgToPlayer(
+                    -1 as PlayerID,
+                    "请使用W,A,S,D或方向键进行移动",
+                    {}
+                );
+                GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE2);
                 GameRules.Spawn.StartSpawnControl()
                 return null;
             },
-            5
+            4
         );
     }
 

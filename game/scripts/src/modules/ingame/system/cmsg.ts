@@ -50,6 +50,22 @@ export class CMsg extends UIEventRegisterClass {
     }
 
     /**
+     *  发送公共消息通知
+     */
+    SendMsgToAll(event_type: CGMessageEventType) {
+        CustomGameEventManager.Send_ServerToAllClients(
+            "CMsg_SendMsgToAll",
+            {
+                data: {
+                    event_type: event_type,
+                    message: "",
+                }
+            }
+
+        );
+    }
+
+    /**
      * 发送错误信息文字 弹框到游戏屏幕中间
      * @param player_id 
      * @param message 

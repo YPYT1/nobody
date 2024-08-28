@@ -397,12 +397,14 @@ export class Spawn extends UIEventRegisterClass {
         //半分钟提示
         GameRules.GetGameModeEntity().SetContextThink("BossHint" + "_" + this._round_index, () => {
             if(this._round_index >= this._round_max){
+                GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE4);
                 GameRules.CMsg.SendCommonMsgToPlayer(
                     -1 as PlayerID,
                     "关底 BOSS即将来袭 ",
                     {}
                 );
             }else{
+                GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE3);
                 GameRules.CMsg.SendCommonMsgToPlayer(
                     -1 as PlayerID,
                     "BOSS即将来袭",
@@ -453,7 +455,7 @@ export class Spawn extends UIEventRegisterClass {
                 "强力 boss即将来袭…… ",
                 {}
             );
-
+            GameRules.CMsg.SendMsgToAll(CGMessageEventType.WARNINGBOSS);
             let unit = GameRules.Spawn.CreepNormalCreate("npc_creature_boss_1", this.StageBossVector);
 
             this.MonsterAmend(unit, "boss", 1, 1);
@@ -472,7 +474,6 @@ export class Spawn extends UIEventRegisterClass {
                 GameRules.GetGameModeEntity().StopThink("CreateEliteTime" + "_" + this._round_index);
                 // boss击杀小怪
                 for (let xgunit of GameRules.Spawn._map_Spawn_list) {
-                    print("xgunit : " , xgunit)
                     if (xgunit.IsNull() == false) {
                         xgunit.Kill(null , unit)
                     }
@@ -481,7 +482,6 @@ export class Spawn extends UIEventRegisterClass {
                 GameRules.Spawn._map_Spawn_list = [];
                 // boss击杀精英
                 for (let jyunit of GameRules.Spawn._map_elite_spawn_list) {
-                    print("jyunit : " , jyunit)
                     if (jyunit.IsNull() == false) {
                         jyunit.Kill(null , unit)
                     }
@@ -492,11 +492,6 @@ export class Spawn extends UIEventRegisterClass {
 
             this._map_boss_unit = unit;
             this._map_boss_refresh = true;
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                -1 as PlayerID,
-                "boss刷新 :",
-                {}
-            );
             GameRules.GetGameModeEntity().StopThink("StartSpawnControl");
             return unit;
         }
@@ -786,7 +781,12 @@ export class Spawn extends UIEventRegisterClass {
                 "即将开启灵魂商店，可自行购买灵魂道具…… ",
                 {}
             );
+            GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
             GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
+                for (let hHero of HeroList.GetAllHeroes()) {
+                    GameRules.BuffManager.AddGeneralDebuff(hHero,hHero,DebuffTypes.rooted , 10); 
+                    // hHero.AddNewModifier(hHero, null, "modifier_debuff_rooted", { duration: 10, });
+                }
                 //重新设置时间
                 GameRules.MysticalShopSystem.RefreshMysticalShopItem();
                 return null;

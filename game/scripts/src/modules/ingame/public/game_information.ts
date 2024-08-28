@@ -47,12 +47,16 @@ export class GameInformation extends UIEventRegisterClass {
             delete GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_14"];
             GameRules.CustomAttribute.DelAttributeInKey(unit, "prop_14_SaintSword");
         }
+        DeepPrintTable(GameRules.MysticalShopSystem.player_shop_buy_data);
         //不朽之守护
         if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] && GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] >= 1){
             GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] --;
-            unit.SetRespawnPosition(unit.GetAbsOrigin());
-            unit.RespawnHero(false, false);
-            unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+            Timers.CreateTimer(0.7, () => {
+                unit.SetRespawnPosition(unit.GetAbsOrigin());
+                unit.RespawnHero(false, false);
+                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+            });
+            
             return 
         }
         let game_over = true;

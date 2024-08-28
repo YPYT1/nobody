@@ -132,7 +132,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             );
         }
         for (let index = 0; index < this.player_count; index++) {
-            this.player_shop_level.push(0);
+            this.player_shop_level  .push(0);
             this.shop_field_list.push([]);
             this.player_shop_field_count.push(this.shop_field_max + this.shop_field_max_vip);
             this.player_shop_field_count_lock.push(this.shop_field_lock);
@@ -263,8 +263,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
 
             let refresh_soul = this.shop_field_list[player_id][index].refresh_soul;
 
-            print("refresh_soul : ", refresh_soul)
-
             let player_gold_start = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - refresh_soul });
 
             if (player_gold_start.status) {
@@ -280,7 +278,14 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * 停止商店
      */
     StopShopSystem() {
+        // GameRules.BuffManager.AddGeneralDebuff("")
         GameRules.GetGameModeEntity().StopThink("MYSTICAL_SHOP_BUY_ITEM");
+
+        for (let hHero of HeroList.GetAllHeroes()) {
+
+        }
+
+
         let refresh_soul = GameRules.MysticalShopSystem.initial_refresh_price;
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
             //重新更新商店
@@ -320,6 +325,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 "他们又来了，他们更强了……",
                 {}
             );
+            GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE6);
             //继续游戏
             GameRules.GetGameModeEntity().SetContextThink("StartSpawnControlStartSpawnControl", () => {
                 GameRules.Spawn.StartSpawnControl()
@@ -389,10 +395,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (item_name && item_name != "") {
                 //是否全局唯一
                 let ItemsCustomInfo = MysteriousShopConfig[item_name as "prop_1"];
-                if(ItemsCustomInfo.buy_count_max >= 1){
+                if(ItemsCustomInfo.buy_count_max >= 1){//大于0的特殊购买
                     if (this.player_shop_buy_data[player_id].hasOwnProperty(item_name)) {
-                        index--;
-                        continue;
+                        if(this.player_shop_buy_data[player_id][item_name] >= ItemsCustomInfo.buy_count_max){
+                            index--;
+                            continue;
+                        }
                     }
                 }
                 let buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id]) / 100);
@@ -420,23 +428,32 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     private OneItemRefresh(player_id: PlayerID, index: number) {
         let shop_wp_list: string[] = [];
         //回归池子
-        if (this.shop_field_list[player_id][index]) {
-            let item_data = this.shop_field_list[player_id][index];
-            shop_wp_list.push(item_data.key);
-            //卖了不会回归池子
-            if (item_data.is_buy == 1) {
-
-            } else {
-                //回归全局池子
-                if (this.item_global_count.hasOwnProperty(item_data.key)) {
-                    this.item_global_count[item_data.key].buy_count--;
+        for (let it = 0; it < this.player_shop_field_count[player_id]; it++) {
+            if(it == index){
+                if (this.shop_field_list[player_id][index]) {
+                    let item_data = this.shop_field_list[player_id][index];
+                    shop_wp_list.push(item_data.key);
+                    //卖了不会回归池子
+                    if (item_data.is_buy == 1) {
+                        
+                    } else {
+                        //回归全局池子
+                        if (this.item_global_count.hasOwnProperty(item_data.key)) {
+                            this.item_global_count[item_data.key].buy_count--;
+                        }
+                        //回归玩家池子
+                        if (this.item_player_count[player_id].hasOwnProperty(item_data.key)) {
+                            this.item_player_count[player_id][item_data.key].player_count--;
+                        }
+                    }
                 }
-                //回归玩家池子
-                if (this.item_player_count[player_id].hasOwnProperty(item_data.key)) {
-                    this.item_player_count[player_id][item_data.key].player_count--;
-                }
+            }else{
+                let item_data = this.shop_field_list[player_id][it];
+                shop_wp_list.push(item_data.key);
             }
+            
         }
+        
         //循环计数器
         let amount_count = 0;
         let amount_max = 50;
@@ -446,6 +463,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (amount_count > amount_max) {
                 break;
             }
+            print("amount_count :" , amount_count);
 
             //获取具体物品
             let item_index = GetCommonProbability(this.item_level_probability_group);
@@ -454,23 +472,25 @@ export class MysticalShopSystem extends UIEventRegisterClass {
 
             if (shop_wp_list.includes(item_name)) {
                 //跳过本次 
-                index--;
+                i--;
                 continue;
             }
             if (this.item_player_count[player_id].hasOwnProperty(item_name)) {
                 if (this.item_player_count[player_id][item_name].player_count >= this.item_player_count[player_id][item_name].player_max) {
                     //跳过本次 
-                    index--;
+                    i--;
                     continue;
                 }
             }
             if (item_name && item_name != "") {
                 //是否全局唯一
                 let ItemsCustomInfo = MysteriousShopConfig[item_name as "prop_1"];
-                if(ItemsCustomInfo.buy_count_max >= 1){
+                if(ItemsCustomInfo.buy_count_max >= 1){//大于0的特殊购买
                     if (this.player_shop_buy_data[player_id].hasOwnProperty(item_name)) {
-                        index--;
-                        continue;
+                        if(this.player_shop_buy_data[player_id][item_name] >= ItemsCustomInfo.buy_count_max){
+                            i--;
+                            continue;
+                        }
                     }
                 }
                 let buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id]) / 100);
@@ -484,7 +504,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 let refresh_soul = GameRules.MysticalShopSystem.GetSXPrice(this.shop_field_list[player_id][index].refresh_count);
                 this.shop_field_list[player_id][index].refresh_soul = refresh_soul;
             } else {
-                index--;
+                i--;
                 continue;
             }
             //保存
@@ -639,6 +659,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     GetPlayerShopBuyData(player_id: PlayerID, params: CGED["MysticalShopSystem"]["GetPlayerShopBuyData"], callback?: string) {
+
+        DeepPrintTable( this.player_shop_buy_client[player_id])
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "MysticalShopSystem_GetPlayerShopBuyData",
@@ -754,6 +776,20 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         }
     }
     /**
+     * 增加Ability
+     * @param player_id 
+     * @param param 
+     * @param key 
+     */
+    AddAbility(player_id: PlayerID, param: { [key: string]: string | number }, key: string){
+        let unit = PlayerResource.GetSelectedHeroEntity(player_id);
+        let shopdata = MysteriousShopConfig[key as keyof typeof MysteriousShopConfig]
+        if (unit) {
+            // 技能
+            let ability = unit.AddAbility(shopdata.BuffName);
+        }
+    }
+    /**
      * 圣剑
      * @param player_id 
      * @param param 
@@ -830,7 +866,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param param 
      */
     AddPlayerLife(player_id: PlayerID, param: { count: number }, key: string) {
-        GameRules.GameInformation.AddPlayerLife(player_id, param.count)
+        // GameRules.GameInformation.AddPlayerLife(player_id, param.count);
     }
     /**
      * 玩家准备

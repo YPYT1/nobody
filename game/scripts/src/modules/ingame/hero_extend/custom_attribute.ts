@@ -190,7 +190,15 @@ export class CustomAttribute {
      * 在游戏中初始化技能
      */
     InitAbility(hUnit: CDOTA_BaseNPC){
-        
+        for (let index = 0; index < 5; index++) {
+            let abi = hUnit.GetAbilityByIndex(index);
+            hUnit.RemoveAbilityByHandle(abi);
+        }
+        hUnit.AddAbility("public_null_1").SetLevel(1);
+        hUnit.AddAbility("public_null_2").SetLevel(1);
+        hUnit.AddAbility("public_null_3").SetLevel(1);
+        hUnit.AddAbility("public_null_4").SetLevel(1);
+        hUnit.AddAbility("public_null_5").SetLevel(1);
     }
     /** 计算属性 */
     AttributeCalculate(hUnit: CDOTA_BaseNPC, attr_key: AttributeMainKey[], is_init: boolean = false) {

@@ -101,7 +101,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
 
         //游戏中初始化技能
         if(IsReset){
-            GameRules.CustomAttribute.InitAbility(BaseNPC)
+            GameRules.CustomAttribute.InitAbility(BaseNPC);
         }
         let unitname = BaseNPC.GetUnitName();
         //获取注册英雄星级
@@ -117,18 +117,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         this.player_hero_id[player_id] = hero_id;
         this.player_talent_list[player_id] = {};
         this.player_talent_data_client[player_id] = {};
-        if(IsReset){
-            let points = this.player_talent_data[player_id].points + this.player_talent_data[player_id].use_count - 1;
-            this.player_talent_data[player_id] = {
-                use_count: 1,
-                points: points,
-            };
-        }else{
-            this.player_talent_data[player_id] = {
-                use_count: 1,
-                points: 0,
-            };
-        }
+        
         
         for (let index = 1; index <= Object.keys(this.player_talent_config.unlock_count).length; index++) {
             //是否初始化
@@ -223,6 +212,26 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 }
             }
         }
+
+        if(IsReset){
+            let points = this.player_talent_data[player_id].points + this.player_talent_data[player_id].use_count - 1;
+            this.player_talent_data[player_id] = {
+                use_count: 1,
+                points: points,
+            };
+            //返还技能点
+            if(GameRules.MapChapter.GameDifficultyNumber >= 133){
+                for (let index = 1; index < points; index++) {
+                    this.TalentUnlockLevel(player_id , index)
+                }
+            }
+        }else{
+            this.player_talent_data[player_id] = {
+                use_count: 1,
+                points: 0,
+            };
+        }
+        
         //更新数据
         GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
         
