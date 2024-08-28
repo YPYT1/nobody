@@ -231,7 +231,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 points: 0,
             };
         }
-        
+
         //更新数据
         GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
         
@@ -673,6 +673,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         }
         let new_ability = hUnit.AddAbility(ability_name)
         new_ability.SetLevel(SetLevel);
+
+        if (GameRules.MapChapter._game_select_phase == 999) {
+            hUnit.GetAbilityByIndex(order).SetActivated(false);
+        }
     }
 
     /**

@@ -605,10 +605,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         } else {
                             this.player_shop_buy_data[player_id][name] = 1;
                         }
-                        //给客服端发送数据
-                        this.player_shop_buy_client[player_id].push(
-                            {"count" : 1, "item_key" : name}
-                        );
+                        //循环查找有没有相同名字
+                        for (let it = 0; it < this.player_shop_buy_client[player_id].length; it++) {
+                            if(this.player_shop_buy_client[player_id][it].item_key == name){
+                                this.player_shop_buy_client[player_id][it].count ++;
+                            }
+                        }
                         this.GetPlayerShopBuyData(player_id , {})
                         this.AddPropAttribute(player_id, name)
                     } else {
