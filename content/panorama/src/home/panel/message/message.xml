@@ -2,6 +2,7 @@
 	<styles>
 		<include src="./message.less" />
         <include src="./../../../_styles/styles.less" />
+        <include src="./../../../_styles/keyframes.less" />
 	</styles>
 	<scripts>
 		<include src="./message.tsx" />
@@ -22,6 +23,17 @@
 	<Panel class="message" hittest="false">
 		<Panel id="CommonMessage" class='BottomToTopMessagePanel' hittest="false">
             <Panel id="CommonManager" class='ManagerList' hittest="false" />
+        </Panel>
+        <Panel id="BossWarningPanel" hittest="false">
+            <Panel id="NormalBossWarning"/>
+        </Panel>
+        <Panel id="EventWarning" hittest="false">
+            <Panel id="101" class="EventMessageRows"/>
+            <Panel id="102" class="EventMessageRows"/>
+            <Panel id="103" class="EventMessageRows"/>
+            <Panel id="104" class="EventMessageRows"/>
+            <Panel id="105" class="EventMessageRows"/>
+            <Panel id="106" class="EventMessageRows"/>
         </Panel>
 	</Panel>
 </root>

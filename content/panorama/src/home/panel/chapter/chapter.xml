@@ -36,7 +36,7 @@
 					<Panel  class="Title">
 						<Label text="#请选择关卡"/>
 					</Panel>
-					<Button id="ClosedBtn" class="ClosedBtn" />
+					<!-- <Button id="ClosedBtn" class="ClosedBtn" /> -->
 				</Panel>
 				<Panel class="Body">
 					<Button id="LeftBtn" class="PageBtn" />

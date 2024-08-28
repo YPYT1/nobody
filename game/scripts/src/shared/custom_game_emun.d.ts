@@ -72,17 +72,19 @@ declare const enum DebuffTypes {
     paralysis = 10,
     /** 混乱 `反方向移动` */
     chaos = 11,
+    /** 不可操作 WASD失效*/
+    un_controll = 12,
 }
 
 declare const enum CGMessageEventType {
     MESSAGE1 = 101, //对应消息 海量怪物即将来袭，是男人就坚持下去…… 持续时间3秒
     MESSAGE2 = 102, //对应消息 请使用W,A,S,D或方向键进行移动…… 持续时间5秒
-    MESSAGE3 = 102, //对应消息 BOSS即将来袭，请准备应对…… 持续时间3秒
-    MESSAGE4 = 103, //对应消息 关底BOSS即将来袭，请准备应对……  持续时间3秒
-    MESSAGE5 = 104, //对应消息 即将开启灵魂商店，可自行购买灵魂道具…… 持续时间3秒
-    MESSAGE6 = 105, //对应消息 他们又来了，他们更强了…… 持续时间3秒
+    MESSAGE3 = 103, //对应消息 BOSS即将来袭，请准备应对…… 持续时间3秒
+    MESSAGE4 = 104, //对应消息 最终BOSS即将来袭，请准备应对……  持续时间3秒
+    MESSAGE5 = 105, //对应消息 即将开启灵魂商店，可自行购买灵魂道具…… 持续时间3秒
+    MESSAGE6 = 106, //对应消息 他们又来了，他们更强了…… 持续时间3秒
     // BOSS警告
     WARNINGBOSS = 201, // boss警告 持续时间3秒
-    // BOSS警告
-    WARNINGTS = 201, // boss警告 持续时间3秒
+    // 
+    WARNINGTS = 202, // boss警告 持续时间3秒
 }

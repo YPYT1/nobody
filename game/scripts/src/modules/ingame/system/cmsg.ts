@@ -173,5 +173,10 @@ export class CMsg extends UIEventRegisterClass {
                 }
             );
         }
+
+        if (cmd == "-event") {
+            let event_id = tonumber(args[0] ?? "101");
+            this.SendMsgToAll(event_id)
+        }
     }
 }

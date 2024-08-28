@@ -59,10 +59,10 @@ export class GameConfig {
         GameRules.SetPreGameTime(0);
         GameRules.SetPostGameTime(45);
         GameRules.SetHeroSelectionTime(99999);
-        GameRules.SetHeroSelectPenaltyTime(10);
+        GameRules.SetHeroSelectPenaltyTime(1);
         GameRules.SetCustomGameAllowHeroPickMusic(false);
         GameRules.SetCustomGameAllowBattleMusic(false);
-        GameRules.SetCustomGameAllowMusicAtGameStart(false);
+        GameRules.SetCustomGameAllowMusicAtGameStart(true);
         // SetUnitCanRespawn
         GameRules.SetCreepSpawningEnabled(false)
         // bit.band()
@@ -73,7 +73,7 @@ export class GameConfig {
         // GameRules.wear
         // 自定义游戏加载事件
         GameRules.SetCustomGameSetupTimeout(-1);
-        GameRules.SetCustomGameSetupAutoLaunchDelay(10);
+        GameRules.SetCustomGameSetupAutoLaunchDelay(1);
 
         GameRules.SetStartingGold(0);
         GameRules.SetHeroRespawnEnabled(false);

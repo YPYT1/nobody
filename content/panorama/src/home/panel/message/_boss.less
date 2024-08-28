@@ -1,0 +1,27 @@
+#BossWarningPanel {
+    width: 100%;
+    height: 100%;
+    background-color: #7405051f;
+    opacity: 0;
+
+    transition-property: opacity;
+    transition-duration: 0.3s;
+
+    &.Show {
+        opacity: 1;
+    }
+
+    #NormalBossWarning {
+        width: 1920px;
+        height: 480px;
+        background-image: url("file://{images}/custom_game/hud/message/boss_warning.png");
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        vertical-align: middle;
+
+        opacity: 0.9;
+        animation-name: flash;
+        animation-duration: 1.4s;
+        animation-iteration-count: infinite;
+    }
+}

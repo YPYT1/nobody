@@ -712,3 +712,25 @@ export class modifier_debuff_chaos extends modifier_debuff_debuff_template {
     }
 
 }
+
+/** 混乱 */
+@registerModifier()
+export class modifier_debuff_uncontroll extends modifier_debuff_debuff_template {
+
+    GetTexture(): string {
+        return "action_stop"
+    }
+
+    // GetStatusEffectName(): string {
+    //     return "particles/status_fx/status_effect_dark_willow_wisp_fear.vpcf";
+    // }
+
+    // GetEffectName(): string {
+    //     return "particles/units/heroes/hero_dark_willow/dark_willow_wisp_spell_debuff.vpcf";
+    // }
+
+    // GetEffectAttachType(): ParticleAttachment {
+    //     return ParticleAttachment.OVERHEAD_FOLLOW
+    // }
+
+}

@@ -37,6 +37,10 @@ export class modifier_basic_move extends BaseModifier {
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
         if (this.parent.IsAlive() == false) {
+            this.move_up = false;
+            this.move_down = false;
+            this.move_left = false;
+            this.move_right = false;
             this.OnMoveStateChange(false)
             this.StartIntervalThink(-1)
             return
@@ -45,9 +49,9 @@ export class modifier_basic_move extends BaseModifier {
         if (params.DOWN) { this.move_down = params.DOWN == 1; }
         if (params.LEFT) { this.move_left = params.LEFT == 1; }
         if (params.RIGHT) { this.move_right = params.RIGHT == 1; }
+        // print(this.move_up, this.move_left, this.move_down, this.move_right);
         this.move_distance = math.max(this.parent.GetMoveSpeedModifier(this.parent.GetBaseMoveSpeed(), true) * 0.07, 48);
         if (this.parent.HasModifier("modifier_debuff_chaos")) { this.move_distance *= -1; }
-
         if (!this.move_up && !this.move_down && !this.move_left && !this.move_right) {
             this.OnMoveStateChange(false)
             this.StartIntervalThink(-1)
@@ -72,7 +76,12 @@ export class modifier_basic_move extends BaseModifier {
     }
 
     OnIntervalThink(): void {
+        if (this.parent.HasModifier("modifier_debuff_uncontroll")) { return }
         if (this.parent.IsAlive() == false) {
+            this.move_up = false;
+            this.move_down = false;
+            this.move_left = false;
+            this.move_right = false;
             this.OnMoveStateChange(false)
             this.StartIntervalThink(-1)
             return;
@@ -91,12 +100,12 @@ export class modifier_basic_move extends BaseModifier {
     }
 
     OnMoveStateChange(state: boolean) {
-        if (state == false) {
-            this.move_up = false;
-            this.move_down = false;
-            this.move_left = false;
-            this.move_right = false;
-        }
+        // if (state == false) {
+        //     this.move_up = false;
+        //     this.move_down = false;
+        //     this.move_left = false;
+        //     this.move_right = false;
+        // }
         // print("OnMoveStateChange", state)
         // prop_30	【极速护符】	原地不动时，技能急速加成提高15%,冷却上限提高15%
         if (this.parent.prop_level_index['prop_30']) {

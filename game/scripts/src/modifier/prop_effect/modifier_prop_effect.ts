@@ -106,7 +106,7 @@ export class modifier_prop_effect extends BaseModifier {
         // prop_42	【神罚】	
         if (this.object["prop_42"]) {
             this.timer_prop_42 += 1;
-            print("this.timer_prop_42",this.timer_prop_42)
+            print("this.timer_prop_42", this.timer_prop_42)
             if (this.timer_prop_42 >= this.Prop_Object("prop_42", 'interval')) {
                 this.timer_prop_42 = 0;
                 this.Effect_Prop42()
@@ -176,8 +176,8 @@ export class modifier_prop_effect extends BaseModifier {
         ParticleManager.SetParticleControl(aoe_cast_fx, 1, Vector(radius, 1, 1))
         ParticleManager.ReleaseParticleIndex(aoe_cast_fx)
 
-        let damage_ratio = this.Prop_Object('prop_42', 'damage_ratio');
-        let aoe_damage = this.caster.GetAverageTrueAttackDamage(null) * damage_ratio * 0.01;
+        let damage_ratio = this.Prop_Object('prop_42', 'damage_ratio') * 0.01;
+        let aoe_damage = this.caster.GetAverageTrueAttackDamage(null) * damage_ratio;
         let enemies = FindUnitsInRadius(
             DotaTeam.GOODGUYS,
             origin,
@@ -202,8 +202,8 @@ export class modifier_prop_effect extends BaseModifier {
         }
 
         // 对自身造成伤害
-        let self_ratio = this.Prop_Object('prop_42', 'self_ratio');
-        let self_damage = this.caster.GetAverageTrueAttackDamage(null) * self_ratio * 0.01;
+        let self_ratio = this.Prop_Object('prop_42', 'self_ratio') * 0.01;
+        let self_damage = this.caster.GetAverageTrueAttackDamage(null) * damage_ratio * self_ratio;
         ApplyCustomDamage({
             victim: this.caster,
             attacker: this.caster,

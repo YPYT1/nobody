@@ -18,14 +18,41 @@
                     <Panel class="HealthBarPanel">
 						<Panel class="HudHeathBarProgressBar">
 							<Panel id="HudHeathBarContent" class="HealthBar">
-								<Panel id="HudHeathBar_0">
-									<Panel class="Screen"/>
+								<Panel id="HealthBarOdd" class="BossHealthBarPanel">
+									<Panel id="HudHeathBar" class="HudHeathBar"/>
+									<Panel id="BossHealthBar" class="BossHealthBar">
+										<DOTAScenePanel 
+											class="HealthBarScene"
+											map="scenes/hud/healthbarburner" 
+											renderdeferred="false" 
+											rendershadows="false" 
+											camera="camera_1" 
+											hittest="false" 
+											particleonly="true" 
+										/>
+									</Panel>
+									
 								</Panel>
-								<Panel id="HudHeathBar_1" />
-								<Panel id="HudHeathBar_2" >
-									<Panel class="Screen"/>
+								<Panel id="HealthBarEven" class="BossHealthBarPanel">
+									<Panel id="HudHeathBar" class="HudHeathBar"/>
+									<Panel id="BossHealthBar" class="BossHealthBar">
+										<DOTAScenePanel 
+											class="HealthBarScene"
+											map="scenes/hud/healthbarburner" 
+											renderdeferred="false" 
+											rendershadows="false" 
+											camera="camera_1" 
+											hittest="false" 
+											particleonly="true" 
+										/>
+									</Panel>
 								</Panel>
+								<!-- <Panel class="HealthBarShinePanel">
+									<Panel id="HealthBarShine" class="HealthBarShine"/>
+								</Panel> -->
+								
 							</Panel>
+							
 						</Panel>
                         
                         <Label class="HealthbarLabel" text="{s:current_hp} / {s:max_hp}"/>

@@ -43,6 +43,23 @@ export class BuffManager {
             hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
         } else if (state == DebuffTypes.chaos) {
             hUnit.AddNewModifier(hCaster, null, "modifier_debuff_chaos", { duration: duration, });
+        } else if (state == DebuffTypes.un_controll) {
+            hUnit.AddNewModifier(hCaster, null, "modifier_debuff_uncontroll", { duration: duration, });
+        }
+    }
+
+    /** 移除通用DEbuff */
+    RemoveGeneralDebuff(hUnit: CDOTA_BaseNPC, eStates: DebuffTypes[]) {
+        for (let state of eStates) {
+            if (state == DebuffTypes.stunned) {
+                hUnit.RemoveModifierByName("modifier_debuff_stunned")
+            } else if (state == DebuffTypes.rooted) {
+                hUnit.RemoveModifierByName("modifier_debuff_rooted")
+            } else if (state == DebuffTypes.chaos) {
+                hUnit.RemoveModifierByName("modifier_debuff_chaos")
+            } else if (state == DebuffTypes.un_controll) {
+                hUnit.RemoveModifierByName("modifier_debuff_uncontroll")
+            }
         }
     }
 

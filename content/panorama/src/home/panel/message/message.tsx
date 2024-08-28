@@ -1,3 +1,5 @@
+import { PlayerIdToARGB } from "../../../utils/method";
+
 const LIMIT_COUNT = 10;
 const MESSAGE_DURATION = 8;
 
@@ -12,13 +14,7 @@ interface MessageDataProps {
     player_id: PlayerID;
 }
 
-export function PlayerIdToARGB(i: number) {
-    return ('00' + (i & 0xFF).toString(16)).substr(-2) +
-        ('00' + ((i >> 8) & 0xFF).toString(16)).substr(-2) +
-        ('00' + ((i >> 16) & 0xFF).toString(16)).substr(-2) +
-        ('00' + ((i >> 24) & 0xFF).toString(16)).substr(-2);
-}
-export const CreateCommonMessage = (event: CommonMessageProps) => {
+const CreateCommonMessage = (event: CommonMessageProps) => {
     // MessageEventIte
     let CommonManager = $("#CommonManager");
     let current_count = CommonManager.GetChildCount();
@@ -75,7 +71,7 @@ export const CreateCommonMessage = (event: CommonMessageProps) => {
 };
 
 
-export function StartMessageTimer() {
+function StartMessageTimer() {
     MessageTimer();
     $.Schedule(0.1, StartMessageTimer);
 }
@@ -175,6 +171,39 @@ export const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageN
     Particles.ReleaseParticleIndex(pidx);
 }
 
+
+let BossWarningPanel = $("#BossWarningPanel");
+let EventWarning = $("#EventWarning");
+let EventDuration: { [key: string]: number } = {
+    "102": 5,
+}
+const CMsg_SendMsgToAll = (params: CustomGameEventDeclarations["CMsg_SendMsgToAll"]) => {
+    let data = params.data;
+    let event_type = data.event_type;
+    if (event_type == 201) {
+        BossWarningPanel.AddClass("Show");
+        $.Schedule(3, () => {
+            BossWarningPanel.RemoveClass("Show")
+        })
+    } else if (event_type == 101) {
+        let eventPanel = EventWarning.FindChildTraverse("101")!;
+        eventPanel.AddClass("Show");
+        $.Schedule(3, () => {
+            eventPanel.RemoveClass("Show")
+        })
+    } else {
+        let eventPanel = EventWarning.FindChildTraverse(`${event_type}`)!;
+        if (eventPanel != null) {
+            eventPanel.AddClass("Show");
+            let duration = EventDuration[`${event_type}`] ?? 3;
+            $.Schedule(duration, () => {
+                eventPanel.RemoveClass("Show")
+            })
+        }
+
+    }
+}
+
 export const Init = () => {
     StartMessageTimer();
     GameEvents.Subscribe("CMsg_SendCommonMsgToPlayer", event => {
@@ -185,6 +214,8 @@ export const Init = () => {
 
     GameEvents.Subscribe("CMsg_SendErrorMsgToPlayer", SendErrorMessage)
     GameEvents.Subscribe("Popup_DamageNumberToClients", DamageFloating)
+    GameEvents.Subscribe("CMsg_SendMsgToAll", CMsg_SendMsgToAll)
+
 }
 
 (function () {

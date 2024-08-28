@@ -269,10 +269,9 @@ export const CreatePanel = () => {
     })
 
     const ClosedBtn = $("#ClosedBtn") as Button;
-
-    ClosedBtn.SetPanelEvent("onactivate", () => {
-        ChapterContainer.RemoveClass("Show")
-    })
+    // ClosedBtn.SetPanelEvent("onactivate", () => {
+    //     ChapterContainer.RemoveClass("Show")
+    // })
 
     const TestToggleBtn = $("#TestToggleBtn") as Button;
     TestToggleBtn.SetPanelEvent("onactivate", () => {

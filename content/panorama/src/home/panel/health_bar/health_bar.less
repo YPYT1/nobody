@@ -21,7 +21,7 @@
     &.Closed {
         visibility: collapse;
     }
-    
+
     #PortraitContent {
         // border: 1px solid #ffffff;
 
@@ -57,6 +57,7 @@
     #HealthBarInfo {
         margin-left: 80px;
         vertical-align: middle;
+        overflow: noclip;
         // border: 1px solid #ffffff;
         flow-children: down;
         // width: 814px;
@@ -89,10 +90,13 @@
 
     .HealthBarPanel {
         width: 840px;
+        // overflow: noclip;
+
         // margin-left: 30px;
         // visibility: collapse;
         // 血条底
         .HudHeathBarProgressBar {
+            // overflow: noclip;
             // margin-left: 16px;
             horizontal-align: center;
             // border: 1px solid #ffffff;
@@ -115,87 +119,100 @@
             height: 36px;
             background-repeat: no-repeat;
             vertical-align: middle;
-            // opacity: 0.5;
+            overflow: noclip;
             margin-bottom: 4px;
-
-
         }
 
-        #HudHeathBar_0 {
-            width: 761px;
+    }
+
+
+    .BossHealthBarPanel {
+        height: 36px;
+        width: 761px;
+        background-repeat: no-repeat;
+        vertical-align: middle;
+        // overflow: noclip;
+        // padding: 6px 12px;
+        // background-image: url("file://{images}/custom_game/hud/health_bar/top_health/top_hpbar_hud.png");
+        z-index: -1;
+
+        &.Show {
+            z-index: 2;
+
+            .HealthBarScene {
+                opacity: 1;
+            }
+        }
+
+        .BossHealthBar {
+            // width: 761px;
+            // horizontal-align: center;
             height: 36px;
             background-repeat: no-repeat;
             vertical-align: middle;
             background-image: url("file://{images}/custom_game/hud/health_bar/top_health/top_hpbar_hud.png");
-            // wash-color: #6bc720;
-
-            .Screen {
-                width: 100%;
-                height: 100%;
-                
-                // color: #2c0000;
-                // background-color: gradient(linear, 0% 0%, 100% 0%, from(#ff4800), to(#42b61f));
-                // -s2-mix-blend-mode: screen;
-            }
+            background-size: 761px 36px;
+            overflow: clip;
+            // border: 1px solid #ffffff;
+            // box-shadow: inset #ffffff33 0px 0px 2px 0px; // inner
+            // hue-rotation: -180deg;
         }
 
-        #HudHeathBar_1 {
-            width: 761px;
+        .HudHeathBar {
+            // width: 761px;
             height: 36px;
+            vertical-align: middle;
             background-image: url("file://{images}/custom_game/hud/health_bar/top_health/top_hpbar_hud.png");
             background-repeat: no-repeat;
+            background-size: 761px 36px;
             transition-property: width;
-            transition-duration: 0.25s;
+            transition-duration: 0.18s;
             transition-timing-function: ease-out;
-            opacity: 0.8;
+            opacity: 0.65;
             saturation: 0;
             brightness: 6;
+            // wash-color: #00000033;
 
             &.DisTransition {
                 transition-duration: 0s;
             }
         }
 
-        #HudHeathBar_2 {
-            width: 384px;
+        .HealthBarScene {
+            width: 761px;
             height: 36px;
-            background-image: url("file://{images}/custom_game/hud/health_bar/top_health/top_hpbar_hud.png");
-            background-repeat: no-repeat;
-            vertical-align: middle;
-            overflow: clip;
-
-            // .Screen {
-            //     width: 761px;
-            //     height: 36px;
-            //     background-color: gradient(linear, 0% 0%, 100% 0%, from(#ff4800), to(#42b61f));
-            //     opacity: 0.5;
-            //     // -s2-mix-blend-mode: screen;
-            // }
-
+            hue-rotation: 255deg;
+            opacity: 0;
         }
 
     }
 
-    #HealthBarProgressBar {
-
-
-        visibility: collapse;
-
-
-        #HealthBarHUD {
-            width: 100%;
-            height: 100%;
-            // background-color: #ffffff;
-            // horizontal-align: right;
-            background-color: gradient(linear, 0% 0%, 100% 0%, from(#ff8b1e), to(#c40000));
-            opacity-mask: url("file://{images}/custom_game/hud/health_bar/top_health/boss_health_bar_hud.png");
-            // wash-color: #ff6b6b;
-            // -s2-mix-blend-mode: screen;
-        }
+    .HealthBarShinePanel {
+        width: 761px;
+        height: 36px;
+        // overflow: noclip;
+        z-index: 9;
     }
 
+    .HealthBarShine {
+        width: 20px;
+        height: 90px;
+        transform: translateX(-34px);
+        // horizontal-align: center;
+        vertical-align: middle;
+        background-image: url("file://{images}/custom_game/hud/health_bar/top_health/top_hpbar_shine.png");
+        // pre-transform-scale2d: 0.75;
+        opacity: 1;
+        transition-property: opacity;
+        transition-duration: 0.2s;
+        transition-timing-function: ease-out;
+        // transition-delay: 0.2s;
 
+        &.Shine {
+            opacity: 0;
+        }
 
+    }
 
 }
 
@@ -231,47 +248,4 @@
         }
     }
 
-}
-
-.OverheadBar {
-    // width: 178px;
-    // height: 48px;
-    // background-color: #ff4343;
-    background-repeat: no-repeat;
-    border: 1px solid #ffffff;
-    flow-children: down;
-
-    Label {
-        font-size: 22px;
-        text-shadow: 0px 0px 0px 2.5 #603800;
-        color: gradient(linear, 0% 0%, 0% 100%, from(#ffffff), to(#f7f4f0));
-        text-align: center;
-    }
-
-    .Title {
-        width: 100%;
-    }
-
-    .headBarPanel {
-        width: 280px;
-        background-color: #000000;
-
-        #HealthBar0 {
-            width: 100%;
-            height: 11px;
-            background-color: rgb(255, 255, 255);
-            // opacity-mask: url("s2r://panorama/images/custom_game/npc_frame/boss_hp_bar_png.vtex");
-            transition-property: width;
-            transition-duration: 0.2s;
-            transition-timing-function: ease-out;
-        }
-
-        #HealthBar {
-            width: 50%;
-            height: 11px;
-            background-color: #ff0000;
-            // background-image: url("s2r://panorama/images/custom_game/npc_frame/boss_hp_bar_png.vtex");
-            background-repeat: no-repeat;
-        }
-    }
 }
