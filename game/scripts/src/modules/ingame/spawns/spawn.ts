@@ -398,18 +398,18 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("BossHint" + "_" + this._round_index, () => {
             if(this._round_index >= this._round_max){
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE4);
-                GameRules.CMsg.SendCommonMsgToPlayer(
-                    -1 as PlayerID,
-                    "关底 BOSS即将来袭 ",
-                    {}
-                );
+                // GameRules.CMsg.SendCommonMsgToPlayer(
+                //     -1 as PlayerID,
+                //     "关底 BOSS即将来袭 ",
+                //     {}
+                // );
             }else{
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE3);
-                GameRules.CMsg.SendCommonMsgToPlayer(
-                    -1 as PlayerID,
-                    "BOSS即将来袭",
-                    {}
-                );
+                // GameRules.CMsg.SendCommonMsgToPlayer(
+                //     -1 as PlayerID,
+                //     "BOSS即将来袭",
+                //     {}
+                // );
             }
             
             return null;
@@ -449,12 +449,11 @@ export class Spawn extends UIEventRegisterClass {
     //刷新游戏boss
     CreateBoss(): CDOTA_BaseNPC {
         if (this._map_boss_refresh == false) {
-
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                -1 as PlayerID,
-                "强力 boss即将来袭…… ",
-                {}
-            );
+            // GameRules.CMsg.SendCommonMsgToPlayer(
+            //     -1 as PlayerID,
+            //     "强力 boss即将来袭…… ",
+            //     {}
+            // );
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.WARNINGBOSS);
             let unit = GameRules.Spawn.CreepNormalCreate("npc_creature_boss_1", this.StageBossVector);
 
@@ -776,11 +775,11 @@ export class Spawn extends UIEventRegisterClass {
                     GameRules.Spawn.CreepNormalRemoveSelf(unit, 0.1);
                 }
             }
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                -1 as PlayerID,
-                "即将开启灵魂商店，可自行购买灵魂道具…… ",
-                {}
-            );
+            // GameRules.CMsg.SendCommonMsgToPlayer(
+            //     -1 as PlayerID,
+            //     "即将开启灵魂商店，可自行购买灵魂道具…… ",
+            //     {}
+            // );
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
             GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
                 for (let hHero of HeroList.GetAllHeroes()) {
@@ -996,11 +995,11 @@ export class Spawn extends UIEventRegisterClass {
 
     //击杀boss
     BossKill(killed_unit: CDOTA_BaseNPC) {
-        GameRules.CMsg.SendCommonMsgToPlayer(
-            -1 as PlayerID,
-            "boss已被击杀",
-            {}
-        );
+        // GameRules.CMsg.SendCommonMsgToPlayer(
+        //     -1 as PlayerID,
+        //     "boss已被击杀",
+        //     {}
+        // );
         //切换成boss倒计时
         GameRules.GetGameModeEntity().SetContextThink("CreateBossKillTime" + "_" + this._round_index, () => {
             //重新设置时间

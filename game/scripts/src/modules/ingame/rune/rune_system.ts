@@ -105,6 +105,7 @@ export class RuneSystem extends UIEventRegisterClass {
         this.player_fate_data[player_id] = [];
         this.check_rune_name[player_id] = [];
         this.player_check_rune_name[player_id] = [];
+        this.player_rune_list[player_id] = {};
         this.player_fate_data_index[player_id] = 0;
         this.player_challenge_number[player_id] = 1;
         this.player_select_rune_max[player_id] = 100;
