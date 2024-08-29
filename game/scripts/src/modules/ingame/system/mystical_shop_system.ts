@@ -619,11 +619,20 @@ export class MysticalShopSystem extends UIEventRegisterClass {
 
     /** 添加商店物品数据 */
     AddPropAttribute(player_id: PlayerID, prop_name: string) {
+        const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+
         if (this.player_shop_buy_data[player_id].hasOwnProperty(prop_name)) {
             this.player_shop_buy_data[player_id][prop_name]++;
         } else {
             this.player_shop_buy_data[player_id][prop_name] = 1;
         }
+        //增加玩家身上的计数器
+        if (hHero.prop_count.hasOwnProperty(prop_name)) {
+            hHero.prop_count[prop_name] ++;
+        } else {
+            hHero.prop_count[prop_name] = 1;
+        }
+
         //循环查找有没有相同名字
         let item_is_add = false
         for (let it = 0; it < this.player_shop_buy_client[player_id].length; it++) {
@@ -632,14 +641,15 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 this.player_shop_buy_client[player_id][it].count ++;
             }
         }
-        if(item_is_add == false)[
+
+        if(item_is_add == false){
             this.player_shop_buy_client[player_id].push({
                 "count" : 1,
                 "item_key" : prop_name,
             })
-        ]
-        const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-        hHero.prop_level_index[prop_name] = 0;
+        }
+        
+        
         let prop_buff = hHero.FindModifierByName("modifier_prop_effect") as modifier_prop_effect
         let ItemData = MysteriousShopConfig[prop_name as keyof typeof MysteriousShopConfig];
         if (prop_buff) {
@@ -964,11 +974,11 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         T2 extends typeof MysteriousShopConfig[Key],
     >(hUnit: CDOTA_BaseNPC, prop_name: Key, ability_key: keyof T2["AbilityValues"]) {
         if (IsServer()) {
-            let level_index = hUnit.prop_level_index[prop_name]
-            if (level_index == null) {
+            let prop_count = hUnit.prop_count[prop_name];
+            if (prop_count == null) {
                 return 0
             } else {
-                return this.GetTKV(prop_name, ability_key, level_index - 1)
+                return this.GetTKV(prop_name, ability_key, 0) 
             }
         } else {
             // let player_id = hUnit.GetPlayerOwnerID();
@@ -994,7 +1004,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         let count = 0;
         for (let player_id = 0 as PlayerID; player_id < 4; player_id++) {
             let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-            if(hHero && hHero.prop_level_index[prop_name]){
+            if(hHero && hHero.prop_count[prop_name]){
                 count += this.player_shop_buy_data[player_id][prop_name]
             }
         }
@@ -1014,10 +1024,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         Key extends keyof typeof MysteriousShopConfig,
         T2 extends typeof MysteriousShopConfig[Key],
     >(hUnit: CDOTA_BaseNPC, prop_name: Key, ability_key: keyof T2["AbilityValues"]) {
-        let level_index = hUnit.prop_level_index[prop_name] ?? 0
-        return this.GetTKV(prop_name, ability_key, level_index);
+        let prop_count = hUnit.prop_count[prop_name] ?? 0
+        return this.GetTKV(prop_name, ability_key, 0);
     }
-
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         //开始售卖
