@@ -600,26 +600,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         //标记为出售
                         this.shop_field_list[player_id][item_index].is_buy = 1;
                         this.shop_field_list[player_id][item_index].is_lock = 0;
-                        if (this.player_shop_buy_data[player_id].hasOwnProperty(name)) {
-                            this.player_shop_buy_data[player_id][name]++;
-                        } else {
-                            this.player_shop_buy_data[player_id][name] = 1;
-                        }
-                        //循环查找有没有相同名字
-                        let item_is_add = false
-                        for (let it = 0; it < this.player_shop_buy_client[player_id].length; it++) {
-                            if(this.player_shop_buy_client[player_id][it].item_key == name){
-                                item_is_add = true;
-                                this.player_shop_buy_client[player_id][it].count ++;
-                            }
-                        }
-                        if(item_is_add == false)[
-                            this.player_shop_buy_client[player_id].push({
-                                "count" : 1,
-                                "item_key" : name,
-                            })
-                        ]
-                        this.GetPlayerShopBuyData(player_id , {})
                         this.AddPropAttribute(player_id, name)
                     } else {
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
@@ -639,6 +619,25 @@ export class MysticalShopSystem extends UIEventRegisterClass {
 
     /** 添加商店物品数据 */
     AddPropAttribute(player_id: PlayerID, prop_name: string) {
+        if (this.player_shop_buy_data[player_id].hasOwnProperty(prop_name)) {
+            this.player_shop_buy_data[player_id][prop_name]++;
+        } else {
+            this.player_shop_buy_data[player_id][prop_name] = 1;
+        }
+        //循环查找有没有相同名字
+        let item_is_add = false
+        for (let it = 0; it < this.player_shop_buy_client[player_id].length; it++) {
+            if(this.player_shop_buy_client[player_id][it].item_key == prop_name){
+                item_is_add = true;
+                this.player_shop_buy_client[player_id][it].count ++;
+            }
+        }
+        if(item_is_add == false)[
+            this.player_shop_buy_client[player_id].push({
+                "count" : 1,
+                "item_key" : prop_name,
+            })
+        ]
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         hHero.prop_level_index[prop_name] = 0;
         let prop_buff = hHero.FindModifierByName("modifier_prop_effect") as modifier_prop_effect
@@ -660,6 +659,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             //执行后续处理....
             GameRules.MysticalShopSystem[ret_action_string](player_id, param, prop_name);
         }
+        //发送信息
+        this.GetPlayerShopBuyData(player_id , {})
     }
 
     /**
