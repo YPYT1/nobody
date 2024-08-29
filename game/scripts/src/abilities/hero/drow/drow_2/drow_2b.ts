@@ -16,19 +16,15 @@ export class drow_2b extends BaseHeroAbility {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            let ability_damage = extraData.a;
-            // let bp_ingame = extraData.bp_ingame;
-            // let bp_server = extraData.bp_server
-
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
-                damage: ability_damage,
+                damage: extraData.a,
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
                 is_primary: true,
-                // bp_ingame: bp_ingame,
-                // bp_server: bp_server,
+                SelfAbilityMul: extraData.SelfAbilityMul,
+                DamageBonusMul: extraData.DamageBonusMul
             })
             return true
         }

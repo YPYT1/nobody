@@ -52,21 +52,27 @@
 @btn-color-text-hover: #d8dade;
 
 
-@rarity_color_1:#b0c3d9; // 普通
-@rarity_color_2:#5e98d9; // 罕见
-@rarity_color_3:#4b69ff; // 稀有
-@rarity_color_4:#8847ff; // 神话
-@rarity_color_5:#d32ce6; // 传说
-@rarity_color_6:#EB4B4B; // 远古
-@rarity_color_7:#e4ae39; // 不朽 max
-@rarity_color_8:#ADE55C; // 至宝
+@rarity_color_1: #ffffff; // 普通 白色
+@rarity_color_2: #5fb83c; // 罕见 绿色
+@rarity_color_3: #4b69ff; // 稀有 蓝色
+@rarity_color_4: #8847ff; // 神话 紫色
+@rarity_color_5: #ffa600; // 传说 金色
+@rarity_color_6: #ff3e3e; // 远古 红色
+@rarity_color_7: gradient(linear, 0% 0%, 100% 0%, from(#FF0000),
+        color-stop(0.2, #FF7F00),
+        color-stop(0.35, #FFFF00),
+        color-stop(0.5, #00FF00),
+        color-stop(0.65, #00FFFF),
+        color-stop(0.8, #0000FF),
+        to(#8B00FF)); // 不朽 彩色
+@rarity_color_8: #ADE55C; // 至宝 
 // @rarities1:#b0c3d9;
 // @rarities1:#b0c3d9;
 
-@element_none:rgb(255,255,255);
-@element_fire:rgb(255, 33, 25);
-@element_ice:rgb(77, 228, 255);
-@element_thunder:rgb(193, 126, 255);
-@element_wind:rgb(148, 255, 77);
-@element_light:rgb(255, 240, 173);
-@element_dark:rgb(161, 0, 140);
+@element_none: rgb(255, 255, 255);
+@element_fire: rgb(255, 33, 25);
+@element_ice: rgb(77, 228, 255);
+@element_thunder: rgb(193, 126, 255);
+@element_wind: rgb(148, 255, 77);
+@element_light: rgb(255, 240, 173);
+@element_dark: rgb(161, 0, 140);

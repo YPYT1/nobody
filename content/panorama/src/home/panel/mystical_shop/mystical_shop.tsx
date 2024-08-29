@@ -33,28 +33,16 @@ const GameEventsSubscribeInit = () => {
         ShopItemList.SetHasClass("IsReady", is_ready);
 
         // 触发商店时,弹窗
-        MysticalShop.SetHasClass("Open",true)
+        MysticalShop.SetHasClass("Open", true)
         // @TODO 准备之后无法购买、无法刷新。但可以锁定\取消锁定。
 
-        // if (is_ready) {
-        //     for (let i = 0; i < SHOP_ITEM_COUNT; i++) {
-        //         let ShopItem = ShopItemList.GetChild(i)!;
-        //         const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
-        //         RefreshBtn.enabled = false;
-        //         const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
-        //         ShopItemCard.enabled = false;
-        //         const is_vip = ShopItem.BHasClass("IsVip")
-        //         const is_lock = ShopItem.BHasClass("IsLock")
-        //         const LockBtn = ShopItem.FindChildTraverse("LockBtn")!;
-        //         LockBtn.enabled
-        //     }
-        // }
+
 
     })
 
     GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
         let data = event.data;
-        $.Msg(["MysticalShopSystem_GetShopData", data])
+        // $.Msg(["MysticalShopSystem_GetShopData", data])
         const local_vip = 0;// data.player_vip_status;
         // ShopItemList.RemoveAndDeleteChildren();
 
@@ -65,10 +53,8 @@ const GameEventsSubscribeInit = () => {
             // $.Msg(["row_data", row_data])
             let shop_key = row_data.key
             let ShopItem = ShopItemList.GetChild(index)!;
-            // ShopItem.BLoadLayoutSnippet("ShopItem")
             let is_vip = (local_vip < row_data.is_vip);
             ShopItem.Data<PanelDataObject>().is_vip = is_vip
-            // ShopItem.Data<PanelDataObject>().is_buy = vip_row_data.is_buy == 1lock
             ShopItem.SetHasClass("IsVip", is_vip);
             ShopItem.SetHasClass("IsBuy", row_data.is_buy == 1);
             ShopItem.SetHasClass("IsLock", row_data.is_lock == 1);
@@ -89,12 +75,19 @@ const GameEventsSubscribeInit = () => {
 
             const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
             ShopItemCard.enabled = row_data.is_buy == 0 && row_data.is_lock == 0 && !is_vip;
+            ShopItemCard.Data<PanelDataObject>().item_key = row_data.key;
 
             const LockBtn = ShopItem.FindChildTraverse("LockBtn")!;
             LockBtn.enabled = row_data.is_buy == 0 && !is_vip;
 
             const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
             RefreshBtn.enabled = row_data.is_lock == 0 && !is_vip;
+
+            // 设置品质
+            const Rarity = ShopItemJson.rarity;
+            for (let r = 1; r <= 7; r++) {
+                ShopItem.SetHasClass("rare_" + r, Rarity == r)
+            }
         }
 
     })
@@ -103,13 +96,20 @@ const GameEventsSubscribeInit = () => {
  * 弹窗购物
  * @param item_order 
  */
-export const OpenPopupsPurchaseItem = (item_order: number, item_key?: string) => {
+export const OpenPopupsPurchaseItem = (item_order: number, item_key: string) => {
     // $.Msg(["OpenPopupsPurchaseItem", item_order]);
     PurchaseConfirm.Data<PanelDataObject>().index = item_order;
-    // PurchaseConfirm.SetDialogVariable("item_key", item_key);
     PurchaseConfirm.AddClass("Show");
-    PopupModal.AddClass("Open");
+    PurchaseConfirm.SetDialogVariable("item_key", $.Localize(`#custom_shopitem_${item_key}`))
 
+    const ShopItemJson = MysteriousShopConfig[item_key as keyof typeof MysteriousShopConfig];
+    const ItemRarity = ShopItemJson.rarity;
+    for (let r = 1; r <= 7; r++) {
+        PurchaseConfirm.SetHasClass("rare_" + r, r == ItemRarity);
+        
+    }
+
+    PopupModal.AddClass("Open");
     BtnConfirm.SetPanelEvent("onactivate", () => {
         ClosedPopups();
         GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
@@ -183,7 +183,8 @@ export const CreatePanel = () => {
 
         const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
         ShopItemCard.SetPanelEvent("onactivate", () => {
-            OpenPopupsPurchaseItem(i);
+            let item_key = ShopItemCard.Data<PanelDataObject>().item_key
+            OpenPopupsPurchaseItem(i, item_key);
         })
     }
 

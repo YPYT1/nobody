@@ -43,15 +43,15 @@ const CustomGameEventsSubscribe = () => {
     // 符文
     GameEvents.Subscribe("RuneSystem_GetPlayerRuneData", event => {
         let list_data = Object.values(event.data);
-
+        // $.Msg(["list_data", list_data])
         for (let row of list_data) {
-            $.Msg(row)
+            // $.Msg(row)
             let name = row.name;
             let ItemBorder = ItemList_Rune.FindChildTraverse(name);
             if (ItemBorder == null) {
                 let ItemBorder = $.CreatePanel("Panel", ItemList_Rune, name);
                 ItemBorder.BLoadLayoutSnippet("ItemBorder")
-                // ItemBorder.AddClass("NoCount")
+                ItemBorder.AddClass("NoCount")
 
                 let ItemData = RuneConfigJson[name as keyof typeof RuneConfigJson];
                 let ItemImage = ItemBorder.FindChildTraverse("ItemImage") as ImagePanel;
@@ -60,16 +60,13 @@ const CustomGameEventsSubscribe = () => {
                 ItemBorder.SetHasClass("rare_" + row.level, true)
                 ItemBorder?.SetDialogVariableInt("count", row.level)
                 ItemBorder.SetPanelEvent("onmouseover", () => {
-                    ShowCustomTooltip(ItemBorder, "rune", name, -1, row.level)
+                    ShowCustomTooltip(ItemBorder, "rune", name, -1, row.level_index)
 
                 })
                 ItemBorder.SetPanelEvent("onmouseout", () => {
                     HideCustomTooltip()
                 })
             }
-            // $.Msg(["row.level",row.level])
-            
-            // ItemBorder.SetDialogVariableInt("count", row.);
         }
 
     })
@@ -77,10 +74,8 @@ const CustomGameEventsSubscribe = () => {
 
     GameEvents.Subscribe("MysticalShopSystem_GetPlayerShopBuyData", event => {
         let list_data = Object.values(event.data.player_shop_buy_data);
-        // $.Msg(list_data)
         let prop_count: { [key: string]: number } = {}
         for (let row of list_data) {
-            // $.Msg(row)
             let item_key = row.item_key;
             let count = row.count;
             let ItemData = MysteriousShopConfig[item_key as keyof typeof MysteriousShopConfig];

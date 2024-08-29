@@ -327,3 +327,4 @@ interface SpecialvalueOfTableSpecialProps {
     }
 }
 
+declare type PopupsType = "Damage" | "Miss" | "Heal"

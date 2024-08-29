@@ -11,6 +11,7 @@ export class modifier_rune_effect extends BaseModifier {
 
     caster: CDOTA_BaseNPC;
     ability: CDOTABaseAbility;
+    player_id: PlayerID;
 
     _rune_object: { [rune: string]: AbilityValuesProps };
 
@@ -22,6 +23,7 @@ export class modifier_rune_effect extends BaseModifier {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         this.ability = this.GetAbility();
+        this.player_id = this.caster.GetPlayerOwnerID();
         this._rune_object = {}
         this.OnRefresh(params);
         this.StartIntervalThink(1)
@@ -35,7 +37,8 @@ export class modifier_rune_effect extends BaseModifier {
     }
 
     Rune_InputAbilityValues(rune_name: string, rune_input: AbilityValuesProps): void {
-        this._rune_object[rune_name] = rune_input
+        this._rune_object[rune_name] = rune_input;
+        GameRules.CustomAttribute.UpdataPlayerSpecialValue(this.player_id)
     }
 
     OnRefresh(params: any): void {
@@ -43,7 +46,7 @@ export class modifier_rune_effect extends BaseModifier {
         // 更新符文效果
     }
 
-    Rune_OnKilled(hTarget: CDOTA_BaseNPC): void {
+    OnKillEvent(hTarget: CDOTA_BaseNPC): void {
         // 通用符文11	击杀敌人时有15%概率获得5%/10%/15%伤害加成，持续5秒，最高5层
         if (this._rune_object["rune_11"]) {
             if (RollPercentage(this.Rune_Object("rune_11", 'chance'))) {
@@ -92,12 +95,12 @@ export class modifier_rune_effect extends BaseModifier {
      * 可能的参数 受伤,伤害来源,伤害类型,伤害数值
      * @param params 
      */
-    Rune_BeInjured(params: any) {
+    OnBeInjured(params: ApplyCustomDamageOptions) {
         // rune_9	通用符文9	移速提高30%，受到伤害后失去该效果8秒
         if (this._rune_object["rune_9"]) {
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_9_debuff", {
                 'MoveSpeed': {
-                    "BasePercent": 30,
+                    "BasePercent": -30,
                 }
             }, 8)
         }
@@ -132,12 +135,13 @@ export class modifier_rune_effect extends BaseModifier {
         // rune_20	通用符文20	"附近每存在一个敌军，提高自身%AttackSpeed%攻击速度,最高提升%MaxValue%%%
         if (this._rune_object["rune_20"]) {
             let max_value = this.Rune_Object("rune_20", 'MaxValue');
+            let distance = this.Rune_Object("rune_20", "distance")
             let StackAttackSpeed = this.Rune_Object("rune_20", "StackAttackSpeed");
             let enemies = FindUnitsInRadius(
                 DotaTeam.GOODGUYS,
                 this.caster.GetAbsOrigin(),
                 null,
-                600,
+                distance,
                 UnitTargetTeam.ENEMY,
                 UnitTargetType.BASIC + UnitTargetType.HERO,
                 UnitTargetFlags.NONE,
@@ -151,6 +155,7 @@ export class modifier_rune_effect extends BaseModifier {
                 }
             }
             let bonus_value = math.min((enemies.length + boss_bonus) * StackAttackSpeed, max_value);
+            // print("bonus_value",bonus_value)
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_20", {
                 "AttackSpeed": {
                     "Base": bonus_value,

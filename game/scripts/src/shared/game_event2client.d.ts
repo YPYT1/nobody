@@ -49,6 +49,14 @@ declare interface CustomGameEventDeclarations {
         };
     };
 
+    CMsg_PopupUnitState: {
+        data: {
+            unit:EntityIndex,
+            popup_type: PopupsType,
+            amount: number,
+        }
+    }
+
     ResourceSystem_SendPlayerResources: {
         data: { [key in PlayerResourceTyps]: number }
     }
@@ -76,4 +84,6 @@ declare interface CustomGameEventDeclarations {
             is_attack: 0 | 1;
         };
     };
+
+
 }

@@ -108,7 +108,7 @@ export class modifier_basic_move extends BaseModifier {
         // }
         // print("OnMoveStateChange", state)
         // prop_30	【极速护符】	原地不动时，技能急速加成提高15%,冷却上限提高15%
-        if (this.parent.prop_level_index['prop_30']) {
+        if (this.parent.prop_count['prop_30']) {
             if (state) {
                 // 移动
                 GameRules.CustomAttribute.SetAttributeInKey(this.parent, "prop_30", {

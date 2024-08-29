@@ -79,11 +79,21 @@
                     
                 </Panel>
             </Panel>
-            <Panel class="ButtonGroup">
-                <Button id="NextGameBtn">
-                    <Label text="#哦" />
-                </Button>
-                <Panel class="ToNextGame"/>
+            <Panel id="BotBtnList" class="ShowClosed">
+                <Panel class="BotBtnClosed flow-right hor-right">
+                    <Button id="ClosedBtn" class="btn">
+                        <Label text="#哦" />
+                    </Button>
+                    <Panel class="Arrow"/>
+                </Panel>
+                <Panel class="BotBtnOpen flow-down hor-right">
+                    <Panel class="Arrow Left"/>
+                    <Button id="ShowBtn" class="btn">
+                        <Label text="#本局结算" />
+                    </Button>
+                </Panel>
+
+                
             </Panel>
         </Panel>
 	</Panel>

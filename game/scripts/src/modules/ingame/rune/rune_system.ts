@@ -532,6 +532,7 @@ export class RuneSystem extends UIEventRegisterClass {
             for(let k in AbilityValues){
                 let run_k = k; //as keyof typeof AbilityValues;
                 let value = this.GetKvOfUnit(hHero,item_name as "rune_2",run_k as "value")
+                print("rune_info","item_name",item_name,run_k,"value",value)
                 InputAbilityValues[run_k] = value
             }
             rune_mdf.Rune_InputAbilityValues(item_name,InputAbilityValues)
@@ -653,11 +654,12 @@ export class RuneSystem extends UIEventRegisterClass {
         T2 extends typeof RuneConfig[Key],
     >(hUnit: CDOTA_BaseNPC,rune_name: Key, ability_key : keyof T2["AbilityValues"]) {
         if(IsServer()){
-            let level_index = hUnit.rune_level_index[rune_name]
+            let level_index = hUnit.rune_level_index[rune_name];
+            print("level_index",level_index)
             if (level_index == null) {
                 return 0
             } else {
-                return this.GetTKV(rune_name, ability_key, level_index - 1)
+                return this.GetTKV(rune_name, ability_key, level_index)
             }
         } else {
             // let player_id = hUnit.GetPlayerOwnerID();

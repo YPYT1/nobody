@@ -176,7 +176,7 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
 
         TalentNodeButton.SetPanelEvent("onmouseover", () => {
             let level = TalentNode.Data<PanelDataObject>().used as number;
-            $.Msg(["ShowCustomTooltip TalentNodeButton", id, level])
+            // $.Msg(["ShowCustomTooltip TalentNodeButton", id, level])
             ShowCustomTooltip(TalentNodeButton, "talent_tree", "", id, level)
         })
 

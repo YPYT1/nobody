@@ -14,3 +14,11 @@ export class modifier_state_invincible extends BaseModifier {
     }
 
 }
+
+@registerModifier()
+export class modifier_state_bloodmage extends BaseModifier {
+
+    RemoveOnDeath(): boolean { return false }
+    IsHidden(): boolean { return true; }
+    IsPermanent(): boolean { return true }
+}

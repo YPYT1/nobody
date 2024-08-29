@@ -1,4 +1,6 @@
 
+import { modifier_prop_effect } from "../../../modifier/prop_effect/modifier_prop_effect";
+import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_rune_effect";
 import { reloadable } from "../../../utils/tstl-utils";
 
 /**
@@ -77,31 +79,30 @@ export class DamageSystem {
         if (hAttacker.GetTeam() == DotaTeam.BADGUYS) {
             return this.ApplyDamageForBadTeam(params)
         }
-
         let hAbility = params.ability;
-
-
         let element_type = params.element_type ?? ElementTypes.NONE;
         let is_primary = params.is_primary ?? false;
         let is_crit = 0;
-
+        let critical_flag = params.critical_flag ?? 0;
+        // 暴击
+        let CriticalChance = hAttacker.custom_attribute_value.CriticalChance;
+        let CriticalDamage = hAttacker.custom_attribute_value.CriticalDamage;
         // 乘区计算
         let SelfAbilityMul = (params.SelfAbilityMul ?? 100) * 0.01;
         let DamageBonusMul = (params.DamageBonusMul ?? 0) + hAttacker.custom_attribute_value.DamageBonusMul;
         let AbilityImproved = (params.AbilityImproved ?? 0) + hAttacker.custom_attribute_value.AbilityImproved;
-        let ElementDmgMul = (params.ElementDmgMul ?? 0);
+        let ElementDmgMul = (params.ElementDmgMul ?? 0) + hAttacker.custom_attribute_value.AllElementDamageBonus;
         let FinalDamageMul = (params.FinalDamageMul ?? 0) + hAttacker.custom_attribute_value.FinalDamageMul;
         /** 元素伤害 */
         let ElementResist = 100;
         // 乘区
-        DamageBonusMul + this.GetBonusDamageFromProp(params)
+        DamageBonusMul += this.GetBonusDamageFromProp(params)
         // 游侠天赋击破效果
         let drow_13_stack_buff = hTarget.FindModifierByName("modifier_drow_2a_a_debuff")
         if (drow_13_stack_buff) {
             let stack = drow_13_stack_buff.GetStackCount();
             let stack_income = GameRules.HeroTalentSystem.GetTalentKvOfUnit(
                 drow_13_stack_buff.GetCaster(),
-
                 "13",
                 'value'
             )
@@ -120,7 +121,7 @@ export class DamageSystem {
                     GameRules.ElementEffect.SetFirePrimary(params.attacker, params.victim)
                 }
                 // prop_3	【啊，是火！】	火元素技能造成伤害的灼烧会额外增加攻击力40%的伤害，并降低火元素抗性20%，持续3秒。
-                if (params.attacker.prop_level_index["prop_3"]) {
+                if (params.attacker.prop_count["prop_3"]) {
                     let FireResist = GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_3', 'FireResist');
                     let duration = GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_3', 'duration');
                     GameRules.EnemyAttribute.SetAttributeInKey(params.victim, "prop_3_effect", {
@@ -161,8 +162,8 @@ export class DamageSystem {
             return ApplyDamage(params);
         }
 
-        // print(params.damage, SelfAbilityMul, DamageBonusMul, AbilityImproved, ElementDmgMul, FinalDamageMul,'damagetype',params.damage_type)
-
+        print(params.damage, "SelfAbilityMul:", SelfAbilityMul, DamageBonusMul, AbilityImproved, ElementDmgMul, FinalDamageMul, 'damagetype', params.damage_type)
+        // print("DamageBonusMul",DamageBonusMul)
         /**
          * 造成伤害1=(攻击者攻击力*【1+攻击力加成百分比】*对应技能伤害)*伤害加成*(1+最终伤害)*技能增强*元素伤害百分比*远程或近战伤害增加百分比
             造成伤害2=固定伤害（=攻击者固定伤害-受攻击者固定伤害减免）【造成伤害最小值1】
@@ -177,6 +178,12 @@ export class DamageSystem {
             ;
         // print("ElementResist",ElementResist)
         params.damage = math.floor(params.damage * increased_injury);
+
+        // 暴击
+        if (critical_flag != -1 && RollPercentage(CriticalChance)) {
+            is_crit = 1;
+            params.damage = math.floor(params.damage * (1 + CriticalDamage * 0.01))
+        }
         PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type)
         return ApplyDamage(params);
     }
@@ -188,6 +195,7 @@ export class DamageSystem {
      */
     ApplyDamageForBadTeam(params: ApplyCustomDamageOptions) {
         // 闪避判定
+        // print("damage",params.damage)
         let custom_attribute_value = params.victim.custom_attribute_value;
         if (custom_attribute_value == null) {
             return ApplyDamage(params);
@@ -196,9 +204,16 @@ export class DamageSystem {
         let EvasionProb = custom_attribute_value ? custom_attribute_value.EvasionProb : 0;
         if (RollPercentage(EvasionProb)) {
             // 闪避
-            PopupMiss(params.victim)
+            GameRules.CMsg.Popups(params.victim, 'Miss', 0, params.victim.GetPlayerOwner())
             return 0
         }
+
+        let rune_buff = params.victim.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
+        if (rune_buff) { rune_buff.OnBeInjured(params) }
+
+        let prop_buff = params.victim.FindModifierByName("modifier_prop_effect") as modifier_prop_effect;
+        if (prop_buff) { prop_buff.OnBeInjured(params) }
+
         // 护甲
         let armor = custom_attribute_value.PhyicalArmor ?? 0;
         params.damage = this.GetReduction(
@@ -208,45 +223,11 @@ export class DamageSystem {
             params.element_type
         );
         params.damage_type = DamageTypes.PURE;
-        // prop_17	【刃甲】	反弹40%受到的伤害
-        if (params.victim.prop_level_index["prop_17"]) {
-            let value = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_17', 'value');
-            let attack_damage = params.damage * value * 0.01;
-            let hAbility = params.victim.FindAbilityByName("public_attribute")
-            this.ApplyDamage({
-                victim: params.attacker,
-                attacker: params.victim,
-                damage: attack_damage,
-                damage_type: DamageTypes.PHYSICAL,
-                ability: hAbility,
-                element_type: ElementTypes.NONE,
-                is_primary: false,
-            })
-        }
 
-        // prop_20	【你的滑板孩】	常驻移动速度+25%，但在受到伤害后变为移动速度降低50%持续3秒
-        if (params.victim.prop_level_index["prop_20"]) {
-            let move_speed_pct = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_20', 'move_speed_pct');
-            let duration = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_20', 'duration');
-            GameRules.CustomAttribute.SetAttributeInKey(params.victim, "prop_20_debuff", {
-                'MoveSpeed': {
-                    'BasePercent': move_speed_pct
-                }
-            }, duration)
-        }
-
-        // prop_27	【永世法衣】	增加40%技能强度，受到伤害时回复5点法力值（超稀有）
-        if (params.victim.prop_level_index["prop_27"]) {
-            let restore_mana = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_27', 'restore_mana');
-            GameRules.BasicRules.RestoreMana(params.victim, restore_mana)
-        }
-
-        // prop_38	【缚灵索】	攻击自身的敌人会被束缚1秒
-        if (params.victim.prop_level_index["prop_38"]) {
-            let root_duration = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_38', 'root_duration');
-            params.attacker.AddNewModifier(params.victim, null, "modifier_shop_prop_38", {
-                duration: root_duration
-            })
+        params.damage = params.damage * (100 - custom_attribute_value.DmgReductionPct) * 0.01;
+        if (params.damage <= 0) {
+            GameRules.CMsg.Popups(params.victim, 'Miss', 0, params.victim.GetPlayerOwner())
+            return 0
         }
         return ApplyDamage(params);
     }
@@ -264,16 +245,19 @@ export class DamageSystem {
         }
 
         // prop_10	【生人勿进】	对自身250码范围内的敌人造成的伤害提升25%
-        if (params.attacker.prop_level_index["prop_10"] && distance < 250) {
-            bonus += GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_10', 'harm')
+        // DeepPrintTable(params.attacker.prop_count)
+        // print(params.attacker.prop_count["prop_10"] , distance < 250)
+        if (params.attacker.prop_count["prop_10"] && distance < 250) {
+            bonus += GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_10', 'harm') * params.attacker.prop_count["prop_10"];
+
         }
         // prop_11	【远有远的好处】	对自身600码以外的敌人造成的伤害提升25%
-        if (params.attacker.prop_level_index["prop_11"] && distance > 600) {
+        if (params.attacker.prop_count["prop_11"] && distance > 600) {
             bonus += GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_11', 'harm')
         }
 
         // prop_18	【致命及砍到】	对生命值大于80%小于20%的单位造成的伤害提升15%
-        if (params.attacker.prop_level_index["prop_18"]) {
+        if (params.attacker.prop_count["prop_18"]) {
             let more_than_pct = GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_18', 'more_than_pct');
             let less_than_pct = GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_18', 'less_than_pct');
             let health_pct = params.victim.GetHealthPercent();
@@ -298,7 +282,7 @@ export class DamageSystem {
             }
         }
 
-
+        // print("final bonus",bonus)
         return bonus
     }
 }

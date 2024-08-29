@@ -11,16 +11,17 @@
 
 #GameEndContainer {
     width: 100%;
-    height: 800px;
-    margin-top: 100px;
+    height: 100%;
+    // 
 
     overflow: noclip;
     // vertical-align: middle;
 
 
     .Content {
+        margin-top: 100px;
         width: 100%;
-        height: 100%;
+        height: 800px;
         background-color: rgba(0, 0, 0, 0.815);
         overflow: noclip;
         flow-children: right;
@@ -47,6 +48,28 @@
         flow-children: down;
         transform: translateY(-50px);
     }
+
+
+
+    .BotBtnOpen {
+        opacity: 0;
+        margin-top: -64px;
+    }
+
+    .BotBtnClosed {
+        opacity: 1;
+    }
+
+    &.Closed {
+        .BotBtnOpen {
+            opacity: 1;
+        }
+
+        .BotBtnClosed {
+            opacity: 0;
+        }
+    }
+
 }
 
 #MvpModelPanel {
@@ -97,13 +120,14 @@
     // border: 1px solid #ffffff;
 }
 
-.ButtonGroup {
-    margin-bottom: 12px;
+#BotBtnList {
+    margin-bottom: 130px;
     horizontal-align: right;
-    flow-children: right;
+    flow-children: down;
     vertical-align: bottom;
 
-    #NextGameBtn {
+    #ShowBtn,
+    #ClosedBtn {
         vertical-align: middle;
         width: 183px;
         height: 54px;
@@ -126,12 +150,17 @@
         }
     }
 
-    .ToNextGame {
+    .Arrow {
         margin-left: 4px;
         width: 101px;
         height: 56px;
         background-image: url("file://{images}/custom_game/hud/game_end/next_game_arrow.png");
         vertical-align: middle;
+        horizontal-align: right;
+
+        &.Left {
+            transform: scaleX(-1.0);
+        }
     }
 }
 

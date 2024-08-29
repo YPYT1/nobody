@@ -53,7 +53,7 @@ export class modifier_drow_1c extends modifier_drow_1 {
 
     UpdataSpecialValue(): void {
         this.fakeAttack = true;
-        this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "8", 'targes');
+        this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "8", 'targes') - 1;
         this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "9", "bonus_value");
         if (this.DamageBonusMul > 0) {
             this.element_type = ElementTypes.ICE;

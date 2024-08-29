@@ -1,4 +1,5 @@
 import { GetTextureSrc } from "../../common/custom_kv_method";
+import { SetLabelDescriptionExtra } from "../../utils/ability_description";
 import { default as MysteriousShopConfig } from "./../../json/config/game/shop/mysterious_shop_config.json"
 
 const MainPanel = $.GetContextPanel();
@@ -21,11 +22,19 @@ export function Init() {
         PropImage.SetImage(GetTextureSrc(textrue));
 
         let rarity = propData.rarity;
-        MainPanel.SetHasClass("rare_1", rarity == 1);
-        MainPanel.SetHasClass("rare_2", rarity == 2);
-        MainPanel.SetHasClass("rare_3", rarity == 3);
+        for (let r = 1; r <= 7; r++) {
+            MainPanel.SetHasClass("rare_" + r, rarity == r);
+        }
         MainPanel.SetDialogVariable("prop_title", $.Localize(`#custom_shopitem_${name}`))
-        MainPanel.SetDialogVariable("prop_desc", $.Localize(`#custom_shopitem_${name}_Description`))
+
+        let prop_desc = SetLabelDescriptionExtra(
+            $.Localize(`#custom_shopitem_${name}_Description`),
+            0,
+            propData.AbilityValues,
+            propData.ObjectValues
+        );
+        // $.Msg(["prop_desc",prop_desc])
+        MainPanel.SetDialogVariable("prop_desc", prop_desc)
         // SetAbilityBaseInfo(name, entityIndex)
     });
 }

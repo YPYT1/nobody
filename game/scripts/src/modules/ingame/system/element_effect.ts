@@ -33,7 +33,7 @@ export class ElementEffect {
         let buff = hTarget.AddNewModifier(hCaster, null, "modifier_element_effect_ice", {
             duration: 3
         })
-        if (hCaster.prop_level_index["prop_21"] && buff) {
+        if (hCaster.prop_count["prop_21"] && buff) {
             // prop_21	【斯嘉蒂之眼】	冰元素技能降低移速时，同时降低敌人30%攻击速度和20%冰元素抗性，持续3秒
             hTarget.AddNewModifier(hCaster, null, "modifier_shop_prop_21", {
                 duration: 3
@@ -53,7 +53,7 @@ export class ElementEffect {
             && !hTarget.HasModifier("modifier_element_effect_thunder")
         ) {
             // prop_22	【雷神之锤】	雷元素技能命中敌人时，50%概率额外追加3秒麻痹效果（相同敌人只受到一次效果）
-            if (hTarget.SpecialMark["prop_22"] == null && hCaster.prop_level_index["prop_22"]) {
+            if (hTarget.SpecialMark["prop_22"] == null && hCaster.prop_count["prop_22"]) {
                 let chance = GameRules.MysticalShopSystem.GetKvOfUnit(hCaster, "prop_22", 'chance');
                 if (RollPercentage(chance)) {
                     hTarget.SpecialMark["prop_22"] = 1;
@@ -94,7 +94,7 @@ export class ElementEffect {
         });
 
         // prop_23	【风儿吹】	风元素技能命中敌人时，被击退的敌人降低20%元素抗性并眩晕1秒
-        if (hCaster.prop_level_index["prop_23"]) {
+        if (hCaster.prop_count["prop_23"]) {
             let stun = GameRules.MysticalShopSystem.GetKvOfUnit(hCaster, "prop_23", 'stun')
             let value = GameRules.MysticalShopSystem.GetKvOfUnit(hCaster, "prop_23", 'value')
             GameRules.EnemyAttribute.SetAttributeInKey(hTarget, "prop_23", {

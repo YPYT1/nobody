@@ -9,14 +9,14 @@ export class special_blood_mage extends BaseAbility {
     // }
 }
 
-@registerModifier()
-export class modifier_special_blood_mage extends BaseModifier {
+// @registerModifier()
+// export class modifier_special_blood_mage extends BaseModifier {
 
-    // DeclareFunctions(): modifierfunction[] {
-    //     return [
-    //         ModifierFunction.CONVERT_MANA_COST_TO_HEALTH_COST
-    //     ]
-    // }
+//     // DeclareFunctions(): modifierfunction[] {
+//     //     return [
+//     //         ModifierFunction.CONVERT_MANA_COST_TO_HEALTH_COST
+//     //     ]
+//     // }
 
-    // GetModifierConvertManaCostToHealthCost() {}
-}
+//     // GetModifierConvertManaCostToHealthCost() {}
+// }

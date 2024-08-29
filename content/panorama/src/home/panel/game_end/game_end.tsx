@@ -1,6 +1,7 @@
 import { CreateServerItem } from "../../../common/server_item";
 
-const NextGameBtn = $("#NextGameBtn");
+const ShowBtn = $("#ShowBtn");
+const ClosedBtn = $("#ClosedBtn");
 const PlayerList = $("#PlayerList");
 const MainPanel = $.GetContextPanel();
 const GameEndContainer = $("#GameEndContainer");
@@ -57,11 +58,11 @@ const Init = () => {
 
                 let OriginExp = AbilityTypesRows.FindChildTraverse("OriginExp")!
                 let BonusExp = AbilityTypesRows.FindChildTraverse("BonusExp")!
-                AbilityTypesRows.SetDialogVariableInt("arms_level",1)
+                AbilityTypesRows.SetDialogVariableInt("arms_level", 1)
 
                 PlayExpAnimation(OriginExp, BonusExp, 50, 60);
 
-               
+
             }
 
         }
@@ -72,8 +73,12 @@ const Init = () => {
         params: {},
     })
 
-    NextGameBtn.SetPanelEvent("onactivate", () => {
-        GameEndContainer.ToggleClass("Closed");
+    ClosedBtn.SetPanelEvent("onactivate", () => {
+        GameEndContainer.AddClass("Closed");
+    })
+
+    ShowBtn.SetPanelEvent("onactivate", () => {
+        GameEndContainer.RemoveClass("Closed");
     })
 }
 

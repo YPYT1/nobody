@@ -91,14 +91,14 @@
     margin-right: 72px;
     padding: 4px 14px;
 
-    transform: translateX(350px);
+    // transform: translateX(350px);
     transition-property: transform;
     transition-duration: 0.1s;
-    // opacity: 0;
+    opacity: 0;
     // border: 1px solid #000000;
     &.Show {
-        // opacity: 1;
-        transform: translateX(0px);
+        opacity: 1;
+        // transform: translateX(0px);
     }
 
     .ItemListClass {
@@ -154,15 +154,19 @@
         }
 
 
-        &.rare_1 .ItemInfo { 
+        &.rare_3 .ItemInfo { 
             background-color: @rarity_color_3;
         }
 
-        &.rare_2 .ItemInfo { 
+        &.rare_4 .ItemInfo { 
             background-color: @rarity_color_4;
         }
 
-        &.rare_3 .ItemInfo { 
+        &.rare_5 .ItemInfo { 
+            background-color: @rarity_color_5;
+        }
+
+        &.rare_6 .ItemInfo { 
             background-color: @rarity_color_6;
         }
     }

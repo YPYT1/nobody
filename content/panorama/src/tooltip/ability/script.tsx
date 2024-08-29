@@ -2,7 +2,7 @@ import { default as ArmsComboJson } from "./../../json/config/game/arms_combo.js
 import { default as NpcAbilityCustom } from "./../../json/npc_abilities_custom.json";
 import { default as AbilityTypesJson } from "./../../json/config/game/const/ability_types.json";
 
-import { SetAbilityDescription, GetAbilityRarity } from '../../utils/ability_description';
+import { SetAbilityDescription, GetAbilityRarity, SetLabelDescriptionExtra } from '../../utils/ability_description';
 import { ConvertAttributeValues } from '../../utils/attribute_method';
 import { GetTextureSrc } from '../../common/custom_kv_method';
 import { GetHeroTalentTreeObject, GetHeroTalentTreeRowData } from "../../common/custom_talent";
@@ -82,7 +82,7 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
         // $.Msg(["entityIndex",entityIndex,ability_mana])
     }
 
-    
+
     // 图标
     const AbilityIcon = MainPanel.FindChildTraverse("AbilityIcon") as ImagePanel;
 
@@ -144,15 +144,15 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
 
     // 耗蓝耗血
     const queryUnit = Players.GetLocalPlayerPortraitUnit();
-    const is_blood_mage = Entities.GetAbilityByName(queryUnit,"special_blood_mage") != -1;
-    MainPanel.SetHasClass("blood_mage",is_blood_mage)
-    if (is_blood_mage){
+    const is_blood_mage = Entities.GetAbilityByName(queryUnit, "special_blood_mage") != -1;
+    MainPanel.SetHasClass("blood_mage", is_blood_mage)
+    if (is_blood_mage) {
         let health_cost = Entities.GetMaxHealth(queryUnit) * 0.01
         MainPanel.SetDialogVariable("health", `${health_cost.toFixed(0)}`);
     } else {
         MainPanel.SetDialogVariable("mana", `${ability_mana}`);
     }
-    
+
 
     // 名字与描述
     let ability_name_label = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}`)
@@ -212,12 +212,12 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
                 let TalentIcon = extra_panel.FindChildTraverse("TalentIcon") as ImagePanel;
                 let texture = row_data.img;
                 TalentIcon.SetImage(GetTextureSrc(texture))
-                let title = $.Localize(`#custom_talent_${heroname}_${key}`)
+                let title = $.Localize(`#custom_talent_${key}`)
                 extra_panel.SetDialogVariable("extra_title", title)
 
-                let TalentData = GetHeroTalentTreeRowData( key);
-                let talent_desc = $.Localize(`#custom_talent_${heroname}_${key}_desc`)
-                let extra_desc = FormatDescription(talent_desc, TalentData.AbilityValues, level, true);
+                let TalentData = GetHeroTalentTreeRowData(key);
+                let talent_desc = $.Localize(`#custom_talent_${key}_desc`)
+                let extra_desc = SetLabelDescriptionExtra(talent_desc, level, TalentData.AbilityValues, TalentData.ObjectValues, true);
                 extra_panel.SetDialogVariable("extra_desc", extra_desc)
             }
         }

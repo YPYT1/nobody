@@ -5,9 +5,10 @@
     <styles>
         <include src="./../../_styles/keyframes.less" />
         <include src="./../../_styles/styles.less" />
+        <include src="./../../_styles/components/tooltip.less" />
         <include src="./styles.less" />
     </styles>
-    <Panel class="tooltip_rune" hittest="false">
+    <Panel class="tooltip_rune tooltip_rare" hittest="false">
         <Panel class="Background">
             <Panel class="Header">
                 <Panel class="Top"/>
@@ -17,11 +18,11 @@
         </Panel>
         <Panel class="Bot" />
         <Panel class="TooltipContent">
-            <Panel class="Image">
-                <Image id="Image" />
+            <Panel class="Image RarityBorder">
+                <Image id="Image" class="RarityImage" />
             </Panel>
             <Panel class="Title">
-                <Label text="{s:title}"/>
+                <Label class="RarityLabel" text="{s:title}"/>
             </Panel>
             <Panel class="Description">
                 <Label text="{s:desc}" html="true" />

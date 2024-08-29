@@ -159,6 +159,33 @@ export class CMsg extends UIEventRegisterClass {
 
     }
 
+    Popups(target: CDOTA_BaseNPC, popup_type: PopupsType, amount: number, player?: CDOTAPlayerController) {
+        if (player) {
+            CustomGameEventManager.Send_ServerToPlayer(
+                player,
+                "CMsg_PopupUnitState",
+                {
+                    data: {
+                        unit:target.entindex(),
+                        popup_type: popup_type,
+                        amount: amount,
+                    }
+                }
+            )
+        } else {
+            CustomGameEventManager.Send_ServerToAllClients(
+                "CMsg_PopupUnitState",
+                {
+                    data: {
+                        unit:target.entindex(),
+                        popup_type: popup_type,
+                        amount: amount,
+                    }
+                }
+            )
+        }
+
+    }
 
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         if (cmd == "-msg") {

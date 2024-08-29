@@ -9,7 +9,9 @@
 	<snippets>
 		<snippet name="ShopItem">
 			<Panel class="ShopItem" hittest="false">
+				
 				<Button id="ShopItemCard" hittest="true">
+					<Panel class="ItemCardBorder" hittest="true"/>
 					<Panel id="ShopItemInfo" >
 						<Panel id="PurchaseBtn" hittest="false">
 							<Image id="ItemIcon" />
@@ -65,7 +67,9 @@
 		<Button id="PopupModal" class="ModalBackground">
 			<Panel id="PurchaseConfirm" class="PopupWindow">
 				<Panel class="PopupContent">
-					<Label text="是否购买 {s:item_key}"/>
+					<Label text="是否购买" html="true"/>
+					<Label class="RareLabel" text="{s:item_key}"/>
+
 				</Panel>
 				<Panel class="PopupFooter">
 					<Panel class="ButtonGroup">

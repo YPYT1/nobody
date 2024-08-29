@@ -60,8 +60,9 @@ export class CustomAttribute {
         hUnit.custom_attribute_key_table = {};
         hUnit.custom_attribute_conversion = {};
         hUnit.last_attribute_update = 0;
+        hUnit.CustomVariables = {};
 
-        hUnit.prop_level_index = {};
+        hUnit.prop_count = {};
         hUnit.hero_talent = {};
         hUnit.rune_level_index = {};
 
@@ -189,7 +190,7 @@ export class CustomAttribute {
     /**
      * 在游戏中初始化技能
      */
-    InitAbility(hUnit: CDOTA_BaseNPC){
+    InitAbility(hUnit: CDOTA_BaseNPC) {
         for (let index = 0; index < 5; index++) {
             let abi = hUnit.GetAbilityByIndex(index);
             hUnit.RemoveAbilityByHandle(abi);
@@ -200,6 +201,8 @@ export class CustomAttribute {
         hUnit.AddAbility("public_null_4").SetLevel(1);
         hUnit.AddAbility("public_null_5").SetLevel(1);
     }
+
+
     /** 计算属性 */
     AttributeCalculate(hUnit: CDOTA_BaseNPC, attr_key: AttributeMainKey[], is_init: boolean = false) {
         for (let main_key of attr_key) {
@@ -234,11 +237,15 @@ export class CustomAttribute {
                     let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
                     let base_value = 100;
                     for (let value of attr_values) {
-                        base_value *= (100 + value) * 0.01;
+                        base_value *= (100 - value) * 0.01;
                     }
+                    base_value = base_value - base_value % 0.001;
+                    // print("base_va",base_value)
                     mul_value = base_value * 0.01;
-                    hUnit.custom_attribute_value[main_key] = base_value;
+                    hUnit.custom_attribute_value[main_key] = 100 - base_value;
                 }
+
+                // print("main", main_key, mul_value)
                 hUnit.custom_attribute_table[main_key].MulRegion = mul_value
             }
         }
@@ -676,6 +683,21 @@ export class CustomAttribute {
     }
 
 
+    /**
+     * 击杀相关
+     * @param hAttacker 击杀者 
+     * @param hUnit 被击杀的单位
+     */
+    OnKillEvent(hAttacker: CDOTA_BaseNPC, hUnit: CDOTA_BaseNPC) {
+        let kill_restore_hp = hAttacker.custom_attribute_value.KillRestoreHp ?? 0;
+        if (kill_restore_hp > 0) { GameRules.BasicRules.Heal(hAttacker, kill_restore_hp) }
+
+        let kill_restore_mp = hAttacker.custom_attribute_value.KillRestoreMp ?? 0;
+        print("kill_restore_mp",kill_restore_mp)
+        if (kill_restore_mp > 0) { GameRules.BasicRules.RestoreMana(hAttacker, kill_restore_mp) }
+
+    }
+
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         if (cmd == "-init") {
@@ -715,10 +737,13 @@ export class CustomAttribute {
         }
 
         if (cmd == "-mulattr") {
-            for (let i = 0; i < 1; i++) {
+            for (let i = 0; i < 10; i++) {
                 let mul_key = DoUniqueString("mul_key");
                 this.SetAttributeInKey(hHero, mul_key, {
-                    'EvasionProb': {
+                    // 'EvasionProb': {
+                    //     "Base": 25,
+                    // },
+                    'DmgReductionPct': {
                         "Base": 50,
                     }
                 }, 5)
@@ -730,6 +755,11 @@ export class CustomAttribute {
             let debuff_emu = tonumber(args[0] ?? "1") as DebuffTypes;
             let debuff_duration = 2;
             GameRules.BuffManager.AddGeneralDebuff(hHero, hHero, debuff_emu, debuff_duration)
+        }
+
+        if(cmd == "-mana"){
+            let mana_amount = tonumber(args[0] ?? "0");
+            hHero.SetMana(mana_amount);
         }
     }
 }

@@ -1,3 +1,4 @@
+import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_rune_effect";
 import { reloadable } from "../../../utils/tstl-utils";
 
 /** 实体击杀 */
@@ -12,6 +13,12 @@ export class EntityKilled {
             let hAttacker = EntIndexToHScript(entindex_attacker) as CDOTA_BaseNPC;
             let iPlayerID = hAttacker.GetPlayerOwnerID();
             let hHero = PlayerResource.GetSelectedHeroEntity(iPlayerID);
+
+            GameRules.CustomAttribute.OnKillEvent(hAttacker, hKilled)
+
+            // 符文效果
+            let rune_buff = hKilled.FindModifierByName("modifier_rune_effect") as modifier_rune_effect
+            if (rune_buff) { rune_buff.OnKillEvent(hKilled) }
 
             // this.KilledOnMdf(hAttacker, hKilled)
             // let hAbility = EntIndexToHScript(entindex_inflictor) as CDOTABaseAbility;

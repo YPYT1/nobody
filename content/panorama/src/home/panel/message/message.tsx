@@ -76,7 +76,7 @@ function StartMessageTimer() {
     $.Schedule(0.1, StartMessageTimer);
 }
 
-export function MessageTimer() {
+function MessageTimer() {
     let current_time = Game.GetDOTATime(false, false);
     let CommonManager = $("#CommonManager");
     for (let i = 0; i < CommonManager.GetChildCount(); i++) {
@@ -92,7 +92,7 @@ export function MessageTimer() {
     }
 }
 
-export const SendErrorMessage = (params: CustomGameEventDeclarations["CMsg_SendErrorMsgToPlayer"]) => {
+const SendErrorMessage = (params: CustomGameEventDeclarations["CMsg_SendErrorMsgToPlayer"]) => {
 
     let MessagePanel = $.GetContextPanel();
     let msg = params.data;
@@ -144,7 +144,7 @@ const element_color: [number, number, number][] = [
     [161, 0, 140], // 暗
 ];
 
-export const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageNumberToClients"]) => {
+const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageNumberToClients"]) => {
     // $.Msg(["Popup_DamageNumberToClients",event])
     const duration = 1;
     let params = event.data;
@@ -177,6 +177,37 @@ let EventWarning = $("#EventWarning");
 let EventDuration: { [key: string]: number } = {
     "102": 5,
 }
+
+const CMsg_PopupUnitState = (params: CustomGameEventDeclarations["CMsg_PopupUnitState"]) => {
+    let data = params.data;
+    let popup_type = data.popup_type;
+    let target = data.unit;
+
+    let fx_name = "";
+    let fx_color: [number, number, number] = [255, 255, 255];
+    let fx_time = 1;
+    let fx_attach: ParticleAttachment_t = ParticleAttachment_t.PATTACH_POINT;
+    let fx_digits = 1
+    let fx_pre_symbol = 0;
+    let fx_post_symbol = 0;
+    let fx_number = data.amount;
+    if (popup_type == "Miss") {
+        fx_name = "particles/msg_fx/msg_damage.vpcf"
+        fx_pre_symbol = 5
+    } else {
+        fx_name = "particles/msg_fx/msg_damage.vpcf"
+    }
+
+    let effect_fx = Particles.CreateParticle(fx_name, ParticleAttachment_t.PATTACH_POINT, target)
+
+    Particles.SetParticleControl(effect_fx, 1, [fx_pre_symbol, fx_number, fx_post_symbol])
+    Particles.SetParticleControl(effect_fx, 2, [fx_time, fx_digits, 0])
+    Particles.SetParticleControl(effect_fx, 3, fx_color)
+
+    Particles.ReleaseParticleIndex(effect_fx);
+
+}
+
 const CMsg_SendMsgToAll = (params: CustomGameEventDeclarations["CMsg_SendMsgToAll"]) => {
     let data = params.data;
     let event_type = data.event_type;
@@ -204,6 +235,7 @@ const CMsg_SendMsgToAll = (params: CustomGameEventDeclarations["CMsg_SendMsgToAl
     }
 }
 
+
 export const Init = () => {
     StartMessageTimer();
     GameEvents.Subscribe("CMsg_SendCommonMsgToPlayer", event => {
@@ -215,7 +247,8 @@ export const Init = () => {
     GameEvents.Subscribe("CMsg_SendErrorMsgToPlayer", SendErrorMessage)
     GameEvents.Subscribe("Popup_DamageNumberToClients", DamageFloating)
     GameEvents.Subscribe("CMsg_SendMsgToAll", CMsg_SendMsgToAll)
-
+    GameEvents.Subscribe("CMsg_PopupUnitState", CMsg_PopupUnitState)
+    
 }
 
 (function () {

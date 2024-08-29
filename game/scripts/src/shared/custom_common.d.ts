@@ -73,6 +73,7 @@ declare interface ApplyCustomDamageOptions {
 }
 
 declare interface ProjectileExtraData {
+    /** 技能基础伤害 */
     a: number;
     et?: ElementTypes;
     dt?: DamageTypes;

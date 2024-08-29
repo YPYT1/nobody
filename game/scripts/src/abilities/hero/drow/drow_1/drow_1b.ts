@@ -95,7 +95,7 @@ export class modifier_drow_1b extends modifier_drow_1 {
             this.caster.SetContextThink(DoUniqueString("shot"), () => {
                 this.LaunchArrows(vCaster, vVelocity, attack_damage);
                 return null
-            }, 0.3)
+            }, 0.5)
         }
     }
 

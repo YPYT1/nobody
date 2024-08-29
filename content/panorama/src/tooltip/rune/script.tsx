@@ -14,23 +14,22 @@ export function Init() {
 
     MainPanel.SetPanelEvent("ontooltiploaded", () => {
 
-        let rarity = $.GetContextPanel().GetAttributeInt("level", 0);
+        let index = $.GetContextPanel().GetAttributeInt("level", 0);
         let name = $.GetContextPanel().GetAttributeString("name", "");
-
         let Data = RuneConfig[name as keyof typeof RuneConfig];
+        let rarity = Data.item_level_section[index];
         let Image = $("#Image") as ImagePanel;
         let textrue = Data.AbilityTextureName;
         Image.SetImage(GetTextureSrc(textrue));
-        MainPanel.SetHasClass("rare_1", rarity == 1);
-        MainPanel.SetHasClass("rare_2", rarity == 2);
-        MainPanel.SetHasClass("rare_3", rarity == 3);
+        for (let r = 1; r <= 7; r++) {
+            MainPanel.SetHasClass("rare_" + r, rarity == r);
+        }
         MainPanel.SetDialogVariable("title", $.Localize(`#custom_${name}`))
 
-        // let row_rune_data = RuneConfig[name];
         let ObjectValues = Data.ObjectValues;
         let AbilityValues = Data.AbilityValues;
 
-        let rune_desc = SetLabelDescriptionExtra($.Localize(`#custom_${name}_Description`), rarity, AbilityValues, ObjectValues);
+        let rune_desc = SetLabelDescriptionExtra($.Localize(`#custom_${name}_Description`), index, AbilityValues, ObjectValues);
         MainPanel.SetDialogVariable("desc", rune_desc)
         // MainPanel.SetDialogVariable("desc", $.Localize(`#custom_${name}_Description`))
         // SetAbilityBaseInfo(name, entityIndex)

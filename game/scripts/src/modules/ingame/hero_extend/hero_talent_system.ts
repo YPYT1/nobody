@@ -439,11 +439,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     //添加到英雄天赋去
                     hero.hero_talent[key] = this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc;
 
-                    // 添加99层数被动属性
-                    
-                    if (tier_number == 99){
+                    //添加属性
+                    let ObjectValues  = HeroTalentCounfg.ObjectValues;
+                    if(Object.keys(ObjectValues).length > 0){
                         let tire_level = hero.hero_talent[key]
-                        let ObjectValues  = HeroTalentCounfg.ObjectValues;
+                        
                         let attr_count : CustomAttributeTableType = {};
                         for (let Attr in ObjectValues) {
                             // let attr_values = this.GetKVAttr(rune_name, key, level_index);
@@ -468,6 +468,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         }
                         GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_"+key,attr_count)
                     }
+
                     if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
                         this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
                     }
