@@ -403,7 +403,7 @@ export class RuneSystem extends UIEventRegisterClass {
             fate_data_info.is_check = true;
 
             GameRules.RuneSystem.GetRuneSelectData(player_id, params);
-            
+
             //刷新一次
             if (GameRules.RuneSystem.player_fate_data[player_id].length > GameRules.RuneSystem.player_fate_data_index[player_id]) {
                 GameRules.RuneSystem.RefreshShopList(player_id, {});
@@ -445,6 +445,7 @@ export class RuneSystem extends UIEventRegisterClass {
         }
         let is_more_level = RuneConfig[item_name as keyof typeof RuneConfig].is_item_level == 1 ? true : false;
         let is_level_up = RuneConfig[item_name as keyof typeof RuneConfig].is_level_up == 1 ? true : false;
+        let is_all = RuneConfig[item_name as keyof typeof RuneConfig].is_all;
         let rune_level = RuneConfig[item_name as keyof typeof RuneConfig].item_level_section[level_index];
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
@@ -483,40 +484,68 @@ export class RuneSystem extends UIEventRegisterClass {
 
         GameRules.RuneSystem.GetPlayerRuneData(player_id, params);
         //获得属性
-        GameRules.RuneSystem.GetRuneValues(player_id, item_name, level_index);
+        GameRules.RuneSystem.GetRuneValues(player_id, item_name, level_index , is_all);
         //增加通过其他符文获取的符文数量
         GameRules.RuneSystem.player_rune_count[player_id] ++;
         // 更新符文MDF
         this.UpdateRuneMdf(item_name,hHero)
     }
     //获得符文属性
-    GetRuneValues(player_id: PlayerID, rune_name: string, level_index: number) {
-
+    GetRuneValues(player_id: PlayerID, rune_name: string, level_index: number , is_all : number) {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         let ObjectValues = RuneConfig[rune_name as keyof typeof RuneConfig].ObjectValues;
         let attr_count : CustomAttributeTableType = {};
-        for (let Attr in ObjectValues) {
-            // let attr_values = this.GetKVAttr(rune_name, key, level_index);
-            if(!attr_count.hasOwnProperty(Attr)){
-                attr_count[Attr] = {};
-            }
-            for (const AttrType in ObjectValues[Attr]) {
-                if(typeof ObjectValues[Attr][AttrType] == "number"){
-                    attr_count[Attr][AttrType] = ObjectValues[Attr][AttrType];
-                }else{
-                    let Str = ObjectValues[Attr][AttrType] as string;
-                    let Str_List = Str.split(" ");
-                    let value = 0;
-                    if(Str_List.length <= (level_index + 1)){ // 2  2
-                        value = tonumber(Str_List[Str_List.length - 1])
-                    }else{
-                        value = tonumber(Str_List[level_index])
+        if(is_all == 1){
+            for (const hero of HeroList.GetAllHeroes()) {
+                let my_player_id = hero.GetPlayerID();
+                for (let Attr in ObjectValues) {
+                    // let attr_values = this.GetKVAttr(rune_name, key, level_index);
+                    if(!attr_count.hasOwnProperty(Attr)){
+                        attr_count[Attr] = {};
                     }
-                    attr_count[Attr][AttrType] = value;
+                    for (const AttrType in ObjectValues[Attr]) {
+                        if(typeof ObjectValues[Attr][AttrType] == "number"){
+                            attr_count[Attr][AttrType] = ObjectValues[Attr][AttrType];
+                        }else{
+                            let Str = ObjectValues[Attr][AttrType] as string;
+                            let Str_List = Str.split(" ");
+                            let value = 0;
+                            if(Str_List.length <= (level_index + 1)){ // 2  2
+                                value = tonumber(Str_List[Str_List.length - 1])
+                            }else{
+                                value = tonumber(Str_List[level_index])
+                            }
+                            attr_count[Attr][AttrType] = value;
+                        }
+                    }
+                }
+                GameRules.CustomAttribute.SetAttributeInKey(hero , "r_s_" + rune_name + "_"+ player_id + "_" + my_player_id, attr_count)
+            }
+        }else{
+            for (let Attr in ObjectValues) {
+                // let attr_values = this.GetKVAttr(rune_name, key, level_index);
+                if(!attr_count.hasOwnProperty(Attr)){
+                    attr_count[Attr] = {};
+                }
+                for (const AttrType in ObjectValues[Attr]) {
+                    if(typeof ObjectValues[Attr][AttrType] == "number"){
+                        attr_count[Attr][AttrType] = ObjectValues[Attr][AttrType];
+                    }else{
+                        let Str = ObjectValues[Attr][AttrType] as string;
+                        let Str_List = Str.split(" ");
+                        let value = 0;
+                        if(Str_List.length <= (level_index + 1)){ // 2  2
+                            value = tonumber(Str_List[Str_List.length - 1])
+                        }else{
+                            value = tonumber(Str_List[level_index])
+                        }
+                        attr_count[Attr][AttrType] = value;
+                    }
                 }
             }
+            GameRules.CustomAttribute.SetAttributeInKey(hHero , "r_s_" + rune_name , attr_count)
         }
-        GameRules.CustomAttribute.SetAttributeInKey(hHero , "r_s_" + rune_name , attr_count)
+        
     } 
 
     //失去符文属性
