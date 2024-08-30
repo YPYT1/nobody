@@ -166,7 +166,7 @@ export function FormatDescriptionExtra(
                     }
                     let value = special_num[i - 1]
                     let is_negative = value < 0;
-                    let col_value = `<span class="${class_name} ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
+                    let col_value = `<span class="${class_name} ${is_negative ? "is_negative" : ""}">${Math.abs(value)}${is_percent ? "%" : ""}</span>`
                     special_value.push(col_value)
                 }
 
@@ -184,7 +184,7 @@ export function FormatDescriptionExtra(
                 let value = special_num[curr_level - 1];
                 // $.Msg(["value",value])
                 let is_negative = value < 0;
-                let col_value = `<span class="GameplayVariable Current ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
+                let col_value = `<span class="GameplayVariable Current ${is_negative ? "is_negative" : ""}">${Math.abs(value)}${is_percent ? "%" : ""}</span>`
                 description_txt = description_txt.replaceAll(
                     `%${key}.${sub_key}%%%`,
                     col_value

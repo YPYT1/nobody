@@ -43,7 +43,7 @@ export function ShowCustomTooltip(
             panel,
             "custom_tooltip_ability",
             "file://{resources}/layout/custom_game/tooltip/ability/layout.xml",
-            `name=${name}&item_level=${item_level}&entityIndex=${entityIndex}&ext_int=${value}`
+            `name=${name}&slot=${item_level}&entityIndex=${entityIndex}&ext_int=${value}`
         );
     } else if (tooltip_type == "item") {
         $.DispatchEvent(

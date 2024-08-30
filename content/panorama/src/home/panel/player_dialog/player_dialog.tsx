@@ -133,12 +133,12 @@ export const Init = () => {
             let textrue = row_rune_data.AbilityTextureName;
             let rune_desc = SetLabelDescriptionExtra($.Localize(`#custom_${name}_Description`), index, AbilityValues, ObjectValues);
             RuneInfo.SetDialogVariable("rune_desc", rune_desc)
-            let level_label = Array(level + 1).join("I");
+            let level_label = Array(index + 1).join("I");
             // $.Msg(["index",index,level_label])
             RuneInfo.SetDialogVariable("rune_name", $.Localize(`#custom_${name}`) + " " + level_label)
-            RuneInfo.SetHasClass("rarity_1", level == 1)
-            RuneInfo.SetHasClass("rarity_2", level == 2)
-            RuneInfo.SetHasClass("rarity_3", level == 3)
+            RuneInfo.SetHasClass("rarity_4", level == 4)
+            RuneInfo.SetHasClass("rarity_5", level == 5)
+            RuneInfo.SetHasClass("rarity_6", level == 6)
             let img_src = GetTextureSrc(textrue)
             let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Panel;
             RuneIconBtn.RemoveAndDeleteChildren()

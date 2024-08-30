@@ -44,13 +44,14 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     let ability_name: string;
     let ability_level = 1;
     let ability_cooldown = 0;
-
+    let in_slot = -1;
     if (entityIndex > 0) {
         ability_name = Abilities.GetAbilityName(entityIndex);
         // $.Msg(["ability_name",ability_name])
         ability_level = Abilities.GetLevel(entityIndex)
         ability_cooldown = Abilities.GetCooldown(entityIndex);
         // ability_mana = Abilities.GetManaCost(entityIndex);
+        in_slot = $.GetContextPanel().GetAttributeInt("slot", -1);
     } else {
         ability_name = name;
     }
@@ -83,9 +84,9 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     }
 
 
+   
     // 图标
     const AbilityIcon = MainPanel.FindChildTraverse("AbilityIcon") as ImagePanel;
-
     const img_src = abilityData ? GetTextureSrc(abilityData.AbilityTextureName) : "";
     AbilityIcon.SetImage(img_src)
 
@@ -188,7 +189,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
     TalentAbilityExtra.RemoveAndDeleteChildren();
 
     // $.Msg(["heroname", heroname, ability_name])
-
+    let in_slot = $.GetContextPanel().GetAttributeInt("slot", -1);
     let netdata = CustomNetTables.GetTableValue("hero_talent", `${player_id}`)
     // $.Msg(netdata)
     if (netdata != null) {
@@ -198,7 +199,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
             if (level <= 0) { continue }
             let row_data = talent_data[key as keyof typeof talent_data]
             let link_ability = row_data.link_ability;
-            if (link_ability == ability_name) {
+            if (link_ability == ability_name || (row_data.tier_number == 99 &&  (row_data.index - 1) == in_slot)) {
                 let is_ability = row_data.is_ability == 1;
                 // $.Msg([ability_name, key, netdata[key]])
                 let extra_panel = $.CreatePanel("Panel", TalentAbilityExtra, "");;
@@ -217,9 +218,11 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
 
                 let TalentData = GetHeroTalentTreeRowData(key);
                 let talent_desc = $.Localize(`#custom_talent_${key}_desc`)
-                let extra_desc = SetLabelDescriptionExtra(talent_desc, level, TalentData.AbilityValues, TalentData.ObjectValues, true);
+                let extra_desc = SetLabelDescriptionExtra(talent_desc, level - 1, TalentData.AbilityValues, TalentData.ObjectValues, true);
                 extra_panel.SetDialogVariable("extra_desc", extra_desc)
             }
+
+            // 
         }
     }
 

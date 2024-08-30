@@ -26,7 +26,7 @@ function AutoUpdateAbility() {
 
 function UpdateAbility() {
     // let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
-    const queryUnit = Players.GetPlayerHeroEntityIndex(localPlayer) ;// Players.GetLocalPlayerPortraitUnit();
+    const queryUnit = Players.GetPlayerHeroEntityIndex(localPlayer);// Players.GetLocalPlayerPortraitUnit();
 
     const isHidden = Abilities.IsHidden(m_Ability);
 
@@ -39,16 +39,16 @@ function UpdateAbility() {
     const need_mana = Abilities.GetManaCost(m_Ability);
     const cooldown_ready = Abilities.IsCooldownReady(m_Ability)
 
-    const is_blood_mage = Entities.GetAbilityByName(queryUnit,"special_blood_mage") != -1;
-   
-    if(is_blood_mage){
+    const is_blood_mage = Entities.GetAbilityByName(queryUnit, "special_blood_mage") != -1;
+
+    if (is_blood_mage) {
         const health_pct = Entities.GetHealthPercent(queryUnit)
         MainPanel.SetHasClass("insufficient_mana", health_pct < 10);
     } else {
         MainPanel.SetHasClass("insufficient_mana", have_nmana < need_mana);
     }
-    
-    MainPanel.SetHasClass("is_disable",!is_enabled);
+
+    MainPanel.SetHasClass("is_disable", !is_enabled);
 
     // cooldown
     const cooldownLength = Abilities.GetCooldownLength(m_Ability);
@@ -70,7 +70,8 @@ function UpdateAbility() {
 }
 
 function AbilityShowTooltip() {
-    ShowCustomTooltip(AbilityContainer, "ability", "", m_Ability)
+    let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex
+    ShowCustomTooltip(AbilityContainer, "ability", "", m_Ability, m_SlotIndex)
 }
 
 function AbilityHideTooltip() {
