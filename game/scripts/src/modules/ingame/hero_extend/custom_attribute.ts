@@ -691,11 +691,8 @@ export class CustomAttribute {
     OnKillEvent(hAttacker: CDOTA_BaseNPC, hUnit: CDOTA_BaseNPC) {
         let kill_restore_hp = hAttacker.custom_attribute_value.KillRestoreHp ?? 0;
         if (kill_restore_hp > 0) { GameRules.BasicRules.Heal(hAttacker, kill_restore_hp) }
-
         let kill_restore_mp = hAttacker.custom_attribute_value.KillRestoreMp ?? 0;
-        print("kill_restore_mp",kill_restore_mp)
         if (kill_restore_mp > 0) { GameRules.BasicRules.RestoreMana(hAttacker, kill_restore_mp) }
-
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
@@ -736,15 +733,16 @@ export class CustomAttribute {
             })
         }
 
-        if (cmd == "-mulattr") {
-            for (let i = 0; i < 10; i++) {
+        if (cmd == "-attrtest") {
+            let value = [60,60]
+            for (let i = 0; i < 2; i++) {
                 let mul_key = DoUniqueString("mul_key");
                 this.SetAttributeInKey(hHero, mul_key, {
                     // 'EvasionProb': {
                     //     "Base": 25,
                     // },
                     'DmgReductionPct': {
-                        "Base": 50,
+                        "Base": value[i],
                     }
                 }, 5)
             }
@@ -757,7 +755,7 @@ export class CustomAttribute {
             GameRules.BuffManager.AddGeneralDebuff(hHero, hHero, debuff_emu, debuff_duration)
         }
 
-        if(cmd == "-mana"){
+        if (cmd == "-mana") {
             let mana_amount = tonumber(args[0] ?? "0");
             hHero.SetMana(mana_amount);
         }

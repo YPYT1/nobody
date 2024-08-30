@@ -20,7 +20,14 @@ export class BasicRules extends UIEventRegisterClass {
 
     /** 治疗触发 */
     Heal(hCaster: CDOTA_BaseNPC, fHealAmount: number, hAbility?: CDOTABaseAbility) {
-        hCaster.Heal(fHealAmount, hAbility)
+        hCaster.Heal(fHealAmount, hAbility);
+
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/generic_gameplay/generic_lifesteal.vpc",
+            ParticleAttachment.POINT,
+            hCaster
+        )
+        ParticleManager.ReleaseParticleIndex(effect_fx)
     }
 
     /** 回蓝 */

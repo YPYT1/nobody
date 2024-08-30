@@ -162,7 +162,7 @@ export class DamageSystem {
             return ApplyDamage(params);
         }
 
-        print(params.damage, "SelfAbilityMul:", SelfAbilityMul, DamageBonusMul, AbilityImproved, ElementDmgMul, FinalDamageMul, 'damagetype', params.damage_type)
+        // print(params.damage, "SelfAbilityMul:", SelfAbilityMul, DamageBonusMul, AbilityImproved, ElementDmgMul, FinalDamageMul, 'damagetype', params.damage_type)
         // print("DamageBonusMul",DamageBonusMul)
         /**
          * 造成伤害1=(攻击者攻击力*【1+攻击力加成百分比】*对应技能伤害)*伤害加成*(1+最终伤害)*技能增强*元素伤害百分比*远程或近战伤害增加百分比

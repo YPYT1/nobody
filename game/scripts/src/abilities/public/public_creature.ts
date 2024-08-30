@@ -44,7 +44,7 @@ export class modifier_public_creature extends BaseModifier {
         );
         if (enemies.length > 0) {
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
-            print("attack_damage",attack_damage)
+            // print("attack_damage",attack_damage)
             for (let enemy of enemies) {
                 ApplyCustomDamage({
                     victim: enemy,

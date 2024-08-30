@@ -25,6 +25,7 @@ export class drow_1b extends drow_1 {
             let ability_damage = extraData.a;
             let damage_vect = Vector(extraData.x, extraData.y, 0);
             // rune_29	游侠#4	穿透箭命中时有40%概率造成5倍伤害
+            print("rune_29_chance",this.rune_29_chance)
             if (RollPercentage(this.rune_29_chance)) {
                 ability_damage *= this.rune_29_mul
             }
@@ -37,7 +38,7 @@ export class drow_1b extends drow_1 {
                 element_type: ElementTypes.WIND,
                 is_primary: true,
                 damage_vect: damage_vect,
-                SelfAbilityMul: extraData.SelfAbilityMul ?? 100,
+                SelfAbilityMul: (extraData.SelfAbilityMul ?? 100) + this.BasicAbilityDmg,
                 DamageBonusMul: extraData.DamageBonusMul ?? 0,
                 // bonus_percent: bonus_percent,
             })
@@ -55,12 +56,11 @@ export class modifier_drow_1b extends modifier_drow_1 {
     UpdataSpecialValue(): void {
         this.proj_width = 90;
         this.fakeAttack = true;
-        this.lianshe_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "6", 'lianshe_chance');
+        this.lianshe_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "6", 'lianshe_chance');
         this.missile_count = this.ability.GetTypesAffixValue(1, "Missile", "skv_missile_count");
-        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "5", "bonus_value");
+        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "5", "bonus_value");
         this.proj_speed = this.ability.GetTypesAffixValue(this.caster.GetProjectileSpeed(), "Missile", "skv_missile_speed");
-        let attackrange = this.caster.Script_GetAttackRange() + 64;
-        this.missile_distance = this.ability.GetTypesAffixValue(attackrange, "Missile", "skv_missile_distance");
+
         // rune_28	游侠#3	穿透箭基础伤害提高200%
         this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_28", 'base_value');
     }
@@ -77,6 +77,8 @@ export class modifier_drow_1b extends modifier_drow_1 {
         if (has_run50buff) { attack_damage *= 2 }
         // print(this.base_value, this.bonus_value)
         // let bp_ingame = (this.base_value - 100) + this.bonus_value;
+        let attackrange = this.caster.Script_GetAttackRange() + 64;
+        this.missile_distance = this.ability.GetTypesAffixValue(attackrange, "Missile", "skv_missile_distance");
 
         this.LaunchArrows(vCaster, vVelocity, attack_damage);
 
@@ -93,7 +95,7 @@ export class modifier_drow_1b extends modifier_drow_1 {
 
         if (RollPercentage(this.lianshe_chance)) {
             this.caster.SetContextThink(DoUniqueString("shot"), () => {
-                this.LaunchArrows(vCaster, vVelocity, attack_damage);
+                this.LaunchArrows(this.caster.GetAbsOrigin(), vVelocity, attack_damage);
                 return null
             }, 0.5)
         }
@@ -101,7 +103,8 @@ export class modifier_drow_1b extends modifier_drow_1 {
 
     LaunchArrows(vCaster: Vector, vVelocity: Vector, attack_damage: number) {
         ProjectileManager.CreateLinearProjectile({
-            EffectName: "particles/econ/items/windrunner/windranger_arcana/windranger_arcana_spell_powershot_combo.vpcf",//G_PorjLinear.wind,
+            // EffectName: "particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf",
+            EffectName: "particles/econ/items/windrunner/windranger_arcana/windranger_arcana_spell_powershot_combo.vpcf",
             Ability: this.GetAbility(),
             vSpawnOrigin: vCaster,
             vVelocity: vVelocity,

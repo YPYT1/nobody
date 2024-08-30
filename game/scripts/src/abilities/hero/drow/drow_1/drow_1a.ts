@@ -37,6 +37,7 @@ export class drow_1a extends drow_1 {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
+            // print("this.SelfAbilityMul",this.SelfAbilityMul)
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
             let has_run50buff = this.caster.HasModifier("modifier_drow_5_buff_rune50");
             if (has_run50buff) { attack_damage *= 2 }
@@ -92,7 +93,7 @@ export class drow_1a extends drow_1 {
                 element_type: ElementTypes.FIRE,
                 ability: this,
                 is_primary: true,
-                SelfAbilityMul: this.SelfAbilityMul,
+                SelfAbilityMul: this.SelfAbilityMul + this.BasicAbilityDmg,
                 DamageBonusMul: this.DamageBonusMul + bonus,
                 // bonus_percent: bonus_percent,
             })

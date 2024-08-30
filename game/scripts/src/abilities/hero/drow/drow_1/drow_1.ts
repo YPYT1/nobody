@@ -10,12 +10,14 @@ import { modifier_drow_1a } from "./drow_1a";
 @registerAbility()
 export class drow_1 extends BaseHeroAbility {
 
+    BasicAbilityDmg: number;
+
     GetIntrinsicModifierName(): string {
         return "modifier_drow_1"
     }
 
     UpdataAbilityValue(): void {
-
+        this.BasicAbilityDmg = this.caster.custom_attribute_value.BasicAbilityDmg;
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
@@ -34,7 +36,7 @@ export class drow_1 extends BaseHeroAbility {
                 is_primary: true,
 
                 // 增伤
-                SelfAbilityMul: SelfAbilityMul,
+                SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
                 DamageBonusMul: extraData.DamageBonusMul,
                 // DamageBonusMul:0,
 
@@ -64,8 +66,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
     }
 
     UpdataAbilityValue(): void {
-        this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value")
-            + this.caster.custom_attribute_value.BasicAbilityDmg;
+        this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
 
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
     }

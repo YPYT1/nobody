@@ -48,8 +48,8 @@ export class modifier_prop_effect extends BaseModifier {
         this.object[prop_name] = rune_input
     }
 
-    Prop_OnKilled(hTarget: CDOTA_BaseNPC): void {
-        this.Prop_Object("prop_1", 'value')
+    OnKillEvent(hTarget: CDOTA_BaseNPC): void {
+    
     }
 
     OnIntervalThink(): void {

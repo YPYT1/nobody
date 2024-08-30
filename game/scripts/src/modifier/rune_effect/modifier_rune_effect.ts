@@ -67,7 +67,7 @@ export class modifier_rune_effect extends BaseModifier {
             if (RollPercentage(this.Rune_Object("rune_15", 'chance'))) {
                 let restore_lose_hp = this.Rune_Object('rune_15', 'restore_lose_hp')
                 let heal_value = this.caster.GetHealthDeficit() * restore_lose_hp * 0.01;
-                GameRules.BasicRules.Heal(this.caster, heal_value, this.ability)
+                GameRules.BasicRules.Heal(this.caster, heal_value, this.ability);
             }
         }
     }

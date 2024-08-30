@@ -38,7 +38,7 @@ export class drow_1c extends drow_1 {
                 damage_type: extraData.dt,
                 element_type: extraData.et,
                 is_primary: true,
-                SelfAbilityMul: SelfAbilityMul,
+                SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
                 DamageBonusMul: DamageBonusMul,
             })
         }

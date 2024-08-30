@@ -457,11 +457,31 @@ export class RuneSystem extends UIEventRegisterClass {
             }
             //增加符文数量
             GameRules.RuneSystem.player_rune_count[player_id] ++;
+
+            this.UpdateRuneMdf(item_name,hHero)
         } else {
             print("没有选择的天命");
         }
     }
 
+    // 添加符文和相关效果
+    
+    UpdateRuneMdf(name: string,hHero:CDOTA_BaseNPC){
+        // 更新符文MDF
+        let rune_mdf = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
+        if(rune_mdf){
+            let row_rune_data = RuneConfig[name as keyof typeof RuneConfig]
+            let AbilityValues = row_rune_data.AbilityValues;
+            let InputAbilityValues: AbilityValuesProps = {};
+            for(let k in AbilityValues){
+                // let run_k = k; //as keyof typeof AbilityValues;
+                let value = this.GetKvOfUnit(hHero,name as "rune_2",k as "value")
+                // print("rune_info","item_name",name,run_k,"value",value)
+                InputAbilityValues[k] = value
+            }
+            rune_mdf.Rune_InputAbilityValues(name,InputAbilityValues)
+        }
+    }
     /**
      * 获取符文
      */
@@ -525,18 +545,7 @@ export class RuneSystem extends UIEventRegisterClass {
         this.player_rune_count[player_id] ++;
 
         // 更新符文MDF
-        let rune_mdf = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
-        if(rune_mdf){
-            let AbilityValues = row_rune_data.AbilityValues;
-            let InputAbilityValues: AbilityValuesProps = {};
-            for(let k in AbilityValues){
-                let run_k = k; //as keyof typeof AbilityValues;
-                let value = this.GetKvOfUnit(hHero,item_name as "rune_2",run_k as "value")
-                print("rune_info","item_name",item_name,run_k,"value",value)
-                InputAbilityValues[run_k] = value
-            }
-            rune_mdf.Rune_InputAbilityValues(item_name,InputAbilityValues)
-        }
+        this.UpdateRuneMdf(item_name,hHero)
     }
     //获得符文属性
     GetRuneValues(player_id: PlayerID, rune_name: string, level_index: number) {
@@ -655,7 +664,6 @@ export class RuneSystem extends UIEventRegisterClass {
     >(hUnit: CDOTA_BaseNPC,rune_name: Key, ability_key : keyof T2["AbilityValues"]) {
         if(IsServer()){
             let level_index = hUnit.rune_level_index[rune_name];
-            print("level_index",level_index)
             if (level_index == null) {
                 return 0
             } else {
