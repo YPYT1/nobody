@@ -60,7 +60,7 @@
                 <Panel class='AbilityLabel'>
                     <Panel class="AbilityName">
                         <Label class='AbilityNameLabel' text="{s:ability_name}" />
-                        <Panel id='AbilityElement'>
+                        <Panel id='AbilityElement' >
                             <Panel class="ElementIcon element_1"/>
                             <Panel class="ElementIcon element_2"/>
                             <Panel class="ElementIcon element_3"/>
@@ -70,17 +70,18 @@
                         </Panel>
                         <Label class="AbilityLevel" text="Lv.{d:level}"/>
                     </Panel>
-                    <Panel id='AbilityCategoryType'>
-                        <Label class="TypeLabel Aoe" text="范围型"/>
-                        <Label class="TypeLabel Buff" text="增益型"/>
-                        <Label class="TypeLabel Dot" text="持续型"/>
-                        <Label class="TypeLabel Grow" text="成长性"/>
-                        <Label class="TypeLabel Missile" text="弹道型"/>
-                        <Label class="TypeLabel Orb" text="法球型"/>
-                        <Label class="TypeLabel Resource" text="理财型"/>
-                        <Label class="TypeLabel Summon" text="召唤型"/>
-                        <Label class="TypeLabel Surround" text="环绕型"/>
-                        <Label class="TypeLabel Targeting" text="目标型"/>
+                    <Panel id='AbilityCategoryType' class="flow-down">
+                        <Label class="TypeLabel Aoe" text="#custom_ability_type_Aoe"/>
+                        <Label class="TypeLabel Buff" text="#custom_ability_type_Buff"/>
+                        <Label class="TypeLabel Dot" text="#custom_ability_type_Dot"/>
+                        <Label class="TypeLabel Growth" text="#custom_ability_type_Growth"/>
+                        <Label class="TypeLabel Missile" text="#custom_ability_type_Missile"/>
+                        <Label class="TypeLabel Orb" text="#custom_ability_type_Orb"/>
+                        <Label class="TypeLabel Resource" text="#custom_ability_type_Resource"/>
+                        <Label class="TypeLabel Summon" text="#custom_ability_type_Summon"/>
+                        <Label class="TypeLabel Surround" text="#custom_ability_type_Surround"/>
+                        <Label class="TypeLabel Targeting" text="#custom_ability_type_Targeting"/>
+                        <Label class="TypeLabel Ring" text="#custom_ability_type_Ring"/>
                     </Panel>
                     <Panel id="CurrentItemCosts">
                         <Panel id="ManaCost" class="CostsRows">

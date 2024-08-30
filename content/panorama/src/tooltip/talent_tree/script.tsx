@@ -53,8 +53,13 @@ function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
 
     // TypesLabel.SetHasClass("Show",true)
     for (let type_key in AbilityTypesJson) {
-        TypesLabel.SetHasClass(type_key, types_value == type_key)
+        TypesLabel.SetHasClass(type_key, types_value == type_key);
+        if (types_value == type_key) {
+            TypesLabel.SetDialogVariable("type_label", $.Localize("#custom_ability_type_" + type_key))
+        }
     }
+
+    // 天赋类型
 
 
 }

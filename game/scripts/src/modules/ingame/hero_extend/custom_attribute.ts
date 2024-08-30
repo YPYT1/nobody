@@ -237,12 +237,10 @@ export class CustomAttribute {
                     let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
                     let base_value = 100;
                     for (let value of attr_values) {
-                        base_value *= (100 - value) * 0.01;
+                        base_value = base_value * (100 - value) * 0.01;
                     }
-                    base_value = base_value - base_value % 0.001;
-                    // print("base_va",base_value)
-                    mul_value = base_value * 0.01;
                     hUnit.custom_attribute_value[main_key] = 100 - base_value;
+                    mul_value = base_value * 0.01;
                 }
 
                 // print("main", main_key, mul_value)
@@ -422,6 +420,8 @@ export class CustomAttribute {
      */
     SetAttributeInKey(hUnit: CDOTA_BaseNPC, key: string, attr_list: CustomAttributeTableType, timer: number = -1) {
         // 乘算属性处理 直接覆盖
+        // print("key", key)
+        // DeepPrintTable(attr_list)
         for (let _key in attr_list) {
             let attr_key = _key as AttributeMainKey
             let is_mul = AttributeConst[attr_key].is_mul == 1;
@@ -445,21 +445,47 @@ export class CustomAttribute {
         } else {
             // 若已存在,进行覆盖时先对比差值 ,写入差值;
             let temp_attr_list = hUnit.custom_attribute_key_table[key];
-            let temp_object = {};
-            for (let k in attr_list) {
-                let row_data = attr_list[k as keyof typeof attr_list];
-                temp_object[k] = {}
+            let origin_object: CustomAttributeTableType = {};
+            let new_object: CustomAttributeTableType = {};
+            // 原本的值
+            for (let k in temp_attr_list) {
+                let row_data = temp_attr_list[k as keyof typeof temp_attr_list];
+                origin_object[k] = {}
                 for (let k2 in row_data) {
                     let attr_value = row_data[k2 as keyof typeof row_data];
-                    let old_value = 0;
-                    if (temp_attr_list[k] && temp_attr_list[k][k2]) {
-                        old_value = temp_attr_list[k][k2]
-                    }
-                    temp_object[k][k2] = attr_value - old_value
+                    origin_object[k][k2] = temp_attr_list[k][k2]
                 }
             }
+            // 新写入的值
+            for (let k in attr_list) {
+                let row_data = attr_list[k as keyof typeof attr_list];
+                new_object[k] = {}
+                for (let k2 in row_data) {
+                    let attr_value = row_data[k2 as keyof typeof row_data];
+                    new_object[k][k2] = attr_value
+                }
+            }
+            // print("============ origin_object")
+            // DeepPrintTable(origin_object)
+            // 移除原本的值
+            for (let k in origin_object) {
+                let row_data = origin_object[k as keyof typeof origin_object];
+                for (let k2 in row_data) {
+                    // let attr_value = row_data[k2 as keyof typeof row_data];
+                    // 如果有原本值直接减
+                    if (new_object[k] == null) { new_object[k] = {} }
+                    if (new_object[k][k2]) {
+                        new_object[k][k2] -= origin_object[k][k2]
+                    } else {
+                        // 否则直接添加要扣除的值
+                        new_object[k][k2] = -1 * origin_object[k][k2]
+                    }
+
+                }
+            }
+            // DeepPrintTable(new_object)
             hUnit.custom_attribute_key_table[key] = attr_list
-            this.ModifyAttribute(hUnit, temp_object)
+            this.ModifyAttribute(hUnit, new_object)
         }
 
 
@@ -733,14 +759,16 @@ export class CustomAttribute {
             })
         }
 
-        if (cmd == "-attrtest") {
-            let value = [60,60]
-            for (let i = 0; i < 2; i++) {
+        if (cmd == "-multest") {
+            let value = [-50, -50, -50, -50, 50, 50, 50];
+
+
+            for (let i = 0; i < value.length; i++) {
                 let mul_key = DoUniqueString("mul_key");
                 this.SetAttributeInKey(hHero, mul_key, {
-                    // 'EvasionProb': {
-                    //     "Base": 25,
-                    // },
+                    'EvasionProb': {
+                        "Base": 25,
+                    },
                     'DmgReductionPct': {
                         "Base": value[i],
                     }

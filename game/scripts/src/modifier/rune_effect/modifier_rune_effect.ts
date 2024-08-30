@@ -70,6 +70,15 @@ export class modifier_rune_effect extends BaseModifier {
                 GameRules.BasicRules.Heal(this.caster, heal_value, this.ability);
             }
         }
+
+        // rune_17	生命补充	击杀敌人时，有%chance%%%概率回复%health_pct%%%最大生命值
+        if (this._rune_object["rune_17"]) {
+            if (RollPercentage(this.Rune_Object("rune_17", 'chance'))) {
+                let health_pct = this.Rune_Object('rune_17', 'health_pct')
+                let heal_value = this.caster.GetMaxHealth() * health_pct * 0.01;
+                GameRules.BasicRules.Heal(this.caster, heal_value, this.ability);
+            }
+        }
     }
 
 
@@ -199,7 +208,7 @@ export class modifier_rune_effect extends BaseModifier {
                 false
             )
             let crit_chance = enemies.length == 0 ? this.Rune_Object("rune_24", "crit_chance") : 0;
-            GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_23", {
+            GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_24", {
                 "CriticalChance": {
                     "Base": crit_chance
                 }
