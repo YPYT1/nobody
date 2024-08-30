@@ -282,7 +282,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().StopThink("MYSTICAL_SHOP_BUY_ITEM");
 
         for (let hHero of HeroList.GetAllHeroes()) {
-
+            GameRules.BuffManager.RemoveGeneralDebuff(hHero, [ DebuffTypes.un_controll ] ); 
         }
 
 

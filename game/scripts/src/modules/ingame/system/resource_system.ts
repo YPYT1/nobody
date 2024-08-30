@@ -86,7 +86,7 @@ export class ResourceSystem extends UIEventRegisterClass {
             // 不为固定,且不无视
             if (amount < 0) {
                 if (bIgnoring == false) {
-                    // 扣除
+                    // 扣除 
                     if (bFixed == false) {
                         amount = amount * this.player_cost_rate[player_id][resource] * 0.01
                     }

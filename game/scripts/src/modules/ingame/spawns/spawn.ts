@@ -783,7 +783,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
             GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
                 for (let hHero of HeroList.GetAllHeroes()) {
-                    GameRules.BuffManager.AddGeneralDebuff(hHero,hHero,DebuffTypes.un_controll , 10); 
+                    GameRules.BuffManager.AddGeneralDebuff(hHero,hHero,DebuffTypes.un_controll , GameRules.MysticalShopSystem.MYSTICAL_SHOP_BUY_ITEM); 
                     // hHero.AddNewModifier(hHero, null, "modifier_debuff_rooted", { duration: 10, });
                 }
                 //重新设置时间

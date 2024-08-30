@@ -464,7 +464,7 @@ export class MapChapter extends UIEventRegisterClass {
         }
 
         for (const hero of HeroList.GetAllHeroes()) {
-            GameRules.BuffManager.AddGeneralDebuff(hero,hero,DebuffTypes.un_controll , 3); 
+            GameRules.BuffManager.AddGeneralDebuff(hero,hero,DebuffTypes.un_controll , 4); 
         }
         this.game_count ++;
         this.NewPlay(-1 , {});

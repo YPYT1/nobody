@@ -195,7 +195,6 @@ export class RuneSystem extends UIEventRegisterClass {
         }
         data.refresh_count = this.player_fate_data[player_id].length - this.player_fate_data_index[player_id];
 
-        DeepPrintTable(data);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "RuneSystem_GetRuneSelectData",
@@ -289,7 +288,6 @@ export class RuneSystem extends UIEventRegisterClass {
      * @param callback 
      */
     ConsumeRefreshCount(player_id: PlayerID, params: CGED["RuneSystem"]["ConsumeRefreshCount"]) {
-
         if (this.player_refresh_count[player_id] > 0) {
             let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
             if (fate_data_info.is_refresh == true) { //
@@ -381,7 +379,6 @@ export class RuneSystem extends UIEventRegisterClass {
      */
     PostSelectRune(player_id: PlayerID, params: CGED["RuneSystem"]["PostSelectRune"]) {
         let index = params.index + 1;
-        let rune_level = 1;
         let level_index = 0;
 
         let hero = PlayerResource.GetSelectedHeroEntity(player_id);
@@ -399,66 +396,18 @@ export class RuneSystem extends UIEventRegisterClass {
                 return;
             }
             let item_name = fate_data_info.item_list[index].name;
-            let rune_index = 0;
-            for (let i_x = 1; i_x <= 99; i_x++) { //留下一个自动使用位
-                if (!GameRules.RuneSystem.player_rune_list[player_id].hasOwnProperty(i_x)) {
-                    rune_index = i_x;
-                    break;
-                }
-            }
-            let is_more_level = RuneConfig[item_name as keyof typeof RuneConfig].is_item_level == 1 ? true : false;
-            let is_level_up = RuneConfig[item_name as keyof typeof RuneConfig].is_level_up == 1 ? true : false;
-
-            rune_level = fate_data_info.item_list[index].level;
             level_index = fate_data_info.item_list[index].level_index;
-            let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-            let item_level_section_length = GameRules.RuneSystem.rune_keyvalue[item_name as keyof typeof GameRules.RuneSystem.rune_keyvalue].item_level_section.length;
-            
-            let is_level_max = false;
-            if (level_index >= (item_level_section_length - 1)) {
-                is_level_max = true;
-            }
-            //写入符文信息
-            GameRules.RuneSystem.player_rune_list[player_id][rune_index] = {
-                name: item_name,
-                index: rune_index,
-                level: rune_level,
-                level_index: level_index,
-                is_award: false,
-                is_delete: false,
-                is_more_level: is_more_level,
-                is_level_up: is_level_up,
-                is_level_max: is_level_max,
-            };
-            //符文等级信息
-            hHero.rune_level_index[item_name] = level_index;
-            //修改已选择状态
-            GameRules.RuneSystem.check_rune_name[player_id].push(item_name);
-            
+            GameRules.RuneSystem.GetRune(player_id , {"item_name" : item_name } , level_index);
             GameRules.RuneSystem.player_fate_data_index[player_id]++;
             fate_data_info.check_index = index;
             fate_data_info.is_check = true;
-            GameRules.CMsg.SendCommonMsgToPlayer(
-                -1 as PlayerID,
-                "#custom_text_player_rune_selected",
-                {
-                    player_id: player_id,
-                    rune_name: item_name,
-                    rune_level: rune_level,
-                }
-            );
+
             GameRules.RuneSystem.GetRuneSelectData(player_id, params);
-            GameRules.RuneSystem.GetPlayerRuneData(player_id, params);
-            //获得属性
-            GameRules.RuneSystem.GetRuneValues(player_id, item_name, level_index);
+            
             //刷新一次
             if (GameRules.RuneSystem.player_fate_data[player_id].length > GameRules.RuneSystem.player_fate_data_index[player_id]) {
                 GameRules.RuneSystem.RefreshShopList(player_id, {});
             }
-            //增加符文数量
-            GameRules.RuneSystem.player_rune_count[player_id] ++;
-
-            this.UpdateRuneMdf(item_name,hHero)
         } else {
             print("没有选择的天命");
         }
@@ -488,24 +437,14 @@ export class RuneSystem extends UIEventRegisterClass {
     GetRune(player_id: PlayerID, params: { item_name: string; level?: number; charges?: number; item_index?: number; }, level_index: number = 0) {
         let item_name = params.item_name as keyof typeof RuneConfig;
         let rune_index = 0;
-        if (!params.hasOwnProperty("item_index")) {
-            for (let index = 1; index <= 99; index++) {
-                if (!this.player_rune_list[player_id].hasOwnProperty(index)) {
-                    rune_index = index;
-                    break;
-                }
+        for (let index = 1; index <= 99; index++) {
+            if (!this.player_rune_list[player_id].hasOwnProperty(index)) {
+                rune_index = index;
+                break;
             }
-        } else {
-            rune_index = params.item_index;
         }
-        let row_rune_data = RuneConfig[item_name]
         let is_more_level = RuneConfig[item_name as keyof typeof RuneConfig].is_item_level == 1 ? true : false;
         let is_level_up = RuneConfig[item_name as keyof typeof RuneConfig].is_level_up == 1 ? true : false;
-        if (is_more_level && params.level) {
-            if (RuneConfig[item_name as keyof typeof RuneConfig].item_level_section.includes(params.level)) {
-                level_index = RuneConfig[item_name as keyof typeof RuneConfig].item_level_section.indexOf(params.level);
-            }
-        }
         let rune_level = RuneConfig[item_name as keyof typeof RuneConfig].item_level_section[level_index];
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
@@ -516,7 +455,7 @@ export class RuneSystem extends UIEventRegisterClass {
             is_level_max = true;
         }
         //写入装备信息
-        this.player_rune_list[player_id][rune_index] = {
+        GameRules.RuneSystem.player_rune_list[player_id][rune_index] = {
             name: item_name,
             index: rune_index,
             level: rune_level,
@@ -530,29 +469,28 @@ export class RuneSystem extends UIEventRegisterClass {
         //符文等级信息
         hHero.rune_level_index[item_name] = level_index;
         //修改已选择状态
-        this.check_rune_name[player_id].push(item_name);
-        //获得属性
-        this.GetRuneValues(player_id, item_name, level_index);
-        //移除夏日特惠和秋日特惠内容
-        this.GetRuneSelectData(player_id, params);
-        this.GetPlayerRuneData(player_id, params);
-        // if(hHero.rune_passive_type["item_rune_null_97_buff_1"]){
-        //     if(RollPercentage(15)){
-        //         GameRules.TreasureSystem.RandomGetTerasure(player_id , 1);
-        //     }
-        // }
-        //增加通过其他符文获取的符文数量
-        this.player_rune_count[player_id] ++;
+        GameRules.RuneSystem.check_rune_name[player_id].push(item_name);
 
+        GameRules.CMsg.SendCommonMsgToPlayer(
+            -1 as PlayerID,
+            "#custom_text_player_rune_selected",
+            {
+                player_id: player_id,
+                rune_name: item_name,
+                rune_level: rune_level,
+            }
+        );
+
+        GameRules.RuneSystem.GetPlayerRuneData(player_id, params);
+        //获得属性
+        GameRules.RuneSystem.GetRuneValues(player_id, item_name, level_index);
+        //增加通过其他符文获取的符文数量
+        GameRules.RuneSystem.player_rune_count[player_id] ++;
         // 更新符文MDF
         this.UpdateRuneMdf(item_name,hHero)
     }
     //获得符文属性
     GetRuneValues(player_id: PlayerID, rune_name: string, level_index: number) {
-        print("================GetRuneValues=================");
-        print("rune_name", rune_name);
-        print("level_index", level_index);
-
 
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         let ObjectValues = RuneConfig[rune_name as keyof typeof RuneConfig].ObjectValues;
@@ -578,7 +516,6 @@ export class RuneSystem extends UIEventRegisterClass {
                 }
             }
         }
-        DeepPrintTable(attr_count);
         GameRules.CustomAttribute.SetAttributeInKey(hHero , "r_s_" + rune_name , attr_count)
     } 
 
