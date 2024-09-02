@@ -43,7 +43,7 @@ const CMsg_TopCountdown = (params: CustomGameEventDeclarations["CMsg_TopCountdow
 }
 
 (function () {
-    TopCountdownMessage.Data<PanelDataObject>().end_timer = Game.GetDOTATime(false, false) + 5;
+    TopCountdownMessage.Data<PanelDataObject>().end_timer = -1;
     TopCountdownMessage.Data<PanelDataObject>().timer = 0
     StartCountdownTimer()
     GameEvents.Subscribe('CMsg_TopCountdown', CMsg_TopCountdown);
