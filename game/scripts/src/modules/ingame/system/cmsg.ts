@@ -236,5 +236,10 @@ export class CMsg extends UIEventRegisterClass {
             let event_id = tonumber(args[0] ?? "101");
             this.SendMsgToAll(event_id)
         }
+
+        if (cmd == "-timer") {
+            print("timer")
+            this.SendTopCountdown(GameRules.GetDOTATime(false, false) + 3)
+        }
     }
 }

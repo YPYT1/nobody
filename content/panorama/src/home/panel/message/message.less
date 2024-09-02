@@ -145,6 +145,13 @@
 
     }
 
+    // &.Play {
+    //     animation-name: fade_play;
+    //     animation-duration: 0.35s;
+    //     animation-timing-function: ease-in-out;
+    //     animation-iteration-count: 1;
+    // }
+
     #Timer {
 
         Label {
@@ -183,6 +190,23 @@
         opacity: 0;
     }
 
+
+    100% {
+        opacity: 1;
+        pre-transform-scale2d: 1;
+    }
+}
+
+@keyframes fade_play {
+    0% {
+        pre-transform-scale2d: 3;
+        opacity: 0;
+    }
+
+    50% {
+        pre-transform-scale2d: 1;
+        opacity: 1;
+    }
 
     100% {
         opacity: 1;
