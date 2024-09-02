@@ -515,15 +515,22 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             if (HeroTalentT.unlock_key[0] == 0) {
                                 this.player_talent_list[player_id][skill_index].pu = 1;
                                 if (this.player_talent_list[player_id][skill_index].t.hasOwnProperty(99)) {
+                                    let pass_list : string[] = [];
                                     for (const skp in this.player_talent_list[player_id][skill_index].t[99].si) {
                                         let HeroTalentP: typeof HeroTalentObject["1"];
-                                        if (unitname == "npc_dota_hero_drow_ranger") {
-                                            HeroTalentP = HeroTalentObject[skp];
-                                        } else {
-                                            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "天赋配置错误！！！！")
-                                            this.GetHeroTalentListData(player_id, {});
-                                            return
+                                        HeroTalentP = HeroTalentObject[skp];
+                                        let pass_key = HeroTalentP.unlock_key[0];
+                                        if(pass_key != 0){
+                                            pass_list.push(tostring(pass_key));
                                         }
+                                    }
+                                    for (const skp in this.player_talent_list[player_id][skill_index].t[99].si) {
+                                        if(pass_list.includes(skp)){
+                                            continue;
+                                        }
+                                        let HeroTalentP: typeof HeroTalentObject["1"];
+                                        HeroTalentP = HeroTalentObject[skp];
+                                        
                                         if(HeroTalentP.hero_star <= this.player_hero_star[player_id]){
                                             //tudo 需要特定处理
                                             this.player_talent_list[player_id][skill_index].t[99].si[skp].iu = 1;
