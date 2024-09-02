@@ -487,6 +487,11 @@ export class RuneSystem extends UIEventRegisterClass {
         GameRules.RuneSystem.GetRuneValues(player_id, item_name, level_index , is_all);
         //增加通过其他符文获取的符文数量
         GameRules.RuneSystem.player_rune_count[player_id] ++;
+
+        if(item_name == "rune_2"){
+           GameRules.HeroTalentSystem.PointsChange(player_id); 
+        }
+
         // 更新符文MDF
         this.UpdateRuneMdf(item_name,hHero)
     }

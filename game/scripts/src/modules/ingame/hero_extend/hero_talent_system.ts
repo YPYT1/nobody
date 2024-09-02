@@ -686,6 +686,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      */
     ReplaceAbility(ability_name: string, order: number, queryUnit: CDOTA_BaseNPC_Hero , SetLevel : number) {
         const hUnit = queryUnit;
+        let player_id = hUnit.GetPlayerOwnerID()
         let order_ability = hUnit.GetAbilityByIndex(order);
         if (order_ability) {
             // order_ability.RemoveSelf()
@@ -695,6 +696,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         new_ability.SetLevel(SetLevel);
 
         if (GameRules.MapChapter._game_select_phase == 999) {
+            hUnit.GetAbilityByIndex(order).SetActivated(false);
+        }
+
+        if(!GameRules.MysticalShopSystem.player_skill_activated[player_id][order]){
             hUnit.GetAbilityByIndex(order).SetActivated(false);
         }
     }

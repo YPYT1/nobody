@@ -200,6 +200,11 @@ export class CustomAttribute {
         hUnit.AddAbility("public_null_3").SetLevel(1);
         hUnit.AddAbility("public_null_4").SetLevel(1);
         hUnit.AddAbility("public_null_5").SetLevel(1);
+        //重置锁定条件
+        let player_id = hUnit.GetPlayerOwnerID();
+        GameRules.MysticalShopSystem.player_skill_activated[player_id] = [
+            true , true , true , true , true 
+        ];
     }
 
 

@@ -85,6 +85,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     //获得灵魂概率 双倍产出概率 
     player_get_soul_double_pro: number[] = [];
 
+    //技能启用禁用标识
+    player_skill_activated : boolean[][] = [];
+
     /**
      * 玩家购买记录
      */
@@ -132,7 +135,10 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             );
         }
         for (let index = 0; index < this.player_count; index++) {
-            this.player_shop_level  .push(0);
+            this.player_skill_activated.push([
+                true , true , true , true , true 
+            ])
+            this.player_shop_level.push(0);
             this.shop_field_list.push([]);
             this.player_shop_field_count.push(this.shop_field_max + this.shop_field_max_vip);
             this.player_shop_field_count_lock.push(this.shop_field_lock);
@@ -188,12 +194,14 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         this.shop_field_list[player_id] = [];
         this.player_shop_buy_data[player_id] = {};
         this.player_shop_buy_client[player_id] = []
+        this.player_skill_activated[player_id] = [
+            true , true , true , true , true 
+        ];
         this.player_shop_discount[player_id] = 100;
         this.player_get_soul_double_pro[player_id] = 0;
         this.player_shop_field_count[player_id] = this.shop_field_max + this.shop_field_max_vip;
         this.player_shop_field_count_lock[player_id] = this.shop_field_lock;
         this.item_player_count[player_id] = {};
-
         let eval_param = {
             count: 0,
         };
@@ -680,7 +688,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     GetPlayerShopBuyData(player_id: PlayerID, params: CGED["MysticalShopSystem"]["GetPlayerShopBuyData"], callback?: string) {
-        DeepPrintTable( this.player_shop_buy_client[player_id])
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "MysticalShopSystem_GetPlayerShopBuyData",
@@ -731,7 +738,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         }
         this.GetShopData(player_id, {});
     }
-
     /**
      * 【双倍灵魂】
      * @param player_id  //玩家名字
@@ -827,16 +833,52 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
     }
     /**
-     * 给全队蓝
+     * 给全队蓝 
      */
     AddAttrOfAll(player_id: PlayerID, param: { ManaRegenBase :  number }, key: string){
+        for (const hero of HeroList.GetAllHeroes()) {
+            let TeamPropCount = this.GetTeamPropCount("prop_35")
+            let count = param.ManaRegenBase * TeamPropCount;
+            let attr_key = "prop_35_aoshuzhihuan";
+            let ObjectValues = {
+                "ManaRegen": {
+                "Base": count
+                }
+            }   
+            GameRules.CustomAttribute.SetAttributeInKey(hero, attr_key, ObjectValues);
+        }
+    }
+
+    /**
+     * 尸鬼封尽
+     */
+    GhoulsSealed(player_id: PlayerID, param: { FinalDamageMul :  number }, key: string){
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-        let TeamPropCount = this.GetTeamPropCount("prop_35")
-        let count = param.ManaRegenBase * TeamPropCount;
-        let attr_key = "prop_35_aoshuzhihuan";
+        let skill_index_list : number[] = [];
+        for (let index = 0; index < 5; index++) {
+            let Ability = hHero.GetAbilityByIndex(index);
+            let  null_name = "public_null_" + (index + 1);
+            if(Ability.GetName() == null_name){
+                continue;
+            }
+            if(this.player_skill_activated[player_id][index]){
+                skill_index_list.push(index);
+            }
+        }
+        let sk_index_id = -1;
+        if(skill_index_list.length > 0){
+            let i = RandomInt(0 , skill_index_list.length - 1);
+            let sk_index = skill_index_list[i];
+            sk_index_id = sk_index;
+            this.player_skill_activated[player_id][sk_index] = false;
+            hHero.GetAbilityByIndex(sk_index).SetActivated(false);
+        }else{
+            return ;
+        }
+        let attr_key = "prop_58_" + player_id + "_" + sk_index_id;
         let ObjectValues = {
-            "ManaRegen": {
-              "Base": count
+            "FinalDamageMul": {
+              "Base": param.FinalDamageMul
             }
         }   
         GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
