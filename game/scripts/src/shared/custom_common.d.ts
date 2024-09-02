@@ -57,6 +57,8 @@ declare interface ApplyCustomDamageOptions {
     /** 额外暴击伤害 */
     crit_bonus_dmg?: number;
 
+    /** 基础技能伤害 */
+    // BasicAbilityDmg?: number;
     /** 对应技能伤害加成  */
     SelfAbilityMul?: number;
     /** `伤害加成` 后续会转为百分比小数  */

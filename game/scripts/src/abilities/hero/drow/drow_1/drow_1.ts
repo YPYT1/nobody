@@ -1,3 +1,4 @@
+import { modifier_basic_move } from "../../../../modifier/modifier_basic";
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
 import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 import { modifier_drow_1a } from "./drow_1a";
@@ -59,15 +60,18 @@ export class modifier_drow_1 extends BaseHeroModifier {
 
     SelfAbilityPow: number;
 
+    move_mdf: modifier_basic_move;
+
     C_OnCreated(): void {
         this.fakeAttack = false;
         this.useProjectile = true;
         this.SelfAbilityPow = 1;
+
+        this.move_mdf = this.caster.FindModifierByName("modifier_basic_move") as modifier_basic_move;
     }
 
     UpdataAbilityValue(): void {
         this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
-
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
     }
 
@@ -92,8 +96,18 @@ export class modifier_drow_1 extends BaseHeroModifier {
             let hTarget = enemies[0];
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
             this.ability.ManaCostAndConverDmgBonus()
+            // 清空动作
             this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
-            this.caster.StartGesture(GameActivity.DOTA_ATTACK);
+            this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
+            // 判断是否为移动状态
+
+            if (this.caster.move_state) {
+                this.caster.StartGesture(GameActivity.DOTA_CAST_ABILITY_1);
+            } else {
+                this.caster.StartGesture(GameActivity.DOTA_ATTACK);
+            }
+
+
             this.caster.GiveMana(this.give_mana);
             this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, 0);
             this.PlayAttackStart({ hTarget: hTarget })

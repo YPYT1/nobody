@@ -3,6 +3,7 @@ import { UIEventRegisterClass } from "../../class_extends/ui_event_register_clas
 import * as TalentConfig from "../../../json/config/game/hero/talent_config/talent_config.json";
 import { BaseHeroAbility } from '../../../abilities/hero/base_hero_ability';
 import { HeroTalentObject } from '../../../kv_data/hero_talent_object';
+import { modifier_talent_effect } from '../../../modifier/talent_effect/modifier_talent_effect';
 
 // 引用 HeroTalentObject
 const TalentTreeObject = HeroTalentObject
@@ -438,12 +439,30 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     this.player_talent_data_client[player_id][key].uc++;
                     //添加到英雄天赋去
                     hero.hero_talent[key] = this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc;
+                    
+                    // 添加mdf效果
+                    let AbilityValues  = HeroTalentCounfg.AbilityValues;
+                    if(Object.keys(AbilityValues).length > 0){
+                        // let tire_level = hero.hero_talent[key]
+                        let attr_count : CustomAttributeTableType = {};
+                        // 这里需要获取到对应的KV值
+                        let InputAbilityValues: AbilityValuesProps = {};
+                        for(let k in AbilityValues){
+                            let value = this.GetTalentKvOfUnit(hero,key as "1",k as 'base_value')
+                            InputAbilityValues[k] = value
+                        }
+                        let talent_mdf = hero.FindModifierByName("modifier_talent_effect") as modifier_talent_effect;
+                        if(talent_mdf){
+                            talent_mdf.InputAbilityValues(key,InputAbilityValues)
+                        } else {
+                            print("no talent_mdf!!!")
+                        }
+                    }
 
                     //添加属性
                     let ObjectValues  = HeroTalentCounfg.ObjectValues;
                     if(Object.keys(ObjectValues).length > 0){
                         let tire_level = hero.hero_talent[key]
-                        
                         let attr_count : CustomAttributeTableType = {};
                         for (let Attr in ObjectValues) {
                             // let attr_values = this.GetKVAttr(rune_name, key, level_index);

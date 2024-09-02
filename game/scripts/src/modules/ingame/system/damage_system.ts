@@ -88,6 +88,7 @@ export class DamageSystem {
         let CriticalChance = hAttacker.custom_attribute_value.CriticalChance;
         let CriticalDamage = hAttacker.custom_attribute_value.CriticalDamage;
         // 乘区计算
+        // let BasicAbilityDmg = (params.BasicAbilityDmg ?? 100) * 0.01
         let SelfAbilityMul = (params.SelfAbilityMul ?? 100) * 0.01;
         let DamageBonusMul = (params.DamageBonusMul ?? 0) + hAttacker.custom_attribute_value.DamageBonusMul;
         let AbilityImproved = (params.AbilityImproved ?? 0) + hAttacker.custom_attribute_value.AbilityImproved;

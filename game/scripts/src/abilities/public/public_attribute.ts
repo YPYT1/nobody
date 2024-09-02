@@ -55,6 +55,7 @@ export class modifier_public_attribute extends BaseModifier {
         this.iParentEntity = this.GetParent().entindex();
         this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_rune_effect", {})
         this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_prop_effect", {})
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_talent_effect", {})
         this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_public_attribute_delay", {})
 
 

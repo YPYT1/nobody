@@ -21,7 +21,7 @@ export class drow_1a extends drow_1 {
     }
 
     UpdataSpecialValue(): void {
-        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "2", "bonus_value");
+        this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "2", "bonus_value");
         this.mul_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "3", "mul_chance");
         this.mul_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "3", "mul_value");
         // rune_27	游侠#2	爆裂箭【浓缩】的触发概率提高至30%，伤害提高5倍

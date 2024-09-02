@@ -91,25 +91,7 @@ export class modifier_talent_attribute extends BaseModifier {
                 })
             }
         }
-        // 43	潜能激发	蓝量小于最大蓝量的20%/30%时，每秒恢复5点蓝量。
-        if (this.caster.hero_talent.hasOwnProperty("43")) {
-            let mana_low = this.GetKV("43", 'mana_low');
-            if (caster_mp_pct < mana_low) {
-                let res_mana = this.GetKV("43", "res_mana");
-                GameRules.BasicRules.RestoreMana(this.caster, res_mana)
-            }
-        }
+       
 
-        // 44	治愈	每过5秒，回复4%/8%最大生命值。
-        if (this.caster.hero_talent.hasOwnProperty("44")) {
-            this.timer_t44 += 1;
-            let interval = this.GetKV("44", "interval")
-            if (this.timer_t44 >= interval) {
-                this.timer_t44 = 0;
-                let heal_maxhp_pct = this.GetKV("44", "heal_maxhp_pct")
-                let heal_amount = this.caster.GetMaxHealth() * heal_maxhp_pct * 0.01
-                GameRules.BasicRules.Heal(this.caster, heal_amount)
-            }
-        }
     }
 }

@@ -61,7 +61,7 @@ export class CustomAttribute {
         hUnit.custom_attribute_conversion = {};
         hUnit.last_attribute_update = 0;
         hUnit.CustomVariables = {};
-
+        hUnit.move_state = false;
         hUnit.prop_count = {};
         hUnit.hero_talent = {};
         hUnit.rune_level_index = {};
@@ -786,6 +786,11 @@ export class CustomAttribute {
         if (cmd == "-mana") {
             let mana_amount = tonumber(args[0] ?? "0");
             hHero.SetMana(mana_amount);
+        }
+
+        if (cmd == "-hp") {
+            let amount = tonumber(args[0] ?? "1");
+            hHero.SetHealth(math.max(1, amount));
         }
     }
 }

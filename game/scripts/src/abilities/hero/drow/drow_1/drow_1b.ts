@@ -25,7 +25,6 @@ export class drow_1b extends drow_1 {
             let ability_damage = extraData.a;
             let damage_vect = Vector(extraData.x, extraData.y, 0);
             // rune_29	游侠#4	穿透箭命中时有40%概率造成5倍伤害
-            print("rune_29_chance",this.rune_29_chance)
             if (RollPercentage(this.rune_29_chance)) {
                 ability_damage *= this.rune_29_mul
             }
@@ -38,6 +37,7 @@ export class drow_1b extends drow_1 {
                 element_type: ElementTypes.WIND,
                 is_primary: true,
                 damage_vect: damage_vect,
+                // BasicAbilityDmg: this.BasicAbilityDmg,
                 SelfAbilityMul: (extraData.SelfAbilityMul ?? 100) + this.BasicAbilityDmg,
                 DamageBonusMul: extraData.DamageBonusMul ?? 0,
                 // bonus_percent: bonus_percent,
@@ -58,7 +58,7 @@ export class modifier_drow_1b extends modifier_drow_1 {
         this.fakeAttack = true;
         this.lianshe_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "6", 'lianshe_chance');
         this.missile_count = this.ability.GetTypesAffixValue(1, "Missile", "skv_missile_count");
-        this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "5", "bonus_value");
+        this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "5", "bonus_value");
         this.proj_speed = this.ability.GetTypesAffixValue(this.caster.GetProjectileSpeed(), "Missile", "skv_missile_speed");
 
         // rune_28	游侠#3	穿透箭基础伤害提高200%
@@ -102,6 +102,7 @@ export class modifier_drow_1b extends modifier_drow_1 {
     }
 
     LaunchArrows(vCaster: Vector, vVelocity: Vector, attack_damage: number) {
+        
         ProjectileManager.CreateLinearProjectile({
             // EffectName: "particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf",
             EffectName: "particles/econ/items/windrunner/windranger_arcana/windranger_arcana_spell_powershot_combo.vpcf",

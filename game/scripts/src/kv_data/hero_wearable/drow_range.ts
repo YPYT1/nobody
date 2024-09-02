@@ -45,7 +45,7 @@ export const drow_range_wearable = {
     ],
 
     "Skin": 0,
-    "unit_model": "models/items/drow/drow_arcana/drow_arcana.vmdl",
+    "unit_model": "models/test/drow/drow_arcana.vmdl",
     "particle_create": [
         "particles/econ/items/drow/drow_arcana/drow_arcana_ambient.vpcf",
         'particles/econ/items/drow/drow_arcana/drow_arcana_arm_aura.vpcf',

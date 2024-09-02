@@ -26,9 +26,11 @@ export class modifier_custom_appearance_underground extends BaseModifierMotionBo
         this.AddParticle(effect_fx, false, false, -1, false, false);
         let fHeight = 190 * this.GetDuration();
         this.flOffsetZ = fHeight / (this.GetDuration() + 0.1);
-        print(fHeight, this.flOffsetZ)
+        // print(fHeight, this.flOffsetZ)
         let vOffetPos = this.GetParent().GetAbsOrigin() + Vector(0, 0, -1 * fHeight) as Vector;
         this.GetParent().SetOrigin(vOffetPos);
+        //
+        AddFOWViewer(DotaTeam.GOODGUYS, this.init_vect, 300, this.GetDuration(), true)
         if (this.ApplyVerticalMotionController() == false || this.ApplyHorizontalMotionController() == false) {
             this.Destroy();
             return;

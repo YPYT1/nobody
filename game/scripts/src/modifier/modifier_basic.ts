@@ -13,9 +13,8 @@ export class modifier_basic_move extends BaseModifier {
     move_down: boolean;
     move_left: boolean;
     move_right: boolean;
-
     move_distance: number;
-    state_moving: boolean;
+
     IsHidden(): boolean { return true; }
     RemoveOnDeath(): boolean { return false }
 
@@ -23,7 +22,7 @@ export class modifier_basic_move extends BaseModifier {
         if (!IsServer()) { return }
         this.parent = this.GetParent();
         this.state_chaos = false;
-        this.state_moving = false;
+        this.parent.move_state = false
         this.unit_index = this.parent.GetEntityIndex();
         this.owner_player = this.parent.GetPlayerOwnerID();
         this.player_control = this.parent.GetPlayerOwner();
@@ -49,6 +48,8 @@ export class modifier_basic_move extends BaseModifier {
         if (params.DOWN) { this.move_down = params.DOWN == 1; }
         if (params.LEFT) { this.move_left = params.LEFT == 1; }
         if (params.RIGHT) { this.move_right = params.RIGHT == 1; }
+
+        this.parent.FadeGesture(GameActivity.DOTA_ATTACK);
         // print(this.move_up, this.move_left, this.move_down, this.move_right);
         this.move_distance = math.max(this.parent.GetMoveSpeedModifier(this.parent.GetBaseMoveSpeed(), true) * 0.07, 48);
         if (this.parent.HasModifier("modifier_debuff_chaos")) { this.move_distance *= -1; }
@@ -100,6 +101,10 @@ export class modifier_basic_move extends BaseModifier {
     }
 
     OnMoveStateChange(state: boolean) {
+        this.parent.move_state = state;
+        if (state == false){
+            this.parent.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
+        }
         // if (state == false) {
         //     this.move_up = false;
         //     this.move_down = false;

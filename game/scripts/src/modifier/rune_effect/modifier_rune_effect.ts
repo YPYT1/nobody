@@ -119,7 +119,9 @@ export class modifier_rune_effect extends BaseModifier {
         if (!this.caster.IsAlive()) { return }
         // 毎损失10%生命百分比
         let lost_health_pct = math.floor((100 - this.caster.GetHealthPercent()) / 10);
-
+        // let mana = this.caster.GetMana();
+        // let max_mana = this.caster.GetMaxMana();
+        let mana_pct = this.caster.GetManaPercent();
         // rune_12	通用符文12	获得50%伤害加成，作为代价，在生命值高于30%时，每秒扣除10%最大生命值
         if (this._rune_object["rune_12"]) {
             let is_above30pct = this.caster.GetHealthPercent() > 30;
@@ -134,6 +136,7 @@ export class modifier_rune_effect extends BaseModifier {
         // rune_10	通用符文10	每损失10%生命值，提高5%/7%/10%移动速度
         if (this._rune_object["rune_10"]) {
             let ms_pct = this.Rune_Object('rune_10', 'ms_pct');
+            print("lost_health_pct", lost_health_pct)
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_10", {
                 'MoveSpeed': {
                     "BasePercent": ms_pct * lost_health_pct,
@@ -141,6 +144,24 @@ export class modifier_rune_effect extends BaseModifier {
             })
         }
 
+        // rune_16 但是蓝量大于%last_mana_pct%%%时，所有技能伤害提高%bp_ingame%%%
+        if (this._rune_object["rune_16"]) {
+            let last_mana_pct = this.Rune_Object("rune_16", 'last_mana_pct');
+            let bp_ingame = this.Rune_Object("rune_16", 'bp_ingame');
+            if (mana_pct > last_mana_pct) {
+                GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_16", {
+                    'AbilityImproved': {
+                        "Base": bp_ingame,
+                    }
+                })
+            } else {
+                GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_16", {
+                    'AbilityImproved': {
+                        "Base": 0,
+                    }
+                })
+            }
+        }
         // rune_20	通用符文20	"附近每存在一个敌军，提高自身%AttackSpeed%攻击速度,最高提升%MaxValue%%%
         if (this._rune_object["rune_20"]) {
             let max_value = this.Rune_Object("rune_20", 'MaxValue');
