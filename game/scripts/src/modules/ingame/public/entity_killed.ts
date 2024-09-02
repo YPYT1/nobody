@@ -12,22 +12,24 @@ export class EntityKilled {
 
         if (hTarget.GetTeamNumber() == DotaTeam.BADGUYS) {
             let hAttacker = EntIndexToHScript(entindex_attacker) as CDOTA_BaseNPC;
-            let iPlayerID = hAttacker.GetPlayerOwnerID();
-            let hHero = PlayerResource.GetSelectedHeroEntity(iPlayerID);
+            // let iPlayerID = hAttacker.GetPlayerOwnerID();
+            // let hHero = PlayerResource.GetSelectedHeroEntity(iPlayerID);
 
-            GameRules.CustomAttribute.OnKillEvent(hAttacker, hTarget)
+            if (hAttacker.GetTeamNumber() == DotaTeam.GOODGUYS ) {
+                GameRules.CustomAttribute.OnKillEvent(hAttacker, hTarget)
+                // 符文效果
+                let rune_buff = hAttacker.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
+                if (rune_buff) { rune_buff.OnKillEvent(hTarget) }
+                // 物品效果
+                let prop_buff = hAttacker.FindModifierByName("modifier_prop_effect") as modifier_prop_effect;
+                if (prop_buff) { prop_buff.OnKillEvent(hTarget) }
+                // this.KilledOnMdf(hAttacker, hTarget)
+                // let hAbility = EntIndexToHScript(entindex_inflictor) as CDOTABaseAbility;
+                // 技能击杀
+                // this.ArmsKillAbility(hAttacker, hTarget,hAbility)
+                // 掉落经验
+            }
 
-            // 符文效果
-            let rune_buff = hAttacker.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
-            if (rune_buff) { rune_buff.OnKillEvent(hTarget) }
-            // 物品效果
-            let prop_buff = hAttacker.FindModifierByName("modifier_prop_effect") as modifier_prop_effect;
-            if (prop_buff) { prop_buff.OnKillEvent(hTarget) }
-            // this.KilledOnMdf(hAttacker, hTarget)
-            // let hAbility = EntIndexToHScript(entindex_inflictor) as CDOTABaseAbility;
-            // 技能击杀
-            // this.ArmsKillAbility(hAttacker, hTarget,hAbility)
-            // 掉落经验
 
             hTarget.AddNoDraw();
             hTarget.SetContextThink("death_play", () => {

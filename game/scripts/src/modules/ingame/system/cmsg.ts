@@ -11,11 +11,14 @@ export class CMsg extends UIEventRegisterClass {
     boss_list: EntityIndex[];
     king_list: EntityIndex[];
 
+    top_countdown: number;
+
     constructor() {
         super("CMsg");
         this.elite_list = [];
         this.boss_list = [];
         this.king_list = [];
+        this.top_countdown = 0;
     }
 
     /**
@@ -59,6 +62,34 @@ export class CMsg extends UIEventRegisterClass {
                 data: {
                     event_type: event_type,
                     message: "",
+                }
+            }
+
+        );
+    }
+
+
+    /** 发送顶部倒计时 */
+    SendTopCountdown(end_timer: number) {
+        this.top_countdown = end_timer
+        CustomGameEventManager.Send_ServerToAllClients(
+            "CMsg_TopCountdown",
+            {
+                data: {
+                    end_timer: this.top_countdown,
+                }
+            }
+
+        );
+    }
+
+    GetTopCountdown(player_id: PlayerID, params: any) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "CMsg_TopCountdown",
+            {
+                data: {
+                    end_timer: this.top_countdown,
                 }
             }
 
@@ -166,7 +197,7 @@ export class CMsg extends UIEventRegisterClass {
                 "CMsg_PopupUnitState",
                 {
                     data: {
-                        unit:target.entindex(),
+                        unit: target.entindex(),
                         popup_type: popup_type,
                         amount: amount,
                     }
@@ -177,7 +208,7 @@ export class CMsg extends UIEventRegisterClass {
                 "CMsg_PopupUnitState",
                 {
                     data: {
-                        unit:target.entindex(),
+                        unit: target.entindex(),
                         popup_type: popup_type,
                         amount: amount,
                     }

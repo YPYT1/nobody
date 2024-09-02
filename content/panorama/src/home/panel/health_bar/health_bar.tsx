@@ -9,7 +9,7 @@ const UPDATE_PER_TIME = 0.25;
 /** 毎管血多少HP */
 const EVER_MAX_HP = 10000;
 /** 毎管血为多少百分比 */
-const EVER_HP_PCT = 10;
+const EVER_HP_PCT = 5;
 /** 有几种颜色 */
 const color_list = [
     '#EB4B4B', // 远古 // Boss 开始颜色
@@ -198,16 +198,30 @@ function UpdateTopPanelBoss() {
                 // NextHealthBar.style.zIndex = -1;
             }
 
+            // $.Msg(nextHudHeathBar.style.washColor)
             if (layer_num <= 1) {
                 nextBossHealthBar.style.washColor = `#000000`;
                 nextHudHeathBar.style.washColor = `#000000`;
             } else {
                 nextHudHeathBar.style.washColor = `${color_list[next_color_index]}`;
                 nextBossHealthBar.style.washColor = `${color_list[next_color_index]}`;
+
+
+                $.Schedule(0.1, () => {
+                    if (layer_num == pPanel.Data<HealtrBarPanelData>().layer_num) {
+                        nextHudHeathBar.style.width = "100%";
+                        nextBossHealthBar.style.width = "100%";
+                    }
+
+                })
             }
+
+
             // NextHealthBar.style.width = "100%"
             // NextHealthBar.style.washColor = `${color_list[next_color_index]}`
             return
+        } else {
+            $.Msg(["deduct_hp", deduct_hp])
         }
 
         // UpdateHealthBar(damage, pPanel);
@@ -229,7 +243,9 @@ function UpdateTopPanelBoss() {
         let curr_layer_hp_pct = Math.max(0, (curr_hp - ever_hp * (layer_num - 1)) / ever_hp * 100);
         let currHudHeathBar = CurrentHealthBar.FindChildTraverse("HudHeathBar")!;
         let currBossHealthBar = CurrentHealthBar.FindChildTraverse("BossHealthBar")!;
+        // currHudHeathBar.AddClass("opacity");
         currHudHeathBar.style.width = `${curr_layer_hp_pct}%`;
+        // currHudHeathBar.RemoveClass("opacity");
         currBossHealthBar.style.width = `${curr_layer_hp_pct}%`;
 
         // 下一层
@@ -237,6 +253,8 @@ function UpdateTopPanelBoss() {
         let nextBossHealthBar = NextHealthBar.FindChildTraverse("BossHealthBar")!;
         nextHudHeathBar.style.width = `100%`;
         nextBossHealthBar.style.width = `100%`;
+        nextHudHeathBar.style.washColor = `${color_list[next_color_index]}`;
+        nextBossHealthBar.style.washColor = `${color_list[next_color_index]}`;
         // let CurrentBossHealthBar: Panel;
         // let CurrentHudHealthBar: Panel;
         // HealthBarShine.SetHasClass("Shine",true);
@@ -249,59 +267,10 @@ function UpdateTopPanelBoss() {
             pPanel.Data<HealtrBarPanelData>().layer_num = layer_num - 1;
         }
 
-        // let NextBossHealthBar: Panel;
-        // let NextHudHealthBar: Panel;
-
-        // let update_time = pPanel.Data<HealtrBarPanelData>().update_time;
-        // let curr_index = pPanel.Data<HealtrBarPanelData>().curr_index
-        // let unit_hp_max = Entities.GetMaxHealth(entity);
-        // let unit_hp_current = Entities.GetHealth(entity);
-        // let ever_hp = unit_hp_max * EVER_HP_PCT * 0.01
-        // let layerNum = Math.ceil(unit_hp_current / ever_hp); // 还有几根血条
-        // let is_even = layerNum % 2 == 0;
-        // if (is_even) {
-        //     CurrentBossHealthBar = EvenBossHealthBar;
-        //     CurrentHudHealthBar = EvenHudHeathBar;
-        //     NextBossHealthBar = OddBossHealthBar;
-        //     NextHudHealthBar = OddHudHeathBar
-        //     // HealthBarOdd.style.zIndex = 1;
-        //     // HealthBarEven.style.zIndex = 2;
-        // } else {
-        //     CurrentBossHealthBar = OddBossHealthBar;
-        //     CurrentHudHealthBar = OddHudHeathBar;
-        //     NextBossHealthBar = EvenBossHealthBar;
-        //     NextHudHealthBar = EvenHudHeathBar;
-        //     // HealthBarOdd.style.zIndex = 2;
-        //     // HealthBarEven.style.zIndex = 1;
-        // }
-        // // hud彩色血条
-        // // A血条 当前血量,
-
-        // let mod_hp_max_value = Math.ceil(100 / EVER_HP_PCT); // 最大根数
-        // let color_index = (mod_hp_max_value - layerNum) % TOTAL_COLOR_COUNT;
-        // let next_color_index = (mod_hp_max_value - layerNum + 1) % TOTAL_COLOR_COUNT;
-
-        // if (layerNum <= 1) {
-        //     NextBossHealthBar.style.washColor = `#000000`
-        // } else {
-        //     NextBossHealthBar.style.washColor = `${color_list[next_color_index]}`
-        // }
-
-        // CurrentBossHealthBar.style.washColor = `${color_list[color_index]}`;
-        // let healthWidth = GetNumDecimals((unit_hp_current - ever_hp * (layerNum - 1)) / ever_hp * 100, 1);
-        // // $.Msg(["healthWidth",healthWidth])
-        // CurrentBossHealthBar.style.width = `${healthWidth}%`;
-
-        // if (curr_index != layerNum && layerNum > 1) {
-        //     pPanel.Data<HealtrBarPanelData>().curr_index = layerNum;
-        //     // HudHeathBar_0.SetHasClass("DisTransition", true)
-        //     // HudHeathBar_0.style.width = `100%`;
-        //     // HudHeathBar_0.SetHasClass("DisTransition", false)
-        //     pPanel.Data<HealtrBarPanelData>().update_time = 0
-        // } else if (update_time <= Game.GetDOTATime(false, false)) {
-        //     // HudHeathBar_1.style.width = `${healthWidth}%`;
-        //     pPanel.Data<HealtrBarPanelData>().update_time = Game.GetDOTATime(false, false) + UPDATE_PER_TIME;
-        // }
+        // $.Schedule(0.01, () => {
+        //     nextHudHeathBar.style.width = "100%";
+        //     nextBossHealthBar.style.width = "100%";
+        // })
 
 
     });

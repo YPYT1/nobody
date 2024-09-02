@@ -51,12 +51,17 @@ declare interface CustomGameEventDeclarations {
 
     CMsg_PopupUnitState: {
         data: {
-            unit:EntityIndex,
+            unit: EntityIndex,
             popup_type: PopupsType,
             amount: number,
         }
     }
 
+    CMsg_TopCountdown: {
+        data: {
+            end_timer: number
+        }
+    }
     ResourceSystem_SendPlayerResources: {
         data: { [key in PlayerResourceTyps]: number }
     }

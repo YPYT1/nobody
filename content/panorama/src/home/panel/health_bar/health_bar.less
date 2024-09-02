@@ -165,13 +165,18 @@
             background-image: url("file://{images}/custom_game/hud/health_bar/top_health/top_hpbar_hud.png");
             background-repeat: no-repeat;
             background-size: 761px 36px;
-            transition-property: width;
-            transition-duration: 0.18s;
+            transition-property: width, opacity;
+            transition-duration: 0.2s;
             transition-timing-function: ease-out;
-            opacity: 0.65;
+            opacity: 0.5;
             saturation: 0;
             brightness: 6;
             // wash-color: #00000033;
+            // opacity: ;
+
+            // &.opacity {
+            //     opacity: 0.01;
+            // }
 
             &.DisTransition {
                 transition-duration: 0s;

@@ -21,6 +21,11 @@
         </snippet>
     </snippets>
 	<Panel class="message" hittest="false">
+        <Panel id="TopCountdownMessage" hittest="false">
+            <Panel id="Timer" >
+                <Label text="{s:timer_label}"/>
+            </Panel>
+        </Panel>
 		<Panel id="CommonMessage" class='BottomToTopMessagePanel' hittest="false">
             <Panel id="CommonManager" class='ManagerList' hittest="false" />
         </Panel>

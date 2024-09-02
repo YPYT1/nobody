@@ -1,5 +1,8 @@
 import { PlayerIdToARGB } from "../../../utils/method";
 
+
+import "./_countdown";
+
 const LIMIT_COUNT = 10;
 const MESSAGE_DURATION = 8;
 
@@ -136,38 +139,48 @@ const SendErrorMessage = (params: CustomGameEventDeclarations["CMsg_SendErrorMsg
 
 const element_color: [number, number, number][] = [
     [255, 255, 255], // 无
-    [255, 33, 25], // 火
-    [77, 228, 255], // 冰
-    [193, 126, 255], // 雷
-    [148, 255, 77], // 风
-    [255, 240, 173], // 光
-    [161, 0, 140], // 暗
+    [234, 71, 44], // 火
+    [98, 158, 232], // 冰
+    [48, 43, 255], // 雷
+    [75, 228, 79], // 风
+    [232, 187, 49], // 光
+    [113, 42, 221], // 暗
 ];
 
 const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageNumberToClients"]) => {
     // $.Msg(["Popup_DamageNumberToClients",event])
     const duration = 1;
     let params = event.data;
-    let element = params.element_type ?? 0;
-
+    let element = params.element_type;
+    let is_crit = params.is_crit;
     let damage_value = params.value;
     let damage_type = params.type;
     let entity = params.entity as EntityIndex;
-
-
-    let digits = String(damage_value).length + 1;
-
-
+    let digits = String(damage_value).length + 1 ;
+    let font_size = 24;
+    let vect = Entities.GetAbsOrigin(entity);
+    let effect_name = "particles/msg_fx/msg00002/msg00002_normal.vpcf";
+    if(is_crit == 1){
+        effect_name = "particles/msg_fx/msg00002/msg00002_crit.vpcf";
+        digits += 1;
+        font_size = 32;
+        vect[2] += Math.floor(Math.random() * 100) - 50;    
+    }
     let color = element_color[element]
     let pidx = Particles.CreateParticle(
-        "particles/diy/msg_damage.vpcf",
+        effect_name,
         ParticleAttachment_t.PATTACH_WORLDORIGIN,
         entity
     );
-    Particles.SetParticleControl(pidx, 0, Entities.GetAbsOrigin(entity));
-    Particles.SetParticleControl(pidx, 1, [1, damage_value, 3]);
-    Particles.SetParticleControl(pidx, 2, [duration, digits, 0]);
-    Particles.SetParticleControl(pidx, 3, color);
+
+    
+    // vect[2] += 150;
+    Particles.SetParticleControl(pidx, 0, vect);
+    Particles.SetParticleControl(pidx, 1, color);
+    Particles.SetParticleControl(pidx, 2, [0, damage_value, is_crit]);
+    Particles.SetParticleControl(pidx, 3, [digits, 0, 0]);
+    Particles.SetParticleControl(pidx, 4, [font_size, 0, 0]);
+
     Particles.ReleaseParticleIndex(pidx);
 }
 
@@ -177,6 +190,8 @@ let EventWarning = $("#EventWarning");
 let EventDuration: { [key: string]: number } = {
     "102": 5,
 }
+
+
 
 const CMsg_PopupUnitState = (params: CustomGameEventDeclarations["CMsg_PopupUnitState"]) => {
     let data = params.data;
@@ -238,6 +253,7 @@ const CMsg_SendMsgToAll = (params: CustomGameEventDeclarations["CMsg_SendMsgToAl
 
 export const Init = () => {
     StartMessageTimer();
+
     GameEvents.Subscribe("CMsg_SendCommonMsgToPlayer", event => {
         let data = event.data;
         const message_object = { "message": data.message, "data": data.data };

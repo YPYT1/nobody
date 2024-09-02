@@ -54,7 +54,8 @@ declare interface CGED {
     }
 
     CMsg: {
-        GetEntityListHealthBar: {}
+        GetEntityListHealthBar: {},
+        GetTopCountdown:{}
     }
 }
 

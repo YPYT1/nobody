@@ -105,7 +105,7 @@ export class GameEvent {
             GameRules.WarningMarker = new WarningMarker();
             GameRules.HeroTalentSystem = new HeroTalentSystem();
             GameRules.NpcSystem = new NpcSystem();
-            
+
             // @ts-expect-error @eslint-disable-next-line
             GameRules.ModuleActivated = true;
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
@@ -132,6 +132,7 @@ export class GameEvent {
     }
 
     OnEntityKilled(event: GameEventProvidedProperties & EntityKilledEvent) {
+
         GameRules.EntityKilled.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)
         //单位死亡后续处理
         GameRules.Spawn.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)

@@ -113,3 +113,79 @@
         }
     }
 }
+
+#TopCountdownMessage {
+    horizontal-align: center;
+    margin-top: 128px;
+    transition-property: opacity, font-size, pre-transform-scale2d;
+    transition-duration: 0.2s;
+    visibility: collapse;
+
+    &.Show {
+        visibility: visible;
+        // opacity: 1;
+        // pre-transform-scale2d: 1;
+    }
+
+    &.fade_in {
+        animation-name: fade_in;
+        animation-duration: 0.35s;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: 1;
+        // pre-transform-scale2d: 3;
+        // transition-duration: 0.5s;
+        pre-transform-scale2d: 1;
+        opacity: 1;
+    }
+
+    &.fade_out {
+        opacity: 0;
+        pre-transform-scale2d: 0;
+        transition-duration: 0.12s;
+
+    }
+
+    #Timer {
+
+        Label {
+            // animation-duration: 0.5s;
+            color: #ff0000;
+            text-shadow: 0px 0px 2px 2.0 #000;
+            font-weight: bold;
+            font-size: 128px;
+            horizontal-align: center;
+            vertical-align: middle;
+            // pre-transform-scale2d: 3;
+            // opacity: 0;
+            // transition-property: opacity, font-size, pre-transform-scale2d;
+            // transition-duration: 0.2s;
+
+        }
+    }
+}
+
+@keyframes fade_out {
+    0% {
+        pre-transform-scale2d: 1;
+        opacity: 1;
+    }
+
+
+    100% {
+        opacity: 0;
+        pre-transform-scale2d: 0;
+    }
+}
+
+@keyframes fade_in {
+    0% {
+        pre-transform-scale2d: 3;
+        opacity: 0;
+    }
+
+
+    100% {
+        opacity: 1;
+        pre-transform-scale2d: 1;
+    }
+}
