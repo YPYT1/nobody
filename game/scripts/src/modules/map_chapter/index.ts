@@ -484,6 +484,8 @@ export class MapChapter extends UIEventRegisterClass {
                 //     {}
                 // );
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE1);
+
+                GameRules.CMsg.SendTopCountdown(GameRules.GetDOTATime(false,false) + 3)
                 
                 return null;
             },
