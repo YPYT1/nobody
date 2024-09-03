@@ -151,9 +151,9 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
         this.bx_record_dmg = 0;
         this.bx_record_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '33', "record_pct");
         this.bx_limit_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '33', 'limit_pct');
-        // rune_43	游侠#18	风暴环绕 【暴雪】记录值提高100%
+        // rune_43	游侠#18	风暴环绕 【暴雪】记录值翻倍
         if (this.caster.rune_level_index.hasOwnProperty("rune_43")) {
-            this.bx_limit_pct += GameRules.RuneSystem.GetKvOfUnit(hCaster, 'rune_43', 'record_pct_bonus')
+            this.bx_limit_pct *= 2;
         }
         let bx_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '33', 'radius')
         let hAbility = this.GetAbility()

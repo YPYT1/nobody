@@ -183,9 +183,12 @@ export class DamageSystem {
         // 暴击
         if (critical_flag != -1 && RollPercentage(CriticalChance)) {
             is_crit = 1;
-            params.damage = math.floor(params.damage * (1 + CriticalDamage * 0.01))
+            params.damage = math.floor(params.damage * (CriticalDamage * 0.01))
         }
-        PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type)
+        PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type);
+        // 伤害系统
+        let actual_damage = math.min(params.damage, params.victim.GetHealth());
+        GameRules.CMsg.AddDamageRecord(iPlayerID,actual_damage);
         return ApplyDamage(params);
     }
 

@@ -28,3 +28,81 @@
     margin-top: 50px;
     background-image: url("file://{images}/custom_game/icon/game_logo.png");
 }
+
+#home_background {
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    // opacity: 0;
+    z-index: 1;
+}
+
+.GameSelectPhase_2 {
+
+    #home_background {
+        transition-property: opacity;
+        transition-duration: 4s;
+        transition-timing-function: ease-in-out;
+        opacity: 1;
+    }
+}
+
+.GameSelectPhase_3 {
+
+    #home_background {
+        opacity: 0;
+    }
+}
+
+
+.GameSelectPhase_999 {
+    #home_background {
+        opacity: 0;
+    }
+}
+
+// .GameSelectPhase_0,
+// .GameSelectPhase_2,
+// .GameSelectPhase_1 {
+//     opacity: 1;
+// }
+
+#screen {
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    // transition-property: opacity;
+    // transition-duration: 2s;
+    // transition-timing-function: ease-in-out;
+    opacity: 0;
+    z-index: 99;
+
+    &.Play {
+
+        animation-name: fade_screen;
+        animation-duration: 3s;
+        animation-iteration-count: 1;
+        animation-timing-function: ease;
+    }
+}
+
+@keyframes fade_screen {
+    0% {
+        opacity: 1;
+    }
+
+
+    100% {
+        opacity: 0;
+    }
+}
+
+// .GameSelectPhase_2,
+// .GameSelectPhase_1 {
+//     z-index: -1;
+//     transition-duration: 0s;
+
+//     #screen {
+//         opacity: 1;
+//     }
+// }

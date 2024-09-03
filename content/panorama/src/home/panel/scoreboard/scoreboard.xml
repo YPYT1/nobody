@@ -18,7 +18,8 @@
                 <Panel class="PlayerLabel">
                     <Label class="PlayerName" text="{s:player_name}"/>
                     <Panel id="PanelBar">
-                        <Panel class="BarVal"/>
+                        <Panel id="DamageRecordBar" class="BarVal"/>
+                        <Label text="{s:damage_record_label}"/>
                     </Panel>
                 </Panel>
                 <Panel class="PlayerState">
@@ -32,9 +33,7 @@
             <Panel class="Header">
                 <Label class="HeaderPlayerList" text="#custom_text_scoreboard_playerlist" />
             </Panel>
-            <Panel id="PlayerList" class="PanelClass">
-                
-            </Panel>
+            <Panel id="PlayerList" class="PanelClass" />
         </Panel>
 	</Panel>
 </root>

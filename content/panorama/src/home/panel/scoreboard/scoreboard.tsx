@@ -1,12 +1,12 @@
+import { FormatIntToString, PlayerIdToARGB } from "../../../utils/method";
+
 const PlayerList = $("#PlayerList");
 
 export const Init = () => {
-    // PlayerList.RemoveAndDeleteChildren();
     Create_Scoreboard(4)
-    // PlayerList.Data<PanelDataObject>().current_count = -1;
-    // Create_Scoreboard(-1);
     CustomSubscribe();
     StartThinkerLoop();
+
     GameEvents.SendCustomGameEventToServer("GameInformation", {
         event_name: "GetPlayerDieData",
         params: {}
@@ -50,22 +50,24 @@ const UpdateScoreBoard = () => {
 }
 
 const Create_Scoreboard = (count: number) => {
-    let current_count: number = PlayerList.Data<PanelDataObject>().current_count
-    if (count == current_count) { return }
+    // let current_count: number = PlayerList.Data<PanelDataObject>().current_count
+    // if (count == current_count) { return }
     PlayerList.Data<PanelDataObject>().current_count = count;
     PlayerList.RemoveAndDeleteChildren()
     let player_count = Game.GetAllPlayerIDs();
     for (let player_id of player_count) {
         let playerInfo = Game.GetPlayerInfo(player_id);
-        let PlayerScoreBoard = $.CreatePanel("Panel", PlayerList, "")
+        let PlayerScoreBoard = $.CreatePanel("Panel", PlayerList, `${player_id}`)
         PlayerScoreBoard.BLoadLayoutSnippet("PlayerScoreBoard");
         let AvatarImage = PlayerScoreBoard.FindChildTraverse("AvatarImage") as AvatarImage;
         AvatarImage.steamid = playerInfo.player_steamid
         PlayerScoreBoard.SetDialogVariable("player_name", playerInfo.player_name);
         PlayerScoreBoard.Data<PanelDataObject>().revive_time = 0;
-
+        PlayerScoreBoard.SetDialogVariable("damage_record_label", "0");
+        let DamageRecordBar = PlayerScoreBoard.FindChildTraverse("DamageRecordBar")!;
+        let player_color = PlayerIdToARGB(Players.GetPlayerColor(player_id));
+        DamageRecordBar.style.washColor = "#" + player_color;
         let connect = playerInfo.player_connection_state;
-
     }
 }
 
@@ -112,6 +114,26 @@ const CustomSubscribe = () => {
         let count = data.count;
         // Create_Scoreboard(count)
     })
+
+    GameEvents.Subscribe("CMsg_GetDamageRecord", event => {
+        let dmg_record = Object.values(event.data.dmg_record);
+        let total_damage = dmg_record.reduce((total, num) => total + num);
+        for (let i = 0; i < PlayerList.GetChildCount(); i++) {
+            let PlayerScoreBoard = PlayerList.GetChild(i);
+            if (PlayerScoreBoard) {
+                let damage_label = FormatIntToString(dmg_record[i])
+                PlayerScoreBoard.SetDialogVariable("damage_record_label", damage_label);
+                const DamageRecordBar = PlayerScoreBoard.FindChildTraverse("DamageRecordBar")!;
+                DamageRecordBar.style.width = Math.floor(100 * dmg_record[i] / total_damage) + "%";
+           
+                // let player_color = PlayerIdToARGB(1);
+                // $.Msg(["player_color:", i, player_color])
+            }
+        }
+    })
 }
 
-Init()
+(function () {
+    $.Msg("scoreboard Init")
+    Init()
+})();

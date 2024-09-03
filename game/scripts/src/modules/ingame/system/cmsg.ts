@@ -4,6 +4,9 @@ import { UIEventRegisterClass } from "../../class_extends/ui_event_register_clas
 
 type TopHealthBarTyps = "Boss" | "King";
 
+/** 伤害统计刷新间隔 */
+const DAMAGE_RECORD_UPDATE_INTERVAL = 1
+
 @reloadable
 export class CMsg extends UIEventRegisterClass {
 
@@ -13,12 +16,17 @@ export class CMsg extends UIEventRegisterClass {
 
     top_countdown: number;
 
+    player_damage_record: number[];
+    update_damage_record_time: number;
+
     constructor() {
         super("CMsg");
         this.elite_list = [];
         this.boss_list = [];
         this.king_list = [];
         this.top_countdown = 0;
+        this.player_damage_record = [0, 0, 0, 0];
+        this.update_damage_record_time = 0
     }
 
     /**
@@ -216,6 +224,37 @@ export class CMsg extends UIEventRegisterClass {
             )
         }
 
+    }
+
+    AddDamageRecord(player_id: PlayerID, damage: number) {
+        this.player_damage_record[player_id] += damage;
+
+        const update_state = GameRules.GetDOTATime(false, false) > this.update_damage_record_time
+        if (update_state) {
+            this.update_damage_record_time = GameRules.GetDOTATime(false, false) + DAMAGE_RECORD_UPDATE_INTERVAL
+            this.GetDamageRecord()
+        } else {
+            GameRules.GetGameModeEntity().SetContextThink("damage_record_interval", () => {
+                this.GetDamageRecord();
+                return null
+            }, DAMAGE_RECORD_UPDATE_INTERVAL)
+        }
+    }
+
+    GetDamageRecord(...arg: any) {
+        CustomGameEventManager.Send_ServerToAllClients(
+            "CMsg_GetDamageRecord",
+            {
+                data: {
+                    dmg_record: this.player_damage_record,
+                }
+            }
+        );
+    }
+
+    ClearDamageRecord() {
+        this.player_damage_record = [0, 0, 0, 0];
+        this.GetDamageRecord()
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID): void {

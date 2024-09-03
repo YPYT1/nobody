@@ -75,10 +75,11 @@ const SetPanel_NpcInteract_GameRestart = () => {
         NpcInteract_GameRestart.RemoveClass("Show");
     })
 }
+
 const UpdateSelectUnit = () => {
     let queryUnit = Players.GetLocalPlayerPortraitUnit();
     let unit_name = Entities.GetUnitName(queryUnit)
-
+    // $.Msg([unit_name == "npc_interact_game_restart"])
     NpcInteract_GameRestart.SetHasClass("Show", unit_name == "npc_interact_game_restart" && player_id == 0)
 
 }
@@ -102,18 +103,26 @@ const CustomGameEventsSubscribe = () => {
         }
     })
 }
+
+const LoopThinker = () => {
+    UpdateSelectUnit();
+    $.Schedule(0.25, LoopThinker)
+}
 export const Init = () => {
 
     InitPanel()
     CustomGameEventsSubscribe();
     GameEvents.Subscribe("dota_player_update_selected_unit", UpdateSelectUnit);
     GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelectUnit);
+    // GameEvents.Subscribe("dotaplaerup", UpdateSelectUnit);
     // GameEvents.Subscribe("dotapupda", UpdateSelectUnit);
 
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetPlayerVoteData",
         params: {}
     })
+
+    // LoopThinker();
 }
 
 (function () {

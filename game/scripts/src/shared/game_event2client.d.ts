@@ -62,6 +62,13 @@ declare interface CustomGameEventDeclarations {
             end_timer: number
         }
     }
+
+    CMsg_GetDamageRecord: {
+        data: {
+            dmg_record: number[]
+        }
+    }
+
     ResourceSystem_SendPlayerResources: {
         data: { [key in PlayerResourceTyps]: number }
     }

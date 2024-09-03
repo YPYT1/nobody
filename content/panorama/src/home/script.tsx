@@ -1,6 +1,8 @@
 import { HideCustomTooltip, ShowCustomTooltip } from "../utils/custom_tooltip";
 
-export const HideOfficialLayoutUI = () => {
+const screen = $("#screen");
+
+const HideOfficialLayoutUI = () => {
 
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_TIMEOFDAY, false);
     GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_HEROES, false);
@@ -20,7 +22,7 @@ export const HideOfficialLayoutUI = () => {
 
 }
 
-export const FindCursorItemID = (itemName: string) => {
+const FindCursorItemID = (itemName: string) => {
     var entities = GameUI.FindScreenEntities(GameUI.GetCursorPosition());
     if (entities) {
         for (let k in entities) {
@@ -87,7 +89,7 @@ export const RegisterCustomTooltip = () => {
 
 export const Initialize = () => {
     const layout_path = "file://{resources}/layout/custom_game/home/panel";
-    
+
     const control = $("#control");
     control.RemoveAndDeleteChildren()
     control.BLoadLayout(layout_path + "/control/control.xml", true, false);
@@ -104,9 +106,8 @@ export const Initialize = () => {
     $("#player_dialog").BLoadLayout(layout_path + "/player_dialog/player_dialog.xml", true, false);
     $("#npc_interact").BLoadLayout(layout_path + "/npc_interact/npc_interact.xml", true, false);
     $("#right_items").BLoadLayout(layout_path + "/right_items/right_items.xml", true, false);
-
-    // talent
     $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", true, false);
+    
     if (Game.IsInToolsMode()) {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
         $.GetContextPanel().SetHasClass("IsInToolsMode", true);
@@ -122,6 +123,10 @@ export const Initialize = () => {
                 HudPanel.SetHasClass("GameSelectPhase_" + phase, game_select_phase == phase);
             }
             HudPanel.SetHasClass("GameSelectPhase_999", game_select_phase == 999);
+            if (game_select_phase != 999 && game_select_phase != 2) {
+                screen.RemoveClass("Play");
+                screen.AddClass("Play");
+            }
         }
     })
 
@@ -137,24 +142,18 @@ export const Initialize = () => {
 
 }
 
-const DelayLoadFunc = ()=>{
-    // MapChapter_NewPlay
-    GameEvents.SendCustomGameEventToServer("MapChapter",{
-        event_name:'NewPlay',
-        params:{}
+const DelayLoadFunc = () => {
+    GameEvents.SendCustomGameEventToServer("MapChapter", {
+        event_name: 'NewPlay',
+        params: {}
     })
 }
 
 (function () {
     let MainPanel = $.GetContextPanel();
-    // for(let i = 0;i<MainPanel.GetChildCount();i++){
-    //     let rowPanel = MainPanel.GetChild(i)!;
-    //     rowPanel.RemoveAndDeleteChildren();
-    // }
     Initialize();
     HideOfficialLayoutUI();
     RegisterCustomTooltip();
-
-    DelayLoadFunc();
+    // DelayLoadFunc();
 })();
 
