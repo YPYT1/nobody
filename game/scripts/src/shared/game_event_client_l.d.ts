@@ -309,6 +309,7 @@ declare interface ShopFieldList {
     is_vip : number , //是否为vip栏位
     refresh_count : number , //刷新次数
     refresh_soul : number , //刷新价格
+    refresh_max : number , //刷新上限
 }   
 //商店刷新信息
 declare interface PlayerRefreshData {

@@ -222,6 +222,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 is_vip: is_vip,
                 refresh_count: 0, //刷新次数
                 refresh_soul: refresh_soul, //刷新价格
+                refresh_max: this.refresh_limit, //刷新上限
             });
         }
     }
@@ -314,6 +315,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         is_vip: is_vip,
                         refresh_count: 0, //刷新次数
                         refresh_soul: refresh_soul, //刷新价格
+                        refresh_max: this.refresh_limit, //刷新上限
                     };
                 } else {
                     this.shop_field_list[index][i].refresh_count = 0;
