@@ -6,7 +6,7 @@ const element_enum_label: CElementType[] = ["fire", "ice", "thunder", "wind", "l
 GameEvents.Subscribe("NewArmsEvolution_GetArmssElementBondDateList", event => {
     let data = event.data;
     let element_obj = data.Element;
-    // $.Msg(["data", data])
+
 
     for (let key in element_obj) {
         if (key == "0") { continue }

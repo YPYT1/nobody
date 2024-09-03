@@ -4,6 +4,19 @@ export function ShowCustomTextTooltip(
     description: string = "",
 ) {
     let post_args = `title=${title}&description=${description}&tooltip=text`;
+
+    for (let k in panel.Data<PanelDataObject>()) {
+        let value = panel.Data<PanelDataObject>()[k];
+        // $.Msg([value, typeof (value)])
+        if (typeof (value) == "number") {
+            panel.SetDialogVariableInt(k, value);
+        } else {
+            panel.SetDialogVariable(k, value);
+        }
+
+
+    }
+
     $.DispatchEvent(
         "UIShowCustomLayoutParametersTooltip",
         panel,

@@ -38,6 +38,7 @@ const SetPanel_GameRestartVote = () => {
                 vote: 0,
             }
         })
+        GameUI.SelectUnit(Players.GetPlayerHeroEntityIndex(player_id), false)
     })
 }
 
@@ -113,7 +114,17 @@ export const Init = () => {
     InitPanel()
     CustomGameEventsSubscribe();
     GameEvents.Subscribe("dota_player_update_selected_unit", UpdateSelectUnit);
-    GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelectUnit);
+    // GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelectUnit);
+
+    // GameEvents.Subscribe('dota_hero_undoselection', () => {
+    //     $.Msg(["dsdsadsa"])
+    // })
+
+
+    // GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+    //     $.Msg([event, value])
+    //     return false
+    // })
     // GameEvents.Subscribe("dotaplaerup", UpdateSelectUnit);
     // GameEvents.Subscribe("dotapupda", UpdateSelectUnit);
 
@@ -121,6 +132,7 @@ export const Init = () => {
         event_name: "GetPlayerVoteData",
         params: {}
     })
+
 
     // LoopThinker();
 }

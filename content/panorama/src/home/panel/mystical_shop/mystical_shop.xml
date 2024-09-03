@@ -15,8 +15,8 @@
 					<Panel id="ShopItemInfo" >
 						<Panel id="PurchaseBtn" hittest="false">
 							<Image id="ItemIcon" />
-							<Label class="ItemName" text="{s:item_name}"/>
-							<Label class="ItemDesc" text="{s:item_desc}"/>
+							<Label class="ItemName" text="{s:item_name}" />
+							<Label class="ItemDesc" text="{s:item_desc}" html="true"/>
 							<Panel class="ItemPrice">
 								<Label text="{d:cost}"/>
 							</Panel>

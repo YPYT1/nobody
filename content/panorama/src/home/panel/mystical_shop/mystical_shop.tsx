@@ -1,5 +1,7 @@
 import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { default as MysteriousShopConfig } from "../../../json/config/game/shop/mysterious_shop_config.json";
+import { SetLabelDescriptionExtra } from "../../../utils/ability_description";
+import { HideCustomTooltip, ShowCustomTextTooltip } from "../../../utils/custom_tooltip";
 
 const localPlayer = Game.GetLocalPlayerID();
 const SHOP_ITEM_COUNT = 6;
@@ -19,7 +21,6 @@ const GameEventsSubscribeInit = () => {
     GameEvents.Subscribe("MysticalShopSystem_GetShopState", event => {
         let data = event.data;
         start_buy_state = data.start_buy_state;
-        $.Msg(["data", data])
         // 页面显示
         MainPanel.SetHasClass("Show", start_buy_state == 1);
         // 结束倒计时
@@ -44,13 +45,11 @@ const GameEventsSubscribeInit = () => {
         let data = event.data;
         // $.Msg(["MysticalShopSystem_GetShopData", data])
         const local_vip = 0;// data.player_vip_status;
-        // ShopItemList.RemoveAndDeleteChildren();
 
         let shop_field_list = data.shop_field_list;
         for (let k in shop_field_list) {
             let index = parseInt(k) - 1;
             let row_data = shop_field_list[k];
-            // $.Msg(["row_data", row_data])
             let shop_key = row_data.key
             let ShopItem = ShopItemList.GetChild(index)!;
             let is_vip = (local_vip < row_data.is_vip);
@@ -60,18 +59,23 @@ const GameEventsSubscribeInit = () => {
             ShopItem.SetHasClass("IsLock", row_data.is_lock == 1);
             const is_enabled = row_data.is_lock == 0 && local_vip >= row_data.is_vip && row_data.is_buy == 0;
             ShopItem.SetHasClass("Enabled", is_enabled)
-
             ShopItem.SetDialogVariableInt("cost", row_data.soul);
             ShopItem.SetDialogVariableInt("refresh_cost", row_data.refresh_soul);
             ShopItem.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${row_data.key}`));
-            ShopItem.SetDialogVariable("item_desc", $.Localize(`#custom_shopitem_${row_data.key}_Description`));
-
-
-
             const ItemIcon = ShopItem.FindChildTraverse("ItemIcon") as ImagePanel;
             const ShopItemJson = MysteriousShopConfig[shop_key as keyof typeof MysteriousShopConfig];
             const ItemSrc = ShopItemJson ? GetTextureSrc(ShopItemJson.AbilityTextureName) : "";
             ItemIcon.SetImage(ItemSrc)
+            let item_desc = SetLabelDescriptionExtra(
+                $.Localize(`#custom_shopitem_${row_data.key}_Description`),
+                0,
+                ShopItemJson.AbilityValues,
+                ShopItemJson.ObjectValues,
+                false
+            )
+            // $.Msg(["item_desc",item_desc])
+            ShopItem.SetDialogVariable("item_desc", item_desc);
+
 
             const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
             ShopItemCard.enabled = row_data.is_buy == 0 && row_data.is_lock == 0 && !is_vip;
@@ -82,7 +86,9 @@ const GameEventsSubscribeInit = () => {
 
             const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
             RefreshBtn.enabled = row_data.is_lock == 0 && !is_vip;
-
+            RefreshBtn.Data<PanelDataObject>().refresh_count = row_data.refresh_count;
+            RefreshBtn.Data<PanelDataObject>().refresh_soul = row_data.refresh_soul;
+            if (RefreshBtn.BHasClass("onmouse")) { ShowCustomTextTooltip(RefreshBtn, "#custom_text_mystical_shop_refresh") }
             // 设置品质
             const Rarity = ShopItemJson.rarity;
             for (let r = 1; r <= 7; r++) {
@@ -106,7 +112,7 @@ export const OpenPopupsPurchaseItem = (item_order: number, item_key: string) => 
     const ItemRarity = ShopItemJson.rarity;
     for (let r = 1; r <= 7; r++) {
         PurchaseConfirm.SetHasClass("rare_" + r, r == ItemRarity);
-        
+
     }
 
     PopupModal.AddClass("Open");
@@ -170,6 +176,13 @@ export const CreatePanel = () => {
                 }
             })
         })
+        LockBtn.SetPanelEvent("onmouseover", () => {
+            ShowCustomTextTooltip(LockBtn, "#custom_text_mystical_shop_lock")
+        })
+
+        LockBtn.SetPanelEvent("onmouseout", () => {
+            HideCustomTooltip()
+        })
 
         const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
         RefreshBtn.SetPanelEvent("onactivate", () => {
@@ -179,6 +192,16 @@ export const CreatePanel = () => {
                     index: i,
                 }
             })
+        })
+
+        RefreshBtn.SetPanelEvent("onmouseover", () => {
+            RefreshBtn.SetHasClass("onmouse", true)
+            ShowCustomTextTooltip(RefreshBtn, "#custom_text_mystical_shop_refresh")
+        })
+
+        RefreshBtn.SetPanelEvent("onmouseout", () => {
+            RefreshBtn.SetHasClass("onmouse", false)
+            HideCustomTooltip()
         })
 
         const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;

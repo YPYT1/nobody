@@ -24,6 +24,12 @@ export const Init = () => {
 
     GameEvents.Subscribe("player_disconnect", event => {
         $.Msg(["player_disconnect", event])
+        //
+    })
+
+    GameEvents.SendCustomGameEventToServer("CMsg",{
+        event_name:"GetDamageRecord",
+        params:{}
     })
 }
 
@@ -117,7 +123,8 @@ const CustomSubscribe = () => {
 
     GameEvents.Subscribe("CMsg_GetDamageRecord", event => {
         let dmg_record = Object.values(event.data.dmg_record);
-        let total_damage = dmg_record.reduce((total, num) => total + num);
+        // $.Msg(["dmg_record",dmg_record])
+        let total_damage = dmg_record.reduce((total, num) => total + num) + 1;
         for (let i = 0; i < PlayerList.GetChildCount(); i++) {
             let PlayerScoreBoard = PlayerList.GetChild(i);
             if (PlayerScoreBoard) {
@@ -125,9 +132,6 @@ const CustomSubscribe = () => {
                 PlayerScoreBoard.SetDialogVariable("damage_record_label", damage_label);
                 const DamageRecordBar = PlayerScoreBoard.FindChildTraverse("DamageRecordBar")!;
                 DamageRecordBar.style.width = Math.floor(100 * dmg_record[i] / total_damage) + "%";
-           
-                // let player_color = PlayerIdToARGB(1);
-                // $.Msg(["player_color:", i, player_color])
             }
         }
     })
