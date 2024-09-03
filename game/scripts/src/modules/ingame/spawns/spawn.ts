@@ -78,7 +78,7 @@ export class Spawn extends UIEventRegisterClass {
     //刷怪计数器
     _monster_count: number = 0;
     //击杀计数器 总击杀数
-    _player_sum_kill: number[] = [];
+    _player_sum_kill: number[] = [];    
     //回合击杀数量
     _player_round_sum_kill: number[] = [];
     //地图每回合信息
@@ -99,7 +99,7 @@ export class Spawn extends UIEventRegisterClass {
         }
     } = {
 
-        };
+    };
     //所有怪物血量换算公式
     _unit_hp_equation: {
         [name: string]: string
@@ -285,7 +285,7 @@ export class Spawn extends UIEventRegisterClass {
     //普通小怪刷怪器
     CreateMonsterTime() {
         let player_count = GetPlayerCount();
-        this._player_round_sum_kill = [];
+        this._player_round_sum_kill = [];   
         for (let index: PlayerID = 0; index < player_count; index++) {
             this._player_round_sum_kill.push(0);
         }

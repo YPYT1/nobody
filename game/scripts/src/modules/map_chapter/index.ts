@@ -33,7 +33,7 @@ export class MapChapter extends UIEventRegisterClass {
     _map_list : { [key : string ] : UserMapSelectDifficulty }  = {};
     //玩家已通关的难度  
     level_difficulty: string[] = [];
-    //玩家可用英雄列表
+    //玩家可用英雄列表  
     player_hero_available: MapSelectHeroData[][] = [];
     //玩家选择英雄记录
     player_select_hero: MapSelectHeroList[] = [];
@@ -46,7 +46,7 @@ export class MapChapter extends UIEventRegisterClass {
     //客服端确认时间    
     countdown_select_map_time : number = 0;
     //确认英雄时间
-    select_hero_time : number = 60;
+    select_hero_time : number = 60; 
     //客服端确认时间
     countdown_select_hero_time : number = 0;
     //投票确认时间
@@ -80,14 +80,24 @@ export class MapChapter extends UIEventRegisterClass {
             map_key: "m1", //地图编号 m1 m2 
         };
         this._map_list["c2"] = {
-            user_difficulty: 208, // 玩家最高可选难度
-            difficulty_max: 208, // 地图最高难度    
-            map_key: "m2", //地图编号 m1 m2 
+            user_difficulty: 113, // 玩家最高可选难度
+            difficulty_max: 115, // 地图最高难度    
+            map_key: "m1", //地图编号 m1 m2 
         }
         this._map_list["c3"] = {
-            user_difficulty: 302, // 玩家最高可选难度   
-            difficulty_max: 305, // 地图最高难度
-            map_key: "m3", //地图编号 m1 m2 
+            user_difficulty: 124, // 玩家最高可选难度   
+            difficulty_max: 124, // 地图最高难度
+            map_key: "m1", //地图编号 m1 m2 
+        }
+        this._map_list["c4"] = {
+            user_difficulty: 132, // 玩家最高可选难度   
+            difficulty_max: 132, // 地图最高难度
+            map_key: "m1", //地图编号 m1 m2 
+        }
+        this._map_list["c5"] = {
+            user_difficulty: 140, // 玩家最高可选难度   
+            difficulty_max: 140, // 地图最高难度
+            map_key: "m1", //地图编号 m1 m2 
         }
 
         this.player_count = GetPlayerCount();
@@ -98,7 +108,7 @@ export class MapChapter extends UIEventRegisterClass {
                 this.hero_list[RowData.HeroID] = key;
                 sort_hero[RowData.sort] = RowData.HeroID;
             }
-        }
+        }   
         for (let index = 0; index < this.player_count; index++) {
             let hero_key : MapSelectHeroData[] = [];
             for (let index = 0; index < Object.keys(sort_hero).length; index++) {
@@ -692,6 +702,9 @@ export class MapChapter extends UIEventRegisterClass {
         RemoveFOWViewer(DotaTeam.BADGUYS , this.shiye);
         //开始游戏确认功能
         GameRules.MapChapter.SelectDifficultyAffirmThink();
+
+        //清空伤害数据
+        GameRules.CMsg.ClearDamageRecord()
 
         let hDropItemList = FindUnitsInRadius(
             DotaTeam.GOODGUYS,
