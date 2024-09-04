@@ -16,7 +16,13 @@
 			<Label text="{d:round} / {d:max_round}" />
 		</Panel>
 		<Panel id="GameTimeInfo">
-			<Label class="TimeLabel" text="{s:time_label}" />
+			<Panel class="TypeNormal">
+				<Label class="TimeLabel" text="{s:time_label}" />
+			</Panel>
+			<Panel class="TypeBoss">
+				<Label class="Label" text="挑战倒计时"/>
+				<Label class="TimeLabel" text="{s:boss_timer}" />
+			</Panel>
 		</Panel>
 	</Panel>
 </root>

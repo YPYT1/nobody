@@ -203,7 +203,7 @@ export class CustomAttribute {
         //重置锁定条件
         let player_id = hUnit.GetPlayerOwnerID();
         GameRules.MysticalShopSystem.player_skill_activated[player_id] = [
-            true , true , true , true , true 
+            true, true, true, true, true
         ];
     }
 
@@ -796,6 +796,19 @@ export class CustomAttribute {
         if (cmd == "-hp") {
             let amount = tonumber(args[0] ?? "1");
             hHero.SetHealth(math.max(1, amount));
+        }
+
+        if (cmd == "-hit") {
+            let amount = tonumber(args[0] ?? "1");
+            let element_type = tonumber(args[1] ?? "1") as ElementTypes;
+            GameRules.DamageSystem.ApplyDamageForBadTeam({
+                victim: hHero,
+                attacker: hHero,
+                damage: amount,
+                damage_type: DamageTypes.MAGICAL,
+                ability: null,
+                element_type: element_type,
+            })
         }
     }
 }

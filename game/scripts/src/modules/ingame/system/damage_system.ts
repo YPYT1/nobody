@@ -117,6 +117,9 @@ export class DamageSystem {
 
             if (element_type == ElementTypes.FIRE) {
                 ElementDmgMul += params.attacker.custom_attribute_value.FireDamageBonus;
+                let EPent = params.attacker.custom_attribute_value.FirePent ?? 0;
+                let EResist = params.victim.enemy_attribute_value.FireResist ?? 0;
+                ElementResist += math.min(0, (EPent - EResist))
                 if (is_primary) {
                     // 添加灼烧
                     GameRules.ElementEffect.SetFirePrimary(params.attacker, params.victim)
@@ -127,19 +130,18 @@ export class DamageSystem {
                     let duration = GameRules.MysticalShopSystem.GetKvOfUnit(params.attacker, 'prop_3', 'duration');
                     GameRules.EnemyAttribute.SetAttributeInKey(params.victim, "prop_3_effect", {
                         "FireResist": {
-                            "Base": duration
+                            "Base": FireResist
                         }
-                    }, 3)
+                    }, duration)
                 }
 
 
             } else if (element_type == ElementTypes.ICE) {
                 ElementDmgMul += params.attacker.custom_attribute_value.IceDamageBonus;
                 // 受到伤害=造成伤害*（1-元素抗性百分比（=受伤害者元素抗性-攻击者元素穿透）最小值0）*（1-伤害减免百分比）+造成伤害2【总值最小为0】
-                let IcePent = params.attacker.custom_attribute_value.IcePent ?? 0;
-                let IceResist = params.victim.enemy_attribute_value.IceResist ?? 0;
-
-                ElementResist += (IcePent - IceResist)
+                let EPent = params.attacker.custom_attribute_value.FirePent ?? 0;
+                let EResist = params.victim.enemy_attribute_value.FireResist ?? 0;
+                ElementResist += math.min(0, (EPent - EResist))
                 if (is_primary) {
                     GameRules.ElementEffect.SetIcePrimary(params.attacker, params.victim)
                 }
@@ -147,12 +149,17 @@ export class DamageSystem {
 
             } else if (element_type == ElementTypes.THUNDER) {
                 ElementDmgMul += params.attacker.custom_attribute_value.ThunderDamageBonus;
-
+                let EPent = params.attacker.custom_attribute_value.ThunderPent ?? 0;
+                let EResist = params.victim.enemy_attribute_value.ThunderResist ?? 0;
+                ElementResist += math.min(0, (EPent - EResist))
                 if (is_primary) {
                     GameRules.ElementEffect.SetThunderPrimary(params.attacker, params.victim)
                 }
             } else if (element_type == ElementTypes.WIND) {
                 ElementDmgMul += params.attacker.custom_attribute_value.WindDamageBonus;
+                let EPent = params.attacker.custom_attribute_value.WindPent ?? 0;
+                let EResist = params.victim.enemy_attribute_value.WindResist ?? 0;
+                ElementResist += math.min(0, (EPent - EResist))
                 if (is_primary && params.damage_vect) {
                     GameRules.ElementEffect.SetWindPrimary(params.attacker, params.victim, params.damage_vect)
                 }
@@ -177,18 +184,18 @@ export class DamageSystem {
             * (1 + FinalDamageMul * 0.01)
             * ElementResist * 0.01
             ;
-        // print("ElementResist",ElementResist)
+        // print("ElementResist", ElementResist)
         params.damage = math.floor(params.damage * increased_injury);
 
         // 暴击
-        if (critical_flag != -1 && RollPercentage(CriticalChance)) {
+        if ((critical_flag != -1 && RollPercentage(CriticalChance)) || critical_flag == 1) {
             is_crit = 1;
-            params.damage = math.floor(params.damage * (CriticalDamage * 0.01))
+            params.damage = math.floor(params.damage * CriticalDamage * 0.01)
         }
         PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type);
         // 伤害系统
         let actual_damage = math.min(params.damage, params.victim.GetHealth());
-        GameRules.CMsg.AddDamageRecord(iPlayerID,actual_damage);
+        GameRules.CMsg.AddDamageRecord(iPlayerID, actual_damage);
         return ApplyDamage(params);
     }
 
@@ -212,14 +219,10 @@ export class DamageSystem {
             return 0
         }
 
-        let rune_buff = params.victim.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
-        if (rune_buff) { rune_buff.OnBeInjured(params) }
 
-        let prop_buff = params.victim.FindModifierByName("modifier_prop_effect") as modifier_prop_effect;
-        if (prop_buff) { prop_buff.OnBeInjured(params) }
 
         // 护甲
-        let armor = custom_attribute_value.PhyicalArmor ?? 0;
+        // let armor = custom_attribute_value.PhyicalArmor ?? 0;
         params.damage = this.GetReduction(
             params.victim,
             params.damage,
@@ -227,8 +230,14 @@ export class DamageSystem {
             params.element_type
         );
         params.damage_type = DamageTypes.PURE;
-
         params.damage = params.damage * (100 - custom_attribute_value.DmgReductionPct) * 0.01;
+
+        let rune_buff = params.victim.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
+        if (rune_buff) { rune_buff.OnBeInjured(params) }
+
+        let prop_buff = params.victim.FindModifierByName("modifier_prop_effect") as modifier_prop_effect;
+        if (prop_buff) { prop_buff.OnBeInjured(params) }
+
         if (params.damage <= 0) {
             GameRules.CMsg.Popups(params.victim, 'Miss', 0, params.victim.GetPlayerOwner())
             return 0

@@ -2,7 +2,7 @@ const MainPanel = $.GetContextPanel();
 
 let RoundGameStartTime = 0;
 let RoundGameDifficulty = "101"
-// let GameSelectPhase = -1;
+let BossCountdownTimer = 0;
 
 const StartLoop = () => {
     UpdateTopInfoTime()
@@ -26,9 +26,14 @@ const UpdateTopInfoTime = () => {
         return
     }
     let DotaGameTime = Game.GetDOTATime(false, false);
+
     let RoundGameTime = DotaGameTime - RoundGameStartTime;
     let TimeLabel = FormatNumberToTime(RoundGameTime);
     MainPanel.SetDialogVariable("time_label", TimeLabel.join(":"));
+
+    let RoundBossTime = Math.max(0, Math.floor(BossCountdownTimer - DotaGameTime))
+    // let BossLabel = FormatNumberToTime(RoundBossTime);
+    MainPanel.SetDialogVariable("boss_timer", `${RoundBossTime}s`);
 }
 
 export const Init = () => {
@@ -39,10 +44,16 @@ export const Init = () => {
     MainPanel.SetDialogVariable("time_label", "0:0");
     MainPanel.SetDialogVariableInt("round", 0);
     MainPanel.SetDialogVariableInt("max_round", 99);
+
     GameEvents.Subscribe("GameInformation_GetPlayGameHeadData", event => {
         let data = event.data;
+        // $.Msg(["GameInformation_GetPlayGameHeadData"])
+
+        MainPanel.SetHasClass("Boss", data.type == 1);
+        MainPanel.SetHasClass("Normal", data.type == 0);
         RoundGameStartTime = data.time;
         RoundGameDifficulty = data.difficulty;
+        BossCountdownTimer = data.boss_time;
         MainPanel.SetDialogVariable("stage", RoundGameDifficulty);
         MainPanel.SetDialogVariableInt("max_round", data.round_max);
         MainPanel.SetDialogVariableInt("round", data.round_index);

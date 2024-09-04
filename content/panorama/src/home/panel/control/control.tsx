@@ -34,7 +34,6 @@ export const CreatePanel_ActionAbility = () => {
 }
 
 export const UpdateAbilityList = () => {
-
     for (let i = 0; i < AbilityList.GetChildCount(); i++) {
         let AbilityPanel = AbilityList.GetChild(i)!;
         AbilityPanel.Data<PanelDataObject>().UpdateAbilityVar();
@@ -58,8 +57,6 @@ const InitAbilityAction = () => {
     OnInitMoveHotkey()
     CreatePanel_ActionAbility();
     GameEvents.Subscribe("dota_portrait_ability_layout_changed", UpdateAbilityList);
-    // GameEvents.Subscribe("dota_player_update_selected_unit", UpdateAbilityList);
-    // GameEvents.Subscribe("dota_player_update_query_unit", UpdateAbilityList);
     GameEvents.Subscribe("dota_ability_changed", UpdateAbilityList);
     GameEvents.Subscribe("dota_hero_ability_points_changed", UpdateAbilityList);
 })();

@@ -14,6 +14,7 @@ const HeroConfirm = $("#HeroConfirm") as Button;
 let heroModel: ScenePanel;
 let HeroIdTable: { [key: number]: string } = {}
 
+let local_select_id = -1;
 function InitKvTable() {
     for (let k in NpcHeroesCustom) {
         let hero_data = NpcHeroesCustom[k as keyof typeof NpcHeroesCustom];
@@ -49,17 +50,21 @@ GameEvents.Subscribe("MapChapter_GetPlayerSelectHeroList", event => {
         HeroIcon.SetImage(`file://{images}/heroes/${PortraitImage}.png`)
         PlayerState.SetDialogVariable("hero_name", $.Localize(`#${hero_name}`))
 
-
         let is_enable = hero_data.Enable == 1;
-        // $.Msg(["is_enable",is_enable])
+
         if (player_id == Game.GetLocalPlayerID()) {
+            // $.Msg(["hero_id", hero_id, local_select_id])
             for (let i = 0; i < HeroBackground.GetChildCount(); i++) {
                 let row_panel = HeroBackground.GetChild(i) as ScenePanel;
                 let row_id = row_panel.id;
-                // row_panel.ReloadScene();
                 row_panel.SetHasClass("Show", row_id == `${hero_id}`)
-                row_panel.FireEntityInput("hero_camera_driver", "SetAnimation", "debut_camera_anim")
-                row_panel.FireEntityInput("qop_arcana", "mapunitname", "npc_dota_hero_axe")
+
+                if (local_select_id != hero_id) {
+                    local_select_id = hero_id;
+                    row_panel.FireEntityInput("hero_camera_driver", "SetAnimation", "debut_camera_anim")
+                    // row_panel.FireEntityInput("qop_arcana", "mapunitname", "npc_dota_hero_axe")
+                }
+
             }
 
             let is_ready = player_data.state == 1;

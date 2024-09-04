@@ -5,29 +5,74 @@
     background-image: url("file://{images}/custom_game/hud/top_info/top_border2.png");
 
 
+    &.Boss {
+        background-image: url("file://{images}/custom_game/hud/top_info/top_border_boss.png");
+
+        #GameTimeInfo {
+            .TypeBoss {
+                visibility: visible;
+            }
+        }
+
+    }
+
+
+    &.Normal {
+
+        #GameTimeInfo {
+            .TypeNormal {
+                visibility: visible;
+            }
+        }
+    }
+
     #GameTimeInfo {
-        width: 120px;
+        // width: 120px;
         horizontal-align: center;
         margin-top: 4px;
 
-        // border: 1px solid #ffffff;
-        .TimeLabel {
+        .TypeNormal {
+            visibility: collapse;
             horizontal-align: center;
-            // background-color: #000000;
-            font-weight: bold;
-            font-size: 30px;
-            // color:#3ab4d3;
-            color: gradient(linear, 0% 0%, 0% 100%, from(#e8fffc), to(#ffffff));
-            text-shadow: 0px 0px 2px 2.0 #000000;
-            // font-family: "思源黑体";
+
+            .TimeLabel {
+                color: gradient(linear, 0% 0%, 0% 100%, from(#e8fffc), to(#ffffff));
+                text-shadow: 0px 0px 2px 2.0 #000000;
+            }
         }
+
+        .TypeBoss {
+            horizontal-align: center;
+            flow-children: right;
+            visibility: collapse;
+
+            .Label {
+                vertical-align: middle;
+                font-size: 18px;
+                color: #ffec92;
+                text-shadow: 0px 0px 6px 2.0 #ff3d2e;
+            }
+
+            .TimeLabel {
+                color: #ffec92;
+                text-shadow: 0px 0px 6px 2.0 #ff3d2e;
+            }
+        }
+    }
+
+    .TimeLabel {
+        // horizontal-align: center;
+        font-weight: bold;
+        font-size: 32px;
+
+        // font-family: "思源黑体";
     }
 
     .TopRows {
         // border: 1px solid #ffffff;
         flow-children: right;
         margin-top: 12px;
-        
+
         Label {
             vertical-align: middle;
             font-size: 18px;

@@ -24,6 +24,7 @@
         <Panel id="TopCountdownMessage" hittest="false">
             <Panel id="Timer" >
                 <Label text="{s:timer_label}"/>
+                <Panel class="TimerImage"/>
             </Panel>
         </Panel>
 		<Panel id="CommonMessage" class='BottomToTopMessagePanel' hittest="false">

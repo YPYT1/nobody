@@ -92,18 +92,24 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 FindOrder.CLOSEST,
                 false
             )
-            if (enemies.length <= 0) { return }
+            if (enemies.length <= 0) { 
+                this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
+                this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
+                return 
+            }
             let hTarget = enemies[0];
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
             this.ability.ManaCostAndConverDmgBonus()
             // 清空动作
-            this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
-            this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
+            
+            // this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
             // 判断是否为移动状态
 
             if (this.caster.move_state) {
+                this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
                 this.caster.StartGesture(GameActivity.DOTA_CAST_ABILITY_1);
             } else {
+                this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
                 this.caster.StartGesture(GameActivity.DOTA_ATTACK);
             }
 

@@ -17,6 +17,7 @@ export class modifier_prop_effect extends BaseModifier {
     timer_prop_43: number;
     timer_prop_45: number;
 
+    prop_49_kills: number;
 
     IsHidden(): boolean { return true }
     IsPermanent(): boolean { return true }
@@ -33,6 +34,8 @@ export class modifier_prop_effect extends BaseModifier {
         this.timer_prop_42 = 0;
         this.timer_prop_43 = 0;
         this.timer_prop_45 = 0;
+
+        this.prop_49_kills = 0;
         this.OnRefresh(params);
         this.StartIntervalThink(1)
     }
@@ -49,7 +52,19 @@ export class modifier_prop_effect extends BaseModifier {
     }
 
     OnKillEvent(hTarget: CDOTA_BaseNPC): void {
-    
+        // let unit_type = hTarget.GetUnitLabel() == ""
+        // prop_49	【石中剑】	每击杀100个敌军增加1%攻击力（精英怪算5个敌军，boss算15个）
+        if (this.object["prop_49"]) {
+            this.prop_49_kills += 1;
+            if (this.prop_49_kills >= 100) {
+                this.prop_49_kills -= 100;
+                GameRules.CustomAttribute.ModifyAttribute(this.caster, {
+                    "AttackDamage": {
+                        "BasePercent": 1
+                    }
+                })
+            }
+        }
     }
 
     OnIntervalThink(): void {
@@ -148,28 +163,38 @@ export class modifier_prop_effect extends BaseModifier {
                     GameRules.BuffManager.AddGeneralDebuff(this.caster, enemy, DebuffTypes.rooted, duration)
                 }
 
-
+                this.timer_prop_45 = 0;
                 // effect
-                // let effect_fx = ParticleManager.CreateParticle("")
+                let effect_fx = ParticleManager.CreateParticle(
+                    "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova.vpcf",
+                    ParticleAttachment.POINT,
+                    this.caster
+                )
+                ParticleManager.SetParticleControl(effect_fx, 1, Vector(radius, 1, 1))
+                ParticleManager.ReleaseParticleIndex(effect_fx)
             }
         }
     }
 
+    /** 收到伤害 */
     OnBeInjured(params: ApplyCustomDamageOptions) {
         // prop_17	【刃甲】	反弹40%受到的伤害
         if (params.victim.prop_count["prop_17"]) {
-            let value = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_17', 'value');
-            let attack_damage = params.damage * value * 0.01;
-            let hAbility = params.victim.FindAbilityByName("public_attribute")
-            GameRules.DamageSystem.ApplyDamage({
-                victim: params.attacker,
-                attacker: params.victim,
-                damage: attack_damage,
-                damage_type: DamageTypes.PHYSICAL,
-                ability: hAbility,
-                element_type: ElementTypes.NONE,
-                is_primary: false,
-            })
+            let hAbility = params.victim.FindAbilityByName("public_attribute");
+            if (params.ability != hAbility) {
+                let value = GameRules.MysticalShopSystem.GetKvOfUnit(params.victim, 'prop_17', 'value');
+                let attack_damage = params.damage * value * 0.01;
+                GameRules.DamageSystem.ApplyDamage({
+                    victim: params.attacker,
+                    attacker: params.victim,
+                    damage: attack_damage,
+                    damage_type: DamageTypes.PHYSICAL,
+                    ability: hAbility,
+                    element_type: ElementTypes.NONE,
+                    is_primary: false,
+                })
+            }
+
         }
 
         // prop_20	【你的滑板孩】	常驻移动速度+25%，但在受到伤害后变为移动速度降低50%持续3秒
@@ -196,6 +221,22 @@ export class modifier_prop_effect extends BaseModifier {
                 duration: root_duration
             })
         }
+
+        // prop_47	【不休尸王的钢盔】	复活时间减少15%，受到致死打击后还能继续存活6秒
+        print("this.caster.prop_count")
+        DeepPrintTable(this.caster.prop_count)
+        if (params.damage >= this.caster.GetHealth() && this.caster.prop_count["prop_47"]) {
+            if (!params.victim.HasModifier("modifier_shop_prop_47")) {
+
+                let duration = this.Prop_Object("prop_47", "duration")
+                let buff = this.caster.AddNewModifier(this.caster, null, "modifier_shop_prop_47", {
+                    duration: duration
+                })
+                print("prop_47 add ", duration, buff)
+                params.damage = 1;
+            }
+        }
+
     }
 
     /** 神罚效果 */

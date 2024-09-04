@@ -14,6 +14,10 @@ const StartCountdownTimer = () => {
     let diff_timer = Math.ceil(end_timer - dotatime);
     // $.Msg(["diff_timer", diff_timer, end_timer - dotatime])
     TopCountdownMessage.SetDialogVariable("timer_label", "" + diff_timer);
+
+    TopCountdownMessage.SetHasClass("timer_1", diff_timer == 1);
+    TopCountdownMessage.SetHasClass("timer_2", diff_timer == 2);
+    TopCountdownMessage.SetHasClass("timer_3", diff_timer == 3);
     let old_timer = TopCountdownMessage.Data<PanelDataObject>().timer;
     TopCountdownMessage.Data<PanelDataObject>().timer = diff_timer;
     // $.Msg([old_timer != diff_timer])
@@ -36,10 +40,11 @@ const StartCountdownTimer = () => {
         $.Schedule(1, StartCountdownTimer)
     }
 
+    // $.Msg(["StartCountdownTimer"])
 }
 
 const CMsg_TopCountdown = (params: CustomGameEventDeclarations["CMsg_TopCountdown"]) => {
-    $.Msg(["CMsg_TopCountdown", params])
+    // $.Msg(["CMsg_TopCountdown", params])
     let data = params.data;
     let end_timer = data.end_timer;
     TopCountdownMessage.Data<PanelDataObject>().end_timer = end_timer;

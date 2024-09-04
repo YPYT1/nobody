@@ -12,8 +12,8 @@ export const CreatePanel_BuffList = () => {
     m_BuffPanels = [];
     m_DeBuffPanels = [];
 
-    GameEvents.Subscribe("dota_player_update_selected_unit", UpdateBuffs);
-    GameEvents.Subscribe("dota_player_update_query_unit", UpdateBuffs);
+    // GameEvents.Subscribe("dota_player_update_selected_unit", UpdateBuffs);
+    // GameEvents.Subscribe("dota_player_update_query_unit", UpdateBuffs);
     AutoUpdateBuffs()
 }
 

@@ -8,6 +8,20 @@ export class EnemyAttribute {
         print("[EnemyAttribute]:constructor")
     }
 
+    SetUnitAttr(hUnit:CDOTA_BaseNPC){
+        hUnit.enemy_attribute_value = {
+            FireResist: 0,
+            IceResist: 0,
+            ThunderResist: 0,
+            WindResist: 0,
+            AllElementResist: 0,
+            DmgReductionFixed: 0,
+        };
+        hUnit.custom_mul_attribute = {};
+        hUnit.enemy_attribute_table_key = {};
+        hUnit.enemy_attribute_table = {};
+        hUnit.SpecialMark = {};
+    }
     ModifyAttribute(hUnit: CDOTA_BaseNPC, AttrList: EnemyAttributeValueType, mode: number = 0) {
         if (hUnit.enemy_attribute_value == null) { hUnit.enemy_attribute_value = {} }
         if (hUnit.enemy_attribute_table == null) { hUnit.enemy_attribute_table = {} }
@@ -94,6 +108,7 @@ export class EnemyAttribute {
                 timer_key,
                 () => {
                     let temp_attr_list = hUnit.enemy_attribute_table_key[key];
+                    DeepPrintTable(hUnit.custom_mul_attribute)
                     for (let attr_key in hUnit.custom_mul_attribute) {
                         hUnit.custom_mul_attribute[attr_key as AttributeMainKey][key] = null
                     }
@@ -116,8 +131,6 @@ export class EnemyAttribute {
                 let SubAttr = hUnit.enemy_attribute_table[main_key as keyof typeof hUnit.enemy_attribute_table];
                 let TotalAttrValue = (SubAttr["Base"]) * (1 + (SubAttr["BasePercent"] ?? 0)* 0.01)
                 hUnit.enemy_attribute_value[main_key] = TotalAttrValue;
-                // hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
-                // hUnit.custom_attribute_show[main_key][1] = TotalAttrValue - SubAttr["Base"]
             } else {
                 // 乘算属性处理
                 if (hUnit.custom_mul_attribute[main_key]) {

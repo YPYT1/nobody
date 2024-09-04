@@ -215,13 +215,9 @@ function UpdateTopPanelBoss() {
 
                 })
             }
-
-
             // NextHealthBar.style.width = "100%"
             // NextHealthBar.style.washColor = `${color_list[next_color_index]}`
             return
-        } else {
-            $.Msg(["deduct_hp", deduct_hp])
         }
 
         // UpdateHealthBar(damage, pPanel);

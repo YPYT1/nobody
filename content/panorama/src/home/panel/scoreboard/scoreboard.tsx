@@ -27,9 +27,9 @@ export const Init = () => {
         //
     })
 
-    GameEvents.SendCustomGameEventToServer("CMsg",{
-        event_name:"GetDamageRecord",
-        params:{}
+    GameEvents.SendCustomGameEventToServer("CMsg", {
+        event_name: "GetDamageRecord",
+        params: {}
     })
 }
 
@@ -72,7 +72,7 @@ const Create_Scoreboard = (count: number) => {
         PlayerScoreBoard.SetDialogVariable("damage_record_label", "0");
         let DamageRecordBar = PlayerScoreBoard.FindChildTraverse("DamageRecordBar")!;
         let player_color = PlayerIdToARGB(Players.GetPlayerColor(player_id));
-        DamageRecordBar.style.washColor = "#" + player_color;
+        // DamageRecordBar.style.washColor = "#" + player_color;
         let connect = playerInfo.player_connection_state;
     }
 }
@@ -124,14 +124,19 @@ const CustomSubscribe = () => {
     GameEvents.Subscribe("CMsg_GetDamageRecord", event => {
         let dmg_record = Object.values(event.data.dmg_record);
         // $.Msg(["dmg_record",dmg_record])
-        let total_damage = dmg_record.reduce((total, num) => total + num) + 1;
+        let max_damage = Math.max(...dmg_record);
         for (let i = 0; i < PlayerList.GetChildCount(); i++) {
             let PlayerScoreBoard = PlayerList.GetChild(i);
             if (PlayerScoreBoard) {
                 let damage_label = FormatIntToString(dmg_record[i])
                 PlayerScoreBoard.SetDialogVariable("damage_record_label", damage_label);
                 const DamageRecordBar = PlayerScoreBoard.FindChildTraverse("DamageRecordBar")!;
-                DamageRecordBar.style.width = Math.floor(100 * dmg_record[i] / total_damage) + "%";
+                if (max_damage == 0) {
+                    DamageRecordBar.style.width = "0%";
+                } else {
+                    DamageRecordBar.style.width = Math.floor(100 * dmg_record[i] / max_damage) + "%";
+                }
+
             }
         }
     })

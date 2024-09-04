@@ -73,8 +73,9 @@ export function FormatDescription(
                 if (curr_level >= i && i == special_num.length) {
                     class_name = "Current"
                 }
-                let value = special_num[i - 1]
-                let is_negative = value < 0;
+               
+                let is_negative = special_num[i - 1] < 0;
+                let value = Math.abs(special_num[i - 1]) 
                 let col_value = `<span class="${class_name} ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
                 special_value.push(col_value)
             }
@@ -90,9 +91,8 @@ export function FormatDescription(
         } else {
             if (curr_level <= 0) { curr_level = 1; }
             curr_level = Math.min(curr_level, special_num.length)
-            let value = special_num[curr_level - 1];
-            // $.Msg(["value",value])
-            let is_negative = value < 0;
+            let is_negative = special_num[curr_level - 1] < 0;
+            let value = Math.abs(special_num[curr_level - 1]) ;
             let col_value = `<span class="GameplayVariable Current ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
             original_description_txt = original_description_txt.replaceAll(
                 `%${key}%%%`,

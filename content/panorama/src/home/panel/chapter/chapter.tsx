@@ -2,6 +2,7 @@ import { CreateServerItem } from "../../../common/server_item";
 import { default as ChapterInfo } from "../../../json/config/chapter_info.json"
 import { default as NpcHeroesCustom } from "../../../json/npc_heroes_custom.json"
 
+const localPlayer = Game.GetLocalPlayerID();
 const MainPanel = $.GetContextPanel();
 const ChapterContainer = $("#ChapterContainer")
 const PageList = $("#PageList");
@@ -349,6 +350,9 @@ export const CreatePanel = () => {
     // 英雄列表
     // Create_HeroList()
     // MainPanel.SetHasClass("Stage_2", true);
+
+
+    ChapterConfirmBtn.visible = localPlayer == 0;
 }
 
 export const UpdateChapterPage = (data: { [key: string]: UserMapSelectDifficulty }) => {

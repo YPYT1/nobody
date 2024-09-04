@@ -116,15 +116,14 @@
 
 #TopCountdownMessage {
     horizontal-align: center;
-    margin-top: 128px;
+    vertical-align: middle;
+    margin-bottom: 128px;
     transition-property: opacity, font-size, pre-transform-scale2d;
     transition-duration: 0.2s;
     visibility: collapse;
 
     &.Show {
         visibility: visible;
-        // opacity: 1;
-        // pre-transform-scale2d: 1;
     }
 
     &.fade_in {
@@ -153,8 +152,8 @@
     // }
 
     #Timer {
-
         Label {
+            visibility: collapse;
             // animation-duration: 0.5s;
             color: #ff0000;
             text-shadow: 0px 0px 2px 2.0 #000;
@@ -162,12 +161,29 @@
             font-size: 128px;
             horizontal-align: center;
             vertical-align: middle;
-            // pre-transform-scale2d: 3;
-            // opacity: 0;
-            // transition-property: opacity, font-size, pre-transform-scale2d;
-            // transition-duration: 0.2s;
-
         }
+
+    }
+
+    .TimerImage {
+        width: 216px;
+        height: 241px;
+        background-repeat: no-repeat;
+        // 
+        // background-image: url("file://{images}/custom_game/hud/message/countdown/2.png");
+        // background-image: url("file://{images}/custom_game/hud/message/countdown/3.png");
+    }
+
+    &.timer_1 {
+        background-image: url("file://{images}/custom_game/hud/message/countdown/1.png");
+    }
+
+    &.timer_2 {
+        background-image: url("file://{images}/custom_game/hud/message/countdown/2.png");
+    }
+
+    &.timer_3 {
+        background-image: url("file://{images}/custom_game/hud/message/countdown/3.png");
     }
 }
 

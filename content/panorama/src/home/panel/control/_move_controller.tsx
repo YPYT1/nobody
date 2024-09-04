@@ -120,7 +120,7 @@ export function OnInitMoveHotkey() {
 
 
     GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-        $.Msg([event, value])
+        // $.Msg([event , value])
         if (value == 1) {
             return true
         } else {

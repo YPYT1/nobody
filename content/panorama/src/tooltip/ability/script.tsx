@@ -199,6 +199,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
             if (level <= 0) { continue }
             let row_data = talent_data[key as keyof typeof talent_data]
             let link_ability = row_data.link_ability;
+            // $.Msg([link_ability,ability_name])
             if (link_ability == ability_name || (row_data.tier_number == 99 &&  (row_data.index - 1) == in_slot)) {
                 let is_ability = row_data.is_ability == 1;
                 // $.Msg([ability_name, key, netdata[key]])

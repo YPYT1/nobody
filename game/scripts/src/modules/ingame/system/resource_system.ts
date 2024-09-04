@@ -211,7 +211,7 @@ export class ResourceSystem extends UIEventRegisterClass {
         exp_unit.drop_resource_type = resource;
         exp_unit.drop_resource_amount = this.exp_type_count[exp_type];
         exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_exp", {})
-        if (killer) {
+        if (killer && killer.GetTeamNumber() == DotaTeam.GOODGUYS) {
             // prop_16	【迈达斯之手】	自动拾取被自身击杀的怪物掉落的经验值（超稀有）
             if (killer.prop_count["prop_16"]) {
                 exp_unit.AddNewModifier(exp_unit, null, "modifier_pick_animation", {

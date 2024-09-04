@@ -78,7 +78,7 @@ export class Spawn extends UIEventRegisterClass {
     //刷怪计数器
     _monster_count: number = 0;
     //击杀计数器 总击杀数
-    _player_sum_kill: number[] = [];    
+    _player_sum_kill: number[] = [];
     //回合击杀数量
     _player_round_sum_kill: number[] = [];
     //地图每回合信息
@@ -99,7 +99,7 @@ export class Spawn extends UIEventRegisterClass {
         }
     } = {
 
-    };
+        };
     //所有怪物血量换算公式
     _unit_hp_equation: {
         [name: string]: string
@@ -277,7 +277,7 @@ export class Spawn extends UIEventRegisterClass {
             let boss_name = boss_name_list[boss_name_list_index];
             if (boss_name == "null") {
                 return 60;
-            }else{
+            } else {
                 return 120;
             }
         }, 0)
@@ -285,7 +285,7 @@ export class Spawn extends UIEventRegisterClass {
     //普通小怪刷怪器
     CreateMonsterTime() {
         let player_count = GetPlayerCount();
-        this._player_round_sum_kill = [];   
+        this._player_round_sum_kill = [];
         for (let index: PlayerID = 0; index < player_count; index++) {
             this._player_round_sum_kill.push(0);
         }
@@ -396,14 +396,14 @@ export class Spawn extends UIEventRegisterClass {
         }
         //半分钟提示
         GameRules.GetGameModeEntity().SetContextThink("BossHint" + "_" + this._round_index, () => {
-            if(this._round_index >= this._round_max){
+            if (this._round_index >= this._round_max) {
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE4);
                 // GameRules.CMsg.SendCommonMsgToPlayer(
                 //     -1 as PlayerID,
                 //     "关底 BOSS即将来袭 ",
                 //     {}
                 // );
-            }else{
+            } else {
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE3);
                 // GameRules.CMsg.SendCommonMsgToPlayer(
                 //     -1 as PlayerID,
@@ -411,7 +411,7 @@ export class Spawn extends UIEventRegisterClass {
                 //     {}
                 // );
             }
-            
+
             return null;
         }, 30)
         //登场
@@ -474,7 +474,7 @@ export class Spawn extends UIEventRegisterClass {
                 // boss击杀小怪
                 for (let xgunit of GameRules.Spawn._map_Spawn_list) {
                     if (xgunit.IsNull() == false) {
-                        xgunit.Kill(null , unit)
+                        xgunit.Kill(null, unit)
                     }
                 }
                 GameRules.Spawn._spawn_count = 0;
@@ -482,7 +482,7 @@ export class Spawn extends UIEventRegisterClass {
                 // boss击杀精英
                 for (let jyunit of GameRules.Spawn._map_elite_spawn_list) {
                     if (jyunit.IsNull() == false) {
-                        jyunit.Kill(null , unit)
+                        jyunit.Kill(null, unit)
                     }
                 }
                 GameRules.Spawn._map_Spawn_list = [];
@@ -783,7 +783,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
             GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
                 for (let hHero of HeroList.GetAllHeroes()) {
-                    GameRules.BuffManager.AddGeneralDebuff(hHero,hHero,DebuffTypes.un_controll , GameRules.MysticalShopSystem.MYSTICAL_SHOP_BUY_ITEM); 
+                    GameRules.BuffManager.AddGeneralDebuff(hHero, hHero, DebuffTypes.un_controll, GameRules.MysticalShopSystem.MYSTICAL_SHOP_BUY_ITEM);
                     // hHero.AddNewModifier(hHero, null, "modifier_debuff_rooted", { duration: 10, });
                 }
                 //重新设置时间
@@ -866,7 +866,7 @@ export class Spawn extends UIEventRegisterClass {
             DeepPrintTable(this._player_sum_kill)
         }
 
-        if(cmd == "--StartSpawnControl"){
+        if (cmd == "--StartSpawnControl") {
             GameRules.Spawn._round_index = 4;
             GameRules.Spawn.StartSpawnControl();
         }
@@ -882,10 +882,7 @@ export class Spawn extends UIEventRegisterClass {
             null,
             DotaTeam.BADGUYS
         );
-        unit.enemy_attribute_value = {};
-        unit.enemy_attribute_table_key = {};
-        unit.enemy_attribute_table = {};
-        unit.SpecialMark = {};
+        GameRules.EnemyAttribute.SetUnitAttr(unit)
         // GameRules.EnemyAttribute.ModifyAttribute(unit,{
         //     'DamageBonusMul'
         // })
@@ -910,7 +907,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn.MapUnitKilled(target, killer);
         } else if (target.IsHero()) {
             //英雄单位死亡处理
-            GameRules.GameInformation.HeroDie(target , killer);
+            GameRules.GameInformation.HeroDie(target, killer);
         }
     }
 
@@ -922,7 +919,7 @@ export class Spawn extends UIEventRegisterClass {
      * @param killer 
      */
     MapUnitKilledCalculate(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
-        if(killer.IsHero()){
+        if (killer.IsHero()) {
             let player_id = killer.GetPlayerOwnerID();
             let unit_label = target.GetUnitLabel();
             //普通怪处理
@@ -943,7 +940,7 @@ export class Spawn extends UIEventRegisterClass {
      */
     MapUnitKilled(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
         //非英雄击杀
-        if(!killer.IsHero()){
+        if (!killer.IsHero()) {
             let unit_label = target.GetUnitLabel();
             let name = target.GetUnitName();
             let KillExpDrop = UnitNormal[name as keyof typeof UnitNormal].KillExpDrop;
@@ -951,11 +948,11 @@ export class Spawn extends UIEventRegisterClass {
             if (unit_label == "creatur_normal") {
                 let ExpType = GetCommonProbability(KillExpDrop);
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
-            } else if (unit_label == "unit_elite"){
+            } else if (unit_label == "unit_elite") {
                 let ExpType = GetCommonProbability(KillExpDrop);
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
             }
-            return 
+            return
         }
         let player_id = killer.GetPlayerOwnerID();
         let unit_label = target.GetUnitLabel();

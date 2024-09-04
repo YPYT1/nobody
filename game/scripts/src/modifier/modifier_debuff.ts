@@ -266,9 +266,9 @@ class modifier_debuff_rooted extends modifier_debuff_debuff_template {
         return "ancient_apparition_cold_feet";
     }
 
-    // GetEffectName() {
-    //     return "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf";
-    // }
+    GetEffectName() {
+        return "particles/units/heroes/hero_oracle/oracle_fortune_purge_root_pnt.vpcf";
+    }
 
     GetEffectAttachType() {
         return ParticleAttachment.ABSORIGIN_FOLLOW;
@@ -721,16 +721,18 @@ export class modifier_debuff_uncontroll extends modifier_debuff_debuff_template 
         return "action_stop"
     }
 
-    // GetStatusEffectName(): string {
-    //     return "particles/status_fx/status_effect_dark_willow_wisp_fear.vpcf";
-    // }
+    GetEffectName() {
+        return "particles/units/heroes/hero_oracle/oracle_fortune_purge_root_pnt.vpcf";
+    }
 
-    // GetEffectName(): string {
-    //     return "particles/units/heroes/hero_dark_willow/dark_willow_wisp_spell_debuff.vpcf";
-    // }
+    GetEffectAttachType() {
+        return ParticleAttachment.ABSORIGIN_FOLLOW;
+    }
 
-    // GetEffectAttachType(): ParticleAttachment {
-    //     return ParticleAttachment.OVERHEAD_FOLLOW
-    // }
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            [ModifierState.ROOTED]: true
+        };
+    }
 
 }

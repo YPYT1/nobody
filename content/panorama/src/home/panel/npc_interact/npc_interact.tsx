@@ -38,7 +38,7 @@ const SetPanel_GameRestartVote = () => {
                 vote: 0,
             }
         })
-        GameUI.SelectUnit(Players.GetPlayerHeroEntityIndex(player_id), false)
+        // GameUI.SelectUnit(Players.GetPlayerHeroEntityIndex(player_id), true)
     })
 }
 
@@ -74,15 +74,20 @@ const SetPanel_NpcInteract_GameRestart = () => {
 
     BtnCancel.SetPanelEvent("onactivate", () => {
         NpcInteract_GameRestart.RemoveClass("Show");
+
     })
 }
 
 const UpdateSelectUnit = () => {
     let queryUnit = Players.GetLocalPlayerPortraitUnit();
-    let unit_name = Entities.GetUnitName(queryUnit)
-    // $.Msg([unit_name == "npc_interact_game_restart"])
+    if (queryUnit == Players.GetPlayerHeroEntityIndex(player_id)) {
+        return
+    }
+    let unit_name = Entities.GetUnitName(queryUnit);
     NpcInteract_GameRestart.SetHasClass("Show", unit_name == "npc_interact_game_restart" && player_id == 0)
 
+
+    // GameUI.SelectUnit(-1 as EntityIndex, false)
 }
 
 const CustomGameEventsSubscribe = () => {
@@ -105,36 +110,14 @@ const CustomGameEventsSubscribe = () => {
     })
 }
 
-const LoopThinker = () => {
-    UpdateSelectUnit();
-    $.Schedule(0.25, LoopThinker)
-}
 export const Init = () => {
-
     InitPanel()
     CustomGameEventsSubscribe();
-    GameEvents.Subscribe("dota_player_update_selected_unit", UpdateSelectUnit);
-    // GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelectUnit);
-
-    // GameEvents.Subscribe('dota_hero_undoselection', () => {
-    //     $.Msg(["dsdsadsa"])
-    // })
-
-
-    // GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-    //     $.Msg([event, value])
-    //     return false
-    // })
-    // GameEvents.Subscribe("dotaplaerup", UpdateSelectUnit);
-    // GameEvents.Subscribe("dotapupda", UpdateSelectUnit);
-
+    GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelectUnit);
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetPlayerVoteData",
         params: {}
     })
-
-
-    // LoopThinker();
 }
 
 (function () {
