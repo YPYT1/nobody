@@ -14,7 +14,7 @@ export class GameInformation extends UIEventRegisterClass {
     player_die_count: number[] = [0, 0, 0, 0, 0, 0];
 
     player_die_time: number[] = [0, 0, 0, 0, 0, 0];
-
+    
     //传输状态
     play_game_head_type : number = 0;
     //boss倒计时时间
@@ -90,6 +90,10 @@ export class GameInformation extends UIEventRegisterClass {
 
         this.player_die_count[player_id]++;
         let d_time = 10 + (this.player_die_count[player_id] * 5 * (player_count - 1));
+        //【不休尸王的钢盔】 复活时间减少15%
+        if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"]){
+            d_time = Math.ceil(d_time * 0.85);
+        }
         let game_d_time = GameRules.GetDOTATime(false, false) + d_time;
         this.player_die_time[player_id] = game_d_time;
         // 这里创建一个救援thinker

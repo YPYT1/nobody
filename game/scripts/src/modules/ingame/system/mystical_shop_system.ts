@@ -232,7 +232,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
             // this.player_refresh_data[index].refresh_count = 0;
             // let eval_param = {
-            //     count: this.player_refresh_data[index].refresh_count, 
+            //     count: this.player_refresh_data[index].refresh_count,    
             // };
             // let refresh_soul = math.ceil(eval(this.STORE_REFRESHES_SOUL_FORMULA, eval_param));
             // this.player_refresh_data[index].soul = refresh_soul;
@@ -247,7 +247,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         //给每个玩家刷新一次商店
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
             GameRules.MysticalShopSystem.PlayerShopItem(index);
-        }
+        }   
 
         GameRules.GetGameModeEntity().SetContextThink("MYSTICAL_SHOP_BUY_ITEM", () => {
             GameRules.MysticalShopSystem.StopShopSystem();
