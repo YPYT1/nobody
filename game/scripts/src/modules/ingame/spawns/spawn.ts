@@ -425,7 +425,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.GetGameModeEntity().SetContextThink("CreateBossKillTime" + "_" + this._round_index, () => {
                 //重新设置时间
                 GameRules.GameInformation.boss_time = 0;
-                GameRules.GameInformation.SetPlayGameTime(1);
+                GameRules.GameInformation.SetPlayGameTime(0);
                 return null;
             }, 3)
             GameRules.MapChapter.GameLoser()
@@ -1004,7 +1004,7 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("CreateBossKillTime" + "_" + this._round_index, () => {
             //重新设置时间
             GameRules.GameInformation.boss_time = 0;
-            GameRules.GameInformation.SetPlayGameTime(1);
+            GameRules.GameInformation.SetPlayGameTime(0);
             return null;
         }, 3)
         GameRules.CMsg.RemoveBossHealthBar(killed_unit);

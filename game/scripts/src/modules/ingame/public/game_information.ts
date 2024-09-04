@@ -14,7 +14,7 @@ export class GameInformation extends UIEventRegisterClass {
     player_die_count: number[] = [0, 0, 0, 0, 0, 0];
 
     player_die_time: number[] = [0, 0, 0, 0, 0, 0];
-    
+
     //传输状态
     play_game_head_type : number = 0;
     //boss倒计时时间
@@ -206,7 +206,7 @@ export class GameInformation extends UIEventRegisterClass {
     play_game_time: number = 0;
 
     SetPlayGameTime(play_game_head_type : number) {
-        GameRules.GameInformation.play_game_head_type = 0;
+        GameRules.GameInformation.play_game_head_type = play_game_head_type;
         GameRules.GameInformation.GetPlayGameHeadData(-1, {})
     }
 
