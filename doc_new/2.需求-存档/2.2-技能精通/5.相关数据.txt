@@ -1,0 +1,10 @@
+需求文档：
+	需求局内->1.英雄&符文->3.英雄设计
+原型图：
+	aruxe->功能栏->个人->技能精通
+美术UI：
+	无
+配置表：
+	nobody\excels\config\server\hero\server_skillful.xlsx
+其他：
+	

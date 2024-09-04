@@ -1,0 +1,14 @@
+需求文档：
+	需求存档-9.物品&掉落-2.物品列表.xls
+	需求局内-0.基础设定-2.属性表.xls
+原型图：
+	无
+美术UI：
+	无
+配置表：
+	nobody\excels\config\server\shop\server_shop_list.xlsx
+
+
+
+
+	

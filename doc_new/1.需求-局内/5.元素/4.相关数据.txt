@@ -1,0 +1,10 @@
+相关文档：
+	需求存档->10.元素精通
+原型图：
+	无
+美术需求：
+	SVN->主界面-新->元素tips
+配置表：
+	nobody\excels\config\game\element_bond.xlsx
+其他：
+	
