@@ -22,6 +22,7 @@ const SetPanel_GameRestartVote = () => {
     let BtnCancel = GameRestartVote.FindChildTraverse("BtnCancel") as Button;
     BtnConfirm.SetPanelEvent("onactivate", () => {
         GameRestartVote.RemoveClass("Show");
+        GameUI.SelectUnit(-1 as EntityIndex, false)
         GameEvents.SendCustomGameEventToServer("MapChapter", {
             event_name: "PlayerVote",
             params: {
@@ -32,6 +33,7 @@ const SetPanel_GameRestartVote = () => {
 
     BtnCancel.SetPanelEvent("onactivate", () => {
         GameRestartVote.RemoveClass("Show");
+        GameUI.SelectUnit(-1 as EntityIndex, false)
         GameEvents.SendCustomGameEventToServer("MapChapter", {
             event_name: "PlayerVote",
             params: {
@@ -74,7 +76,7 @@ const SetPanel_NpcInteract_GameRestart = () => {
 
     BtnCancel.SetPanelEvent("onactivate", () => {
         NpcInteract_GameRestart.RemoveClass("Show");
-
+        GameUI.SelectUnit(-1 as EntityIndex, false)
     })
 }
 
@@ -87,7 +89,7 @@ const UpdateSelectUnit = () => {
     NpcInteract_GameRestart.SetHasClass("Show", unit_name == "npc_interact_game_restart" && player_id == 0)
 
 
-    // GameUI.SelectUnit(-1 as EntityIndex, false)
+    
 }
 
 const CustomGameEventsSubscribe = () => {

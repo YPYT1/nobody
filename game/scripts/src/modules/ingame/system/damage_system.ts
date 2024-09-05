@@ -1,6 +1,7 @@
 
 import { modifier_prop_effect } from "../../../modifier/prop_effect/modifier_prop_effect";
 import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_rune_effect";
+import { modifier_talent_effect } from "../../../modifier/talent_effect/modifier_talent_effect";
 import { reloadable } from "../../../utils/tstl-utils";
 
 /**
@@ -191,6 +192,10 @@ export class DamageSystem {
         if ((critical_flag != -1 && RollPercentage(CriticalChance)) || critical_flag == 1) {
             is_crit = 1;
             params.damage = math.floor(params.damage * CriticalDamage * 0.01)
+        }
+        let talent_mdf = hAttacker.FindModifierByName("modifier_talent_effect") as modifier_talent_effect
+        if(talent_mdf){
+            talent_mdf.OnCriticalStrike(params.victim)
         }
         PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type);
         // 伤害系统

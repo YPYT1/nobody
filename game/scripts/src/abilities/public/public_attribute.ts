@@ -102,12 +102,9 @@ export class modifier_public_attribute extends BaseModifier {
         // print("[modifier_public_attribute]:_UpdateAttribute");
         let hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
         for (let k of UpdateAttributeKyes) {
-            if (k == "PickItemRadius") {
-                this.AttributeData[k] = math.max(10, hUnit.custom_attribute_value[k]);
-                // ParticleManager.SetParticleControl(this.PickItemFx, 1, Vector(this.AttributeData[k], 0, 0));
-            } else {
-                this.AttributeData[k] = hUnit.custom_attribute_value[k];
-            }
+
+            this.AttributeData[k] = hUnit.custom_attribute_value[k];
+
         }
         this.SendBuffRefreshToClients();
         hUnit.SetBaseDamageMin(hUnit.custom_attribute_value.AttackDamage);

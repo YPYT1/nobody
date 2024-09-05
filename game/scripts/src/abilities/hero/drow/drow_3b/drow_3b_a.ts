@@ -34,22 +34,22 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
 
     OnCreated_Extends(): void {
         this.element_type = ElementTypes.FIRE;
-        let extra_dmg_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(),  "36", "extra_dmg_pct")
+        let extra_dmg_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "36", "extra_dmg_pct")
         if (extra_dmg_pct > 0) {
             this.extra_dmg_pct = this.ability.GetTypesAffixValue(extra_dmg_pct, "Buff", "skv_buff_increase");
         }
-        let level = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(),  "35", "level");
+        let level = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "35", "level");
         this.is_primary = level < 2;
-        // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升至200%，持续时间延长至10秒
-        if (this.caster.rune_level_index.hasOwnProperty("rune_45")) {
-            this.dot_duration = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_duration');
-        } else {
-            // drow_35 燃烧
-            this.dot_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '35', 'burn_duration');
-        }
-        this.dot_duration += this.caster.custom_attribute_value["BurningDuration"];
+        this.dot_duration == this.caster.custom_attribute_value["BurningDuration"];
+        // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升100%，持续时间延长至10秒
 
-        this.interval_increase = this.ability.GetTypesAffixValue(100, "Dot", "skv_dot_interval")
+        this.dot_duration += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_duration');
+
+        // drow_35 燃烧
+        this.dot_duration += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '35', 'burn_duration');
+
+
+        this.interval_increase = this.ability.GetTypesAffixValue(0, "Dot", "skv_dot_interval")
 
     }
 
@@ -58,7 +58,7 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
             if (!target.IsAlive()) { return null }
             let hCaster = this.GetCaster()
             let DamageBonusMul = this.DamageBonusMul;
-            if (this.extra_dmg_pct > 0 && target.HasModifier("modifier_element_effect_fire")) {
+            if (this.extra_dmg_pct > 0 && GameRules.ElementEffect.State(target, ElementState.burn)) {
                 DamageBonusMul += this.extra_dmg_pct
             }
             ApplyCustomDamage({
@@ -99,12 +99,12 @@ export class modifier_drow_3b_a_dot extends modifier_element_effect_fire {
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
-        let base_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '35', 'burn_dmg')
-        // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升至200%，持续时间延长至10秒
+        let base_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '35', 'burn_dmg') - 25;
+        // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升100%，
         if (this.caster.rune_level_index.hasOwnProperty("rune_45")) {
-            base_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_to_dmg')
+            base_value += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_to_dmg')
         }
-        base_value += this.caster.custom_attribute_value["BurningDmg"]
+        base_value += this.caster.custom_attribute_value["BurningDmg"];
         this.dot_damage = math.floor(this.caster.GetAverageTrueAttackDamage(null) * base_value * 0.01);
     }
 

@@ -104,9 +104,12 @@ export class ElementEffect {
             }, stun)
             GameRules.BuffManager.AddGeneralDebuff(hCaster, hTarget, DebuffTypes.stunned, stun)
         }
-
-        // if(hCaster.CustomVariables["wind_element_features"] )
     }
 
-
+    State(hUnit: CDOTA_BaseNPC, element_state: ElementState) {
+        if (element_state == ElementState.burn) {
+            return hUnit.HasModifier("modifier_element_effect_fire") || hUnit.HasModifier("modifier_drow_3b_a_dot")
+        }
+        return false
+    }
 }

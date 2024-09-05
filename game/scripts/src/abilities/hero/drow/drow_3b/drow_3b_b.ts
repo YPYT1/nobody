@@ -34,12 +34,12 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
     OnCreated_Extends(): void {
         this.talent_37 = (this.GetCaster().hero_talent["37"] ?? 0) > 0;
         this.talent_38 = (this.GetCaster().hero_talent["38"] ?? 0) > 0;
-        this.limit_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(),  "37", "limit_stack");
-        // rune_46	游侠#21	箭雨【集火】最高可叠加层数增加至20层
+        this.limit_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "37", "limit_stack");
+        // rune_46	游侠#21	箭雨【集火】最高可叠加层数增加10层
         if (this.caster.rune_level_index.hasOwnProperty("rune_46")) {
-            this.limit_stack = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_46', 'jihuo_stack')
+            this.limit_stack += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_46', 'jihuo_stack')
         }
-        this.bonus_dmg = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(),  "37", "bonus_dmg");
+        this.bonus_dmg = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "37", "bonus_dmg");
 
         if (this.talent_38) {
             this.element_type = ElementTypes.ICE;

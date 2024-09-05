@@ -229,8 +229,16 @@ export class CustomAttribute {
                     * (1 + SubAttr["TotalPercent"] * 0.01)
                     + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                     + (SubAttr["Fixed"]);
-                TotalAttrValue = TotalAttrValue * mul_value
-                hUnit.custom_attribute_value[main_key] = TotalAttrValue;
+                TotalAttrValue = TotalAttrValue * mul_value;
+                // 这里取
+                let LastAmount = SubAttr["Last"] ?? 0;
+                // print(main_key, "LastAmount", LastAmount)
+                if (LastAmount != 0) {
+                    hUnit.custom_attribute_value[main_key] = math.max(LastAmount, TotalAttrValue);
+                } else {
+                    hUnit.custom_attribute_value[main_key] = TotalAttrValue;
+                }
+
                 hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
                 hUnit.custom_attribute_show[main_key][1] = TotalAttrValue - SubAttr["Base"]
 
@@ -768,16 +776,14 @@ export class CustomAttribute {
             let value = [-50, -50, -50, -50, 50, 50, 50];
 
 
-            for (let i = 0; i < value.length; i++) {
+            for (let i = 0; i < 5; i++) {
                 let mul_key = DoUniqueString("mul_key");
                 this.SetAttributeInKey(hHero, mul_key, {
-                    'EvasionProb': {
-                        "Base": 25,
+                    'MoveSpeed': {
+                        "Bonus": -5,
+                        "BasePercent": -10,
                     },
-                    'DmgReductionPct': {
-                        "Base": value[i],
-                    }
-                }, 5)
+                }, 5 + i)
             }
 
         }

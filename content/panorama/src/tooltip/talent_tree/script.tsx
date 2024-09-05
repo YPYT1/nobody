@@ -38,6 +38,14 @@ function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
     MainPanel.SetDialogVariable("talent_name", talent_name)
     let talent_desc = $.Localize(`#custom_talent_${key}_desc`)
     let description_txt = SetLabelDescriptionExtra(talent_desc, level, AbilityValues, ObjectValues, true);
+
+    let description_lv2 = $.Localize(`#custom_talent_${key}_desc_lv2`);
+    if (description_lv2.indexOf("#") != 0) {
+        let is_act = level >= 1;
+        let desc_lv2 = SetLabelDescriptionExtra(description_lv2, 2, AbilityValues, ObjectValues, true);
+        description_txt += `<br><br><span class="${is_act ? "on" : "off"}">新增: ${desc_lv2}</span>`
+    }
+
     MainPanel.SetDialogVariable("talent_desc", description_txt)
     // 风格
     MainPanel.SetHasClass("IsAbility", talent_data.is_ability == 1)

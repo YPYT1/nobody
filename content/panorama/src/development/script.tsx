@@ -127,7 +127,7 @@ export const HeroDemo = () => {
     const [show, setShow] = useState(true);
     const [name, setName] = useState("")
 
-   
+
 
     const updateUnit = useCallback((event: object) => {
         let unit = Players.GetLocalPlayerPortraitUnit();
@@ -148,8 +148,8 @@ export const HeroDemo = () => {
         setPopupsViews("None")
     }
 
-     useGameEvent("dota_player_update_query_unit", updateUnit);
-     useGameEvent('dota_player_update_selected_unit', updateUnit);
+    // useGameEvent("dota_player_update_query_unit", updateUnit);
+    // useGameEvent('dota_player_update_selected_unit', updateUnit);
 
     return (
         <>
@@ -157,7 +157,7 @@ export const HeroDemo = () => {
                 <Panel className="head">
                     <Panel className='flow-right'>
                         <Label text="开发工具" />
-                        <Label text={name} />
+                        {/* <Label text={name} /> */}
                         <UnitCountsPanel />
                     </Panel>
                     {/* <Button className='btn-close' onactivate={ToggleHandle} /> */}

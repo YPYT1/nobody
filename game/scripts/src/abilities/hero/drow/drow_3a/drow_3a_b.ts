@@ -57,7 +57,6 @@ export class modifier_drow_3a_b_summoned extends modifier_drow_3a_summoned {
         // rune_42	游侠#17	风暴环绕【冰雹】会吸附敌人
         this.xifu = this.caster.rune_level_index.hasOwnProperty("rune_42");
         // DeepPrintTable(this.caster.rune_level_index)
-        print("xifu",this.xifu)
         this.StartIntervalThink(0.03)
     }
 

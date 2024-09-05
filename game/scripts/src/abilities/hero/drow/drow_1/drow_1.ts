@@ -19,6 +19,7 @@ export class drow_1 extends BaseHeroAbility {
 
     UpdataAbilityValue(): void {
         this.BasicAbilityDmg = this.caster.custom_attribute_value.BasicAbilityDmg;
+        this.SelfAbilityMul = 100;
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {

@@ -120,12 +120,17 @@ export class modifier_drow_5_branch_a extends modifier_drow_5_buff {
         dmg_bonus_pct = this.GetAbility().GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase");
         let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "55", 'bonus_value');
         bonus_value = this.GetAbility().GetTypesAffixValue(bonus_value, "Buff", "skv_buff_increase");
+
+        let last_move = this.caster.custom_attribute_table.MoveSpeed.Base ?? 0;
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             'DamageBonusMul': {
                 "Base": dmg_bonus_pct
             },
             'IceDamageBonus': {
                 "Base": bonus_value
+            },
+            "MoveSpeed": {
+                "Last": last_move
             }
         })
     }
@@ -179,7 +184,7 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         let hAbility = this.GetAbility()
-        let mana_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "57", "mana_pct");
+        let mana_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "57", "mana_pct");
         this.mana_pct = hAbility.GetTypesAffixValue(mana_pct, "Buff", "skv_buff_increase");
         let dmg_bonus_pct = hAbility.GetSpecialValueFor("dmg_bonus_pct")
         dmg_bonus_pct = hAbility.GetTypesAffixValue(dmg_bonus_pct, "Buff", "skv_buff_increase")

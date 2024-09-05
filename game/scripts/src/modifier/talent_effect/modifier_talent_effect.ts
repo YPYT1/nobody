@@ -117,6 +117,23 @@ export class modifier_talent_effect extends BaseModifier {
 
     OnBeInjured(params: ApplyCustomDamageOptions) { }
 
+    OnCriticalStrike(hTarget: CDOTA_BaseNPC) {
+        // 53	追猎	暴击后提高%add_as_pct%%%攻速和%add_mv_pct%%%移速，持续2秒。
+        if (this.object["53"]) {
+            let add_as_pct = this.GetObject('53', 'add_as_pct');
+            let add_mv_pct = this.GetObject('53', 'add_mv_pct');
+            let duration = this.GetObject('53', 'duration');
+            GameRules.CustomAttribute.SetAttributeInKey(this.caster, 'kv_t_53', {
+                AttackSpeed: {
+                    "BasePercent": add_as_pct,
+                },
+                MoveSpeed: {
+                    "BasePercent": add_mv_pct,
+                }
+            }, duration)
+        }
+    }
+
     OnKillEvent(hTarget: CDOTA_BaseNPC) {
 
     }

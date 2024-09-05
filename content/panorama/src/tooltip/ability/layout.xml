@@ -106,7 +106,6 @@
                     <Label class="DescriptionLabel" text="{s:description}" html="true" />
                     <Panel id="TalentAbilityExtra" />
                 </Panel>
-                <Panel id='ComboContainer' />
             </Panel>
             <Panel class="BottomlBank"/>
         </Panel>

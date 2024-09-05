@@ -118,6 +118,12 @@ export class modifier_drow_3a_summoned extends modifier_motion_surround {
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 
+    _OnIntervalThink(){
+        if(!this.caster.IsAlive()){
+            this.Destroy()
+        }
+    }
+    
     OnDestroy(): void {
         if (!IsServer()) { return }
         UTIL_Remove(this.GetParent())

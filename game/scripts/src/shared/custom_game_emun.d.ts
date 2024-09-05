@@ -88,3 +88,9 @@ declare const enum CGMessageEventType {
     // 
     WARNINGTS = 202, // boss警告 持续时间3秒
 }
+
+/** 元素特性状态 */
+declare const enum ElementState {
+    null = 0,
+    burn = 1,  
+}

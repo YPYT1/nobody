@@ -386,28 +386,30 @@
             vertical-align: middle;
         }
 
-        .ExtraDescription {
-            width: 100%;
-            // margin-top: 2px;
-            background-image: url("file://{images}/custom_game/tooltip/ability/extra_label_bg.png");
-            padding: 8px;
 
-            Label {
-                font-size: 18px;
-                color: #ffffff;
-            }
-
-            // wash-color: #ebbf31;
-
-            .Current {
-                color: #ffde4b;
-            }
-        }
     }
 
 
 
+    .ExtraDescription {
+        width: 100%;
+        // margin-top: 2px;
+        background-image: url("file://{images}/custom_game/tooltip/ability/extra_label_bg.png");
+        padding: 8px;
 
+        Label {
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .off {
+            color:#747474;
+        }
+
+        .Current {
+            color: #ffde4b;
+        }
+    }
 }
 
 
@@ -416,59 +418,10 @@
     height: 32px;
 }
 
-#ComboContainer {
-    margin-top: 8px;
-    horizontal-align: center;
-    width: 308px;
-    background-image: url("file://{images}/custom_game/tooltip/ability/combo_separator.png");
-    background-repeat: no-repeat;
-    flow-children: down;
-    // padding-top: 24px;
-
-    .ArmsCombieRows {
-        margin-top: 16px;
-        flow-children: down;
-
-        .CombieTitle {
-            font-size: 17px;
-            color: #fff175;
-            text-shadow: 0px 0px 2px 2.0 #000000;
-        }
-
-        .CombieAbilityRequire {
-            margin-top: 4px;
-            font-size: 15px;
-            color: #666666;
-        }
-
-        .on {
-            color: #cae0f3;
-            // color: #ffffff;
-        }
-
-        .off {
-            color: #666666;
-        }
-
-        .CombieAbilityDesc {
-            color: #00ff00;
-            visibility: collapse;
-        }
-
-        .hover {
-            font-size: 16px;
-            color: #7cff7c;
-            font-weight: bold;
-        }
-
-        &.is_activate .CombieAbilityDesc {
-            visibility: visible;
-        }
-    }
-}
 
 .TypeLabel {
     visibility: collapse;
+
     &.Show {
         visibility: visible;
     }

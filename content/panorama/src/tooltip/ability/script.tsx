@@ -84,7 +84,7 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     }
 
 
-   
+
     // 图标
     const AbilityIcon = MainPanel.FindChildTraverse("AbilityIcon") as ImagePanel;
     const img_src = abilityData ? GetTextureSrc(abilityData.AbilityTextureName) : "";
@@ -200,7 +200,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
             let row_data = talent_data[key as keyof typeof talent_data]
             let link_ability = row_data.link_ability;
             // $.Msg([link_ability,ability_name])
-            if (link_ability == ability_name || (row_data.tier_number == 99 &&  (row_data.index - 1) == in_slot)) {
+            if (link_ability == ability_name || (row_data.tier_number == 99 && (row_data.index - 1) == in_slot)) {
                 let is_ability = row_data.is_ability == 1;
                 // $.Msg([ability_name, key, netdata[key]])
                 let extra_panel = $.CreatePanel("Panel", TalentAbilityExtra, "");;
@@ -220,6 +220,13 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
                 let TalentData = GetHeroTalentTreeRowData(key);
                 let talent_desc = $.Localize(`#custom_talent_${key}_desc`)
                 let extra_desc = SetLabelDescriptionExtra(talent_desc, level - 1, TalentData.AbilityValues, TalentData.ObjectValues, true);
+                let description_lv2 = $.Localize(`#custom_talent_${key}_desc_lv2`);
+                if (description_lv2.indexOf("#") != 0) {
+                    let is_act = level >= 2;
+                    let desc_lv2 = SetLabelDescriptionExtra(description_lv2, 1, TalentData.AbilityValues, TalentData.ObjectValues, true);
+                    extra_desc += `<br><span class="${is_act ? "on" : "off"}">${desc_lv2}</span>`
+                }
+
                 extra_panel.SetDialogVariable("extra_desc", extra_desc)
             }
 
@@ -239,13 +246,6 @@ export function Init() {
     $.GetContextPanel().GetParent()!.FindChild('RightArrow')!.visible = false;
     m_TooltipPanel.FindChild('TopArrow')!.visible = false;
     m_TooltipPanel.FindChild('BottomArrow')!.visible = false;
-
-    let ComboContainer = $("#ComboContainer");
-    ComboContainer.RemoveAndDeleteChildren();
-    // m_CombiePanel = [];
-
-    // const AbilityCategoryType = $("#AbilityCategoryType");
-    // AbilityCategoryType.RemoveAndDeleteChildren();
 
     MainPanel.SetPanelEvent("ontooltiploaded", () => {
         // UpdateTooltip()

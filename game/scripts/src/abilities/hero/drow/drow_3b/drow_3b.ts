@@ -12,6 +12,9 @@ export class drow_3b extends BaseHeroAbility {
         return "modifier_drow_3b"
     }
 
+    UpdataAbilityValue(): void {
+        this.SetCustomAbilityType("Aoe", true)
+    }
 }
 
 @registerModifier()
@@ -19,15 +22,13 @@ export class modifier_drow_3b extends BaseHeroModifier {
 
     radius: number;
     arrow_count: number;
-
-
     mdf_thinker = "modifier_drow_3b_thinker";
 
     UpdataAbilityValue(): void {
         let hAbility = this.GetAbility();
-        this.radius = hAbility.GetSpecialValueFor("radius");
+        this.radius = hAbility.GetSpecialValueForTypes("radius", 'Aoe', 'skv_aoe_radius');
         this.arrow_count = hAbility.GetSpecialValueFor("arrow_count")
-            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "38", 'bonus_arrow')
+            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "38", 'bonus_arrow')
 
         this.SelfAbilityMul = hAbility.GetSpecialValueFor("base_value");
         // rune_44	游侠#19	箭雨的基础伤害提高50%

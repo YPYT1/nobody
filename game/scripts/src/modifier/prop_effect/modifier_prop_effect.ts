@@ -223,8 +223,6 @@ export class modifier_prop_effect extends BaseModifier {
         }
 
         // prop_47	【不休尸王的钢盔】	复活时间减少15%，受到致死打击后还能继续存活6秒
-        print("this.caster.prop_count")
-        DeepPrintTable(this.caster.prop_count)
         if (params.damage >= this.caster.GetHealth() && this.caster.prop_count["prop_47"]) {
             if (!params.victim.HasModifier("modifier_shop_prop_47")) {
 

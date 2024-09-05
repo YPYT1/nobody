@@ -26,6 +26,7 @@ export class modifier_element_effect_fire extends BaseModifier {
         let interval_increase: number = params.interval_increase ?? 0;
         let base_interval = params.base_interval ?? 1;
         let interval = base_interval / (1 + interval_increase * 0.01);
+        print("base_interval", base_interval, "interval_increase", interval_increase, "interval", interval)
         this.StartIntervalThink(interval)
     }
 
@@ -59,8 +60,19 @@ export class modifier_element_effect_fire extends BaseModifier {
 @registerModifier()
 export class modifier_element_effect_ice extends BaseModifier {
 
+    move_slow_pct: number = 30;
+
     GetTexture(): string {
         return "ancient_apparition_cold_feet"
+    }
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        let hCaster = this.GetCaster();
+        let t16_index = hCaster.hero_talent["16"] ?? 0;
+        if (t16_index >= 2) {
+            this.move_slow_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '16', 'move_slow')
+        }
     }
 
     IsDebuff(): boolean { return true }
@@ -72,7 +84,7 @@ export class modifier_element_effect_ice extends BaseModifier {
     }
 
     GetModifierMoveSpeedBonus_Percentage(): number {
-        return -30
+        return -1 * this.move_slow_pct
     }
 
     GetStatusEffectName(): string {

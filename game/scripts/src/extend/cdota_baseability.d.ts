@@ -32,8 +32,6 @@ declare interface CDOTABaseAbility extends CBaseEntity {
         T2 extends keyof SpecialvalueOfTableProps[T1]
     >(flBaseValue: number, skv_affix: T1, skv_key: T2): number;
 
-
-    // TODO
     GetSpecialValueForTypes<
         T1 extends keyof SpecialvalueOfTableProps,
         T2 extends keyof SpecialvalueOfTableProps[T1]

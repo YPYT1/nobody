@@ -83,6 +83,7 @@ declare type AttributeSubKey = "Base"
     | "PreLvFixed"
     | "MulRegion"
     | "Limit"
+    | "Last" // 最低值 0 为不限
     ;
 
 /** 敌人属性 */
