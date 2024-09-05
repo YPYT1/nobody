@@ -78,7 +78,7 @@ export class Spawn extends UIEventRegisterClass {
     //刷怪计数器
     _monster_count: number = 0;
     //击杀计数器 总击杀数
-    _player_sum_kill: number[] = [];
+    _player_sum_kill: number[] = [];    
     //回合击杀数量
     _player_round_sum_kill: number[] = [];
     //地图每回合信息
@@ -96,10 +96,12 @@ export class Spawn extends UIEventRegisterClass {
             elite_name: string; //精英怪名字
             elite_count: number; //精英数量
             boss_name_list: string[]; //boss名字列表
+            boss_hp_power : number ; //boss血量倍率
+            boss_attack_power : number ; //boss血量倍率
         }
     } = {
 
-        };
+    };
     //所有怪物血量换算公式
     _unit_hp_equation: {
         [name: string]: string
@@ -126,8 +128,14 @@ export class Spawn extends UIEventRegisterClass {
 
     _game_start: boolean = false;
 
+    //刷新的boss名字
+    _game_boss_name : string = "npc_creature_boss_1";
+
     //最大回合数
     _round_max: number = 20;
+
+    //boss存在时间
+    _game_boss_time : number = 180;
 
     constructor() {
         super("Spawn");
@@ -170,6 +178,9 @@ export class Spawn extends UIEventRegisterClass {
 
         let MapInfoDifficultyData = MapInfoDifficulty[GameRules.MapChapter.GameDifficulty as keyof typeof MapInfoDifficulty];
 
+        //难度血量公式
+        this._hp_equation = MapInfoDifficultyData.hp_equation;
+        this._attack_equation = MapInfoDifficultyData.attack_equation;
 
         //回合数量修改
         let round_class = MapInfoDifficultyData.round_class;
@@ -208,6 +219,8 @@ export class Spawn extends UIEventRegisterClass {
                     elite_name: TwiceMapInfoRoundInit.elite_name,
                     elite_count: TwiceMapInfoRoundInit.elite_count,
                     boss_name_list: TwiceMapInfoRoundInit.boss_name,
+                    boss_hp_power: TwiceMapInfoRoundInit.boss_hp_power,
+                    boss_attack_power: TwiceMapInfoRoundInit.boss_attack_power,
                 }
             }
         }
@@ -263,13 +276,12 @@ export class Spawn extends UIEventRegisterClass {
                 GameRules.GetGameModeEntity().StopThink("CreateMonsterTime" + "_" + (this._round_index - 1));
                 //普通小怪刷怪器
                 GameRules.Spawn.CreateMonsterTime();
-
                 GameRules.GetGameModeEntity().StopThink("CreateEliteTime" + "_" + (this._round_index - 1));
                 //精英刷怪器
                 GameRules.Spawn.CreateEliteTime();
                 //boss刷怪器
                 GameRules.GetGameModeEntity().StopThink("CreateBossTime" + "_" + (this._round_index - 1));
-                //精英刷怪器
+                //boss刷怪器
                 GameRules.Spawn.CreateBossTime();
             }
             let boss_name_list = this.map_info_round[this._round_index].boss_name_list;
@@ -277,15 +289,15 @@ export class Spawn extends UIEventRegisterClass {
             let boss_name = boss_name_list[boss_name_list_index];
             if (boss_name == "null") {
                 return 60;
-            } else {
-                return 120;
+            }else{
+                return 60 + this._game_boss_time;
             }
         }, 0)
     }
     //普通小怪刷怪器
     CreateMonsterTime() {
         let player_count = GetPlayerCount();
-        this._player_round_sum_kill = [];
+        this._player_round_sum_kill = [];   
         for (let index: PlayerID = 0; index < player_count; index++) {
             this._player_round_sum_kill.push(0);
         }
@@ -389,21 +401,22 @@ export class Spawn extends UIEventRegisterClass {
     //boss定时器 
     CreateBossTime() {
         let boss_name_list = this.map_info_round[this._round_index].boss_name_list;
-        let boss_name_list_index = RandomInt(0, boss_name_list.length - 1);
+        let boss_name_list_index = RandomInt(0, boss_name_list.length - 1); 
         let boss_name = boss_name_list[boss_name_list_index];
         if (boss_name == "null") {
             return
         }
+        GameRules.Spawn._game_boss_name = boss_name;
         //半分钟提示
         GameRules.GetGameModeEntity().SetContextThink("BossHint" + "_" + this._round_index, () => {
-            if (this._round_index >= this._round_max) {
+            if(this._round_index >= this._round_max){
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE4);
                 // GameRules.CMsg.SendCommonMsgToPlayer(
                 //     -1 as PlayerID,
                 //     "关底 BOSS即将来袭 ",
                 //     {}
                 // );
-            } else {
+            }else{
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE3);
                 // GameRules.CMsg.SendCommonMsgToPlayer(
                 //     -1 as PlayerID,
@@ -411,7 +424,7 @@ export class Spawn extends UIEventRegisterClass {
                 //     {}
                 // );
             }
-
+            
             return null;
         }, 30)
         //登场
@@ -430,7 +443,7 @@ export class Spawn extends UIEventRegisterClass {
             }, 3)
             GameRules.MapChapter.GameLoser()
             return null;
-        }, 120);
+        }, 60 + this._game_boss_time);
     }
 
     /**
@@ -455,9 +468,9 @@ export class Spawn extends UIEventRegisterClass {
             //     {}
             // );
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.WARNINGBOSS);
-            let unit = GameRules.Spawn.CreepNormalCreate("npc_creature_boss_1", this.StageBossVector);
+            let unit = GameRules.Spawn.CreepNormalCreate( GameRules.Spawn._game_boss_name, this.StageBossVector);
 
-            this.MonsterAmend(unit, "boss", 1, 1);
+            this.MonsterAmend(unit, "boss", 1, this._round_index);
 
             unit.AddNewModifier(unit, null, "modifier_custom_appearance_underground", { duration: 3 });
 
@@ -466,7 +479,7 @@ export class Spawn extends UIEventRegisterClass {
             //切换成boss倒计时
             GameRules.GetGameModeEntity().SetContextThink("CreateBossTimeComeOnStage" + "_" + this._round_index, () => {
                 //重新设置时间
-                GameRules.GameInformation.boss_time = GameRules.GetDOTATime(false, false) + 60;
+                GameRules.GameInformation.boss_time = GameRules.GetDOTATime(false, false) + this._game_boss_time;
                 GameRules.GameInformation.SetPlayGameTime(1);
                 //击杀所有怪物 并停止怪物刷新
                 GameRules.GetGameModeEntity().StopThink("CreateMonsterTime" + "_" + this._round_index);
@@ -474,7 +487,7 @@ export class Spawn extends UIEventRegisterClass {
                 // boss击杀小怪
                 for (let xgunit of GameRules.Spawn._map_Spawn_list) {
                     if (xgunit.IsNull() == false) {
-                        xgunit.Kill(null, unit)
+                        xgunit.Kill(null , unit)
                     }
                 }
                 GameRules.Spawn._spawn_count = 0;
@@ -482,7 +495,7 @@ export class Spawn extends UIEventRegisterClass {
                 // boss击杀精英
                 for (let jyunit of GameRules.Spawn._map_elite_spawn_list) {
                     if (jyunit.IsNull() == false) {
-                        jyunit.Kill(null, unit)
+                        jyunit.Kill(null , unit)
                     }
                 }
                 GameRules.Spawn._map_Spawn_list = [];
@@ -505,7 +518,7 @@ export class Spawn extends UIEventRegisterClass {
     }
 
     //刷新精英
-    CreateEliteMonster(bs_spawn_name: string, _Vector: Vector, round_index: number): CDOTA_BaseNPC {
+    CreateEliteMonster(bs_spawn_name: string, _Vector: Vector, round_index: number): CDOTA_BaseNPC {    
         // print("_Vector :" , _Vector )
         let unit = GameRules.Spawn.CreepNormalCreate(bs_spawn_name, _Vector);
         //属性修改
@@ -518,8 +531,67 @@ export class Spawn extends UIEventRegisterClass {
      * 统一的怪物数据修改
      * @param round_index 
      */
-    MonsterAmend(hUnit: CDOTA_BaseNPC, type: 'boss' | 'leader' | 'normal' | 'elite', level: number = 1, round_index: number = 1) {
+    MonsterAmend(hUnit: CDOTA_BaseNPC, type: 'boss' | 'normal' | 'elite', level: number = 1, round_index: number = 1) {
+        //血量
+        let healthmax = hUnit.GetMaxHealth();
+        let UnitName = hUnit.GetUnitName();
+        if (type == "boss") {
+            healthmax = math.ceil(GameRules.Spawn.map_info_round[round_index].boss_hp_power * healthmax);
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_BOSS_HP[this.player_count - 1];
+        } else if (type == "elite") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_LEADER_HP[this.player_count - 1]
+        } else if (type == "normal") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_MONSTER_HP[this.player_count - 1]
+        } 
+        //难度加算  
+        let eval_param = {
+            hp: healthmax,
+        }
+        healthmax = LFUN.eval(this._hp_equation, eval_param);
+        if (healthmax > 4200452371273100000) {
+            healthmax = 4200452371273100000;
+        }
+        GameRules.Spawn.SetUnitHealthLimit(hUnit, healthmax)
 
+        //攻击力
+        let UnitDamage = hUnit.GetBaseDamageMin();
+
+        //配置加算
+        // if (this._unit_attack_equation[UnitName]) {
+        //     let attack_equation = {
+        //         attack: UnitDamage,
+        //         round: round_index,
+        //         level: level
+        //     }
+        //     UnitDamage = LFUN.eval(this._unit_attack_equation[UnitName], attack_equation)
+        // }
+        if (type == "boss") {
+            UnitDamage = math.ceil(GameRules.Spawn.map_info_round[round_index].boss_attack_power * UnitDamage);
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_BOSS_HP[this.player_count - 1];
+        } else if (type == "elite") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_LEADER_HP[this.player_count - 1]
+        } else if (type == "normal") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_MONSTER_HP[this.player_count - 1]
+        } 
+        //难度加算
+        let unit_damage_param = {
+            attack: UnitDamage,
+        }
+        UnitDamage = LFUN.eval(this._attack_equation, unit_damage_param)
+        //人数加算 等级加算
+        hUnit.SetBaseDamageMin(UnitDamage)
+        hUnit.SetBaseDamageMax(UnitDamage)
+    }
+
+    /**
+     * 设置单位的血量 （未实装可超出21亿）
+     * @param hUnit 
+     * @param iHealth 
+     */
+    SetUnitHealthLimit(hUnit: CDOTA_BaseNPC, iHealth: number) {
+        hUnit.SetBaseMaxHealth(iHealth);
+        hUnit.SetMaxHealth(iHealth);
+        hUnit.SetHealth(iHealth);
     }
     /**
      * 任务怪记录信息
@@ -783,7 +855,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
             GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
                 for (let hHero of HeroList.GetAllHeroes()) {
-                    GameRules.BuffManager.AddGeneralDebuff(hHero, hHero, DebuffTypes.un_controll, GameRules.MysticalShopSystem.MYSTICAL_SHOP_BUY_ITEM);
+                    GameRules.BuffManager.AddGeneralDebuff(hHero,hHero,DebuffTypes.un_controll , GameRules.MysticalShopSystem.MYSTICAL_SHOP_BUY_ITEM); 
                     // hHero.AddNewModifier(hHero, null, "modifier_debuff_rooted", { duration: 10, });
                 }
                 //重新设置时间
@@ -866,7 +938,7 @@ export class Spawn extends UIEventRegisterClass {
             DeepPrintTable(this._player_sum_kill)
         }
 
-        if (cmd == "--StartSpawnControl") {
+        if(cmd == "--StartSpawnControl"){
             GameRules.Spawn._round_index = 4;
             GameRules.Spawn.StartSpawnControl();
         }
@@ -907,7 +979,7 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn.MapUnitKilled(target, killer);
         } else if (target.IsHero()) {
             //英雄单位死亡处理
-            GameRules.GameInformation.HeroDie(target, killer);
+            GameRules.GameInformation.HeroDie(target , killer);
         }
     }
 
@@ -919,7 +991,7 @@ export class Spawn extends UIEventRegisterClass {
      * @param killer 
      */
     MapUnitKilledCalculate(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
-        if (killer.IsHero()) {
+        if(killer.IsHero()){
             let player_id = killer.GetPlayerOwnerID();
             let unit_label = target.GetUnitLabel();
             //普通怪处理
@@ -940,7 +1012,7 @@ export class Spawn extends UIEventRegisterClass {
      */
     MapUnitKilled(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
         //非英雄击杀
-        if (!killer.IsHero()) {
+        if(!killer.IsHero()){
             let unit_label = target.GetUnitLabel();
             let name = target.GetUnitName();
             let KillExpDrop = UnitNormal[name as keyof typeof UnitNormal].KillExpDrop;
@@ -948,11 +1020,11 @@ export class Spawn extends UIEventRegisterClass {
             if (unit_label == "creatur_normal") {
                 let ExpType = GetCommonProbability(KillExpDrop);
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
-            } else if (unit_label == "unit_elite") {
+            } else if (unit_label == "unit_elite"){
                 let ExpType = GetCommonProbability(KillExpDrop);
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
             }
-            return
+            return 
         }
         let player_id = killer.GetPlayerOwnerID();
         let unit_label = target.GetUnitLabel();

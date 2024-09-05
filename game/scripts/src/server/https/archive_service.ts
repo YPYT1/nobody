@@ -148,59 +148,62 @@ export class ArchiveService extends UIEventRegisterClass {
 
                     this.general_game_over_data_pass_data.game_count = GameRules.MapChapter.game_count;
                     //
-                    this.general_game_over_data_pass_data.player_list_data.push({
-                        "exp" : 200,
-                        "is_mvp" : 1,
-                        "old_exp" : 100,
-                        "player_id" : 0,
-                        "steam_id" : steam_id,
-                        "pass_item" : [
-                            {
-                                "item_id" : "1",
-                                "item_number" : 100,
-                                "quality" : 3,
-                                "type" : 1,
-                            },
-                            {
-                                "item_id" : "2",
-                                "item_number" : 12,
-                                "quality" : 1,
-                                "type" : 1,
-                            },
-                            {
-                                "item_id" : "3",
-                                "item_number" : 1,
-                                "quality" : 2,
-                                "type" : 1,
-                            },
-                            {
-                                "item_id" : "4",
-                                "item_number" : 5,
-                                "quality" : 4,
-                                "type" : 1,
-                            }
-                        ],
-                        "skill_exp" : [
-                            {
-                                "1" : {
-                                    "exp" : 123,
-                                    "old_exp" : 23423,
+                    for (let index = 0; index < 4; index++) {
+                        this.general_game_over_data_pass_data.player_list_data.push({
+                            "exp" : 200,
+                            "is_mvp" : 1,
+                            "old_exp" : 100,
+                            "player_id" : 0,
+                            "steam_id" : steam_id,
+                            "pass_item" : [
+                                {
+                                    "item_id" : "1",
+                                    "item_number" : 100,
+                                    "quality" : 3,
+                                    "type" : 1,
                                 },
-                                "2" : {
-                                    "exp" : 324,
-                                    "old_exp" : 4234,
+                                {
+                                    "item_id" : "2",
+                                    "item_number" : 12,
+                                    "quality" : 1,
+                                    "type" : 1,
                                 },
-                                "3" : {
-                                    "exp" : 20,
-                                    "old_exp" : 53451,
+                                {
+                                    "item_id" : "3",
+                                    "item_number" : 1,
+                                    "quality" : 2,
+                                    "type" : 1,
                                 },
-                                "4" : {
-                                    "exp" : 20,
-                                    "old_exp" : 225432,
-                                },
-                            }
-                        ]
-                    })
+                                {
+                                    "item_id" : "4",
+                                    "item_number" : 5,
+                                    "quality" : 4,
+                                    "type" : 1,
+                                }
+                            ],
+                            "skill_exp" : [
+                                {
+                                    "1" : {
+                                        "exp" : 123,
+                                        "old_exp" : 23423,
+                                    },
+                                    "2" : {
+                                        "exp" : 324,
+                                        "old_exp" : 4234,
+                                    },
+                                    "3" : {
+                                        "exp" : 20,
+                                        "old_exp" : 53451,
+                                    },
+                                    "4" : {
+                                        "exp" : 20,
+                                        "old_exp" : 225432,
+                                    },
+                                }
+                            ]
+                        })
+                        
+                    }
                 }
                 let player_count = 6;
                 //发送给每个玩家数据
