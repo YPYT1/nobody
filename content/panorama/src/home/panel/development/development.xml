@@ -15,6 +15,7 @@
 	</snippets>
 	<Panel class="development">
 		<Panel class="GameInfoLabel">
+			<Label text="{s:center_angle}"/>
 			<Label id="GamePhase" text="GamePhase:{d:game_phase}"/>
         	<Label id="DotaGameTime" text="DotaTime:<span class='time'>{s:dota_time}</span>" html="true"/>
 		</Panel>

@@ -3,6 +3,7 @@ import * as MapInfo from "../../json/config/map_info.json"
 import * as MapInfoDifficulty from "../../json/config/map_info_difficulty.json"
 import * as NpcHeroesCustom from "../../json/npc_heroes_custom.json"
 import { UIEventRegisterClass } from "../class_extends/ui_event_register_class";
+import { MissionSystem } from "../ingame/mission/mission_system";
 
 
 
@@ -459,6 +460,7 @@ export class MapChapter extends UIEventRegisterClass {
         // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
         let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
         this.shiye  = AddFOWViewer(DotaTeam.BADGUYS,vLocation , 9999 , 999999 , true);
+        GameRules.MissionSystem = new MissionSystem()
         GameRules.GameInformation.ResetNumberofDeaths();
         for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
             let hHero = PlayerResource.GetSelectedHeroEntity(index);

@@ -170,3 +170,24 @@ function GetRandomListIndex(list_value: number[], is100: boolean = true) {
     // 
     return -1;
 }
+
+/** 求B元素里缺少A元素的集合 */
+function GetLackList<T>(Arr1: T[], Arr2: T[]): T[] {
+    let ret: T[] = [];
+    // 遍历A元素
+    for (let valA of Arr1) {
+        let equal = false;
+        // B元素值
+        for (let valB of Arr2) {
+            // 若B含有A元素,则放弃,
+            if (valB == valA) {
+                equal = true;
+                break;
+            }
+        }
+        if (!equal) {
+            ret.push(valA);
+        }
+    }
+    return ret;
+}

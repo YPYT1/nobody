@@ -367,6 +367,17 @@ export class Development extends UIEventRegisterClass {
 
         }
 
+        if (cmd == "-ui") {
+            // let clientui_dialog = Entities.CreateByClassname("point_clientui_dialog");
+            // // Entities.GetLocalPlayer
+            // print("clientui_dialog", clientui_dialog);
+            // clientui_dialog.SetAbsOrigin(hHero.GetAbsOrigin())
+            // print("clientui_dialog", clientui_dialog.GetClassname(), clientui_dialog.HasAttribute("XML"))
+            // ShowGenericPopupToPlayer()
+            // SpawnEntityGroupFromTable()
+            // CustomUI.DynamicHud_Create()
+            // DeepPrintTable(clientui_dialog)
+        }
     }
 
 }

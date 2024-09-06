@@ -124,10 +124,10 @@ export class modifier_talent_effect extends BaseModifier {
             let add_mv_pct = this.GetObject('53', 'add_mv_pct');
             let duration = this.GetObject('53', 'duration');
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, 'kv_t_53', {
-                AttackSpeed: {
+                'AttackSpeed': {
                     "BasePercent": add_as_pct,
                 },
-                MoveSpeed: {
+                'MoveSpeed': {
                     "BasePercent": add_mv_pct,
                 }
             }, duration)

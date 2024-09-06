@@ -10,7 +10,9 @@ export default function Precache(context: CScriptPrecacheContext) {
         [
             'particles/diy/pick_item_fx2.vpcf',
             'particles/diy_particles/event_ring_anim/event_ring_anim.vpcf',
+            'particles/diy_particles/event_ring_anim/event_ring_anim_origin.vpcf',
             'particles/units/heroes/hero_dark_willow/dark_willow_wisp_spell_debuff.vpcf',
+            'particles/diy_particles/move.vpcf',
             // 元素效果特效
             'particles/custom/element/ice/ice_effect_frozen.vpcf',
             'particles/custom/element/thunder/thunder_effect_debuff.vpcf',

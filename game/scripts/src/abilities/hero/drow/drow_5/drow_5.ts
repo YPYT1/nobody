@@ -129,7 +129,7 @@ export class modifier_drow_5_branch_a extends modifier_drow_5_buff {
             'IceDamageBonus': {
                 "Base": bonus_value
             },
-            "MoveSpeed": {
+            'MoveSpeed': {
                 "Last": last_move
             }
         })

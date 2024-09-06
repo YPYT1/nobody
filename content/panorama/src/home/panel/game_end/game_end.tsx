@@ -3,6 +3,7 @@ import { CreateServerItem } from "../../../common/server_item";
 const ShowBtn = $("#ShowBtn");
 const ClosedBtn = $("#ClosedBtn");
 const PlayerList = $("#PlayerList");
+const ModelScene = $("#ModelScene") as ScenePanel;
 const MainPanel = $.GetContextPanel();
 const GameEndContainer = $("#GameEndContainer");
 
@@ -16,9 +17,12 @@ const Init = () => {
         let play_time = data.time;
         let player_id = 0;
         GameEndContainer.SetDialogVariable("play_time", `${play_time}`)
+        GameEndContainer.SetHasClass("is_win", data.state == 1);
+        GameEndContainer.RemoveClass("Closed");
+        let mvp_player = -1;
         for (let row_data of player_list_data) {
             let PlayerInfoRows = $.CreatePanel("Panel", PlayerList, "");
-            let playerInfo = Game.GetPlayerInfo(player_id as PlayerID)
+            let playerInfo = Game.GetPlayerInfo(row_data.player_id)
             PlayerInfoRows.BLoadLayoutSnippet("PlayerInfoRows");
 
             // Avatar
@@ -65,7 +69,19 @@ const Init = () => {
 
             }
 
+            if (row_data.is_mvp == 1) {
+                // mvp_player = row_data.player_id
+                // 设置MVP单位
+                let hero_unit = playerInfo.player_selected_hero
+                // ModelScene.RemoveAndDeleteChildren()
+                // let HeroScenePanel = $.CreatePanel("DOTAScenePanel", ModelScene, "", {
+                //     class: "full"
+                // })
+
+            }
         }
+
+
     })
 
     GameEvents.SendCustomGameEventToServer("ArchiveService", {

@@ -86,12 +86,13 @@ const InputButton = () => {
 
 let lock_camera = false;
 function Onkey_Backspace_Down() {
-    if (lock_camera) {
-        GameUI.SetCameraTarget(-1 as EntityIndex);
-    } else {
-        let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-        GameUI.SetCameraTarget(hero_entity);
-    }
+    GameUI.SetCameraTarget(-1 as EntityIndex);
+    // if (lock_camera) {
+    //     GameUI.SetCameraTarget(-1 as EntityIndex);
+    // } else {
+    //     let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+    //     GameUI.SetCameraTarget(hero_entity);
+    // }
     lock_camera = !lock_camera
 }
 
@@ -132,7 +133,7 @@ export function OnInitMoveHotkey() {
 
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
     let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    GameUI.SetCameraTarget(hero_entity);
+    // GameUI.SetCameraTarget(hero_entity);
     // let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
     //     GameUI.SetCameraTarget(hero_entity);
     GameEvents.SendCustomGameEventToServer("BasicRules", {

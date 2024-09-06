@@ -8,16 +8,25 @@ import { SetHotKey } from "../control/_move_controller";
 const DevCustomAttributeList = $("#DevCustomAttributeList");
 const attr_sub_key_list = Object.keys(AttributeSub);
 /** 开发模块,开发模式下才会显示的一些信息 */
-export const MainPanel = $.GetContextPanel();
+const MainPanel = $.GetContextPanel();
 
 
 
-export const StartLoop = () => {
+const StartLoop = () => {
     UpdateTopInfoTime();
-    $.Schedule(0.5, StartLoop);
+    // UpdateUnitAngle();
+    $.Schedule(0.1, StartLoop);
 }
 
-export const UpdateTopInfoTime = () => {
+// const UpdateUnitAngle =()=>{
+//     let map_center = [6144 ,6144 ,128];
+//     let hHero = Players.GetPlayerHeroEntityIndex(0);
+//     let vHero= Entities.GetAbsOrigin(hHero);
+//     let vAngle = Entities.GetAbsAngles(hHero)
+
+//     $.Msg(vHero,vAngle)
+// }
+const UpdateTopInfoTime = () => {
     let DotaGameTime = Game.GetDOTATime(false, false);
     let TimeLabel = FormatNumberToTime(DotaGameTime);
     MainPanel.SetDialogVariable("dota_time", TimeLabel.join(":"));

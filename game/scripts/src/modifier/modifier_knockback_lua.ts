@@ -41,7 +41,7 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
         this.fMovedDistance = 0;
         const knockback_distance = params.knockback_distance as number ?? 0;
         const knockback_duration = params.knockback_duration as number ?? 1;
-
+        /** 可否穿墙 */
         const knockback_cross = params.knockback_cross as number;
         const knockback_activity = params.knockback_activity ?? 0;
         this.SetStackCount(knockback_activity);

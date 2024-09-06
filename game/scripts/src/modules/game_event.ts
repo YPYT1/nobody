@@ -24,6 +24,7 @@ import { HeroTalentSystem } from './ingame/hero_extend/hero_talent_system';
 import { NpcSystem } from './map_chapter/npc_system';
 import { RuneSystem } from './ingame/rune/rune_system';
 import { EnemyAttribute } from './ingame/hero_extend/enemy_attribute';
+import { MissionSystem } from './ingame/mission/mission_system';
 
 declare global {
 
@@ -60,6 +61,8 @@ declare global {
         ServiceEquipment: ServiceEquipment;
 
         WarningMarker: WarningMarker;
+
+        MissionSystem: MissionSystem;
     }
 }
 
@@ -124,6 +127,7 @@ export class GameEvent {
 
         } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段
             GameRules.EnemyAttribute = new EnemyAttribute();
+            
         } else if (State_Get == GameState.POST_GAME) { //推送结果阶段
 
         } else if (State_Get == GameState.DISCONNECT) { //断开阶段
@@ -192,6 +196,7 @@ export function ReloadModules() {
     //根据游戏进程选择更新某些模块
     let State_Get = GameRules.State_Get();
     GameRules.CustomAttribute.Reload();
+    
     if (State_Get == GameState.INIT) { //初始化阶段---无UI
 
     } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) { //加载阶段---无UI
@@ -212,6 +217,7 @@ export function ReloadModules() {
 
     } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段---游戏内UI
         GameRules.EnemyAttribute = new EnemyAttribute();
+        GameRules.MissionSystem.Reload();
     } else if (State_Get == GameState.POST_GAME) { //推送结果阶段---游戏内UI
 
     } else if (State_Get == GameState.DISCONNECT) { //断开阶段---游戏内UI
