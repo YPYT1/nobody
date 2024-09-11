@@ -17,6 +17,7 @@ const UpdateAttributeKyes: AttributeMainKey[] = [
     'AbilityHaste',
     'AbilityCooldown',
     'AbilityCooldown2',
+    'VisionRange',
 ];
 
 // 属性
@@ -102,10 +103,9 @@ export class modifier_public_attribute extends BaseModifier {
         // print("[modifier_public_attribute]:_UpdateAttribute");
         let hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
         for (let k of UpdateAttributeKyes) {
-
             this.AttributeData[k] = hUnit.custom_attribute_value[k];
-
         }
+
         this.SendBuffRefreshToClients();
         hUnit.SetBaseDamageMin(hUnit.custom_attribute_value.AttackDamage);
         hUnit.SetBaseDamageMax(hUnit.custom_attribute_value.AttackDamage);
@@ -152,7 +152,19 @@ export class modifier_public_attribute extends BaseModifier {
             ModifierFunction.MANA_BONUS,
             ModifierFunction.MANA_REGEN_CONSTANT,
             ModifierFunction.COOLDOWN_PERCENTAGE,
+            ModifierFunction.FIXED_DAY_VISION,
+            ModifierFunction.FIXED_NIGHT_VISION,
+            ModifierFunction.BONUS_DAY_VISION,
+            ModifierFunction.BONUS_NIGHT_VISION,
         ]
+    }
+
+    GetBonusDayVision(): number {
+        return this.AttributeData.VisionRange ?? 800
+    }
+
+    GetBonusNightVision(): number {
+        return this.AttributeData.VisionRange ?? 800
     }
 
     GetModifierAttackRangeOverride(): number {

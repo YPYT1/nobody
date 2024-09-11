@@ -57,3 +57,4 @@ _temp
 /game/scripts/npc/npc_heroes_custom.txt
 /content/maps
 /game/scripts/src/server/https/http_request.ts
+/cmd.txt

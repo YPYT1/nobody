@@ -1,9 +1,11 @@
+import { MissleNameList } from "../../modules/ingame/mission/mission_system";
 import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
 
 @registerModifier()
 export class modifier_mission_thinker extends BaseModifier {
 
-    mission_name: string;
+    mission_name: MissleNameList;
+    mission_type: number;
     is_timeout: boolean;
     origin: Vector;
     residence_time: number;
@@ -19,16 +21,23 @@ export class modifier_mission_thinker extends BaseModifier {
         this.origin = this.GetParent().GetAbsOrigin()
         this.is_timeout = true;
         this.mission_name = params.mission_name;
-
+        this.mission_type = params.mission_type;
         this.origin_fx = ParticleManager.CreateParticle(
             "particles/diy_particles/event_ring_anim/event_ring_anim_origin.vpcf",
             ParticleAttachment.POINT,
             this.GetParent()
         )
         ParticleManager.SetParticleControl(this.origin_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
-        // ParticleManager.SetParticleControl(this.origin_fx, 1, Vector(-1, 0, 0))
         ParticleManager.SetParticleControl(this.origin_fx, 2, Vector(this.radius - 32, 0, 0))
-        ParticleManager.SetParticleControl(this.origin_fx, 3, Vector(0, 255, 255))
+
+        if (this.mission_type == 1) {
+            // 天辉蓝色
+            ParticleManager.SetParticleControl(this.origin_fx, 3, Vector(100, 255, 100))
+        } else if (this.mission_type == 2) {
+            //  夜宴红色
+            ParticleManager.SetParticleControl(this.origin_fx, 3, Vector(255, 10, 10))
+        }
+
         this.StartIntervalThink(0.1)
     }
 
@@ -63,7 +72,7 @@ export class modifier_mission_thinker extends BaseModifier {
             if (this.residence_time >= 5) {
                 this.residence_time = 0;
                 // 执行任务
-                GameRules.MissionSystem.StartMission(this.origin);
+                GameRules.MissionSystem.MissionHandle[this.mission_name].StartTheMission(this.origin)
                 if (this.cast_fx) {
                     ParticleManager.DestroyParticle(this.cast_fx, true)
                 }
@@ -83,11 +92,42 @@ export class modifier_mission_thinker extends BaseModifier {
     OnDestroy(): void {
         if (!IsServer()) { return }
         ParticleManager.DestroyParticle(this.origin_fx, true);
-
-        if (this.is_timeout) {
-            // 任务失败
-            GameRules.MissionSystem.EndMission(false)
-        }
         UTIL_Remove(this.GetParent())
+    }
+
+}
+
+@registerModifier()
+export class modifier_mission_thinker_countdown extends BaseModifier {
+
+    mission_type: number;
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        this.mission_type = params.mission_type
+    }
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        if (this.mission_type == 1) {
+            GameRules.MissionSystem.RadiantMissionHandle.MissionOverTime()
+        } else {
+            GameRules.MissionSystem.DireMissionHandle.MissionOverTime()
+        }
+        // 
+        UTIL_Remove(this.GetParent())
+    }
+}
+
+
+@registerModifier()
+export class modifier_mission_npc extends BaseModifier {
+
+    CheckState(): Partial<Record<modifierstate, boolean>> {
+        return {
+            [ModifierState.INVULNERABLE]: true,
+            [ModifierState.NO_UNIT_COLLISION]: true,
+            [ModifierState.NO_HEALTH_BAR]: true,
+            [ModifierState.UNSELECTABLE]: true,
+        }
     }
 }

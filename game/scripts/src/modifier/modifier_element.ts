@@ -26,7 +26,7 @@ export class modifier_element_effect_fire extends BaseModifier {
         let interval_increase: number = params.interval_increase ?? 0;
         let base_interval = params.base_interval ?? 1;
         let interval = base_interval / (1 + interval_increase * 0.01);
-        print("base_interval", base_interval, "interval_increase", interval_increase, "interval", interval)
+        // print("base_interval", base_interval, "interval_increase", interval_increase, "interval", interval)
         this.StartIntervalThink(interval)
     }
 

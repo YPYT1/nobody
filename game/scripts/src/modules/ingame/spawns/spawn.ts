@@ -534,25 +534,11 @@ export class Spawn extends UIEventRegisterClass {
     MonsterAmend(hUnit: CDOTA_BaseNPC, type: 'boss' | 'normal' | 'elite', level: number = 1, round_index: number = 1) {
         //血量
         let healthmax = hUnit.GetMaxHealth();
-        let UnitName = hUnit.GetUnitName();
-        if (type == "boss") {
-            healthmax = math.ceil(GameRules.Spawn.map_info_round[round_index].boss_hp_power * healthmax);
-            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_BOSS_HP[this.player_count - 1];
-        } else if (type == "elite") {
-            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_LEADER_HP[this.player_count - 1]
-        } else if (type == "normal") {
-            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_MONSTER_HP[this.player_count - 1]
-        } 
-        //难度加算  
-        let eval_param = {
-            hp: healthmax,
-        }
-        healthmax = LFUN.eval(this._hp_equation, eval_param);
+        healthmax = this.GetCurrentRoundHP(healthmax , type , level , round_index);
         if (healthmax > 4200452371273100000) {
             healthmax = 4200452371273100000;
         }
-        GameRules.Spawn.SetUnitHealthLimit(hUnit, healthmax)
-
+        GameRules.Spawn.SetUnitHealthLimit(hUnit, healthmax);
         //攻击力
         let UnitDamage = hUnit.GetBaseDamageMin();
 
@@ -583,15 +569,61 @@ export class Spawn extends UIEventRegisterClass {
         hUnit.SetBaseDamageMax(UnitDamage)
     }
 
+
+    GetCurrentRoundHP(healthmax : number , type: 'boss' | 'normal' | 'elite' , level: number = 1, round_index: number = 1) : number{
+        if(healthmax == -1){
+            healthmax = this.GetBaseNormalHP(type)
+        }
+        if (type == "boss") {
+            healthmax = math.ceil(GameRules.Spawn.map_info_round[round_index].boss_hp_power * healthmax);
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_BOSS_HP[this.player_count - 1];
+        } else if (type == "elite") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_LEADER_HP[this.player_count - 1]
+        } else if (type == "normal") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_MONSTER_HP[this.player_count - 1]
+        } 
+        //难度加算  
+        let eval_param = {
+            hp: healthmax,
+        }
+        healthmax = LFUN.eval(this._hp_equation, eval_param);
+        return healthmax;
+    }
+
+    GetBaseNormalHP(type: 'boss' | 'normal' | 'elite') : number{
+        let StatusHealth = 1;
+        if(type == "normal"){
+            let name = GameRules.Spawn.map_info_round[GameRules.Spawn._round_index].monster_list[1];
+            StatusHealth = UnitNormal[name as keyof typeof UnitNormal].StatusHealth;
+        }else{
+            let name = GameRules.Spawn.map_info_round[GameRules.Spawn._round_index].monster_list[1];
+            StatusHealth = UnitNormal[name as keyof typeof UnitNormal].StatusHealth;
+        }
+        return StatusHealth;
+    }
+
     /**
      * 设置单位的血量 （未实装可超出21亿）
      * @param hUnit 
      * @param iHealth 
      */
     SetUnitHealthLimit(hUnit: CDOTA_BaseNPC, iHealth: number) {
-        hUnit.SetBaseMaxHealth(iHealth);
-        hUnit.SetMaxHealth(iHealth);
-        hUnit.SetHealth(iHealth);
+        let mul_power = iHealth / 2100000000;
+        if (mul_power > 1) {
+            let iMulte = math.ceil(mul_power);
+            const iNewHealth = math.ceil(iHealth / iMulte);
+            hUnit.SetBaseMaxHealth(iNewHealth);
+            hUnit.SetMaxHealth(iNewHealth);
+            hUnit.SetHealth(iNewHealth);
+            hUnit.AddNewModifier(hUnit, null, "modifier_common_mul_health", {
+                iMulte: iMulte
+            });
+        } else {
+            hUnit.SetBaseMaxHealth(iHealth);
+            hUnit.SetMaxHealth(iHealth);
+            hUnit.SetHealth(iHealth);
+        }
+        return hUnit;
     }
     /**
      * 任务怪记录信息

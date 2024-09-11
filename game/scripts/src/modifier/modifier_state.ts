@@ -27,9 +27,9 @@ export class modifier_state_bloodmage extends BaseModifier {
 export class modifier_state_movetips extends BaseModifier {
 
     OnCreated(params: any): void {
-        if(!IsServer()){ return }
-        let vect = Vector(params.x,params.y,params.z);
-        
+        if (!IsServer()) { return }
+        let vect = Vector(params.x, params.y, params.z);
+
         let line_pfx = ParticleManager.CreateParticle(
             "particles/diy_particles/move.vpcf",
             ParticleAttachment.POINT_FOLLOW,
@@ -37,5 +37,39 @@ export class modifier_state_movetips extends BaseModifier {
         );
         ParticleManager.SetParticleControl(line_pfx, 1, vect);
         this.AddParticle(line_pfx, false, false, -1, false, false);
+    }
+}
+
+/** 任务单位 */
+@registerModifier()
+export class modifier_state_mission extends BaseModifier {
+
+    IsHidden(): boolean {
+        return true
+    }
+
+    CheckState(): Partial<Record<modifierstate, boolean>> {
+        return {
+            [ModifierState.NO_UNIT_COLLISION]: true,
+            [ModifierState.NO_HEALTH_BAR]: true,
+            [ModifierState.INVULNERABLE]: true,
+            [ModifierState.UNSLOWABLE]: true,
+            // [ModifierState.NOT_ON_MINIMAP]:true,
+        }
+    }
+}
+
+/** 任务单位 */
+@registerModifier()
+export class modifier_state_noheathbar extends BaseModifier {
+
+    IsHidden(): boolean {
+        return true
+    }
+
+    CheckState(): Partial<Record<modifierstate, boolean>> {
+        return {
+            [ModifierState.NO_HEALTH_BAR]: true,
+        }
     }
 }

@@ -11,142 +11,104 @@ import { MissionModule } from "../_mission_module";
  */
 export class Mission_Radiant_1 extends MissionModule {
 
-
     start_vect: Vector;
-    path_check_count: number;
-
-    /** 进球数量 */
-    goal_count: number;
-    goal_max: number;
-
     /** 门框半径 */
     goal_radius: number = 250;
-    goal_mdf: CDOTA_Buff;
 
     /** 任务限时 */
-    limit_time = 60;
+    limit_time = 10;
 
 
     ExecuteLogic(vect: Vector) {
-
+        this.RemoveMoveTips()
+        this.progress_value = 0;
+        this.progress_max = 1
+        this.mission_state = -1;
         this.start_vect = vect;
-
-        this.path_check_count = 0;
-
+        this.units = [];
+        this.SendMissionProgress();
         // 创建终点
-        // let rand_vect = this.start_vect + RandomVector(RandomInt(2000, 2500)) as Vector
         let goal_vect = this.GetFoolballGoalVect(vect);
-        let final_vect = this.CreateFootballGoal(goal_vect);
-
-        this.goal_count = 0;
-        this.goal_max = 1
-        this.CreateFootball(this.start_vect, final_vect)
+        this.CreateFootballGoal(goal_vect);
+        this.CreateFootball(this.start_vect, goal_vect)
         if (PlayerResource.GetPlayerCount() > 2) {
-            this.goal_max += 1
-            this.CreateFootball(this.start_vect, final_vect)
+            this.progress_max += 1
+            this.CreateFootball(this.start_vect, goal_vect)
         }
 
-        // 是否有定时器
-        this.StateChangeThink()
-
+        this.CreateCountdownThinker(10)
     }
 
-    StateChangeThink() {
-        let time = 0;
-        GameRules.GetGameModeEntity().SetContextThink("StateChangeThink", () => {
-            if (this.limit_time == null) { return null }
-            time += 1;
-            if (time >= this.limit_time) {
-                // 任务失败
-                return null
-            }
-            return 1
-        }, 0);
-
-
-    }
 
     /** 创建足球 */
     CreateFootball(vect: Vector, goal_vect: Vector) {
         let rand_vect = vect + RandomVector(200) as Vector
-        let football = CreateUnitByName("npc_football", rand_vect, false, null, null, DotaTeam.NEUTRALS);
+        let football = CreateUnitByName("npc_football", rand_vect, false, null, null, DotaTeam.GOODGUYS);
         // 添加门框指示线
-        football.AddNewModifier(football, null, "modifier_mission_mdf_1_football", {
+        football.AddNewModifier(football, null, "modifier_mission_radiant_1_football", {
             goal_x: goal_vect.x,
             goal_y: goal_vect.y,
             goal_z: goal_vect.z,
             goal_radius: this.goal_radius,
         })
+
+        this.units.push(football)
     }
 
     /** 创建足球终点 */
     CreateFootballGoal(vect: Vector) {
-        let football_goal = CreateUnitByName("npc_football_goal", vect, false, null, null, DotaTeam.NEUTRALS);
-        this.goal_mdf = football_goal.AddNewModifier(football_goal, null, "modifier_mission_mdf_1_football_goal", {
-            goal_radius: this.goal_radius,
-        })
-        this.the_npc = football_goal
-        return football_goal.GetAbsOrigin()
+        this.mdf_thinker = CreateModifierThinker(
+            null,
+            null,
+            "modifier_mission_radiant_1_football_goal",
+            {
+                duration: this.limit_time,
+                goal_radius: this.goal_radius,
+            },
+            vect,
+            DotaTeam.GOODGUYS,
+            false
+        )
+
+        return this.mdf_thinker.GetAbsOrigin()
+    }
+
+    MissionOverTime(): void {
+
     }
 
     GetFoolballGoalVect(vStart: Vector): Vector {
         // 门框的位置必须要单位能移动到
-        // let path_check = GridNav.CanFindPath(this.map_center, vect);
-        // // let path2 = GridNav.IsTraversable(vect);
-        // // let is_blocked = GridNav.IsBlocked(vect)
-        // if (path_check) {
-        //     return vect
-        // }
-        // this.path_check_count += 1;
-        // let rand_vect: Vector;
-        // if (this.path_check_count >= 60) {
-        //     // 如果超过60次都没有找到合适点,则在地图中心点放置
-        //     rand_vect = this.map_center + RandomVector(200) as Vector
-        // } else {
-        //     rand_vect = this.start_vect + RandomVector(RandomInt(3000, 3500)) as Vector
-        // }
-        // return this.GetFoolballGoalVect(rand_vect)
-
-        //
         let direction = (vStart - this.vMapCenter as Vector).Normalized()
         let next_pos = vStart + direction * -3000 as Vector;
         let final = RotatePosition(vStart, QAngle(0, RandomInt(-45, 45), 0), next_pos)
-
         return final
     }
 
-
     AddProgressValue(value: number): void {
-        this.goal_count += value;
+        this.progress_value += value;
         // 进度提示
-        GameRules.CMsg.SendCommonMsgToPlayer(
-            -1,
-            "{s:mission_name} 任务进度{d:goal_count} / {d:goal_max}",
-            {
-                mission_name: "m1",
-                goal_count: this.goal_count,
-                goal_max: this.goal_max,
-            }
-        )
+        this.SendMissionProgress();
         // 成功条件
-        if (this.goal_count >= this.goal_max) {
+        if (this.progress_value >= this.progress_max) {
+            this.mission_state = 1
             this.EndOfMission(true)
         }
     }
 
-    EndOfMission(success: boolean) {
+    CleanMissionData(): void {
         // 移除NPC
-        if (this.the_npc) {
-            UTIL_Remove(this.the_npc)
-            this.the_npc = null
+        if (this.mdf_thinker) {
+            UTIL_Remove(this.mdf_thinker)
+            this.mdf_thinker = null
         }
 
-        if (success) {
-            // m1 成功
-            this.GetReward()
+        for (let unit of this.units) {
+            if (unit && unit.IsNull()) {
+                UTIL_Remove(unit)
+            }
         }
-
-
+        this.units = []
     }
 
 }

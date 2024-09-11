@@ -11,5 +11,43 @@ import { MissionModule } from "../_mission_module";
  */
 export class Mission_Radiant_7 extends MissionModule {
 
+    check_radius: number;
 
+
+    ExecuteLogic(start: Vector): void {
+        this.progress_max = 20;
+        this.progress_value = 0;
+        this.SendMissionProgress();
+        this.limit_time = 20;
+        this.check_radius = 1000;
+        this.mission_state = -1;
+
+        // 所有英雄强制移动
+        for (let hHero of HeroList.GetAllHeroes()) {
+            // let distance = (hHero.GetAbsOrigin() - start as Vector).Length2D();
+            hHero.AddNewModifier(hHero, null, "modifier_generic_arc_lua", {
+                target_x: start.x,
+                target_y: start.y,
+                height: 100,
+                speed: 600,
+                // duration: this.motion_time,
+                // fix_duration: 1,
+            })
+        }
+
+        // 创建限制范围
+        let thinker = CreateModifierThinker(
+            null,
+            null,
+            "modifier_mission_radiant_7_zone",
+            {
+                duration: this.limit_time,
+                radius: this.check_radius,
+            },
+            start,
+            DotaTeam.GOODGUYS,
+            false
+        )
+        this.units.push(thinker)
+    }
 }

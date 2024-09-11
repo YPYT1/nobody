@@ -18,7 +18,7 @@ export class WarningMarker {
         radius: number,
         duration: number,
         vect: Vector,
-        immediateRelease: boolean = true,
+        immediateRelease: boolean = false,
         color: Vector = Vector(255, 0, 0)
     ) {
         let aoe_pfx2 = ParticleManager.CreateParticle(

@@ -10,14 +10,65 @@ import { MissionModule } from "../_mission_module";
  */
 export class Mission_Radiant_3 extends MissionModule {
 
+    BallUnit: CDOTA_BaseNPC;
+    vNextVect: Vector;
+    motion_time = 4;
+    check_radius = 150;
+    max_distance = 500;
+
     ExecuteLogic(start: Vector): void {
-        
-        // 发射,创建
+        this.progress_value = 0;
+        this.progress_max = 5;
+        this.SendMissionProgress();
+        this.motion_time = 4;
+        this.BallUnit = CreateUnitByName("npc_mission_ball", start, false, null, null, DotaTeam.NEUTRALS);
+        this.BallUnit.AddNewModifier(this.BallUnit, null, "modifier_state_mission", {})
+        // 发射,
         this.TossBall(start)
 
+        this.units.push(this.BallUnit)
     }
 
-    TossBall(vStart:Vector){
+    TossBall(vStart: Vector) {
 
+        //
+        let fDistance = RandomInt(300, 500);
+        this.vNextVect = this.GetToNextPoints(vStart, fDistance)
+        this.BallUnit.AddNewModifier(this.BallUnit, null, "modifier_generic_arc_lua", {
+            target_x: this.vNextVect.x,
+            target_y: this.vNextVect.y,
+            distance: fDistance,
+            height: 1000,
+            duration: this.motion_time,
+            fix_duration: 1,
+        })
+
+        let thinker = CreateModifierThinker(
+            null,
+            null,
+            "modifier_mission_radiant_3_points",
+            {
+                duration: this.motion_time,
+                radius: this.check_radius
+            },
+            this.vNextVect,
+            DotaTeam.GOODGUYS,
+            false
+        )
+        this.units.push(thinker)
     }
+
+    AddProgressValue(value: number): void {
+        this.progress_value += 1;
+        this.SendMissionProgress();
+        if (this.progress_value < this.progress_max) {
+            // 下一个点
+            this.TossBall(this.vNextVect)
+        } else {
+            // 完成任务
+            GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true)
+        }
+    }
+
+
 }

@@ -1,14 +1,16 @@
 import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
 
 @registerModifier()
-export class modifier_mission_mdf_1_football extends BaseModifier {
+export class modifier_mission_radiant_1_football extends BaseModifier {
 
     hFootball: CDOTA_BaseNPC;
     goal_vect: Vector;
     goal_radius: number;
-    
+
+    state: boolean;
     OnCreated(params: any): void {
         if (!IsServer()) { return }
+        this.state = false;
         // 足球逻辑 当有单位接近时,通过角度进行位移一段距离
         this.goal_vect = Vector(params.goal_x, params.goal_y, params.goal_z)
         this.goal_radius = params.goal_radius;
@@ -31,7 +33,7 @@ export class modifier_mission_mdf_1_football extends BaseModifier {
         let distance = (this.goal_vect - vect as Vector).Length2D();
         if (distance < this.goal_radius) {
             // 进球
-            GameRules.MissionSystem.MissionProgress(1);
+            GameRules.MissionSystem.MissionHandle.r_1.AddProgressValue(1);
             this.StartIntervalThink(-1)
             this.Destroy();
             return
@@ -78,7 +80,7 @@ export class modifier_mission_mdf_1_football extends BaseModifier {
 }
 
 @registerModifier()
-export class modifier_mission_mdf_1_football_goal extends BaseModifier {
+export class modifier_mission_radiant_1_football_goal extends BaseModifier {
 
     origin: Vector;
     radius: number;
@@ -106,5 +108,11 @@ export class modifier_mission_mdf_1_football_goal extends BaseModifier {
             [ModifierState.UNSLOWABLE]: true,
             [ModifierState.INVULNERABLE]: true,
         }
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        // GameRules.MissionSystem.MissionHandle.r_1.EndOfMission(false)
+        UTIL_Remove(this.GetParent())
     }
 }

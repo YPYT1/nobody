@@ -102,7 +102,7 @@ export class modifier_basic_move extends BaseModifier {
 
     OnMoveStateChange(state: boolean) {
         this.parent.move_state = state;
-        if (state == false){
+        if (state == false) {
             this.parent.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
         }
         // if (state == false) {
@@ -191,7 +191,68 @@ export class modifier_common_mul_health extends BaseModifier {
     }
 }
 
+/** 倒计时 */
 @registerModifier()
-export class modifier_basic_attack extends BaseModifier {
+export class modifier_basic_countdown extends BaseModifier {
+
+    timer: number;
+    timer_fx: ParticleID;
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.timer = this.GetDuration()
+        this.timer_fx = ParticleManager.CreateParticle(
+            "particles/test_particle/xulie/overhead_timer.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            this.GetParent()
+        );
+        ParticleManager.SetParticleControl(this.timer_fx, 1, Vector(0, 0, 0));
+        ParticleManager.SetParticleControl(this.timer_fx, 2, Vector(3, 0, 0));
+        ParticleManager.SetParticleControl(this.timer_fx, 3, Vector(255, 0, 0));
+        this.AddParticle(this.timer_fx, false, false, -1, true, true);
+
+        this.OnIntervalThink();
+        this.StartIntervalThink(1)
+    }
+
+    OnIntervalThink(): void {
+        let countdown = math.floor(this.timer);
+        let cp1_x = math.floor(countdown / 10);
+        let cp1_y = math.floor(countdown % 10);
+        ParticleManager.SetParticleControl(this.timer_fx, 1, Vector(cp1_x, cp1_y, 0));
+        this.timer -= 1;
+    }
+
+}
+
+@registerModifier()
+export class modifier_basic_hits extends BaseModifier {
+
+    bar_Pips: number;
+
+    IsHidden(): boolean { return true; }
+
+    DeclareFunctions(): ModifierFunction[] {
+        return [
+            ModifierFunction.HEALTHBAR_PIPS,
+        ];
+    }
+
+
+    OnCreated(params: object): void {
+        this.OnRefresh(params);
+    }
+
+    OnRefresh(params: object): void {
+        this.bar_Pips = math.min(25, this.GetParent().GetMaxHealth());
+    }
+
+    GetModifierHealthBarPips() {
+        return this.bar_Pips;
+    }
+
+
+
+
 
 }

@@ -82,6 +82,8 @@ const SetPanel_NpcInteract_GameRestart = () => {
 
 const UpdateSelectUnit = () => {
     let queryUnit = Players.GetLocalPlayerPortraitUnit();
+    let unit_label = Entities.GetUnitLabel(queryUnit);
+    // $.Msg(["unit_label", queryUnit,unit_label])
     if (queryUnit == Players.GetPlayerHeroEntityIndex(player_id)) {
         return
     }
@@ -89,7 +91,6 @@ const UpdateSelectUnit = () => {
     NpcInteract_GameRestart.SetHasClass("Show", unit_name == "npc_interact_game_restart" && player_id == 0)
 
 
-    
 }
 
 const CustomGameEventsSubscribe = () => {

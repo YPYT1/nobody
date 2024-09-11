@@ -2,6 +2,7 @@
 
 #base "abilities/public.txt"
 #base "abilities/special.txt"
+#base "abilities/mission.txt"
 
 #base "abilities/hero/drow_skill.txt"
 

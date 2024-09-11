@@ -1,7 +1,7 @@
 import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
 
 @registerModifier()
-export class modifier_mission_mdf_2_points extends BaseModifier {
+export class modifier_mission_radiant_2_points extends BaseModifier {
 
     is_timeout: boolean;
     // relay_index: number;
@@ -45,7 +45,7 @@ export class modifier_mission_mdf_2_points extends BaseModifier {
         // print("players.length", players.length)
         if (players.length > 0) {
             this.is_timeout = false;
-            GameRules.MissionSystem.MissionProgress(1);
+            GameRules.MissionSystem.RadiantMissionHandle.AddProgressValue(1);
             this.Destroy();
         }
     }
@@ -54,17 +54,17 @@ export class modifier_mission_mdf_2_points extends BaseModifier {
         if (!IsServer()) { return }
         if (this.is_timeout) {
             // 任务失败
-            GameRules.MissionSystem.EndMission(false);
+            GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(false);
         }
         UTIL_Remove(this.GetParent())
     }
 
-    CheckState(): Partial<Record<modifierstate, boolean>> {
-        return {
-            [ModifierState.NO_HEALTH_BAR]: true,
-            [ModifierState.NO_UNIT_COLLISION]: true,
-            [ModifierState.UNSLOWABLE]: true,
-            [ModifierState.INVULNERABLE]: true,
-        }
-    }
+    // CheckState(): Partial<Record<modifierstate, boolean>> {
+    //     return {
+    //         [ModifierState.NO_HEALTH_BAR]: true,
+    //         [ModifierState.NO_UNIT_COLLISION]: true,
+    //         [ModifierState.UNSLOWABLE]: true,
+    //         [ModifierState.INVULNERABLE]: true,
+    //     }
+    // }
 }

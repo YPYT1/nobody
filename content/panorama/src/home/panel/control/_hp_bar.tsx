@@ -1,4 +1,4 @@
-import { FormatIntToString } from "../../../utils/method";
+import { FormatIntToString, GetUnitModifierStack } from "../../../utils/method";
 
 export const BarTypeList = ["Hp", "Mp"];
 export let bar_panel_list: { [key: string]: Panel } = {};
@@ -26,7 +26,7 @@ export const StartLoop = () => {
 export const UpdateLocalPlayer = () => {
     const queryUnit = Players.GetLocalPlayerPortraitUnit();
     if (queryUnit <= 0) { return }
-    const health_mul = 1;// GetUnitModifierStack(queryUnit, "modifier_common_mul_health");
+    const health_mul = GetUnitModifierStack(queryUnit, "modifier_common_mul_health");
     const hp_val = Entities.GetHealth(queryUnit) * health_mul;
     const hp_max = Entities.GetMaxHealth(queryUnit) * health_mul;
     // const hp_reg = Entities.GetHealthThinkRegen(queryUnit);

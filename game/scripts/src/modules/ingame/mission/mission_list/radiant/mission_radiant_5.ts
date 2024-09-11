@@ -10,5 +10,30 @@ import { MissionModule } from "../_mission_module";
  */
 export class Mission_Radiant_5 extends MissionModule {
 
+    limit_time = 15;
 
+    ExecuteLogic(start: Vector): void {
+        // 任务点创建小猪
+        this.progress_max = 1;
+        this.progress_value = 0;
+        this.SendMissionProgress();
+        this._CreatePig(start)
+    }
+
+    _CreatePig(vect: Vector) {
+        let vOrigin = vect + RandomVector(RandomInt(0, 200));
+        let pig = CreateUnitByName("npc_mission_pig", vect, false, null, null, DotaTeam.GOODGUYS);
+        // print("this.the_npc",this.the_npc,this.limit_time)
+        pig.AddNewModifier(pig, null, "modifier_mission_radiant_5_ai", {
+            duration: this.limit_time
+        })
+
+        this.units.push(pig)
+    }
+
+    AddProgressValue(value: number): void {
+        this.progress_value += 1;
+        this.SendMissionProgress();
+        GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true)
+    }
 }

@@ -188,7 +188,7 @@ function GetVectDirection(vect1: Vector, vect2: Vector) {
 }
 
 /** 判断是否为无效值 [true:表示无效] */
-function IsValid(h: any) {
+function IsValid(h: CBaseEntity) {
     return h != null && h.IsNull();
 }
 

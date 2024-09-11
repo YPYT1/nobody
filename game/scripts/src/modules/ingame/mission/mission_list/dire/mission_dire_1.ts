@@ -10,10 +10,18 @@ import { MissionModule } from "../_mission_module";
  */
 export class Mission_Dire_1 extends MissionModule {
 
-    mission_name: string = "dire_1"
+    limit_time = 90;
 
-
-    ExecuteLogic(vect: Vector): void {
-        
+    ExecuteLogic(start: Vector): void {
+        this.progress_value = 0;
+        this.progress_max = this.limit_time
+        let spider = GameRules.Spawn.CreepNormalCreate("npc_mission_spider", start + RandomVector(300) as Vector);
+        spider.AddNewModifier(spider, null, "modifier_mission_dire_1", { duration: this.limit_time })
+        spider.AddNewModifier(spider, null, "modifier_basic_countdown", { duration: this.limit_time })
+        this.CreateCountdownThinker(this.limit_time)
     }
+
+    
+
+
 }

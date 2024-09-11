@@ -87,12 +87,12 @@ const InputButton = () => {
 let lock_camera = false;
 function Onkey_Backspace_Down() {
     GameUI.SetCameraTarget(-1 as EntityIndex);
-    // if (lock_camera) {
-    //     GameUI.SetCameraTarget(-1 as EntityIndex);
-    // } else {
-    //     let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    //     GameUI.SetCameraTarget(hero_entity);
-    // }
+    if (lock_camera) {
+        GameUI.SetCameraTarget(-1 as EntityIndex);
+    } else {
+        let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+        GameUI.SetCameraTarget(hero_entity);
+    }
     lock_camera = !lock_camera
 }
 
@@ -120,14 +120,14 @@ export function OnInitMoveHotkey() {
     // GameUI.SetCameraPitchMax(70);
 
 
-    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-        // $.Msg([event , value])
-        if (value == 1) {
-            return true
-        } else {
-            return false
-        }
-    });
+    // GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+    //     // $.Msg([event , value])
+    //     if (value == 1) {
+    //         return true
+    //     } else {
+    //         return false
+    //     }
+    // });
 
 }
 

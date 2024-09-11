@@ -9,16 +9,18 @@ import { MissionModule } from "../_mission_module";
  */
 export class Mission_Radiant_2 extends MissionModule {
 
-    count: number;
-    relay_count = 5; // 接力次数
     relay_radius = 250; // 接力点范围
     relay_time = 15; // 接力时间
     distance_range = [1500, 2000];
 
     last_relay_pos: Vector;
 
+    
     ExecuteLogic(start: Vector): void {
-        this.count = 0
+        this.RemoveMoveTips()
+        this.progress_max = 5;
+        this.progress_value = 0;
+        this.SendMissionProgress();
         this.last_relay_pos = this.GetToNextPoints(start, RandomInt(1500, 2000))
         this._CreateRelayPoint(this.last_relay_pos)
     }
@@ -29,31 +31,48 @@ export class Mission_Radiant_2 extends MissionModule {
      * @param iIndex 
      */
     _CreateRelayPoint(vOrign: Vector) {
-        let mission_point = CreateUnitByName("npc_mission_point", vOrign, false, null, null, DotaTeam.NEUTRALS);
-        mission_point.AddNewModifier(mission_point, null, "modifier_mission_mdf_2_points", {
-            relay_radius: this.relay_radius,
-        })
+        this.AddMoveTips(vOrign,this.relay_time)
+        let unis = CreateModifierThinker(
+            null,
+            null,
+            "modifier_mission_radiant_2_points",
+            {
+                relay_radius: this.relay_radius,
+                duration: this.relay_time,
+            },
+            vOrign,
+            DotaTeam.GOODGUYS,
+            false
+        )
+        this.units.push(unis)
     }
 
     AddProgressValue(value: number): void {
-        this.count += 1;
-        GameRules.CMsg.SendCommonMsgToPlayer(
-            -1,
-            "{s:mission_name} 任务进度{d:count} / {d:relay_count}",
-            {
-                mission_name: this.mission_name,
-                count: this.count,
-                relay_count: this.relay_count,
-            }
-        )
+        this.progress_value += 1;
+        this.SendMissionProgress();
 
-        if (this.count < this.relay_count) {
+        if (this.progress_value < this.progress_max) {
             // 下一个点
             this.last_relay_pos = this.GetToNextPoints(this.last_relay_pos, RandomInt(1500, 2000))
             this._CreateRelayPoint(this.last_relay_pos)
         } else {
             // 完成任务
-            GameRules.MissionSystem.EndMission(true)
+            GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true)
         }
+    }
+
+    CleanMissionData(): void {
+        // 移除NPC
+        if (this.mdf_thinker) {
+            UTIL_Remove(this.mdf_thinker)
+            this.mdf_thinker = null
+        }
+
+        for (let unit of this.units) {
+            if (unit && unit.IsNull()) {
+                UTIL_Remove(unit)
+            }
+        }
+        this.units = []
     }
 }

@@ -39,7 +39,7 @@ export const HeroList = [
     // "npc_dota_hero_grimstroke",
     // "npc_dota_hero_gyrocopter",
     // "npc_dota_hero_huskar",
-    // "npc_dota_hero_invoker",
+    "npc_dota_hero_invoker",
     // "npc_dota_hero_jakiro",
     // "npc_dota_hero_juggernaut",
     // "npc_dota_hero_keeper_of_the_light",

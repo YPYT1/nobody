@@ -10,5 +10,22 @@ import { MissionModule } from "../_mission_module";
  */
 export class Mission_Radiant_8 extends MissionModule {
 
+    fish: CDOTA_BaseNPC;
 
+    ExecuteLogic(start: Vector): void {
+        this.progress_max = 1;
+        this.progress_value = 0;
+        this.SendMissionProgress();
+        this.limit_time = 25;
+
+        // 创建鱼人
+        let fish_hp = 500
+        this.fish = GameRules.Spawn.CreepNormalCreate("npc_mission_big_fish", start + RandomVector(200) as Vector)
+        this.fish.SetBaseMaxHealth(fish_hp);
+        this.fish.SetMaxHealth(fish_hp);
+        this.fish.SetHealth(fish_hp);
+        this.fish.AddNewModifier(this.fish, null, "modifier_mission_radiant_8_ai", { duration: this.limit_time })
+        this.fish.AddNewModifier(this.fish, null, "modifier_basic_countdown", { duration: this.limit_time })
+        this.units.push(this.fish)
+    }
 }

@@ -71,20 +71,35 @@ export class DamageSystem {
     }
 
     ApplyDamage(params: ApplyCustomDamageOptions) {
+        // print("params.attacker",params.attacker)
         if (params.attacker == null) { return }
         const hAttacker = params.attacker;
         const hTarget = params.victim;
+        // print(hAttacker == null, IsValid(hAttacker))
         if (hAttacker == null || IsValid(hAttacker)) { return 0 }
+        // print()
         const iPlayerID = hAttacker.GetPlayerOwnerID();
-        // print("iPlayerID",iPlayerID)
+        // print("hAttacker iPlayerID",iPlayerID)
+        params.miss_flag = params.miss_flag ?? 0;
         if (hAttacker.GetTeam() == DotaTeam.BADGUYS) {
             return this.ApplyDamageForBadTeam(params)
+        }
+
+        if (params.victim.enemy_attribute_value == null){
+            params.victim.enemy_attribute_value = {}
         }
         let hAbility = params.ability;
         let element_type = params.element_type ?? ElementTypes.NONE;
         let is_primary = params.is_primary ?? false;
         let is_crit = 0;
         let critical_flag = params.critical_flag ?? 0;
+
+        if (hTarget.HasModifier("modifier_basic_hits")) {
+            params.damage = 1;
+            PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type);
+            return ApplyDamage(params);
+        }
+
         // 暴击
         let CriticalChance = hAttacker.custom_attribute_value.CriticalChance;
         let CriticalDamage = hAttacker.custom_attribute_value.CriticalDamage;
@@ -194,7 +209,7 @@ export class DamageSystem {
             params.damage = math.floor(params.damage * CriticalDamage * 0.01)
         }
         let talent_mdf = hAttacker.FindModifierByName("modifier_talent_effect") as modifier_talent_effect
-        if(talent_mdf){
+        if (talent_mdf) {
             talent_mdf.OnCriticalStrike(params.victim)
         }
         PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type);
@@ -211,14 +226,15 @@ export class DamageSystem {
      */
     ApplyDamageForBadTeam(params: ApplyCustomDamageOptions) {
         // 闪避判定
-        // print("damage",params.damage)
+        // print("ApplyDamageForBadTeam", params.damage)
+        params.damage_type = DamageTypes.PURE;
         let custom_attribute_value = params.victim.custom_attribute_value;
         if (custom_attribute_value == null) {
             return ApplyDamage(params);
         }
 
         let EvasionProb = custom_attribute_value ? custom_attribute_value.EvasionProb : 0;
-        if (RollPercentage(EvasionProb)) {
+        if (params.miss_flag != 1 && RollPercentage(EvasionProb)) {
             // 闪避
             GameRules.CMsg.Popups(params.victim, 'Miss', 0, params.victim.GetPlayerOwner())
             return 0
@@ -234,7 +250,7 @@ export class DamageSystem {
             params.damage_type,
             params.element_type
         );
-        params.damage_type = DamageTypes.PURE;
+
         params.damage = params.damage * (100 - custom_attribute_value.DmgReductionPct) * 0.01;
 
         let rune_buff = params.victim.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
@@ -247,6 +263,8 @@ export class DamageSystem {
             GameRules.CMsg.Popups(params.victim, 'Miss', 0, params.victim.GetPlayerOwner())
             return 0
         }
+
+
         return ApplyDamage(params);
     }
 

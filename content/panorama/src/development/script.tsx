@@ -85,10 +85,11 @@ const UnitOperation = (event_name: UnitEventName) => {
 }
 
 const RemoveUnitSendServer = () => {
+    let queryUnit = Players.GetLocalPlayerPortraitUnit();
     GameEvents.SendCustomGameEventToServer("Development", {
         event_name: "RemoveUnit",
         params: {
-            units: Players.GetSelectedEntities(Players.GetLocalPlayer())
+            units: [queryUnit]
         }
     })
 }

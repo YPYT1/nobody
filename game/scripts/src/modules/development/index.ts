@@ -120,7 +120,8 @@ export class Development extends UIEventRegisterClass {
         for (let [k, v] of pairs(params.units)) {
             let entity = v as EntityIndex;
             let unit = EntIndexToHScript(entity) as CDOTA_BaseNPC;
-            if (unit && !unit.IsNull() && unit != PlayerResource.GetSelectedHeroEntity(player_id)) {
+            let hHero = PlayerResource.GetSelectedHeroEntity(player_id)
+            if (unit && unit != hHero) {
                 unit.Destroy()
             } else {
                 print("不可删除的单位")
@@ -232,11 +233,17 @@ export class Development extends UIEventRegisterClass {
 
         if (cmd == "-vis") {
             print("add vis")
-            AddFOWViewer(DotaTeam.GOODGUYS, hHero.GetAbsOrigin(), 9999, 10, false)
+            hHero.AddNewModifier(hHero, null, 'modifier_mission_dire_6_vision', { duration: 10 })
+            // AddFOWViewer(DotaTeam.GOODGUYS, hHero.GetAbsOrigin(), 9999, 10, false)
         }
 
         if (cmd == "-hpbar") {
             SendToConsole("dota_hud_healthbars 1")
+        }
+
+        if (cmd == "-fow") {
+            AddFOWViewer(DotaTeam.GOODGUYS, hHero.GetAbsOrigin(), 7000, 10, false)
+            AddFOWViewer(DotaTeam.BADGUYS, hHero.GetAbsOrigin(), 7000, 10, false)
         }
 
         if (cmd == "-shuag") {

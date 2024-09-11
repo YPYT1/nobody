@@ -12,14 +12,14 @@ declare interface CGED {
         KillUnit: { unit: EntityIndex },
         AddDummy: { unit: EntityIndex },
         RemoveUnit: { units: EntityIndex[] },
-        ReplaceHero: { heroid: number },
+        ReplaceHero: { heroid: number, facetid: number },
         ReplaceAbility: { ability_name: string, order: number, queryUnit: EntityIndex },
         UpgradeAbility: { ability_enti: EntityIndex },
         DeleteAbility: {
             queryUnit: EntityIndex,
             ability_order: number,
         },
-        ToggleAbility:{
+        ToggleAbility: {
             queryUnit: EntityIndex,
             ability_order: number,
         }
@@ -55,8 +55,8 @@ declare interface CGED {
 
     CMsg: {
         GetEntityListHealthBar: {},
-        GetTopCountdown:{},
-        GetDamageRecord:{},
+        GetTopCountdown: {},
+        GetDamageRecord: {},
     }
 }
 

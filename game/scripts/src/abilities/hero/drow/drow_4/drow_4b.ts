@@ -35,7 +35,7 @@ export class modifier_drow_4b extends BaseHeroModifier {
     UpdataAbilityValue(): void {
         let duration = this.ability.GetSpecialValueFor("duration");
         this.duration = this.ability.GetTypesAffixValue(duration, "Dot", "skv_dot_duration");
-        this.ability_cd_reduce = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "49", 'ability_cd_reduce')
+        this.ability_cd_reduce = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "49", 'ability_cd_reduce')
     }
 
     OnIntervalThink(): void {
@@ -73,7 +73,7 @@ export class modifier_drow_4b_buff extends BaseModifier {
     move_pct: number;
     phase_state: boolean;
     caster: CDOTA_BaseNPC;
-
+    buff_key = "drow_4b_buff"
     OnCreated(params: object): void {
         this.caster = this.GetCaster()
         this.phase_state = false;
@@ -89,7 +89,12 @@ export class modifier_drow_4b_buff extends BaseModifier {
     OnRefresh(params: object): void {
         this.move_pct = this.GetAbility().GetSpecialValueFor("move_pct");
         if (IsServer()) {
-            this.phase_state = (this.caster.hero_talent["50"] ?? 0) > 0
+            this.phase_state = (this.caster.hero_talent["50"] ?? 0) > 0;
+            GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
+                MoveSpeed: {
+                    "BasePercent": this.move_pct
+                }
+            })
         }
     }
 
@@ -99,13 +104,17 @@ export class modifier_drow_4b_buff extends BaseModifier {
         }
     }
 
-    DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
-        ]
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.CustomAttribute.DelAttributeInKey(this.caster, this.buff_key)
     }
+    // DeclareFunctions(): modifierfunction[] {
+    //     return [
+    //         ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
+    //     ]
+    // }
 
-    GetModifierMoveSpeedBonus_Percentage(): number {
-        return this.move_pct
-    }
+    // GetModifierMoveSpeedBonus_Percentage(): number {
+    //     return this.move_pct
+    // }
 }
