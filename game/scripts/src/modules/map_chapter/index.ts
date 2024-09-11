@@ -514,6 +514,7 @@ export class MapChapter extends UIEventRegisterClass {
                 // );
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE2);
                 GameRules.Spawn.StartSpawnControl()
+                GameRules.MissionSystem.Start(180);
                 return null;
             },
             4
@@ -765,6 +766,9 @@ export class MapChapter extends UIEventRegisterClass {
 
     //游戏胜利 普通关卡
     GameWin() {
+        //清理任务
+        GameRules.MissionSystem.Stop();
+
         GameRules.Spawn.StopAllSpawnAndMonster();
         let exp_list: number[] = [];
         let cj_list: string[] = [];
@@ -798,6 +802,9 @@ export class MapChapter extends UIEventRegisterClass {
     }
     //游戏失败 普通关卡
     GameLoser() {
+        //清理任务
+        GameRules.MissionSystem.Stop();
+        
         GameRules.Spawn.StopAllSpawnAndMonster();
         let exp_list: number[] = [];
         let cj_list: string[] = [];
