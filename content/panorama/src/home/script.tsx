@@ -84,7 +84,6 @@ export const RegisterCustomTooltip = () => {
     $.RegisterForUnhandledEvent("DOTAHideDroppedItemTooltip", function () {
         HideCustomTooltip();
     });
-
 }
 
 export const Initialize = () => {
@@ -107,6 +106,8 @@ export const Initialize = () => {
     $("#npc_interact").BLoadLayout(layout_path + "/npc_interact/npc_interact.xml", true, false);
     $("#right_items").BLoadLayout(layout_path + "/right_items/right_items.xml", true, false);
     $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", true, false);
+    $("#mission").BLoadLayout(layout_path + "/mission/mission.xml", true, false);
+
     
     if (Game.IsInToolsMode()) {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);

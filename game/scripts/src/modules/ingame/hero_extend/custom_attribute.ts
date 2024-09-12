@@ -230,11 +230,10 @@ export class CustomAttribute {
                     + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
                     + (SubAttr["Fixed"]);
                 TotalAttrValue = TotalAttrValue * mul_value;
-                // 这里取
-                let LastAmount = SubAttr["Last"] ?? 0;
-                // print(main_key, "LastAmount", LastAmount)
-                if (LastAmount != 0) {
-                    hUnit.custom_attribute_value[main_key] = math.max(LastAmount, TotalAttrValue);
+                /** 最低基础值 */
+                let LastState = (SubAttr["Last"] ?? 0) > 0;
+                if (LastState) {
+                    hUnit.custom_attribute_value[main_key] = math.max(SubAttr["Base"], TotalAttrValue);
                 } else {
                     hUnit.custom_attribute_value[main_key] = TotalAttrValue;
                 }
@@ -432,25 +431,29 @@ export class CustomAttribute {
      * @param timer 持续时间 -1为永久
      */
     SetAttributeInKey(hUnit: CDOTA_BaseNPC, key: string, attr_list: CustomAttributeTableType, timer: number = -1) {
-        // 乘算属性处理 直接覆盖
-        // print("key", key)
-        // DeepPrintTable(attr_list)
-        for (let _key in attr_list) {
-            let attr_key = _key as AttributeMainKey
-            let is_mul = AttributeConst[attr_key].is_mul == 1;
-            let row_input = attr_list[attr_key]
-            if (is_mul) {
-                if (hUnit.custom_mul_attribute[attr_key] == null) {
-                    hUnit.custom_mul_attribute[attr_key] = {}
+        // 对比写入的key 与 当前已存在的key 里面的结果是否想等
+        let exists_attr = hUnit.custom_attribute_key_table[key];
+        let exists_attr_str = JSON.encode(exists_attr)
+        let attr_list_str = JSON.encode(attr_list);
+        if (exists_attr_str != attr_list_str) {
+            for (let _key in attr_list) {
+                let attr_key = _key as AttributeMainKey
+                let is_mul = AttributeConst[attr_key].is_mul == 1;
+                let row_input = attr_list[attr_key]
+                if (is_mul) {
+                    if (hUnit.custom_mul_attribute[attr_key] == null) {
+                        hUnit.custom_mul_attribute[attr_key] = {}
+                    }
+                    hUnit.custom_mul_attribute[attr_key][key] = (attr_list[attr_key].Base ?? 0)
+                } else if (row_input.MulRegion != null) {
+                    if (hUnit.custom_mul_attribute[attr_key] == null) {
+                        hUnit.custom_mul_attribute[attr_key] = {}
+                    }
+                    hUnit.custom_mul_attribute[attr_key][key] = (attr_list[attr_key].MulRegion ?? 0)
                 }
-                hUnit.custom_mul_attribute[attr_key][key] = (attr_list[attr_key].Base ?? 0)
-            } else if (row_input.MulRegion != null) {
-                if (hUnit.custom_mul_attribute[attr_key] == null) {
-                    hUnit.custom_mul_attribute[attr_key] = {}
-                }
-                hUnit.custom_mul_attribute[attr_key][key] = (attr_list[attr_key].MulRegion ?? 0)
             }
         }
+
 
         if (hUnit.custom_attribute_key_table[key] == null) {
             hUnit.custom_attribute_key_table[key] = attr_list;
@@ -500,8 +503,6 @@ export class CustomAttribute {
             hUnit.custom_attribute_key_table[key] = attr_list
             this.ModifyAttribute(hUnit, new_object)
         }
-
-
 
         if (timer >= 0) {
             const timer_key = "attr_timer_" + key;
@@ -736,27 +737,19 @@ export class CustomAttribute {
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-        if (cmd == "-init") {
-            this.InitHeroAttribute(hHero)
-            // hHero.AddNewModifier(hHero, null, "modifier_hero_attribute", {})
-        }
 
         if (cmd == "-attr") {
-            // DeepPrintTable(hHero.custom_attribute_value)
             DeepPrintTable(hHero.custom_attribute_key_table)
         }
 
-        if (cmd == "-setattr") {
-            let value = parseInt(args[0] ?? "100");
-            let timer = parseInt(args[1] ?? "5");
-            this.SetAttributeInKey(hHero, "settest", {
-                'MaxHealth': {
-                    "Base": value
-                },
-                "IcePent": {
-                    "Base": value
-                },
-            }, timer)
+        if (cmd == "-atest") {
+            for (let i = 0; i < 10; i++) {
+                this.SetAttributeInKey(hHero, "atest", {
+                    'MoveSpeed': {
+                        "BasePercent": -200,
+                    },
+                }, 5 + i * 0.5)
+            }
         }
         if (cmd == "-addattr") {
             this.ModifyAttribute(hHero, {

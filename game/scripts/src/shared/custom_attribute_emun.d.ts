@@ -83,7 +83,7 @@ declare type AttributeSubKey = "Base"
     | "PreLvFixed"
     | "MulRegion"
     | "Limit"
-    | "Last" // 最低值 0 为不限
+    | "Last" // 是否为最低值
     ;
 
 /** 敌人属性 */
@@ -329,3 +329,6 @@ interface SpecialvalueOfTableSpecialProps {
 }
 
 declare type PopupsType = "Damage" | "Miss" | "Heal"
+
+declare type PlayerAttributeTypes = "drop_double_exp"
+    | "drop_double_soul"

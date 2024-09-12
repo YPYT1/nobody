@@ -277,6 +277,7 @@ export class modifier_public_revive_thinker extends BaseModifier {
         ParticleManager.SetParticleControl(cast_fx, 1, Vector(duration, 0, 0))
         ParticleManager.SetParticleControl(cast_fx, 2, Vector(this.rescue_radius, 0, 0))
         ParticleManager.SetParticleControl(cast_fx, 3, Vector(0, 255, 0))
+        ParticleManager.SetParticleControl(cast_fx, 3, Vector(255, 255, 0))
         // this.AddParticle(cast_fx, false, false, -1, false, false);
         this.rescue_time = GameRules.GetDOTATime(false, false) + duration / 2;
         this.cast_fx = cast_fx;

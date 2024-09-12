@@ -1,0 +1,287 @@
+.mission {
+    width: 100%;
+    height: 100%;
+}
+
+#MissionAppearTips {
+    margin-top: 40px;
+    horizontal-align: center;
+}
+
+.MissionTips {
+    width: 451px;
+    height: 208px;
+    background-image: url("file://{images}/custom_game/hud/mission/trial_tips_1.png");
+    horizontal-align: center;
+}
+
+#MissionContent {
+    width: 100%;
+    height: 100%;
+}
+
+.MissionContainer {
+    overflow: noclip;
+    horizontal-align: center;
+    transition-property: transform, opacity;
+    transition-duration: 0.21s;
+    opacity: 1;
+    
+    margin-top: 72px;
+
+    &.Play {
+        wash-color: #a73535;
+        transform: translateX(50%) translateY(100px);
+        opacity: 1;
+    }
+
+    .Border {
+        width: 410px;
+        overflow: noclip;
+        flow-children: down;
+    }
+
+    .Header {
+        overflow: noclip;
+        width: 410px;
+        height: 30px;
+        background-image: url("file://{images}/custom_game/hud/mission/dire_header_line.png");
+        background-repeat: no-repeat;
+
+        transition-property: opacity, height;
+        transition-duration: 0.5s;
+    }
+
+    .Bottom {
+        width: 410px;
+        height: 34px;
+        max-height: 34px;
+        background-image: url("file://{images}/custom_game/hud/mission/dire_bottom_line.png");
+        background-repeat: no-repeat;
+        margin-top: -16px;
+        transition-property: opacity, height;
+        transition-duration: 0.5s;
+    }
+
+    .Body {
+        width: 410px;
+        // min-height: 62px;
+        padding: 12px;
+        background-image: url("file://{images}/custom_game/hud/mission/border_bg.png");
+        margin-top: -16px;
+        z-index: -1;
+        transition-property: width, height;
+        transition-duration: 0.5s;
+        flow-children: down;
+
+        .Title {
+            margin-top: 12px;
+            horizontal-align: center;
+
+            Label {
+                font-size: 18px;
+                color: #ffffff;
+            }
+        }
+
+        .Desc {
+            margin-top: 4px;
+            horizontal-align: center;
+            transition-property: width, height;
+            transition-duration: 0.5s;
+
+            Label {
+                font-size: 16px;
+                // color:#ffffff;
+            }
+        }
+    }
+
+
+    .Sign {
+        // border: 1px solid #ffffff;
+        width: 80px;
+        height: 80px;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        // horizontal-align: center;
+        background-image: url("file://{images}/custom_game/hud/mission/icon_dire_1.png");
+        transform: translateX(50%) translateY(-40px);
+        margin-left: -40px;
+
+    }
+
+
+}
+
+.MissionContainerRightSide {
+    horizontal-align: right;
+    margin-top: 120px;
+    transition-property: width;
+    transition-duration: 0.15s;
+    width: 151px;
+    height: 62px;
+    opacity: 1;
+    // border: 1px solid #ffffff;
+
+    // &.Closed {
+    //     // opacity: 0;
+    // }
+
+    &:hover {
+        margin-top: 80px;
+        width: 410px;
+        height: 192px;
+
+        .Border {
+            width: 410px;
+            height: 192px;
+            flow-children: down;
+            overflow: noclip;
+            background-image: none;
+        }
+
+        .Header {
+            margin-top: 40px;
+            overflow: noclip;
+            width: 410px;
+            height: 30px;
+            max-height: 30px;
+            background-image: url("file://{images}/custom_game/hud/mission/dire_header_line.png");
+            background-repeat: no-repeat;
+            transition-property: opacity, height;
+            transition-duration: 0.25s;
+        }
+
+        .Bottom {
+            width: 410px;
+            height: 34px;
+            margin-top: -22px;
+            // height: 0px;
+        }
+
+        .Body {
+            width: 410px;
+            background-image: url("file://{images}/custom_game/hud/mission/border_bg.png");
+            margin-top: -16px;
+            z-index: -1;
+            padding: 16px;
+            transition-property: width, height;
+            transition-duration: 0.25s;
+            flow-children: down;
+            opacity: 1;
+        }
+
+        .Title {
+            visibility: visible;
+        }
+
+        .Desc {
+            visibility: visible;
+
+
+        }
+
+        .Sign {
+            width: 80px;
+            height: 80px;
+            background-size: 100%;
+            background-repeat: no-repeat;
+            background-image: url("file://{images}/custom_game/hud/mission/icon_dire_1.png");
+            transform: translateX(50%);
+            margin-left: -40px;
+
+        }
+
+        .SignLabel {
+            opacity: 0;
+            visibility: collapse;
+        }
+
+    }
+
+
+
+    .Border {
+        width: 151px;
+        height: 62px;
+        background-image: url("file://{images}/custom_game/hud/mission/right_side_dire.png");
+        background-repeat: no-repeat;
+        transition-property: transform, height, width, margin, opacity;
+        transition-duration: 0.2s;
+    }
+
+    .Sign {
+        width: 80px;
+        height: 80px;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-image: url("file://{images}/custom_game/hud/mission/icon_dire_1.png");
+        margin-left: -40px;
+        transform: translateX(-10px) translateY(-8px);
+        margin: 0px;
+
+        transition-property: transform, height, width, margin, opacity;
+        transition-duration: 0.2s;
+    }
+
+
+    .SignLabel {
+        color: #ffffff;
+        font-size: 18px;
+        margin-left: 64px;
+        vertical-align: middle;
+        // margin-bottom: 24px;
+        opacity: 1;
+        // visibility: v;
+
+        transition-property: transform, height, width, margin, opacity;
+        transition-duration: 0.2s;
+    }
+
+    .Body {
+        background-image: none;
+        transition-property: transform, height, width, margin, opacity;
+        transition-duration: 0.2s;
+    }
+
+    .Title {
+        horizontal-align: center;
+        visibility: collapse;
+        Label {
+            font-size: 18px;
+            color: #ffffff;
+        }
+    }
+
+    .Header {
+        height: 0px;
+        transition-property: transform, height, width, margin, opacity;
+        transition-duration: 0.2s;
+    }
+
+    .Bottom {
+        background-image: url("file://{images}/custom_game/hud/mission/dire_bottom_line.png");
+        background-repeat: no-repeat;
+        margin-top: -26px;
+        transition-property: opacity, height;
+        transition-duration: 0.25s;
+        // height: 0px;
+        transition-property: transform, height, width, margin, opacity;
+        transition-duration: 0.2s;
+    }
+
+
+    .Desc {
+        // height: 0px;
+        transition-property: transform, height, width, margin, opacity;
+        transition-duration: 0.2s;
+        visibility: collapse;
+
+        Label {
+            font-size: 16px;
+            // color:#ffffff;
+        }
+    }
+
+}

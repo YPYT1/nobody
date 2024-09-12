@@ -44,7 +44,8 @@ declare interface ApplyCustomDamageOptions {
     critical_flag?: -1 | 0 | 1;
     /** 闪避判定 `0`默认 `1`不可闪避*/
     miss_flag?: 0 | 1;
-
+    /** 无视护甲 `0`否 `1`是 */
+    ignore_armor?: 0 | 1;
     // extra_percent?: number;
     /** 元素类型 */
     element_type?: ElementTypes;

@@ -460,6 +460,7 @@ export class MapChapter extends UIEventRegisterClass {
         // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
         let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
         this.shiye  = AddFOWViewer(DotaTeam.BADGUYS,vLocation , 9999 , 999999 , true);
+        GameRules.Altar.SetMapCenter();
         GameRules.MissionSystem = new MissionSystem()
         GameRules.GameInformation.ResetNumberofDeaths();
         for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {

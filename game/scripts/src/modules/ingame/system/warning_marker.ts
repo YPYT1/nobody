@@ -140,37 +140,42 @@ export class WarningMarker {
 
 
     /**
-     * 扇形
+     * 
+     * @param caster 施法者
+     * @param start_vect 开始点
+     * @param end_vect 结束点
+     * @param angle 角度
+     * @param distance 距离
+     * @param color 颜色
+     * @param duration 时间
+     * @returns 
      */
     Sector(
         caster: CDOTA_BaseNPC,
-        target_vect: Vector,
-        start_radius: number,
-        end_radius: number,
-        distance: number = -1,
-        color: Vector = Vector(255, 255, 255),
-        duration: number = -1,
+        start_vect: Vector,
+        end_vect: Vector,
+        angle: number,
+        distance: number,
+        color: Vector = Vector(255, 0, 0),
+        duration: number = 1,
     ) {
-        let line_pfx = ParticleManager.CreateParticle(
-            "particles/diy_particles/warning_sector/warning_sector.vpcf",
+        // 通过开始点,结束点,角度,来得到 结束时候的radius
+        let end_radius = math.tan((angle) * math.pi / 180) * distance;
+        // 因为特效问题,需要多偏移50的距离
+        let vDir = (end_vect - start_vect as Vector)
+        let vTarget = start_vect + vDir.Normalized() * (distance + 100) as Vector;
+        let warning_fx = ParticleManager.CreateParticle(
+            "particles/diy_particles/warning_sector/warning_sector2.vpcf",
             ParticleAttachment.WORLDORIGIN,
             caster,
         );
-        ParticleManager.SetParticleControl(line_pfx, 0, caster.GetOrigin());
-        ParticleManager.SetParticleControl(line_pfx, 1, caster.GetOrigin());
-        ParticleManager.SetParticleControl(line_pfx, 3, Vector(end_radius, start_radius, 0));
-        ParticleManager.SetParticleControl(line_pfx, 4, color);
-        if (distance != -1) {
-            let start_vect = caster.GetOrigin();
-            let direction = target_vect - start_vect as Vector;
-            direction.z = 0;
-            direction = direction.Normalized();
-            let vPoint = start_vect + direction * distance as Vector;
-            ParticleManager.SetParticleControl(line_pfx, 2, vPoint);
-        } else {
-            ParticleManager.SetParticleControl(line_pfx, 2, target_vect);
-        }
-        return line_pfx;
+        ParticleManager.SetParticleControl(warning_fx, 0, start_vect);
+        ParticleManager.SetParticleControl(warning_fx, 1, vTarget);
+        ParticleManager.SetParticleControl(warning_fx, 2, Vector(0, end_radius, 0));
+        ParticleManager.SetParticleControl(warning_fx, 3, Vector(duration, 0, 0));
+        // // 颜色
+        ParticleManager.SetParticleControl(warning_fx, 4, color);
+        return warning_fx;
     }
 
     /**

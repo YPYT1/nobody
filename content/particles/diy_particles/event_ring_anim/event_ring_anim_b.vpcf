@@ -16,7 +16,7 @@
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 10.0, 0.0, 0.0 ]
+					m_vecOffset = [ 3.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
@@ -32,7 +32,7 @@
 				{
 					m_iControlPoint = 10
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 10.0, 0.0, 0.0 ]
+					m_vecOffset = [ 33.333332, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
@@ -44,6 +44,12 @@
 					m_iControlPoint = 2
 					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_vecOffset = [ 100.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 4
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 0.0, 255.0, 0.0 ]
 					m_entityName = "self"
 				},
 			]
@@ -1003,6 +1009,20 @@
 			}
 			m_nOutputField = 1
 		},
+		{
+			_class = "C_INIT_RemapTransformToVector"
+			m_nFieldOutput = 6
+			m_vInputMax = [ 255.0, 255.0, 255.0 ]
+			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
+			m_TransformInput = 
+			{
+				m_nControlPoint = 4
+			}
+			m_LocalSpaceTransform = 
+			{
+				m_nType = "PT_TYPE_INVALID"
+			}
+		},
 	]
 	m_Operators = 
 	[
@@ -1137,21 +1157,21 @@
 			{
 				m_nType = "PVEC_TYPE_LITERAL_COLOR"
 				m_vLiteralValue = [ 0.0, 0.0, 0.0 ]
-				m_LiteralColor = [ 255, 161, 54 ]
+				m_LiteralColor = [ 236, 236, 236 ]
 				m_NamedValue = ""
 				m_bFollowNamedValue = false
 				m_nVectorAttribute = 6
 				m_vVectorAttributeScale = [ 1.0, 1.0, 1.0 ]
-				m_nControlPoint = 0
+				m_nControlPoint = 6
 				m_nDeltaControlPoint = 0
 				m_vCPValueScale = [ 1.0, 1.0, 1.0 ]
 				m_vCPRelativePosition = [ 0.0, 0.0, 0.0 ]
-				m_vCPRelativeDir = [ 1.0, 0.0, 0.0 ]
+				m_vCPRelativeDir = [ 1.0, 1.0, 1.0 ]
 				m_FloatComponentX = 
 				{
 					m_nType = "PF_TYPE_LITERAL"
 					m_nMapType = "PF_MAP_TYPE_DIRECT"
-					m_flLiteralValue = 0.0
+					m_flLiteralValue = 255.0
 					m_NamedValue = ""
 					m_nControlPoint = 0
 					m_nScalarAttribute = 3
@@ -1192,6 +1212,7 @@
 					m_flNotchedRangeMax = 1.0
 					m_flNotchedOutputOutside = 0.0
 					m_flNotchedOutputInside = 1.0
+					m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 					m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 					m_flBiasParameter = 0.0
 					m_Curve = 
@@ -1206,7 +1227,7 @@
 				{
 					m_nType = "PF_TYPE_LITERAL"
 					m_nMapType = "PF_MAP_TYPE_DIRECT"
-					m_flLiteralValue = 0.0
+					m_flLiteralValue = 255.0
 					m_NamedValue = ""
 					m_nControlPoint = 0
 					m_nScalarAttribute = 3
@@ -1247,6 +1268,7 @@
 					m_flNotchedRangeMax = 1.0
 					m_flNotchedOutputOutside = 0.0
 					m_flNotchedOutputInside = 1.0
+					m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 					m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 					m_flBiasParameter = 0.0
 					m_Curve = 
@@ -1261,7 +1283,7 @@
 				{
 					m_nType = "PF_TYPE_LITERAL"
 					m_nMapType = "PF_MAP_TYPE_DIRECT"
-					m_flLiteralValue = 0.0
+					m_flLiteralValue = 255.0
 					m_NamedValue = ""
 					m_nControlPoint = 0
 					m_nScalarAttribute = 3
@@ -1302,6 +1324,7 @@
 					m_flNotchedRangeMax = 1.0
 					m_flNotchedOutputOutside = 0.0
 					m_flNotchedOutputInside = 1.0
+					m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 					m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 					m_flBiasParameter = 0.0
 					m_Curve = 
@@ -1357,6 +1380,7 @@
 					m_flNotchedRangeMax = 1.0
 					m_flNotchedOutputOutside = 0.0
 					m_flNotchedOutputInside = 1.0
+					m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 					m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 					m_flBiasParameter = 0.0
 					m_Curve = 
@@ -1453,7 +1477,7 @@
 				m_nControlPoint = 2
 				m_nScalarAttribute = 3
 				m_nVectorAttribute = 6
-				m_nVectorComponent = 0
+				m_nVectorComponent = 1
 				m_flRandomMin = 0.0
 				m_flRandomMax = 1.0
 				m_bHasRandomSignFlip = false
@@ -1489,6 +1513,7 @@
 				m_flNotchedRangeMax = 1.0
 				m_flNotchedOutputOutside = 0.0
 				m_flNotchedOutputInside = 1.0
+				m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 				m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 				m_flBiasParameter = 0.0
 				m_Curve = 
@@ -1501,17 +1526,17 @@
 			}
 			m_vecColorScale = 
 			{
-				m_nType = "PVEC_TYPE_LITERAL_COLOR"
+				m_nType = "PVEC_TYPE_CP_RELATIVE_POSITION"
 				m_vLiteralValue = [ 0.0, 0.0, 0.0 ]
 				m_LiteralColor = [ 205, 129, 0 ]
 				m_NamedValue = ""
 				m_bFollowNamedValue = false
 				m_nVectorAttribute = 6
 				m_vVectorAttributeScale = [ 1.0, 1.0, 1.0 ]
-				m_nControlPoint = 0
+				m_nControlPoint = 6
 				m_nDeltaControlPoint = 0
 				m_vCPValueScale = [ 1.0, 1.0, 1.0 ]
-				m_vCPRelativePosition = [ 0.0, 0.0, 0.0 ]
+				m_vCPRelativePosition = [ 1.0, 1.0, 1.0 ]
 				m_vCPRelativeDir = [ 1.0, 0.0, 0.0 ]
 				m_FloatComponentX = 
 				{
@@ -1558,6 +1583,7 @@
 					m_flNotchedRangeMax = 1.0
 					m_flNotchedOutputOutside = 0.0
 					m_flNotchedOutputInside = 1.0
+					m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 					m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 					m_flBiasParameter = 0.0
 					m_Curve = 
@@ -1613,6 +1639,7 @@
 					m_flNotchedRangeMax = 1.0
 					m_flNotchedOutputOutside = 0.0
 					m_flNotchedOutputInside = 1.0
+					m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 					m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 					m_flBiasParameter = 0.0
 					m_Curve = 
@@ -1668,6 +1695,7 @@
 					m_flNotchedRangeMax = 1.0
 					m_flNotchedOutputOutside = 0.0
 					m_flNotchedOutputInside = 1.0
+					m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 					m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 					m_flBiasParameter = 0.0
 					m_Curve = 
@@ -1723,6 +1751,7 @@
 					m_flNotchedRangeMax = 1.0
 					m_flNotchedOutputOutside = 0.0
 					m_flNotchedOutputInside = 1.0
+					m_nRoundType = "PF_ROUND_TYPE_NEAREST"
 					m_nBiasType = "PF_BIAS_TYPE_STANDARD"
 					m_flBiasParameter = 0.0
 					m_Curve = 
@@ -1861,6 +1890,7 @@
 					m_vDomainMaxs = [ 0.0, 0.0 ]
 				}
 			}
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_RenderRopes"

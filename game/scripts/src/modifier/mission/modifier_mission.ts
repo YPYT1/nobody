@@ -65,7 +65,8 @@ export class modifier_mission_thinker extends BaseModifier {
                 ParticleManager.SetParticleControl(this.cast_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
                 ParticleManager.SetParticleControl(this.cast_fx, 1, Vector(5, 0, 0))
                 ParticleManager.SetParticleControl(this.cast_fx, 2, Vector(this.radius - 32, 0, 0))
-                ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(122, 255, 0))
+                ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(255, 255, 255))
+                ParticleManager.SetParticleControl(this.cast_fx, 4, Vector(255, 200, 100))
                 // ParticleManager.ReleaseParticleIndex
                 // ParticleManager.SetParticleControl(this.cast_fx, 1, Vector(5, 0, 0))
             }

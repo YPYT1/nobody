@@ -121,7 +121,6 @@ export class modifier_drow_5_branch_a extends modifier_drow_5_buff {
         let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "55", 'bonus_value');
         bonus_value = this.GetAbility().GetTypesAffixValue(bonus_value, "Buff", "skv_buff_increase");
 
-        let last_move = this.caster.custom_attribute_table.MoveSpeed.Base ?? 0;
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             'DamageBonusMul': {
                 "Base": dmg_bonus_pct
@@ -130,7 +129,7 @@ export class modifier_drow_5_branch_a extends modifier_drow_5_buff {
                 "Base": bonus_value
             },
             'MoveSpeed': {
-                "Last": last_move
+                "Last": 1
             }
         })
     }

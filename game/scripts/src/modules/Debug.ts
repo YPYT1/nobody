@@ -87,5 +87,6 @@ export class Debug {
         GameRules.NpcSystem.Debug(cmd, args, keys.playerid)
         GameRules.CustomOverrideAbility.Debug(cmd, args, keys.playerid)
         GameRules.MissionSystem.Debug(cmd, args, keys.playerid)
+        GameRules.Altar.Debug(cmd, args, keys.playerid)
     }
 }

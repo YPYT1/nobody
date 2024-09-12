@@ -1037,6 +1037,10 @@ export class Spawn extends UIEventRegisterClass {
         }
     }
 
+
+    player_double_exp = [ 0 ,0 ,0 ,0 ];
+    
+    player_double_soul = [ 0 ,0 ,0 ,0 ];
     /**
      * 通关前同一击杀处理
      * @param target 目标

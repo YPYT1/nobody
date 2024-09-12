@@ -19,6 +19,7 @@
         <Panel id="message" hittest="false" />
         <Panel id="mystical_shop" hittest="false" />
         <Panel id="element_bond" hittest="false"/>
+        <Panel id="mission" hittest="false"/>
         <Panel id="scoreboard" hittest="false" />
         <Panel id="right_items" hittest ="false" />
         <Panel id="talent" hittest="false" />

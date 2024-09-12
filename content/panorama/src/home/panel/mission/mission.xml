@@ -1,0 +1,51 @@
+<root>
+	<styles>
+		<include src="./mission.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./mission.tsx" />
+	</scripts>
+	<Panel class="mission">
+        <!-- <Panel id="MissionAppearTips" hittest="false">
+            <Panel id="DireMissionTips" class="MissionTips"/>
+            <Panel id="RadiantMissionTips" class="MissionTips"/>
+        </Panel> -->
+
+        <Panel id="MissionContent" hittest="false">
+            <Panel id="DireMissionTips" class="MissionContainer Dire">
+                <Panel class="Border">
+                    <Panel class="Header" />
+                    <Panel class="Body">
+                        <Panel class="Title">
+                            <Label class="PanelClass" text="重炮蜘蛛" />
+                        </Panel>
+                        <Panel class="Desc">
+                            <Label class="PanelClass" text="生成一只巨大蜘蛛女王，每过3秒会向周围6个方向发射暗影球造成伤害。" />
+                        </Panel>
+                    </Panel>
+                    <Panel class="Bottom" />
+                </Panel>
+                <Panel class="Sign"/>
+            </Panel>
+
+            <Panel id="DireMissionContainer" class="MissionContainerRightSide Dire">
+                <Panel class="Border" hittest="false">
+                    <Panel class="Header" hittest="false"/>
+                    <Panel class="Body" hittest="false">
+                        <Panel class="Title" hittest="false">
+                            <Label text="重炮蜘蛛" hittest="false"/>
+                        </Panel>
+                        <Panel class="Desc" hittest="false">
+                            <Label text="生成一只巨大蜘蛛女王，每过3秒会向周围6个方向发射暗影球造成伤害。" hittest="false"/>
+                        </Panel>
+                    </Panel>
+                    <Panel class="Bottom" hittest="false"/>
+                </Panel>
+ 
+                <Panel class="Sign" hittest="false"/>
+                <Label class="SignLabel" text="重炮蜘蛛" hittest="false"/>
+            </Panel>
+        </Panel>
+	</Panel>
+</root>

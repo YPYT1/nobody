@@ -206,6 +206,8 @@ export class MissionSystem extends UIEventRegisterClass {
 
     /** 开始一次指定事件名的随机事件 */
     StartEventOfName(event_name: RadiantMissleNameList | DireMissleNameList, is_test: boolean = false) {
+        let ChapterData = GameRules.MapChapter.ChapterData
+        this.vMapCenter = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 128);
         let start = this.vMapCenter + RandomVector(RandomInt(1500, 2500)) as Vector;
         if (this.RadiantMissionList.indexOf(event_name) != -1) {
             // 进行天辉的任务

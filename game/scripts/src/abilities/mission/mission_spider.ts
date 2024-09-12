@@ -17,7 +17,19 @@ export class mission_spider extends BaseCreatureAbility {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: object): boolean | void {
         if (target) {
-            print("mission_spider hit")
+            let damage = target.GetMaxHealth() * 0.4;
+            // print("mission_spider hit")
+            ApplyCustomDamage({
+                victim: target,
+                attacker: this.GetCaster(),
+                damage: damage,
+                damage_type: DamageTypes.PHYSICAL,
+                element_type: ElementTypes.NONE,
+                ability: this,
+                miss_flag: 1,
+                ignore_armor: 1,
+                // bonus_percent: bonus_percent,
+            })
             // target.AddNewModifier(this.GetCaster(), this, "modifier_creature_boss_shadow_demon_3_stack", {});
             return true;
         }

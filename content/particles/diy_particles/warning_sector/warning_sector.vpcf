@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf51:version{6d03d500-2498-454e-b833-f654e870bb3d} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf61:version{39d3ce1d-9442-4407-9b78-8317145b1732} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
@@ -31,7 +31,7 @@
 				{
 					m_iControlPoint = 3
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 125.0, 125.0, 0.0 ]
+					m_vecOffset = [ 300.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
@@ -53,6 +53,7 @@
 	[
 		{
 			m_ChildRef = resource:"particles/diy_particles/range_finder_cone_body.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/ui_mouseactions/range_finder_cone_end.vpcf"
@@ -60,10 +61,17 @@
 		},
 		{
 			m_ChildRef = resource:"particles/ui_mouseactions/range_finder_cone_start.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/ui_mouseactions/range_finder_cone_arrows.vpcf"
 			m_bDisableChild = true
+		},
+		{
+			m_ChildRef = resource:"particles/diy_particles/warning_sector/warning_sector_body.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/diy_particles/warning_sector/warning_sector_top.vpcf"
 		},
 	]
 }

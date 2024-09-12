@@ -16,6 +16,14 @@ export class modifier_state_invincible extends BaseModifier {
 }
 
 @registerModifier()
+export class modifier_state_damage_immunity extends BaseModifier {
+
+    IsHidden(): boolean { return false; }
+
+}
+
+
+@registerModifier()
 export class modifier_state_bloodmage extends BaseModifier {
 
     RemoveOnDeath(): boolean { return false }

@@ -14,12 +14,14 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/units/heroes/hero_dark_willow/dark_willow_wisp_spell_debuff.vpcf',
             'particles/diy_particles/warning_aoe/ui_sphere.vpcf',
             'particles/diy_particles/warning_aoe/ui_sphere_reverse.vpcf',
+            'particles/diy_particles/warning_sector/warning_sector2.vpcf',
             'particles/diy_particles/range_finder_cone.vpcf',
             'particles/diy_particles/warning_sector/warning_sector.vpcf',
             'particles/diy_particles/move.vpcf',
             'particles/test_particle/xulie/overhead_timer.vpcf',
             'particles/econ/events/fall_2022/teleport/teleport_fall2022_end_lvl1.vpcf',
-            // 元素效果特效
+            'particles/custom/altar/altar.vpcf',
+            
             'particles/custom/element/ice/ice_effect_frozen.vpcf',
             'particles/custom/element/thunder/thunder_effect_debuff.vpcf',
             'particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf',

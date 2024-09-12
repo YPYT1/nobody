@@ -23,6 +23,9 @@ export class EntityKilled {
                 // 物品效果
                 let prop_buff = hAttacker.FindModifierByName("modifier_prop_effect") as modifier_prop_effect;
                 if (prop_buff) { prop_buff.OnKillEvent(hTarget) }
+
+                // 圣坛效果
+                
                 // this.KilledOnMdf(hAttacker, hTarget)
                 // let hAbility = EntIndexToHScript(entindex_inflictor) as CDOTABaseAbility;
                 // 技能击杀
@@ -31,6 +34,7 @@ export class EntityKilled {
             }
 
 
+            /** 延迟1秒删除 */
             hTarget.AddNoDraw();
             hTarget.SetContextThink("death_play", () => {
                 hTarget.RemoveSelf()

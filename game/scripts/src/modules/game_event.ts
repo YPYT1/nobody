@@ -25,6 +25,8 @@ import { NpcSystem } from './map_chapter/npc_system';
 import { RuneSystem } from './ingame/rune/rune_system';
 import { EnemyAttribute } from './ingame/hero_extend/enemy_attribute';
 import { MissionSystem } from './ingame/mission/mission_system';
+import { Altar } from './additional/altar';
+import { PlayerAttribute } from './ingame/hero_extend/player_attribute';
 
 declare global {
 
@@ -63,6 +65,8 @@ declare global {
         WarningMarker: WarningMarker;
 
         MissionSystem: MissionSystem;
+        Altar:Altar;
+        PlayerAttribute:PlayerAttribute;
     }
 }
 
@@ -108,7 +112,7 @@ export class GameEvent {
             GameRules.WarningMarker = new WarningMarker();
             GameRules.HeroTalentSystem = new HeroTalentSystem();
             GameRules.NpcSystem = new NpcSystem();
-
+            GameRules.PlayerAttribute = new PlayerAttribute()
             // @ts-expect-error @eslint-disable-next-line
             GameRules.ModuleActivated = true;
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
@@ -120,7 +124,8 @@ export class GameEvent {
         } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段
             new Filter(); // 加载过滤器
             GameRules.MapChapter.InitChapterMap();
-            SendToConsole("dota_hud_healthbars 1"); // 血条设置
+            GameRules.Altar = new Altar();
+            // SendToConsole("dota_hud_healthbars 1"); // 血条设置
         } else if (State_Get == GameState.PRE_GAME) { //赛前阶段
 
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段

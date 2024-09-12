@@ -23,7 +23,7 @@ export class modifier_mission_radiant_7_zone extends BaseModifier {
         ParticleManager.SetParticleControl(this.cast_fx, 1, Vector(this.GetDuration(), 0, 0))
         ParticleManager.SetParticleControl(this.cast_fx, 2, Vector(this.radius - 32, 0, 0))
         ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(122, 255, 0))
-
+        ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(0, 255, 255))
         this.StartIntervalThink(0.1)
     }
 
