@@ -138,7 +138,7 @@ export class Spawn extends UIEventRegisterClass {
     _game_boss_time : number = 180;
 
     constructor() {
-        super("Spawn");
+        super("Spawn" , true);
     }
 
     //初始化地图信息

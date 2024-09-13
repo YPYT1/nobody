@@ -25,7 +25,7 @@ export class ArchiveService extends UIEventRegisterClass {
     _game_versions : string = "";
     //构造
     constructor() {
-        super("ArchiveService")
+        super("ArchiveService" , true)
     }
 
     Init() {

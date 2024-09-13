@@ -279,22 +279,59 @@ declare interface CGED {
     ServiceTalent : {
         //点天赋
         ClickTalent : {
-            hero_id : number , //英雄id
-            key : string , //天赋key
+            key : string , //天赋下标
         }
         //获取存档天赋
         GetPlayerServerTalent : {
 
         }
+        //获取存档天赋by英雄 (未实装)
+        GetPlayerServerTalentByHero : {
+            hero_id : number,
+        }
         //保存存档天赋
         SaveTalentConfig : {
-
+            hero_id : number,
         }
         //还原存档天赋
         RestoreTalentConfig : {
+            hero_id : number,
+        }
+        //重置存档天赋
+        ResetTalentConfig : {
+            hero_id : number,
+        }
+    }
+    //存档接口
+    ServiceInterface : {
+        //解锁图鉴
+        PlayerConsumeCard : {
+            suit_id : string ,
+            card_id : string ,
+        }
+        //装备图鉴
+        ConfigPictuerFetter : {
+            index : number , //装备栏位
+            suit_id : string , //图鉴id
+        }
+        //卸载图鉴
+        UninstallPictuerFetter : {
+            index : number , //装备栏位
+            suit_id : string , //图鉴id
+        }
+        //卡片合成
+        CompoundCard : {
+            list : string[][],  //结构 [ [ 3 ,4 ,6] , [ 5 ,7 , 9] ] 为两个合成 最多十个
+        }
+
+        //获取图鉴信息
+        GetConfigPictuerFetter : {
+
+        }
+        //获取玩家所有卡片
+        GetPlayerCardList : {
 
         }
     }
-
 }
 

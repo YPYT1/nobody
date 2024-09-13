@@ -8,7 +8,7 @@ export class modifier_mission_dire_6_vision extends BaseModifier {
     
     DeclareFunctions(): modifierfunction[] {
         return [
-            ModifierFunction.VISION_DEGREES_RESTRICTION
+            // ModifierFunction.VISION_DEGREES_RESTRICTION
         ]
     }
 

@@ -22,7 +22,7 @@ export class ResourceSystem extends UIEventRegisterClass {
 
     exp_type_count = [2, 5, 10];
     constructor() {
-        super("ResourceSystem")
+        super("ResourceSystem" , true)
         this.InitAllPlayer()
     }
 

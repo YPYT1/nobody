@@ -20,7 +20,7 @@ export class CMsg extends UIEventRegisterClass {
     update_damage_record_time: number;
 
     constructor() {
-        super("CMsg");
+        super("CMsg" , true);
         this.elite_list = [];
         this.boss_list = [];
         this.king_list = [];

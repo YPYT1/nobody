@@ -27,6 +27,7 @@ import { EnemyAttribute } from './ingame/hero_extend/enemy_attribute';
 import { MissionSystem } from './ingame/mission/mission_system';
 import { Altar } from './additional/altar';
 import { PlayerAttribute } from './ingame/hero_extend/player_attribute';
+import { ServiceTalent } from '../server/https/service_talent';
 
 declare global {
 
@@ -61,6 +62,7 @@ declare global {
         ServiceData: ServiceData;
         ServiceInterface: ServiceInterface;
         ServiceEquipment: ServiceEquipment;
+        ServiceTalent : ServiceTalent;
 
         WarningMarker: WarningMarker;
 
@@ -95,7 +97,7 @@ export class GameEvent {
             GameRules.NewArmsEvolution = new NewArmsEvolution();
             GameRules.BasicRules = new BasicRules();
             GameRules.CustomAttribute = new CustomAttribute();
-            GameRules.CustomOverrideAbility = new CustomOverrideAbility()
+            GameRules.CustomOverrideAbility = new CustomOverrideAbility();
             GameRules.BuffManager = new BuffManager();
             GameRules.EntityKilled = new EntityKilled();
             GameRules.ItemArmsSystem = new ItemArmsSystem();
@@ -106,8 +108,10 @@ export class GameEvent {
             GameRules.CMsg = new CMsg();
             GameRules.RuneSystem = new RuneSystem();
             GameRules.MysticalShopSystem = new MysticalShopSystem();
+            GameRules.ServiceData = new ServiceData();
             GameRules.ServiceInterface = new ServiceInterface();
             GameRules.ServiceEquipment = new ServiceEquipment();
+            GameRules.ServiceTalent = new ServiceTalent();
             GameRules.GameInformation = new GameInformation();
             GameRules.WarningMarker = new WarningMarker();
             GameRules.HeroTalentSystem = new HeroTalentSystem();

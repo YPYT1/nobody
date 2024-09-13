@@ -125,7 +125,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * 玩家神秘商店栏位数量
      */
     constructor() {
-        super("MysticalShopSystem");
+        super("MysticalShopSystem" , true);
         this.player_count = GameRules.PUBLIC_CONST.PLAYER_COUNT;
         for (const key in MysteriousShopConfig) {
             const Info = MysteriousShopConfig[key as keyof typeof MysteriousShopConfig];

@@ -162,7 +162,22 @@ declare interface CustomGameEventDeclarations {
             Msg?: string,
         };
     };
-
+    /**
+     * 获取图鉴配置
+     */
+    ServiceInterface_GetConfigPictuerFetter : {
+        data: {
+            pictuer : string[][],
+        };
+    }
+    /**
+     * 获取图鉴配置
+     */
+    ServiceInterface_GetPlayerCardList : {
+        data: {
+            card : AM2_Server_Backpack[],
+        };
+    }
     //玩家生命数
     GameInformation_GetPlayerLifeData : {
         data: {
@@ -258,6 +273,8 @@ declare interface CustomGameEventDeclarations {
             },
         };
     };
+
+    
 }
 
 
@@ -329,13 +346,18 @@ declare interface ShopStateData {
 
     
 declare interface CGEDGetTalentListInfo {
-    use_count : number , //总投入点 用于反算可以使用的点
-    count : number , //可用天赋点
-    talent : {
-        [talent_key : string] :  {
-            iu: number, //是否解锁
-            uc : number , //投入点
-        },
+    u : number , //总投入点 用于反算可以使用的点
+    y : number , //可用天赋点
+    i : { //天赋信息
+        [tier_number : number ] : {
+            c : number , //当前层点了多少点
+            k : {
+                [talent_key : string] : { //有key就是解锁 没有就是没解锁
+                    uc : number , //投入点
+                },
+            }
+        }
+        
     }
 }
 

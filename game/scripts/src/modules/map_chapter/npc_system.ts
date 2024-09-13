@@ -19,7 +19,7 @@ export class NpcSystem extends UIEventRegisterClass {
     } = {};
 
     constructor() {
-        super("NpcSystem");
+        super("NpcSystem" , true);
         for (let [key, RowData] of pairs(Interact)) {
             if(RowData.is_enable == 1){
                 this.npc_collection_list[key] = {

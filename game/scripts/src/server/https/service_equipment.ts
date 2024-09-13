@@ -50,7 +50,7 @@ export class ServiceEquipment extends UIEventRegisterClass {
     } } = {};
 
     constructor() {
-        super("ServiceEquipment");
+        super("ServiceEquipment" , true);
         for (let index = 0; index < 6; index++) {
             this.player_equip_list.push({});    
         }

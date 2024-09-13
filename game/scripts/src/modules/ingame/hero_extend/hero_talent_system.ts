@@ -53,7 +53,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     }}[] = []
 
     constructor() {
-        super("HeroTalentSystem");
+        super("HeroTalentSystem" , true);
         for (const key in TalentConfig) {   
             this.player_talent_config.unlock_count[parseInt(key)] = TalentConfig[key as keyof typeof TalentConfig].count;
             this.player_talent_config.unlock_level[parseInt(key)] = TalentConfig[key as keyof typeof TalentConfig].level;

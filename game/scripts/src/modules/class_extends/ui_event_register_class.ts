@@ -9,8 +9,11 @@ export class UIEventRegisterClass {
      * @param eventName 监听名
      * @param filter_func 禁止调用方法
      */
-    constructor(eventName: string) {
+    constructor(eventName: string , open_debug = false) {
         CustomGameEventManager.RegisterListener(eventName, (_, event) => { this._UIEventRegister(event) });
+        if(open_debug){
+            GameRules.Debug.RegisterDebug(eventName)
+        }
     }
 
     _UIEventRegister(event: any) {
