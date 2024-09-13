@@ -17,6 +17,7 @@ export class Altar {
 
     constructor() {
         print("Init Altar");
+        GameRules.Debug.RegisterDebug(this.constructor.name)
         this._Init()
     }
 

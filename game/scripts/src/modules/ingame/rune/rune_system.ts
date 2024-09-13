@@ -55,6 +55,7 @@ export class RuneSystem extends UIEventRegisterClass {
 
     constructor() {
         super("RuneSystem");
+        GameRules.Debug.RegisterDebug(this.constructor.name)
         for (let index = 0; index < 6 ; index++) {
             this.drop_list.push({
                 key : [],

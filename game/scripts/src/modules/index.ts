@@ -19,6 +19,7 @@ declare global {
         MapChapter: MapChapter;
         ElementEffect: ElementEffect;
         DamageSystem: DamageSystem;
+        Debug:Debug;
         /**常量 */
         PUBLIC_CONST: typeof public_const;
     }
@@ -36,6 +37,7 @@ export function ActivateModules() {
     print("ActivateModules");
     //初始化常量
     GameRules.PUBLIC_CONST = public_const;
+    GameRules.Debug = new Debug();
     // 初始化所有的GameRules模块
     GameRules.GameEvent = new GameEvent();
     GameRules.XNetTable = new XNetTable();
@@ -43,12 +45,12 @@ export function ActivateModules() {
     GameRules.MapChapter = new MapChapter()
     GameRules.ElementEffect = new ElementEffect();
     GameRules.DamageSystem = new DamageSystem();
+    
     // @ts-expect-error @eslint-disable-next-line
     GameRules.ModuleActivated = true;
 
     // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
     new GameConfig();
-    // 初始化测试模块xD
-    new Debug();
+    
 
 }
