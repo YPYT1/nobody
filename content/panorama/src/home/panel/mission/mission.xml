@@ -7,45 +7,58 @@
 		<include src="./mission.tsx" />
 	</scripts>
 	<Panel class="mission">
-        <!-- <Panel id="MissionAppearTips" hittest="false">
-            <Panel id="DireMissionTips" class="MissionTips"/>
-            <Panel id="RadiantMissionTips" class="MissionTips"/>
-        </Panel> -->
+        <Panel id="MissionAppearTips" hittest="false">
+            <Panel id="DireTips" class="MissionTips Dire">
+                <Label class="TipsTitle" text="{s:tips_title}" />
+                <Label class="TipsDesc" text="{s:tips_desc}" />
+            </Panel>
+            <Panel id="RadiantTips" class="MissionTips Radiant">
+                <Label class="TipsTitle" text="{s:tips_title}" />
+                <Label class="TipsDesc" text="{s:tips_desc}" />
+            </Panel>
+        </Panel>
 
         <Panel id="MissionContent" hittest="false">
-            <Panel id="DireMissionTips" class="MissionContainer Dire">
-                <Panel class="Border">
-                    <Panel class="Header" />
-                    <Panel class="Body">
-                        <Panel class="Title">
-                            <Label class="PanelClass" text="重炮蜘蛛" />
+            
+            <Panel class="MissionRightSideList" hittest="false">
+                <Panel id="DireMissionContainer" class="MissionContainerRightSide Dire Hide">
+                    <Panel class="Border" hittest="false">
+                        <Panel class="Header" hittest="false"/>
+                        <Panel class="Body" hittest="false">
+                            <Panel class="Title" hittest="false">
+                                <Label text="{s:mission_title}" hittest="false"/>
+                            </Panel>
+                            <Panel class="Desc" hittest="false">
+                                <Label text="{s:mission_desc}" hittest="false"/>
+                            </Panel>
                         </Panel>
-                        <Panel class="Desc">
-                            <Label class="PanelClass" text="生成一只巨大蜘蛛女王，每过3秒会向周围6个方向发射暗影球造成伤害。" />
-                        </Panel>
+                        <Panel class="Bottom" hittest="false"/>
                     </Panel>
-                    <Panel class="Bottom" />
+    
+                    <Panel class="Sign" hittest="false"/>
+                    <Label class="SignLabel" text="{s:mission_title}" hittest="false"/>
                 </Panel>
-                <Panel class="Sign"/>
-            </Panel>
 
-            <Panel id="DireMissionContainer" class="MissionContainerRightSide Dire">
-                <Panel class="Border" hittest="false">
-                    <Panel class="Header" hittest="false"/>
-                    <Panel class="Body" hittest="false">
-                        <Panel class="Title" hittest="false">
-                            <Label text="重炮蜘蛛" hittest="false"/>
+                <Panel id="RadiantMissionContainer" class="MissionContainerRightSide Radiant Hide">
+                    <Panel class="Border" hittest="false">
+                        <Panel class="Header" hittest="false"/>
+                        <Panel class="Body" hittest="false">
+                            <Panel class="Title" hittest="false">
+                                <Label text="{s:mission_title}" hittest="false"/>
+                            </Panel>
+                            <Panel class="Desc" hittest="false">
+                                <Label text="{s:mission_desc}" hittest="false"/>
+                            </Panel>
                         </Panel>
-                        <Panel class="Desc" hittest="false">
-                            <Label text="生成一只巨大蜘蛛女王，每过3秒会向周围6个方向发射暗影球造成伤害。" hittest="false"/>
-                        </Panel>
+                        <Panel class="Bottom" hittest="false"/>
                     </Panel>
-                    <Panel class="Bottom" hittest="false"/>
+    
+                    <Panel class="Sign" hittest="false"/>
+                    <Label class="SignLabel" text="{s:mission_title}" hittest="false"/>
                 </Panel>
- 
-                <Panel class="Sign" hittest="false"/>
-                <Label class="SignLabel" text="重炮蜘蛛" hittest="false"/>
+                <Panel id="resource" />
             </Panel>
+            
         </Panel>
 	</Panel>
 </root>

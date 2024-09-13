@@ -11,7 +11,7 @@
         <Panel id="home_background" hittest="false"/>
         <Panel id="screen" hittest="false"/>
         <Panel id="control" hittest="false" />
-        <Panel id="resource" hittest="false" />
+        <!-- <Panel id="resource" hittest="false" /> -->
         <Panel id="top_info" hittest="false" />
         <Panel id="chapter" hittest="false" />
         <Panel id="hero_selection" hittest="false" />

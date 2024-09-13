@@ -39,7 +39,12 @@ export function GetTextureSrc(texture: string, func: string = "123") {
     } else {
         // 技能
         let cut_arr = texture.split("/");
-        if (cut_arr[0] == "custom" || cut_arr[0] == "arms" || cut_arr[0] == "hero") {
+        if (
+            cut_arr[0] == "custom" 
+            || cut_arr[0] == "arms" 
+            || cut_arr[0] == "hero"
+            || cut_arr[0] == "altar"
+        ) {
             return `${ABILITY_PATH_CUSTOM}${texture}.png`;
         } else {
             return `${ABILITY_PATH_ORIGINAL}${texture}.png`;

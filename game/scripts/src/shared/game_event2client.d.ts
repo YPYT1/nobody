@@ -97,5 +97,21 @@ declare interface CustomGameEventDeclarations {
         };
     };
 
+    MissionSystem_GetCurrentMission: {
+        data: {
+            /** 夜魇任务编号 */
+            dire?: string;
+            /** 天辉任务编号 */
+            radiant?: string;
+        }
+    }
 
+    MissionSystem_SendMissionTips: {
+        data: {
+            mission_type: number;
+            mission_name: string;
+        }
+    }
 }
+
+

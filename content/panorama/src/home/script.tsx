@@ -92,7 +92,7 @@ export const Initialize = () => {
     const control = $("#control");
     control.RemoveAndDeleteChildren()
     control.BLoadLayout(layout_path + "/control/control.xml", true, false);
-    $("#resource").BLoadLayout(layout_path + "/resource/resource.xml", true, false);
+    // $("#resource").BLoadLayout(layout_path + "/resource/resource.xml", true, false);
     $("#top_info").BLoadLayout(layout_path + "/top_info/top_info.xml", true, false);
     $("#chapter").BLoadLayout(layout_path + "/chapter/chapter.xml", true, false);
     $("#message").BLoadLayout(layout_path + "/message/message.xml", true, false);

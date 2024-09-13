@@ -96,6 +96,7 @@ export function UpdateBuff(buffPanel: Panel, queryUnit: EntityIndex, buffSerial:
     }
 
     let buffTexture = Buffs.GetTexture(queryUnit, buffSerial);
+    // $.Msg(["buffTexture",buffTexture])
     let ImageSrc = GetTextureSrc(buffTexture);
     BuffImage.SetImage(ImageSrc);
 

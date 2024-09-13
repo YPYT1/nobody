@@ -96,11 +96,15 @@ export class MissionSystem extends UIEventRegisterClass {
     DireOrder: number;
     DireMissionHandle: MissileList;
 
-
     vMapCenter: Vector;
+
+    mission_name: { dire?: string, radiant?: string };
+
 
     constructor() {
         super("MissionSystem");
+        GameRules.Debug.RegisterDebug(this.constructor.name)
+        this.mission_name = {}
         this._Init();
     }
 
@@ -130,7 +134,8 @@ export class MissionSystem extends UIEventRegisterClass {
             r_7: new Mission_Radiant_7('r_7', 1),
             r_8: new Mission_Radiant_8('r_8', 1),
         }
-
+        this.RadiantMissionList = ["r_1", "r_2", "r_3", "r_4", "r_5", "r_6", "r_7", "r_8"];
+        this.DireMissionList = ["d_1", "d_2", "d_3", "d_4", "d_5", "d_6", "d_7", "d_8"];
     }
 
 
@@ -164,6 +169,7 @@ export class MissionSystem extends UIEventRegisterClass {
 
     /** 开始天辉任务线 */
     StartRadiantMissionLine() {
+
         if (this.RadiantOrder >= this.RadiantMissionList.length - 1) {
             print("已做完所有天辉任务")
             return
@@ -226,8 +232,23 @@ export class MissionSystem extends UIEventRegisterClass {
         // this.hCurrentHandle.CreateMission(start)
     }
 
+    EndMissionOfName(mission_type: number) {
+        if (mission_type == 1) {
+            this.mission_name["radiant"] = null;
+            GameRules.MissionSystem.GetCurrentMission(-1);
+        } else {
+            this.mission_name["dire"] = null
+            GameRules.MissionSystem.GetCurrentMission(-1);
+        }
+
+
+
+    }
     /** 强制结束所有任务 */
     Stop() {
+        this.mission_name["radiant"] = null;
+        this.mission_name["dire"] = null;
+        GameRules.MissionSystem.GetCurrentMission(-1);
         GameRules.GetGameModeEntity().SetContextThink("MissionStartDelay", null, 0)
         GameRules.GetGameModeEntity().SetContextThink("DIRE_MISSION_DELAY", null, 0)
         GameRules.GetGameModeEntity().SetContextThink("RADIANT_MISSION_INTERVAL", null, 0)
@@ -244,6 +265,49 @@ export class MissionSystem extends UIEventRegisterClass {
         // this.DireMissionHandle = null
 
     }
+
+
+    SendMissionTips(mission_type: number, mission_name: string) {
+        GameRules.GetGameModeEntity().SetContextThink("MissionClientShow", null, 0);
+        CustomGameEventManager.Send_ServerToAllClients(
+            "MissionSystem_SendMissionTips",
+            {
+                data: {
+                    mission_type: mission_type,
+                    mission_name: mission_name,
+                }
+            }
+        )
+        // 设置当前
+        if (mission_type == 1) {
+            this.mission_name["radiant"] = mission_name
+        } else {
+            this.mission_name["dire"] = mission_name
+        }
+
+        
+    }
+
+    GetCurrentMission(player_id: PlayerID, params?: any) {
+        if (player_id == -1) {
+            CustomGameEventManager.Send_ServerToAllClients(
+                "MissionSystem_GetCurrentMission",
+                {
+                    data: this.mission_name
+                }
+            )
+        } else {
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "MissionSystem_GetCurrentMission",
+                {
+                    data: this.mission_name
+                }
+            )
+        }
+
+    }
+
 
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);

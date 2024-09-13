@@ -1,6 +1,6 @@
 <root>
 	<styles>
-        <include src="./../../../_styles/styles.less" /> 
+        <include src="./../../../../_styles/styles.less" /> 
 		<include src="./resource.less" />
 	</styles>
 	<scripts>
@@ -14,7 +14,7 @@
             </Panel>
         </snippet>
     </snippets>
-	<Panel class="resource_panel">
+	<Panel>
 		
 	</Panel>
 </root>

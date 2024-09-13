@@ -5,7 +5,7 @@ import * as EnemyAttributeConst from "../../../json/config/game/enemy_attribute_
 export class EnemyAttribute {
 
     constructor() {
-        print("[EnemyAttribute]:constructor")
+        // print("[EnemyAttribute]:constructor")
     }
 
     SetUnitAttr(hUnit:CDOTA_BaseNPC){
@@ -22,6 +22,7 @@ export class EnemyAttribute {
         hUnit.enemy_attribute_table = {};
         hUnit.SpecialMark = {};
     }
+
     ModifyAttribute(hUnit: CDOTA_BaseNPC, AttrList: EnemyAttributeValueType, mode: number = 0) {
         if (hUnit.enemy_attribute_value == null) { hUnit.enemy_attribute_value = {} }
         if (hUnit.enemy_attribute_table == null) { hUnit.enemy_attribute_table = {} }

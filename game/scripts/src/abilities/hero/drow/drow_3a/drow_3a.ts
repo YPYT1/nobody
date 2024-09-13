@@ -165,7 +165,6 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
         this.ability_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.OnCreated_Extends();
         this.OnIntervalThink();
-        print("this.interval",this.interval)
         this.StartIntervalThink(this.interval);
     }
 

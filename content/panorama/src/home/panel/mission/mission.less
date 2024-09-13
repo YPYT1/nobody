@@ -4,7 +4,9 @@
 }
 
 #MissionAppearTips {
-    margin-top: 40px;
+    width: 100%;
+    height: 100%;
+    margin-top: 60px;
     horizontal-align: center;
 }
 
@@ -12,12 +14,65 @@
     width: 451px;
     height: 208px;
     background-image: url("file://{images}/custom_game/hud/mission/trial_tips_1.png");
+    background-repeat: no-repeat;
     horizontal-align: center;
+    flow-children: down;
+    opacity: 0;
+
+    transition-property: transform, opacity;
+    transition-duration: 1s;
+
+    .TipsTitle {
+        horizontal-align: center;
+        margin-top: 112px;
+        font-size: 24px;
+        color: #ff594c;
+    }
+
+    .TipsDesc {
+        horizontal-align: center;
+        margin-top: 4px;
+        font-size: 18px;
+        color: #e32a2a;
+    }
+
+    &.Show {
+        opacity: 1;
+    }
+
+    &.Radiant {
+        background-image: url("file://{images}/custom_game/hud/mission/trial_tips_2.png");
+
+        .TipsTitle {
+            color: #ffdc73;
+        }
+
+        .TipsDesc {
+            color: #e49941;
+        }
+    }
+
+    &.Play {
+        transform: translateX(50%);
+        opacity: 0.01;
+    }
 }
+
 
 #MissionContent {
     width: 100%;
     height: 100%;
+
+    // margin-top: 120px;
+    // visibility: collapse;
+}
+
+.MissionRightSideList {
+    width: 100%;
+    height: 100%;
+    flow-children: down;
+    border: 1px solid #ffffff;
+    padding-top: 120px;
 }
 
 .MissionContainer {
@@ -26,8 +81,10 @@
     transition-property: transform, opacity;
     transition-duration: 0.21s;
     opacity: 1;
-    
+
     margin-top: 72px;
+
+    opacity: 0;
 
     &.Play {
         wash-color: #a73535;
@@ -114,28 +171,148 @@
 
 }
 
+@keyframes TipsShow {
+
+    0% {
+        pre-transform-scale2d: 1;
+        opacity: 1;
+        transform: translateX(-50%) translate3d(305px, 0px, 0px);
+
+    }
+
+    40% {
+        pre-transform-scale2d: 1;
+        transform: translateX(-50%) translate3d(305px, 0px, 0px);
+
+    }
+
+    60% {
+        // pre-transform-scale2d: 0.75;
+        transform: translateX(0%);
+    }
+}
+
 .MissionContainerRightSide {
     horizontal-align: right;
-    margin-top: 120px;
-    transition-property: width;
+    transition-property: width, transform, pre-transform-scale2d;
     transition-duration: 0.15s;
     width: 151px;
     height: 62px;
     opacity: 1;
-    // border: 1px solid #ffffff;
+    overflow: noclip;
+    // pre-transform-scale2d: 1;
+    // margin-top: 12px;
 
-    // &.Closed {
-    //     // opacity: 0;
-    // }
+    &.Hide {
+        visibility: collapse;
+        opacity: 0;
+    }
 
-    &:hover {
-        margin-top: 80px;
+    &.TipsPlay {
+        pre-transform-scale2d: 1;
+        opacity: 1;
+        // transform: translateX(-50%) translate3d(305px, 0px, 0px);
+        // transform-origin: 50% 50%;
+        animation-name: TipsShow;
+        animation-duration: 5s;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+
+    }
+
+    &.Radiant {
+        // .Border {
+        //     background-image: url("file://{images}/custom_game/hud/mission/right_side_2.png");
+        // }
+
+        .Bottom {
+            background-image: url("file://{images}/custom_game/hud/mission/bottom_line_1.png");
+        }
+
+        .Header {
+            background-image: url("file://{images}/custom_game/hud/mission/header_line_1.png");
+        }
+    }
+
+    &.TipsPlay {
+        width: 410px * 1.5;
+        height: 172px * 1.5;
+
+        .Border {
+            width: 410px * 1.5;
+            background-image: none;
+            flow-children: down;
+        }
+
+        .Header {
+            background-size: 100%;
+            width: 410px * 1.5;
+            height: 30px;
+        }
+
+        .Bottom {
+            width: 410px * 1.5;
+            height: 34px;
+            background-size: 100%;
+            margin-top: -12px;
+            opacity: 1;
+        }
+
+        .Body {
+            margin-top: -12px;
+            width: 410px * 1.5;
+            horizontal-align: center;
+            flow-children: down;
+            padding-top: 24px;
+            padding-bottom: 24px;
+
+            background-image: url("file://{images}/custom_game/hud/mission/border_bg.png");
+        }
+
+        .Title {
+            visibility: visible;
+        }
+
+        .Desc {
+            
+            horizontal-align: center;
+            width: 410px;
+            height: 48px;
+            flow-children: down;
+            visibility: visible;
+        }
+
+        .Sign {
+            // background-image: url("file://{images}/custom_game/hud/mission/icon_dire_1.png");
+            transform: translateX(50%);
+            margin-left: -40px;
+
+        }
+
+        .SignLabel {
+            opacity: 0;
+            visibility: collapse;
+        }
+    }
+
+    &.Showed {
+        background-image: url("file://{images}/custom_game/hud/mission/right_side_dire.png");
+        background-size: 151px 62px;
+        background-repeat: no-repeat;
+
+        &.Radiant {
+            background-image: url("file://{images}/custom_game/hud/mission/right_side_2.png");
+        }
+    }
+    &.Showed:hover {
+        background-image: none;
+        // margin-top: 80px;
         width: 410px;
-        height: 192px;
+        height: 172px;
 
         .Border {
             width: 410px;
-            height: 192px;
+            // height: 172px;
             flow-children: down;
             overflow: noclip;
             background-image: none;
@@ -146,17 +323,17 @@
             overflow: noclip;
             width: 410px;
             height: 30px;
-            max-height: 30px;
-            background-image: url("file://{images}/custom_game/hud/mission/dire_header_line.png");
             background-repeat: no-repeat;
-            transition-property: opacity, height;
-            transition-duration: 0.25s;
+            // transition-property: opacity, height;
+            // transition-duration: 0.25s;
+            opacity: 1;
         }
 
         .Bottom {
             width: 410px;
             height: 34px;
             margin-top: -22px;
+            opacity: 1;
             // height: 0px;
         }
 
@@ -179,15 +356,13 @@
         .Desc {
             visibility: visible;
 
-
+            height: 44px;
         }
 
         .Sign {
-            width: 80px;
-            height: 80px;
-            background-size: 100%;
-            background-repeat: no-repeat;
-            background-image: url("file://{images}/custom_game/hud/mission/icon_dire_1.png");
+
+
+            // background-image: url("file://{images}/custom_game/hud/mission/icon_dire_1.png");
             transform: translateX(50%);
             margin-left: -40px;
 
@@ -200,12 +375,14 @@
 
     }
 
-
-
     .Border {
         width: 151px;
-        height: 62px;
-        background-image: url("file://{images}/custom_game/hud/mission/right_side_dire.png");
+        vertical-align: middle;
+        // border: 1px solid #ffffff;
+        background-image: none;
+        // background-image: url("file://{images}/custom_game/hud/mission/right_side_dire.png");
+        background-size: 151px 62px;
+        // background-size: 100%;
         background-repeat: no-repeat;
         transition-property: transform, height, width, margin, opacity;
         transition-duration: 0.2s;
@@ -216,13 +393,13 @@
         height: 80px;
         background-size: 100%;
         background-repeat: no-repeat;
-        background-image: url("file://{images}/custom_game/hud/mission/icon_dire_1.png");
         margin-left: -40px;
         transform: translateX(-10px) translateY(-8px);
         margin: 0px;
-
         transition-property: transform, height, width, margin, opacity;
-        transition-duration: 0.2s;
+        transition-duration: 0.05s;
+
+        // border: 1px solid #ffffff;
     }
 
 
@@ -236,28 +413,46 @@
         // visibility: v;
 
         transition-property: transform, height, width, margin, opacity;
-        transition-duration: 0.2s;
+        transition-duration: 0.02s;
     }
 
     .Body {
+        flow-children: down;
         background-image: none;
         transition-property: transform, height, width, margin, opacity;
         transition-duration: 0.2s;
+        background-size: 100%;
+        padding: 12px;
+        z-index: -1;
+        // height: 100%;
     }
 
     .Title {
         horizontal-align: center;
         visibility: collapse;
+
         Label {
             font-size: 18px;
             color: #ffffff;
         }
     }
 
+    .Desc {
+        // border: 1px solid #fff;
+        width: 410px;
+        height: 80px;
+        flow-children: down;
+    }
+
     .Header {
+        margin-top: 40px;
+        overflow: noclip;
+        width: 410px;
         height: 0px;
         transition-property: transform, height, width, margin, opacity;
         transition-duration: 0.2s;
+        background-image: url("file://{images}/custom_game/hud/mission/dire_header_line.png");
+        opacity: 1;
     }
 
     .Bottom {
@@ -266,17 +461,16 @@
         margin-top: -26px;
         transition-property: opacity, height;
         transition-duration: 0.25s;
-        // height: 0px;
-        transition-property: transform, height, width, margin, opacity;
-        transition-duration: 0.2s;
+        opacity: 0;
     }
 
 
     .Desc {
-        // height: 0px;
+        margin-top: 12px;
         transition-property: transform, height, width, margin, opacity;
         transition-duration: 0.2s;
         visibility: collapse;
+        horizontal-align: center;
 
         Label {
             font-size: 16px;
@@ -284,4 +478,68 @@
         }
     }
 
+}
+
+.d_1 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/d_1.png");
+}
+
+.d_2 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/d_2.png");
+}
+
+.d_3 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/d_3.png");
+}
+
+.d_4 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/d_4.png");
+}
+
+.d_5 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/d_5.png");
+}
+
+.d_6 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/d_6.png");
+}
+
+.d_7 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/d_7.png");
+}
+
+.d_8 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/d_8.png");
+}
+
+.r_1 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/r_1.png");
+}
+
+.r_2 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/r_2.png");
+}
+
+.r_3 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/r_3.png");
+}
+
+.r_4 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/r_4.png");
+}
+
+.r_5 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/r_5.png");
+}
+
+.r_6 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/r_6.png");
+}
+
+.r_7 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/r_7.png");
+}
+
+.r_8 .Sign {
+    background-image: url("file://{images}/custom_game/hud/mission/icon/r_8.png");
 }

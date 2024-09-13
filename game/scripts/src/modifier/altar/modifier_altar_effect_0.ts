@@ -40,6 +40,10 @@ export class modifier_altar_effect_1 extends ModifierAltarEffect {
     buff_key: string = "altar_1"
     color = Vector(255, 230, 2);
 
+    GetTexture(): string {
+        return "altar/光明圣坛"
+    }
+
     _OnCreated(params: any): void {
 
     }

@@ -58,6 +58,10 @@ declare interface CGED {
         GetTopCountdown: {},
         GetDamageRecord: {},
     }
+
+    MissionSystem :{
+        GetCurrentMission:{}
+    }
 }
 
 

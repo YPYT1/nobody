@@ -92,14 +92,7 @@ export class MissionModule {
         }
         this.start_npc.AddNewModifier(this.start_npc, null, "modifier_mission_npc", {})
 
-        GameRules.CMsg.SendCommonMsgToPlayer(
-            -1,
-            "任务 {s:mission_name} 出现!",
-            {
-                mission_name: this.mission_name,
-
-            }
-        )
+        GameRules.MissionSystem.SendMissionTips(this.mission_type,this.mission_name)
     }
 
     RemoveMoveTips() {
@@ -136,9 +129,11 @@ export class MissionModule {
             UTIL_Remove(this.start_npc)
             this.start_npc = null
         }
-        // if (IsValid(this.start_npc)) { UTIL_Remove(this.start_npc) }
-        this.ExecuteLogic(start)
+        this.ExecuteLogic(start);
+        print("StartTheMission",this.mission_name)
+        GameRules.MissionSystem.GetCurrentMission(-1);
     }
+
     // 执行任务相关内容
     ExecuteLogic(start: Vector) { }
 
@@ -162,6 +157,8 @@ export class MissionModule {
                 this.GetReward()
             }
             // 任务结束后进行下一个任务
+            GameRules.MissionSystem.EndMissionOfName(this.mission_type);
+            
             if (this.is_test == false) {
                 if (this.mission_type == 1) {
                     GameRules.MissionSystem.StartRadiantMissionLine()
@@ -169,8 +166,9 @@ export class MissionModule {
                     GameRules.MissionSystem.StartDireMissionLine()
                 }
             }
-
-            this.is_stop = true
+            this.is_stop = true;
+            
+           
         }
 
 
@@ -179,12 +177,14 @@ export class MissionModule {
     /** 清空当前任务相关数据 */
     CleanMissionData() {
         // 移除NPC
+        GameRules.MissionSystem.EndMissionOfName(this.mission_type)
         print("CleanMissionData", this.mission_name)
         if (this.mdf_thinker) {
             UTIL_Remove(this.mdf_thinker)
             this.mdf_thinker = null
         }
         if (this.start_npc) {
+            this.start_npc.RemoveSelf();
             UTIL_Remove(this.start_npc)
             this.start_npc = null
         }
@@ -206,7 +206,6 @@ export class MissionModule {
     /** 任务终止 */
     StopCurrentMission() {
         this.is_stop = true;
-        // print("StopCurrentMission",this.mission_name)
         this.RemoveMoveTips()
         this.CleanMissionData()
         if (this.start_thinker) {

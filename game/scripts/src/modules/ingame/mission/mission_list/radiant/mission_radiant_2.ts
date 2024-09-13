@@ -61,18 +61,5 @@ export class Mission_Radiant_2 extends MissionModule {
         }
     }
 
-    CleanMissionData(): void {
-        // 移除NPC
-        if (this.mdf_thinker) {
-            UTIL_Remove(this.mdf_thinker)
-            this.mdf_thinker = null
-        }
 
-        for (let unit of this.units) {
-            if (unit && unit.IsNull()) {
-                UTIL_Remove(unit)
-            }
-        }
-        this.units = []
-    }
 }
