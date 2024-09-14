@@ -31,8 +31,8 @@ export class modifier_mission_thinker extends BaseModifier {
         ParticleManager.SetParticleControl(this.origin_fx, 2, Vector(this.radius - 32, 0, 0))
 
         if (this.mission_type == 1) {
-            // 天辉蓝色
-            ParticleManager.SetParticleControl(this.origin_fx, 3, Vector(100, 255, 100))
+            // 天辉金色
+            ParticleManager.SetParticleControl(this.origin_fx, 3, Vector(255, 165, 0))
         } else if (this.mission_type == 2) {
             //  夜宴红色
             ParticleManager.SetParticleControl(this.origin_fx, 3, Vector(255, 10, 10))
@@ -65,7 +65,14 @@ export class modifier_mission_thinker extends BaseModifier {
                 ParticleManager.SetParticleControl(this.cast_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
                 ParticleManager.SetParticleControl(this.cast_fx, 1, Vector(5, 0, 0))
                 ParticleManager.SetParticleControl(this.cast_fx, 2, Vector(this.radius - 32, 0, 0))
-                ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(255, 255, 255))
+                // ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(0, 0, 0))
+                if (this.mission_type == 1) {
+                    // 天辉蓝色
+                    ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(255, 165, 0))
+                } else if (this.mission_type == 2) {
+                    //  夜宴红色
+                    ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(255, 10, 10))
+                }
                 ParticleManager.SetParticleControl(this.cast_fx, 4, Vector(255, 200, 100))
                 // ParticleManager.ReleaseParticleIndex
                 // ParticleManager.SetParticleControl(this.cast_fx, 1, Vector(5, 0, 0))
@@ -122,6 +129,13 @@ export class modifier_mission_thinker_countdown extends BaseModifier {
 
 @registerModifier()
 export class modifier_mission_npc extends BaseModifier {
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        let hParent = this.GetParent();
+        hParent.SetAngles(0, -90, 0);
+        hParent.StartGesture(GameActivity.DOTA_IDLE)
+    }
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {

@@ -332,3 +332,4 @@ declare type PopupsType = "Damage" | "Miss" | "Heal"
 
 declare type PlayerAttributeTypes = "drop_double_exp"
     | "drop_double_soul"
+    | "kill_bonus_soul"

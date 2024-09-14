@@ -100,10 +100,12 @@
                     </Panel>
                 </Panel>
             </Panel>
+            
             <Panel id="AbilityCoreDetails">
                 <!-- <Label id="AttributeInfo" text="{s:attribute}" html="true" /> -->
                 <Panel id="DescriptionContainer">
                     <Label class="DescriptionLabel" text="{s:description}" html="true" />
+                    <!-- <Label class="TestToolDamageValue" text="{s:damage_number}" /> -->
                     <Panel id="TalentAbilityExtra" />
                 </Panel>
             </Panel>

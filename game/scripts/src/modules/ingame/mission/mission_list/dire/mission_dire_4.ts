@@ -17,7 +17,6 @@ export class Mission_Dire_4 extends MissionModule {
         this.progress_max = this.limit_time
         this.progress_value = 0;
         const vMapCenter = GameRules.MissionSystem.vMapCenter;
-
         const diag_distance = 6400;
         let place_point = start + (vMapCenter - start as Vector).Normalized() * -200 as Vector
         let dummy = CreateUnitByName("npc_mission_dummy", place_point, false, null, null, DotaTeam.BADGUYS);
@@ -28,34 +27,55 @@ export class Mission_Dire_4 extends MissionModule {
         this.units.push(dummy)
     }
 
-    CreateMission(vPos: Vector) {
+    CreateMission(vPos: Vector, vMapCenter: Vector, is_test: boolean) {
         let angle = this.angle_list[RandomInt(0, 3)]
-        const vMapCenter = GameRules.MissionSystem.vMapCenter;
         let line_pos = vMapCenter + Vector(3200, 0, 0) as Vector;
-        let target_vect = RotatePosition(vMapCenter, QAngle(0, angle, 0), line_pos);
+        vPos = RotatePosition(vMapCenter, QAngle(0, angle, 0), line_pos);
 
+        // let hHero = PlayerResource.GetSelectedHeroEntity(0);
+        // hHero.RemoveModifierByName("modifier_state_movetips")
+
+        // // this.pick_points = target_vect;
+        // hHero.AddNewModifier(hHero, null, "modifier_state_movetips", {
+        //     duration: 15,
+        //     x: target_vect.x,
+        //     y: target_vect.y,
+        //     z: target_vect.z,
+        // })
+
+        this.is_test = is_test;
+        this.is_stop = false;
+        this.units = [];
+        this.vMapCenter = vMapCenter;
         let hHero = PlayerResource.GetSelectedHeroEntity(0);
         hHero.RemoveModifierByName("modifier_state_movetips")
-
-        // this.pick_points = target_vect;
         hHero.AddNewModifier(hHero, null, "modifier_state_movetips", {
-            duration: 15,
-            x: target_vect.x,
-            y: target_vect.y,
-            z: target_vect.z,
+            duration: 30,
+            x: vPos.x,
+            y: vPos.y,
+            z: vPos.z,
         })
 
-        CreateModifierThinker(
+        this.start_thinker = CreateModifierThinker(
             null,
             null,
             "modifier_mission_thinker",
             {
                 mission_name: this.mission_name,
+                mission_type: this.mission_type,
             },
-            target_vect,
+            vPos,
             DotaTeam.GOODGUYS,
             false
         )
+        if (this.mission_type == 1) {
+            this.start_npc = CreateUnitByName("npc_mission_npc_radiant", vPos, false, null, null, DotaTeam.GOODGUYS)
+        } else {
+            this.start_npc = CreateUnitByName("npc_mission_npc_dire", vPos, false, null, null, DotaTeam.GOODGUYS)
+        }
+        this.start_npc.AddNewModifier(this.start_npc, null, "modifier_mission_npc", {})
+        GameRules.MissionSystem.SendMissionTips(this.mission_type,this.mission_name)
+
     }
 
     MissionOverTime(): void {

@@ -120,14 +120,14 @@ export function OnInitMoveHotkey() {
     // GameUI.SetCameraPitchMax(70);
 
 
-    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-        // $.Msg([event , value])
-        if (value == 1) {
-            return true
-        } else {
-            return false
-        }
-    });
+    // GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+    //     // $.Msg([event , value])
+    //     if (value == 1) {
+    //         return true
+    //     } else {
+    //         return false
+    //     }
+    // });
 
 }
 

@@ -212,7 +212,7 @@ export class BaseHeroAbility extends BaseAbility {
                 let max_mana = this.caster.GetMaxMana();
                 let cost_percent = math.floor((100 * cost_mana) / max_mana);
                 let value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_4", "value")
-                print("has rune_4", 'cost_percent', cost_percent, 'value', value,value * cost_percent)
+                // print("has rune_4", 'cost_percent', cost_percent, 'value', value,value * cost_percent)
                 return value * cost_percent
             }
         }
