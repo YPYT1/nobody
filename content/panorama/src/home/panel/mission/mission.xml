@@ -37,6 +37,10 @@
     
                     <Panel class="Sign" hittest="false"/>
                     <Label class="SignLabel" text="{s:mission_title}" hittest="false"/>
+                    <Panel class="MiniShow">
+                        <Panel class="Mark"/>
+                        <Label text="任务进行中"/>
+                    </Panel>
                 </Panel>
 
                 <Panel id="RadiantMissionContainer" class="MissionContainerRightSide Radiant Hide">

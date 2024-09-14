@@ -19,9 +19,8 @@ export class Mission_Dire_1 extends MissionModule {
         spider.AddNewModifier(spider, null, "modifier_mission_dire_1", { duration: this.limit_time })
         spider.AddNewModifier(spider, null, "modifier_basic_countdown", { duration: this.limit_time })
         this.CreateCountdownThinker(this.limit_time)
+
+        this.units.push(spider)
     }
-
-    
-
 
 }

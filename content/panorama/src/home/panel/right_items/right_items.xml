@@ -12,7 +12,7 @@
 				<Panel class="ItemInfo">
 					<Image id="ItemImage" />
 				</Panel>
-				<Label class="CountLabel" text="{d:count}"/>
+				<Label class="CountLabel" text="{s:count}"/>
 			</Panel>
 		</snippet>
 	</snippets>

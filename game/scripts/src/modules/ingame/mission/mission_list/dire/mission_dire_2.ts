@@ -18,6 +18,7 @@ export class Mission_Dire_2 extends MissionModule {
         unit.AddNewModifier(unit, null, "modifier_mission_dire_2", { duration: this.limit_time })
         unit.AddNewModifier(unit, null, "modifier_basic_countdown", { duration: this.limit_time })
         this.CreateCountdownThinker(this.limit_time)
+        this.units.push(unit)
     }
 
     MissionOverTime(): void {

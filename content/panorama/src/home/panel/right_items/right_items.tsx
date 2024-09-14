@@ -51,14 +51,14 @@ const CustomGameEventsSubscribe = () => {
             if (ItemBorder == null) {
                 let ItemBorder = $.CreatePanel("Panel", ItemList_Rune, name);
                 ItemBorder.BLoadLayoutSnippet("ItemBorder")
-                ItemBorder.AddClass("NoCount")
+                // ItemBorder.AddClass("NoCount")
 
                 let ItemData = RuneConfigJson[name as keyof typeof RuneConfigJson];
                 let ItemImage = ItemBorder.FindChildTraverse("ItemImage") as ImagePanel;
                 let textrue = ItemData.AbilityTextureName;
                 ItemImage.SetImage(GetTextureSrc(textrue));
                 ItemBorder.SetHasClass("rare_" + row.level, true)
-                ItemBorder?.SetDialogVariableInt("count", row.level)
+                ItemBorder?.SetDialogVariable("count", `${row.name}`)
                 ItemBorder.SetPanelEvent("onmouseover", () => {
                     ShowCustomTooltip(ItemBorder, "rune", name, -1, row.level_index)
 
@@ -102,7 +102,7 @@ const CustomGameEventsSubscribe = () => {
                 prop_count[item_key] += count
             }
 
-            ItemBorder.SetDialogVariableInt("count", prop_count[item_key]);
+            ItemBorder.SetDialogVariable("count", ""+prop_count[item_key]);
 
 
             // ItemBorder.SetDialogVariableInt("count", row.);

@@ -14,13 +14,13 @@ export class Mission_Radiant_1 extends MissionModule {
     start_vect: Vector;
     /** 门框半径 */
     goal_radius: number = 250;
-
     /** 任务限时 */
-    limit_time = 10;
+    limit_time = 60;
 
 
     ExecuteLogic(vect: Vector) {
         this.RemoveMoveTips()
+        this.limit_time = 60;
         this.progress_value = 0;
         this.progress_max = 1
         this.mission_state = -1;
@@ -36,7 +36,7 @@ export class Mission_Radiant_1 extends MissionModule {
             this.CreateFootball(this.start_vect, goal_vect)
         }
 
-        this.CreateCountdownThinker(10)
+        this.CreateCountdownThinker(this.limit_time)
     }
 
 
@@ -45,13 +45,15 @@ export class Mission_Radiant_1 extends MissionModule {
         let rand_vect = vect + RandomVector(200) as Vector
         let football = CreateUnitByName("npc_football", rand_vect, false, null, null, DotaTeam.GOODGUYS);
         // 添加门框指示线
+        football.AddNewModifier(football, null, "modifier_basic_countdown", { duration: this.limit_time })
         football.AddNewModifier(football, null, "modifier_mission_radiant_1_football", {
             goal_x: goal_vect.x,
             goal_y: goal_vect.y,
             goal_z: goal_vect.z,
             goal_radius: this.goal_radius,
+            duration: this.limit_time,
         })
-
+        
         this.units.push(football)
     }
 
@@ -73,10 +75,6 @@ export class Mission_Radiant_1 extends MissionModule {
         return this.mdf_thinker.GetAbsOrigin()
     }
 
-    MissionOverTime(): void {
-
-    }
-
     GetFoolballGoalVect(vStart: Vector): Vector {
         // 门框的位置必须要单位能移动到
         let direction = (vStart - this.vMapCenter as Vector).Normalized()
@@ -93,6 +91,12 @@ export class Mission_Radiant_1 extends MissionModule {
         if (this.progress_value >= this.progress_max) {
             this.mission_state = 1
             this.EndOfMission(true)
+        }
+    }
+
+    MissionOverTime(): void {
+        if(this.mission_state == -1){
+            this.EndOfMission(false)
         }
     }
 

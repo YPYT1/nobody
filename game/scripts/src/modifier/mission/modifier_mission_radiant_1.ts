@@ -3,7 +3,7 @@ import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
 @registerModifier()
 export class modifier_mission_radiant_1_football extends BaseModifier {
 
-    hFootball: CDOTA_BaseNPC;
+    hParent: CDOTA_BaseNPC;
     goal_vect: Vector;
     goal_radius: number;
 
@@ -14,12 +14,12 @@ export class modifier_mission_radiant_1_football extends BaseModifier {
         // 足球逻辑 当有单位接近时,通过角度进行位移一段距离
         this.goal_vect = Vector(params.goal_x, params.goal_y, params.goal_z)
         this.goal_radius = params.goal_radius;
-        this.hFootball = this.GetParent();
+        this.hParent = this.GetParent();
         // 添加终点辅助线
         let line_pfx = ParticleManager.CreateParticle(
             "particles/diy_particles/move.vpcf",
             ParticleAttachment.POINT_FOLLOW,
-            this.hFootball,
+            this.hParent,
         );
         ParticleManager.SetParticleControl(line_pfx, 1, this.goal_vect);
         this.AddParticle(line_pfx, false, false, -1, false, false);
@@ -38,7 +38,7 @@ export class modifier_mission_radiant_1_football extends BaseModifier {
             this.Destroy();
             return
         }
-        if (this.hFootball.HasModifier("modifier_knockback_lua")) { return }
+        if (this.hParent.HasModifier("modifier_knockback_lua")) { return }
 
         let hHeroes = FindUnitsInRadius(
             DotaTeam.GOODGUYS,
@@ -52,15 +52,21 @@ export class modifier_mission_radiant_1_football extends BaseModifier {
             false
         )
         if (hHeroes.length > 0) {
-            let vStart = hHeroes[0].GetAbsOrigin();
-            this.hFootball.AddNewModifier(this.hFootball, null, "modifier_knockback_lua", {
-                center_x: vStart.x,
-                center_y: vStart.y,
+            let vOrigin = hHeroes[0].GetAbsOrigin();
+            let vTarget = this.hParent.GetAbsOrigin()
+            let direction = (vTarget - vOrigin as Vector).Normalized();
+            let angle = VectorToAngles(direction).y
+            this.hParent.SetAngles(0, angle, 0)
+            // let angle_diff = math.abs(AngleDiff(cast_angle, angle))
+            this.hParent.AddNewModifier(this.hParent, null, "modifier_knockback_lua", {
+                center_x: vOrigin.x,
+                center_y: vOrigin.y,
                 center_z: 0,
-                knockback_distance: 450,
+                knockback_distance: RandomInt(450, 600),
                 knockback_duration: 0.35,
                 duration: 0.5,
             })
+
         }
     }
 
@@ -70,6 +76,7 @@ export class modifier_mission_radiant_1_football extends BaseModifier {
             [ModifierState.NO_UNIT_COLLISION]: true,
             [ModifierState.UNSLOWABLE]: true,
             [ModifierState.INVULNERABLE]: true,
+            // [ModifierState.FROZEN]:!this.GetParent().HasModifier("modifier_knockback_lua"),
         }
     }
 
@@ -87,6 +94,7 @@ export class modifier_mission_radiant_1_football_goal extends BaseModifier {
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
+        print("modifier_mission_radiant_1_football_goal")
         this.origin = this.GetParent().GetOrigin();
         this.radius = params.goal_radius;
         let origin_fx = ParticleManager.CreateParticle(
@@ -95,7 +103,6 @@ export class modifier_mission_radiant_1_football_goal extends BaseModifier {
             this.GetParent()
         )
         ParticleManager.SetParticleControl(origin_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
-        ParticleManager.SetParticleControl(origin_fx, 1, Vector(60, 0, 0))
         ParticleManager.SetParticleControl(origin_fx, 2, Vector(this.radius - 32, 0, 0))
         ParticleManager.SetParticleControl(origin_fx, 3, Vector(0, 255, 0))
         this.AddParticle(origin_fx, false, false, -1, false, false)
@@ -112,7 +119,7 @@ export class modifier_mission_radiant_1_football_goal extends BaseModifier {
 
     OnDestroy(): void {
         if (!IsServer()) { return }
-        // GameRules.MissionSystem.MissionHandle.r_1.EndOfMission(false)
+        GameRules.MissionSystem.RadiantMissionHandle.MissionOverTime()
         UTIL_Remove(this.GetParent())
     }
 }

@@ -59,21 +59,13 @@ const CustomSubscribe = () => {
         let mission_type = data.mission_type;
         if (mission_type == 1) {
             RadiantTips.AddClass("Show")
-            $.Schedule(3, () => {
-                RadiantTips.AddClass("Play");
-                $.Schedule(3, () => {
-                    RadiantTips.RemoveClass("Show");
-                    RadiantTips.RemoveClass("Play");
-                })
+            $.Schedule(5, () => {
+                RadiantTips.RemoveClass("Show");
             })
         } else {
             DireTips.AddClass("Show")
-            $.Schedule(3, () => {
-                DireTips.AddClass("Play");
-                $.Schedule(3, () => {
-                    DireTips.RemoveClass("Show");
-                    DireTips.RemoveClass("Play");
-                })
+            $.Schedule(5, () => {
+                DireTips.RemoveClass("Show");
             })
         }
     })

@@ -160,6 +160,11 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
     MainPanel.SetDialogVariable("ability_name", ability_name_label);
 
     SetExtraAbilityDesc(ability_name, ability_level);
+
+    // 伤害计算
+    // let base_value = abilityData.AbilityValues.base_value;
+    // $.Msg(["base_value",base_value])
+    // MainPanel.SetDialogVariable("damage_number","")
 }
 
 function ResetAbilityElementAndType() {

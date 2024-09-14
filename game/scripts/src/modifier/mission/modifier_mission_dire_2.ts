@@ -8,6 +8,8 @@ export class modifier_mission_dire_2 extends BaseModifier {
     target: CDOTA_BaseNPC;
     parent: CDOTA_BaseNPC;
 
+    target_fx: ParticleID;
+
     IsHidden(): boolean { return true }
 
     IsAura(): boolean { return true; }
@@ -15,13 +17,12 @@ export class modifier_mission_dire_2 extends BaseModifier {
     GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
     GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
     GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
-    GetModifierAura() { return "modifier_mission_dire_1_aura"; }
+    GetModifierAura() { return "modifier_mission_dire_2_aura"; }
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.parent = this.GetParent();
         this.state = false;
-        this.OnIntervalThink();
         this.StartIntervalThink(1);
     }
 
@@ -39,7 +40,10 @@ export class modifier_mission_dire_2 extends BaseModifier {
                 false
             )
             if (enemies.length > 0) {
-                this.target = enemies[0]
+                this.target = enemies[0];
+                this.parent.AddNewModifier(this.parent, null, "modifier_mission_dire_2_target", {
+                    target: this.target.entindex(),
+                })
             }
         } else {
             if (!this.target.IsNull() && this.target.IsAlive() == false) {
@@ -80,7 +84,9 @@ export class modifier_mission_dire_2 extends BaseModifier {
 }
 
 @registerModifier()
-export class modifier_mission_dire_1_aura extends BaseModifier {
+export class modifier_mission_dire_2_aura extends BaseModifier {
+
+    IsHidden(): boolean { return true }
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
@@ -99,7 +105,7 @@ export class modifier_mission_dire_1_aura extends BaseModifier {
             miss_flag: 1,
         })
 
-        hCaster.AddNewModifier(hCaster, null, "modifier_mission_dire_1_root", { duration: 1 })
+        hCaster.AddNewModifier(hCaster, null, "modifier_mission_dire_2_root", { duration: 1 })
         hParent.AddNewModifier(hCaster, null, "modifier_knockback_lua", {
             center_x: vCaster.x,
             center_y: vCaster.y,
@@ -119,7 +125,7 @@ export class modifier_mission_dire_1_aura extends BaseModifier {
 }
 
 @registerModifier()
-export class modifier_mission_dire_1_root extends BaseModifier {
+export class modifier_mission_dire_2_root extends BaseModifier {
 
     IsHidden(): boolean {
         return true
@@ -129,5 +135,40 @@ export class modifier_mission_dire_1_root extends BaseModifier {
         return {
             [ModifierState.ROOTED]: true
         }
+    }
+}
+
+@registerModifier()
+export class modifier_mission_dire_2_target extends BaseModifier {
+
+    effect_fx: ParticleID;
+
+    OnCreated(params: object): void {
+        this.OnRefresh(params)
+    }
+
+    OnRefresh(params: any): void {
+        if (!IsServer()) { return }
+        if (this.effect_fx) { ParticleManager.DestroyParticle(this.effect_fx, true) }
+        this.effect_fx = ParticleManager.CreateParticle(
+            "particles/diy_particles/move.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent()
+        )
+        let target = params.target as EntityIndex;
+        let hTarget = EntIndexToHScript(target);
+        ParticleManager.SetParticleControlEnt(
+            this.effect_fx,
+            1,
+            hTarget, ParticleAttachment.POINT_FOLLOW,
+            "attach_loc",
+            Vector(0, 0, 0),
+            false
+        )
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        if (this.effect_fx) { ParticleManager.DestroyParticle(this.effect_fx, true) }
     }
 }
