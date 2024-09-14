@@ -126,7 +126,6 @@ export const Init = () => {
             let post_index = select_index
             let level = _data.level;
             let index = _data.level_index;
-            $.Msg(_data)
             let name = _data.name as runeName;
             let RuneInfo = $.CreatePanel("Panel", RuneSelectList, "");
             RuneInfo.BLoadLayoutSnippet("RuneInfo");

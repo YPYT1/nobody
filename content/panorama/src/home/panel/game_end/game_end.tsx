@@ -33,8 +33,9 @@ const Init = () => {
             Avater.SetPanelEvent("onmouseover", () => { })
             Avater.SetPanelEvent("oncontextmenu", () => { })
             // player and hero
-            let hero_id = playerInfo.player_selected_hero_id;
-            PlayerInfoRows.SetDialogVariable("hero_name", `${hero_id}`)
+            let hero_id = playerInfo.player_selected_hero;
+            let heroname = GameUI.SendCustomHUDError
+            PlayerInfoRows.SetDialogVariable("hero_name", $.Localize(`#${hero_id}`));
             PlayerInfoRows.SetDialogVariable("player_name", playerInfo.player_name)
             // exp 缺经验表
             PlayerInfoRows.SetDialogVariableInt("player_lv", 1)

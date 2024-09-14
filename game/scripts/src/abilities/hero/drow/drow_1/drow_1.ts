@@ -1,7 +1,6 @@
 import { modifier_basic_move } from "../../../../modifier/modifier_basic";
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
 import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
-import { modifier_drow_1a } from "./drow_1a";
 
 /**
  * 攻击1名敌人，

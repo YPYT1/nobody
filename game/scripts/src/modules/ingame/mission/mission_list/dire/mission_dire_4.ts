@@ -16,11 +16,10 @@ export class Mission_Dire_4 extends MissionModule {
     ExecuteLogic(start: Vector): void {
         this.progress_max = this.limit_time
         this.progress_value = 0;
-        // let diagonal = start + (start - this.vMapCenter as Vector).Normalized() * 3500 as Vector;
-        // let diag_distance = (diagonal - start as Vector).Length2D();
+        const vMapCenter = GameRules.MissionSystem.vMapCenter;
+
         const diag_distance = 6400;
-        // print("dia_distance", diag_distance, diag_distance * 0.8);
-        let place_point = start + (this.vMapCenter - start as Vector).Normalized() * -200 as Vector
+        let place_point = start + (vMapCenter - start as Vector).Normalized() * -200 as Vector
         let dummy = CreateUnitByName("npc_mission_dummy", place_point, false, null, null, DotaTeam.BADGUYS);
         dummy.AddNewModifier(dummy, null, "modifier_mission_dire_4_thinker", {
             duration: this.limit_time,
@@ -31,8 +30,9 @@ export class Mission_Dire_4 extends MissionModule {
 
     CreateMission(vPos: Vector) {
         let angle = this.angle_list[RandomInt(0, 3)]
-        let line_pos = this.vMapCenter + Vector(3200, 0, 0) as Vector;
-        let target_vect = RotatePosition(this.vMapCenter, QAngle(0, angle, 0), line_pos);
+        const vMapCenter = GameRules.MissionSystem.vMapCenter;
+        let line_pos = vMapCenter + Vector(3200, 0, 0) as Vector;
+        let target_vect = RotatePosition(vMapCenter, QAngle(0, angle, 0), line_pos);
 
         let hHero = PlayerResource.GetSelectedHeroEntity(0);
         hHero.RemoveModifierByName("modifier_state_movetips")

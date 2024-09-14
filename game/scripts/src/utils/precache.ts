@@ -21,7 +21,7 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/test_particle/xulie/overhead_timer.vpcf',
             'particles/econ/events/fall_2022/teleport/teleport_fall2022_end_lvl1.vpcf',
             'particles/custom/altar/altar.vpcf',
-            
+            'particles/units/heroes/hero_razor/razor_plasmafield.vpcf',
             'particles/custom/element/ice/ice_effect_frozen.vpcf',
             'particles/custom/element/thunder/thunder_effect_debuff.vpcf',
             'particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf',

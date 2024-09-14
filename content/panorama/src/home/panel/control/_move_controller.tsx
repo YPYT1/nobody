@@ -120,22 +120,20 @@ export function OnInitMoveHotkey() {
     // GameUI.SetCameraPitchMax(70);
 
 
-    // GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-    //     // $.Msg([event , value])
-    //     if (value == 1) {
-    //         return true
-    //     } else {
-    //         return false
-    //     }
-    // });
+    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+        // $.Msg([event , value])
+        if (value == 1) {
+            return true
+        } else {
+            return false
+        }
+    });
 
 }
 
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
     let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    // GameUI.SetCameraTarget(hero_entity);
-    // let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    //     GameUI.SetCameraTarget(hero_entity);
+    GameUI.SetCameraTarget(hero_entity);
     GameEvents.SendCustomGameEventToServer("BasicRules", {
         event_name: "MoveState",
         params: eventData

@@ -185,7 +185,7 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
         })
     }
 
-    $.Schedule(0, () => {
+    $.Schedule(1, () => {
         let abi_pos = AbilityList.GetPositionWithinWindow();
         for (let i = 0; i < PlayerTalentTreeList.GetChildCount(); i++) {
             let AbilityTreePanel = PlayerTalentTreeList.GetChild(i);

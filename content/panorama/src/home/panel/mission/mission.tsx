@@ -79,7 +79,7 @@ const CustomSubscribe = () => {
     })
 
     GameEvents.Subscribe("MissionSystem_GetCurrentMission", event => {
-        $.Msg("MissionSystem_GetCurrentMission 1")
+        // $.Msg("MissionSystem_GetCurrentMission 1")
         let data = event.data;
         for (let key of mission_key_list) { DireMissionContainer.RemoveClass(key) }
         for (let key of mission_key_list) { RadiantMissionContainer.RemoveClass(key) }
