@@ -6,8 +6,12 @@ import { UIEventRegisterClass } from "../../class_extends/ui_event_register_clas
 //符文系统
 @reloadable
 export class RuneSystem extends UIEventRegisterClass {
-    //每个玩家掉落列表
+    //每个玩家升级可用符文列表
     drop_list: { key: string[], pro: number[]; }[] = [];
+    //每个玩家天辉可用符文列表
+    tianhui_task_drop_list: { key: string[], pro: number[]; }[] = [];
+    //每个玩家夜魇可用符文列表
+    nightmare_task_drop_list: { key: string[], pro: number[]; }[] = [];
     //debug模式
     de_bug = true;
     //记录天命次数与数据
@@ -38,7 +42,7 @@ export class RuneSystem extends UIEventRegisterClass {
      */
     //玩家单次最大随机数量
     player_select_amount: number[] = [];
-    /**
+    /** 
      * 初始化
      */
     //玩家单次最大随机数量
@@ -57,6 +61,14 @@ export class RuneSystem extends UIEventRegisterClass {
         super("RuneSystem" , true);
         for (let index = 0; index < 6 ; index++) {
             this.drop_list.push({
+                key : [],
+                pro : [],
+            })
+            this.tianhui_task_drop_list.push({
+                key : [],
+                pro : [],
+            })
+            this.tianhui_task_drop_list.push({
                 key : [],
                 pro : [],
             })
@@ -91,15 +103,40 @@ export class RuneSystem extends UIEventRegisterClass {
             key : [],
             pro : [],
         };
-        
+        let tianhui_task_drop_list : { key: string[], pro: number[]; } = {
+            key : [],
+            pro : [],
+        };
+        let nightmare_task_drop_list : { key: string[], pro: number[]; } = {
+            key : [],
+            pro : [],
+        };
+
         for (let key in RuneConfig) {
             const element = RuneConfig[key as keyof typeof RuneConfig];
-            if(element.hero_id == 0 || element.hero_id == hero_id){
+            if(element.hero_id != 0){
+                if(element.hero_id == hero_id){
+                    drop_info.key.push(key);
+                    drop_info.pro.push(element.probability);
+                }
+            }else if(element.task_type == 0 || element.task_type == 3){
                 drop_info.key.push(key);
                 drop_info.pro.push(element.probability);
             }
+            if(element.task_type == 3 || element.task_type == 1){
+                tianhui_task_drop_list.key.push(key);
+                tianhui_task_drop_list.pro.push(element.probability);
+            }
+            if(element.task_type == 3 || element.task_type == 2){
+                nightmare_task_drop_list.key.push(key);
+                nightmare_task_drop_list.pro.push(element.probability);
+            }
         }
+        
         this.drop_list[player_id] = drop_info;
+        this.tianhui_task_drop_list[player_id] = tianhui_task_drop_list;
+        this.nightmare_task_drop_list[player_id] = nightmare_task_drop_list;
+        
         //初始化刷新次数
         this.player_refresh_count[player_id] = this.player_refresh_count_config;
         this.player_fate_data[player_id] = [];
@@ -119,20 +156,23 @@ export class RuneSystem extends UIEventRegisterClass {
         // G.PlayerGameData.PulbicRuneData.ComRuneUseMax = 0
     }
     /**
-     * 增加一次符文选择
+     * 获取符文 根据类型
+     * @param player_id 
+     * @param type 类型
      */
-    GetRuneSelectToPlayer(player_id: PlayerID) {
+    GetRuneSelectToPlayer(player_id: PlayerID , type : number = 0) {
         //解锁
         // GameRules.CMsg.SendScreenParticleToClient("GetRune", player_id);
         //符文商店选择信息
 
         let fate_dota: CGEDPlayerRuneSelectServerData = {
-            is_check: false,
-            level: this.player_challenge_number[player_id],
-            item_list: {},
-            check_index: -1,
-            is_refresh: false,
-            time : 0,
+            is_check: false ,
+            level: this.player_challenge_number[player_id] ,
+            item_list: {} ,
+            check_index: -1 ,
+            is_refresh: false ,
+            time : 0 , 
+            type : type ,
         };
         this.player_fate_data[player_id].push(fate_dota);
         this.player_challenge_number[player_id]++;
@@ -149,9 +189,10 @@ export class RuneSystem extends UIEventRegisterClass {
         // );
     }
     /**
-     * 增加所有玩家符文选择
+     * 
+     * @param type 获取符文类型 1公共+专属 2公共+天辉 3公共+夜魇
      */
-    GetRuneSelectToAll() {
+    GetRuneSelectToAll(type : number = 0) {
         let player_count = GetPlayerCount();
         // GameRules.CMsg.SendScreenParticleToClient("GetRune", -1);
         for (let index = 0 as PlayerID; index < player_count; index++) {
@@ -162,6 +203,7 @@ export class RuneSystem extends UIEventRegisterClass {
                 check_index: -1,
                 is_refresh: false,
                 time : 0,
+                type :type,
             };
             this.player_fate_data[index].push(fate_dota);
             this.player_challenge_number[index]++;
@@ -186,12 +228,14 @@ export class RuneSystem extends UIEventRegisterClass {
             fate_level : this.player_challenge_number[player_id],
             player_refresh_count: this.player_refresh_count[player_id],
             time : 0 ,
+            type : 0 ,
         };
         //当有数据才返回
         if (this.player_fate_data[player_id].length > this.player_fate_data_index[player_id]) {
             data.is_new_fate_check = 1;
             data.item_list = this.player_fate_data[player_id][this.player_fate_data_index[player_id]].item_list;
-            data.time = this.player_fate_data[player_id][this.player_fate_data_index[player_id]].time
+            data.time = this.player_fate_data[player_id][this.player_fate_data_index[player_id]].time;
+            data.type = this.player_fate_data[player_id][this.player_fate_data_index[player_id]].type;
         }
         data.refresh_count = this.player_fate_data[player_id].length - this.player_fate_data_index[player_id];
 
@@ -223,12 +267,10 @@ export class RuneSystem extends UIEventRegisterClass {
             let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
             //修改已刷新状态
             fate_data_info.is_refresh = true;
-            let fate_level = math.min(6, fate_data_info.level);
             //最多几样物品
             let amount = this.player_select_amount[player_id];
             let ret_data: { [key: string]: CGEDPlayerRuneSelectData; } = {};
             let shop_wp_list: string[] = [];
-            let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
             for (let index = 1; index <= amount; index++) { // 45 - 44 
                 let rune_sub = this.player_select_rune_max[player_id] - this.check_rune_name[player_id].length;
                 if (index > rune_sub) {
@@ -239,9 +281,24 @@ export class RuneSystem extends UIEventRegisterClass {
                     // }
                     break;
                 }
-                let key_list = this.drop_list[player_id].key;
-                let pro_list = this.drop_list[player_id].pro;
-                let item_name = key_list[GetCommonProbability(pro_list)];
+                let item_name = "null";
+                if(fate_data_info.type == 1){
+                    let key_list = this.tianhui_task_drop_list[player_id].key;
+                    let pro_list = this.tianhui_task_drop_list[player_id].pro;
+                    item_name = key_list[GetCommonProbability(pro_list)];
+                }else if(fate_data_info.type == 2){
+                    let key_list = this.nightmare_task_drop_list[player_id].key;
+                    let pro_list = this.nightmare_task_drop_list[player_id].pro;
+                    item_name = key_list[GetCommonProbability(pro_list)];
+                }else{
+                    let key_list = this.drop_list[player_id].key;
+                    let pro_list = this.drop_list[player_id].pro;
+                    item_name = key_list[GetCommonProbability(pro_list)];
+                }
+                if(item_name == "null"){
+                    index--;
+                    continue;
+                }
                 //重复物品跳过
                 if (shop_wp_list.includes(item_name)) {
                     //跳过本次 
@@ -264,6 +321,7 @@ export class RuneSystem extends UIEventRegisterClass {
                 shop_wp_list.push(item_name);
                 this.player_check_rune_name[player_id].push(item_name);
             }
+            
             fate_data_info.item_list = ret_data;
 
             //玩家倒计时
@@ -443,10 +501,11 @@ export class RuneSystem extends UIEventRegisterClass {
                 break;
             }
         }
-        let is_more_level = RuneConfig[item_name as keyof typeof RuneConfig].is_item_level == 1 ? true : false;
-        let is_level_up = RuneConfig[item_name as keyof typeof RuneConfig].is_level_up == 1 ? true : false;
-        let is_all = RuneConfig[item_name as keyof typeof RuneConfig].is_all;
-        let rune_level = RuneConfig[item_name as keyof typeof RuneConfig].item_level_section[level_index];
+        let RuneData = RuneConfig[item_name as keyof typeof RuneConfig];
+        let is_more_level = RuneData.is_item_level == 1 ? true : false;
+        let is_level_up = RuneData.is_level_up == 1 ? true : false;
+        let is_all = RuneData.is_all;
+        let rune_level = RuneData.item_level_section[level_index];
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
         let item_level_section_length = GameRules.RuneSystem.rune_keyvalue[item_name as keyof typeof GameRules.RuneSystem.rune_keyvalue].item_level_section.length;
@@ -487,6 +546,13 @@ export class RuneSystem extends UIEventRegisterClass {
         GameRules.RuneSystem.GetRuneValues(player_id, item_name, level_index , is_all);
         //增加通过其他符文获取的符文数量
         GameRules.RuneSystem.player_rune_count[player_id] ++;
+        
+        let ret_action_string = RuneData.ret_action;
+        let param = RuneData.AbilityValues;
+        if (ret_action_string != "null") {
+            //执行后续处理....
+            GameRules.RuneSystem[ret_action_string](player_id, param, item_name);
+        }
 
         if(item_name == "rune_2"){
            GameRules.HeroTalentSystem.PointsChange(player_id); 
@@ -771,7 +837,55 @@ export class RuneSystem extends UIEventRegisterClass {
             }
         }
     }
+    /**
+     * 【飞速成长】
+     * @param player_id  //玩家名字
+     * @param param  //buff名字
+     * @param player_id  //参数
+     */
+    HeroLevelUp(player_id: PlayerID, param: { level: number }, key: string) {
+        //更新数值
+    }
+    /**
+     * 【大量灵魂】
+     * @param player_id  //玩家名字
+     * @param param  //buff名字
+     * @param player_id  //参数
+     */
+    GetSoul(player_id: PlayerID, param: { soul: number }, key: string) {
+        //更新数值
+    }
+    /**
+     * 【聚少成多】
+     * @param player_id  //玩家名字
+     * @param param  //buff名字
+     * @param player_id  //参数
+     */
+    RuneGetATK(player_id: PlayerID, param: { value: number }, key: string) {
+        //更新数值
+    }
+    /**
+     * 【独乐乐】如果自身拥有【独乐乐】，则自身获得双倍加成，所有友军获得【独乐乐】加成
+     * @param player_id  //玩家名字
+     * @param param  //buff名字
+     * @param player_id  //参数
+     */
+    GetExpPro(player_id: PlayerID, param: { value: number }, key: string) {
+        //更新数值
+    }
+    /**
+     * 【众乐乐】 如果自身拥有【独乐乐】，则自身获得双倍加成，所有友军获得【独乐乐】加成
+     * @param player_id  //玩家名字
+     * @param param  //buff名字
+     * @param player_id  //参数
+     */
+    GetExpProALL(player_id: PlayerID, param: { self: number , else: number }, key: string) {
+        //更新数值
+    }
 
+    
+
+    
     /**
      * debug 命令
      */

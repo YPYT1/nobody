@@ -501,6 +501,7 @@ declare interface CGEDPlayerRuneSelectServerData {
     check_index: number,
     is_refresh: boolean,
     time : number ,
+    type : number , //获得类型 0 升级时的符文 1天辉符文 2夜魇符文
 }
 declare interface CGEDPlayerRuneSelectDataList {
     item_list: { [index: string]: CGEDPlayerRuneSelectData; }; //可选符文列表 无数据代表不可选 等级下标
@@ -509,6 +510,7 @@ declare interface CGEDPlayerRuneSelectDataList {
     fate_level: number, // 玩家天命挑战成功次数 -即为挑战等级 -- 弃用 不通过战斗获取
     player_refresh_count: number, // 剩余重随符文次数
     time : number , // 倒计时   
+    type : number , //获得类型 0 升级时的符文 1天辉符文 2夜魇符文
 }
 
 
