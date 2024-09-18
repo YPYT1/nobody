@@ -10,14 +10,13 @@ import { MissionModule } from "../_mission_module";
 export class Mission_Radiant_2 extends MissionModule {
 
     relay_radius = 250; // 接力点范围
-    relay_time = 15; // 接力时间
+    limit_time: number = 15;
     distance_range = [1500, 2000];
 
     last_relay_pos: Vector;
 
-    
+
     ExecuteLogic(start: Vector): void {
-        this.RemoveMoveTips()
         this.progress_max = 5;
         this.progress_value = 0;
         this.SendMissionProgress();
@@ -31,14 +30,14 @@ export class Mission_Radiant_2 extends MissionModule {
      * @param iIndex 
      */
     _CreateRelayPoint(vOrign: Vector) {
-        this.AddMoveTips(vOrign,this.relay_time)
+        this.AddMoveTips(vOrign, this.limit_time, this.mission_type)
         let unis = CreateModifierThinker(
             null,
             null,
             "modifier_mission_radiant_2_points",
             {
                 relay_radius: this.relay_radius,
-                duration: this.relay_time,
+                duration: this.limit_time,
             },
             vOrign,
             DotaTeam.GOODGUYS,
@@ -55,6 +54,9 @@ export class Mission_Radiant_2 extends MissionModule {
             // 下一个点
             this.last_relay_pos = this.GetToNextPoints(this.last_relay_pos, RandomInt(1500, 2000))
             this._CreateRelayPoint(this.last_relay_pos)
+
+            let end_time = GameRules.GetDOTATime(false, false) + this.limit_time;
+            GameRules.MissionSystem.UpdateMissionEndTime(this.mission_type, this.mission_name, end_time, this.limit_time)
         } else {
             // 完成任务
             GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true)

@@ -22,6 +22,7 @@ export class modifier_mission_radiant_1_football extends BaseModifier {
             this.hParent,
         );
         ParticleManager.SetParticleControl(line_pfx, 1, this.goal_vect);
+        ParticleManager.SetParticleControl(line_pfx, 6, Vector(50, 255, 50));
         this.AddParticle(line_pfx, false, false, -1, false, false);
 
         this.StartIntervalThink(0.1)
@@ -62,7 +63,7 @@ export class modifier_mission_radiant_1_football extends BaseModifier {
                 center_x: vOrigin.x,
                 center_y: vOrigin.y,
                 center_z: 0,
-                knockback_distance: RandomInt(450, 600),
+                knockback_distance: RandomInt(500, 1000),
                 knockback_duration: 0.35,
                 duration: 0.5,
             })
@@ -94,7 +95,6 @@ export class modifier_mission_radiant_1_football_goal extends BaseModifier {
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
-        print("modifier_mission_radiant_1_football_goal")
         this.origin = this.GetParent().GetOrigin();
         this.radius = params.goal_radius;
         let origin_fx = ParticleManager.CreateParticle(
@@ -106,6 +106,15 @@ export class modifier_mission_radiant_1_football_goal extends BaseModifier {
         ParticleManager.SetParticleControl(origin_fx, 2, Vector(this.radius - 32, 0, 0))
         ParticleManager.SetParticleControl(origin_fx, 3, Vector(0, 255, 0))
         this.AddParticle(origin_fx, false, false, -1, false, false)
+
+        let glow_fx = ParticleManager.CreateParticle(
+            "particles/diy_particles/move_glow.vpcf",
+            ParticleAttachment.POINT,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControl(glow_fx, 1, this.GetParent().GetAbsOrigin())
+        ParticleManager.SetParticleControl(glow_fx, 6, Vector(0, 255, 0))
+        this.AddParticle(glow_fx, false, false, -1, false, false)
     }
 
     CheckState(): Partial<Record<modifierstate, boolean>> {

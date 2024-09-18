@@ -11,7 +11,7 @@ import { MissionModule } from "../_mission_module";
 export class Mission_Radiant_6 extends MissionModule {
 
     box_list: CDOTA_BaseNPC[] = [];
-    limit_time: number = 15;
+    limit_time: number = 45;
 
     ExecuteLogic(start: Vector): void {
         this.progress_max = 10;
@@ -31,8 +31,8 @@ export class Mission_Radiant_6 extends MissionModule {
             let box_pos = this.GetToNextPoints(vect, RandomInt(300, 3000))
             let box = CreateUnitByName("npc_mission_box", box_pos, false, null, null, DotaTeam.BADGUYS);
             box.AddNewModifier(box, null, "modifier_mission_radiant_6_box", { duration: this.limit_time })
-            box.AddNewModifier(box, null, "modifier_basic_countdown", { duration: this.limit_time })
-            box.AddNewModifier(box, null, "modifier_basic_hits", {})
+            // box.AddNewModifier(box, null, "modifier_basic_countdown", { duration: this.limit_time })
+            // box.AddNewModifier(box, null, "modifier_basic_hits", {})
             this.units.push(box)
         }
     }

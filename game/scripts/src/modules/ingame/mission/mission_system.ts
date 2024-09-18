@@ -98,13 +98,24 @@ export class MissionSystem extends UIEventRegisterClass {
 
     vMapCenter: Vector;
 
-    mission_name: { dire?: string, radiant?: string };
+    mission_object: MissionDataProps;
 
 
     constructor() {
         super("MissionSystem");
         GameRules.Debug.RegisterDebug(this.constructor.name)
-        this.mission_name = {}
+        this.mission_object = {
+            dire: {
+                name: null,
+                end_time: -1,
+                max_time: -1
+            },
+            radiant: {
+                name: null,
+                end_time: -1,
+                max_time: -1
+            }
+        }
         this._Init();
     }
 
@@ -234,10 +245,10 @@ export class MissionSystem extends UIEventRegisterClass {
 
     EndMissionOfName(mission_type: number) {
         if (mission_type == 1) {
-            this.mission_name["radiant"] = null;
+            this.mission_object["radiant"] = null;
             GameRules.MissionSystem.GetCurrentMission(-1);
         } else {
-            this.mission_name["dire"] = null
+            this.mission_object["dire"] = null
             GameRules.MissionSystem.GetCurrentMission(-1);
         }
 
@@ -246,8 +257,8 @@ export class MissionSystem extends UIEventRegisterClass {
     }
     /** 强制结束所有任务 */
     Stop() {
-        this.mission_name["radiant"] = null;
-        this.mission_name["dire"] = null;
+        this.mission_object["radiant"] = null;
+        this.mission_object["dire"] = null;
         GameRules.MissionSystem.GetCurrentMission(-1);
         GameRules.GetGameModeEntity().SetContextThink("MissionStartDelay", null, 0)
         GameRules.GetGameModeEntity().SetContextThink("DIRE_MISSION_DELAY", null, 0)
@@ -279,13 +290,15 @@ export class MissionSystem extends UIEventRegisterClass {
             }
         )
         // 设置当前
-        if (mission_type == 1) {
-            this.mission_name["radiant"] = mission_name
-        } else {
-            this.mission_name["dire"] = mission_name
-        }
+        // if (mission_type == 1) {
+        //     this.mission_object["radiant"] = mission_name
+        //     // this.mission_object["radiant_timer"] = deadline
+        // } else {
+        //     this.mission_object["dire"] = mission_name
+        //     // this.mission_object["dire_timer"] = deadline
+        // }
 
-        
+
     }
 
     GetCurrentMission(player_id: PlayerID, params?: any) {
@@ -293,7 +306,7 @@ export class MissionSystem extends UIEventRegisterClass {
             CustomGameEventManager.Send_ServerToAllClients(
                 "MissionSystem_GetCurrentMission",
                 {
-                    data: this.mission_name
+                    data: this.mission_object
                 }
             )
         } else {
@@ -301,13 +314,32 @@ export class MissionSystem extends UIEventRegisterClass {
                 PlayerResource.GetPlayer(player_id),
                 "MissionSystem_GetCurrentMission",
                 {
-                    data: this.mission_name
+                    data: this.mission_object
                 }
             )
         }
 
     }
 
+    MissionCompleteSend(mission_type: number) {
+        CustomGameEventManager.Send_ServerToAllClients(
+            "MissionSystem_MissionComplete",
+            {
+                data: {
+                    mission_type: mission_type
+                }
+            }
+        )
+    }
+    UpdateMissionEndTime(mission_type: number, name: string, end_time: number, max_time: number) {
+        if (mission_type == 1) {
+            this.mission_object.radiant = { name, end_time, max_time }
+        } else {
+            this.mission_object.dire = { name, end_time, max_time }
+        }
+
+        this.GetCurrentMission(-1)
+    }
 
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);

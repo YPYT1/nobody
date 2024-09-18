@@ -7,7 +7,7 @@ import { BaseCreatureAbility } from "../creature/base_creature";
 @registerAbility()
 export class mission_spider extends BaseCreatureAbility {
 
-    shadowball_distance: number = 1000;
+    shadowball_distance: number = 5000;
     shadowball_maxhp_dmg: number = 40;
     shadowball_speed: number = 350;
 

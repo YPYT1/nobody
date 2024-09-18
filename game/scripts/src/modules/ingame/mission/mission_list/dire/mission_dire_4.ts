@@ -31,30 +31,10 @@ export class Mission_Dire_4 extends MissionModule {
         let angle = this.angle_list[RandomInt(0, 3)]
         let line_pos = vMapCenter + Vector(3200, 0, 0) as Vector;
         vPos = RotatePosition(vMapCenter, QAngle(0, angle, 0), line_pos);
-
-        // let hHero = PlayerResource.GetSelectedHeroEntity(0);
-        // hHero.RemoveModifierByName("modifier_state_movetips")
-
-        // // this.pick_points = target_vect;
-        // hHero.AddNewModifier(hHero, null, "modifier_state_movetips", {
-        //     duration: 15,
-        //     x: target_vect.x,
-        //     y: target_vect.y,
-        //     z: target_vect.z,
-        // })
-
         this.is_test = is_test;
         this.is_stop = false;
         this.units = [];
         this.vMapCenter = vMapCenter;
-        let hHero = PlayerResource.GetSelectedHeroEntity(0);
-        hHero.RemoveModifierByName("modifier_state_movetips")
-        hHero.AddNewModifier(hHero, null, "modifier_state_movetips", {
-            duration: 30,
-            x: vPos.x,
-            y: vPos.y,
-            z: vPos.z,
-        })
 
         this.start_thinker = CreateModifierThinker(
             null,
@@ -74,6 +54,7 @@ export class Mission_Dire_4 extends MissionModule {
             this.start_npc = CreateUnitByName("npc_mission_npc_dire", vPos, false, null, null, DotaTeam.GOODGUYS)
         }
         this.start_npc.AddNewModifier(this.start_npc, null, "modifier_mission_npc", {})
+        // const deadline = GameRules.GetDOTATime(false,false);
         GameRules.MissionSystem.SendMissionTips(this.mission_type,this.mission_name)
 
     }

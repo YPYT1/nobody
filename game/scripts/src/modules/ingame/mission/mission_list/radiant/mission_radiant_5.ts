@@ -10,7 +10,7 @@ import { MissionModule } from "../_mission_module";
  */
 export class Mission_Radiant_5 extends MissionModule {
 
-    limit_time = 15;
+    limit_time = 45;
 
     ExecuteLogic(start: Vector): void {
         // 任务点创建小猪

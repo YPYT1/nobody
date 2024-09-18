@@ -29,6 +29,12 @@ export class modifier_mission_radiant_8_ai extends BaseModifier {
         ]
     }
 
+    CheckState(): Partial<Record<modifierstate, boolean>> {
+        return {
+            [ModifierState.NO_HEALTH_BAR]:true
+        }
+    }
+    
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
         if (!event.target.HasModifier("modifier_mission_radiant_8_speed")) {
             event.target.AddNewModifier(event.target, null, "modifier_mission_radiant_8_speed", {

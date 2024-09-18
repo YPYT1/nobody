@@ -30,14 +30,25 @@ export class modifier_mission_thinker extends BaseModifier {
         ParticleManager.SetParticleControl(this.origin_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
         ParticleManager.SetParticleControl(this.origin_fx, 2, Vector(this.radius - 32, 0, 0))
 
+        let glow_fx = ParticleManager.CreateParticle(
+            "particles/diy_particles/move_glow.vpcf",
+            ParticleAttachment.POINT,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControl(glow_fx, 1, this.GetParent().GetAbsOrigin())
         if (this.mission_type == 1) {
             // 天辉金色
             ParticleManager.SetParticleControl(this.origin_fx, 3, Vector(255, 165, 0))
+            // 光晕绿色
+            ParticleManager.SetParticleControl(glow_fx, 6, Vector(255, 165, 0))
         } else if (this.mission_type == 2) {
             //  夜宴红色
             ParticleManager.SetParticleControl(this.origin_fx, 3, Vector(255, 10, 10))
+            // 光晕红色
+            ParticleManager.SetParticleControl(glow_fx, 6, Vector(255, 10, 10))
         }
 
+        this.AddParticle(glow_fx, false, false, -1, false, false)
         this.StartIntervalThink(0.1)
     }
 

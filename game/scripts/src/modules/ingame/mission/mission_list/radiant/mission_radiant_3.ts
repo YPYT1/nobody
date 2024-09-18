@@ -15,7 +15,8 @@ export class Mission_Radiant_3 extends MissionModule {
     motion_time = 4;
     check_radius = 150;
     max_distance = 500;
-
+    limit_time = 45;
+    
     ExecuteLogic(start: Vector): void {
         this.progress_value = 0;
         this.progress_max = 5;

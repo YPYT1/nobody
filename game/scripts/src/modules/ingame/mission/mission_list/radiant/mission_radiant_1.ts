@@ -19,7 +19,6 @@ export class Mission_Radiant_1 extends MissionModule {
 
 
     ExecuteLogic(vect: Vector) {
-        this.RemoveMoveTips()
         this.limit_time = 60;
         this.progress_value = 0;
         this.progress_max = 1
@@ -45,7 +44,7 @@ export class Mission_Radiant_1 extends MissionModule {
         let rand_vect = vect + RandomVector(200) as Vector
         let football = CreateUnitByName("npc_football", rand_vect, false, null, null, DotaTeam.GOODGUYS);
         // 添加门框指示线
-        football.AddNewModifier(football, null, "modifier_basic_countdown", { duration: this.limit_time })
+        // football.AddNewModifier(football, null, "modifier_basic_countdown", { duration: this.limit_time })
         football.AddNewModifier(football, null, "modifier_mission_radiant_1_football", {
             goal_x: goal_vect.x,
             goal_y: goal_vect.y,

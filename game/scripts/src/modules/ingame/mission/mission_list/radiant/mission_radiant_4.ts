@@ -11,7 +11,7 @@ import { MissionModule } from "../_mission_module";
 export class Mission_Radiant_4 extends MissionModule {
 
     check_radius = 350;
-    check_time = 60;
+    limit_time = 60;
     final_vect: Vector;
 
     ExecuteLogic(start: Vector): void {
@@ -34,7 +34,7 @@ export class Mission_Radiant_4 extends MissionModule {
             "modifier_mission_radiant_4_points",
             {
                 relay_radius: this.check_radius,
-                duration: this.check_time,
+                duration: this.limit_time,
             },
             vOrign,
             DotaTeam.GOODGUYS,

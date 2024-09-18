@@ -44,6 +44,45 @@ export class modifier_state_movetips extends BaseModifier {
             this.GetParent(),
         );
         ParticleManager.SetParticleControl(line_pfx, 1, vect);
+        ParticleManager.SetParticleControl(line_pfx, 6, Vector(255, 255, 255));
+        this.AddParticle(line_pfx, false, false, -1, false, false);
+    }
+}
+
+// 天辉任务路径  绿色，光柱绿色；
+@registerModifier()
+export class modifier_state_mission_path_radiant extends BaseModifier {
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        let vect = Vector(params.x, params.y, params.z);
+
+        let line_pfx = ParticleManager.CreateParticle(
+            "particles/diy_particles/move.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent(),
+        );
+        ParticleManager.SetParticleControl(line_pfx, 1, vect);
+        ParticleManager.SetParticleControl(line_pfx, 6, Vector(50, 255, 50))
+
+        this.AddParticle(line_pfx, false, false, -1, false, false);
+    }
+}
+
+@registerModifier()
+export class modifier_state_mission_path_dire extends BaseModifier {
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        let vect = Vector(params.x, params.y, params.z);
+
+        let line_pfx = ParticleManager.CreateParticle(
+            "particles/diy_particles/move.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent(),
+        );
+        ParticleManager.SetParticleControl(line_pfx, 1, vect);
+        ParticleManager.SetParticleControl(line_pfx, 6, Vector(255, 0, 50))
         this.AddParticle(line_pfx, false, false, -1, false, false);
     }
 }

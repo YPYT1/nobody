@@ -3,6 +3,18 @@ interface MessageObjectDataProps {
     [key: string]: string | number
 }
 
+interface MissionDataProps {
+    dire: {
+        name: string,
+        end_time: number,
+        max_time: number,
+    },
+    radiant: {
+        name: string,
+        end_time: number,
+        max_time: number,
+    }
+}
 declare interface CustomGameEventDeclarations {
 
     CMsg_SendCommonMsgToPlayer: {
@@ -98,18 +110,19 @@ declare interface CustomGameEventDeclarations {
     };
 
     MissionSystem_GetCurrentMission: {
-        data: {
-            /** 夜魇任务编号 */
-            dire?: string;
-            /** 天辉任务编号 */
-            radiant?: string;
-        }
+        data: MissionDataProps
     }
 
     MissionSystem_SendMissionTips: {
         data: {
             mission_type: number;
             mission_name: string;
+        }
+    }
+
+    MissionSystem_MissionComplete: {
+        data:{
+            mission_type:number
         }
     }
 }

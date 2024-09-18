@@ -165,6 +165,7 @@ export class modifier_mission_dire_2_target extends BaseModifier {
             Vector(0, 0, 0),
             false
         )
+        ParticleManager.SetParticleControl(this.effect_fx, 6, Vector(255, 0, 0))
     }
 
     OnDestroy(): void {

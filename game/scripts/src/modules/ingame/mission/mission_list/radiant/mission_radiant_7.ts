@@ -12,7 +12,7 @@ import { MissionModule } from "../_mission_module";
 export class Mission_Radiant_7 extends MissionModule {
 
     check_radius: number;
-
+    limit_time = 20;
 
     ExecuteLogic(start: Vector): void {
         this.progress_max = 20;

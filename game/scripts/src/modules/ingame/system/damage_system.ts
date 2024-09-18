@@ -225,8 +225,11 @@ export class DamageSystem {
      * @returns 
      */
     ApplyDamageForBadTeam(params: ApplyCustomDamageOptions) {
-        // 闪避判定
-        // print("ApplyDamageForBadTeam", params.damage)
+        
+        // 无敌
+        if (params.victim.HasModifier("modifier_altar_effect_6")){
+            return 0
+        }
         params.damage_type = DamageTypes.PURE;
         let custom_attribute_value = params.victim.custom_attribute_value;
         if (custom_attribute_value == null) {

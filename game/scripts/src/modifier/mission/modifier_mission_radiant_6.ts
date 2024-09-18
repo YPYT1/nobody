@@ -30,6 +30,7 @@ export class modifier_mission_radiant_6_box extends BaseModifier {
         return {
             [ModifierState.LOW_ATTACK_PRIORITY]: true,
             [ModifierState.NO_UNIT_COLLISION]: true,
+            [ModifierState.NO_HEALTH_BAR]: true,
         };
     }
 
@@ -38,7 +39,5 @@ export class modifier_mission_radiant_6_box extends BaseModifier {
         if (this.is_kill == true) {
             GameRules.MissionSystem.RadiantMissionHandle.AddProgressValue(1);
         }
-        // if()
-        // UTIL_Remove(this.GetParent())
     }
 }

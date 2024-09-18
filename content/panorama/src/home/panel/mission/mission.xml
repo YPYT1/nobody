@@ -6,6 +6,38 @@
 	<scripts>
 		<include src="./mission.tsx" />
 	</scripts>
+    <snippets>
+        <snippet name="ContainerRightSide">
+            <Panel class="ContainerRightSide">
+                <CircularProgressBar id="MissionProgressBar" class="MissionTimerProgress" max="100" min="0" value="25">
+                    <Label text="{s:timer}s"/>
+                </CircularProgressBar>
+                <Panel class="MissionSideContainer">
+                    <Panel class="ContentBorder" hittest="false">
+                        <Panel class="ContentHeader" hittest="false"/>
+                        <Panel class="ContentBody" hittest="false">
+                            <Label class="Title" text="{s:mission_title}" hittest="false"/>
+                            <Label class="Desc" text="{s:mission_desc}" hittest="false"/>
+                        </Panel>
+                        <Panel class="ContentBottom" hittest="false"/>
+                    </Panel>
+                    <Panel class="SignBorder">
+                        <Panel class="Sign" hittest="false"/>
+                    </Panel>
+                </Panel>
+            </Panel>
+        </snippet>
+
+        <snippet name="MissionComplete">
+            <Panel class="MissionComplete">
+                <Panel class="Sign" hittest="false" />
+                <Panel class="Border">
+                    <Label class="Title" text="{s:title}" />
+                    <Label class="Desc" text="{s:desc}" />
+                </Panel>
+            </Panel>
+        </snippet>
+    </snippets>
 	<Panel class="mission">
         <Panel id="MissionAppearTips" hittest="false">
             <Panel id="DireTips" class="MissionTips Dire">
@@ -19,50 +51,16 @@
         </Panel>
 
         <Panel id="MissionContent" hittest="false">
-            
             <Panel class="MissionRightSideList" hittest="false">
-                <Panel id="DireMissionContainer" class="MissionContainerRightSide Dire Hide">
-                    <Panel class="Border" hittest="false">
-                        <Panel class="Header" hittest="false"/>
-                        <Panel class="Body" hittest="false">
-                            <Panel class="Title" hittest="false">
-                                <Label text="{s:mission_title}" hittest="false"/>
-                            </Panel>
-                            <Panel class="Desc" hittest="false">
-                                <Label text="{s:mission_desc}" hittest="false"/>
-                            </Panel>
-                        </Panel>
-                        <Panel class="Bottom" hittest="false"/>
-                    </Panel>
-    
-                    <Panel class="Sign" hittest="false"/>
-                    <Label class="SignLabel" text="{s:mission_title}" hittest="false"/>
-                    <Panel class="MiniShow">
-                        <Panel class="Mark"/>
-                        <Label text="任务进行中"/>
-                    </Panel>
-                </Panel>
-
-                <Panel id="RadiantMissionContainer" class="MissionContainerRightSide Radiant Hide">
-                    <Panel class="Border" hittest="false">
-                        <Panel class="Header" hittest="false"/>
-                        <Panel class="Body" hittest="false">
-                            <Panel class="Title" hittest="false">
-                                <Label text="{s:mission_title}" hittest="false"/>
-                            </Panel>
-                            <Panel class="Desc" hittest="false">
-                                <Label text="{s:mission_desc}" hittest="false"/>
-                            </Panel>
-                        </Panel>
-                        <Panel class="Bottom" hittest="false"/>
-                    </Panel>
-    
-                    <Panel class="Sign" hittest="false"/>
-                    <Label class="SignLabel" text="{s:mission_title}" hittest="false"/>
-                </Panel>
+                <Panel id="DireMissionContainer" class="MissionContainerRightSide Dire Hide" />
+                <Panel id="RadiantMissionContainer" class="MissionContainerRightSide Radiant Hide"/>
                 <Panel id="resource" />
             </Panel>
-            
+        </Panel>
+
+        <Panel id="MissionCompleteContainer">
+            <Panel id="RadiantComplete" class="Radiant"/>
+            <Panel id="DireComplete" class="Dire"/>
         </Panel>
 	</Panel>
 </root>

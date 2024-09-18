@@ -82,14 +82,6 @@ export class Altar {
             duration: 60
         })
 
-        let hHero = PlayerResource.GetSelectedHeroEntity(0);
-        hHero.RemoveModifierByName("modifier_state_movetips")
-        hHero.AddNewModifier(hHero, null, "modifier_state_movetips", {
-            duration: 60,
-            x: vStart.x,
-            y: vStart.y,
-            z: vStart.z,
-        })
     }
 
     /** 圣坛存在时间超时 */

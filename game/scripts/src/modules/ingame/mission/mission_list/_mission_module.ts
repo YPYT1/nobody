@@ -64,16 +64,6 @@ export class MissionModule {
         this.is_stop = false;
         this.units = [];
         this.vMapCenter = vMapCenter;
-        let hHero = PlayerResource.GetSelectedHeroEntity(0);
-        if (IsInToolsMode()) {
-            hHero.RemoveModifierByName("modifier_state_movetips")
-            hHero.AddNewModifier(hHero, null, "modifier_state_movetips", {
-                duration: 30,
-                x: vPos.x,
-                y: vPos.y,
-                z: vPos.z,
-            })
-        }
 
 
         this.start_thinker = CreateModifierThinker(
@@ -94,18 +84,39 @@ export class MissionModule {
             this.start_npc = CreateUnitByName("npc_mission_npc_dire", vPos, false, null, null, DotaTeam.GOODGUYS)
         }
         this.start_npc.AddNewModifier(this.start_npc, null, "modifier_mission_npc", {})
+        GameRules.MissionSystem.SendMissionTips(this.mission_type, this.mission_name);
 
-        GameRules.MissionSystem.SendMissionTips(this.mission_type, this.mission_name)
+        if (IsInToolsMode()) {
+            this.TestAddMoveTips(vPos, 30)
+        }
     }
 
     RemoveMoveTips() {
         // 移除tips
         for (let hHero of HeroList.GetAllHeroes()) {
-            hHero.RemoveModifierByName("modifier_state_movetips")
+            hHero.RemoveModifierByName("modifier_state_movetips");
+            hHero.RemoveModifierByName("modifier_state_mission_path_radiant");
+            hHero.RemoveModifierByName("modifier_state_mission_path_dire");
         }
     }
 
-    AddMoveTips(vPos: Vector, duration: number) {
+    AddMoveTips(vPos: Vector, duration: number, mission_type: number) {
+        let buff_name = "modifier_state_mission_path_radiant";
+        if (mission_type == 2) {
+            buff_name = "modifier_state_mission_path_dire";
+        }
+        for (let hHero of HeroList.GetAllHeroes()) {
+            hHero.RemoveModifierByName(buff_name)
+            hHero.AddNewModifier(hHero, null, buff_name, {
+                duration: duration,
+                x: vPos.x,
+                y: vPos.y,
+                z: vPos.z,
+            })
+        }
+    }
+
+    TestAddMoveTips(vPos: Vector, duration: number,) {
         for (let hHero of HeroList.GetAllHeroes()) {
             hHero.RemoveModifierByName("modifier_state_movetips")
             hHero.AddNewModifier(hHero, null, "modifier_state_movetips", {
@@ -114,6 +125,12 @@ export class MissionModule {
                 y: vPos.y,
                 z: vPos.z,
             })
+        }
+    }
+
+    TestRemoveTip() {
+        for (let hHero of HeroList.GetAllHeroes()) {
+            hHero.RemoveModifierByName("modifier_state_movetips")
         }
     }
 
@@ -132,9 +149,12 @@ export class MissionModule {
             UTIL_Remove(this.start_npc)
             this.start_npc = null
         }
+        if (IsInToolsMode()) {
+            this.TestRemoveTip()
+        }
         this.ExecuteLogic(start);
-        this.RemoveMoveTips()
-        GameRules.MissionSystem.GetCurrentMission(-1);
+        let end_time = GameRules.GetDOTATime(false, false) + (this.limit_time ?? 0);
+        GameRules.MissionSystem.UpdateMissionEndTime(this.mission_type, this.mission_name, end_time, this.limit_time)
     }
 
     // 执行任务相关内容
@@ -255,6 +275,7 @@ export class MissionModule {
             }
         )
 
+        GameRules.MissionSystem.MissionCompleteSend(1)
 
     }
 
@@ -274,6 +295,8 @@ export class MissionModule {
                 soul: 1000,
             }
         )
+
+        GameRules.MissionSystem.MissionCompleteSend(2)
     }
 
 }

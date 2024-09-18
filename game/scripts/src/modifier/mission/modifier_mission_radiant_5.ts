@@ -20,7 +20,6 @@ export class modifier_mission_radiant_5_ai extends BaseModifier {
     }
 
     OnIntervalThink(): void {
-
         if (this.delay <= 0) {
             let players = FindUnitsInRadius(
                 DotaTeam.GOODGUYS,
@@ -42,7 +41,7 @@ export class modifier_mission_radiant_5_ai extends BaseModifier {
                 return
             }
         } else {
-            if (this.delay > 2.9) {
+            if (this.delay > 0.5) {
                 this.MovePig()
             }
             this.delay -= 0.1;
@@ -52,7 +51,7 @@ export class modifier_mission_radiant_5_ai extends BaseModifier {
 
         if (this.last_vect == this.parent.GetAbsOrigin()) {
             this.idle_timer += 0.1;
-            if (this.idle_timer >= 1) {
+            if (this.idle_timer >= 0.5) {
                 this.idle_timer = 0;
                 this.MovePig()
             }
