@@ -266,17 +266,17 @@ export class MissionModule {
                 "Soul": 500
             })
         }
-        GameRules.CMsg.SendCommonMsgToPlayer(
-            -1,
-            "完成天辉任务{s:mission_name} 获得 {d:soul}灵魂",
-            {
-                mission_name: this.mission_name,
-                soul: 500,
-            }
-        )
+        // GameRules.CMsg.SendCommonMsgToPlayer(
+        //     -1,
+        //     "完成天辉任务{s:mission_name} 获得 {d:soul}灵魂",
+        //     {
+        //         mission_name: this.mission_name,
+        //         soul: 500,
+        //     }
+        // )
 
         GameRules.MissionSystem.MissionCompleteSend(1)
-
+        GameRules.RuneSystem.GetRuneSelectToAll(1)
     }
 
     /** 夜魇奖励 */
@@ -287,16 +287,17 @@ export class MissionModule {
                 "Soul": 1000
             })
         }
-        GameRules.CMsg.SendCommonMsgToPlayer(
-            -1,
-            "完成夜宴任务{s:mission_name} 获得 {d:soul}灵魂",
-            {
-                mission_name: this.mission_name,
-                soul: 1000,
-            }
-        )
+        // GameRules.CMsg.SendCommonMsgToPlayer(
+        //     -1,
+        //     "完成夜宴任务{s:mission_name} 获得 {d:soul}灵魂",
+        //     {
+        //         mission_name: this.mission_name,
+        //         soul: 1000,
+        //     }
+        // )
 
         GameRules.MissionSystem.MissionCompleteSend(2)
+        GameRules.RuneSystem.GetRuneSelectToAll(2)
     }
 
 }

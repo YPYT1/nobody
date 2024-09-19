@@ -168,6 +168,9 @@ const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageNumberTo
         vect[2] += Math.floor(Math.random() * 100) - 50;    
     }
     let color = element_color[element]
+    if (damage_type == 4){
+        color = [237, 219, 255];
+    }
     let pidx = Particles.CreateParticle(
         effect_name,
         ParticleAttachment_t.PATTACH_WORLDORIGIN,

@@ -1,4 +1,5 @@
 
+import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_rune_effect";
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 
@@ -22,7 +23,7 @@ export class ResourceSystem extends UIEventRegisterClass {
 
     exp_type_count = [2, 5, 10];
     constructor() {
-        super("ResourceSystem" , true)
+        super("ResourceSystem", true)
         this.InitAllPlayer()
     }
 
@@ -111,15 +112,25 @@ export class ResourceSystem extends UIEventRegisterClass {
                     amount = amount * this.player_cost_rate[player_id][resource] * 0.01
                 }
             }
-            this.player_resource[player_id][resource] += math.ceil(amount);
+            this.player_resource[player_id][resource] += math.floor(amount);
             if (resource == "SingleExp") {
                 // 增加个人英雄经验
-                this.AddExperience(player_id, math.ceil(amount))
+                this.AddExperience(player_id, math.floor(amount))
             } else if (resource == "TeamExp") {
                 // 团队经验
                 for (let hHero of HeroList.GetAllHeroes()) {
-                    this.AddExperience(hHero.GetPlayerID(), math.ceil(amount))
+                    this.AddExperience(hHero.GetPlayerID(), math.floor(amount))
                 }
+            } else if (resource == "Soul") {
+                // 获得灵魂时
+                if (amount > 0) {
+                    const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+                    let rune_buff = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect
+                    if (rune_buff) {
+                        rune_buff.OnGetSoul(math.floor(amount))
+                    }
+                }
+
             }
         }
 
