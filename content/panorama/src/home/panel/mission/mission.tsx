@@ -72,11 +72,11 @@ const SetMissionTipsAnima = (panel: Panel, mission_name: string, end_time: numbe
     panel.Data<PanelDataObject>().end_time = end_time;
     panel.Data<PanelDataObject>().max_time = max_time;
 
-    $.Msg([panel.BHasClass("Showed")])
+    // $.Msg([panel.BHasClass("Showed")])
     if (!panel.BHasClass("Showed")) {
         panel.SetDialogVariable("mission_title", $.Localize(`#custom_mission_no_${mission_name}`));
         panel.SetDialogVariable("mission_desc", $.Localize(`#custom_mission_no_${mission_name}_Description`));
-        // panel.AddClass("TipsPlay");
+        panel.AddClass("TipsPlay");
         panel.AddClass("Showed")
         $.Schedule(4.5, () => {
             panel.RemoveClass("TipsPlay")
@@ -141,7 +141,7 @@ const CustomSubscribe = () => {
     })
 
     GameEvents.Subscribe("MissionSystem_GetCurrentMission", event => {
-        $.Msg("MissionSystem_GetCurrentMission 1")
+        // $.Msg("MissionSystem_GetCurrentMission 1")
         let data = event.data;
 
         for (let key of mission_key_list) {

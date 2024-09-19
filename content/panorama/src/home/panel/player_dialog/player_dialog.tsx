@@ -62,40 +62,11 @@ const UpdateHeroStateDialog = () => {
     HeroState.SetDialogVariableInt("mp_pct", 100 * mp / max_mp)
 }
 const UpdateLocalPlayerRuneDialog = () => {
-    // const entity = Players.GetPlayerHeroEntityIndex(localPlayer);
-    // const pos = Entities.GetAbsOrigin(entity);
-    // // $.Msg(pos)
-    // if (pos == null) { return }
-    // let fOffset = Entities.GetHealthBarOffset(entity);
-    // fOffset = (fOffset === -1 || fOffset < BarHeight) ? BarHeight : fOffset;
-    // let xUI = Game.WorldToScreenX(pos[0], pos[1], pos[2] + fOffset);
-    // let yUI = Game.WorldToScreenY(pos[0], pos[1], pos[2] + fOffset);
-    // if (xUI < 0 || xUI > Game.GetScreenWidth() || yUI < 0 || yUI > Game.GetScreenHeight()) {
-    //     LocalPlayerRuneDialog.visible = false;
-    //     return;
-    // }
-    // LocalPlayerRuneDialog.visible = true;
-    // const [clampX, clampY] = GameUI.WorldToScreenXYClamped(pos);
-    // // $.Msg([clampX, clampY])
-    // const diffX = clampX - 0.5;
-    // const diffY = clampY - 0.5;
-    // xUI -= diffX * Game.GetScreenWidth() * 0.16;
-    // yUI -= diffY * Game.GetScreenHeight() * 0.10;
-
-    // let xoffset = 0;
-    // let yoffset = -30;
-    // LocalPlayerRuneDialog.SetPositionInPixels(
-    //     (xUI - LocalPlayerRuneDialog.actuallayoutwidth / 2 - xoffset) / LocalPlayerRuneDialog.actualuiscale_x,
-    //     (yUI - LocalPlayerRuneDialog.actuallayoutheight + yoffset) / LocalPlayerRuneDialog.actualuiscale_y,
-    //     0,
-    // );
     let game_time = Game.GetDOTATime(false, false);
     let over_time = LocalPlayerRuneDialog.Data<PanelDataObject>().over_time ?? 0;
     let select_timer = Math.floor(over_time - game_time)
     LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", select_timer)
 }
-
-
 
 export const Init = () => {
     HeroState.RemoveAndDeleteChildren();
@@ -122,6 +93,12 @@ export const Init = () => {
         let rune_list = Object.values(data.item_list)
         RuneSelectList.RemoveAndDeleteChildren();
         let select_index = 0;
+        let reward_type = data.type;
+        $.Msg([reward_type])
+        LocalPlayerRuneDialog.SetHasClass("type_0",reward_type == 0);
+        LocalPlayerRuneDialog.SetHasClass("type_1",reward_type == 1);
+        LocalPlayerRuneDialog.SetHasClass("type_2",reward_type == 2);
+
         for (let _data of rune_list) {
             let post_index = select_index
             let level = _data.level;

@@ -190,7 +190,7 @@ export class RuneSystem extends UIEventRegisterClass {
     }
     /**
      * 
-     * @param type 获取符文类型 1公共+专属 2公共+天辉 3公共+夜魇
+     * @param type 获取符文类型 0公共+专属 1公共+天辉 2公共+夜魇
      */
     GetRuneSelectToAll(type : number = 0) {
         let player_count = GetPlayerCount();

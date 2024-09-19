@@ -15,6 +15,8 @@ export class modifier_rune_effect extends BaseModifier {
 
     _rune_object: { [rune: string]: AbilityValuesProps };
 
+    timer_114: number;
+    kills_115: number;
     IsHidden(): boolean { return true }
     IsPermanent(): boolean { return true }
     RemoveOnDeath(): boolean { return false }
@@ -25,6 +27,9 @@ export class modifier_rune_effect extends BaseModifier {
         this.ability = this.GetAbility();
         this.player_id = this.caster.GetPlayerOwnerID();
         this._rune_object = {}
+
+        this.timer_114 = 0;
+        this.kills_115 = 0;
         this.OnRefresh(params);
         this.StartIntervalThink(1)
     }
@@ -77,6 +82,26 @@ export class modifier_rune_effect extends BaseModifier {
                 let health_pct = this.Rune_Object('rune_17', 'health_pct')
                 let heal_value = this.caster.GetMaxHealth() * health_pct * 0.01;
                 GameRules.BasicRules.Heal(this.caster, heal_value, this.ability);
+            }
+        }
+
+        // rune_105	灵魂征收	击杀敌人时，会额外获得3点灵魂
+        if (this._rune_object["rune_105"]) {
+            GameRules.ResourceSystem.ModifyResource(this.player_id, {
+                "Soul": 3,
+            })
+        }
+
+        // rune_115	累积急速	每击杀50个敌人获得1点技能急速
+        if (this._rune_object["rune_105"]) {
+            this.kills_115 += 1;
+            if (this.kills_115 >= 50) {
+                this.kills_115 -= 50;
+                GameRules.CustomAttribute.ModifyAttribute(this.caster, {
+                    "AbilityHaste": {
+                        "Base": 1
+                    }
+                })
             }
         }
     }
@@ -136,7 +161,7 @@ export class modifier_rune_effect extends BaseModifier {
         // rune_10	通用符文10	每损失10%生命值，提高5%/7%/10%移动速度
         if (this._rune_object["rune_10"]) {
             let ms_pct = this.Rune_Object('rune_10', 'ms_pct');
-            print("lost_health_pct", lost_health_pct)
+            // print("lost_health_pct", lost_health_pct)
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_10", {
                 'MoveSpeed': {
                     "BasePercent": ms_pct * lost_health_pct,
@@ -236,5 +261,66 @@ export class modifier_rune_effect extends BaseModifier {
             });
         }
 
+        // rune_101	飞毛腿	自身每拥有1%移速加成，自身造成的伤害提高1%
+        if (this._rune_object["rune_101"]) {
+            let ms_pct = math.floor(math.max(this.caster.custom_attribute_value.MoveSpeed - 350, 0) / 350)
+            GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_24", {
+                "DamageBonusMul": {
+                    "Base": ms_pct
+                }
+            });
+        }
+
+        // rune_114	无人之境	每过15秒，获得伤害加成在-50%~125%波动，持续15秒
+        if (this._rune_object["rune_114"]) {
+            this.timer_114 += 1;
+            if (this.timer_114 >= 15) {
+                this.timer_114 = 0
+                let damage_bonus = RandomInt(-50, 125);
+                GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_114", {
+                    "DamageBonusMul": {
+                        "Base": damage_bonus
+                    }
+                }, 15.1);
+            }
+        }
+
+        // rune_117	法力燃烧	每秒扣除5点蓝量，对自身500码范围内敌人造成每秒扣除蓝量的1000%真实伤害
+        if (this._rune_object["rune_117"]) {
+            let mana_regen = this.caster.custom_attribute_value.ManaRegen;
+            if (mana_regen < 0) {
+                let damage = math.abs(mana_regen) * 10;
+                let enemies = FindUnitsInRadius(
+                    DotaTeam.GOODGUYS,
+                    this.caster.GetAbsOrigin(),
+                    null,
+                    500,
+                    UnitTargetTeam.ENEMY,
+                    UnitTargetType.BASIC + UnitTargetType.HERO,
+                    UnitTargetFlags.NONE,
+                    FindOrder.ANY,
+                    false
+                )
+                for (let enemy of enemies) {
+                    ApplyCustomDamage({
+                        victim: enemy,
+                        attacker: this.caster,
+                        damage: damage,
+                        damage_type: DamageTypes.PURE,
+                        element_type: ElementTypes.NONE,
+                        ability: this.GetAbility(),
+                        is_primary: false,
+                    })
+                }
+            }
+        }
+    }
+
+    // 获得灵魂
+    OnGetSoul(soul: number) {
+        // rune_104	灵魂补充	每获得1点灵魂，恢复同等的生命值
+        if (this._rune_object["rune_104"]) {
+            GameRules.BasicRules.Heal(this.caster, soul)
+        }
     }
 }

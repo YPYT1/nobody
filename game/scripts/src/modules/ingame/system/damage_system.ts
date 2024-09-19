@@ -200,6 +200,7 @@ export class DamageSystem {
             * (1 + FinalDamageMul * 0.01)
             * ElementResist * 0.01
             ;
+        // print("increased_injury",increased_injury)
         // print("ElementResist", ElementResist)
         params.damage = math.floor(params.damage * increased_injury);
 
