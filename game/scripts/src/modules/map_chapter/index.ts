@@ -767,7 +767,7 @@ export class MapChapter extends UIEventRegisterClass {
 
     //游戏胜利 普通关卡
     GameWin() {
-        if(GameRules.MapChapter._game_select_phase != 999){
+        if(GameRules.MapChapter._game_select_phase == 999){
             return
         }
         //清理任务
@@ -806,7 +806,7 @@ export class MapChapter extends UIEventRegisterClass {
     }
     //游戏失败 普通关卡
     GameLoser() {
-        if(GameRules.MapChapter._game_select_phase != 999){
+        if(GameRules.MapChapter._game_select_phase == 999){
             return
         }
         //清理任务
