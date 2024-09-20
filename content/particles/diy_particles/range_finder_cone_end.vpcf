@@ -1,4 +1,4 @@
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf57:version{4f75132e-4f5d-493c-958e-3bb4328089ba} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf61:version{39d3ce1d-9442-4407-9b78-8317145b1732} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
@@ -19,17 +19,13 @@
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_entityName = "self"
-				},
-				{
-					m_iControlPoint = 2
-					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ -173.716003, -210.214996, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 3
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1.0, 0.0, 0.0 ]
+					m_vecOffset = [ 100.0, 100.0, 0.0 ]
 					m_entityName = "self"
 				},
 				{
@@ -39,9 +35,7 @@
 					m_entityName = "self"
 				},
 				{
-					m_iControlPoint = 6
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1.0, 0.0, 0.0 ]
 					m_entityName = "self"
 				},
 			]
@@ -82,7 +76,7 @@
 			_class = "C_INIT_CreateWithinSphereTransform"
 			m_TransformInput = 
 			{
-				m_nControlPoint = 2
+				m_nControlPoint = 1
 			}
 		},
 		{
@@ -110,17 +104,6 @@
 			m_nFieldOutput = 6
 			m_vInputMax = [ 255.0, 255.0, 255.0 ]
 			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
-			m_flOpStrength = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 6
-				m_nVectorComponent = 0
-				m_nMapType = "PF_MAP_TYPE_REMAP"
-				m_flInput0 = 0.0
-				m_flInput1 = 1.0
-				m_flOutput0 = 0.0
-				m_flOutput1 = 1.0
-			}
 			m_TransformInput = 
 			{
 				m_nControlPoint = 4
@@ -137,7 +120,7 @@
 			_class = "C_OP_PositionLock"
 			m_TransformInput = 
 			{
-				m_nControlPoint = 2
+				m_nControlPoint = 1
 			}
 		},
 		{
@@ -147,9 +130,9 @@
 		{
 			_class = "C_OP_MovementPlaceOnGround"
 			m_flOffset = 16.0
-			m_nRefCP1 = 2
-			m_nRefCP2 = 1
-			m_flTolerance = 2.0
+			m_nRefCP1 = 1
+			m_nRefCP2 = 0
+			m_flTolerance = 1.0
 			m_flMaxTraceLength = 512.0
 			m_flTraceOffset = 128.0
 			m_CollisionGroupName = "DEBRIS"
@@ -160,28 +143,16 @@
 			m_nFieldOutput = 6
 			m_vInputMax = [ 255.0, 255.0, 255.0 ]
 			m_vOutputMax = [ 1.0, 1.0, 1.0 ]
-			m_flOpStrength = 
-			{
-				m_nType = "PF_TYPE_CONTROL_POINT_COMPONENT"
-				m_nControlPoint = 6
-				m_nVectorComponent = 0
-				m_nMapType = "PF_MAP_TYPE_REMAP"
-				m_flInput0 = 0.0
-				m_flInput1 = 1.0
-				m_flOutput0 = 0.0
-				m_flOutput1 = 1.0
-			}
 		},
 		{
 			_class = "C_OP_Orient2DRelToCP"
-			m_nCP = 1
 		},
 		{
 			_class = "C_OP_RemapCPtoScalar"
 			m_nCPInput = 3
-			m_flInputMin = 125.0
+			m_flInputMin = 50.0
 			m_flInputMax = 1000.0
-			m_flOutputMin = 111.0
+			m_flOutputMin = 50.0
 			m_flOutputMax = 888.0
 		},
 	]

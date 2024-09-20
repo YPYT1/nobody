@@ -15,7 +15,7 @@ export class EntityKilled {
             // let iPlayerID = hAttacker.GetPlayerOwnerID();
             // let hHero = PlayerResource.GetSelectedHeroEntity(iPlayerID);
 
-            if (hAttacker.GetTeamNumber() == DotaTeam.GOODGUYS ) {
+            if (hAttacker.GetTeamNumber() == DotaTeam.GOODGUYS) {
                 GameRules.CustomAttribute.OnKillEvent(hAttacker, hTarget)
                 // 符文效果
                 let rune_buff = hAttacker.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
@@ -25,7 +25,7 @@ export class EntityKilled {
                 if (prop_buff) { prop_buff.OnKillEvent(hTarget) }
 
                 // 圣坛效果
-                
+
                 // this.KilledOnMdf(hAttacker, hTarget)
                 // let hAbility = EntIndexToHScript(entindex_inflictor) as CDOTABaseAbility;
                 // 技能击杀
@@ -36,10 +36,14 @@ export class EntityKilled {
 
             /** 延迟1秒删除 */
             hTarget.AddNoDraw();
+            let delay = 4;
+            if (hTarget.HasAbility("creature_elite_16")) {
+                delay = 10;
+            }
             hTarget.SetContextThink("death_play", () => {
                 hTarget.RemoveSelf()
                 return null
-            }, 1)
+            }, delay)
 
         }
     }

@@ -4,6 +4,8 @@ import { ConvertAttributeToLabel } from "../../../utils/attribute_method";
 import { HideCustomTooltip, ShowCustomTextTooltip } from "../../../utils/custom_tooltip";
 import { FormatNumberToTime } from "../../../utils/method";
 import { SetHotKey } from "../control/_move_controller";
+import { testCode } from "./canvas_test";
+
 
 const DevCustomAttributeList = $("#DevCustomAttributeList");
 const attr_sub_key_list = Object.keys(AttributeSub);
@@ -18,14 +20,14 @@ const StartLoop = () => {
     $.Schedule(0.1, StartLoop);
 }
 
-// const UpdateUnitAngle =()=>{
-//     let map_center = [6144 ,6144 ,128];
-//     let hHero = Players.GetPlayerHeroEntityIndex(0);
-//     let vHero= Entities.GetAbsOrigin(hHero);
-//     let vAngle = Entities.GetAbsAngles(hHero)
+const UpdateUnitAngle = () => {
+    // let map_center = [6144 ,6144 ,128];
+    let hHero = Players.GetPlayerHeroEntityIndex(0);
+    let vHero = Entities.GetForward(hHero);
 
-//     $.Msg(vHero,vAngle)
-// }
+
+    $.Msg(vHero)
+}
 const UpdateTopInfoTime = () => {
     let DotaGameTime = Game.GetDOTATime(false, false);
     let TimeLabel = FormatNumberToTime(DotaGameTime);
@@ -52,7 +54,6 @@ const UpdateTopInfoTime = () => {
 }
 
 const OpenAttributePanel = () => {
-    // $.Msg("OpenAttributePanel")
     DevCustomAttributeList.ToggleClass("Show")
 }
 
@@ -99,8 +100,18 @@ export const Initialize = () => {
 
     SetHotKey("`", OpenAttributePanel)
     StartLoop();
+
+    testCode()
 }
 
+
+
+
+function _flattenArrayOfTuples(arrOfTuples: number[][]) {
+    let retVal: number[] = [];
+    arrOfTuples.forEach(t => retVal.push(t[0]) && retVal.push(t[1]));
+    return retVal;
+}
 
 (function () {
     Initialize();

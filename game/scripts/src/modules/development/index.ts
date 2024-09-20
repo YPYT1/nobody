@@ -43,7 +43,7 @@ export class Development extends UIEventRegisterClass {
         const hero_class = `npc_dota_hero_` + DOTAGameManager.GetHeroNameByID(heroid)
         PlayerResource.ReplaceHeroWithNoTransfer(player_id, hero_class, 0, 0);
 
-        // PrecacheUnitByNameAsync(hero_class, () => { })
+        PrecacheUnitByNameAsync(hero_class, () => { })
         // const lastSelectHero = PlayerResource.GetPlayer(player_id).GetAssignedHero();
         if (originHero) { UTIL_Remove(originHero); }
     }
@@ -374,6 +374,11 @@ export class Development extends UIEventRegisterClass {
 
         }
 
+        if (cmd == "-tsg") {
+            let vect = hHero.GetAbsOrigin() + RandomVector(300) as Vector;
+            let unit = GameRules.Spawn.CreepNormalCreate("npc_public_test", vect);
+            unit.SetControllableByPlayer(0, false)
+        }
         if (cmd == "-ui") {
             // let clientui_dialog = Entities.CreateByClassname("point_clientui_dialog");
             // // Entities.GetLocalPlayer

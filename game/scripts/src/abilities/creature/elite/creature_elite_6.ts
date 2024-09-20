@@ -1,0 +1,61 @@
+
+import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
+import { BaseCreatureAbility } from "../base_creature";
+
+/**
+ * creature_elite_6	冲击波	
+ * 锁定一个玩家，蓄力2秒之后发射冲击波，冲击波长度700码宽300码，造成高额伤害（玩家当前生命值40%）。施法距离700码。
+ */
+@registerAbility()
+export class creature_elite_6 extends BaseCreatureAbility {
+
+    wave_width:number;
+
+    OnAbilityPhaseStart(): boolean {
+        let hTarget = this.GetCursorTarget();
+        this.vPoint = hTarget.GetAbsOrigin();
+        this.wave_width = 300;
+        this.nPreviewFX = GameRules.WarningMarker.Line(
+            this.hCaster,
+            this.wave_width,
+            this.hCaster.GetAbsOrigin(),
+            this.vPoint,
+            700,
+            this._cast_point
+        )
+        return true
+    }
+
+    OnSpellStart(): void {
+        this.DestroyWarningFx()
+        let vCaster = this.hCaster.GetAbsOrigin()
+        let vDirection = (this.vPoint - vCaster as Vector).Normalized();
+        vDirection.z = 0;
+        ProjectileManager.CreateLinearProjectile({
+            Ability: this,
+            EffectName: "particles/units/heroes/hero_shadow_demon/shadow_demon_shadow_poison_projectile.vpcf",
+            vSpawnOrigin: vCaster,
+            fDistance: 700,
+            fStartRadius: this.wave_width,
+            fEndRadius: this.wave_width,
+            Source: this.hCaster,
+            vVelocity: (vDirection * 700) as Vector,
+            iUnitTargetTeam: UnitTargetTeam.ENEMY,
+            iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
+        });
+    }
+
+    OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {
+        if (target) {
+            let damage = target.GetHealth() * 0.4;
+            ApplyCustomDamage({
+                victim: target,
+                attacker: this.hCaster,
+                ability: this,
+                damage: damage,
+                damage_type: DamageTypes.PHYSICAL,
+                miss_flag: 1,
+            })
+        }
+    }
+}

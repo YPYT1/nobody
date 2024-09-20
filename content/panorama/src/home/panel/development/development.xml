@@ -20,7 +20,7 @@
         	<Label id="DotaGameTime" text="DotaTime:<span class='time'>{s:dota_time}</span>" html="true"/>
 		</Panel>
         
-		<Panel id="DevCustomAttributeList">
-		</Panel>
+		<Panel id="DevCustomAttributeList" />
+		<UICanvas id="CanvasPanel" ></UICanvas>
 	</Panel>
 </root>

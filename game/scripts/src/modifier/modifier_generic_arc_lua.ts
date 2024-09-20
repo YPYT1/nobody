@@ -43,9 +43,9 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     start_offset: number;
     activity: number;
 
-    target_x:number;
-    target_y:number;
-    
+    target_x: number;
+    target_y: number;
+
     fix_duration: boolean;
     fix_end: boolean;
     fix_height: boolean;
@@ -80,13 +80,22 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
 
     OnCreated(kv: any) {
         if (!IsServer()) { return; }
+        this._OnCreated(kv);
+        this.OnRefresh(kv)
+    }
+
+    _OnCreated(kv: any) { }
+
+    OnRefresh(kv: any): void {
+        if (!IsServer()) { return }
         this.interrupted = false;
         this.SetJumpParameters(kv);
         this.Jump();
+        this._OnRefresh(kv)
     }
 
-    OnRefresh(kv: any): void {
-        this.OnCreated(kv);
+    _OnRefresh(kv: any): void {
+
     }
 
     OnDestroy(): void {
@@ -189,7 +198,7 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         this.activity = kv.activity ?? 0;
         this.SetStackCount(this.activity);
 
-        
+
         if (kv.target_x && kv.target_y) {
             let origin = this.parent.GetOrigin();
             let dir = Vector(kv.target_x, kv.target_y, 0) - origin as Vector;
@@ -199,7 +208,7 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
             this.direction = dir;
         }
 
-        if(kv.distance){
+        if (kv.distance) {
             this.distance = kv.distance;
         }
         if (kv.dir_x && kv.dir_y) {
@@ -210,8 +219,8 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         }
 
         this.duration = kv.duration;
-        
-        
+
+
 
         this.speed = kv.speed;
 
@@ -263,7 +272,7 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
 
         this.C_OnCreated(kv);
     }
-    
+
     C_OnCreated(kv) { }
     Jump() {
         if (this.distance > 0) {

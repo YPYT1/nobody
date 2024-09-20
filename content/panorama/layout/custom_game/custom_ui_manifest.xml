@@ -1,6 +1,7 @@
 <root>
     <scripts>
       <include src="file://{resources}/layout/custom_game/custom_ui_manifest.js"></include>
+      <include src="file://{resources}/layout/custom_game/utils/custom_math.js"></include>
     </scripts>
 
     <Panel>

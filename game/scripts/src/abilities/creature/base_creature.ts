@@ -51,6 +51,10 @@ export class BaseCreatureAbility extends BaseAbility {
         this.nPreviewFX_List = []
     }
 
+    Precache(context: CScriptPrecacheContext): void {
+        
+    }
+
     OnUpgrade(): void {
         this.hCaster = this.GetCaster();
         this._radius = this.GetSpecialValueFor("radius");
@@ -59,9 +63,5 @@ export class BaseCreatureAbility extends BaseAbility {
         this._interval = this.GetSpecialValueFor("interval");
         this._distance = this.GetCastRange(this.GetCaster().GetOrigin(), this.GetCaster());
         this._cast_point = this.GetCastPoint();
-        
     }
-
-
-
 }

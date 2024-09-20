@@ -8,6 +8,10 @@ interface Panel {
     offsetY: number;
 }
 
+interface UICanvas extends Panel {
+    ClearJS(cstring: string): void;
+    DrawSoftLinePointsJS(count1: number, tuples2: number[], float3: number, float4: number, color5: string): void;
+}
 
 declare interface CScriptBindingPR_Abilities {
     GetCurrentAbilityCharges(nEntityIndex: any): number;

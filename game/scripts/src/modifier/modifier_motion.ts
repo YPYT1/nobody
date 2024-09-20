@@ -462,3 +462,73 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
     }
 
 }
+
+@registerModifier()
+export class modifier_motion_hit_target extends BaseModifierMotionHorizontal {
+
+    speed: number;
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return; }
+        this.fCount = 0;
+        this.speed = params.speed ?? 100;;
+        this.target = EntIndexToHScript(params.target_entity) as CDOTA_BaseNPC;
+        // 贝塞尔曲线 参考点
+        // let mid_vect = this.GetParent().GetOrigin().Lerp(this.target.GetOrigin(), 0.2);
+        // this.vBezier = RotatePosition(this.GetParent().GetOrigin(), QAngle(0, RandomInt(0, 0), 0), mid_vect);
+        this._OnCreated(params);
+        if (this.ApplyHorizontalMotionController() == false) {
+            this.Destroy();
+            return;
+        }
+        // this.SetDuration(2, false);
+    }
+
+    _OnCreated(params: any): void { }
+    CheckState(): Partial<Record<ModifierState, boolean>> {
+        return {
+            [ModifierState.NO_HEALTH_BAR]: true,
+            [ModifierState.NOT_ON_MINIMAP]: true,
+            [ModifierState.UNSELECTABLE]: true,
+            [ModifierState.INVULNERABLE]: true,
+            [ModifierState.INVISIBLE]: true,
+            [ModifierState.NO_UNIT_COLLISION]: true,
+        };
+    }
+
+    UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
+        if (!IsServer()) { return; }
+        if (IsValid(this.target)) { this.Destroy(); }
+        let vMePos = me.GetAbsOrigin();
+        let distance = (this.target.GetAbsOrigin() - vMePos as Vector).Length2D();
+        if (distance < 32) {
+            this.Destroy()
+            return
+        }
+        let direction = (this.target.GetAbsOrigin() - vMePos as Vector).Normalized();
+        direction.z = 0;
+        // 每秒朝目标点移动
+        let vNew = vMePos + direction * dt * this.speed as Vector;
+        let angle = VectorAngles(direction);
+        me.SetAbsOrigin(vNew);
+        me.SetAbsAngles(0, angle.y, 0)
+
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return; }
+        //移除这个单位 造成伤害
+        UTIL_RemoveImmediate(this.GetParent());
+
+    }
+
+    fDamage: number;
+    fSpeed: number;
+    target: CDOTA_BaseNPC;
+    vBezier: Vector;
+    fCount: number;
+    fdistance: number;
+    tElement: CElementType;
+    tDamageType: DamageTypes;
+    fRadius: number;
+}

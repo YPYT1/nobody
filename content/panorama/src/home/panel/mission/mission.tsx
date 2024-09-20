@@ -112,7 +112,7 @@ const MisstionTimerUpdate = () => {
         pPanel.SetDialogVariable("timer", "" + diff_time)
         //@ts-ignore
         const MissionProgressBar = pPanel.FindChildTraverse("MissionProgressBar") as ProgressBar;
-        const value = Math.ceil(100 * (diff_time) / Math.max(1, max_time))
+        const value = Math.ceil(-100 * (diff_time) / Math.max(1, max_time))
         // const deg = Math.ceil(360 * diff_time / Math.max(1, max_time));
         // $.Msg(["MissionProgressBar_FG",deg])
         MissionProgressBar.value = value;

@@ -432,6 +432,7 @@ export class CustomAttribute {
      */
     SetAttributeInKey(hUnit: CDOTA_BaseNPC, key: string, attr_list: CustomAttributeTableType, timer: number = -1) {
         // 对比写入的key 与 当前已存在的key 里面的结果是否想等
+        if (!hUnit.IsHero()) { return }
         let exists_attr = hUnit.custom_attribute_key_table[key];
         let exists_attr_str = JSON.encode(exists_attr)
         let attr_list_str = JSON.encode(attr_list);
@@ -525,6 +526,7 @@ export class CustomAttribute {
 
     /** 删除一个key值的相关属性 */
     DelAttributeInKey(hUnit: CDOTA_BaseNPC, key: string) {
+        if(!hUnit.IsHero()){ return }
         if (hUnit.custom_attribute_key_table[key] == null) {
             return;
         }

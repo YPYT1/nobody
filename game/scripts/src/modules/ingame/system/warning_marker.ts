@@ -47,30 +47,33 @@ export class WarningMarker {
      */
     Line(
         caster: CDOTA_BaseNPC,
-        line_radius: number,
+        line_width: number,
         start_vect: Vector,
         target_vect: Vector,
         distance: number = -1,
         duration: number = -1,
-        color: Vector = Vector(255, 255, 255),
+        color: Vector = Vector(255, 0, 0),
     ) {
+        // particles/diy_particles/range_finder_cone.vpcf
         let line_pfx = ParticleManager.CreateParticle(
             "particles/diy_particles/range_finder_cone.vpcf",
             ParticleAttachment.WORLDORIGIN,
             caster,
         );
+        print("duration", duration)
         ParticleManager.SetParticleControl(line_pfx, 0, caster.GetOrigin());
-        ParticleManager.SetParticleControl(line_pfx, 1, caster.GetOrigin());
-        ParticleManager.SetParticleControl(line_pfx, 3, Vector(line_radius, line_radius, 0));
+        // ParticleManager.SetParticleControl(line_pfx, 1, caster.GetOrigin());
+        ParticleManager.SetParticleControl(line_pfx, 2, Vector(duration, 0, 0));
+        ParticleManager.SetParticleControl(line_pfx, 3, Vector(line_width, line_width, 0));
         ParticleManager.SetParticleControl(line_pfx, 4, color);
         if (distance != -1) {
             let direction = target_vect - start_vect as Vector;
             direction.z = 0;
             direction = direction.Normalized();
             let vPoint = start_vect + direction * distance as Vector;
-            ParticleManager.SetParticleControl(line_pfx, 2, vPoint);
+            ParticleManager.SetParticleControl(line_pfx, 1, vPoint);
         } else {
-            ParticleManager.SetParticleControl(line_pfx, 2, target_vect);
+            ParticleManager.SetParticleControl(line_pfx, 1, target_vect);
         }
         return line_pfx;
     }

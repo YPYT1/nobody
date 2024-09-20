@@ -18,7 +18,7 @@ export class drow_1 extends BaseHeroAbility {
 
     UpdataAbilityValue(): void {
         this.BasicAbilityDmg = this.caster.custom_attribute_value.BasicAbilityDmg;
-        this.SelfAbilityMul = 100;
+        // this.SelfAbilityMul = 100;
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
@@ -99,12 +99,8 @@ export class modifier_drow_1 extends BaseHeroModifier {
             }
             let hTarget = enemies[0];
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
-            this.ability.ManaCostAndConverDmgBonus()
+            this.ability.ManaCostAndConverDmgBonus();
             // 清空动作
-            
-            // this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
-            // 判断是否为移动状态
-
             if (this.caster.move_state) {
                 this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
                 this.caster.StartGesture(GameActivity.DOTA_CAST_ABILITY_1);
@@ -112,8 +108,6 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
                 this.caster.StartGesture(GameActivity.DOTA_ATTACK);
             }
-
-
             this.caster.GiveMana(this.give_mana);
             this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, 0);
             this.PlayAttackStart({ hTarget: hTarget })

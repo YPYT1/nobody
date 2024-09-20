@@ -31,7 +31,10 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/units/heroes/hero_ursa/ursa_earthshock.vpcf',
             'particles/units/heroes/hero_skeletonking/wraith_king_ghosts_ambient.vpcf',
             'particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova.vpcf',
-            
+            'particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf',
+            'particles/units/heroes/hero_pudge/pudge_rot.vpcf',
+            'particles/units/heroes/hero_muerta/muerta_parting_shot_tether.vpcf',
+            'particles/units/heroes/hero_techies/techies_land_mine_explode.vpcf',
             ...drow_precache,
         ],
         context
