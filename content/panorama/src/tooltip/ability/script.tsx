@@ -1,4 +1,3 @@
-import { default as ArmsComboJson } from "./../../json/config/game/arms_combo.json";
 import { default as NpcAbilityCustom } from "./../../json/npc_abilities_custom.json";
 import { default as AbilityTypesJson } from "./../../json/config/game/const/ability_types.json";
 
