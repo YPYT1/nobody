@@ -30,7 +30,7 @@ export class creature_elite_13 extends BaseCreatureAbility {
             this,
             "modifier_creature_elite_13",
             {
-                duration: 5,
+                duration: this._duration,
             },
             this.vPoint,
             this.hCaster.GetTeam(),
@@ -52,7 +52,7 @@ export class modifier_creature_elite_13 extends BaseModifier {
     GetModifierAura() { return "modifier_creature_elite_13_aura"; }
 
     OnCreated(params: object): void {
-        this.radius = 500;
+        this.radius = this.GetAbility().GetSpecialValueFor("radius");
         if (!IsServer()) { return }
         let cast_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_viper/viper_nethertoxin.vpcf",

@@ -17,21 +17,24 @@ export class creature_elite_10 extends BaseCreatureAbility {
 @registerModifier()
 export class modifier_creature_elite_10 extends BaseModifier {
 
+    aura_radius: number;
+
     IsAura(): boolean { return true; }
-    GetAuraRadius(): number { return 200; }
+    GetAuraRadius(): number { return this.aura_radius; }
     GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
     GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
     GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
     GetModifierAura() { return "modifier_creature_elite_10_aura"; }
 
     OnCreated(params: object): void {
+        this.aura_radius = this.GetAbility().GetSpecialValueFor("aura_radius")
         if (!IsServer()) { return }
         let nFXIndex = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_pudge/pudge_rot.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.GetCaster()
         )
-        ParticleManager.SetParticleControl(nFXIndex, 1, Vector(200, 1, 200))
+        ParticleManager.SetParticleControl(nFXIndex, 1, Vector(this.aura_radius, 1, this.aura_radius))
         this.AddParticle(nFXIndex, false, false, -1, false, false)
     }
 }
@@ -43,9 +46,10 @@ export class modifier_creature_elite_10_aura extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        let movespeed_pct = this.GetAbility().GetSpecialValueFor("movespeed_pct")
         GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
             "MoveSpeed": {
-                "BasePercent": -25
+                "BasePercent": movespeed_pct
             }
         })
         this.OnIntervalThink()

@@ -33,8 +33,7 @@ export class modifier_creature_elite_12 extends BaseModifier {
     }
 
     OnRefresh(params: object): void {
-        if (!IsServer()) { return }
-        this.radius = 300;
+        this.radius = this.GetAbility().GetSpecialValueFor("radius");
         this.dmg_max_hp = 20 * 0.01
     }
 

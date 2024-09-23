@@ -44,7 +44,6 @@ export class modifier_public_creature extends BaseModifier {
         );
         if (enemies.length > 0) {
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
-            if (this.caster.HasModifier("modifier_creature_elite_5")) { attack_damage *= 2 }
             for (let enemy of enemies) {
                 ApplyCustomDamage({
                     victim: enemy,

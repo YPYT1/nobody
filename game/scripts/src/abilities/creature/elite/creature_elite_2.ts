@@ -9,9 +9,10 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_2 extends BaseCreatureAbility {
 
+    knockback_duration: number;
     OnAbilityPhaseStart(): boolean {
         this.vPoint = this.GetCursorPosition();
-        this._radius = 300;
+        this.knockback_duration = this.GetSpecialValueFor("knockback_duration")
         // print("this._radius", this._radius, this._cast_point)
         this.nPreviewFX = GameRules.WarningMarker.Circular(
             this._radius,
@@ -52,8 +53,8 @@ export class creature_elite_2 extends BaseCreatureAbility {
                 center_z: 0,
                 knockback_height: 600,
                 knockback_distance: 0,
-                knockback_duration: 1,
-                duration: 1,
+                knockback_duration: this.knockback_duration,
+                duration: this.knockback_duration,
             })
         }
 

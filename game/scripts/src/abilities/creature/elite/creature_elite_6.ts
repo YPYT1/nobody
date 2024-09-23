@@ -9,18 +9,20 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_6 extends BaseCreatureAbility {
 
-    wave_width:number;
+    line_width: number;
+    line_distance: number;
 
     OnAbilityPhaseStart(): boolean {
         let hTarget = this.GetCursorTarget();
         this.vPoint = hTarget.GetAbsOrigin();
-        this.wave_width = 300;
+        this.line_width = this.GetSpecialValueFor("line_width");
+        this.line_distance = this.GetSpecialValueFor("line_distance")
         this.nPreviewFX = GameRules.WarningMarker.Line(
             this.hCaster,
-            this.wave_width,
+            this.line_width,
             this.hCaster.GetAbsOrigin(),
             this.vPoint,
-            700,
+            this.line_distance,
             this._cast_point
         )
         return true
@@ -35,11 +37,11 @@ export class creature_elite_6 extends BaseCreatureAbility {
             Ability: this,
             EffectName: "particles/units/heroes/hero_shadow_demon/shadow_demon_shadow_poison_projectile.vpcf",
             vSpawnOrigin: vCaster,
-            fDistance: 700,
-            fStartRadius: this.wave_width,
-            fEndRadius: this.wave_width,
+            fDistance: this.line_distance,
+            fStartRadius: this.line_width,
+            fEndRadius: this.line_width,
             Source: this.hCaster,
-            vVelocity: (vDirection * 700) as Vector,
+            vVelocity: (vDirection * this.line_distance) as Vector,
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
         });

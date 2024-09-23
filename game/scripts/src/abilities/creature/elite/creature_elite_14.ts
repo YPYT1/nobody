@@ -10,16 +10,18 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_14 extends BaseCreatureAbility {
 
-
+    line_width:number
+    line_distance:number;
     OnAbilityPhaseStart(): boolean {
-
+        this.line_width = this.GetSpecialValueFor("line_width");
+        this.line_distance = this.GetSpecialValueFor("line_distance")
         this.vPoint = this.GetCursorPosition();
         this.nPreviewFX = GameRules.WarningMarker.Line(
             this.hCaster,
-            150,
+            this.line_width,
             this.hCaster.GetAbsOrigin(),
             this.vPoint,
-            1000,
+            this.line_distance ,
             this._cast_point
         )
         return true
@@ -27,17 +29,17 @@ export class creature_elite_14 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx()
-        let distance = 1000;
+
         let direction = this.vPoint - this.hCaster.GetAbsOrigin() as Vector;
         direction.z = 0;
         direction = direction.Normalized();
-        let vPoint = this.hCaster.GetAbsOrigin() + direction * distance as Vector;
+        let vPoint = this.hCaster.GetAbsOrigin() + direction * this.line_distance  as Vector;
 
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_elite_14", {
             target_x: vPoint.x,
             target_y: vPoint.y,
             height: 0,
-            speed: 1200,
+            speed: this.line_distance ,
         })
 
     }

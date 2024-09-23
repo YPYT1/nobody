@@ -13,8 +13,6 @@ export class creature_elite_8 extends BaseCreatureAbility {
 
     OnAbilityPhaseStart(): boolean {
         this.vPoint = this.GetCursorPosition();
-        this._radius = 300;
-        // print("this._radius", this._radius, this._cast_point)
         this.nPreviewFX = GameRules.WarningMarker.Circular(
             this._radius,
             this._cast_point,
@@ -39,7 +37,7 @@ export class creature_elite_8 extends BaseCreatureAbility {
 
         for (let enemy of enemies) {
             enemy.AddNewModifier(this.hCaster, this, "modifier_creature_elite_8_dot", {
-                duration: 3.1
+                duration: this._duration + 0.1,
             })
         }
 

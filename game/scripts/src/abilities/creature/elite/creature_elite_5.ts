@@ -20,11 +20,16 @@ export class creature_elite_5 extends BaseCreatureAbility {
 export class modifier_creature_elite_5 extends BaseModifier {
 
     parent: CDOTA_BaseNPC;
+    relieve_radius: number;
 
     OnCreated(params: object): void {
+        this.relieve_radius = this.GetAbility().GetSpecialValueFor("relieve_radius")
         if (!IsServer()) { return }
         this.parent = this.GetParent();
         this.StartIntervalThink(0.1)
+        // 加个感叹号
+        let cast_fx = GameRules.WarningMarker.CreateExclamation(this.GetParent());
+        this.AddParticle(cast_fx, false, false, -1, false, false)
     }
 
     OnIntervalThink(): void {
@@ -32,14 +37,13 @@ export class modifier_creature_elite_5 extends BaseModifier {
             this.parent.GetTeamNumber(),
             this.parent.GetAbsOrigin(),
             null,
-            300,
+            this.relieve_radius,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE,
             FindOrder.ANY,
             false
         )
-        // print("unit.length",unit.length)
         this.SetStackCount(unit.length)
     }
 
@@ -53,16 +57,21 @@ export class modifier_creature_elite_5 extends BaseModifier {
     DeclareFunctions(): modifierfunction[] {
         return [
             ModifierFunction.INVISIBILITY_LEVEL,
-            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
+            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
+            ModifierFunction.BASEDAMAGEOUTGOING_PERCENTAGE,
         ]
     }
 
     GetModifierInvisibilityLevel(): number {
-        return 5
+        return 10
     }
 
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
         this.Destroy()
         return 0
+    }
+
+    GetModifierBaseDamageOutgoing_Percentage(event: ModifierAttackEvent): number {
+        return 100
     }
 }

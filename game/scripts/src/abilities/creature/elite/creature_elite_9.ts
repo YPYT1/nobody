@@ -11,17 +11,19 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_9 extends BaseCreatureAbility {
 
-
+    line_width:number
+    line_distance:number
     OnAbilityPhaseStart(): boolean {
         // let hTarget = this.GetCursorTarget();
         this.vPoint = this.GetCursorPosition();
-        this._duration = 700;
+        this.line_width = this.GetSpecialValueFor("line_width")
+        this.line_distance = this.GetSpecialValueFor("line_distance");
         this.nPreviewFX = GameRules.WarningMarker.Line(
             this.hCaster,
-            200,
+            this.line_width,
             this.hCaster.GetAbsOrigin(),
             this.vPoint,
-            700,
+            this.line_distance,
             this._cast_point
         )
         return true
@@ -54,8 +56,11 @@ export class modifier_creature_elite_9_path extends BaseModifier {
     start: Vector;
     end: Vector;
     team: DotaTeam;
+
+    line_width:number;
     OnCreated(params: any): void {
         if (!IsServer()) { return }
+        this.line_width = this.GetAbility().GetSpecialValueFor("line_width")
         this.start = this.GetParent().GetAbsOrigin();
         this.end = Vector(params.x, params.y, this.start.z);
         this.team = this.GetCaster().GetTeam();
@@ -77,7 +82,7 @@ export class modifier_creature_elite_9_path extends BaseModifier {
             this.start,
             this.end,
             null,
-            200,
+            this.line_width,
             UnitTargetTeam.BOTH,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE
@@ -126,7 +131,7 @@ export class modifier_creature_elite_9_debuff extends BaseModifier {
             }
         })
         this.OnIntervalThink()
-        this.StartIntervalThink(1)
+        // this.StartIntervalThink(1)
     }
 
     OnIntervalThink(): void {

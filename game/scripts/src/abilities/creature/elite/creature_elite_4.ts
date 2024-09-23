@@ -21,6 +21,7 @@ export class creature_elite_4 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx()
+        let hero_distance = this.GetSpecialValueFor("hero_distance")
         let vTarget = this.hTarget.GetAbsOrigin();
         let friendly = FindUnitsInRadius(
             this.hCaster.GetTeam(),
@@ -34,7 +35,11 @@ export class creature_elite_4 extends BaseCreatureAbility {
             false
         )
         for (let unit of friendly) {
-            let vect = vTarget + Vector(RandomInt(-300, 300), RandomInt(-300, 300), 0) as Vector
+            let vect = vTarget + Vector(
+                RandomInt(-hero_distance, hero_distance),
+                RandomInt(-hero_distance, hero_distance),
+                0
+            ) as Vector
             unit.SetAbsOrigin(vect)
         }
     }

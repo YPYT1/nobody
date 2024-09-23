@@ -11,7 +11,6 @@ export class creature_elite_15 extends BaseCreatureAbility {
 
     OnAbilityPhaseStart(): boolean {
         this.vPoint = this.GetCursorPosition();
-        this._radius = 300;
         // print("this._radius", this._radius, this._cast_point)
         this.nPreviewFX = GameRules.WarningMarker.Circular(
             this._radius,
@@ -23,7 +22,7 @@ export class creature_elite_15 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx()
-
+        let root_duration = this.GetSpecialValueFor("root_duration")
         let enemies = FindUnitsInRadius(
             this.hCaster.GetTeam(),
             this.vPoint,
@@ -37,7 +36,7 @@ export class creature_elite_15 extends BaseCreatureAbility {
         )
 
         for (let enemy of enemies) {
-            GameRules.BuffManager.AddGeneralDebuff(this.hCaster, enemy, DebuffTypes.rooted, 2)
+            GameRules.BuffManager.AddGeneralDebuff(this.hCaster, enemy, DebuffTypes.rooted, root_duration)
         }
     }
 

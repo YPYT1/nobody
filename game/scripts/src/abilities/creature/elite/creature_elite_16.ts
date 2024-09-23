@@ -18,10 +18,16 @@ export class creature_elite_16 extends BaseCreatureAbility {
 @registerModifier()
 export class modifier_creature_elite_16 extends BaseModifier {
 
+    duration: number;
+
     DeclareFunctions(): modifierfunction[] {
         return [
             ModifierFunction.ON_DEATH
         ]
+    }
+
+    OnCreated(params: object): void {
+        this.duration = this.GetAbility().GetSpecialValueFor("duration")
     }
 
     OnDeath(event: ModifierInstanceEvent): void {
@@ -31,7 +37,7 @@ export class modifier_creature_elite_16 extends BaseModifier {
                 this.GetAbility(),
                 "modifier_creature_elite_16_thinker",
                 {
-                    duration: 10
+                    duration: this.duration
                 },
                 event.unit.GetAbsOrigin(),
                 event.unit.GetTeam(),
@@ -50,18 +56,19 @@ export class modifier_creature_elite_16_thinker extends BaseModifier {
     line_pos1: Vector;
     line_pos2: Vector;
     origin: Vector;
-    distance: number;
+    line_distance: number;
+    line_width: number;
     interval: number;
     team: DotaTeam;
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
-        this.distance = 500;
+        this.line_distance = this.GetAbility().GetSpecialValueFor("line_distance");
         this.origin = this.GetParent().GetAbsOrigin();
         this.origin.z += 10;
         this.team = this.GetParent().GetTeam();
 
-        let base_pos = this.origin + Vector(500, 0, 0) as Vector
+        let base_pos = this.origin + Vector(this.line_distance, 0, 0) as Vector
 
         this.line_pos1 = RotatePosition(this.origin, QAngle(0, RandomInt(0, 359), 0), base_pos);
         let line_fx = ParticleManager.CreateParticle(
@@ -85,10 +92,7 @@ export class modifier_creature_elite_16_thinker extends BaseModifier {
         this.line_fx1 = line_fx;
         this.line_fx2 = line_fx2;
 
-
         this.interval = GameRules.GetGameFrameTime();
-
-        print("this.interval", this.interval)
         this.OnIntervalThink()
         this.StartIntervalThink(this.interval)
         // particles/units/heroes/hero_muerta/muerta_parting_shot_tether.vpcf
@@ -104,7 +108,7 @@ export class modifier_creature_elite_16_thinker extends BaseModifier {
             this.origin,
             this.line_pos1,
             null,
-            50,
+            this.line_width,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE
@@ -118,21 +122,35 @@ export class modifier_creature_elite_16_thinker extends BaseModifier {
             this.origin,
             this.line_pos2,
             null,
-            50,
+            this.line_width,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE
         )
 
         for (let enemy of enemies) {
-            enemy.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_16_dmg", {
-                duration: 0.3
-            })
+            this.ApplyDamage(enemy)
         }
 
         for (let enemy of enemies2) {
-            enemy.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_16_dmg", {
-                duration: 0.3
+            this.ApplyDamage(enemy)
+        }
+    }
+
+    ApplyDamage(hTarget: CDOTA_BaseNPC) {
+        if (!hTarget.HasModifier("modifier_creature_elite_16_dmg")) {
+            const damage = this.GetParent().GetMaxHealth() * 0.2;
+            ApplyCustomDamage({
+                victim: hTarget,
+                attacker: this.GetCaster(),
+                ability: null,
+                damage: damage,
+                damage_type: DamageTypes.PHYSICAL,
+                miss_flag: 1,
+            })
+
+            hTarget.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_16_dmg", {
+                duration: 1
             })
         }
     }
@@ -143,23 +161,5 @@ export class modifier_creature_elite_16_dmg extends BaseModifier {
 
     IsHidden(): boolean {
         return true
-    }
-
-    OnCreated(params: object): void {
-        if (!IsServer()) { return }
-        this.OnIntervalThink()
-        this.StartIntervalThink(1)
-    }
-
-    OnIntervalThink(): void {
-        const damage = this.GetParent().GetMaxHealth() * 0.2;
-        ApplyCustomDamage({
-            victim: this.GetParent(),
-            attacker: this.GetCaster(),
-            ability: null,
-            damage: damage,
-            damage_type: DamageTypes.PHYSICAL,
-            miss_flag: 1,
-        })
     }
 }

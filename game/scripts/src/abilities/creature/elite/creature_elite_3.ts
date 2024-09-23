@@ -14,7 +14,7 @@ export class creature_elite_3 extends BaseCreatureAbility {
     // particles/units/heroes/hero_gyrocopter/gyro_guided_missile_target.vpcf
     OnSpellStart(): void {
         let hTarget = this.GetCursorTarget();
-
+        let speed = this.GetSpecialValueFor("speed");
         let Missile = CreateUnitByName(
             "npc_public_homing_missile",
             this.hCaster.GetAbsOrigin(),
@@ -26,9 +26,9 @@ export class creature_elite_3 extends BaseCreatureAbility {
         // print("Missile", Missile)
 
         Missile.AddNewModifier(this.hCaster, this, "modifier_creature_elite_3_tracking", {
-            speed: 325,
+            speed: speed,
             target_entity: hTarget.entindex(),
-            duration: 7,
+            duration: this._duration,
         })
     }
 

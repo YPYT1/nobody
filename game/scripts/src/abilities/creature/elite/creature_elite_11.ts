@@ -19,15 +19,16 @@ export class creature_elite_11 extends BaseCreatureAbility {
 export class modifier_creature_elite_11 extends BaseModifier {
 
     aura_radius: number;
+
     IsAura(): boolean { return true; }
-    GetAuraRadius(): number { return 500; }
+    GetAuraRadius(): number { return this.aura_radius; }
     GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
     GetAuraSearchTeam() { return UnitTargetTeam.FRIENDLY; }
     GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
     GetModifierAura() { return "modifier_creature_elite_11_aura"; }
 
     OnCreated(params: object): void {
-        this.aura_radius = 500
+        this.aura_radius = this.GetAbility().GetSpecialValueFor("aura_radius")
     }
 
 }
@@ -35,8 +36,14 @@ export class modifier_creature_elite_11 extends BaseModifier {
 @registerModifier()
 export class modifier_creature_elite_11_aura extends BaseModifier {
 
+    movespeed_pct:number;
+
     IsHidden(): boolean {
         return true
+    }
+
+    OnCreated(params: object): void {
+        this.movespeed_pct = this.GetAbility().GetSpecialValueFor("movespeed_pct")
     }
 
     DeclareFunctions(): modifierfunction[] {
@@ -46,6 +53,6 @@ export class modifier_creature_elite_11_aura extends BaseModifier {
     }
 
     GetModifierMoveSpeedBonus_Percentage(): number {
-        return 25
+        return this.movespeed_pct
     }
 }

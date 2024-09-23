@@ -11,6 +11,7 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_7 extends BaseCreatureAbility {
 
+    line_width:number;
     OnAbilityPhaseStart(): boolean {
         // let hTarget = this.GetCursorTarget();
         this.vPoint = this.hCaster.GetAbsOrigin();
@@ -25,20 +26,23 @@ export class creature_elite_7 extends BaseCreatureAbility {
     OnSpellStart(): void {
         this.DestroyWarningFx();
         // 发射
+
         let vCaster = this.hCaster.GetAbsOrigin()
         let line_pos = vCaster + this.hCaster.GetForwardVector() * 1000 as Vector;
-        let count = 10;
+        let count = this.GetSpecialValueFor("count");
+        let line_width = this.GetSpecialValueFor("line_width");
+        let line_distance = this.GetSpecialValueFor("line_distance")
         for (let i = 0; i < count; i++) {
             let vDirection = (line_pos - vCaster as Vector).Normalized();
             ProjectileManager.CreateLinearProjectile({
                 Ability: this,
                 EffectName: "particles/custom/creature/elite/elite7_proj.vpcf",
                 vSpawnOrigin: vCaster,
-                fDistance: 1000,
-                fStartRadius: 50,
-                fEndRadius: 50,
+                fDistance: line_distance,
+                fStartRadius: line_width,
+                fEndRadius: line_width,
                 Source: this.hCaster,
-                vVelocity: (vDirection * 1000) as Vector,
+                vVelocity: (vDirection * line_distance) as Vector,
                 iUnitTargetTeam: UnitTargetTeam.ENEMY,
                 iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
             });

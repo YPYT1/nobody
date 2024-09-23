@@ -10,16 +10,20 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_1 extends BaseCreatureAbility {
 
+    line_width: number;
+    line_distance: number;
 
     OnAbilityPhaseStart(): boolean {
         let hTarget = this.GetCursorTarget();
+        this.line_width = this.GetSpecialValueFor("line_width");
+        this.line_distance = this.GetSpecialValueFor("line_distance");
         this.vPoint = hTarget.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Line(
             this.hCaster,
-            100,
+            this.line_width,
             this.hCaster.GetAbsOrigin(),
             this.vPoint,
-            700,
+            this.line_distance,
             this._cast_point
         )
         return true
@@ -27,11 +31,10 @@ export class creature_elite_1 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx()
-        let distance = 700;
         let direction = this.vPoint - this.hCaster.GetAbsOrigin() as Vector;
         direction.z = 0;
         direction = direction.Normalized();
-        let vPoint = this.hCaster.GetAbsOrigin() + direction * distance as Vector;
+        let vPoint = this.hCaster.GetAbsOrigin() + direction * this.line_distance as Vector;
 
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_elite_1", {
             target_x: vPoint.x,
@@ -62,6 +65,7 @@ export class modifier_creature_elite_1 extends modifier_generic_arc_lua {
 @registerModifier()
 export class modifier_creature_elite_1_aura extends BaseModifier {
 
+    knockback_duration:number;
     IsHidden(): boolean {
         return true
     }
@@ -69,6 +73,7 @@ export class modifier_creature_elite_1_aura extends BaseModifier {
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         // 击飞500码
+        this.knockback_duration = this.GetAbility().GetSpecialValueFor("knockback_duration")
         let hParent = this.GetParent();
         let hCaster = this.GetCaster();
         let vCaster = hCaster.GetAbsOrigin()
@@ -89,8 +94,8 @@ export class modifier_creature_elite_1_aura extends BaseModifier {
             center_z: 0,
             knockback_height: 600,
             knockback_distance: 0,
-            knockback_duration: 1.5,
-            duration: 1.5,
+            knockback_duration: this.knockback_duration,
+            duration: this.knockback_duration,
         })
 
 

@@ -18,10 +18,16 @@ export class creature_elite_17 extends BaseCreatureAbility {
 @registerModifier()
 export class modifier_creature_elite_17 extends BaseModifier {
 
+    delay: number;
+
     DeclareFunctions(): modifierfunction[] {
         return [
             ModifierFunction.ON_DEATH
         ]
+    }
+
+    OnCreated(params: object): void {
+        this.delay = this.GetAbility().GetSpecialValueFor("delay")
     }
 
     OnDeath(event: ModifierInstanceEvent): void {
@@ -31,7 +37,7 @@ export class modifier_creature_elite_17 extends BaseModifier {
                 this.GetAbility(),
                 "modifier_creature_elite_17_blast",
                 {
-                    duration: 3,
+                    duration: this.delay,
                 },
                 event.unit.GetAbsOrigin(),
                 event.unit.GetTeam(),
@@ -45,10 +51,12 @@ export class modifier_creature_elite_17 extends BaseModifier {
 export class modifier_creature_elite_17_blast extends BaseModifier {
 
     origin: Vector;
-    _radius = 300;
-    team:DotaTeam;
+    _radius: number;
+    team: DotaTeam;
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this._radius = this.GetAbility().GetSpecialValueFor("radius")
         this.team = this.GetCaster().GetTeam()
         this.origin = this.GetParent().GetAbsOrigin();
         GameRules.WarningMarker.Circular(this._radius, 3, this.origin, true)
