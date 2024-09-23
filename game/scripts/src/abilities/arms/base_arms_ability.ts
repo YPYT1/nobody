@@ -119,7 +119,7 @@ export class BaseArmsAbility extends BaseAbility {
                     break
                 }
             }
-            GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
+            // GameRules.ArmsCombo.AddComboAbility(this.caster, this.GetAbilityName())
             // GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, 1, this.slot_index);
             if (this.element_type != 0) {
                 // GameRules.CustomOverrideAbility.UpdateOverrideAbility(this.caster, this.GetAbilityName());
@@ -162,7 +162,7 @@ export class BaseArmsAbility extends BaseAbility {
         let kill_index = hCaster.OnKillList.indexOf(this);
         if (kill_index != -1) { hCaster.OnKillList.splice(kill_index, 1) }
 
-        GameRules.ArmsCombo.RemoveCheckComboSets(hCaster, this);
+        // GameRules.ArmsCombo.RemoveCheckComboSets(hCaster, this);
         if (this.element_type && this.element_type > 0) {
             // GameRules.NewArmsEvolution.SetElementBondDate(this.player_id, this.element_type, -1, this.slot_index)
         }

@@ -7,7 +7,7 @@ import { CustomOverrideAbility } from './ingame/hero_extend/custom_override_abil
 import { EntityKilled } from './ingame/public/entity_killed';
 import { ItemArmsSystem } from './ingame/item_arms_system';
 import { ResourceSystem } from './ingame/system/resource_system';
-import { ArmsCombo } from './ingame/hero_extend/arms_combo';
+// import { ArmsCombo } from './ingame/hero_extend/arms_combo';
 import { SummonedSystem } from './ingame/system/summoned_system';
 import { CustomMechanics } from './ingame/hero_extend/custom_mechanics';
 import { Spawn } from './ingame/spawns/spawn';
@@ -46,7 +46,6 @@ declare global {
         ResourceSystem: ResourceSystem;
         ItemArmsSystem: ItemArmsSystem;
         Spawn: Spawn;
-        ArmsCombo: ArmsCombo;
         CMsg: CMsg;
         GameInformation: GameInformation;
         NpcSystem: NpcSystem;
