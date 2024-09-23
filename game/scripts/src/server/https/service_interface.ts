@@ -24,6 +24,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             this.PlayerServerSkillLevelCount.push({
                 level : {}
             })
+            this.player_log_data.push("");
         }
         //初始化分支等级
         for (let index = 0; index < 6; index++) {
@@ -418,8 +419,99 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
             }
         );
+        
     }
-    
+    /**
+     * 玩家日志log
+     */
+    player_log_data : string[] = []
+    /**
+     * 日志系统
+     * @param msg 
+     * @param player_id -1为全部玩家
+     */
+    PostLuaLog(player_id: PlayerID ,  msg : string){
+        let gametime = math.floor(GameRules.GetDOTATime(false, false) - GameRules.GameInformation.play_game_time);
+        let gametimegsh = "";
+        let hour_str = "00";
+        let minute_str = "00";
+        let second_str = "00";
+        
+        if(gametime > 3600 ){
+            let gametime_int = math.floor(gametime/3600);
+            if(gametime_int < 10){
+                hour_str = "0" + gametime_int;
+            }else{
+                hour_str = gametime_int.toString();
+            }
+        }
+        if(gametime > 60){
+            let minute_int = math.floor((gametime%3600) / 60);
+            if(minute_int < 10){
+                minute_str = "0" + minute_int;
+            }else{
+                minute_str = minute_int.toString();
+            }
+        }
+        if(gametime > 1){
+            let second_int = (gametime%60);
+            if(second_int < 10){
+                second_str = "0" + second_int;
+            }else{
+                second_str = second_int.toString();
+            }
+
+        }
+        gametimegsh = hour_str + ":" + minute_str + ":" + second_str;
+
+        if(player_id == -1){
+            let player_count = GetPlayerCount();
+            for (let index = 0; index < player_count; index++) {
+                this.player_log_data[index] += gametimegsh + msg + "\n";
+            }
+        }else{
+            this.player_log_data[player_id] += gametimegsh + msg + "\n";
+        }
+    } 
+    /**
+     * 发送日志 并清空数据
+     * @param cmd 
+     * @param args 
+     * @param player_id 
+     */
+    SendLuaLog(player_id: PlayerID){
+        let send_obj : { [sid: string]: string; } = {}
+        if(player_id == -1){
+            let player_count = GetPlayerCount();
+            for (let index = 0 as PlayerID; index < player_count; index++) {
+                if(this.player_log_data[index] != ""){
+                    let Hero = PlayerResource.GetSelectedHeroEntity(index);
+                    let steam_id = PlayerResource.GetSteamAccountID(index).toString();
+                    let hero_level = Hero.GetLevel();
+                    send_obj[steam_id] =  "第"+  GameRules.MapChapter.game_count  +"次游戏:" 
+                        + ";当前波数:" + GameRules.Spawn._round_index + ";" 
+                        + ";英雄等级:" + hero_level + ";" 
+                        + "\n" +this.player_log_data[index];
+                    this.player_log_data[index] = "";
+                }
+            }
+        }else{
+            if(this.player_log_data[player_id] != ""){
+                let Hero = PlayerResource.GetSelectedHeroEntity(player_id);
+                let steam_id = PlayerResource.GetSteamAccountID(player_id).toString();
+                let hero_level = Hero.GetLevel();
+                send_obj[steam_id] =  "第"+  GameRules.MapChapter.game_count  +"次游戏:" 
+                    + ";当前波数:" + GameRules.Spawn._round_index + ";" 
+                    + ";英雄等级:" + hero_level + ";" 
+                    + "\n" +this.player_log_data[player_id];
+                this.player_log_data[player_id] = "";
+            }
+        }
+        
+        if(Object.keys(send_obj).length > 0){
+            GameRules.ArchiveService.PostLuaLog(player_id , send_obj);
+        }
+    }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         if(cmd == "-LoadSkillfulLevel"){
@@ -454,6 +546,9 @@ export class ServiceInterface extends UIEventRegisterClass{
             this.CompoundCard(player_id , {
                 list : list,
             })
+        }
+        if(cmd == "-SendLuaLog"){
+            this.SendLuaLog(-1)
         }
 
         // //解锁图鉴

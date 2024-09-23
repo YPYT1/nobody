@@ -623,6 +623,17 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     // 更新点了天赋之后相关变动数值
                     GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
 
+                    //记录天赋点击情况
+                    if(tier_number == 1){
+                        GameRules.ServiceInterface.PostLuaLog(player_id , "技能位置#"+ skill_index +"学习基础技能:"+ key  + "(" 
+                            + this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc+ "/" 
+                            + HeroTalentCounfg.max_number + ")");
+                    }else{
+                        GameRules.ServiceInterface.PostLuaLog(player_id , "技能位置#"+ skill_index +"学习分支技能:"+ key+ "(" 
+                            + this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc+ "/" 
+                            + HeroTalentCounfg.max_number + ")");
+                    }
+
                     this.GetHeroTalentListData(player_id, {});
                 }
             } else {

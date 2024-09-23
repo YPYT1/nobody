@@ -610,7 +610,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         //标记为出售
                         this.shop_field_list[player_id][item_index].is_buy = 1;
                         this.shop_field_list[player_id][item_index].is_lock = 0;
-                        this.AddPropAttribute(player_id, name)
+                        this.AddPropAttribute(player_id, name);
                     } else {
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
                     }
@@ -679,6 +679,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             //执行后续处理....
             GameRules.MysticalShopSystem[ret_action_string](player_id, param, prop_name);
         }
+        //发送信息
+        GameRules.ServiceInterface.PostLuaLog(player_id , "购买物品:" + prop_name + "(" + this.player_shop_buy_data[player_id][prop_name]+ "/" + ItemData.buy_count_max + ")");
         //发送信息
         this.GetPlayerShopBuyData(player_id , {})
     }

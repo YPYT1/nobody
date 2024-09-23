@@ -46,6 +46,7 @@ export class GameInformation extends UIEventRegisterClass {
         if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_14"]){
             delete GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_14"];
             GameRules.CustomAttribute.DelAttributeInKey(unit, "prop_14_SaintSword");
+            GameRules.ServiceInterface.PostLuaLog(player_id , "失去物品:prop_14");
         }
         DeepPrintTable(GameRules.MysticalShopSystem.player_shop_buy_data);
         //不朽之守护
@@ -56,6 +57,7 @@ export class GameInformation extends UIEventRegisterClass {
                 unit.RespawnHero(false, false);
                 unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
             });
+            GameRules.ServiceInterface.PostLuaLog(player_id , "失去物品:prop_26");
             
             return 
         }

@@ -168,3 +168,21 @@ declare interface UpdateEquipReturn {
 }
 
 
+
+/**
+ * 日志信息
+ */
+declare interface GameLogParam {
+    gid: string, //游戏id
+    data : { [ sid : string] : string} , //记录数据
+}
+/**
+ * 更新装备信息返回
+ */
+declare interface GameLogReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+}
+
+
+

@@ -42,7 +42,7 @@ export class RuneSystem extends UIEventRegisterClass {
      */
     //玩家单次最大随机数量
     player_select_amount: number[] = [];
-    /** 
+    /**     
      * 初始化
      */
     //玩家单次最大随机数量
@@ -429,7 +429,7 @@ export class RuneSystem extends UIEventRegisterClass {
                 select_index = index;
                 max_level = element.level;
             }
-        }
+        }   
         GameRules.RuneSystem.PostSelectRune( player_id , { index : (select_index - 1) })
     }
     /**
@@ -455,7 +455,7 @@ export class RuneSystem extends UIEventRegisterClass {
             }
             let item_name = fate_data_info.item_list[index].name;
             level_index = fate_data_info.item_list[index].level_index;
-            GameRules.RuneSystem.GetRune(player_id , {"item_name" : item_name } , level_index);
+            GameRules.RuneSystem.GetRune(player_id , {"item_name" : item_name , select_type : fate_data_info.type } , level_index);
             GameRules.RuneSystem.player_fate_data_index[player_id]++;
             fate_data_info.check_index = index;
             fate_data_info.is_check = true;
@@ -492,7 +492,7 @@ export class RuneSystem extends UIEventRegisterClass {
     /**
      * 获取符文
      */
-    GetRune(player_id: PlayerID, params: { item_name: string; level?: number; charges?: number; item_index?: number; }, level_index: number = 0) {
+    GetRune(player_id: PlayerID, params: { item_name: string; level?: number; charges?: number; item_index?: number; select_type? : number }, level_index: number = 0) {
         let item_name = params.item_name as keyof typeof RuneConfig;
         let rune_index = 0;
         for (let index = 1; index <= 99; index++) {
@@ -557,7 +557,12 @@ export class RuneSystem extends UIEventRegisterClass {
         if(item_name == "rune_2"){
            GameRules.HeroTalentSystem.PointsChange(player_id); 
         }
-
+        let select_type = 0;
+        //发送日志
+        if(params.select_type){
+            select_type = select_type
+        }
+        GameRules.ServiceInterface.PostLuaLog(player_id , "获得符文:"+ item_name + ";获取方式:"+ select_type);
         // 更新符文MDF
         this.UpdateRuneMdf(item_name,hHero)
     }

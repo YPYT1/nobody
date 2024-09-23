@@ -767,16 +767,6 @@ export class MapChapter extends UIEventRegisterClass {
 
     //游戏胜利 普通关卡
     GameWin() {
-        if(GameRules.MapChapter._game_select_phase == 999){
-            return
-        }
-        //清理任务
-        GameRules.MissionSystem.Stop();
-
-        GameRules.Spawn.StopAllSpawnAndMonster();
-        let exp_list: number[] = [];
-        let cj_list: string[] = [];
-        let hero_list: string[] = [];
         Timers.CreateTimer(3, () => {
             let player_count = GetPlayerCount();
             let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
@@ -791,6 +781,16 @@ export class MapChapter extends UIEventRegisterClass {
                 }
             }
         })
+        if(GameRules.MapChapter._game_select_phase == 999){
+            return
+        }
+        //清理任务
+        GameRules.MissionSystem.Stop();
+
+        GameRules.Spawn.StopAllSpawnAndMonster();
+        let exp_list: number[] = [];
+        let cj_list: string[] = [];
+        let hero_list: string[] = [];
         //通关结算
         GameRules.ArchiveService.GameOver(
             1,
@@ -803,20 +803,11 @@ export class MapChapter extends UIEventRegisterClass {
             "游戏胜利",
             {}
         );
+        GameRules.ServiceInterface.PostLuaLog(-1 , "--------------游戏胜利--------------");
+        GameRules.ServiceInterface.SendLuaLog(-1);
     }
     //游戏失败 普通关卡
     GameLoser() {
-        if(GameRules.MapChapter._game_select_phase == 999){
-            return
-        }
-        //清理任务
-        GameRules.MissionSystem.Stop();
-        
-        GameRules.Spawn.StopAllSpawnAndMonster();
-        let exp_list: number[] = [];
-        let cj_list: string[] = [];
-        let hero_list: string[] = [];
-
         Timers.CreateTimer(3, () => {
             let player_count = GetPlayerCount();
             let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
@@ -831,6 +822,17 @@ export class MapChapter extends UIEventRegisterClass {
                 }
             }
         })
+        if(GameRules.MapChapter._game_select_phase == 999){
+            return
+        }
+        //清理任务
+        GameRules.MissionSystem.Stop();
+        
+        GameRules.Spawn.StopAllSpawnAndMonster();
+        let exp_list: number[] = [];
+        let cj_list: string[] = [];
+        let hero_list: string[] = [];
+
         //通关结算
         GameRules.ArchiveService.GameOver(
             2,
@@ -844,6 +846,8 @@ export class MapChapter extends UIEventRegisterClass {
             "游戏失败",
             {}
         );
+        GameRules.ServiceInterface.PostLuaLog(-1 , "--------------游戏失败--------------");
+        GameRules.ServiceInterface.SendLuaLog(-1);
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {

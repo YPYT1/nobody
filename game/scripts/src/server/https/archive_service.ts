@@ -269,6 +269,7 @@ export class ArchiveService extends UIEventRegisterClass {
                 }
             },
             (code: number, body: string) => {
+                
             }
         )
     }
@@ -329,6 +330,7 @@ export class ArchiveService extends UIEventRegisterClass {
                 }
             },  
             (code: number, body: string) => {
+                
             }
         )
     }
@@ -361,6 +363,27 @@ export class ArchiveService extends UIEventRegisterClass {
                 print("body : " ,body) 
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "配置装备: 未知错误")
                 GameRules.ServiceEquipment.GetEquipConfig(player_id , {})
+            }
+        )
+    }
+
+    //获取缓存
+    PostLuaLog(player_id: PlayerID  , data_string : { [sid: string]: string; }) {
+        let param_data = <GameLogParam>{
+            gid : this._game_id,
+            data : data_string , 
+        }
+        // DeepPrintTable(param_data)
+        HttpRequest.AM2Post(ACTION_LUA_LOG,
+            {
+                param: param_data
+            },
+            (data: GameLogReturn) => {
+                // DeepPrintTable(data)
+                print("日志已发送")
+            },
+            (code: number, body: string) => {
+                // print("code" , code , "body" , body )
             }
         )
     }

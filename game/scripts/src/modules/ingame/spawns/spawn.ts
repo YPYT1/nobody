@@ -1118,9 +1118,11 @@ export class Spawn extends UIEventRegisterClass {
         this._map_boss_refresh = false;
         if (GameRules.Spawn._round_index < GameRules.Spawn._round_max) {
             GameRules.Spawn.TemporarilyStopTheGame();
+            GameRules.ServiceInterface.SendLuaLog(-1);
         } else {
             GameRules.MapChapter.GameWin();
         }
+        
     }
 
     //移除单位
