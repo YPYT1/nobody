@@ -21,8 +21,8 @@ export class special_indicator_sector extends BaseAbility {
             vTarget,
             this.angle,
             this.distance,
+            cast_point,
             Vector(255, 0, 0),
-            cast_point
         )
         return true
     }

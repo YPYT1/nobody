@@ -7,6 +7,7 @@
 #base "abilities/hero/drow_skill.txt"
 
 #base "abilities/creature/elite.txt"
+#base "abilities/creature/boss.txt"
 
 "DOTAAbilities"
 {

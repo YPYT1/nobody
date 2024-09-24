@@ -4,6 +4,8 @@ declare interface CDOTA_Buff {
     element_type: ElementTypes;
     caster: CDOTA_BaseNPC;
     parent: CDOTA_BaseNPC;
+    team: DotaTeam;
+    origin: Vector;
 
     /** `该技能加成` */
     SelfAbilityMul: number;

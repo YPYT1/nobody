@@ -28,7 +28,7 @@ function Custom_FindUnitsInSector(
     teamFilter: DOTA_UNIT_TARGET_TEAM,
     typeFilter: DOTA_UNIT_TARGET_TYPE,
     flagFilter: DOTA_UNIT_TARGET_FLAGS,
-    order: FindOrder,
+    order: FindOrder = FindOrder.ANY,
 ) {
     // print("Custom_FindUnitsInSector")
     let find_units: CDOTA_BaseNPC[] = [];

@@ -13,6 +13,7 @@ export class BaseCreatureAbility extends BaseAbility {
 
     _cast_point: number;
 
+    vOrigin: Vector;
     vPoint: Vector;
     vTarget: Vector;
     hTarget: CDOTA_BaseNPC;
@@ -27,15 +28,20 @@ export class BaseCreatureAbility extends BaseAbility {
     _radius: number;
     _damage: number;
     _duration: number;
-
     _project_speed: number;
+    _team: DotaTeam;
+    _cast_range: number;
+    dmg_max_hp: number;
+    dmg_cur_hp: number;
 
     OnAbilityPhaseStart(): boolean { return true; }
+
     OnAbilityPhaseInterrupted() {
         this.DestroyWarningFx()
     }
 
     DestroyWarningFx() {
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible");
         if (this.nPreviewFX) {
             ParticleManager.DestroyParticle(this.nPreviewFX, true);
             this.nPreviewFX = null;
@@ -52,7 +58,7 @@ export class BaseCreatureAbility extends BaseAbility {
     }
 
     Precache(context: CScriptPrecacheContext): void {
-        
+
     }
 
     OnUpgrade(): void {
@@ -61,7 +67,11 @@ export class BaseCreatureAbility extends BaseAbility {
         this._damage_factor = this.GetSpecialValueFor("damage_factor");
         this._duration = this.GetSpecialValueFor("duration");
         this._interval = this.GetSpecialValueFor("interval");
-        this._distance = this.GetCastRange(this.GetCaster().GetOrigin(), this.GetCaster());
+        this._cast_range = this.GetCastRange(this.GetCaster().GetOrigin(), this.GetCaster());
         this._cast_point = this.GetCastPoint();
+        this._team = this.hCaster.GetTeam();
+        this.channel_timer = this.GetChannelTime()
+        this.dmg_max_hp = this.GetSpecialValueFor("dmg_max_hp") * 0.01;
+        this.dmg_cur_hp = this.GetSpecialValueFor("dmg_cur_hp") * 0.01;
     }
 }

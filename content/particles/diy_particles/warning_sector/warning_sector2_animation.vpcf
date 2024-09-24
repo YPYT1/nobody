@@ -820,7 +820,7 @@
 					m_hTexture = resource:"materials/particle/snapfire/snapfire_shotgun_preview_gradient_ring.vtex"
 				},
 			]
-			m_nOutputBlendMode = "PARTICLE_OUTPUT_BLEND_MODE_ADD"
+			m_nOutputBlendMode = "PARTICLE_OUTPUT_BLEND_MODE_BLEND_ADD"
 		},
 	]
 	m_Children = 

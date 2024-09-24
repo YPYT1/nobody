@@ -32,7 +32,12 @@ export class BasicRules extends UIEventRegisterClass {
 
     /** 回蓝 */
     RestoreMana(hCaster: CDOTA_BaseNPC, fManaAmount: number, hAbility?: CDOTABaseAbility) {
-        hCaster.GiveMana(fManaAmount)
+        if(fManaAmount < 0){
+            hCaster.Script_ReduceMana(math.abs(fManaAmount) ,hAbility)
+        } else {
+            hCaster.GiveMana(fManaAmount)
+        }
+        
     }
 
 

@@ -311,6 +311,15 @@ export class BaseHeroModifier extends BaseModifier {
         }
     }
 
+    /** 施法条件 */
+    CastingConditions() {
+        return (this.caster.IsAlive()
+            && this.ability.IsActivated()
+            && this.ability.IsCooldownReady()
+            && this.ability.IsMeetCastCondition()
+            && !this.caster.IsHexed()
+        )
+    }
 }
 
 const SpecialvalueOfTableSpecialObject = {

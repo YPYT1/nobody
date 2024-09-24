@@ -35,11 +35,7 @@ export class modifier_drow_4a extends BaseHeroModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.ability.IsActivated()
-            && this.caster.IsAlive()
-            && this.ability.IsCooldownReady()
-            && this.ability.IsMeetCastCondition()
-        ) {
+        if (this.CastingConditions()) {
             this.DoExecutedAbility()
             this.ability.ManaCostAndConverDmgBonus()
 

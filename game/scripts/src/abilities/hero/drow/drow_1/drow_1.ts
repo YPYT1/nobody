@@ -79,6 +79,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
         if (this.caster.IsAlive()
             && this.ability.IsActivated()
             && this.ability.IsMeetCastCondition()
+            && !this.caster.IsHexed()
         ) {
             let attackrange = this.caster.Script_GetAttackRange() + 64;
             let enemies = FindUnitsInRadius(

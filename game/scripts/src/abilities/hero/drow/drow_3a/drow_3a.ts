@@ -40,11 +40,7 @@ export class modifier_drow_3a extends BaseHeroModifier {
     }
 
     OnIntervalThink() {
-        if (this.caster.IsAlive()
-            && this.ability.IsActivated()
-            && this.ability.IsCooldownReady()
-            && this.ability.IsMeetCastCondition()
-        ) {
+        if (this.CastingConditions()) {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             this.ExtraEffect()

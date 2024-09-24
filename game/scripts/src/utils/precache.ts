@@ -35,6 +35,8 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/units/heroes/hero_pudge/pudge_rot.vpcf',
             'particles/units/heroes/hero_muerta/muerta_parting_shot_tether.vpcf',
             'particles/units/heroes/hero_techies/techies_land_mine_explode.vpcf',
+            'particles/econ/items/phoenix/phoenix_solar_forge/phoenix_sunray_solar_forge.vpcf',
+            'particles/title_fx/title00028/title00028.vpcf',
             ...drow_precache,
         ],
         context

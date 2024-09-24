@@ -143,7 +143,7 @@ export class WarningMarker {
 
 
     /**
-     * 
+     * 扇形范围,不超过
      * @param caster 施法者
      * @param start_vect 开始点
      * @param end_vect 结束点
@@ -159,14 +159,16 @@ export class WarningMarker {
         end_vect: Vector,
         angle: number,
         distance: number,
-        color: Vector = Vector(255, 0, 0),
         duration: number = 1,
+        color: Vector = Vector(255, 0, 0),
     ) {
         // 通过开始点,结束点,角度,来得到 结束时候的radius
         let end_radius = math.tan((angle) * math.pi / 180) * distance;
+        // let end_radius2 = distance * 3.14 * (360 / angle)
+        // print("end_radius",end_radius,end_radius2)
         // 因为特效问题,需要多偏移50的距离
         let vDir = (end_vect - start_vect as Vector)
-        let vTarget = start_vect + vDir.Normalized() * (distance + 100) as Vector;
+        let vTarget = start_vect + vDir.Normalized() * (distance + 50) as Vector;
         let warning_fx = ParticleManager.CreateParticle(
             "particles/diy_particles/warning_sector/warning_sector2.vpcf",
             ParticleAttachment.WORLDORIGIN,

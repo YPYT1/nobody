@@ -169,7 +169,8 @@ export class ResourceSystem extends UIEventRegisterClass {
         return true
     }
 
-    AddExperience(player_id: PlayerID, base_exp: number) {
+    /** 内部类代码.,外部不可调用 */
+    private AddExperience(player_id: PlayerID, base_exp: number) {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         hHero.AddExperience(base_exp, ModifyXpReason.CREEP_KILL, false, false)
     }

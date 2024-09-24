@@ -161,7 +161,7 @@ export class modifier_mission_dire_2_target extends BaseModifier {
             this.effect_fx,
             1,
             hTarget, ParticleAttachment.POINT_FOLLOW,
-            "attach_loc",
+            "attach_hitloc",
             Vector(0, 0, 0),
             false
         )

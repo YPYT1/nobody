@@ -364,8 +364,8 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
 
     OnCreated(params: any): void {
         if (!IsServer()) { return; }
-        this.GetParent().RemoveHorizontalMotionController(this);
-        this.GetParent().RemoveVerticalMotionController(this);
+        // this.GetParent().RemoveHorizontalMotionController(this);
+        // this.GetParent().RemoveVerticalMotionController(this);
         this.surround_distance = params.surround_distance;
         this.final_distance = params.surround_distance;
         this.surround_qangle = params.surround_qangle;
@@ -381,7 +381,10 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
         this._rote_value = 0;
         this.parent = this.GetParent();
         this.caster = this.GetCaster();
+        // print("this._base_entity", this._base_entity.GetUnitName())
+        // print("this.ApplyHorizontalMotionController()",this.ApplyHorizontalMotionController())
         if (this.ApplyHorizontalMotionController() == false || this.ApplyVerticalMotionController() == false) {
+            // print("Created Destroy")
             this.Destroy();
             return;
         }
@@ -396,7 +399,6 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
         if (!IsServer()) { return; }
         // 变更坐标
         this.final_distance = params.surround_distance;
-        // print(this.GetName(), " OnRefresh");
     }
 
     OnIntervalThink(): void {
@@ -409,12 +411,17 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
     }
 
     _OnIntervalThink() { }
+
     OnDestroy(): void {
         if (!IsServer()) { return; }
         this.GetParent().RemoveHorizontalMotionController(this);
         this.GetParent().RemoveVerticalMotionController(this);
+        this.C_OnDestroy()
     }
 
+    C_OnDestroy() {
+
+    }
     OnVerticalMotionInterrupted() {
         if (!IsServer()) { return; }
         this.Destroy();
@@ -435,7 +442,6 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
             this.Destroy();
             return;
         }
-        // print(this._base_entity, IsValid(this._base_entity));
         let center_point = this._base_entity.GetAbsOrigin() + this._base_entity.GetForwardVector() * this.forward_offset as Vector;
         let int_offset: Vector;
         if (this.final_distance == this.surround_distance) {

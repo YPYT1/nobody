@@ -33,7 +33,7 @@ export const HeroList = [
     // "npc_dota_hero_elder_titan",
     // "npc_dota_hero_ember_spirit",
     // "npc_dota_hero_enchantress",
-    // "npc_dota_hero_enigma",
+    "npc_dota_hero_enigma",
     // "npc_dota_hero_faceless_void",
     // "npc_dota_hero_furion",
     "npc_dota_hero_grimstroke",
@@ -119,5 +119,5 @@ export const HeroList = [
     // "npc_dota_hero_winter_wyvern",
     // "npc_dota_hero_wisp",
     // "npc_dota_hero_witch_doctor",
-    // "npc_dota_hero_zuus",
+    "npc_dota_hero_zuus",
 ]
