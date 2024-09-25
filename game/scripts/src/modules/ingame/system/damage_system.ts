@@ -203,7 +203,6 @@ export class DamageSystem {
         // print("increased_injury",increased_injury)
         // print("ElementResist", ElementResist)
         params.damage = math.floor(params.damage * increased_injury);
-
         // 暴击
         if ((critical_flag != -1 && RollPercentage(CriticalChance)) || critical_flag == 1) {
             is_crit = 1;
@@ -213,6 +212,9 @@ export class DamageSystem {
         if (talent_mdf) {
             talent_mdf.OnCriticalStrike(params.victim)
         }
+        // 特殊机制
+        let bonus_dmg_pct = this.AboutSpecialMechanism(params)
+        params.damage *= bonus_dmg_pct;
         PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type);
         // 伤害系统
         let actual_damage = math.min(params.damage, params.victim.GetHealth());
@@ -243,8 +245,6 @@ export class DamageSystem {
             GameRules.CMsg.Popups(params.victim, 'Miss', 0, params.victim.GetPlayerOwner())
             return 0
         }
-
-
 
         // 护甲
         // let armor = custom_attribute_value.PhyicalArmor ?? 0;
@@ -324,5 +324,13 @@ export class DamageSystem {
 
         // print("final bonus",bonus)
         return bonus
+    }
+
+    AboutSpecialMechanism(params:ApplyCustomDamageOptions){
+        let base_multiplying = 1;
+        if(params.victim.HasModifier("modifier_creature_boss_19") && params.attacker.HasModifier("modifier_creature_boss_19_note3") ){
+            base_multiplying *= 2
+        }
+        return base_multiplying
     }
 }

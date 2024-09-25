@@ -60,12 +60,20 @@ export class modifier_creature_elite_1 extends modifier_generic_arc_lua {
     GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
     GetModifierAura() { return "modifier_creature_elite_1_aura"; }
 
+    _OnCreated(kv: any): void {
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_spirit_breaker/spirit_breaker_charge.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent()
+        )
+        this.AddParticle(effect_fx, false, false, -1, false, false)
+    }
 }
 
 @registerModifier()
 export class modifier_creature_elite_1_aura extends BaseModifier {
 
-    knockback_duration:number;
+    knockback_duration: number;
     IsHidden(): boolean {
         return true
     }

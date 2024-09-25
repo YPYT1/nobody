@@ -1,5 +1,5 @@
 export const HeroList = [
-    // "npc_dota_hero_abaddon",
+    "npc_dota_hero_abaddon",
     // "npc_dota_hero_abyssal_underlord",
     // "npc_dota_hero_alchemist",
     // "npc_dota_hero_ancient_apparition",
@@ -60,6 +60,7 @@ export const HeroList = [
     // "npc_dota_hero_mirana",
     // "npc_dota_hero_monkey_king",
     // "npc_dota_hero_morphling",
+    "npc_dota_hero_muerta",
     // "npc_dota_hero_naga_siren",
     // "npc_dota_hero_necrolyte",
     // "npc_dota_hero_nevermore",

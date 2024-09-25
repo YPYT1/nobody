@@ -14,33 +14,105 @@ export class creature_elite_3 extends BaseCreatureAbility {
     // particles/units/heroes/hero_gyrocopter/gyro_guided_missile_target.vpcf
     OnSpellStart(): void {
         let hTarget = this.GetCursorTarget();
-        let speed = this.GetSpecialValueFor("speed");
+
         let Missile = CreateUnitByName(
             "npc_public_homing_missile",
-            this.hCaster.GetAbsOrigin(),
+            this.hCaster.GetAbsOrigin() + RandomVector(200) as Vector,
             false,
             this.hCaster,
             this.hCaster,
             this.hCaster.GetTeam()
         )
         // print("Missile", Missile)
-
-        Missile.AddNewModifier(this.hCaster, this, "modifier_creature_elite_3_tracking", {
-            speed: speed,
-            target_entity: hTarget.entindex(),
-            duration: this._duration,
+        Missile.AddNewModifier(this.hCaster, this, "modifier_creature_elite_3_delay", {
+            duration: 3,
+            target: hTarget.entindex(),
+            _duration: this._duration,
         })
+
+
     }
 
 
 }
 
 @registerModifier()
+export class modifier_creature_elite_3_delay extends BaseModifier {
+
+    target: EntityIndex;
+    _duration: number;
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        this.target = params.target
+        this._duration = params._duration;
+        // this.GetParent().animation
+        this.StartIntervalThink(3)
+    }
+
+    OnIntervalThink(): void {
+        this.StartIntervalThink(-1);
+        this.Destroy()
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        let speed = this.GetAbility().GetSpecialValueFor("speed");
+        this.GetParent().AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_3_tracking", {
+            speed: speed,
+            target_entity: this.target,
+            duration: this._duration,
+        })
+        
+    }
+
+    CheckState(): Partial<Record<modifierstate, boolean>> {
+        return {
+            [ModifierState.NO_UNIT_COLLISION]: true,
+            [ModifierState.INVULNERABLE]: true,
+            [ModifierState.NO_HEALTH_BAR]: true,
+            [ModifierState.UNSELECTABLE]: true,
+        }
+    }
+
+    DeclareFunctions(): modifierfunction[] {
+        return [
+            ModifierFunction.OVERRIDE_ANIMATION_RATE
+        ]
+    }
+
+    
+    GetOverrideAnimationRate(): number {
+        return 2
+    }
+}
+
+@registerModifier()
 export class modifier_creature_elite_3_tracking extends modifier_motion_hit_target {
 
     _OnCreated(params: any): void {
-        this.GetParent().RemoveGesture(GameActivity.DOTA_SPAWN);
-        this.GetParent().StartGesture(GameActivity.DOTA_LOADOUT)
+        // this.GetParent().RemoveGesture(GameActivity.DOTA_IDLE)
+        // this.GetParent().StartGestureWithPlaybackRate(GameActivity.DOTA_RUN,2)
+
+        let target_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_gyrocopter/gyro_guided_missile_target.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            this.target
+        )
+        this.AddParticle(target_fx, false, false, -1, false, false)
+
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_gyrocopter/gyro_guided_missile.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControlEnt(effect_fx, 0, this.GetParent(),
+            ParticleAttachment.POINT_FOLLOW,
+            "attach_fuse",
+            Vector(0, 0, 0),
+            false
+        )
+        this.AddParticle(effect_fx, false, false, -1, false, false)
     }
 
     OnDestroy(): void {

@@ -2,6 +2,8 @@
 import { drow_precache } from "../kv_data/precache_data/hero_ability/drow";
 import { HeroList } from "../kv_data/precache_data/hero_list";
 
+import "./../global/global_precache";
+
 // 导出的预载入方法，用来给addon_game_mode.ts调用
 export default function Precache(context: CScriptPrecacheContext) {
     // 需要预载的所有资源
@@ -37,6 +39,21 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/units/heroes/hero_techies/techies_land_mine_explode.vpcf',
             'particles/econ/items/phoenix/phoenix_solar_forge/phoenix_sunray_solar_forge.vpcf',
             'particles/title_fx/title00028/title00028.vpcf',
+            'particles/econ/items/leshrac/leshrac_tormented_staff/leshrac_split_tormented.vpcf',
+            'particles/econ/events/ti9/teleport_end_ti9.vpcf',
+            'particles/units/heroes/hero_phoenix/phoenix_supernova_reborn.vpcf',
+            'particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path_b.vpcf',
+            'particles/units/heroes/hero_gyrocopter/gyro_guided_missile_target.vpct',
+            'particles/units/heroes/hero_gyrocopter/gyro_guided_missile.vpcf',
+            'particles/econ/items/death_prophet/death_prophet_acherontia/death_prophet_acher_swarm.vpcf',
+            'particles/units/heroes/hero_magnataur/magnataur_skewer.vpcf',
+            'particles/units/heroes/hero_treant/treant_overgrowth_cast.vpcf',
+            'particles/econ/items/treant_protector/treant_ti10_immortal_head/treant_ti10_immortal_overgrowth_root_small.vpcf',
+            'particles/units/heroes/hero_elder_titan/elder_titan_echo_stomp_physical.vpcf',
+            'particles/ui_mouseactions/range_finder_tower_line.vpcf',
+            'particles/custom/creature/boss/boss_20_mission.vpcf',
+            'particles/diy_particles/unit_model_particles.vpcf',
+            'particles/econ/items/lina/lina_ti7/lina_spell_light_strike_array_ti7.vpcf',
             ...drow_precache,
         ],
         context
@@ -68,57 +85,4 @@ export default function Precache(context: CScriptPrecacheContext) {
         context
     );
     print(`[Precache] Precache finished.`);
-}
-
-// 预载入KV文件中的所有资源
-function precacheEveryResourceInKV(kvFileList: string[], context: CScriptPrecacheContext) {
-    kvFileList.forEach(file => {
-        const kvTable = LoadKeyValues(file);
-        precacheEverythingFromTable(kvTable, context);
-    });
-}
-// 预载入资源列表
-function precacheResource(resourceList: string[], context: CScriptPrecacheContext) {
-    resourceList.forEach(resource => {
-        precacheResString(resource, context);
-    });
-}
-function precacheResString(res: string, context: CScriptPrecacheContext) {
-    if (res.endsWith('.vpcf')) {
-        PrecacheResource('particle', res, context);
-    } else if (res.endsWith('.vsndevts')) {
-        PrecacheResource('soundfile', res, context);
-    } else if (res.endsWith('.vmdl')) {
-        PrecacheResource('model', res, context);
-    }
-}
-
-// 预载入单位列表
-function precacheUnits(unitNamesList: string[], context?: CScriptPrecacheContext) {
-    if (context != null) {
-        unitNamesList.forEach(unitName => {
-            PrecacheUnitByNameSync(unitName, context);
-        });
-    } else {
-        unitNamesList.forEach(unitName => {
-            PrecacheUnitByNameAsync(unitName, () => { });
-        });
-    }
-}
-// 预载入物品列表
-function precacheItems(itemList: string[], context: CScriptPrecacheContext) {
-    itemList.forEach(itemName => {
-        PrecacheItemByNameSync(itemName, context);
-    });
-}
-
-// 一个辅助的，从KV表中解析出所有资源并预载入的方法
-function precacheEverythingFromTable(kvTable: any, context: CScriptPrecacheContext) {
-    for (const [k, v] of pairs(kvTable)) {
-        if (type(v) === 'table') {
-            precacheEverythingFromTable(v, context);
-        } else if (type(v) === 'string') {
-            precacheResString(v, context);
-        }
-    }
 }

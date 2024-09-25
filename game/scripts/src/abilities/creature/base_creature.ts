@@ -58,7 +58,7 @@ export class BaseCreatureAbility extends BaseAbility {
     }
 
     Precache(context: CScriptPrecacheContext): void {
-
+        precacheResString("particles/units/heroes/hero_treant/treant_overgrowth_cast.vpcf",context)
     }
 
     OnUpgrade(): void {

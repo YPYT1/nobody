@@ -231,10 +231,11 @@ export class Development extends UIEventRegisterClass {
             // ], context)
         }
 
-        if (cmd == "-vis") {
+        if (cmd == "-fog") {
             print("add vis")
-            hHero.AddNewModifier(hHero, null, 'modifier_mission_dire_6_vision', { duration: 10 })
+            // hHero.AddNewModifier(hHero, null, 'modifier_mission_dire_6_vision', { duration: 10 })
             // AddFOWViewer(DotaTeam.GOODGUYS, hHero.GetAbsOrigin(), 9999, 10, false)
+            GameRules.GetGameModeEntity().SetFogOfWarDisabled(true)
         }
 
         if (cmd == "-hpbar") {

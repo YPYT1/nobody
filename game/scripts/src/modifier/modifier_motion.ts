@@ -497,7 +497,7 @@ export class modifier_motion_hit_target extends BaseModifierMotionHorizontal {
             [ModifierState.NOT_ON_MINIMAP]: true,
             [ModifierState.UNSELECTABLE]: true,
             [ModifierState.INVULNERABLE]: true,
-            [ModifierState.INVISIBLE]: true,
+            // [ModifierState.INVISIBLE]: true,
             [ModifierState.NO_UNIT_COLLISION]: true,
         };
     }

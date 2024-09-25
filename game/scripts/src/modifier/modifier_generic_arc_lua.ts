@@ -81,16 +81,15 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     OnCreated(kv: any) {
         if (!IsServer()) { return; }
         this._OnCreated(kv);
-        this.OnRefresh(kv)
+        this.interrupted = false;
+        this.SetJumpParameters(kv);
+        this.Jump();
     }
 
     _OnCreated(kv: any) { }
 
     OnRefresh(kv: any): void {
         if (!IsServer()) { return }
-        this.interrupted = false;
-        this.SetJumpParameters(kv);
-        this.Jump();
         this._OnRefresh(kv)
     }
 
@@ -101,7 +100,6 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     OnDestroy(): void {
         if (!IsServer()) { return; }
         let pos = this.GetParent().GetOrigin();
-
         this.GetParent().RemoveHorizontalMotionController(this);
         this.GetParent().RemoveVerticalMotionController(this);
         if (this.end_offset != 0) {
@@ -109,6 +107,7 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         }
         this._OnDestroy();
     }
+
     _OnDestroy() { }
 
     DeclareFunctions(): ModifierFunction[] {

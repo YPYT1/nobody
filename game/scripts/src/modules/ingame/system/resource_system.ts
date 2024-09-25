@@ -125,10 +125,13 @@ export class ResourceSystem extends UIEventRegisterClass {
                 // 获得灵魂时
                 if (amount > 0) {
                     const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-                    let rune_buff = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect
-                    if (rune_buff) {
-                        rune_buff.OnGetSoul(math.floor(amount))
+                    if (hHero) {
+                        let rune_buff = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect
+                        if (rune_buff) {
+                            rune_buff.OnGetSoul(math.floor(amount))
+                        }
                     }
+
                 }
 
             }

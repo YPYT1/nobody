@@ -392,7 +392,7 @@ function ArrayScramblingByString(arr: string[]): void {
  * 打乱数组
  * @param arr 
  */
-function ArrayScramblingByNumber(arr: number[]): void {
+function ArrayScramblingByNumber<T>(arr: T[]): void {
     let key_length = arr.length;
     for (let k_i = 0; k_i < key_length; k_i++) {
         let JH_i = RandomInt(0, key_length - 1);

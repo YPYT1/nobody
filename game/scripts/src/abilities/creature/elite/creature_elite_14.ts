@@ -10,8 +10,11 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_14 extends BaseCreatureAbility {
 
-    line_width:number
-    line_distance:number;
+    line_width: number
+    line_distance: number;
+
+    final_vect: Vector;
+    direction: Vector;
     OnAbilityPhaseStart(): boolean {
         this.line_width = this.GetSpecialValueFor("line_width");
         this.line_distance = this.GetSpecialValueFor("line_distance")
@@ -21,7 +24,7 @@ export class creature_elite_14 extends BaseCreatureAbility {
             this.line_width,
             this.hCaster.GetAbsOrigin(),
             this.vPoint,
-            this.line_distance ,
+            this.line_distance,
             this._cast_point
         )
         return true
@@ -33,15 +36,16 @@ export class creature_elite_14 extends BaseCreatureAbility {
         let direction = this.vPoint - this.hCaster.GetAbsOrigin() as Vector;
         direction.z = 0;
         direction = direction.Normalized();
-        let vPoint = this.hCaster.GetAbsOrigin() + direction * this.line_distance  as Vector;
+        this.direction = direction
+        let vPoint = this.hCaster.GetAbsOrigin() + direction * this.line_distance as Vector;
 
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_elite_14", {
             target_x: vPoint.x,
             target_y: vPoint.y,
             height: 0,
-            speed: this.line_distance ,
+            speed: this.line_distance,
         })
-
+        this.final_vect = vPoint
     }
 }
 
@@ -53,12 +57,37 @@ export class modifier_creature_elite_14 extends modifier_generic_arc_lua {
     }
 
     IsAura(): boolean { return true; }
+    // GetAuraDuration(): number { return 0.1 }
     GetAuraRadius(): number { return 150; }
     GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
     GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
     GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
     GetModifierAura() { return "modifier_creature_elite_14_aura"; }
 
+    _OnCreated(kv: any): void {
+        let hParent = this.GetParent()
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_magnataur/magnataur_skewer.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControlEnt(effect_fx, 1, this.GetParent(),
+            ParticleAttachment.POINT_FOLLOW,
+            "attach_head",
+            Vector(0, 0, 0),
+            true)
+        this.AddParticle(effect_fx, false, false, -1, false, false)
+    }
+
+    DeclareFunctions(): ModifierFunction[] {
+        return [
+            ModifierFunction.DISABLE_TURNING
+        ]
+    }
+
+    GetModifierDisableTurning(): 0 | 1 {
+        return 1
+    }
 }
 
 @registerModifier()
@@ -75,7 +104,12 @@ export class modifier_creature_elite_14_aura extends BaseModifier {
         let hCaster = this.GetCaster();
         let vCaster = hCaster.GetAbsOrigin()
         let damage = hParent.GetMaxHealth() * 0.4;
-
+        let hAbility = this.GetAbility() as creature_elite_14;
+        let final_vect = hAbility.final_vect;
+        let speed = hAbility.line_distance;
+        let direction = hAbility.direction;
+        let distance = (vCaster - final_vect as Vector).Length2D()
+        let vTarget = hParent.GetAbsOrigin() + hCaster.GetForwardVector() * distance as Vector
 
         ApplyCustomDamage({
             victim: hParent,
@@ -86,17 +120,14 @@ export class modifier_creature_elite_14_aura extends BaseModifier {
             miss_flag: 1,
         })
 
-        hParent.AddNewModifier(hCaster, null, "modifier_knockback_lua", {
-            center_x: vCaster.x,
-            center_y: vCaster.y,
-            center_z: 0,
-            knockback_height: 0,
-            knockback_distance: 150,
-            knockback_duration: 0.1,
-            duration: 0.1,
+        hParent.AddNewModifier(hCaster, this.GetAbility(), "modifier_generic_arc_lua", {
+            target_x: vTarget.x,
+            target_y: vTarget.y,
+            height: 0,
+            speed: speed,
+            isStun: 1,
+            isRestricted: 1,
         })
-
-
-        this.OnDestroy();
     }
+
 }

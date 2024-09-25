@@ -32,10 +32,10 @@ export class creature_elite_6 extends BaseCreatureAbility {
         this.DestroyWarningFx()
         let vCaster = this.hCaster.GetAbsOrigin()
         let vDirection = (this.vPoint - vCaster as Vector).Normalized();
-        vDirection.z = 0;
+        // vDirection.z = 0;
         ProjectileManager.CreateLinearProjectile({
             Ability: this,
-            EffectName: "particles/units/heroes/hero_shadow_demon/shadow_demon_shadow_poison_projectile.vpcf",
+            EffectName: "particles/econ/items/death_prophet/death_prophet_acherontia/death_prophet_acher_swarm.vpcf",
             vSpawnOrigin: vCaster,
             fDistance: this.line_distance,
             fStartRadius: this.line_width,
@@ -45,6 +45,13 @@ export class creature_elite_6 extends BaseCreatureAbility {
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
         });
+        // let effect_fx = ParticleManager.CreateParticle(
+        //     "particles/units/heroes/hero_death_prophet/death_prophet_carrion_swarm.vpcf",
+        //     ParticleAttachment.CUSTOMORIGIN,
+        //     null
+        // )
+        // ParticleManager.SetParticleControl(effect_fx,0,vCaster)
+        // ParticleManager.set
     }
 
     OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {

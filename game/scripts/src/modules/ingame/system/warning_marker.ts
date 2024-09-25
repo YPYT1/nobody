@@ -19,10 +19,15 @@ export class WarningMarker {
         duration: number,
         vect: Vector,
         immediateRelease: boolean = false,
-        color: Vector = Vector(255, 0, 0)
+        color: Vector = Vector(255, 0, 0),
+        type: number = 0,
     ) {
+        let effect_name = "particles/diy_particles/warning_aoe/ui_sphere.vpcf";
+        if (type == 1) {
+            effect_name = "particles/diy_particles/warning_aoe/ui_sphere_reverse.vpcf";
+        }
         let aoe_pfx2 = ParticleManager.CreateParticle(
-            "particles/diy_particles/warning_aoe/ui_sphere.vpcf",
+            effect_name,
             ParticleAttachment.CUSTOMORIGIN,
             null,
         );

@@ -24,12 +24,14 @@ export class creature_elite_2 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx()
+        // file://{images}/spellicons/leshrac_split_earth.png
         let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_kunkka/kunkka_spell_torrent_splash.vpcf",
+            "particles/econ/items/leshrac/leshrac_tormented_staff/leshrac_split_tormented.vpcf",
             ParticleAttachment.CUSTOMORIGIN,
             null
         );
         ParticleManager.SetParticleControl(effect_fx, 0, this.vPoint)
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this._radius,1,1))
         ParticleManager.ReleaseParticleIndex(effect_fx)
         let enemies = FindUnitsInRadius(
             this.hCaster.GetTeam(),

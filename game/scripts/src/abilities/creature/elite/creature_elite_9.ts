@@ -11,10 +11,11 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_9 extends BaseCreatureAbility {
 
-    line_width:number
-    line_distance:number
+    line_width: number
+    line_distance: number
     OnAbilityPhaseStart(): boolean {
         // let hTarget = this.GetCursorTarget();
+        this.vOrigin = this.hCaster.GetAbsOrigin()
         this.vPoint = this.GetCursorPosition();
         this.line_width = this.GetSpecialValueFor("line_width")
         this.line_distance = this.GetSpecialValueFor("line_distance");
@@ -33,7 +34,7 @@ export class creature_elite_9 extends BaseCreatureAbility {
         this.DestroyWarningFx();
         // particles/units/heroes/hero_jakiro/jakiro_ice_path.vpcf
         let dir = (this.vPoint - this.hCaster.GetAbsOrigin() as Vector).Normalized();
-        let vTarget = this.hCaster.GetAbsOrigin() + dir * this._duration as Vector;
+        let vTarget = this.hCaster.GetAbsOrigin() + dir * this.line_distance as Vector;
         CreateModifierThinker(
             this.hCaster,
             this,
@@ -47,6 +48,28 @@ export class creature_elite_9 extends BaseCreatureAbility {
             this.hCaster.GetTeam(),
             false
         )
+        // 伤害
+        let enemies = FindUnitsInLine(
+            this._team,
+            this.vOrigin,
+            vTarget,
+            null,
+            this.line_width,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE
+        )
+        for (let enemy of enemies) {
+            let damage = enemy.GetMaxHealth() * 0.2;
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.hCaster,
+                ability: this,
+                damage: damage,
+                damage_type: DamageTypes.PHYSICAL,
+                miss_flag: 1,
+            })
+        }
     }
 }
 
@@ -57,7 +80,8 @@ export class modifier_creature_elite_9_path extends BaseModifier {
     end: Vector;
     team: DotaTeam;
 
-    line_width:number;
+    line_width: number;
+
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.line_width = this.GetAbility().GetSpecialValueFor("line_width")
@@ -65,15 +89,16 @@ export class modifier_creature_elite_9_path extends BaseModifier {
         this.end = Vector(params.x, params.y, this.start.z);
         this.team = this.GetCaster().GetTeam();
         let cast_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_jakiro/jakiro_ice_path.vpcf",
-            ParticleAttachment.POINT,
-            this.GetParent()
+            "particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path_b.vpcf",
+            ParticleAttachment.CUSTOMORIGIN,
+            null
         )
+        ParticleManager.SetParticleControl(cast_fx, 0, this.start)
         ParticleManager.SetParticleControl(cast_fx, 1, this.end)
-        ParticleManager.SetParticleControl(cast_fx, 2, Vector(0, 0, this.GetDuration()))
+        ParticleManager.SetParticleControl(cast_fx, 2, Vector(this.GetDuration(), 0, 0))
         this.AddParticle(cast_fx, false, false, -1, false, false)
         this.OnIntervalThink()
-        this.StartIntervalThink(0.25)
+        this.StartIntervalThink(0.1)
     }
 
     OnIntervalThink(): void {
@@ -90,10 +115,10 @@ export class modifier_creature_elite_9_path extends BaseModifier {
         for (let unit of line_unit) {
             if (unit.GetTeamNumber() == this.team) {
                 // 加速
-                unit.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_9_buff", { duration: 1.5 })
+                unit.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_9_buff", { duration: 0.5 })
             } else {
                 // 伤害减速
-                unit.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_9_debuff", { duration: 1.5 })
+                unit.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_9_debuff", { duration: 0.5 })
             }
         }
     }
@@ -130,20 +155,12 @@ export class modifier_creature_elite_9_debuff extends BaseModifier {
                 "BasePercent": -50
             }
         })
-        this.OnIntervalThink()
+        // this.OnIntervalThink()
         // this.StartIntervalThink(1)
     }
 
     OnIntervalThink(): void {
-        let damage = this.GetParent().GetMaxHealth() * 0.2;
-        ApplyCustomDamage({
-            victim: this.GetParent(),
-            attacker: this.GetCaster(),
-            ability: this.GetAbility(),
-            damage: damage,
-            damage_type: DamageTypes.PHYSICAL,
-            miss_flag: 1,
-        })
+
     }
 
     OnDestroy(): void {

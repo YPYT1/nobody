@@ -154,7 +154,7 @@ export const HeroDemo = () => {
 
     return (
         <>
-            <Panel id='DevelopmentContainer' className={`container flow-down ${show ? "" : "off"}`} >
+            <Panel id='DevelopmentContainer' className={`Dev container flow-down ${show ? "" : "off"}`} >
                 <Panel className="head">
                     <Panel className='flow-right'>
                         <Label text="开发工具" />
@@ -225,7 +225,7 @@ export const HeroDemo = () => {
             <Button id='DevelopmentButton' className='btn' onactivate={ToggleHandle} >
                 <Label text={"开发工具切换"} />
             </Button>
-            <Panel id='DevelopmentPopups' className={`Popups ${PopupsViews}`} hittest={false}>
+            <Panel id='DevelopmentPopups' className={`Dev Popups ${PopupsViews}`} hittest={false}>
                 <HeroPick closedHandle={() => setPopupsViews("None")} />
                 <AbilityPick />
                 <ItemListPick />
