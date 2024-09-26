@@ -695,7 +695,7 @@ export class CustomAttribute {
             for (let wearable of szWearables) {
                 let hWearable = Entities.CreateByClassname("wearable_item") as CDOTA_BaseNPC
                 if (hWearable != null) {
-
+                    hWearable.wrarable_model = wearable.model
                     hWearable.SetModel(wearable.model)
                     hWearable.SetTeam(DotaTeam.GOODGUYS)
                     hWearable.SetOwner(hUnit)

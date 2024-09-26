@@ -43,8 +43,10 @@ export class creature_boss_7 extends BaseCreatureAbility {
 export class modifier_creature_boss_7 extends BaseModifier {
 
     origin: Vector;
+    state: boolean;
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.state = false;
         this.origin = this.GetParent().GetAbsOrigin()
         let effect_fx = ParticleManager.CreateParticle(
             "particles/title_fx/title00028/title00028.vpcf",
@@ -60,34 +62,38 @@ export class modifier_creature_boss_7 extends BaseModifier {
     OnIntervalThink(): void {
         const pos = this.GetParent().GetAbsOrigin()
         if (pos == this.origin) { return }
-        this.origin = pos;
-        this.ApplyDamage(this.GetParent())
+        this.state = true;
+        this.StartIntervalThink(-1)
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        if (this.state) {
+            this.ApplyDamage(this.GetParent())
+        }
     }
 
     ApplyDamage(hTarget: CDOTA_BaseNPC) {
-        if (!hTarget.HasModifier("modifier_creature_boss_7_dmg_interval")) {
-            hTarget.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_boss_7_dmg_interval", {
-                duration: 1
-            })
-            const damage = hTarget.GetMaxHealth() * 0.75;
-            ApplyCustomDamage({
-                victim: hTarget,
-                attacker: this.GetCaster(),
-                ability: null,
-                damage: damage,
-                damage_type: DamageTypes.PHYSICAL,
-                miss_flag: 1,
-            })
 
-            let effect_px = ParticleManager.CreateParticle(
-                "particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf",
-                ParticleAttachment.OVERHEAD_FOLLOW,
-                hTarget
-            )
-            ParticleManager.SetParticleControl(effect_px, 1, hTarget.GetAbsOrigin());
-            ParticleManager.SetParticleControl(effect_px, 2, this.GetCaster().GetAbsOrigin());
-            ParticleManager.ReleaseParticleIndex(effect_px);
-        }
+        const damage = hTarget.GetMaxHealth() * 0.75;
+        ApplyCustomDamage({
+            victim: hTarget,
+            attacker: this.GetCaster(),
+            ability: null,
+            damage: damage,
+            damage_type: DamageTypes.PHYSICAL,
+            miss_flag: 1,
+        })
+
+        let effect_px = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            hTarget
+        )
+        ParticleManager.SetParticleControl(effect_px, 1, hTarget.GetAbsOrigin());
+        ParticleManager.SetParticleControl(effect_px, 2, this.GetCaster().GetAbsOrigin());
+        ParticleManager.ReleaseParticleIndex(effect_px);
+
     }
 }
 

@@ -31,6 +31,29 @@ export class creature_boss_20 extends BaseCreatureAbility {
         this.DestroyWarningFx();
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_20_attack", {})
     }
+
+    OnChannelFinish(interrupted: boolean): void {
+        this.hCaster.RemoveModifierByName("modifier_creature_boss_20_attack");
+        this.hCaster.RemoveModifierByName("modifier_creature_boss_20_line")
+    }
+
+    OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {
+        if (target) {
+            let base_damage = target.GetMaxHealth() * 0.9;
+            if (target.HasModifier("modifier_creature_boss_20_shield")) {
+                base_damage *= 0.1;
+                target.RemoveModifierByName("modifier_creature_boss_20_shield")
+            }
+            ApplyCustomDamage({
+                attacker: this.GetCaster(),
+                victim: target,
+                damage: base_damage,
+                damage_type: DamageTypes.PHYSICAL,
+                ability: this,
+                miss_flag: 1
+            })
+        }
+    }
 }
 
 @registerModifier()
@@ -54,6 +77,7 @@ export class modifier_creature_boss_20_attack extends BaseModifier {
     order: number;
     is_end: boolean;
     hCaster: CDOTA_BaseNPC;
+    target: CDOTA_BaseNPC;
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
@@ -74,7 +98,11 @@ export class modifier_creature_boss_20_attack extends BaseModifier {
             this.Destroy()
             return
         }
-        this.OnIntervalThink()
+        this.target = this.target_list[0];
+        this.hCaster.AddNewModifier(this.hCaster, this.GetAbility(), "modifier_creature_boss_20_line", {
+            entity: this.target.entindex(),
+        })
+        // this.OnIntervalThink()
         this.StartIntervalThink(2)
     }
 
@@ -85,32 +113,39 @@ export class modifier_creature_boss_20_attack extends BaseModifier {
         }
         if (this.target_list.length <= this.order) {
             this.is_end = true
+            this.hCaster.RemoveModifierByName("modifier_creature_boss_20_line")
             this.StartIntervalThink(1)
             return
         }
 
+        ProjectileManager.CreateTrackingProjectile({
+            Source: this.GetCaster(),
+            Target: this.target,
+            Ability: this.GetAbility(),
+            EffectName: "particles/units/heroes/hero_skeletonking/skeletonking_hellfireblast.vpcf",
+            iSourceAttachment: ProjectileAttachment.HITLOCATION,
+            iMoveSpeed: 9999,
+        })
 
-        let hTarget = this.target_list[this.order];
-        let iTargetEnti = hTarget.entindex();
-        let Missile = CreateUnitByName(
-            "npc_football_goal",
-            this.hCaster.GetAbsOrigin(),
-            false,
-            this.hCaster,
-            this.hCaster,
-            this.hCaster.GetTeam()
-        )
-        Missile.AddNewModifier(
-            this.hCaster,
-            this.GetAbility(),
-            "modifier_creature_boss_20_target",
-            {
-                // duration: 3,
-                speed: 600,
-                target_entity: iTargetEnti
-            }
-        )
-        this.order += 1;
+        // let Missile = CreateUnitByName(
+        //     "npc_football_goal",
+        //     this.hCaster.GetAbsOrigin(),
+        //     false,
+        //     this.hCaster,
+        //     this.hCaster,
+        //     this.hCaster.GetTeam()
+        // )
+        // Missile.AddNewModifier(
+        //     this.hCaster,
+        //     this.GetAbility(),
+        //     "modifier_creature_boss_20_target",
+        //     {
+        //         // duration: 3,
+        //         speed: 600,
+        //         target_entity: iTargetEnti
+        //     }
+        // )
+        // this.order += 1;
         this.StartIntervalThink(3)
     }
 
@@ -122,6 +157,7 @@ export class modifier_creature_boss_20_attack extends BaseModifier {
 
     OnDestroy(): void {
         if (!IsServer()) { return }
+        this.GetCaster().InterruptChannel()
         for (let hHero of HeroList.GetAllHeroes()) {
             hHero.RemoveModifierByName("modifier_creature_boss_20_shield")
         }
@@ -178,19 +214,7 @@ export class modifier_creature_boss_20_target extends modifier_motion_hit_target
 
     OnDestroy(): void {
         if (!IsServer()) { return; }
-        let base_damage = this.target.GetMaxHealth() * 0.9;
-        if (this.target.HasModifier("modifier_creature_boss_20_shield")) {
-            base_damage *= 0.1;
-            this.target.RemoveModifierByName("modifier_creature_boss_20_shield")
-        }
-        ApplyCustomDamage({
-            attacker: this.GetCaster(),
-            victim: this.target,
-            damage: base_damage,
-            damage_type: DamageTypes.PHYSICAL,
-            ability: this.GetAbility(),
-            miss_flag: 1
-        })
+
 
         //移除这个单位 造成伤害
         UTIL_RemoveImmediate(this.GetParent());
@@ -198,4 +222,103 @@ export class modifier_creature_boss_20_target extends modifier_motion_hit_target
     }
 
 
+}
+
+@registerModifier()
+export class modifier_creature_boss_20_line extends BaseModifier {
+
+    line_fx: ParticleID;
+    target: CDOTA_BaseNPC;
+    origin: Vector;
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        this.origin = this.GetCaster().GetAbsOrigin()
+        this.OnRefresh(params);
+        this.StartIntervalThink(0.1)
+    }
+
+    OnRefresh(params: any): void {
+        if (!IsServer()) { return }
+        let target = EntIndexToHScript(params.entity) as CDOTA_BaseNPC;
+        this.SetUnitLine(target)
+    }
+
+    SetUnitLine(target: CDOTA_BaseNPC) {
+        this.target = target
+        if (this.line_fx) { ParticleManager.DestroyParticle(this.line_fx, true) }
+        this.line_fx = ParticleManager.CreateParticle(
+            "particles/diy_particles/line_to_target.vpcf",
+            ParticleAttachment.CUSTOMORIGIN,
+            null
+        )
+        // ParticleManager.SetParticleControl(this.line_fx, 0, this.GetCaster().GetAbsOrigin());
+        ParticleManager.SetParticleControlEnt(this.line_fx, 0, this.GetCaster(), ParticleAttachment.POINT_FOLLOW,
+            "attach_hitloc", Vector(0, 0, 0), true
+        )
+        ParticleManager.SetParticleControlEnt(this.line_fx, 1, this.target, ParticleAttachment.POINT_FOLLOW,
+            "attach_hitloc", Vector(0, 0, 0), true
+        )
+        ParticleManager.SetParticleControl(this.line_fx, 2, Vector(255, 0, 0))
+
+        let attack_buff = this.GetCaster().FindModifierByName("modifier_creature_boss_20_attack") as modifier_creature_boss_20_attack;
+        attack_buff.target = target
+        // this.AddParticle(this.line_fx, false, false, -1, false, false)
+    }
+
+    CheckState(): Partial<Record<modifierstate, boolean>> {
+        return {
+            [ModifierState.PROVIDES_VISION]: true
+        }
+    }
+
+    OnIntervalThink(): void {
+        if (!this.target.IsAlive()) {
+            // 切换目标
+            let enemies = FindUnitsInRadius(
+                DotaTeam.GOODGUYS,
+                this.origin,
+                null,
+                9999,
+                UnitTargetTeam.FRIENDLY,
+                UnitTargetType.HERO,
+                UnitTargetFlags.NONE,
+                FindOrder.CLOSEST,
+                false
+            )
+            if (enemies.length > 0) {
+                this.SetUnitLine(enemies[0])
+            } else {
+                this.Destroy()
+            }
+            return
+        }
+        let units = FindUnitsInLine(
+            DotaTeam.GOODGUYS,
+            this.origin,
+            this.target.GetAbsOrigin(),
+            null,
+            100,
+            UnitTargetTeam.FRIENDLY,
+            UnitTargetType.HERO,
+            UnitTargetFlags.NONE
+        )
+        if (units.length >= 2) {
+            let min_dis = 9999;
+            let target: CDOTA_BaseNPC;
+            for (let unit of units) {
+                let dis = (unit.GetAbsOrigin() - this.origin as Vector).Length2D();
+                if (dis < min_dis) {
+                    min_dis = dis;
+                    target = unit
+                }
+            }
+            this.SetUnitLine(target)
+        }
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        if (this.line_fx) { ParticleManager.DestroyParticle(this.line_fx, true) }
+    }
 }

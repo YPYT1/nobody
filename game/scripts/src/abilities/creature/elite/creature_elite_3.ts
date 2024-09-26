@@ -24,11 +24,13 @@ export class creature_elite_3 extends BaseCreatureAbility {
             this.hCaster.GetTeam()
         )
         // print("Missile", Missile)
+        Missile.AddNewModifier(this.hCaster, this, "modifier_basic_countdown", { duration: 3 })
         Missile.AddNewModifier(this.hCaster, this, "modifier_creature_elite_3_delay", {
             duration: 3,
             target: hTarget.entindex(),
             _duration: this._duration,
         })
+
 
 
     }
@@ -63,7 +65,7 @@ export class modifier_creature_elite_3_delay extends BaseModifier {
             target_entity: this.target,
             duration: this._duration,
         })
-        
+
     }
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
@@ -81,7 +83,7 @@ export class modifier_creature_elite_3_delay extends BaseModifier {
         ]
     }
 
-    
+
     GetOverrideAnimationRate(): number {
         return 2
     }

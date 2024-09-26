@@ -18,13 +18,13 @@
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 1000.0, -337.229004, 0.0 ]
+					m_vecOffset = [ 28.261101, 2214.229492, 0.0 ]
 					m_entityName = "self"
 				},
 				{
 					m_iControlPoint = 2
 					m_iAttachType = "PATTACH_WORLDORIGIN"
-					m_vecOffset = [ 2.0, 200.0, 0.0 ]
+					m_vecOffset = [ 2.0, 807.5, 0.0 ]
 					m_entityName = "self"
 				},
 				{
@@ -576,20 +576,20 @@
 					[
 						{
 							x = 0.0
-							y = 0.2
+							y = 0.0
 							m_flSlopeIncoming = 0.0
-							m_flSlopeOutgoing = -0.561999
+							m_flSlopeOutgoing = 0.317545
 						},
 						{
-							x = 0.2121
-							y = 0.0808
-							m_flSlopeIncoming = -0.561999
-							m_flSlopeOutgoing = -0.102551
+							x = 0.629831
+							y = 0.2
+							m_flSlopeIncoming = 0.317545
+							m_flSlopeOutgoing = -0.540294
 						},
 						{
 							x = 1.0
 							y = 0.0
-							m_flSlopeIncoming = -0.102551
+							m_flSlopeIncoming = -0.540294
 							m_flSlopeOutgoing = 0.0
 						},
 					]
@@ -613,6 +613,7 @@
 				}
 			}
 			m_nOutputField = 7
+			m_bDisableOperator = true
 		},
 		{
 			_class = "C_OP_MovementPlaceOnGround"
@@ -640,7 +641,7 @@
 			{
 				m_nType = "PF_TYPE_LITERAL"
 				m_nMapType = "PF_MAP_TYPE_DIRECT"
-				m_flLiteralValue = 1500.0
+				m_flLiteralValue = 3000.0
 				m_NamedValue = ""
 				m_nControlPoint = 0
 				m_nScalarAttribute = 3

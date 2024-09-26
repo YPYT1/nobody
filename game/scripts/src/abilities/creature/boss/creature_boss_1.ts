@@ -37,13 +37,14 @@ export class creature_boss_1 extends BaseCreatureAbility {
             Ability: this,
             EffectName: "particles/econ/items/queen_of_pain/qop_arcana/qop_arcana_sonic_wave.vpcf",
             vSpawnOrigin: this.vOrigin,
-            fDistance: this.sector_distance,
+            fDistance: this.sector_distance - 500,
             fStartRadius: this.sector_angle,
-            fEndRadius: this.sector_distance * 3.14 * (360 / this.sector_angle),
+            fEndRadius: this.sector_angle,
             Source: this.hCaster,
-            vVelocity: (vDirection * this.sector_distance) as Vector,
+            vVelocity: (vDirection * this.sector_distance ) as Vector,
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
+            bVisibleToEnemies:true,
         });
 
         // let cast_fx = ParticleManager.CreateParticle(

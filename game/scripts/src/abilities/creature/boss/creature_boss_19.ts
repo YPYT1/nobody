@@ -10,6 +10,7 @@ import { BaseCreatureAbility } from "../base_creature";
  * 黄色音符玩家攻击boss会造成双倍伤害，
  * 黑色音符玩家攻击boss会将伤害转移给平均其他玩家身上。
 该过程持续20秒。音符随机且唯一，如果玩家数量大于1，保底给一个黄色音符。"
+BOSS加个胜利动作持续播放
  */
 @registerAbility()
 export class creature_boss_19 extends BaseCreatureAbility {

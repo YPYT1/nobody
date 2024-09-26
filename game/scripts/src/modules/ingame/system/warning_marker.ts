@@ -65,7 +65,6 @@ export class WarningMarker {
             ParticleAttachment.WORLDORIGIN,
             caster,
         );
-        print("duration", duration)
         ParticleManager.SetParticleControl(line_pfx, 0, caster.GetOrigin());
         // ParticleManager.SetParticleControl(line_pfx, 1, caster.GetOrigin());
         ParticleManager.SetParticleControl(line_pfx, 2, Vector(duration, 0, 0));
@@ -168,12 +167,12 @@ export class WarningMarker {
         color: Vector = Vector(255, 0, 0),
     ) {
         // 通过开始点,结束点,角度,来得到 结束时候的radius
-        let end_radius = math.tan((angle) * math.pi / 180) * distance;
+        let end_radius = math.tan((angle) * math.pi / 360) * distance;
         // let end_radius2 = distance * 3.14 * (360 / angle)
         // print("end_radius",end_radius,end_radius2)
         // 因为特效问题,需要多偏移50的距离
         let vDir = (end_vect - start_vect as Vector)
-        let vTarget = start_vect + vDir.Normalized() * (distance + 50) as Vector;
+        let vTarget = start_vect + vDir.Normalized() * (distance + 100) as Vector;
         let warning_fx = ParticleManager.CreateParticle(
             "particles/diy_particles/warning_sector/warning_sector2.vpcf",
             ParticleAttachment.WORLDORIGIN,

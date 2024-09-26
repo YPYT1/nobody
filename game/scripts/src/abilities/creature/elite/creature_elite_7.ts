@@ -11,22 +11,33 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_7 extends BaseCreatureAbility {
 
-    line_width:number;
+    line_width: number;
     OnAbilityPhaseStart(): boolean {
         // let hTarget = this.GetCursorTarget();
-        this.vPoint = this.hCaster.GetAbsOrigin();
-        this.nPreviewFX = GameRules.WarningMarker.Circular(
-            300,
-            this._cast_point,
-            this.vPoint
-        )
+        this.vOrigin = this.hCaster.GetAbsOrigin();
+        let count = this.GetSpecialValueFor("count");
+        let line_width = this.GetSpecialValueFor("line_width");
+        let line_distance = this.GetSpecialValueFor("line_distance")
+        let line_pos = this.vOrigin + this.hCaster.GetForwardVector() * line_distance as Vector;
+        for (let i = 0; i < count; i++) {
+            line_pos = RotatePosition(this.vOrigin, QAngle(0, 360 / count, 0), line_pos);
+            let line_fx = GameRules.WarningMarker.Line(
+                this.hCaster,
+                line_width,
+                this.vOrigin,
+                line_pos,
+                -1,
+                this._cast_point
+            )
+            this.nPreviewFX_List.push(line_fx)
+        }
+
         return true
     }
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
         // 发射
-
         let vCaster = this.hCaster.GetAbsOrigin()
         let line_pos = vCaster + this.hCaster.GetForwardVector() * 1000 as Vector;
         let count = this.GetSpecialValueFor("count");
@@ -53,7 +64,7 @@ export class creature_elite_7 extends BaseCreatureAbility {
     }
 
     OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {
-        if(target){
+        if (target) {
             let damage = target.GetMaxHealth() * 0.2
             ApplyCustomDamage({
                 victim: target,

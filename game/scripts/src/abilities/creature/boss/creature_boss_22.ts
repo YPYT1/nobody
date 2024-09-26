@@ -52,6 +52,7 @@ export class creature_boss_22 extends BaseCreatureAbility {
             )
             ParticleManager.SetParticleControl(cast_fx, 0, vTarget)
             ParticleManager.SetParticleControl(cast_fx, 1, Vector(this._radius, 1, 1))
+            ParticleManager.ReleaseParticleIndex(cast_fx)
             let max_hp_pct = base_dmg_pct / enemies.length * 0.01;
             for (let enemy of enemies) {
                 let damage = enemy.GetMaxHealth() * max_hp_pct;

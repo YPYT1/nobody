@@ -13,7 +13,7 @@ export class creature_boss_17 extends BaseCreatureAbility {
 
     OnAbilityPhaseStart(): boolean {
         this.vOrigin = this.hCaster.GetAbsOrigin();
-        this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
+        this.nPreviewFX = GameRules.WarningMarker.Circular(300, this._cast_point, this.vOrigin)
         return true
     }
 
@@ -33,7 +33,18 @@ export class creature_boss_17 extends BaseCreatureAbility {
 
         if (enemies.length > 0) {
             let hTarget = enemies[0];
-            let vTarget = hTarget.GetAbsOrigin();
+            this.hTarget = hTarget;
+            this.hTarget.AddNewModifier(this.hCaster, this, "modifier_creature_boss_17_channel", {
+                duration: 1
+            })
+        }
+    }
+
+    OnChannelFinish(interrupted: boolean): void {
+        this.hTarget.RemoveModifierByName("modifier_creature_boss_17_channel")
+        if (interrupted) { return }
+        if (this.hTarget) {
+            let vTarget = this.hTarget.GetAbsOrigin();
             let distance = (this.vOrigin - vTarget as Vector).Length2D();
             let speed = 1000;
             let duration = distance / speed;
@@ -47,23 +58,44 @@ export class creature_boss_17 extends BaseCreatureAbility {
                 duration: duration,
             })
         }
-    }
 
+    }
 }
 
+@registerModifier()
+export class modifier_creature_boss_17_channel extends BaseModifier {
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        let radius = this.GetAbility().GetSpecialValueFor("radius")
+        let warning_fx = GameRules.WarningMarker.Circular(radius, -1, Vector(0, 0, 0), false, Vector(255, 0, 0))
+        ParticleManager.SetParticleControlEnt(
+            warning_fx,
+            0,
+            this.GetParent(),
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            "attach_hitloc",
+            Vector(0, 0, 0),
+            true
+        );
+        this.AddParticle(warning_fx, false, false, -1, false, false)
+    }
+
+
+}
 @registerModifier()
 export class modifier_creature_boss_17_jump extends modifier_generic_arc_lua {
 
     radius: number;
     vPoint: Vector
-    dmg_max_hp:number;
+    dmg_max_hp: number;
     _OnCreated(kv: any): void {
         // this.r 
         this.dmg_max_hp = this.GetAbility().GetSpecialValueFor("dmg_max_hp") * 0.01;
-        this.radius = 500;//this.GetAbility().GetSpecialValueFor("radius")
+        this.radius = this.GetAbility().GetSpecialValueFor("radius")
         this.vPoint = Vector(kv.target_x, kv.target_y, kv.target_z);
         let aoe_fx = GameRules.WarningMarker.Circular(this.radius, this.GetDuration(), this.vPoint);
-        this.AddParticle(aoe_fx,false,false,-1,false,false)
+        this.AddParticle(aoe_fx, false, false, -1, false, false)
     }
 
     _OnDestroy(): void {
@@ -72,10 +104,10 @@ export class modifier_creature_boss_17_jump extends modifier_generic_arc_lua {
             ParticleAttachment.CUSTOMORIGIN,
             null
         )
-        ParticleManager.SetParticleControl(effect_fx,0,this.vPoint)
+        ParticleManager.SetParticleControl(effect_fx, 0, this.vPoint)
         ParticleManager.ReleaseParticleIndex(effect_fx)
 
-        
+
         let enemies = FindUnitsInRadius(
             this.GetCaster().GetTeam(),
             this.vPoint,

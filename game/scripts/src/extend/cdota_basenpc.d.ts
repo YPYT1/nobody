@@ -74,5 +74,8 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
     rune_level_index: { [key in RuneName]?: number }; //值是技能下标志
 
     prop_count: { [key in PropName]?: number } // 这个修改成数量
+
+    /** 饰品原始模型 */
+    wrarable_model:string;
 }
 

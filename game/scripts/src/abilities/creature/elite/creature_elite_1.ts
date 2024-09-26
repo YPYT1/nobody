@@ -14,10 +14,10 @@ export class creature_elite_1 extends BaseCreatureAbility {
     line_distance: number;
 
     OnAbilityPhaseStart(): boolean {
-        let hTarget = this.GetCursorTarget();
+        // let hTarget = this.GetCursorTarget();
         this.line_width = this.GetSpecialValueFor("line_width");
         this.line_distance = this.GetSpecialValueFor("line_distance");
-        this.vPoint = hTarget.GetAbsOrigin();
+        this.vPoint = this.GetCursorPosition();
         this.nPreviewFX = GameRules.WarningMarker.Line(
             this.hCaster,
             this.line_width,

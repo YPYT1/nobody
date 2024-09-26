@@ -9,6 +9,7 @@ import { BaseCreatureAbility } from "../base_creature";
 export class creature_boss_8 extends BaseCreatureAbility {
 
     OnAbilityPhaseStart(): boolean {
+        this._duration = 3;
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
         return true
@@ -42,8 +43,11 @@ export class creature_boss_8 extends BaseCreatureAbility {
 export class modifier_creature_boss_8 extends BaseModifier {
 
     origin: Vector;
+    state: boolean;
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.state = false;
         this.origin = this.GetParent().GetAbsOrigin()
         let effect_fx = ParticleManager.CreateParticle(
             "particles/title_fx/title00028/title00028.vpcf",
@@ -57,37 +61,42 @@ export class modifier_creature_boss_8 extends BaseModifier {
 
     OnIntervalThink(): void {
         const pos = this.GetParent().GetAbsOrigin()
-        if (pos != this.origin) { 
+        if (pos != this.origin) {
             this.origin = pos;
-            return 
+            return
         }
-        this.ApplyDamage(this.GetParent())
+        this.state = true;
+        this.StartIntervalThink(-1);
+        // this.ApplyDamage(this.GetParent())
     }
 
-    ApplyDamage(hTarget: CDOTA_BaseNPC) {
-        if (!hTarget.HasModifier("modifier_creature_boss_8_dmg_interval")) {
-            hTarget.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_boss_8_dmg_interval", {
-                duration: 1
-            })
-            const damage = hTarget.GetMaxHealth() * 0.75;
-            ApplyCustomDamage({
-                victim: hTarget,
-                attacker: this.GetCaster(),
-                ability: null,
-                damage: damage,
-                damage_type: DamageTypes.PHYSICAL,
-                miss_flag: 1,
-            })
-
-            let effect_px = ParticleManager.CreateParticle(
-                "particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf",
-                ParticleAttachment.OVERHEAD_FOLLOW,
-                hTarget
-            )
-            ParticleManager.SetParticleControl(effect_px, 1, hTarget.GetAbsOrigin());
-            ParticleManager.SetParticleControl(effect_px, 2, this.GetCaster().GetAbsOrigin());
-            ParticleManager.ReleaseParticleIndex(effect_px);
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        if (this.state) {
+            this.ApplyDamage(this.GetParent())
         }
+    }
+    ApplyDamage(hTarget: CDOTA_BaseNPC) {
+
+        const damage = hTarget.GetMaxHealth() * 0.75;
+        ApplyCustomDamage({
+            victim: hTarget,
+            attacker: this.GetCaster(),
+            ability: null,
+            damage: damage,
+            damage_type: DamageTypes.PHYSICAL,
+            miss_flag: 1,
+        })
+
+        let effect_px = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            hTarget
+        )
+        ParticleManager.SetParticleControl(effect_px, 1, hTarget.GetAbsOrigin());
+        ParticleManager.SetParticleControl(effect_px, 2, this.GetCaster().GetAbsOrigin());
+        ParticleManager.ReleaseParticleIndex(effect_px);
+
     }
 }
 

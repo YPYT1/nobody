@@ -34,12 +34,20 @@ function Custom_FindUnitsInSector(
     let find_units: CDOTA_BaseNPC[] = [];
     let units = FindUnitsInRadius(team, vOrigin, null, idistance, teamFilter, typeFilter, flagFilter, order, false);
     let cast_direction = (vTarget - vOrigin as Vector).Normalized()
+    cast_direction.z = 0;
     let cast_angle = VectorToAngles(cast_direction).y
+
+    // print("=========")
+    // print("cast_angle", cast_angle)
+    // DebugDrawCircle(vOrigin)
     for (let unit of units) {
         let enemy_direction = (unit.GetOrigin() - vOrigin as Vector).Normalized();
+        enemy_direction.z = 0
         let enemy_angle = VectorToAngles(enemy_direction).y
+        // print("cast_angle",cast_angle,enemy_angle)
         let angle_diff = math.abs(AngleDiff(cast_angle, enemy_angle))
-        if (angle_diff <= iAngle ) {
+        // print("angle_diff", angle_diff, iAngle)
+        if (angle_diff <= (iAngle * 0.5)) {
             find_units.push(unit)
         }
     }

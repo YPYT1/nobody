@@ -65,6 +65,7 @@ export class modifier_creature_boss_15 extends BaseModifier {
 export class modifier_creature_boss_15_debuff extends BaseModifier {
 
     buff_key = "boss_15_debuff"
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.parent = this.GetParent()
@@ -73,19 +74,27 @@ export class modifier_creature_boss_15_debuff extends BaseModifier {
                 "BasePercent": -50
             }
         })
-        // 隐藏饰品
-        // for(this.parent)
-        // for (let v of this.GetParent().GetChildren()) {
-        //     if (v && v.GetClassname() == "dota_item_wearable") {
-        //         v.hi(0)
-        //     }
-        // }
+        this.HideWearable()
 
     }
 
-    CheckState(): Partial<Record<modifierstate, boolean>> {
-        return {
-            [ModifierState.HEXED]: true,
+    HideWearable() {
+        // 隐藏饰品
+        for (let v of this.GetParent().GetChildren()) {
+            print(v, v.GetClassname())
+            if (v && v.GetClassname() == "wearable_item") {
+                print("hide war");
+                (v as CDOTA_BaseNPC).SetModel("models/development/invisiblebox.vmdl")
+            }
+        }
+    }
+
+    ShowWearable() {
+        for (let v of this.GetParent().GetChildren()) {
+            if (v && v.GetClassname() == "wearable_item") {
+                let wrarable = v as CDOTA_BaseNPC
+                wrarable.SetModel(wrarable.wrarable_model)
+            }
         }
     }
 
@@ -97,7 +106,8 @@ export class modifier_creature_boss_15_debuff extends BaseModifier {
 
     OnDestroy(): void {
         if (!IsServer()) { return }
-        GameRules.CustomAttribute.DelAttributeInKey(this.parent, this.buff_key)
+        GameRules.CustomAttribute.DelAttributeInKey(this.parent, this.buff_key);
+        this.ShowWearable()
     }
 
     GetModifierModelChange(): string {

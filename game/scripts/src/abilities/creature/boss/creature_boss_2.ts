@@ -101,7 +101,12 @@ export class modifier_creature_boss_2_channel extends BaseModifier {
         this.StartIntervalThink(this.interval)
     }
 
-
+    CheckState(): Partial<Record<modifierstate, boolean>> {
+        return {
+            [ModifierState.PROVIDES_VISION]:true
+        }
+    }
+    
     OnIntervalThink(): void {
         this.bonus += this.think_angle;
         this.caster.SetAngles(0, this.start_angley + this.bonus, 0);

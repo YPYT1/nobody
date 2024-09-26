@@ -19,6 +19,7 @@ export class creature_boss_21 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
+
         let enemies = FindUnitsInRadius(
             this._team,
             this.vOrigin,
@@ -31,8 +32,27 @@ export class creature_boss_21 extends BaseCreatureAbility {
             false
         )
         for (let enemy of enemies) {
-            enemy.AddNewModifier(this.hCaster, this, "modifier_creature_boss_21", { duration: 10 })
+            let speed = math.max(1000, (enemy.GetAbsOrigin() - this.vOrigin as Vector).Length2D() / 2)
+            ProjectileManager.CreateTrackingProjectile({
+                Source: this.hCaster,
+                Target: enemy,
+                Ability: this,
+                EffectName: "particles/units/heroes/hero_muerta/muerta_parting_shot_projectile.vpcf",
+                iSourceAttachment: ProjectileAttachment.HITLOCATION,
+                iMoveSpeed: speed,
+            })
+
             break
+        }
+    }
+
+    OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {
+        if (target) {
+            target.AddNewModifier(this.hCaster, this, "modifier_creature_boss_21", {
+                duration: 10,
+                end_time: GameRules.GetDOTATime(false, false) + 10,
+            })
+            return true
         }
     }
 
@@ -45,10 +65,13 @@ export class modifier_creature_boss_21 extends BaseModifier {
     origin: Vector;
     image: CDOTA_BaseNPC;
     timer: number;
+    end_time: number;
 
-    OnCreated(params: object): void {
+    OnCreated(params: any): void {
         if (!IsServer()) { return }
+        this.caster = this.GetCaster();
         this.timer = 0;
+        this.end_time = params.end_time
         this.parent = this.GetParent();
         GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
             "MoveSpeed": {
@@ -116,6 +139,9 @@ export class modifier_creature_boss_21 extends BaseModifier {
         let origin = this.GetParent().GetAbsOrigin();
         let distance = (origin - this.origin as Vector).Length2D();
         if (distance > 999) {
+            // 并且眩晕BOSS
+            let stun_duration = this.end_time - GameRules.GetDOTATime(false, false)
+            GameRules.BuffManager.AddGeneralDebuff(this.caster, this.caster, DebuffTypes.stunned, stun_duration)
             this.Destroy()
         }
     }
@@ -136,18 +162,20 @@ export class modifier_creature_boss_21_image extends BaseModifier {
         if (!IsServer()) { return }
         this.hUnit = EntIndexToHScript(params.image) as CDOTA_BaseNPC;
         this.model = this.hUnit.GetModelName()
-
         let model_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_muerta/muerta_parting_shot_soul.vpcf",
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         )
         this.AddParticle(model_fx, false, false, -1, false, false)
+        
         this.StartIntervalThink(0)
     }
 
     OnIntervalThink(): void {
         this.CopyWearable(this.hUnit);
+        // this.GetParent().StartGesture(GameActivity.DOTA_DISABLED)
+        this.GetParent().StartGesture(GameActivity.DOTA_FLAIL)
         this.StartIntervalThink(-1)
     }
 
@@ -172,7 +200,12 @@ export class modifier_creature_boss_21_image extends BaseModifier {
             ModifierFunction.MODEL_CHANGE,
             ModifierFunction.MODEL_SCALE,
             ModifierFunction.MODEL_SCALE_ANIMATE_TIME,
+            ModifierFunction.OVERRIDE_ANIMATION,
         ]
+    }
+
+    GetOverrideAnimation(): GameActivity_t {
+        return GameActivity.DOTA_DISABLED
     }
 
     GetModifierModelScaleAnimateTime() {

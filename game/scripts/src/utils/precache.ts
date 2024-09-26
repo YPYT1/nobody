@@ -54,6 +54,11 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/custom/creature/boss/boss_20_mission.vpcf',
             'particles/diy_particles/unit_model_particles.vpcf',
             'particles/econ/items/lina/lina_ti7/lina_spell_light_strike_array_ti7.vpcf',
+            'particles/units/heroes/hero_spirit_breaker/spirit_breaker_charge.vpcf',
+            'particles/custom/creature/boss/boss_24_explode.vpcf',
+            'particles/custom/creature/boss/boss_24_shield.vpcf',
+            'particles/diy_particles/line_to_target.vpcf',
+            'particles/units/heroes/hero_earthshaker/earthshaker_echoslam_start.vpcf',
             ...drow_precache,
         ],
         context
