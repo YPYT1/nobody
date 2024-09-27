@@ -196,13 +196,7 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
         }
     })
 
-    //
-    // let entity = `portrait_` + heroname;
-
-    UnitPortraitPanel.FireEntityInput('portrait_drow_ranger', "Enable", "1")
-    UnitPortraitPanel.SetPanelEvent("onload", () => {
-        UnitPortraitPanel.FireEntityInput('portrait_drow_ranger', "Enable", "1")
-    })
+    SetLoaclPlayerHeroPortrait()
 }
 
 
@@ -278,5 +272,20 @@ const GameEventsSubscribe = () => {
     GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
         event_name: "ResetHeroTalent",
         params: {}
+    })
+
+    GameEvents.Subscribe("gameui_hidden", () => {
+        let heroname = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+        $.Schedule(4, () => {
+            UnitPortraitPanel.FireEntityInput(heroname, "Enable", "1")
+        })
+    });
+}
+
+const SetLoaclPlayerHeroPortrait = () => {
+    let heroname = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
+    UnitPortraitPanel.ReloadScene();
+    $.Schedule(0.1, () => {
+        UnitPortraitPanel.FireEntityInput(heroname, "Enable", "1")
     })
 }

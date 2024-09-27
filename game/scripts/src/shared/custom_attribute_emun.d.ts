@@ -84,6 +84,7 @@ declare type AttributeSubKey = "Base"
     | "MulRegion"
     | "Limit"
     | "Last" // 是否为最低值
+    | "Up_Base"
     ;
 
 /** 敌人属性 */

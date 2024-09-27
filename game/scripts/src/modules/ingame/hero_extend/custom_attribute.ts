@@ -4,9 +4,8 @@ import * as NpcHeroesCustom from "../../../json/npc_heroes_custom.json";
 
 import { reloadable } from "../../../utils/tstl-utils";
 import { drow_range_wearable } from "../../../kv_data/hero_wearable/drow_range";
-
-type HeroWearable = typeof drow_range_wearable
-
+import { skywrath_mage_wearable } from "../../../kv_data/hero_wearable/skywrath_mage";
+import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_rune_effect";
 
 /** 自定义属性系统 */
 @reloadable
@@ -17,20 +16,35 @@ export class CustomAttribute {
     hero_wearable: {
         [hero: string]: HeroWearable
     }
+
+    particle_test: ParticleID[];
+
     constructor() {
         print("[CustomAttribute]:constructor")
         this.ModifierList = {};
         this.hero_wearable = {};
         this.update_delay = 0.25;
         this.hero_wearable["npc_dota_hero_drow_ranger"] = drow_range_wearable
+        this.hero_wearable["npc_dota_hero_skywrath_mage"] = skywrath_mage_wearable
 
         ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
     }
 
     Reload() {
+        // this.particle_test = [];
         this.update_delay = 0.25;
         this.hero_wearable["npc_dota_hero_drow_ranger"] = drow_range_wearable
+        this.hero_wearable["npc_dota_hero_skywrath_mage"] = skywrath_mage_wearable;
+        GameRules.GetGameModeEntity().SetContextThink("particle_test", null, 0)
+        // GameRules.GetGameModeEntity().SetContextThink("particle_test", () => {
+        //     for (let particle of this.particle_test) {
+        //         print("particle", particle)
+        //         ParticleManager.DestroyParticle(particle,true)
+        //     }
+        //     return 1
+        // }, 1)
     }
+
 
     /** 升级事件 */
     OnEntityDotaPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
@@ -42,28 +56,11 @@ export class CustomAttribute {
         if (event.level % 5 == 0) {
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
         }
-        if(hHero.rune_level_index["rune_103"]){
-            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_103","value");
-            hHero.rune_trigger_count["rune_103"] ++;
-            let value = hHero.rune_trigger_count["rune_103"] * kv_value ;
-            let attr_count : CustomAttributeTableType = {
-                "AbilityHaste" : {
-                    "Base" : value,
-                }
-            };
-            GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_103_AbilityHaste" , attr_count);
-        }
-        if(hHero.rune_level_index["rune_113"]){
-            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_113","move_speed");
-            hHero.rune_trigger_count["rune_113"] ++;
-            let value = hHero.rune_trigger_count["rune_113"] * kv_value ;
-            let attr_count : CustomAttributeTableType = {
-                "MoveSpeed" : {
-                    "Base" : value,
-                }
-            };
-            GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_113_MoveSpeed" , attr_count);
-        }
+        
+        const rune_mdf = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
+        if(rune_mdf){
+            rune_mdf.OnLevelUprade()
+        } 
         GameRules.HeroTalentSystem.TalentUnlockLevel(event.player_id, event.level);
         this.AttributeInLevelUp(hHero)
     }
@@ -546,7 +543,7 @@ export class CustomAttribute {
 
     /** 删除一个key值的相关属性 */
     DelAttributeInKey(hUnit: CDOTA_BaseNPC, key: string) {
-        if(!hUnit.IsHero()){ return }
+        if (!hUnit.IsHero()) { return }
         if (hUnit.custom_attribute_key_table[key] == null) {
             return;
         }
@@ -697,11 +694,12 @@ export class CustomAttribute {
                     v.RemoveSelf()
                 }
             }
-            const WearableSkin = wearable_data.Skin ?? 0;
+            const WearableModel = wearable_data.origin_model
 
-            hUnit.SetOriginalModel(wearable_data.unit_model)
-            hUnit.SetModel(wearable_data.unit_model);
-            hUnit.SetSkin(WearableSkin)
+            hUnit.SetOriginalModel(WearableModel.unit_model)
+            hUnit.SetModel(WearableModel.unit_model);
+            hUnit.SetSkin(WearableModel.skin)
+            // hUnit.SetMaterialGroup()
             for (let particle_create of wearable_data.particle_create) {
                 // print("w_particle",particle_create)
                 let particle_index = ParticleManager.CreateParticle(
@@ -720,13 +718,14 @@ export class CustomAttribute {
                     hWearable.SetTeam(DotaTeam.GOODGUYS)
                     hWearable.SetOwner(hUnit)
                     hWearable.FollowEntity(hUnit, true)
-                    // hWearable.SetSkin(1);
-
                     let material = wearable.material
                     if (material) {
-                        hWearable.SetMaterialGroup(material.name)
-                        hWearable.SetBodygroupByName(material.grou_name, material.group_value)
-                        // hWearable.SetBodygroup(0, 2)
+                        if (material.index) {
+                            hWearable.SetMaterialGroup(material.index)
+                        } else {
+                            hWearable.SetBodygroupByName(material.group, material.value)
+                        }
+
                     }
 
                     // hWearable.SetRenderColor(255,0,0);
@@ -737,6 +736,8 @@ export class CustomAttribute {
                             ParticleAttachment.POINT_FOLLOW,
                             hWearable
                         )
+
+                        // this.particle_test.push(particle_index)
                     }
                     // hWearable.SetSkin(1)
                 }
@@ -772,6 +773,15 @@ export class CustomAttribute {
                     },
                 }, 5 + i * 0.5)
             }
+        }
+
+        if (cmd == "-uptest") {
+
+            this.SetAttributeInKey(hHero, "uptest", {
+                "MoveSpeed": {
+                    "Up_Base": 5
+                }
+            })
         }
         if (cmd == "-addattr") {
             this.ModifyAttribute(hHero, {

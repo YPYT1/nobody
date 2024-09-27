@@ -85,7 +85,7 @@ export class MissionModule {
         }
         this.start_npc.AddNewModifier(this.start_npc, null, "modifier_mission_npc", {})
         GameRules.MissionSystem.SendMissionTips(this.mission_type, this.mission_name);
-
+        GameRules.ServiceInterface.PostLuaLog(-1, `--------任务:${this.mission_name}出现-------`);
         if (IsInToolsMode()) {
             this.TestAddMoveTips(vPos, 30)
         }
@@ -153,6 +153,7 @@ export class MissionModule {
             this.TestRemoveTip()
         }
         this.ExecuteLogic(start);
+        GameRules.ServiceInterface.PostLuaLog(-1, `--------任务:${this.mission_name}接取-------`);
         let end_time = GameRules.GetDOTATime(false, false) + (this.limit_time ?? 0);
         GameRules.MissionSystem.UpdateMissionEndTime(this.mission_type, this.mission_name, end_time, this.limit_time)
     }
@@ -165,6 +166,12 @@ export class MissionModule {
 
     /** 任务结束 */
     EndOfMission(success: boolean) {
+        if (success) {
+            GameRules.ServiceInterface.PostLuaLog(-1, `--------任务:${this.mission_name} 成功-------`);
+        } else {
+            GameRules.ServiceInterface.PostLuaLog(-1, `--------任务:${this.mission_name} 失败-------`);
+        }
+
         this.RemoveMoveTips()
         this.CleanMissionData()
         if (this.is_stop == false) {
@@ -190,8 +197,6 @@ export class MissionModule {
                 }
             }
             this.is_stop = true;
-
-
         }
 
 

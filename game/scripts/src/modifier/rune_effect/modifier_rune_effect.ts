@@ -140,6 +140,30 @@ export class modifier_rune_effect extends BaseModifier {
         }
     }
 
+    OnLevelUprade() {
+        if (this._rune_object["rune_103"]) {
+            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(this.caster, "rune_103", "value");
+            this.caster.rune_trigger_count["rune_103"]++;
+            let value = this.caster.rune_trigger_count["rune_103"] * kv_value;
+            let attr_count: CustomAttributeTableType = {
+                "AbilityHaste": {
+                    "Base": value,
+                }
+            };
+            GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_103_AbilityHaste", attr_count);
+        }
+        if (this.caster.rune_level_index["rune_113"]) {
+            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(this.caster, "rune_113", "move_speed");
+            this.caster.rune_trigger_count["rune_113"]++;
+            let value = this.caster.rune_trigger_count["rune_113"] * kv_value;
+            let attr_count: CustomAttributeTableType = {
+                "MoveSpeed": {
+                    "Base": value,
+                }
+            };
+            GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_113_MoveSpeed", attr_count);
+        }
+    }
     OnIntervalThink(): void {
         if (!this.caster.IsAlive()) { return }
         // 毎损失10%生命百分比
