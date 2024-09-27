@@ -88,7 +88,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 this.talent_tree_values[key][A_key] = numlist;
             }
         }
-
     }
     //英雄星级 临时存储
     player_hero_star : number[] = [];
@@ -633,7 +632,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             + this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc+ "/" 
                             + HeroTalentCounfg.max_number + ")");
                     }
-
                     this.GetHeroTalentListData(player_id, {});
                 }
             } else {
@@ -840,6 +838,34 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         if (cmd == "-rtf") {
             let hero = PlayerResource.GetSelectedHeroEntity(player_id);
             this.RegisterHeroTalent(hero,true);
+        }
+        if(cmd == "-addjl"){
+            // print("UpdataPlayerSpecialValue")
+
+            let ablname = args[0] ?? "l_test_1";
+
+            let ablindex = tonumber(args[1]) ?? 0;
+
+            let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+
+            let order_ability = hHero.GetAbilityByIndex(ablindex);
+            if (order_ability) {
+                // order_ability.RemoveSelf()
+                hHero.RemoveAbilityByHandle(order_ability)
+            }
+            let new_ability = hHero.AddAbility(ablname)
+            new_ability.SetLevel(1);
+
+            for (let i = 0; i < 5; i++) {
+                let hAbility = hHero.GetAbilityByIndex(i);
+                if (hAbility) {
+                    hAbility.OnUpgrade();
+                }
+                if (hAbility.IntrinsicMdf) {
+                    let PassiveMdfName = hAbility.GetIntrinsicModifierName();
+                    hAbility.IntrinsicMdf.ForceRefresh()
+                }
+            }
         }
     }
 

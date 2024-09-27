@@ -75,6 +75,8 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     prop_count: { [key in PropName]?: number } // 这个修改成数量
 
+    rune_trigger_count : { [key in RuneName]?: number }; //值是触发子次数
+
     /** 饰品原始模型 */
     wrarable_model:string;
 }

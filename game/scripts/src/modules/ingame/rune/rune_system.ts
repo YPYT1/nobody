@@ -68,7 +68,7 @@ export class RuneSystem extends UIEventRegisterClass {
                 key : [],
                 pro : [],
             })
-            this.tianhui_task_drop_list.push({
+            this.nightmare_task_drop_list.push({
                 key : [],
                 pro : [],
             })
@@ -152,6 +152,7 @@ export class RuneSystem extends UIEventRegisterClass {
         //初始化英雄相关数据
         if(hHero != null){
             hHero.rune_level_index = {};
+            hHero.rune_trigger_count = {};
         }
         // G.PlayerGameData.PulbicRuneData.ComRuneUseMax = 0
     }
@@ -174,6 +175,7 @@ export class RuneSystem extends UIEventRegisterClass {
             time : 0 , 
             type : type ,
         };
+        DeepPrintTable(fate_dota);
         this.player_fate_data[player_id].push(fate_dota);
         this.player_challenge_number[player_id]++;
         //推送选择信息
@@ -265,6 +267,7 @@ export class RuneSystem extends UIEventRegisterClass {
     RefreshShopList(player_id: PlayerID, params: any, callback?) {
         if (this.player_fate_data[player_id][this.player_fate_data_index[player_id]].is_refresh == false) {
             let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
+            DeepPrintTable(fate_data_info);
             //修改已刷新状态
             fate_data_info.is_refresh = true;
             //最多几样物品
@@ -295,6 +298,7 @@ export class RuneSystem extends UIEventRegisterClass {
                     let pro_list = this.drop_list[player_id].pro;
                     item_name = key_list[GetCommonProbability(pro_list)];
                 }
+                print("fate_data_info.type : " , fate_data_info.type)
                 if(item_name == "null"){
                     index--;
                     continue;
@@ -334,8 +338,6 @@ export class RuneSystem extends UIEventRegisterClass {
                 GameRules.RuneSystem.TimeSelectRune( player_id );
                 return null;
             }, this.count_down_time);
-
-            
         }
         this.GetRuneSelectData(player_id, params);
     }
@@ -445,6 +447,7 @@ export class RuneSystem extends UIEventRegisterClass {
         GameRules.RuneSystem.player_check_rune_name[player_id] = [];
         if (GameRules.RuneSystem.player_fate_data[player_id].length > GameRules.RuneSystem.player_fate_data_index[player_id]) {
             let fate_data_info = GameRules.RuneSystem.player_fate_data[player_id][GameRules.RuneSystem.player_fate_data_index[player_id]];
+            DeepPrintTable(fate_data_info);
             if (!fate_data_info.item_list.hasOwnProperty(index)) {
                 print("没有此物品");
                 return;
@@ -528,6 +531,7 @@ export class RuneSystem extends UIEventRegisterClass {
         };
         //符文等级信息
         hHero.rune_level_index[item_name] = level_index;
+        hHero.rune_trigger_count[item_name] = 0;
         //修改已选择状态
         GameRules.RuneSystem.check_rune_name[player_id].push(item_name);
 
@@ -547,6 +551,22 @@ export class RuneSystem extends UIEventRegisterClass {
         //增加通过其他符文获取的符文数量
         GameRules.RuneSystem.player_rune_count[player_id] ++;
         
+
+        //特殊处理符文变化时
+        if(GameRules.RuneSystem.check_rune_name[player_id].includes("rune_102")){ // 聚少成多
+            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_102","value");
+                //更新数值 
+            let rune_count = GameRules.RuneSystem.check_rune_name[player_id].length;
+            let value = rune_count * kv_value;
+            let attr_count : CustomAttributeTableType = {
+                "AttackDamage" : {
+                    "BasePercent" : value,
+                }
+            };
+            GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_102_RuneGetATK" , attr_count)
+        }
+
+
         let ret_action_string = RuneData.ret_action;
         let param = RuneData.AbilityValues;
         if (ret_action_string != "null") {
@@ -560,7 +580,7 @@ export class RuneSystem extends UIEventRegisterClass {
         let select_type = 0;
         //发送日志
         if(params.select_type){
-            select_type = select_type
+            select_type = params.select_type
         }
         GameRules.ServiceInterface.PostLuaLog(player_id , "获得符文:"+ item_name + ";获取方式:"+ select_type);
         // 更新符文MDF
@@ -850,6 +870,17 @@ export class RuneSystem extends UIEventRegisterClass {
      */
     HeroLevelUp(player_id: PlayerID, param: { level: number }, key: string) {
         //更新数值
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let value = param.level;
+        for (let i = 0; i < value; i++) {
+            hHero.HeroLevelUp(true)
+            let level_up_fx = ParticleManager.CreateParticle(
+                "particles/econ/events/ti10/hero_levelup_ti10.vpcf",
+                ParticleAttachment.ABSORIGIN_FOLLOW,
+                hHero
+            )
+            ParticleManager.ReleaseParticleIndex(level_up_fx)
+        }
     }
     /**
      * 【大量灵魂】
@@ -859,6 +890,9 @@ export class RuneSystem extends UIEventRegisterClass {
      */
     GetSoul(player_id: PlayerID, param: { soul: number }, key: string) {
         //更新数值
+        GameRules.ResourceSystem.ModifyResource(player_id, {
+            Soul: param.soul
+        })
     }
     /**
      * 【聚少成多】
@@ -867,7 +901,17 @@ export class RuneSystem extends UIEventRegisterClass {
      * @param player_id  //参数
      */
     RuneGetATK(player_id: PlayerID, param: { value: number }, key: string) {
-        //更新数值
+        //更新数值 
+        let rune_count = GameRules.RuneSystem.check_rune_name[player_id].length;
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let value = rune_count * param.value;
+        let attr_count : CustomAttributeTableType = {
+            "AttackDamage" : {
+                "BasePercent" : value,
+            }
+        };
+        GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_102_RuneGetATK" , attr_count)
+        
     }
     /**
      * 【独乐乐】如果自身拥有【独乐乐】，则自身获得双倍加成，所有友军获得【独乐乐】加成
@@ -876,7 +920,32 @@ export class RuneSystem extends UIEventRegisterClass {
      * @param player_id  //参数
      */
     GetExpPro(player_id: PlayerID, param: { value: number }, key: string) {
+
+        let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let value = param.value;
         //更新数值
+        if(GameRules.RuneSystem.check_rune_name[player_id].includes("rune_116")){
+            let count = GetPlayerCount();
+            for (let index = 0; index < count; index++) {
+                if(index == player_id){
+                    return ;
+                }
+                let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+                let attr_count : CustomAttributeTableType = {
+                    "SingleExpeIncrease" : {
+                        "BasePercent" : value,
+                    }
+                };
+                GameRules.CustomAttribute.SetAttributeInKey(hHero ,  "rune_106_2_" + player_id  , attr_count)
+            }
+            value = value * 2;
+        }
+        let attr_count : CustomAttributeTableType = {
+            "SingleExpeIncrease" : {
+                "BasePercent" : value,
+            }
+        };
+        GameRules.CustomAttribute.SetAttributeInKey(selfhHero , "rune_106_1_" + player_id , attr_count)
     }
     /**
      * 【众乐乐】 如果自身拥有【独乐乐】，则自身获得双倍加成，所有友军获得【独乐乐】加成
@@ -886,11 +955,31 @@ export class RuneSystem extends UIEventRegisterClass {
      */
     GetExpProALL(player_id: PlayerID, param: { self: number , else: number }, key: string) {
         //更新数值
+        let paramself = param.self;
+        let paramelse = param.else;
+        //更新数值
+        if(GameRules.RuneSystem.check_rune_name[player_id].includes("rune_106")){
+            let count = GetPlayerCount();
+            for (let index = 0; index < count; index++) {
+                let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+                if(index == player_id){
+                    let attr_count : CustomAttributeTableType = {
+                        "SingleExpeIncrease" : {
+                            "BasePercent" : paramself,
+                        }
+                    };
+                    GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_106_1_" + player_id , attr_count)
+                }else{
+                    let attr_count : CustomAttributeTableType = {
+                        "SingleExpeIncrease" : {
+                            "BasePercent" : paramelse,
+                        }
+                    };
+                    GameRules.CustomAttribute.SetAttributeInKey(hHero ,  "rune_116_2_" + player_id  , attr_count)
+                }
+            }
+        }
     }
-
-    
-
-    
     /**
      * debug 命令
      */
@@ -905,10 +994,13 @@ export class RuneSystem extends UIEventRegisterClass {
             }, level_index);
             
         } else if (cmd == "-fwxz") { //获取一个符文选择机会
-            let count = tonumber(args[1]) ?? 1;
+            let count = tonumber(args[0]) ?? 1;
             for (let index = 0; index < count; index++) {
                 GameRules.RuneSystem.GetRuneSelectToAll();
             }
+        }else if (cmd == "-fwxzb") { //获取一个符文选择机会
+            let type = tonumber(args[0]) ?? 0;
+            GameRules.RuneSystem.GetRuneSelectToPlayer(player_id , type);
         } else if (cmd == "-bwhq") { //获取符文信息
             GameRules.RuneSystem.GetPlayerRuneData(player_id, {});
         }

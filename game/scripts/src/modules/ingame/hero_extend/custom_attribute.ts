@@ -17,8 +17,6 @@ export class CustomAttribute {
     hero_wearable: {
         [hero: string]: HeroWearable
     }
-
-
     constructor() {
         print("[CustomAttribute]:constructor")
         this.ModifierList = {};
@@ -43,6 +41,28 @@ export class CustomAttribute {
         //增加符文点
         if (event.level % 5 == 0) {
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
+        }
+        if(hHero.rune_level_index["rune_103"]){
+            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_103","value");
+            hHero.rune_trigger_count["rune_103"] ++;
+            let value = hHero.rune_trigger_count["rune_103"] * kv_value ;
+            let attr_count : CustomAttributeTableType = {
+                "AbilityHaste" : {
+                    "Base" : value,
+                }
+            };
+            GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_103_AbilityHaste" , attr_count);
+        }
+        if(hHero.rune_level_index["rune_113"]){
+            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_113","move_speed");
+            hHero.rune_trigger_count["rune_113"] ++;
+            let value = hHero.rune_trigger_count["rune_113"] * kv_value ;
+            let attr_count : CustomAttributeTableType = {
+                "MoveSpeed" : {
+                    "Base" : value,
+                }
+            };
+            GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_113_MoveSpeed" , attr_count);
         }
         GameRules.HeroTalentSystem.TalentUnlockLevel(event.player_id, event.level);
         this.AttributeInLevelUp(hHero)

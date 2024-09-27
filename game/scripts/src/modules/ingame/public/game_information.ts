@@ -41,6 +41,7 @@ export class GameInformation extends UIEventRegisterClass {
     }
 
     HeroDie(unit: CDOTA_BaseNPC_Hero , killer: CDOTA_BaseNPC) {
+
         let player_id = unit.GetPlayerOwnerID();
         //圣剑处理
         if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_14"]){
@@ -48,7 +49,6 @@ export class GameInformation extends UIEventRegisterClass {
             GameRules.CustomAttribute.DelAttributeInKey(unit, "prop_14_SaintSword");
             GameRules.ServiceInterface.PostLuaLog(player_id , "失去物品:prop_14");
         }
-        DeepPrintTable(GameRules.MysticalShopSystem.player_shop_buy_data);
         //不朽之守护
         if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] && GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] >= 1){
             GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] --;
@@ -58,12 +58,11 @@ export class GameInformation extends UIEventRegisterClass {
                 unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
             });
             GameRules.ServiceInterface.PostLuaLog(player_id , "失去物品:prop_26");
-            
             return 
         }
+        //设置玩家本回合已死状态
+        GameRules.Spawn.player_round_die[player_id] = 0;
         let game_over = true;
-
-        
         //检查全部英雄是否还有剩余生命
         let player_count = GetPlayerCount();
         for (let index = 0 as PlayerID; index < player_count; index++) {

@@ -290,11 +290,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         // GameRules.BuffManager.AddGeneralDebuff("")
         GameRules.GetGameModeEntity().StopThink("MYSTICAL_SHOP_BUY_ITEM");
 
-        for (let hHero of HeroList.GetAllHeroes()) {
-            GameRules.BuffManager.RemoveGeneralDebuff(hHero, [ DebuffTypes.un_controll ] ); 
-        }
-
-
         let refresh_soul = GameRules.MysticalShopSystem.initial_refresh_price;
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
             //重新更新商店

@@ -500,8 +500,8 @@ export class ServiceInterface extends UIEventRegisterClass{
                 let Hero = PlayerResource.GetSelectedHeroEntity(player_id);
                 let steam_id = PlayerResource.GetSteamAccountID(player_id).toString();
                 let hero_level = Hero.GetLevel();
-                send_obj[steam_id] =  "第"+  GameRules.MapChapter.game_count  +"次游戏:" 
-                    + ";当前波数:" + GameRules.Spawn._round_index + ";" 
+                send_obj[steam_id] =  "第"+  GameRules.MapChapter.game_count + "次游戏" 
+                    + ";当前波数:" + GameRules.Spawn._round_index 
                     + ";英雄等级:" + hero_level + ";" 
                     + "\n" +this.player_log_data[player_id];
                 this.player_log_data[player_id] = "";

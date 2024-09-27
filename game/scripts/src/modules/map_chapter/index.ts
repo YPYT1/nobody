@@ -764,14 +764,22 @@ export class MapChapter extends UIEventRegisterClass {
             GameRules.ResourceSystem.InitAllPlayer();
         }
     }
+    TimersXYWIN : {x : number , y : number }[] = [
+        { x : -100 , y : -100 },
+        { x : 100 , y : -100 },
+        { x : 100 , y : 100 },
+        { x : -100 , y : 100 },
+    ]
 
     //游戏胜利 普通关卡
     GameWin() {
         Timers.CreateTimer(3, () => {
             let player_count = GetPlayerCount();
-            let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
+
             for (let index = 0 as PlayerID; index < player_count; index++) {
                 let hHero = PlayerResource.GetSelectedHeroEntity(index);
+                
+                let vLocation = Vector(this.ChapterData.map_centre_x + this.TimersXYWIN[index].x, this.ChapterData.map_centre_y + this.TimersXYWIN[index].y, 0);
                 if(hHero.IsAlive() == false){
                     hHero.SetRespawnPosition(vLocation);
                     hHero.RespawnHero(false, false);
@@ -779,6 +787,7 @@ export class MapChapter extends UIEventRegisterClass {
                 }else{
                     hHero.SetOrigin(vLocation);
                 }
+                hHero.SetAbsAngles(0 , 45 + index * 90, 100 )
             }
         })
         if(GameRules.MapChapter._game_select_phase == 999){
@@ -810,8 +819,8 @@ export class MapChapter extends UIEventRegisterClass {
     GameLoser() {
         Timers.CreateTimer(3, () => {
             let player_count = GetPlayerCount();
-            let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
             for (let index = 0 as PlayerID; index < player_count; index++) {
+                let vLocation = Vector(this.ChapterData.map_centre_x + this.TimersXYWIN[index].x , this.ChapterData.map_centre_y + this.TimersXYWIN[index].y , 0);
                 let hHero = PlayerResource.GetSelectedHeroEntity(index);
                 if(hHero.IsAlive() == false){
                     hHero.SetRespawnPosition(vLocation);
@@ -820,8 +829,9 @@ export class MapChapter extends UIEventRegisterClass {
                 }else{
                     hHero.SetOrigin(vLocation);
                 }
+                hHero.SetAbsAngles(0 , 45 + index * 90, 100 )
             }
-        })
+        })  
         if(GameRules.MapChapter._game_select_phase == 999){
             return
         }

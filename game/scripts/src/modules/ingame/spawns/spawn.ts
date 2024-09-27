@@ -136,6 +136,9 @@ export class Spawn extends UIEventRegisterClass {
 
     //boss存在时间
     _game_boss_time : number = 180;
+    
+    //玩家是否死亡
+    player_round_die : number[] = []
 
     constructor() {
         super("Spawn" , true);
@@ -147,8 +150,10 @@ export class Spawn extends UIEventRegisterClass {
         this.StageBossVector = Vector(x, y, 0);
         this.player_count = GetPlayerCount();
         this._Vector = Vector(x, y, 128);
+        GameRules.Spawn.player_round_die = [];
         //击杀计数器
         for (let index: PlayerID = 0; index < this.player_count; index++) {
+            GameRules.Spawn.player_round_die.push(1);
             if (this._player_sum_kill.hasOwnProperty(index)) {
                 this._player_sum_kill[index] = 0;
                 this._player_round_sum_kill[index] = 0;
@@ -156,6 +161,7 @@ export class Spawn extends UIEventRegisterClass {
                 this._player_sum_kill.push(0);
                 this._player_round_sum_kill.push(0);
             }
+            
         }
 
         //加载怪物血量公式 加载怪物攻击公式
@@ -272,6 +278,44 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("StartSpawnControl", () => {
             GameRules.Spawn._round_index++;
             GameRules.GameInformation.GetPlayGameHeadData(-1, {})
+            let playercount = GetPlayerCount();
+            for (let index = 0 as PlayerID; index < playercount; index++) {
+                let hHero = PlayerResource.GetSelectedHeroEntity(index);
+                //累积生存
+                if(hHero.rune_level_index["rune_112"]){
+                    let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_112","hp_pct");
+                    hHero.rune_trigger_count["rune_112"] ++;
+                    let value = hHero.rune_trigger_count["rune_112"] * kv_value ;
+                    let attr_count : CustomAttributeTableType = {
+                        "MaxHealth" : {
+                            "BasePercent" : value,
+                        }
+                    };
+                    GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_112_MaxHealth" , attr_count);
+                }
+                //砥砺前行
+                if(hHero.rune_level_index["rune_107"]){
+                    if(GameRules.Spawn.player_round_die[index] == 1){
+                        let AHB_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_107","AHB");
+                        let AIBP_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_107","AIBP");
+                        hHero.rune_trigger_count["rune_107"] ++;
+                        let AHB_value_1 = hHero.rune_trigger_count["rune_107"] * AHB_value ;
+                        let AIBP_value_1 = hHero.rune_trigger_count["rune_107"] * AIBP_value ;
+                        let attr_count : CustomAttributeTableType = {
+                            "AbilityHaste" : {
+                                "Base" : AHB_value_1,
+                            },
+                            "AbilityImproved" : {
+                                "Base" : AIBP_value_1,
+                            }
+                        };
+                        GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_107_Attr" , attr_count);
+                    }
+                }
+                //重置死亡状态
+                GameRules.Spawn.player_round_die[index] = 1;
+                
+            }
             if (GameRules.Spawn._round_index) {
                 GameRules.GetGameModeEntity().StopThink("CreateMonsterTime" + "_" + (this._round_index - 1));
                 //普通小怪刷怪器
@@ -886,10 +930,6 @@ export class Spawn extends UIEventRegisterClass {
             // );
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
             GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
-                for (let hHero of HeroList.GetAllHeroes()) {
-                    GameRules.BuffManager.AddGeneralDebuff(hHero,hHero,DebuffTypes.un_controll , GameRules.MysticalShopSystem.MYSTICAL_SHOP_BUY_ITEM); 
-                    // hHero.AddNewModifier(hHero, null, "modifier_debuff_rooted", { duration: 10, });
-                }
                 //重新设置时间
                 GameRules.MysticalShopSystem.RefreshMysticalShopItem();
                 return null;
