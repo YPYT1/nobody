@@ -90,7 +90,7 @@ export class modifier_drow_2a_a extends modifier_drow_2a {
             + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "12", 'bonus_value');
 
         if (this.caster.hero_talent.hasOwnProperty("14")) {
-            this.proj_name = G_PorjLinear.wind;
+            this.proj_name = G_PorjLinear.drow.wind;
         }
 
         this.ElementDmgMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '14', 'wind_dmg_pct')

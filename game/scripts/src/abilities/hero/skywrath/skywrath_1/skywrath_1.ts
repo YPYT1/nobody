@@ -8,12 +8,12 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 间隔基于自身攻击速度,
  */
 @registerAbility()
-export class drow_1 extends BaseHeroAbility {
+export class skywrath_1 extends BaseHeroAbility {
 
     BasicAbilityDmg: number;
 
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_1"
+        return "modifier_skywrath_1"
     }
 
     UpdataAbilityValue(): void {
@@ -25,8 +25,7 @@ export class drow_1 extends BaseHeroAbility {
         if (target) {
             let attack_damage = extraData.a;
             let SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
-            let has_run50buff = this.caster.HasModifier("modifier_drow_5_buff_rune50");
-            if (has_run50buff) { attack_damage *= 2 }
+
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -47,7 +46,7 @@ export class drow_1 extends BaseHeroAbility {
 }
 
 @registerModifier()
-export class modifier_drow_1 extends BaseHeroModifier {
+export class modifier_skywrath_1 extends BaseHeroModifier {
 
     proj_name: string;
     useProjectile: boolean;
@@ -66,15 +65,13 @@ export class modifier_drow_1 extends BaseHeroModifier {
         this.fakeAttack = false;
         this.useProjectile = true;
         this.SelfAbilityPow = 1;
-
+        this.tracking_proj_name = G_PorjTrack.skywrath.none;
         this.move_mdf = this.caster.FindModifierByName("modifier_basic_move") as modifier_basic_move;
     }
-
 
     UpdataAbilityValue(): void {
         this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
-        this.tracking_proj_name = G_PorjTrack.drow.fire;
     }
 
     OnIntervalThink(): void {

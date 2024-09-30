@@ -1,6 +1,8 @@
 import { GetTextureSrc } from "../../../common/custom_kv_method";
-import { FormatTalentTree, GetAllHeroTalentTree, HeroTreeObject } from "../../../common/custom_talent";
+import { GetAllHeroTalentTree, HeroTreeObject } from "../../../common/custom_talent";
+import { SetLabelDescriptionExtra } from "../../../utils/ability_description";
 import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
+import { default as AbilityTypesJson } from "./../../../json/config/game/const/ability_types.json";
 
 const CenterStatsContainer = $("#CenterStatsContainer");
 const UnitPortraitPanel = $("#UnitPortrait") as ScenePanel;
@@ -120,13 +122,12 @@ export const CreatePanel_Talent = () => {
 }
 
 const CreateHeroTalentTree = (heroId: HeroID) => {
-    $.Msg(["CreateHeroTalentTree", heroId])
+    // $.Msg(["CreateHeroTalentTree", heroId])
     PlayerTalentTreeList.RemoveAndDeleteChildren();
     const ALPos = AbilityList.GetPositionWithinWindow();
 
 
     // let hero_data = talent_data[heroname as keyof typeof talent_data];
-    let talent_tree = FormatTalentTree(talent_data, heroId);
     let index = 0;
     for (let id in talent_data) {
         let row_data = talent_data[id as keyof typeof talent_data];
@@ -170,33 +171,21 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
                     key: id,
                 }
             })
-
-
         })
 
-        TalentNodeButton.SetPanelEvent("onmouseover", () => {
-            let level = TalentNode.Data<PanelDataObject>().used as number;
-            // $.Msg(["ShowCustomTooltip TalentNodeButton", id, level])
-            ShowCustomTooltip(TalentNodeButton, "talent_tree", "", id, level)
-        })
+        // TalentNodeButton.SetPanelEvent("onmouseover", () => {
+        //     let level = TalentNode.Data<PanelDataObject>().used as number;
+        //     // $.Msg(["ShowCustomTooltip TalentNodeButton", id, level])
+        //     ShowCustomTooltip(TalentNodeButton, "talent_tree", "", id, level)
+        // })
 
-        TalentNodeButton.SetPanelEvent("onmouseout", () => {
-            HideCustomTooltip()
-        })
+        // TalentNodeButton.SetPanelEvent("onmouseout", () => {
+        //     HideCustomTooltip()
+        // })
     }
 
-    $.Schedule(1, () => {
-        let abi_pos = AbilityList.GetPositionWithinWindow();
-        for (let i = 0; i < PlayerTalentTreeList.GetChildCount(); i++) {
-            let AbilityTreePanel = PlayerTalentTreeList.GetChild(i);
-            if (AbilityTreePanel) {
-                AbilityTreePanel.style.marginLeft = `${abi_pos.x + 68.4 * i + 16}px`
-            }
+    SetLoaclPlayerHeroPortrait();
 
-        }
-    })
-
-    SetLoaclPlayerHeroPortrait()
 }
 
 
@@ -217,21 +206,59 @@ const GameEventsSubscribe = () => {
         let local_hero = Players.GetPlayerHeroEntityIndex(local_player);
         MainPanel.SetDialogVariableInt("point_count", talent_points);
         let hero_name = Entities.GetUnitName(local_hero).replace("npc_dota_hero_", "");
+
+
         if (talent_points > 0) {
             // let hero_data = talent_data[hero_name as keyof typeof talent_data];
             for (let id in hero_talent_list) {
                 let talent_id = `talent_${id}`;
                 let TalentNode = PlayerTalentTreeList.FindChildTraverse(talent_id);
                 if (TalentNode) {
+
                     let _data = hero_talent_list[id];
                     let is_unlock = _data.iu == 1;
-                    let row_hero_data = talent_data[id as keyof typeof talent_data]
+                    let row_hero_data = talent_data[id as "1"];
                     let is_max = _data.uc >= talent_data[id as keyof typeof talent_data].max_number
                     let is_show = is_unlock && !is_max;
+                    let level = _data.uc
                     TalentNode.Data<PanelDataObject>().used = _data.uc
                     TalentNode.SetHasClass("Show", is_show)
                     TalentNode.SetHasClass("IsNew", _data.uc == 0)
                     TalentNode.SetHasClass("IsUp", _data.uc > 0)
+                    TalentNode.SetHasClass("IsAbility", row_hero_data.is_ability == 1)
+                    TalentNode.SetHasClass("IsAttribute", row_hero_data.tier_number == 99)
+
+                    TalentNode.SetDialogVariable("talent_name", $.Localize(`#custom_talent_${id}`))
+                    TalentNode.SetDialogVariableInt("uc", level)
+                    TalentNode.SetDialogVariableInt("max", row_hero_data.max_number)
+                    // 类型标签
+                    let TypesLabel = TalentNode.FindChildTraverse("TypesLabel")!;
+                    let types_value = row_hero_data.mark_types;
+                    let has_newTypes = row_hero_data.mark_types != "Null";
+                    TypesLabel.SetHasClass("Show", has_newTypes && level == 0)
+                    for (let type_key in AbilityTypesJson) {
+                        TypesLabel.SetHasClass(type_key, types_value == type_key);
+                        if (types_value == type_key) {
+                            TypesLabel.SetDialogVariable("type_label", $.Localize("#custom_ability_type_" + type_key))
+                        }
+                    }
+                    // 元素
+                    let ExtraElement = TalentNode.FindChildTraverse("ExtraElement")!;
+                    let has_element = row_hero_data.mark_element;
+                    // $.Msg(["xxx", id, level, has_element > 0, level == 1])
+                    ExtraElement.SetHasClass("Show", has_element > 0 && level == 0);
+                    for (let i = 1; i <= 6; i++) {
+                        ExtraElement.SetHasClass("element_" + i, has_element == i)
+                    }
+                    let talent_desc = $.Localize(`#custom_talent_${id}_desc`)
+                    let description_txt = SetLabelDescriptionExtra(
+                        talent_desc,
+                        _data.uc,
+                        row_hero_data.AbilityValues,
+                        row_hero_data.ObjectValues,
+                        true
+                    );
+                    TalentNode.SetDialogVariable("AbilityDescription", description_txt)
                 }
             }
 
@@ -285,7 +312,23 @@ const GameEventsSubscribe = () => {
 const SetLoaclPlayerHeroPortrait = () => {
     let heroname = Players.GetPlayerSelectedHero(Players.GetLocalPlayer())
     UnitPortraitPanel.ReloadScene();
-    $.Schedule(0.1, () => {
+    checkHeroView(heroname)
+}
+
+const checkHeroView = (heroname: string) => {
+
+    $.Schedule(1, () => {
         UnitPortraitPanel.FireEntityInput(heroname, "Enable", "1")
     })
+
+    // let state = UnitPortraitPanel.SpawnHeroInScenePanelByPlayerSlotWithFullBodyView(heroname, Players.GetLocalPlayer())
+    // $.Msg(["state", state])
+    // if (state) {
+
+    // } else {
+    //     $.Schedule(0.1, () => {
+    //         checkHeroView(heroname)
+    //     })
+
+    // }
 }

@@ -69,7 +69,7 @@ export class modifier_drow_2b_a extends modifier_drow_2b {
 
     UpdataSpecialValue(): void {
         this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "19", "bonus_value");
-        this.proj_name = G_PorjLinear.fire;
+        this.proj_name = G_PorjLinear.drow.fire;
 
         // rune_37	游侠#12	散射【火力覆盖】火元素伤害提高50%
         this.ElementDmgMul = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_37', 'fire_bonus');

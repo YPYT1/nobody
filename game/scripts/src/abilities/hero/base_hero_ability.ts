@@ -276,7 +276,7 @@ export class BaseHeroModifier extends BaseModifier {
         this.ability = this.GetAbility() as BaseHeroAbility;
         this.ability_damage = 0;
         this.ability.IntrinsicMdf = this;
-        this.tracking_proj_name = G_PorjTrack.none;
+        this.tracking_proj_name = G_PorjTrack.drow.none;
         this.SetStackCount(0)
         this.C_OnCreated();
         this.OnRefresh(params)

@@ -41,11 +41,14 @@ export class Development extends UIEventRegisterClass {
         const heroid = params.heroid;
         const originHero = PlayerResource.GetSelectedHeroEntity(player_id);
         const hero_class = `npc_dota_hero_` + DOTAGameManager.GetHeroNameByID(heroid)
-        PlayerResource.ReplaceHeroWithNoTransfer(player_id, hero_class, 0, 0);
 
-        PrecacheUnitByNameAsync(hero_class, () => { })
+
+        PrecacheUnitByNameAsync(hero_class, () => {
+            PlayerResource.ReplaceHeroWithNoTransfer(player_id, hero_class, 0, 0);
+            if (originHero) { UTIL_Remove(originHero); }
+        })
         // const lastSelectHero = PlayerResource.GetPlayer(player_id).GetAssignedHero();
-        if (originHero) { UTIL_Remove(originHero); }
+        
     }
 
     /** 替换技能 */

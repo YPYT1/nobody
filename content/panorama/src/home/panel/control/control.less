@@ -224,47 +224,138 @@
     }
 
     .AbilityTreePanel {
-        // border: 1px solid #000000;
-        width: 320px;
-        height: 97px;
-        background-image: url("file://{images}/custom_game/hud/control/ability_up_bg.png");
         background-size: 100%;
-
         vertical-align: bottom;
-        // margin-bottom: 120px;
-        transform: translateY(-86px);
-        // margin-bottom: 200px;
+        horizontal-align: center;
+        margin-bottom: 100px;
         opacity: 0;
-        // flow-children: right;
-        // horizontal-align: center;
-        // padding: 0px 12px;
+        // padding: 60px;
 
         &.Show {
             opacity: 1;
         }
 
         #TalentList {
-            margin-top: 6px;
+            // border: 1px solid #ffffff;
+            // margin-top: 6px;
             // vertical-align: middle;
             horizontal-align: center;
             // width: 58px * 5;
             flow-children: right;
             overflow: clip;
+            padding: 60px 60px 0px 60px;
+            overflow: noclip;
         }
 
         .TalentInfo {
-            width: 66px;
-            height: 76px;
-
-            // margin: 0px 2px;
+            width: 280px;
+            height: 430px;
+            vertical-align: bottom;
+            background-image: url("file://{images}/custom_game/hud/control/upgrade/talent_info_t2.png");
+            background-repeat: no-repeat;
+            background-size: 100%;
             flow-children: none;
+            horizontal-align: center;
+            vertical-align: bottom;
             visibility: collapse;
             opacity: 0;
-            transition-property: opacity, visibility, brightness;
-            transition-duration: 0.2s;
-            transition-delay: 0.1s;
-            // saturation: 2;
-            brightness: 20;
+            transition-property: transform, ui-scale, pre-transform-scale2d;
+            transition-duration: 0.15s;
+            transform-origin: 50% 100%;
+            ui-scale: 100%;
+            pre-transform-scale2d: 1;
+
+            #TalentIcon {
+                width: 70px;
+                height: 70px;
+                margin-top: 47px;
+                margin-right: 1px;
+                horizontal-align: center;
+                // vertical-align: middle;
+                border-width: 2px;
+                border-style: solid;
+                border-color: #954cff;
+                transition-property: margin, width, height;
+                transition-duration: 0.1s;
+            }
+
+            .Name {
+                color: #954cff;
+            }
+
+            &.IsAbility {
+                background-image: url("file://{images}/custom_game/hud/control/upgrade/talent_info_t3.png");
+
+                .Name {
+                    color: #fbb93a;
+                }
+
+                .BtnHover {
+                    background-image: url("file://{images}/custom_game/hud/control/upgrade/talent_info_t3_hover.png");
+                }
+
+                #TalentIcon {
+                    border-color: #fbb93a;
+                }
+
+                &.IsNew {
+                    .TalentStateLabel {
+                        background-image: url("file://{images}/custom_game/hud/control/upgrade/icon_main_b.png");
+                    }
+                }
+
+                &.IsUp {
+                    .TalentStateLabel {
+                        background-image: url("file://{images}/custom_game/hud/control/upgrade/icon_main_a.png");
+                    }
+                }
+            }
+
+            &.IsAttribute {
+                background-image: url("file://{images}/custom_game/hud/control/upgrade/talent_info_t1.png");
+
+                .BtnHover {
+                    background-image: url("file://{images}/custom_game/hud/control/upgrade/talent_info_t1_hover.png");
+                }
+
+                #TalentIcon {
+                    border-color: #67a9f1;
+                }
+
+                .Name {
+                    color: #67a9f1;
+                }
+
+                &.IsNew,
+                &.IsUp {
+                    .TalentStateLabel {
+                        background-image: url("file://{images}/custom_game/hud/control/upgrade/icon_passive.png");
+                    }
+                }
+
+            }
+
+            .BtnHover {
+                width: 100%;
+                height: 100%;
+                background-image: url("file://{images}/custom_game/hud/control/upgrade/talent_info_t2_hover.png");
+                background-size: 100%;
+                opacity: 0;
+                transition-property: opacity;
+                transition-duration: 0.1s;
+            }
+
+            &:hover {
+                // ui-scale: 110%;
+
+                // pre-transform-scale2d: 1.1;
+                transform: scaleX(1.1) scaleY(1.1);
+
+                .BtnHover {
+                    opacity: 1;
+                }
+            }
+
 
             &.Show {
                 opacity: 1;
@@ -272,16 +363,24 @@
                 brightness: 1;
             }
 
+            .TalentStateLabel {
+                // border: 1px solid #fff;
+                horizontal-align: center;
+                width: 59px;
+                height: 61px;
+                // 
+                background-image: url("file://{images}/custom_game/hud/control/upgrade/icon_passive.png");
+                vertical-align: bottom;
+            }
+
+
             &.IsNew {
                 .StateIcon {
                     background-image: url("file://{images}/custom_game/hud/control/icon_new.png");
                 }
 
                 .TalentStateLabel {
-                    width: 66px;
-                    height: 69px;
-                    background-image: url("file://{images}/custom_game/hud/control/state_new.png");
-                    vertical-align: bottom;
+                    background-image: url("file://{images}/custom_game/hud/control/upgrade/icon_sub_b.png");
                 }
             }
 
@@ -291,12 +390,14 @@
                 }
 
                 .TalentStateLabel {
-                    width: 66px;
-                    height: 69px;
-                    background-image: url("file://{images}/custom_game/hud/control/state_up.png");
-                    vertical-align: bottom;
+                    background-image: url("file://{images}/custom_game/hud/control/upgrade/icon_sub_a.png");
                 }
+
+                // .TalentStateLabel {
+                //     background-image: url("file://{images}/custom_game/hud/control/state_up.png");
+                // }
             }
+
 
             .StateIcon {
                 width: 26px;
@@ -307,28 +408,135 @@
             }
 
             #TalentNodeButton {
-                horizontal-align: center;
-                width: 52px;
-                height: 52px;
-                tooltip-position: top;
-                border: 2px solid #fec75200;
-                box-shadow: #8f6e2700 0px 0px 4px 0px;
 
-                &:enabled {
-                    &:hover {
-                        border: 2px solid #fec752;
-                        box-shadow: #8f6e27cc 0px 0px 4px 0px;
+                horizontal-align: center;
+                width: 100%;
+                height: 100%;
+                flow-children: down;
+                transition-property: width, height;
+                transition-duration: 0.1s;
+
+                .AbilityNamePanel {
+                    horizontal-align: center;
+                    flow-children: right;
+
+                    margin-top: 30px;
+
+                    Label {
+                        font-size: 18px;
+                        // text-overflow:shrink;
+                        // font-weight: semi-bold;
+                        // font-stretch: expanded;
                     }
                 }
 
-                #TalentIcon {
-                    width: 42px;
-                    height: 42px;
+                #TypesLabel {
+                    visibility: collapse;
+
+                    &.Show {
+                        visibility: visible;
+                    }
+                }
+
+                .TalentExtraInfo {
+                    margin-top: 8px;
+                    // border: 1px solid #fff;
+                    // height: 50px;
                     horizontal-align: center;
-                    vertical-align: middle;
-                    border: 2px solid #8491a7;
+                    // vertical-align: middle;
+                    flow-children: right;
+
+                    #ExtraElement {
+                        width: 50px;
+                        height: 50px;
+
+                        background-repeat: no-repeat;
+                        background-size: 42px 39px;
+                        background-position: 50% 50%;
+                        visibility: collapse;
+
+                        &.Show {
+                            visibility: visible;
+                        }
+
+                        &.element_1 {
+                            background-image: url("file://{images}/custom_game/icon/element/1.png");
+                        }
+
+                        &.element_2 {
+                            background-image: url("file://{images}/custom_game/icon/element/2.png");
+                        }
+
+                        &.element_3 {
+                            background-image: url("file://{images}/custom_game/icon/element/3.png");
+                        }
+
+                        &.element_4 {
+                            background-image: url("file://{images}/custom_game/icon/element/4.png");
+                        }
+
+                        &.element_5 {
+                            background-image: url("file://{images}/custom_game/icon/element/5.png");
+                        }
+
+                        &.element_6 {
+                            background-image: url("file://{images}/custom_game/icon/element/6.png");
+                        }
+                    }
+
+                    // #ExtraTypes {
+                    //     // width: 50px;
+                    //     // height: 50px;
+                    //     vertical-align: middle;
+                    //     background-repeat: no-repeat;
+                    //     background-size: 50px 22px;
+                    //     background-position: 50% 50%;
+                    //     visibility: collapse;
+                    //     border: 1px solid #252525;
+
+
+                    //     &.Show {
+                    //         visibility: visible;
+                    //     }
+
+
+                    // }
+                }
+
+                .SplitLine {
+                    width: 189px;
+                    height: 1px;
+                    horizontal-align: center;
+                    margin-top: 4px;
+                    margin-bottom: 4px;
+                    background-image: url("file://{images}/custom_game/hud/control/upgrade/split_line.png");
+                }
+
+                .AbilityDescription {
+                    width: 189px;
+                    horizontal-align: center;
+
+                    Label {
+                        font-size: 16px;
+                    }
+                }
+
+                .Variable,
+                .GameplayVariable {
+                    font-size: 20px;
+                    // font-weight: bold;
+                    color: #5d758f;
+                }
+
+                .OtherVariable {
+                    color: #5c5c5c;
+                }
+
+                .Current {
+                    color: #ffc833;
                 }
             }
+
 
 
         }

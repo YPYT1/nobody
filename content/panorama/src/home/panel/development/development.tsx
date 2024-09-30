@@ -13,6 +13,11 @@ const attr_sub_key_list = Object.keys(AttributeSub);
 const MainPanel = $.GetContextPanel();
 
 
+const UpMouseOffset = ()=>{
+    let offset = GameUI.GetCursorPosition()
+    MainPanel.SetDialogVariable("mouse_offset",`${offset.join(",")}`)
+    $.Schedule(0.03, UpMouseOffset);
+}
 
 const StartLoop = () => {
     UpdateTopInfoTime();
@@ -100,7 +105,7 @@ export const Initialize = () => {
 
     SetHotKey("`", OpenAttributePanel)
     StartLoop();
-
+    UpMouseOffset();
     testCode()
 }
 

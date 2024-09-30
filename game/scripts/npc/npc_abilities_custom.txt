@@ -5,6 +5,7 @@
 #base "abilities/mission.txt"
 
 #base "abilities/hero/drow_skill.txt"
+#base "abilities/hero/skywrath_skill.txt"
 
 #base "abilities/creature/elite.txt"
 #base "abilities/creature/boss.txt"

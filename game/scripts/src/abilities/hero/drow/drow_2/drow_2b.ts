@@ -50,7 +50,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
         this.arrow_angle = this.ability.GetSpecialValueFor("arrow_angle");
         this.proj_width = this.ability.GetSpecialValueFor("proj_width");
         this.proj_speed = this.caster.GetProjectileSpeed();
-        this.proj_name = G_PorjLinear.none;
+        this.proj_name = G_PorjLinear.drow.none;
         this.proj_distance = this.ability.GetSpecialValueFor("proj_distance");
 
         // rune_36	游侠#11	散射的基础伤害提高200%

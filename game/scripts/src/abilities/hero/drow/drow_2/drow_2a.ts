@@ -63,7 +63,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
         this.proj_speed = hAbility.GetSpecialValueFor("proj_speed");
         this.proj_width = hAbility.GetSpecialValueFor("proj_width");
         this.action_range = this.caster.Script_GetAttackRange();
-        this.proj_name = G_PorjLinear.none;
+        this.proj_name = G_PorjLinear.drow.none;
     }
 
 

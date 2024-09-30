@@ -11,7 +11,7 @@
         <Panel class="TooltipContent">
             <Panel class="TalentHeader">
                 <Panel class="TalentLabels">
-                    <Label class="TalentName" text="{s:talent_name}"/>
+                    <Label class="TalentName" text="{s:talent_name}" antialias="true"/>
                     <Label class="TalentLevel" text="{d:level} / {d:max}"/>
                 </Panel>
                 <Panel class="TalentExtraInfo">

@@ -16,6 +16,7 @@ const ABILITY_PATH_ORIGINAL = "file://{images}/spellicons/";
  * @returns 
  */
 export function GetTextureSrc(texture: string, func: string = "123") {
+    // $.Msg(["texture",texture])
     let texture_arr = texture.split("_");
     let bIsItem = texture_arr[0] == "item";
     // $.Msg(["GetTextureSrc", func])

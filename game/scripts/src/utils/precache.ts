@@ -1,5 +1,6 @@
 /** @noSelfInFile */
 import { drow_precache } from "../kv_data/precache_data/hero_ability/drow";
+import { skywrath_precache } from "../kv_data/precache_data/hero_ability/skywrath";
 import { HeroList } from "../kv_data/precache_data/hero_list";
 
 import "./../global/global_precache";
@@ -60,6 +61,7 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/diy_particles/line_to_target.vpcf',
             'particles/units/heroes/hero_earthshaker/earthshaker_echoslam_start.vpcf',
             ...drow_precache,
+            ...skywrath_precache,
         ],
         context
     );

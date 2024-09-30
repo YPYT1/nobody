@@ -139,7 +139,7 @@ export class modifier_drow_2a_b extends modifier_drow_2a {
     UpdataSpecialValue(): void {
         let cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  '16', 'cigu_value')
         if (cigu_value > 0) {
-            this.proj_name = G_PorjLinear.ice;
+            this.proj_name = G_PorjLinear.drow.ice;
         }
         this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  '15', 'bonus_value')
 

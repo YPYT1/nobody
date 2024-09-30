@@ -115,7 +115,7 @@ export class modifier_drow_1a extends modifier_drow_1 {
 
     UpdataSpecialValue(): void {
         this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "2", "bonus_value");
-        this.tracking_proj_name = G_PorjTrack.fire;
+        this.tracking_proj_name = G_PorjTrack.drow.fire;
     }
 
 }

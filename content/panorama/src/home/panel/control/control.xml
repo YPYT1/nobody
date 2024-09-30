@@ -37,22 +37,41 @@
             </Button>
         </snippet>
 		<snippet name="AbilityTreePanel">
-			<Button class="AbilityTreePanel">
-				<Panel class="AbilityUpBg">
-					<Panel class=""/>
+			<Button class="AbilityTreePanel" hittest="false">
+				<Panel class="AbilityUpBg" hittest="false">
+					<Panel class="" hittest="false"/>
 				</Panel>
-				<Panel id="TalentList"/>
+				<Panel id="TalentList" hittest="false"/>
 			</Button>
 		</snippet>
-		<snippet name="TalentInfo" hittest="false">
-			<Panel class="TalentInfo" hittest="false">
-				<Panel class="TalentStateLabel" hittest="false" />
-				<Button id="TalentNodeButton">
-					<Image id="TalentIcon" hittest="false"/>
-					<Panel class="StateIcon" hittest="false"/>
-				</Button>
-				
-			</Panel>
+		<snippet name="TalentInfo">
+			
+				<Panel class="TalentInfo" antialias="true">
+					<Panel class="BtnHover"/>
+					<Button id="TalentNodeButton">
+						<Image id="TalentIcon" hittest="false"/>
+						<Panel class="AbilityNamePanel">
+							<Label class="Name" text="{s:talent_name}"/>
+							<Label class="Level" text="({d:uc}/{d:max})"/>
+						</Panel>
+						<Panel id="TalentExtra" class="TalentExtraInfo">
+							<Panel id="ExtraElement">
+								<Panel class="NewIcon" />
+							</Panel>
+							
+								<Label id="TypesLabel" class="TypeLabel" text="{s:type_label}"/>
+								<!-- <Panel class="NewIcon" /> -->
+							
+						</Panel>
+						<Panel class="SplitLine" />
+						<Panel class="AbilityDescription">
+							<Label text="{s:AbilityDescription}" html="true"/>
+						</Panel>
+					</Button>
+					<Panel class="TalentStateLabel" hittest="false" />
+				</Panel>
+		
+			
 		</snippet>
 		<snippet name="PanelAttributeRow">
 			<Panel class="PanelAttributeRow">
@@ -84,7 +103,7 @@
 					<Panel id='PortraitBorder' hittest="false">
 						<DOTAScenePanel 
 							id="UnitPortrait" 
-							map="maps/custom_scene/hero_portrait.vmap" 
+							map="maps/custom_scene/hero_portrait" 
 							camera='hero_camera' 
 							light='light_frontpage' 
 							particleonly="false"

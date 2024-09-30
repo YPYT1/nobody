@@ -164,6 +164,7 @@ export class modifier_rune_effect extends BaseModifier {
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_113_MoveSpeed", attr_count);
         }
     }
+    
     OnIntervalThink(): void {
         if (!this.caster.IsAlive()) { return }
         // 毎损失10%生命百分比

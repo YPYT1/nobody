@@ -59,7 +59,7 @@ export class modifier_drow_1c extends modifier_drow_1 {
         if (bonus_value > 0) {
             this.element_type = ElementTypes.ICE;
             this.damage_type = DamageTypes.MAGICAL;
-            this.tracking_proj_name = G_PorjTrack.ice;
+            this.tracking_proj_name = G_PorjTrack.drow.ice;
         }
         // rune_30	游侠#5	分裂箭的基础伤害提高200%
         this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_30', 'base_value');

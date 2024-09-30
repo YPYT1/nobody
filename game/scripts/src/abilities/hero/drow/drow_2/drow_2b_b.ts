@@ -79,7 +79,7 @@ export class modifier_drow_2b_b extends modifier_drow_2b {
     sp_chance: number;
     sp_extra: number;
     UpdataSpecialValue(): void {
-        this.proj_name = G_PorjLinear.ice
+        this.proj_name = G_PorjLinear.drow.ice
         this.sp_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "22", "chance");
         // rune_38	游侠#13	双喷再次释放时可以再次触发效果（可套娃）
         this.sp_extra = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_38', 'sp_extra');
