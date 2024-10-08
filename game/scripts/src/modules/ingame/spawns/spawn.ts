@@ -515,7 +515,7 @@ export class Spawn extends UIEventRegisterClass {
             let unit = GameRules.Spawn.CreepNormalCreate( GameRules.Spawn._game_boss_name, this.StageBossVector);
 
             this.MonsterAmend(unit, "boss", 1, this._round_index);
-
+            unit.AddNewModifier(unit, null, "modifier_state_boss_growup", {} )
             unit.AddNewModifier(unit, null, "modifier_custom_appearance_underground", { duration: 3 });
 
             GameRules.CMsg.SetBossHealthBar(unit);

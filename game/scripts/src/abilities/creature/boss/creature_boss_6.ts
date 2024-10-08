@@ -13,7 +13,7 @@ export class creature_boss_6 extends BaseCreatureAbility {
     line_distance: number;
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_lion/lion_spell_mana_drain.vpcf", context)
+        precacheResString("particles/econ/items/lion/lion_demon_drain/lion_spell_mana_drain_demon.vpcf", context)
     }
 
     OnAbilityPhaseStart(): boolean {
@@ -62,8 +62,10 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
     line_width: number;
     team: DotaTeam;
 
+    npc_list: CDOTA_BaseNPC[];
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.npc_list = [];
         this.line_width = this.GetAbility().GetSpecialValueFor("line_width");
         this.line_distance = this.GetAbility().GetSpecialValueFor("line_distance");
         this.caster = this.GetCaster()
@@ -81,24 +83,44 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
     }
 
     PlayEffect(vPos) {
+        const dummy = CreateModifierThinker(
+            this.caster,
+            this.GetAbility(),
+            "modifier_creature_boss_6_dummy",
+            {},
+            vPos,
+            DotaTeam.GOODGUYS,
+            false
+        )
+        this.npc_list.push(dummy)
         let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_lion/lion_spell_mana_drain.vpcf",
-            ParticleAttachment.CUSTOMORIGIN,
-            this.GetCaster()
+            "particles/econ/items/lion/lion_demon_drain/lion_spell_mana_drain_demon.vpcf",
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            dummy
         )
         vPos.z += 30;
-        ParticleManager.SetParticleControl(effect_fx, 0, vPos)
+        // ParticleManager.SetParticleControl(effect_fx, 0, vPos)
+        ParticleManager.SetParticleControlEnt(
+            effect_fx,
+            0,
+            dummy,
+            ParticleAttachment.POINT_FOLLOW,
+            "attach_hitloc",
+            Vector(0, 0, 50),
+            true
+        )
         ParticleManager.SetParticleControlEnt(
             effect_fx,
             1,
             this.caster,
             ParticleAttachment.POINT_FOLLOW,
-            "attach_hitloc",
-            Vector(0, 0, 0),
+            "attach_mouth",
+            Vector(0, 0, 50),
             true
         )
         this.AddParticle(effect_fx, false, false, -1, false, false)
     }
+
     OnIntervalThink(): void {
         let enemies = FindUnitsInLine(
             this.team,
@@ -128,10 +150,20 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
         })
         GameRules.BasicRules.RestoreMana(hTarget, -3, this.GetAbility())
     }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        for (let unit of this.npc_list) {
+            UTIL_Remove(unit)
+        }
+    }
 }
 
-// @registerModifier()
-// export class modifier_creature_boss_6_dmginterval extends BaseModifier {
+@registerModifier()
+export class modifier_creature_boss_6_dummy extends BaseModifier {
 
-//     IsHidden(): boolean { return true }
-// }
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        UTIL_Remove(this.GetParent())
+    }
+}

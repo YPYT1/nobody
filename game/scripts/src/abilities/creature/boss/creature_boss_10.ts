@@ -24,7 +24,7 @@ export class creature_boss_10 extends BaseCreatureAbility {
     OnSpellStart(): void {
         this.DestroyWarningFx();
         // 自身1000范围内随机两个点
-        let recovery_vect1 = this.vOrigin + RandomVector(RandomInt(0, this._cast_range)) as Vector
+        let recovery_vect1 = this.vOrigin + RandomVector(this._cast_range) as Vector
         let recovery_vect2 = RotatePosition(this.vOrigin, QAngle(0, 180, 0), recovery_vect1);
 
         let count = this.GetSpecialValueFor("count");
@@ -55,7 +55,7 @@ export class creature_boss_10 extends BaseCreatureAbility {
         )
 
         for (let i = 0; i < garbage_count; i++) {
-            let origin = this.vOrigin + RandomVector(this._cast_range) as Vector;
+            let origin = this.vOrigin + RandomVector(RandomInt(-this._cast_range, this._cast_range)) as Vector;
             this.CreateGarbage(origin, type, pos)
         }
     }
@@ -87,7 +87,7 @@ export class creature_boss_10 extends BaseCreatureAbility {
 export class modifier_creature_boss_10_stack extends BaseModifier {
 
     dmg_max_hp: number;
-    
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.dmg_max_hp = this.GetAbility().GetSpecialValueFor("dmg_max_hp") * 0.01

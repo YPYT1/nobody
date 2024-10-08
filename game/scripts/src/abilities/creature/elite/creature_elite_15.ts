@@ -18,11 +18,7 @@ export class creature_elite_15 extends BaseCreatureAbility {
         // this.vPoint = this.GetCursorPosition();
         // print("this._radius", this._radius, this._cast_point)
         this.vOrigin = this.hCaster.GetAbsOrigin();
-        this.nPreviewFX = GameRules.WarningMarker.Circular(
-            this._cast_range,
-            this._cast_point,
-            this.vOrigin
-        )
+        this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
         return true
     }
 

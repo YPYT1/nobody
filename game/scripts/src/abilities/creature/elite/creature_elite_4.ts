@@ -13,11 +13,7 @@ export class creature_elite_4 extends BaseCreatureAbility {
     OnAbilityPhaseStart(): boolean {
         this.hTarget = this.GetCursorTarget();
         this.vPoint = this.GetCursorPosition();
-        this.nPreviewFX = GameRules.WarningMarker.Circular(
-            this._radius,
-            this._cast_point,
-            this.hCaster.GetAbsOrigin()
-        )
+        this.nPreviewFX = GameRules.WarningMarker.Circular(this._radius,this._cast_point,this.hCaster.GetAbsOrigin())
         let effect_fx = ParticleManager.CreateParticle(
             "particles/econ/events/ti9/teleport_end_ti9.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,

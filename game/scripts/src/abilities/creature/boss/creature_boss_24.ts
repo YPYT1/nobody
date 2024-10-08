@@ -16,7 +16,7 @@ export class creature_boss_24 extends BaseCreatureAbility {
     shield_list: CDOTA_BaseNPC[];
     OnAbilityPhaseStart(): boolean {
         this.vOrigin = this.hCaster.GetAbsOrigin();
-        this.nPreviewFX = GameRules.WarningMarker.Circular(400, this._cast_point, this.vOrigin);
+        this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin);
         return true
     }
 

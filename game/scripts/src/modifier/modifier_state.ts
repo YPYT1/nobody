@@ -124,22 +124,53 @@ export class modifier_state_noheathbar extends BaseModifier {
 /** Boss无敌，不会失去生命值 */
 @registerModifier()
 export class modifier_state_boss_invincible extends BaseModifier {
-    
+
     IsHidden(): boolean {
         return true
     }
 
     OnCreated(params: object): void {
-        if(!IsServer()){ return }
+        if (!IsServer()) { return }
         let effect_fx = ParticleManager.CreateParticle(
             "particles/items_fx/black_king_bar_avatar.vpcf",
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         )
-        this.AddParticle(effect_fx,false,false,-1,false,false)
+        this.AddParticle(effect_fx, false, false, -1, false, false)
     }
-    
+
     GetStatusEffectName(): string {
         return "particles/status_fx/status_effect_avatar.vpcf"
+    }
+}
+
+@registerModifier()
+export class modifier_state_boss_growup extends BaseModifier {
+
+    value: number;
+
+    // IsHidden(): boolean {
+    //     return true
+    // }
+
+    OnCreated(params: object): void {
+        this.value = 0;
+        if(!IsServer()){ return }
+        this.StartIntervalThink(5)
+    }
+
+    OnIntervalThink(): void {
+        this.value += 1
+        this.IncrementStackCount()
+    }
+
+    DeclareFunctions(): modifierfunction[] {
+        return [
+            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
+        ]
+    }
+
+    GetModifierMoveSpeedBonus_Percentage(): number {
+        return this.value;
     }
 }

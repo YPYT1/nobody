@@ -81,6 +81,7 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
             && this.ability.IsActivated()
             && this.ability.IsMeetCastCondition()
             && !this.caster.IsHexed()
+            && !this.caster.IsSilenced()
         ) {
             let attackrange = this.caster.Script_GetAttackRange() + 64;
             let enemies = FindUnitsInRadius(

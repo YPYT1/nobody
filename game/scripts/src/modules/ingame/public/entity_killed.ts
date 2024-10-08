@@ -35,15 +35,15 @@ export class EntityKilled {
 
 
             /** 延迟1秒删除 */
-            hTarget.AddNoDraw();
-            let delay = 4;
-            if (hTarget.HasAbility("creature_elite_16")) {
-                delay = 10;
-            }
-            hTarget.SetContextThink("death_play", () => {
-                hTarget.RemoveSelf()
-                return null
-            }, delay)
+            // hTarget.AddNoDraw();
+            // let delay = 4;
+            // if (hTarget.HasAbility("creature_elite_16")) {
+            //     delay = 10;
+            // }
+            // hTarget.SetContextThink("death_play", () => {
+            //     hTarget.RemoveSelf()
+            //     return null
+            // }, delay)
 
         }
     }

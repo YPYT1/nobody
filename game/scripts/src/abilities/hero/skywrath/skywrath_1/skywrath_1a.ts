@@ -11,13 +11,14 @@ import { modifier_skywrath_1, skywrath_1 } from "./skywrath_1";
 export class skywrath_1a extends skywrath_1 {
 
     lm_radius: number;
-
+    yl_thunder_bonus: number;
+    yl_radius: number;
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/units/heroes/hero_zuus/zuus_base_attack.vpcf", context)
         precacheResString("particles/units/heroes/hero_zuus/zuus_lightning_bolt_aoe.vpcf", context)
         precacheResString("particles/units/heroes/hero_zuus/zuus_lightning_bolt_glow_fx.vpcf", context)
         precacheResString("particles/econ/items/zeus/lightning_weapon_fx/zuus_lightning_bolt_immortal_lightning.vpcf", context)
-
+        precacheResString("particles/units/heroes/hero_zeus/zeus_cloud.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -27,6 +28,9 @@ export class skywrath_1a extends skywrath_1 {
     UpdataSpecialValue(): void {
         this.SetCustomAbilityType("Targeting", true)
         this.lm_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "59", "radius");
+
+        this.yl_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "61", "yl_radius");
+
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
@@ -80,8 +84,46 @@ export class skywrath_1a extends skywrath_1 {
             })
         }
 
-        if (bm_crit == 1) {
+        let base_bonus_mul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "60", "base_bonus_mul");
+        if (bm_crit == 1 && base_bonus_mul > 0) {
+            let effect_fx2 = ParticleManager.CreateParticle(
+                "particles/units/heroes/hero_zuus/zuus_lightning_bolt_glow_fx.vpcf",
+                ParticleAttachment.WORLDORIGIN,
+                null
+            )
+            ParticleManager.SetParticleControl(effect_fx2, 0, vPos);
+            const vPos2 = vPos + Vector(0, 0, 1000) as Vector;
+            ParticleManager.SetParticleControl(effect_fx2, 1, vPos2)
+            ParticleManager.ReleaseParticleIndex(effect_fx2);
 
+            let attack_damage2 = attack_damage * base_bonus_mul * 0.01
+            for (let enemy of enemies) {
+                ApplyCustomDamage({
+                    victim: enemy,
+                    attacker: this.caster,
+                    damage: attack_damage2,
+                    damage_type: DamageTypes.MAGICAL,
+                    element_type: ElementTypes.THUNDER,
+                    ability: this,
+                    is_primary: true,
+                    SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
+                })
+            }
+        }
+        // this.yl_radius = 200;
+        if (this.yl_radius > 0) {
+            CreateModifierThinker(
+                this.caster,
+                this,
+                "modifier_skywrath_1a_yinlei",
+                {
+                    duration: 3,
+                    yl_radius: this.yl_radius,
+                },
+                vPos,
+                this.team,
+                false
+            )
         }
     }
 
@@ -96,5 +138,53 @@ export class modifier_skywrath_1a extends modifier_skywrath_1 {
     UpdataSpecialValue(): void {
         this.tracking_proj_name = "particles/units/heroes/hero_zuus/zuus_base_attack.vpcf";
         this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "59", "base_bonus");
+    }
+}
+
+@registerModifier()
+export class modifier_skywrath_1a_yinlei extends BaseModifier {
+
+    IsAura(): boolean { return true; }
+    GetAuraRadius(): number { return 250; }
+    GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
+    GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
+    GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
+    GetModifierAura() { return "modifier_skywrath_1a_yinlei_aura"; }
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return }
+        let yl_radius = params.yl_radius as number;
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_zeus/zeus_cloud.vpcf",
+            ParticleAttachment.POINT,
+            this.GetParent()
+        )
+        let origin = this.GetParent().GetAbsOrigin();
+        let cloud_pos = origin + Vector(0, 0, -500) as Vector;
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(yl_radius, 1, 1))
+        ParticleManager.SetParticleControl(effect_fx, 2, cloud_pos)
+        this.AddParticle(effect_fx, false, false, -1, false, false)
+    }
+}
+
+@registerModifier()
+export class modifier_skywrath_1a_yinlei_aura extends BaseModifier {
+
+    buff_key = "skywrath_1a_yinlei";
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        let yl_thunder_bonus = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "61", "yl_thunder_bonus");
+        GameRules.EnemyAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
+            "ThunderDamageIncome": {
+                "Base": yl_thunder_bonus
+            }
+        })
+    }
+
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.EnemyAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
     }
 }

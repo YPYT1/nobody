@@ -10,15 +10,11 @@ import { BaseCreatureAbility } from "../base_creature";
 export class creature_elite_2 extends BaseCreatureAbility {
 
     knockback_duration: number;
-    
+
     OnAbilityPhaseStart(): boolean {
         this.vPoint = this.GetCursorPosition();
         this.knockback_duration = this.GetSpecialValueFor("knockback_duration")
-        this.nPreviewFX = GameRules.WarningMarker.Circular(
-            this._radius,
-            this._cast_point,
-            this.vPoint
-        )
+        this.nPreviewFX = GameRules.WarningMarker.Circular(this._radius, this._cast_point, this.vPoint)
         return true
     }
 
@@ -31,7 +27,7 @@ export class creature_elite_2 extends BaseCreatureAbility {
             null
         );
         ParticleManager.SetParticleControl(effect_fx, 0, this.vPoint)
-        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this._radius,1,1))
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this._radius, 1, 1))
         ParticleManager.ReleaseParticleIndex(effect_fx)
         let enemies = FindUnitsInRadius(
             this.hCaster.GetTeam(),

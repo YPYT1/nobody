@@ -106,9 +106,13 @@ export class modifier_creature_boss_25_channel extends BaseModifier {
 
     count: number;
     origin2: Vector;
+    wave_distance: number;
+    wave_width: number;
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.wave_distance = this.GetAbility().GetSpecialValueFor("wave_distance")
+        this.wave_width = this.GetAbility().GetSpecialValueFor("wave_width")
         this.origin = this.GetCaster().GetAbsOrigin();
         this.origin2 = this.origin + Vector(100, 0, 0) as Vector;
         this.count = 3;//this.GetAbility().GetSpecialValueFor("")
@@ -144,12 +148,12 @@ export class modifier_creature_boss_25_channel extends BaseModifier {
         ProjectileManager.CreateLinearProjectile({
             Ability: this.GetAbility(),
             EffectName: "particles/units/heroes/hero_magnataur/magnataur_shockwave.vpcf",
-            fDistance: 3000,
-            fStartRadius: 225,
-            fEndRadius: 225,
+            fDistance: this.wave_distance,
+            fStartRadius: this.wave_width,
+            fEndRadius: this.wave_width,
             vSpawnOrigin: this.origin,
             Source: this.GetCaster(),
-            vVelocity: (vDirection * 500) as Vector,
+            vVelocity: (vDirection * 700) as Vector,
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
         })

@@ -9,6 +9,10 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_boss_15 extends BaseCreatureAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_queenofpain/queen_scream_of_wave.vpcf", context)
+    }
+
     OnAbilityPhaseStart(): boolean {
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
@@ -33,8 +37,11 @@ export class modifier_creature_boss_15 extends BaseModifier {
 
     buff_key = "boss_15";
 
+    attack_list: CDOTA_BaseNPC[];
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.attack_list = [];
         GameRules.EnemyAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
             "DmgReductionPct": {
                 "Base": 100,
@@ -42,10 +49,6 @@ export class modifier_creature_boss_15 extends BaseModifier {
         })
     }
 
-    OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.EnemyAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
-    }
 
     DeclareFunctions(): modifierfunction[] {
         return [
@@ -54,11 +57,23 @@ export class modifier_creature_boss_15 extends BaseModifier {
     }
 
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
-        event.attacker.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_boss_15_debuff", {
-            duration: 10
-        })
-        return -100
+        if (this.attack_list.indexOf(event.attacker) < 0) {
+            this.attack_list.push(event.attacker)
+        }
+        return -999
     }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return };
+        GameRules.EnemyAttribute.DelAttributeInKey(this.GetParent(), this.buff_key);
+        for (let unit of this.attack_list) {
+            unit.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_boss_15_debuff", {
+                duration: 10
+            })
+        }
+    }
+
+
 }
 
 @registerModifier()
@@ -81,9 +96,9 @@ export class modifier_creature_boss_15_debuff extends BaseModifier {
     HideWearable() {
         // 隐藏饰品
         for (let v of this.GetParent().GetChildren()) {
-            print(v, v.GetClassname())
+            // print(v, v.GetClassname())
             if (v && v.GetClassname() == "wearable_item") {
-                print("hide war");
+                // print("hide war");
                 (v as CDOTA_BaseNPC).SetModel("models/development/invisiblebox.vmdl")
             }
         }

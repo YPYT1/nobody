@@ -70,6 +70,13 @@ declare type EnemyAttributeKey = "AllElementResist"
     | "AbilityHaste"
     | "DamageBonusMul"
     | "RestoreIncrease"
+    | "FireDamageIncome"
+    | "IceDamageIncome"
+    | "ThunderDamageIncome"
+    | "WindDamageIncome"
+    | "LightDamageIncome"
+    | "DarkDamageIncome"
+
     ;
 /** 自定义属性子类 */
 declare type AttributeSubKey = "Base"

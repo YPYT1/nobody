@@ -24,7 +24,7 @@ export class creature_boss_9 extends BaseCreatureAbility {
     OnSpellStart(): void {
         this.DestroyWarningFx();
         // 自身1000范围内随机两个点
-        let recovery_vect1 = this.vOrigin + RandomVector(RandomInt(0, this._cast_range)) as Vector
+        let recovery_vect1 = this.vOrigin + RandomVector(this._cast_range) as Vector
         let recovery_vect2 = RotatePosition(this.vOrigin, QAngle(0, 180, 0), recovery_vect1);
         this.CreateRecoveryZone(recovery_vect1, 0);
         this.CreateRecoveryZone(recovery_vect2, 1);
