@@ -2,9 +2,10 @@
 import { drow_precache } from "../kv_data/precache_data/hero_ability/drow";
 import { skywrath_precache } from "../kv_data/precache_data/hero_ability/skywrath";
 import { HeroList } from "../kv_data/precache_data/hero_list";
-
 import "./../global/global_precache";
+import * as NpcAbilitiesCustomJson from "../json/npc_abilities_custom.json";
 
+const abilities_list = Object.keys(NpcAbilitiesCustomJson)
 // 导出的预载入方法，用来给addon_game_mode.ts调用
 export default function Precache(context: CScriptPrecacheContext) {
     // 需要预载的所有资源
@@ -87,6 +88,7 @@ export default function Precache(context: CScriptPrecacheContext) {
     precacheItems(
         [
             // 物品名称
+            ...abilities_list,
             // 'item_***',
         ],
         context

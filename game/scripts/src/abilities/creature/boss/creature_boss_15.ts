@@ -98,9 +98,16 @@ export class modifier_creature_boss_15_debuff extends BaseModifier {
         }
     }
 
+    CheckState(): Partial<Record<modifierstate, boolean>> {
+        return {
+            [ModifierState.DISARMED]: true,
+            [ModifierState.SILENCED]: true,
+        }
+    }
+
     DeclareFunctions(): modifierfunction[] {
         return [
-            ModifierFunction.MODEL_CHANGE
+            ModifierFunction.MODEL_CHANGE,
         ]
     }
 

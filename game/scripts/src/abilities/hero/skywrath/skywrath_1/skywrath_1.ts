@@ -10,6 +10,7 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 @registerAbility()
 export class skywrath_1 extends BaseHeroAbility {
 
+    /** Q技能伤害加成 */
     BasicAbilityDmg: number;
 
     GetIntrinsicModifierName(): string {
@@ -48,7 +49,7 @@ export class skywrath_1 extends BaseHeroAbility {
 @registerModifier()
 export class modifier_skywrath_1 extends BaseHeroModifier {
 
-    proj_name: string;
+    // proj_name: string;
     useProjectile: boolean;
     // base_value: number = 0;
     bonus_value: number = 0;
@@ -70,6 +71,7 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
     }
 
     UpdataAbilityValue(): void {
+        
         this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
     }

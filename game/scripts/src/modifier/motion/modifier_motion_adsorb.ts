@@ -20,7 +20,6 @@ export class modifier_motion_adsorb extends BaseModifier {
         this.speed = 50;
         this.dt = GameRules.GetGameFrameTime()
         this._OnCreated(params)
-
         this.StartIntervalThink(this.dt)
         // if (this.ApplyHorizontalMotionController() == false) {
         //     this.Destroy();
@@ -37,7 +36,10 @@ export class modifier_motion_adsorb extends BaseModifier {
         let direction = target_vect - this.origin as Vector;
         let distance = direction.Length2D();
         direction = direction.Normalized();
-        if (distance > this.speed * 2) {
+        if (distance > 100) {
+            this.parent.SetOrigin(target_vect - direction * this.speed * this.dt as Vector)
+            // FindClearSpaceForUnit(, false)
+        } else {
             FindClearSpaceForUnit(this.parent, target_vect - direction * this.speed * this.dt as Vector, false)
         }
     }

@@ -83,7 +83,7 @@
                     
                 </Panel>
             </Panel>
-            <Panel id="BotBtnList" class="ShowClosed">
+            <Panel id="BotBtnList" class="ShowClosed" hittest="false">
                 <Panel class="BotBtnClosed flow-right hor-right">
                     <Button id="ClosedBtn" class="btn">
                         <Label text="#哦" />

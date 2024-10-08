@@ -29,7 +29,7 @@ export class creature_boss_24 extends BaseCreatureAbility {
         })
 
         this.shield_list = []
-        for (let i = 0; i < PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS); i++) {
+        for (let i = 0; i < 1; i++) {
             let place_vect = this.vOrigin + RandomVector(RandomInt(300, 700)) as Vector;
             this.PlaceShield(place_vect)
         }
@@ -96,7 +96,7 @@ export class modifier_creature_boss_24_shield extends BaseModifier {
         if (!IsServer()) { return }
         this.end_time = params.end_time;
         this.sector_angle = this.GetAbility().GetSpecialValueFor("sector_angle")
-        this.sector_distance = this.GetAbility().GetSpecialValueFor("sector_distance")
+        this.sector_distance = 1000;//this.GetAbility().GetSpecialValueFor("sector_distance")
         let hCaster = this.GetCaster();
         this.vCaster = hCaster.GetAbsOrigin();
         let origin = this.GetParent().GetAbsOrigin();
@@ -142,7 +142,7 @@ export class modifier_creature_boss_24_shield extends BaseModifier {
                 this.AddParticle(this.safe_fx, false, false, -1, false, false)
                 // 移动单位到盾后面,禁止移动
                 let move_pos = this.origin + this.GetParent().GetForwardVector() * -100 as Vector;
-                let unit = enemies[0]
+                let unit = enemies[0];
                 unit.SetAbsOrigin(move_pos);
                 let last_time = this.end_time - GameRules.GetDOTATime(false, false)
                 GameRules.BuffManager.AddGeneralDebuff(this.GetCaster(), unit, DebuffTypes.rooted, last_time)

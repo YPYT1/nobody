@@ -12,6 +12,10 @@ export class creature_boss_6 extends BaseCreatureAbility {
     line_width: number;
     line_distance: number;
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_lion/lion_spell_mana_drain.vpcf", context)
+    }
+
     OnAbilityPhaseStart(): boolean {
         this.vPoint = this.GetCursorPosition();
         this.vOrigin = this.hCaster.GetAbsOrigin();

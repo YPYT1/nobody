@@ -32,7 +32,8 @@ export class modifier_creature_boss_4_channel extends BaseModifier {
     radius: number;
     origin: Vector;
     caster: CDOTA_BaseNPC;
-    interval:number;
+    interval: number;
+    dmg_max_hp: number;
 
     IsAura(): boolean { return true; }
     GetAuraRadius(): number { return this.radius; }
@@ -46,7 +47,7 @@ export class modifier_creature_boss_4_channel extends BaseModifier {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         this.origin = this.caster.GetAbsOrigin();
-       
+        this.dmg_max_hp = 25;
         let effect_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_enigma/enigma_blackhole.vpcf",
             ParticleAttachment.ABSORIGIN,
@@ -54,8 +55,8 @@ export class modifier_creature_boss_4_channel extends BaseModifier {
         )
         // ParticleManager.SetParticleControlTransform
         this.AddParticle(effect_fx, false, false, -1, false, false)
-        this.OnIntervalThink()
-        this.StartIntervalThink(0.03)
+        // this.OnIntervalThink()
+        this.StartIntervalThink(1)
     }
 
     OnIntervalThink(): void {
@@ -71,14 +72,22 @@ export class modifier_creature_boss_4_channel extends BaseModifier {
             false
         )
         // 黑洞吸附效果
+        // 从离boss1000码起，每100码伤害递增5%
         for (let enemy of enemies) {
             let target_vect = enemy.GetAbsOrigin();
             let direction = target_vect - this.origin as Vector;
             let distance = direction.Length2D();
-            direction = direction.Normalized();
-            if (distance >= 40) {
-                FindClearSpaceForUnit(enemy, target_vect - direction * 10 as Vector, false)
-            }
+
+            let bonus_dmg_pct = 5 * (math.max(0, 1000 - distance) / 100);
+            let damage = enemy.GetMaxHealth() * (this.dmg_max_hp + bonus_dmg_pct) * 0.01;
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.GetCaster(),
+                ability: this.GetAbility(),
+                damage: damage,
+                damage_type: DamageTypes.PHYSICAL,
+                miss_flag: 1,
+            })
         }
     }
 
@@ -92,6 +101,6 @@ export class modifier_creature_boss_4_channel extends BaseModifier {
 export class modifier_creature_boss_4_aura extends modifier_motion_adsorb {
 
     _OnCreated(params: any): void {
-        this.speed = 15
+        this.speed = 275
     }
 }

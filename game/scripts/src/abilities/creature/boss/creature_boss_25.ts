@@ -15,16 +15,12 @@ export class creature_boss_25 extends BaseCreatureAbility {
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.hCaster.RemoveModifierByName("modifier_creature_boss_25_hits");
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin);
-        for (let i = 0; i < PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS); i++) {
-            let place_vect = this.vOrigin + RandomVector(RandomInt(800, 1200)) as Vector;
-            this.PlaceSpear(place_vect)
-        }
+
         return true
     }
 
-    /** 布置圣盾 */
+
     PlaceSpear(pos: Vector) {
-        // models/heroes/mars/mars_shield.vmdl
         let shield_unit = CreateUnitByName(
             "npc_public_hide_creature",
             pos,
@@ -35,12 +31,16 @@ export class creature_boss_25 extends BaseCreatureAbility {
         )
         // 
         shield_unit.AddNewModifier(this.hCaster, this, "modifier_creature_boss_25_spear", {
-            duration: this.channel_timer + this._cast_point,
+            duration: this.channel_timer,
         })
     }
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
+        for (let i = 0; i < PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS); i++) {
+            let place_vect = this.vOrigin + RandomVector(RandomInt(800, 1200)) as Vector;
+            this.PlaceSpear(place_vect)
+        }
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_basic_countdown", {
             duration: this.channel_timer
         })
@@ -119,7 +119,7 @@ export class modifier_creature_boss_25_channel extends BaseModifier {
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         )
-        ParticleManager.SetParticleControl(effect_fx, 2, Vector(255,255,0))
+        ParticleManager.SetParticleControl(effect_fx, 2, Vector(255, 255, 0))
         this.AddParticle(effect_fx, false, false, -1, false, false)
         this.StartIntervalThink(1)
     }

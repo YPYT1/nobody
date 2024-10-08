@@ -20,6 +20,10 @@ boss在上一次攻击完成时，会间隔3秒，再次进行攻击读条，依
 @registerAbility()
 export class creature_boss_20 extends BaseCreatureAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/econ/items/sniper/sniper_fall20_immortal/sniper_fall20_immortal_assassinate.vpcf", context)
+    }
+
     OnAbilityPhaseStart(): boolean {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_attack")
         this.vOrigin = this.hCaster.GetAbsOrigin();
@@ -33,6 +37,7 @@ export class creature_boss_20 extends BaseCreatureAbility {
     }
 
     OnChannelFinish(interrupted: boolean): void {
+        print("OnChannelFinish", interrupted)
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_attack");
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_line")
     }
@@ -122,30 +127,11 @@ export class modifier_creature_boss_20_attack extends BaseModifier {
             Source: this.GetCaster(),
             Target: this.target,
             Ability: this.GetAbility(),
-            EffectName: "particles/units/heroes/hero_skeletonking/skeletonking_hellfireblast.vpcf",
+            EffectName: "particles/econ/items/sniper/sniper_fall20_immortal/sniper_fall20_immortal_assassinate.vpcf",
             iSourceAttachment: ProjectileAttachment.HITLOCATION,
             iMoveSpeed: 9999,
         })
 
-        // let Missile = CreateUnitByName(
-        //     "npc_football_goal",
-        //     this.hCaster.GetAbsOrigin(),
-        //     false,
-        //     this.hCaster,
-        //     this.hCaster,
-        //     this.hCaster.GetTeam()
-        // )
-        // Missile.AddNewModifier(
-        //     this.hCaster,
-        //     this.GetAbility(),
-        //     "modifier_creature_boss_20_target",
-        //     {
-        //         // duration: 3,
-        //         speed: 600,
-        //         target_entity: iTargetEnti
-        //     }
-        // )
-        // this.order += 1;
         this.StartIntervalThink(3)
     }
 
@@ -164,65 +150,62 @@ export class modifier_creature_boss_20_attack extends BaseModifier {
     }
 }
 
-@registerModifier()
-export class modifier_creature_boss_20_target extends modifier_motion_hit_target {
+// @registerModifier()
+// export class modifier_creature_boss_20_target extends modifier_motion_hit_target {
 
-    _OnCreated(params: any): void {
-        this.team = this.GetCaster().GetTeam()
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/custom/creature/boss/boss_20_mission.vpcf",
-            ParticleAttachment.POINT_FOLLOW,
-            this.GetParent()
+//     _OnCreated(params: any): void {
+//         this.team = this.GetCaster().GetTeam()
+//         let effect_fx = ParticleManager.CreateParticle(
+//             "particles/custom/creature/boss/boss_20_mission.vpcf",
+//             ParticleAttachment.POINT_FOLLOW,
+//             this.GetParent()
 
-        )
-        this.AddParticle(effect_fx, false, false, -1, false, false);
-        let target_fx = ParticleManager.CreateParticle(
-            "particles/diy_particles/line_to_target.vpcf",
-            ParticleAttachment.CUSTOMORIGIN,
-            null
-        )
-        ParticleManager.SetParticleControlEnt(target_fx, 0, this.GetParent(), ParticleAttachment.POINT_FOLLOW,
-            "attach_hitloc", Vector(0, 0, 0), true
-        )
-        ParticleManager.SetParticleControlEnt(target_fx, 1, this.target, ParticleAttachment.POINT_FOLLOW,
-            "attach_hitloc", Vector(0, 0, 0), true
-        )
+//         )
+//         this.AddParticle(effect_fx, false, false, -1, false, false);
+//         let target_fx = ParticleManager.CreateParticle(
+//             "particles/diy_particles/line_to_target.vpcf",
+//             ParticleAttachment.CUSTOMORIGIN,
+//             null
+//         )
+//         ParticleManager.SetParticleControlEnt(target_fx, 0, this.GetParent(), ParticleAttachment.POINT_FOLLOW,
+//             "attach_hitloc", Vector(0, 0, 0), true
+//         )
+//         ParticleManager.SetParticleControlEnt(target_fx, 1, this.target, ParticleAttachment.POINT_FOLLOW,
+//             "attach_hitloc", Vector(0, 0, 0), true
+//         )
 
-        this.AddParticle(target_fx, false, false, -1, false, false)
-        this.StartIntervalThink(0.03)
-    }
+//         this.AddParticle(target_fx, false, false, -1, false, false)
+//         this.StartIntervalThink(0.03)
+//     }
 
-    OnIntervalThink(): void {
-        this.speed += 6;
-        let origin = this.GetParent().GetAbsOrigin();
-        let enemies = FindUnitsInRadius(
-            this.team,
-            origin,
-            null,
-            125,
-            UnitTargetTeam.ENEMY,
-            UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
-            FindOrder.ANY,
-            false
-        )
-        if (enemies.length >= 1) {
-            this.target = enemies[0]
-            this.Destroy()
-        }
-    }
+//     OnIntervalThink(): void {
+//         this.speed += 6;
+//         let origin = this.GetParent().GetAbsOrigin();
+//         let enemies = FindUnitsInRadius(
+//             this.team,
+//             origin,
+//             null,
+//             125,
+//             UnitTargetTeam.ENEMY,
+//             UnitTargetType.HERO,
+//             UnitTargetFlags.NONE,
+//             FindOrder.ANY,
+//             false
+//         )
+//         if (enemies.length >= 1) {
+//             this.target = enemies[0]
+//             this.Destroy()
+//         }
+//     }
 
-    OnDestroy(): void {
-        if (!IsServer()) { return; }
-
-
-        //移除这个单位 造成伤害
-        UTIL_RemoveImmediate(this.GetParent());
-
-    }
+//     OnDestroy(): void {
+//         if (!IsServer()) { return; }
+//         //移除这个单位 造成伤害
+//         UTIL_RemoveImmediate(this.GetParent());
+//     }
 
 
-}
+// }
 
 @registerModifier()
 export class modifier_creature_boss_20_line extends BaseModifier {
@@ -233,6 +216,7 @@ export class modifier_creature_boss_20_line extends BaseModifier {
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
+        this.caster = this.GetCaster()
         this.origin = this.GetCaster().GetAbsOrigin()
         this.OnRefresh(params);
         this.StartIntervalThink(0.1)
@@ -262,7 +246,12 @@ export class modifier_creature_boss_20_line extends BaseModifier {
         ParticleManager.SetParticleControl(this.line_fx, 2, Vector(255, 0, 0))
 
         let attack_buff = this.GetCaster().FindModifierByName("modifier_creature_boss_20_attack") as modifier_creature_boss_20_attack;
-        attack_buff.target = target
+        attack_buff.target = target;
+
+        for (let hHero of HeroList.GetAllHeroes()) {
+            hHero.RemoveModifierByName("modifier_creature_boss_20_slow")
+        }
+        target.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_boss_20_slow", {})
         // this.AddParticle(this.line_fx, false, false, -1, false, false)
     }
 
@@ -303,6 +292,11 @@ export class modifier_creature_boss_20_line extends BaseModifier {
             UnitTargetType.HERO,
             UnitTargetFlags.NONE
         )
+        if (units.length == 0) {
+            this.StartIntervalThink(-1)
+            this.Destroy();
+            return
+        }
         if (units.length >= 2) {
             let min_dis = 9999;
             let target: CDOTA_BaseNPC;
@@ -320,5 +314,36 @@ export class modifier_creature_boss_20_line extends BaseModifier {
     OnDestroy(): void {
         if (!IsServer()) { return }
         if (this.line_fx) { ParticleManager.DestroyParticle(this.line_fx, true) }
+        this.caster.InterruptChannel();
+        ExecuteOrderFromTable({
+            UnitIndex: this.caster.entindex(),
+            OrderType: UnitOrder.STOP,
+            Queue: false
+        })
+        for (let hHero of HeroList.GetAllHeroes()) {
+            hHero.RemoveModifierByName("modifier_creature_boss_20_slow")
+        }
+        // 移除所有 
+    }
+}
+
+@registerModifier()
+export class modifier_creature_boss_20_slow extends BaseModifier {
+
+    buff_key = "boss_20_slow"
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+
+        GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
+            "MoveSpeed": {
+                "BasePercent": -75
+            }
+        })
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
     }
 }

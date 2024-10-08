@@ -248,7 +248,7 @@ export class BaseHeroModifier extends BaseModifier {
     fakeAttack: boolean = false;
     tracking_proj_name: string = "";
 
-    /** `该技能加成` */
+    /** `该技能的攻击力加成` */
     SelfAbilityMul = 100;
     /** `伤害加成` 后续会转为百分比小数  */
     DamageBonusMul = 0;

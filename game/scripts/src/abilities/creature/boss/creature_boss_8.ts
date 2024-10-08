@@ -56,13 +56,15 @@ export class modifier_creature_boss_8 extends BaseModifier {
         )
         ParticleManager.SetParticleControl(effect_fx, 1, Vector(16, 0, 0))
         this.AddParticle(effect_fx, false, false, -1, false, false)
-        this.StartIntervalThink(0.1)
+        this.StartIntervalThink(2)
     }
 
     OnIntervalThink(): void {
+        // if (this.origin == null) { this.origin = this.GetParent().GetAbsOrigin() }
         const pos = this.GetParent().GetAbsOrigin()
         if (pos != this.origin) {
             this.origin = pos;
+            this.StartIntervalThink(0.1)
             return
         }
         this.state = true;

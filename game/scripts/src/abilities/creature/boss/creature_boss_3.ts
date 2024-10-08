@@ -75,12 +75,13 @@ export class modifier_creature_boss_3_thunder_delay extends BaseModifier {
         if (!IsServer()) { return }
         this.dmg_max_hp = this.GetAbility().GetSpecialValueFor("dmg_max_hp");
         this.thunder_radius = this.GetAbility().GetSpecialValueFor("thunder_radius");
-        GameRules.WarningMarker.Circular(
+        const effect_fx = GameRules.WarningMarker.Circular(
             this.thunder_radius,
             this.GetDuration(),
             this.GetParent().GetAbsOrigin(),
-            true
+            false
         )
+        this.AddParticle(effect_fx, false, false, -1, false, false)
     }
 
 

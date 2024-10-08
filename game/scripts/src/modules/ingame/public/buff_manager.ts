@@ -33,12 +33,16 @@ export class BuffManager {
                 hUnit.AddNewModifier(hCaster, null, "modifier_debuff_stunned", { duration: duration });
             }
         } else if (state == DebuffTypes.rooted) {
-
             let debuff = hUnit.FindModifierByName("modifier_debuff_rooted");
             let current_duration = debuff ? debuff.GetDuration() : 0;
             if (duration > current_duration) {
                 hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
             }
+            ExecuteOrderFromTable({
+                UnitIndex: hUnit.entindex(),
+                OrderType: UnitOrder.STOP,
+                Queue: false,
+            })
         } else if (state == DebuffTypes.paralysis) {
             hUnit.AddNewModifier(hCaster, null, "modifier_debuff_rooted", { duration: duration, });
         } else if (state == DebuffTypes.chaos) {

@@ -3,7 +3,8 @@ import { BaseCreatureAbility } from "../base_creature";
 
 /**
  * creature_boss_7	静止空间	
- * 蓄力2秒后开启提示，玩家必须在3秒内保持原地不动，如果动了则会受到天降雷电的打击造成高额伤害。（伤害为玩家最大生命值75%）
+ * 蓄力2秒后开启提示，玩家必须在3秒内保持原地不动，
+ * 如果动了则会受到天降雷电的打击造成高额伤害。（伤害为玩家最大生命值75%）
  */
 @registerAbility()
 export class creature_boss_7 extends BaseCreatureAbility {
@@ -44,10 +45,10 @@ export class modifier_creature_boss_7 extends BaseModifier {
 
     origin: Vector;
     state: boolean;
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.state = false;
-        this.origin = this.GetParent().GetAbsOrigin()
         let effect_fx = ParticleManager.CreateParticle(
             "particles/title_fx/title00028/title00028.vpcf",
             ParticleAttachment.OVERHEAD_FOLLOW,
@@ -55,13 +56,16 @@ export class modifier_creature_boss_7 extends BaseModifier {
         )
         ParticleManager.SetParticleControl(effect_fx, 1, Vector(15, 0, 0))
         this.AddParticle(effect_fx, false, false, -1, false, false)
-
-        this.StartIntervalThink(0.1)
+        this.StartIntervalThink(2)
     }
 
     OnIntervalThink(): void {
+        if (this.origin == null) { this.origin = this.GetParent().GetAbsOrigin() }
         const pos = this.GetParent().GetAbsOrigin()
-        if (pos == this.origin) { return }
+        if (pos == this.origin) {
+            this.StartIntervalThink(0.1)
+            return
+        }
         this.state = true;
         this.StartIntervalThink(-1)
     }
