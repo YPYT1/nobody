@@ -653,7 +653,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 this.player_talent_list[player_id][s_u_index].iu = 1;
                 if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
                     for (const si_key in this.player_talent_list[player_id][s_u_index].t[1].si) {
-                        print("si_key" , si_key)
                         let HeroTalent: typeof HeroTalentObject["1"];
                         HeroTalent = HeroTalentObject[si_key];
                         if(HeroTalent.hero_star <= this.player_hero_star[player_id]){

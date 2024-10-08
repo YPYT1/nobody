@@ -73,7 +73,7 @@ const HandleLevelUp = (uplv: number) => {
     })
 }
 
-type UnitEventName = "RespawnHero" | "KillUnit" | "AddDummy"
+type UnitEventName = "RespawnHero" | "KillUnit" | "AddDummy" | "RespawnHeroOfPlayerId"
 const UnitOperation = (event_name: UnitEventName) => {
     const queryUnit = Players.GetLocalPlayerPortraitUnit();
     GameEvents.SendCustomGameEventToServer("Development", {
@@ -83,6 +83,16 @@ const UnitOperation = (event_name: UnitEventName) => {
         }
     })
 }
+
+const RespawnHeroOfPlayerId = (playerid : PlayerID) => {
+    GameEvents.SendCustomGameEventToServer("Development", {
+        event_name: "RespawnHeroOfPlayerId",
+        params: {
+            playerid: playerid,
+        }
+    })
+}
+
 
 const RemoveUnitSendServer = () => {
     let queryUnit = Players.GetLocalPlayerPortraitUnit();
@@ -167,6 +177,20 @@ export const HeroDemo = () => {
                 <Panel className="content">
                     <Panel className="title">
                         <Label text="当前单位" />
+                    </Panel>
+                    <Panel className="row btn-group">
+                    <Button className="btn" onactivate={() => RespawnHeroOfPlayerId(0)}>
+                            <Label text="复活1号玩家" />
+                        </Button>
+                        <Button className="btn" onactivate={() => RespawnHeroOfPlayerId(1)}>
+                            <Label text="复活2号玩家" />
+                        </Button>
+                        <Button className="btn" onactivate={() => RespawnHeroOfPlayerId(2)}>
+                            <Label text="复活3号玩家" />
+                        </Button>
+                        <Button className="btn" onactivate={() => RespawnHeroOfPlayerId(3)}>
+                            <Label text="复活4号玩家" />
+                        </Button>
                     </Panel>
 
                     <Panel className="row btn-group">

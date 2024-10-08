@@ -9,6 +9,7 @@ declare interface CGED {
         },
 
         RespawnHero: { unit: EntityIndex },
+        RespawnHeroOfPlayerId : { playerid : PlayerID},
         KillUnit: { unit: EntityIndex },
         AddDummy: { unit: EntityIndex },
         RemoveUnit: { units: EntityIndex[] },

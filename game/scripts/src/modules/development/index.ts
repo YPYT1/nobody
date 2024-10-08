@@ -37,6 +37,13 @@ export class Development extends UIEventRegisterClass {
         hHeroUnit.RespawnHero(false, false);
     }
 
+
+    RespawnHeroOfPlayerId(player_id: PlayerID, params: CGED["Development"]["RespawnHeroOfPlayerId"]) {
+        let hHeroUnit = PlayerResource.GetSelectedHeroEntity(params.playerid);
+        hHeroUnit.SetRespawnPosition(hHeroUnit.GetAbsOrigin());
+        hHeroUnit.RespawnHero(false, false);
+    }
+
     ReplaceHero(player_id: PlayerID, params: CGED["Development"]["ReplaceHero"]) {
         const heroid = params.heroid;
         const originHero = PlayerResource.GetSelectedHeroEntity(player_id);
