@@ -298,7 +298,6 @@ export class RuneSystem extends UIEventRegisterClass {
                     let pro_list = this.drop_list[player_id].pro;
                     item_name = key_list[GetCommonProbability(pro_list)];
                 }
-                print("fate_data_info.type : " , fate_data_info.type)
                 if(item_name == "null"){
                     index--;
                     continue;
@@ -443,11 +442,9 @@ export class RuneSystem extends UIEventRegisterClass {
 
         let hero = PlayerResource.GetSelectedHeroEntity(player_id);
         hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + this.player_fate_data_index[player_id]);
-
         GameRules.RuneSystem.player_check_rune_name[player_id] = [];
         if (GameRules.RuneSystem.player_fate_data[player_id].length > GameRules.RuneSystem.player_fate_data_index[player_id]) {
             let fate_data_info = GameRules.RuneSystem.player_fate_data[player_id][GameRules.RuneSystem.player_fate_data_index[player_id]];
-            DeepPrintTable(fate_data_info);
             if (!fate_data_info.item_list.hasOwnProperty(index)) {
                 print("没有此物品");
                 return;

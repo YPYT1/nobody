@@ -54,7 +54,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
 
     constructor() {
         super("HeroTalentSystem" , true);
-        for (const key in TalentConfig) {   
+        for (const key in TalentConfig) {
             this.player_talent_config.unlock_count[parseInt(key)] = TalentConfig[key as keyof typeof TalentConfig].count;
             this.player_talent_config.unlock_level[parseInt(key)] = TalentConfig[key as keyof typeof TalentConfig].level;
         }
@@ -112,7 +112,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         if(BaseNPC.IsHero()){
             hero_id = BaseNPC.GetHeroID();
         }
-        this.player_hero_star[player_id] = GameRules.ServiceInterface.player_hero_star[player_id][hero_id];
+        //初始化星级
+        if(GameRules.ServiceInterface.player_hero_star[player_id][hero_id]){
+            this.player_hero_star[player_id] = GameRules.ServiceInterface.player_hero_star[player_id][hero_id];
+        }
         this.player_hero_name[player_id] = unitname;
         this.player_hero_id[player_id] = hero_id;
         this.player_talent_list[player_id] = {};
@@ -158,7 +161,18 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             if(data.hero_id != hero_id){
                 continue;
             }
-           
+            let skill_index = data.index;
+            let tier_number = data.tier_number;
+            if (skill_index == 1 && tier_number == 1) { //第一个技能默认点了
+                unlock_key = HeroTalentObject[key].unlock_key;
+                break
+            }
+        }
+        for (const key in HeroTalentObject) {
+            let data = HeroTalentObject[key as keyof typeof HeroTalentObject];
+            if(data.hero_id != hero_id){
+                continue;
+            }
             let skill_index = data.index;
             let max_number = data.max_number;
             let tier_number = data.tier_number;
@@ -168,14 +182,14 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     si: {},
                 }
             }
-            if (key == "1") { //第一个技能默认点了
-                h_max_tf["1"] = 1;
+            if (skill_index == 1 && tier_number == 1) { //第一个技能默认点了
+                h_max_tf[key] = 1;
                 this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
                     iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
                     ml: max_number, //最高等级
                     uc: 1, //当前技能投入点数
                 }
-                this.player_talent_data_client[player_id]["1"] = {
+                this.player_talent_data_client[player_id][key] = {
                     iu: 1,
                     uc: 1,
                 }
@@ -200,7 +214,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             if (this.player_talent_list[player_id][skill_index].tm < tier_number && tier_number != 99) {
                 this.player_talent_list[player_id][skill_index].tm = tier_number;
             }
-
             if(data.index == 1 && data.tier_number == 1){
                 //增加技能
                 if(data.is_ability == 1){
@@ -304,15 +317,9 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             this.GetHeroTalentListData(player_id, {});
             return
         }
-        if (unitname == "npc_dota_hero_drow_ranger") {
-            HeroTalentCounfg = HeroTalentObject[key];
-            if (!HeroTalentObject.hasOwnProperty(key)) {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "没有此技能！！")
-                this.GetHeroTalentListData(player_id, {});
-                return
-            }
-        } else {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "天赋配置错误！！！！")
+        HeroTalentCounfg = HeroTalentObject[key];
+        if (!HeroTalentObject.hasOwnProperty(key)) {
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "没有此技能！！")
             this.GetHeroTalentListData(player_id, {});
             return
         }
@@ -321,7 +328,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         let tier_number = HeroTalentCounfg.tier_number;
         let is_ability = HeroTalentCounfg.is_ability;
         if (this.player_talent_list[player_id][skill_index].iu == 1) {
-            if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key]) {
+            if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key]) { 
                 if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc
                     >= this.player_talent_list[player_id][skill_index].t[tier_number].si[key].ml
                 ) {
@@ -347,14 +354,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                 continue;
                             }
                             let HeroTalent: typeof HeroTalentObject["1"];
-    
-                            if (unitname == "npc_dota_hero_drow_ranger") {
-                                HeroTalent = HeroTalentObject[element];
-                            } else {
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "天赋配置错误！！！！")
-                                this.GetHeroTalentListData(player_id, {});
-                                return
-                            }
+                            HeroTalent = HeroTalentObject[element];
                             let si = HeroTalent.index;
                             let tu = HeroTalent.tier_number;
                             let hero_star = HeroTalent.hero_star;
@@ -378,13 +378,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                 }
                                 let HeroTalent: typeof HeroTalentObject["1"];
         
-                                if (unitname == "npc_dota_hero_drow_ranger") {
-                                    HeroTalent = HeroTalentObject[element];
-                                } else {
-                                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "天赋配置错误！！！！")
-                                    this.GetHeroTalentListData(player_id, {});
-                                    return
-                                }
+                                HeroTalent = HeroTalentObject[element];
                                 let si = HeroTalent.index;
                                 let tu = HeroTalent.tier_number;
                                 this.player_talent_list[player_id][si].t[tu].si[element].iu = 1;
@@ -409,13 +403,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
                                 for (const si_key in this.player_talent_list[player_id][s_u_index].t[1].si) {
                                     let HeroTalent: typeof HeroTalentObject["1"];
-                                    if (unitname == "npc_dota_hero_drow_ranger") {
-                                        HeroTalent = HeroTalentObject[si_key];    
-                                    } else {
-                                        GameRules.CMsg.SendErrorMsgToPlayer(player_id , "天赋配置错误！！！！")
-                                        this.GetHeroTalentListData(player_id, {});
-                                        return
-                                    }
+                                    HeroTalent = HeroTalentObject[si_key];    
                                     if(HeroTalent.hero_star <= this.player_hero_star[player_id]){
                                         this.player_talent_list[player_id][s_u_index].t[1].si[si_key].iu = 1;
                                         if (!this.player_talent_data_client[player_id].hasOwnProperty(si_key)) {
@@ -499,13 +487,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                 break;
                             }
                             let HeroTalentT: typeof HeroTalentObject["1"];
-                            if (unitname == "npc_dota_hero_drow_ranger") {
-                                HeroTalentT = HeroTalentObject[sk];
-                            } else {
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "天赋配置错误！！！！")
-                                this.GetHeroTalentListData(player_id, {});
-                                return
-                            }
+                            HeroTalentT = HeroTalentObject[sk];
                             if (this.player_talent_list[player_id][skill_index].t[index].si[sk].uc
                                 < this.player_talent_list[player_id][skill_index].t[index].si[sk].ml
                             ) {
@@ -671,14 +653,9 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 this.player_talent_list[player_id][s_u_index].iu = 1;
                 if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
                     for (const si_key in this.player_talent_list[player_id][s_u_index].t[1].si) {
+                        print("si_key" , si_key)
                         let HeroTalent: typeof HeroTalentObject["1"];
-                        if (unitname == "npc_dota_hero_drow_ranger") {
-                            HeroTalent = HeroTalentObject[si_key];
-                        } else {
-                            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "天赋配置错误！！！！")
-                            this.GetHeroTalentListData(player_id, {});
-                            return
-                        }
+                        HeroTalent = HeroTalentObject[si_key];
                         if(HeroTalent.hero_star <= this.player_hero_star[player_id]){
                             this.player_talent_list[player_id][s_u_index].t[1].si[si_key].iu = 1;
                             if (!this.player_talent_data_client[player_id].hasOwnProperty(si_key)) {
