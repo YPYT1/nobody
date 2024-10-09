@@ -8,8 +8,7 @@ import * as UnitNormal from "../../../json/units/monster/normal.json";
 import * as EliteNormal from "../../../json/units/monster/elite.json";
 import * as MapInfoRound from "../../../json/config/map_info_round.json";
 import * as MapInfoDifficulty from "../../../json/config/map_info_difficulty.json";
-
-
+import * as EliteAbilities from "../../../json/abilities/creature/elite.json";
 
 @reloadable
 export class Spawn extends UIEventRegisterClass {
@@ -142,6 +141,24 @@ export class Spawn extends UIEventRegisterClass {
 
     constructor() {
         super("Spawn" , true);
+
+        for (const key in EliteAbilities) {
+            let init = EliteAbilities[key as keyof typeof EliteAbilities];
+            if(init.is_pass == 1){
+                this._elite_abi_list_.pass.push(key);
+            }else{
+                this._elite_abi_list_.no_pass.push(key);
+            }
+        }
+    }
+
+    //精英技能集合
+    _elite_abi_list_ : {
+        pass :  string[],
+        no_pass : string [] ,
+    } = {
+        pass : [],
+        no_pass : [] ,
     }
 
     //初始化地图信息
@@ -420,6 +437,7 @@ export class Spawn extends UIEventRegisterClass {
     }
     //精英刷怪器
     CreateEliteTime() {
+        print("this.map_info_round[this._round_index].elite_name : " , this.map_info_round[this._round_index].elite_name);
         if (this.map_info_round[this._round_index].elite_name == "null") {
             return;
         }
@@ -436,6 +454,20 @@ export class Spawn extends UIEventRegisterClass {
                 let elite_Vector = GameRules.Spawn._map_coord[coord_index];
                 let elite_spawn_name = GameRules.Spawn.map_info_round[this._round_index].elite_name;
                 let unit = GameRules.Spawn.CreateMonster(elite_spawn_name, elite_Vector, this._round_index);
+                if(GameRules.MapChapter.GameDifficultyNumber > 101){
+                    let long = GameRules.Spawn._elite_abi_list_.no_pass.length;
+                    let abl_i = RandomInt(0 , long - 1);
+                    let no_pass_name = GameRules.Spawn._elite_abi_list_.no_pass[abl_i];
+                    //增加一个主动
+                    unit.AddAbility(no_pass_name);
+                }
+                if(GameRules.MapChapter.GameDifficultyNumber >= 133){ 
+                    //增加一个被动
+                    let long = GameRules.Spawn._elite_abi_list_.pass.length;
+                    let abl_i = RandomInt(0 , long - 1);
+                    let pass_name = GameRules.Spawn._elite_abi_list_.pass[abl_i];
+                    unit.AddAbility(pass_name);
+                }
                 this._map_elite_spawn_list.push(unit);
             }
             monster_refresh_count++;
@@ -504,7 +536,7 @@ export class Spawn extends UIEventRegisterClass {
     //     });
     // }
     //刷新游戏boss
-    CreateBoss(): CDOTA_BaseNPC {
+    CreateBoss(boss_name = "") : CDOTA_BaseNPC {
         if (this._map_boss_refresh == false) {
             // GameRules.CMsg.SendCommonMsgToPlayer(
             //     -1 as PlayerID,
@@ -512,7 +544,14 @@ export class Spawn extends UIEventRegisterClass {
             //     {}
             // );
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.WARNINGBOSS);
-            let unit = GameRules.Spawn.CreepNormalCreate( GameRules.Spawn._game_boss_name, this.StageBossVector);
+
+            let unit : CDOTA_BaseNPC;
+            if(boss_name != ""){
+                unit = GameRules.Spawn.CreepNormalCreate( boss_name , this.StageBossVector);
+            }else{
+                unit = GameRules.Spawn.CreepNormalCreate( GameRules.Spawn._game_boss_name , this.StageBossVector);
+            }
+            
 
             this.MonsterAmend(unit, "boss", 1, this._round_index);
             unit.AddNewModifier(unit, null, "modifier_state_boss_growup", {} )
@@ -997,7 +1036,8 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn.Init(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y)
         }
         if (cmd == "-boss") {
-            GameRules.Spawn.CreateBoss();
+            let boss_name = args[0] ?? "";
+            GameRules.Spawn.CreateBoss(boss_name);
         }
         if (cmd == "-sg") {
             GameRules.Spawn.CreateMonsterTime()
@@ -1156,9 +1196,12 @@ export class Spawn extends UIEventRegisterClass {
         //击杀boss奖励
         this._map_boss_unit = null;
         this._map_boss_refresh = false;
+        
         if (GameRules.Spawn._round_index < GameRules.Spawn._round_max) {
-            GameRules.Spawn.TemporarilyStopTheGame();
-            GameRules.ServiceInterface.SendLuaLog(-1);
+            if(GameRules.MapChapter._game_select_phase != 999){
+                GameRules.Spawn.TemporarilyStopTheGame();
+                GameRules.ServiceInterface.SendLuaLog(-1);
+            }
         } else {
             GameRules.MapChapter.GameWin();
         }
