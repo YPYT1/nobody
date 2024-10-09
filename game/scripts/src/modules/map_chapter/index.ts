@@ -231,6 +231,7 @@ export class MapChapter extends UIEventRegisterClass {
         if (this._game_select_phase == 0 && player_id == 0 && params.difficulty != "-1") {
             this.GameDifficulty = params.difficulty as keyof typeof MapInfoDifficulty;
             this.GameDifficultyNumber = tonumber(this.GameDifficulty);
+            
             //强制默认为 134
             this.GameDifficultyNumber = 134;
             this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
@@ -294,7 +295,6 @@ export class MapChapter extends UIEventRegisterClass {
             //发送选择英雄信息
             for (let index = 0 as PlayerID; index < GameRules.MapChapter.player_count; index++) {
                 let steam_id = PlayerResource.GetSteamAccountID(index);
-                print("steam_id : " , steam_id)
                 //清空玩家选择状态
                 if(steam_id == 0){
                     this.player_select_hero[index].state = 1;
@@ -305,6 +305,10 @@ export class MapChapter extends UIEventRegisterClass {
             }
             
         }
+        CustomNetTables.SetTableValue("game_setting", "game_mode",  {
+            mode : 0 , 
+            difficulty : this.GameDifficulty,
+        });
         GameRules.GetGameModeEntity().StopThink("SELECT_DIFFICULTY_AFFIRM");
     }
 
