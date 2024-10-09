@@ -85,6 +85,17 @@ export class modifier_rune_effect extends BaseModifier {
             }
         }
 
+        // rune_21	移动圣塔	击杀敌人时，有8%概率获得随机一种圣塔效果，持续5秒
+        if (this._rune_object["rune_21"]) {
+            if (RollPercentage(this.Rune_Object("rune_21", 'chance'))) {
+                let duration = this.Rune_Object('rune_21', 'duration')
+                const altar_index = RandomInt(1, 7)
+                this.caster.AddNewModifier(this.caster, null, "modifier_altar_effect_" + altar_index, {
+                    duration: duration,
+                })
+            }
+        }
+
         // rune_105	灵魂征收	击杀敌人时，会额外获得3点灵魂
         if (this._rune_object["rune_105"]) {
             GameRules.ResourceSystem.ModifyResource(this.player_id, {
@@ -164,7 +175,7 @@ export class modifier_rune_effect extends BaseModifier {
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_113_MoveSpeed", attr_count);
         }
     }
-    
+
     OnIntervalThink(): void {
         if (!this.caster.IsAlive()) { return }
         // 毎损失10%生命百分比

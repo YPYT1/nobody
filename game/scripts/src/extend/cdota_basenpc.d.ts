@@ -79,5 +79,7 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     /** 饰品原始模型 */
     wrarable_model:string;
+    /** 上次击退时间 */
+    knockback_time:number;
 }
 

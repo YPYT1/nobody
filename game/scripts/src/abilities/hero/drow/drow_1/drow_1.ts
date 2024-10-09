@@ -74,7 +74,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
     UpdataAbilityValue(): void {
         this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
-        this.tracking_proj_name = G_PorjTrack.drow.fire;
+        this.tracking_proj_name = G_PorjTrack.drow.none;
     }
 
     OnIntervalThink(): void {

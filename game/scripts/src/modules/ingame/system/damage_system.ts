@@ -85,7 +85,7 @@ export class DamageSystem {
             return this.ApplyDamageForBadTeam(params)
         }
 
-        if (params.victim.enemy_attribute_value == null){
+        if (params.victim.enemy_attribute_value == null) {
             params.victim.enemy_attribute_value = {}
         }
         let hAbility = params.ability;
@@ -219,6 +219,11 @@ export class DamageSystem {
         // 伤害系统
         let actual_damage = math.min(params.damage, params.victim.GetHealth());
         GameRules.CMsg.AddDamageRecord(iPlayerID, actual_damage);
+        // 击飞
+        if (params.damage < params.victim.GetHealth()) {
+            this.OnKnockback(params.victim, params.attacker)
+        }
+
         return ApplyDamage(params);
     }
 
@@ -228,9 +233,9 @@ export class DamageSystem {
      * @returns 
      */
     ApplyDamageForBadTeam(params: ApplyCustomDamageOptions) {
-        
+
         // 无敌
-        if (params.victim.HasModifier("modifier_altar_effect_6")){
+        if (params.victim.HasModifier("modifier_altar_effect_6")) {
             return 0
         }
         params.damage_type = DamageTypes.PURE;
@@ -326,11 +331,38 @@ export class DamageSystem {
         return bonus
     }
 
-    AboutSpecialMechanism(params:ApplyCustomDamageOptions){
+    /** 一些特殊机制 */
+    AboutSpecialMechanism(params: ApplyCustomDamageOptions) {
         let base_multiplying = 1;
-        if(params.victim.HasModifier("modifier_creature_boss_19") && params.attacker.HasModifier("modifier_creature_boss_19_note3") ){
+        if (params.victim.HasModifier("modifier_creature_boss_19")
+            && params.attacker.HasModifier("modifier_creature_boss_19_note3")
+        ) {
             base_multiplying *= 2
         }
         return base_multiplying
+    }
+
+    /** 击退 */
+    OnKnockback(hUnit: CDOTA_BaseNPC, hAttacker?: CDOTA_BaseNPC) {
+        if (hAttacker == null) { return }
+        const dotatime = GameRules.GetDOTATime(false, false);
+        const knockback_time = hUnit.knockback_time ?? 0;
+        // 且未处于击飞状态
+        const is_vert_cont = hUnit.IsCurrentlyVerticalMotionControlled()
+        const is_hor_cont = hUnit.IsCurrentlyHorizontalMotionControlled()
+        // print("is_vert_cont", is_vert_cont, "is_hor_cont", is_hor_cont)
+        if (!is_hor_cont && !is_hor_cont && knockback_time < dotatime) {
+            const vOrigin = hAttacker.GetAbsOrigin()
+            hUnit.knockback_time = dotatime + 1;
+            hUnit.AddNewModifier(hUnit, null, "modifier_knockback_lua", {
+                center_x: vOrigin.x,
+                center_y: vOrigin.y,
+                center_z: 0,
+                knockback_height: 0,
+                knockback_distance: 20,
+                knockback_duration: 0.2,
+                duration: 0.2,
+            })
+        }
     }
 }

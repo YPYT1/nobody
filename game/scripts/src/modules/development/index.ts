@@ -40,6 +40,7 @@ export class Development extends UIEventRegisterClass {
 
     RespawnHeroOfPlayerId(player_id: PlayerID, params: CGED["Development"]["RespawnHeroOfPlayerId"]) {
         let hHeroUnit = PlayerResource.GetSelectedHeroEntity(params.playerid);
+        if(hHeroUnit == null){ return }
         hHeroUnit.SetRespawnPosition(hHeroUnit.GetAbsOrigin());
         hHeroUnit.RespawnHero(false, false);
     }

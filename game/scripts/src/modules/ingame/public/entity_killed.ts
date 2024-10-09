@@ -44,7 +44,7 @@ export class EntityKilled {
             //     hTarget.RemoveSelf()
             //     return null
             // }, delay)
-
+            this.PlayDeathAnimation(hTarget, hAttacker)
         }
     }
 
@@ -61,9 +61,10 @@ export class EntityKilled {
 
     /** 死亡击飞 */
     PlayDeathAnimation(me: CDOTA_BaseNPC, hAttacker: CDOTA_BaseNPC) {
+        // print("PlayDeathAnimation")
         let knockback_duration = 0.5;
-        let knockback_distance = RandomInt(300, 600);
-        let knockback_height = RandomInt(100, 200);
+        let knockback_distance = 200;
+        let knockback_height = 10;
         let fGroundSpeed = knockback_distance / knockback_duration
         let attack_vect = hAttacker.GetOrigin();
         let unit_origin = me.GetAbsOrigin()

@@ -3,13 +3,13 @@ import { modifier_skywrath_3b, skywrath_3b } from "./skywrath_3b";
 
 
 @registerAbility()
-export class skywrath_3b_a extends skywrath_3b {
+export class skywrath_3b_b extends skywrath_3b {
 
     GetIntrinsicModifierName(): string {
-        return "modifier_skywrath_3b"
+        return "modifier_skywrath_3b_b"
     }
 }
 @registerModifier()
-export class modifier_skywrath_3b_a extends modifier_skywrath_3b {
+export class modifier_skywrath_3b_b extends modifier_skywrath_3b {
 
 }
