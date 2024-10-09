@@ -3,7 +3,7 @@ declare interface CustomNetTableDeclarations {
     // 游戏配置
     game_setting: {
         game_mode: {
-            difficulty: number,
+            difficulty: string,
             mode: number,
         },
     }
