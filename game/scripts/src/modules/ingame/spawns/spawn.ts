@@ -466,14 +466,16 @@ export class Spawn extends UIEventRegisterClass {
             let abl_i = RandomInt(0 , long - 1);
             let no_pass_name = GameRules.Spawn._elite_abi_list_.no_pass[abl_i];
             //增加一个主动
-            unit.AddAbility(no_pass_name);
+            let AddAbility = unit.AddAbility(no_pass_name);
+            AddAbility.SetLevel(1);
         }
         if(GameRules.MapChapter.GameDifficultyNumber >= 133){ 
             //增加一个被动
             let long = GameRules.Spawn._elite_abi_list_.pass.length;
             let abl_i = RandomInt(0 , long - 1);
             let pass_name = GameRules.Spawn._elite_abi_list_.pass[abl_i];
-            unit.AddAbility(pass_name);
+            let AddAbility = unit.AddAbility(pass_name);
+            AddAbility.SetLevel(1);
         }
         this._map_elite_spawn_list.push(unit);
     }
