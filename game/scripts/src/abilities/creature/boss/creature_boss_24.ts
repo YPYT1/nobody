@@ -18,6 +18,10 @@ export class creature_boss_24 extends BaseCreatureAbility {
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin);
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -25,7 +29,7 @@ export class creature_boss_24 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
-        // this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_basic_countdown", {
             duration: this.channel_timer
         })
@@ -35,6 +39,7 @@ export class creature_boss_24 extends BaseCreatureAbility {
             let place_vect = this.vOrigin + RandomVector(RandomInt(300, 700)) as Vector;
             this.PlaceShield(place_vect)
         }
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_17", {})
     }
 
     /** 布置圣盾 */
@@ -81,6 +86,7 @@ export class creature_boss_24 extends BaseCreatureAbility {
         for (let shield of this.shield_list) {
             UTIL_Remove(shield)
         }
+        GameRules.CMsg.BossCastWarning(false)
     }
 }
 
@@ -150,6 +156,7 @@ export class modifier_creature_boss_24_shield extends BaseModifier {
                 let last_time = this.end_time - GameRules.GetDOTATime(false, false)
                 GameRules.BuffManager.AddGeneralDebuff(this.GetCaster(), unit, DebuffTypes.rooted, last_time)
 
+                GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_18", {})
             }
         }
         if (this.GetStackCount() == 2) {

@@ -58,7 +58,8 @@ export class BaseCreatureAbility extends BaseAbility {
         for (let preview of this.nPreviewFX_List) {
             ParticleManager.DestroyParticle(preview, true);
         }
-        this.nPreviewFX_List = []
+        this.nPreviewFX_List = [];
+        GameRules.CMsg.BossCastWarning(false)
     }
 
     Precache(context: CScriptPrecacheContext): void {
@@ -81,5 +82,56 @@ export class BaseCreatureAbility extends BaseAbility {
 
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel");
+        GameRules.CMsg.BossCastWarning(false)
+    }
+
+    /** 退 */
+    OnKnockback(radius: number) {
+        const vOrigin = this.hCaster.GetOrigin()
+        const effect_px = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_phoenix/phoenix_supernova_reborn.vpcf",
+            ParticleAttachment.ABSORIGIN,
+            this.hCaster
+        )
+        ParticleManager.SetParticleControl(effect_px, 1, Vector(radius, radius, radius));
+        ParticleManager.ReleaseParticleIndex(effect_px);
+
+        let enemies = FindUnitsInRadius(
+            this._team,
+            vOrigin,
+            null,
+            radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.BASIC + UnitTargetType.HERO,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        )
+        for (let enemy of enemies) {
+            const damage = enemy.GetMaxHealth() * 0.25;
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.hCaster,
+                ability: this,
+                damage: damage,
+                damage_type: DamageTypes.PHYSICAL,
+                miss_flag: 1,
+            })
+
+            enemy.AddNewModifier(this.hCaster, this, "modifier_knockback_lua", {
+                center_x: vOrigin.x,
+                center_y: vOrigin.y,
+                center_z: 0,
+                knockback_height: 100,
+                knockback_distance: 450,
+                knockback_duration: 1,
+                duration: 1,
+            })
+        }
+    }
+
+    /** 阶段转换时清除该技能当前效果  */
+    ClearCurrentPhase(){
+
     }
 }

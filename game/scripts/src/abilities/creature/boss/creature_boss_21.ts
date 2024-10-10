@@ -15,6 +15,10 @@ export class creature_boss_21 extends BaseCreatureAbility {
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -121,6 +125,7 @@ export class modifier_creature_boss_21 extends BaseModifier {
         ParticleManager.SetParticleControl(range_fx, 2, Vector(1, 0, 0))
         this.AddParticle(range_fx, false, false, -1, false, false)
         this.StartIntervalThink(0.1)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_14", {})
     }
 
     OnIntervalThink(): void {
@@ -151,6 +156,8 @@ export class modifier_creature_boss_21 extends BaseModifier {
         if (!IsServer()) { return }
         GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
         UTIL_Remove(this.image)
+
+        GameRules.CMsg.BossCastWarning(false)
     }
 }
 
@@ -169,7 +176,7 @@ export class modifier_creature_boss_21_image extends BaseModifier {
             this.GetParent()
         )
         this.AddParticle(model_fx, false, false, -1, false, false)
-        
+
         this.StartIntervalThink(0)
     }
 

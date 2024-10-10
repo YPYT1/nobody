@@ -65,6 +65,9 @@ export class modifier_creature_boss_18_buff extends BaseModifier {
             this.GetParent()
         );
         this.AddParticle(effext_fx, false, false, -1, false, false);
+
+        let hAbility = this.GetAbility() as BaseCreatureAbility
+        hAbility.OnKnockback(300);
     }
 
     GetStatusEffectName(): string {

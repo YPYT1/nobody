@@ -157,7 +157,9 @@ function UpdateTopPanelBoss() {
         /** 当前帧扣除的生命 */
         let deduct_hp = health_bar_object[`${entity}`].curr_hp - curr_hp;
         health_bar_object[`${entity}`].curr_hp = Entities.GetHealth(entity);
-        // $.Msg(["deduct_hp", deduct_hp])
+        // $.Msg(["curr_hp", curr_hp])
+        pPanel.SetDialogVariable("current_hp", `` + curr_hp)
+        pPanel.SetDialogVariable("max_hp", `` + max_hp)
         if (deduct_hp <= 0) {
             // 更新当前面板
             // HealthBarShine.SetHasClass("Shine",false);
@@ -218,6 +220,9 @@ function UpdateTopPanelBoss() {
             // NextHealthBar.style.width = "100%"
             // NextHealthBar.style.washColor = `${color_list[next_color_index]}`
             return
+        } else {
+            $.Msg(["huixue"])
+            return
         }
 
         // UpdateHealthBar(damage, pPanel);
@@ -255,8 +260,8 @@ function UpdateTopPanelBoss() {
         // let CurrentHudHealthBar: Panel;
         // HealthBarShine.SetHasClass("Shine",true);
 
-        pPanel.SetDialogVariable("current_hp", `` + curr_hp)
-        pPanel.SetDialogVariable("max_hp", `` + max_hp)
+        
+        
         pPanel.SetDialogVariableInt("hp_count", layer_num);
 
         if (curr_layer_hp_pct <= 0) {

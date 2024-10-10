@@ -31,6 +31,10 @@ export class creature_boss_6 extends BaseCreatureAbility {
             this.line_distance,
             this._cast_point
         )
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -46,11 +50,14 @@ export class creature_boss_6 extends BaseCreatureAbility {
 
             }
         )
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_4", {})
     }
 
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_6_channel")
-        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel");
+        this.OnKnockback(300);
+        GameRules.CMsg.BossCastWarning(false)
     }
 }
 

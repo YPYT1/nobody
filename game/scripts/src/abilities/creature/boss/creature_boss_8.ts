@@ -12,27 +12,26 @@ export class creature_boss_8 extends BaseCreatureAbility {
         this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
-        let enemies = FindUnitsInRadius(
-            this._team,
-            this.vOrigin,
-            null,
-            9999,
-            UnitTargetTeam.ENEMY,
-            UnitTargetType.BASIC + UnitTargetType.HERO,
-            UnitTargetFlags.NONE,
-            FindOrder.ANY,
-            false
-        )
-
-        for (let enemy of enemies) {
+        for (let enemy of HeroList.GetAllHeroes()) {
             enemy.AddNewModifier(this.hCaster, this, "modifier_creature_boss_8", {
                 duration: this._duration,
             })
+        }
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_6", {})
+    }
+
+    ClearCurrentPhase(): void {
+        for (let enemy of HeroList.GetAllHeroes()) {
+            enemy.RemoveModifierByName("modifier_creature_boss_8")
         }
     }
 
@@ -77,7 +76,9 @@ export class modifier_creature_boss_8 extends BaseModifier {
         if (this.state) {
             this.ApplyDamage(this.GetParent())
         }
+        GameRules.CMsg.BossCastWarning(false)
     }
+
     ApplyDamage(hTarget: CDOTA_BaseNPC) {
 
         const damage = hTarget.GetMaxHealth() * 0.75;
@@ -99,6 +100,10 @@ export class modifier_creature_boss_8 extends BaseModifier {
         ParticleManager.SetParticleControl(effect_px, 2, this.GetCaster().GetAbsOrigin());
         ParticleManager.ReleaseParticleIndex(effect_px);
 
+    }
+
+    ShouldUseOverheadOffset(): boolean {
+        return true
     }
 }
 

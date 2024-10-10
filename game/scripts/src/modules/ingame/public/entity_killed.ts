@@ -44,7 +44,13 @@ export class EntityKilled {
             //     hTarget.RemoveSelf()
             //     return null
             // }, delay)
-            this.PlayDeathAnimation(hTarget, hAttacker)
+            if (hTarget.IsBossCreature()) {
+                // BOSS死亡特效
+                this.PlayBossDeath(hTarget)
+            } else {
+                this.PlayDeathAnimation(hTarget, hAttacker);
+            }
+
         }
     }
 
@@ -59,9 +65,27 @@ export class EntityKilled {
     //     // 技能击杀
     // }
 
+    PlayBossDeath(me: CDOTA_BaseNPC) {
+        let state = true;
+        me.SetContextThink("boss_death_animation", () => {
+            if (state) {
+                state = false
+                let effect_fx = ParticleManager.CreateParticle(
+                    "particles/units/heroes/hero_techies/techies_remote_cart_explode.vpcf",
+                    ParticleAttachment.CUSTOMORIGIN,
+                    null
+                )
+                ParticleManager.SetParticleControl(effect_fx, 0, me.GetAbsOrigin())
+                ParticleManager.SetParticleControl(effect_fx, 1, Vector(0, 0, 1300))
+                ParticleManager.ReleaseParticleIndex(effect_fx)
+                return 0.2
+            }
+            me.AddEffects(EntityEffects.EF_NODRAW);
+            return null
+        }, 3)
+    }
     /** 死亡击飞 */
     PlayDeathAnimation(me: CDOTA_BaseNPC, hAttacker: CDOTA_BaseNPC) {
-        // print("PlayDeathAnimation")
         let knockback_duration = 0.5;
         let knockback_distance = 200;
         let knockback_height = 10;

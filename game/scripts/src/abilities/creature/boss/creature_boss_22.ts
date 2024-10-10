@@ -26,6 +26,10 @@ export class creature_boss_22 extends BaseCreatureAbility {
             Vector(0, 0, 0),
             true
         );
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -69,3 +73,6 @@ export class creature_boss_22 extends BaseCreatureAbility {
 
     }
 }
+
+// @registerModifier()
+// export class 

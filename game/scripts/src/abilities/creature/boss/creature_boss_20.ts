@@ -29,6 +29,10 @@ export class creature_boss_20 extends BaseCreatureAbility {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_attack")
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -36,12 +40,14 @@ export class creature_boss_20 extends BaseCreatureAbility {
         this.DestroyWarningFx();
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_20_attack", {})
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_12", {})
     }
 
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_attack");
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_line")
         this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
+        GameRules.CMsg.BossCastWarning(false)
     }
 
     OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {
@@ -114,6 +120,7 @@ export class modifier_creature_boss_20_attack extends BaseModifier {
     }
 
     OnIntervalThink(): void {
+        GameRules.CMsg.BossCastWarning(false)
         if (this.is_end == true) {
             this.Destroy()
             return
@@ -133,7 +140,7 @@ export class modifier_creature_boss_20_attack extends BaseModifier {
             iSourceAttachment: ProjectileAttachment.HITLOCATION,
             iMoveSpeed: 9999,
         })
-
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_13", {})
         this.StartIntervalThink(3)
     }
 

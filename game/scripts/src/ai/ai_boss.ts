@@ -2,6 +2,7 @@
 import { CBossBase } from "./boss_base";
 import * as NpcUnitsCustom from "./../json/npc_units_custom.json"
 import * as MapInfoDifficulty from "./../json/config/map_info_difficulty.json"
+import { BaseCreatureAbility } from "../abilities/creature/base_creature";
 
 declare const thisEntity: CDOTA_BaseNPC;
 
@@ -14,7 +15,7 @@ Object.assign(getfenv(), {
 export function Spawn(entityKeyValues: any) {
     if (!IsServer()) { return; }
     if (!thisEntity) { return; }
-    let BossAI = new CustomAI_Boss(thisEntity, 0.5);
+    let BossAI = new CustomAI_Boss(thisEntity, 0.25);
 }
 
 export class CustomAI_Boss {
@@ -83,7 +84,8 @@ export class CustomAI_Boss {
         let diff_data = MapInfoDifficulty[difficulty as "101"]
         let is_final = this.me.GetIntAttr("is_final") == 1;
         // 得到当前难度对应的血量阶段
-        let boss_hp_phase = is_final ? diff_data.pt_boss : diff_data.ww_boss;
+        // let boss_hp_phase = is_final ? diff_data.pt_boss : diff_data.ww_boss;
+        let boss_hp_phase = [75,50,25];
         boss_hp_phase.sort((a, b) => b - a)
         // DeepPrintTable(boss_hp_phase)
         let index = 0
@@ -189,8 +191,15 @@ export class CustomAI_Boss {
 
             if (hPhase.activate == false && hPhase.hpPct > nPct) {
                 hPhase.activate = true;
-                print("hPhase.abilityname",hPhase.abilityname)
-                // 该阶段激活,并进行释放技能
+              
+                // 该阶段激活 移除上阶段的技能效果
+                if (i > 0){
+                    let LasthPhase = this.PhaseStatus[i - 1];
+                    let LasthAbility = this.me.FindAbilityByName(LasthPhase.abilityname) as BaseCreatureAbility;
+                    LasthAbility.ClearCurrentPhase();
+                }
+                
+                // 执行技能效果
                 let hAbility = this.me.FindAbilityByName(hPhase.abilityname)
                 // 移除锁血
                 this.me.RemoveModifierByName("modifier_state_boss_phase_hp");

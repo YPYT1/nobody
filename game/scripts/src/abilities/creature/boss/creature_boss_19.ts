@@ -23,6 +23,10 @@ export class creature_boss_19 extends BaseCreatureAbility {
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -54,14 +58,23 @@ export class creature_boss_19 extends BaseCreatureAbility {
                 hHero.RemoveModifierByName("modifier_creature_boss_19_note4")
                 let note_id = note[i]
                 hHero.AddNewModifier(this.hCaster, this, "modifier_creature_boss_19_note" + note_id, {
-                    duration: 20
+                    duration: 10
                 })
+
             }
 
         }
-
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_11", {})
     }
 
+    ClearCurrentPhase(): void {
+        for (let hHero of HeroList.GetAllHeroes()) {
+            hHero.RemoveModifierByName("modifier_creature_boss_19_note1")
+            hHero.RemoveModifierByName("modifier_creature_boss_19_note2")
+            hHero.RemoveModifierByName("modifier_creature_boss_19_note3")
+            hHero.RemoveModifierByName("modifier_creature_boss_19_note4")
+        }
+    }
 }
 
 @registerModifier()
@@ -98,7 +111,7 @@ export class modifier_creature_boss_19 extends BaseModifier {
         } else if (event.attacker.HasModifier("modifier_creature_boss_19_note2")) {
             // 绿色音符的玩家攻击boss会为boss回复等额生命值，
             GameRules.BasicRules.Heal(this.GetCaster(), event.damage)
-            return -100
+            return -999
         } else if (event.attacker.HasModifier("modifier_creature_boss_19_note3")) {
             // 黄色音符玩家攻击boss会造成双倍伤害，
             return 0
@@ -150,7 +163,15 @@ export class modifier_creature_boss_19_note1 extends BaseModifier {
         )
         ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.icon_index, 0, 0))
         this.AddParticle(effect_fx, false, false, -1, false, false)
+    }
 
+    ShouldUseOverheadOffset(): boolean {
+        return true
+    }
+
+    OnDestroy(): void {
+        if(!IsServer()){ return }
+        GameRules.CMsg.BossCastWarning(false)
     }
 }
 

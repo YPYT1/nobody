@@ -20,7 +20,7 @@ export class CMsg extends UIEventRegisterClass {
     update_damage_record_time: number;
 
     constructor() {
-        super("CMsg" , true);
+        super("CMsg", true);
         this.elite_list = [];
         this.boss_list = [];
         this.king_list = [];
@@ -247,6 +247,19 @@ export class CMsg extends UIEventRegisterClass {
             {
                 data: {
                     dmg_record: this.player_damage_record,
+                }
+            }
+        );
+    }
+
+    BossCastWarning(show: boolean, message?: string, data?: MessageObjectDataProps) {
+        CustomGameEventManager.Send_ServerToAllClients(
+            "CMsg_BossCastWarning",
+            {
+                data: {
+                    show: show ? 1 : 0,
+                    message: message,
+                    data: data,
                 }
             }
         );

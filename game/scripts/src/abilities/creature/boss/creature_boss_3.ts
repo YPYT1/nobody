@@ -14,6 +14,10 @@ export class creature_boss_3 extends BaseCreatureAbility {
         this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -22,6 +26,7 @@ export class creature_boss_3 extends BaseCreatureAbility {
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_3_thunder", {
             duration: this._duration
         })
+        
     }
 }
 
@@ -40,6 +45,7 @@ export class modifier_creature_boss_3_thunder extends BaseModifier {
         this._cast_range = (this.GetAbility() as BaseCreatureAbility)._cast_range
         this.OnIntervalThink()
         this.StartIntervalThink(this.thunder_interval)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_2", {})
     }
 
     OnIntervalThink(): void {
@@ -63,6 +69,10 @@ export class modifier_creature_boss_3_thunder extends BaseModifier {
         }
     }
 
+    OnDestroy(): void {
+        if(!IsServer()){ return }
+        GameRules.CMsg.BossCastWarning(false)
+    }
 
 }
 

@@ -61,7 +61,7 @@ GameEvents.Subscribe("MapChapter_GetPlayerSelectHeroList", event => {
 
                 if (local_select_id != hero_id) {
                     local_select_id = hero_id;
-                    row_panel.FireEntityInput("hero_camera_driver", "SetAnimation", "debut_camera_anim")
+                    // row_panel.FireEntityInput("hero_camera_driver", "SetAnimation", "debut_camera_anim")
                     // row_panel.FireEntityInput("qop_arcana", "mapunitname", "npc_dota_hero_axe")
                 }
 

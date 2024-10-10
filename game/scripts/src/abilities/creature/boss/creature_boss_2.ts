@@ -14,7 +14,7 @@ export class creature_boss_2 extends BaseCreatureAbility {
 
 
     OnAbilityPhaseStart(): boolean {
-        this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vPoint = this.GetCursorPosition();
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.line_width = this.GetSpecialValueFor("line_width");
@@ -29,7 +29,10 @@ export class creature_boss_2 extends BaseCreatureAbility {
             this.line_distance,
             this._cast_point
         )
-
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -37,6 +40,7 @@ export class creature_boss_2 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_1", {})
         let dir = (this.vPoint - this.vOrigin as Vector).Normalized()
         dir.z = 0;
         let vTarget = this.vOrigin + dir * this.line_distance as Vector;
@@ -48,6 +52,7 @@ export class creature_boss_2 extends BaseCreatureAbility {
 
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_2_channel")
+        GameRules.CMsg.BossCastWarning(false)
     }
 }
 
@@ -113,10 +118,10 @@ export class modifier_creature_boss_2_channel extends BaseModifier {
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
-            [ModifierState.PROVIDES_VISION]:true
+            [ModifierState.PROVIDES_VISION]: true
         }
     }
-    
+
     OnIntervalThink(): void {
         this.bonus += this.think_angle;
         this.caster.SetAngles(0, this.start_angley + this.bonus, 0);

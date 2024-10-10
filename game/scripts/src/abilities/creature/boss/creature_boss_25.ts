@@ -17,7 +17,10 @@ export class creature_boss_25 extends BaseCreatureAbility {
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.hCaster.RemoveModifierByName("modifier_creature_boss_25_hits");
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin);
-
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -39,7 +42,8 @@ export class creature_boss_25 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
-        // this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_19", {})
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         for (let i = 0; i < PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS); i++) {
             let place_vect = this.vOrigin + RandomVector(RandomInt(800, 1200)) as Vector;
             this.PlaceSpear(place_vect)
@@ -56,6 +60,7 @@ export class creature_boss_25 extends BaseCreatureAbility {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_25_channel");
         this.hCaster.RemoveModifierByName("modifier_basic_countdown");
         this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
+        GameRules.CMsg.BossCastWarning(false)
     }
 
     OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {

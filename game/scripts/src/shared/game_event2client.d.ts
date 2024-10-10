@@ -81,6 +81,14 @@ declare interface CustomGameEventDeclarations {
         }
     }
 
+    CMsg_BossCastWarning: {
+        data: {
+            show: number;
+            message?: string;
+            data?: MessageObjectDataProps;
+        }
+    }
+
     ResourceSystem_SendPlayerResources: {
         data: { [key in PlayerResourceTyps]: number }
     }
@@ -121,8 +129,8 @@ declare interface CustomGameEventDeclarations {
     }
 
     MissionSystem_MissionComplete: {
-        data:{
-            mission_type:number
+        data: {
+            mission_type: number
         }
     }
 }

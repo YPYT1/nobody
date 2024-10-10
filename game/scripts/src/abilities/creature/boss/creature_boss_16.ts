@@ -14,6 +14,10 @@ export class creature_boss_16 extends BaseCreatureAbility {
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 

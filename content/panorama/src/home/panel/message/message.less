@@ -229,3 +229,65 @@
         pre-transform-scale2d: 1;
     }
 }
+
+@keyframes boss_warning {
+
+    0% {
+        opacity: 0;
+    }
+
+    25% {
+        opacity: 1;
+    }
+
+    75% {
+
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+
+    }
+}
+
+#BossCastWarningPanel {
+    // border: 1px solid #ffffff;
+    horizontal-align: center;
+    // flow-children: right;
+    margin-top: 220px;
+    width: 725px;
+    visibility: collapse;
+
+    &.Play {
+        visibility: visible;
+        // animation-name: boss_warning;
+        // animation-iteration-count: infinite;
+        // animation-duration: 1s;
+    }
+
+
+
+    .WarningIcon {
+        height: 94px;
+        width: 94px;
+        background-image: url("file://{images}/custom_game/hud/message/boss_cast_warning_1.png");
+        z-index: 2;
+    }
+
+    .WarningText {
+        width: 685px;
+        height: 57px;
+        background-image: url("file://{images}/custom_game/hud/message/boss_cast_warning_2.png");
+        vertical-align: middle;
+        margin-left: 30px;
+        z-index: 1;
+    }
+
+    #WarningLabel {
+        margin-left: 60px;
+        font-size: 20px;
+        color: #ffe47a;
+        vertical-align: middle;
+    }
+}

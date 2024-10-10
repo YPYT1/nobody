@@ -34,12 +34,16 @@ export class creature_boss_23 extends BaseCreatureAbility {
         )
         ParticleManager.SetParticleControlForward(effect_fx, 3, this.hCaster.GetForwardVector())
         this.nPreviewFX_2 = effect_fx
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
-
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_16", {})
         let heroes = HeroList.GetAllHeroes();
         let target_index = RandomInt(0, heroes.length - 1);
         let target_vect = heroes[target_index].GetAbsOrigin();
@@ -113,5 +117,6 @@ export class modifier_creature_boss_23_delay extends BaseModifier {
                 miss_flag: 1,
             })
         }
+        GameRules.CMsg.BossCastWarning(false)
     }
 }

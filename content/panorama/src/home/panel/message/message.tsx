@@ -157,18 +157,18 @@ const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageNumberTo
     let damage_value = params.value;
     let damage_type = params.type;
     let entity = params.entity as EntityIndex;
-    let digits = String(damage_value).length + 1 ;
+    let digits = String(damage_value).length + 1;
     let font_size = 24;
     let vect = Entities.GetAbsOrigin(entity);
     let effect_name = "particles/msg_fx/msg00002/msg00002_normal.vpcf";
-    if(is_crit == 1){
+    if (is_crit == 1) {
         effect_name = "particles/msg_fx/msg00002/msg00002_crit.vpcf";
         digits += 1;
         font_size = 32;
-        vect[2] += Math.floor(Math.random() * 100) - 50;    
+        vect[2] += Math.floor(Math.random() * 100) - 50;
     }
     let color = element_color[element]
-    if (damage_type == 4){
+    if (damage_type == 4) {
         color = [237, 219, 255];
     }
     let pidx = Particles.CreateParticle(
@@ -177,7 +177,7 @@ const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageNumberTo
         entity
     );
 
-    
+
     // vect[2] += 150;
     Particles.SetParticleControl(pidx, 0, vect);
     Particles.SetParticleControl(pidx, 1, color);
@@ -254,6 +254,46 @@ const CMsg_SendMsgToAll = (params: CustomGameEventDeclarations["CMsg_SendMsgToAl
     }
 }
 
+const BossCastWarningPanel = $("#BossCastWarningPanel")
+const WarningLabel = $("#WarningLabel") as LabelPanel;
+
+const CMsg_BossCastWarning = (params: CustomGameEventDeclarations["CMsg_BossCastWarning"]) => {
+    // $.Msg(["CMsg_BossCastWarning", params])
+    let event = params.data;
+    let show = event.show == 1;
+    if (show) {
+        let message = event.message!;
+        const data = event.data;
+        // WarningLabel.SetDialogVariable("warning_text", message)
+        if (data) {
+            for (let k in data) {
+                let value = data[k];
+                if (typeof (value) == "number") {
+                    WarningLabel.SetDialogVariableInt(k, value)
+                } else {
+                    if(k == "ability"){
+                        WarningLabel.SetDialogVariable(k, $.Localize(`#DOTA_Tooltip_Ability_` + value))
+                    } else {
+                        WarningLabel.SetDialogVariable(k, $.Localize(`#` + value))
+                    }
+                    
+                }
+            }
+        }
+        // WarningLabel.text = message
+        if (message.indexOf("#") != 0) {
+            message = "#" + message
+        }
+        let sMessage = $.Localize(message, WarningLabel);
+        WarningLabel.SetDialogVariable("warning_text", sMessage)
+        BossCastWarningPanel.AddClass("Play");
+    } else {
+        BossCastWarningPanel.RemoveClass("Play")
+    }
+
+
+
+}
 
 export const Init = () => {
     StartMessageTimer();
@@ -268,7 +308,7 @@ export const Init = () => {
     GameEvents.Subscribe("Popup_DamageNumberToClients", DamageFloating)
     GameEvents.Subscribe("CMsg_SendMsgToAll", CMsg_SendMsgToAll)
     GameEvents.Subscribe("CMsg_PopupUnitState", CMsg_PopupUnitState)
-    
+    GameEvents.Subscribe("CMsg_BossCastWarning", CMsg_BossCastWarning)
 }
 
 (function () {

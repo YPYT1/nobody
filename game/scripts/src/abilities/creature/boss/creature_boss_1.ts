@@ -13,7 +13,7 @@ export class creature_boss_1 extends BaseCreatureAbility {
     sector_distance: number;
 
     OnAbilityPhaseStart(): boolean {
-        this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.sector_angle = this.GetSpecialValueFor("sector_angle");
         this.sector_distance = this.GetSpecialValueFor("sector_distance");
         this.vOrigin = this.hCaster.GetAbsOrigin()
@@ -27,7 +27,10 @@ export class creature_boss_1 extends BaseCreatureAbility {
             this._cast_point,
         )
 
-        
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -43,10 +46,10 @@ export class creature_boss_1 extends BaseCreatureAbility {
             fStartRadius: this.sector_angle,
             fEndRadius: this.sector_angle,
             Source: this.hCaster,
-            vVelocity: (vDirection * this.sector_distance ) as Vector,
+            vVelocity: (vDirection * this.sector_distance) as Vector,
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
-            bVisibleToEnemies:true,
+            bVisibleToEnemies: true,
         });
 
         // let cast_fx = ParticleManager.CreateParticle(

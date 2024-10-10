@@ -14,6 +14,10 @@ export class creature_boss_4 extends BaseCreatureAbility {
         this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -21,11 +25,14 @@ export class creature_boss_4 extends BaseCreatureAbility {
         this.DestroyWarningFx();
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_4_channel", {})
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_3", {})
     }
 
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_4_channel");
         this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
+        GameRules.CMsg.BossCastWarning(false)
+        this.OnKnockback(300);
     }
 }
 

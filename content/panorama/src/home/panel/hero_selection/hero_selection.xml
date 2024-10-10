@@ -66,7 +66,7 @@
 				renderdeferred="true"
             /> -->
 
-			<!-- <DOTAScenePanel
+			<DOTAScenePanel
 				id="6"
 				class='full hero_backgroud'
 				map='maps/backgrounds/hero_showcase_drow_ranger_arcana.vmap'
@@ -101,7 +101,7 @@
 				light='hero_light'
 				particleonly="false"
 				renderdeferred="true"
-            /> -->
+            />
 		</Panel>
         <Panel id="HeroSelectionContainer" class="full">
             <Panel id="PlayerStateContainer" />

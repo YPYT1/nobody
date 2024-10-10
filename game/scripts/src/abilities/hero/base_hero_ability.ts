@@ -22,7 +22,7 @@ export class BaseHeroAbility extends BaseAbility {
     /** `伤害加成` 后续会转为百分比小数  */
     DamageBonusMul = 0;
     /** `最终伤害` */
-    FinalDamageMul = 0;
+    // FinalDamageMul = 0;
     /**  技能增强*/
     AbilityImproved = 0;
     /** 对应元素伤害百分比*/
@@ -253,7 +253,7 @@ export class BaseHeroModifier extends BaseModifier {
     /** `伤害加成` 后续会转为百分比小数  */
     DamageBonusMul = 0;
     /** `最终伤害` */
-    FinalDamageMul = 0;
+    // FinalDamageMul = 0;
     /**  技能增强*/
     AbilityImproved = 0;
     /** 对应元素伤害百分比*/

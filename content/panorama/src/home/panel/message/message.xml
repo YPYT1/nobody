@@ -41,5 +41,12 @@
             <Panel id="105" class="EventMessageRows"/>
             <Panel id="106" class="EventMessageRows"/>
         </Panel>
+
+        <Panel id="BossCastWarningPanel">
+            <Panel class="WarningIcon"/>
+            <Panel class="WarningText">
+                <Label id="WarningLabel" text="{s:warning_text}" />
+            </Panel>
+        </Panel>
 	</Panel>
 </root>

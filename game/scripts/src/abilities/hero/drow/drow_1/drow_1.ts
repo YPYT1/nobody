@@ -66,7 +66,6 @@ export class modifier_drow_1 extends BaseHeroModifier {
         this.fakeAttack = false;
         this.useProjectile = true;
         this.SelfAbilityPow = 1;
-
         this.move_mdf = this.caster.FindModifierByName("modifier_basic_move") as modifier_basic_move;
     }
 

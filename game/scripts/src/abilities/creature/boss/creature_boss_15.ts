@@ -14,10 +14,14 @@ export class creature_boss_15 extends BaseCreatureAbility {
     }
 
     OnAbilityPhaseStart(): boolean {
-        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
+        // this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_15", {})
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+            unitname: this.hCaster.GetUnitName(),
+            ability: this.GetAbilityName(),
+        })
         return true
     }
 
@@ -30,6 +34,7 @@ export class creature_boss_15 extends BaseCreatureAbility {
             this.hCaster
         )
         ParticleManager.ReleaseParticleIndex(cast_fx)
+        
     }
 }
 
@@ -43,17 +48,17 @@ export class modifier_creature_boss_15 extends BaseModifier {
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.attack_list = [];
-        GameRules.EnemyAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
-            "DmgReductionPct": {
-                "Base": 100,
-            }
-        })
+        // GameRules.EnemyAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
+        //     "DmgReductionPct": {
+        //         "Base": 100,
+        //     }
+        // })
     }
 
 
     DeclareFunctions(): modifierfunction[] {
         return [
-            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
+            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
         ]
     }
 
@@ -90,6 +95,7 @@ export class modifier_creature_boss_15_debuff extends BaseModifier {
                 "BasePercent": -50
             }
         })
+        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_9", {})
         this.HideWearable()
 
     }
@@ -131,6 +137,7 @@ export class modifier_creature_boss_15_debuff extends BaseModifier {
         if (!IsServer()) { return }
         GameRules.CustomAttribute.DelAttributeInKey(this.parent, this.buff_key);
         this.ShowWearable()
+        GameRules.CMsg.BossCastWarning(false)
     }
 
     GetModifierModelChange(): string {
