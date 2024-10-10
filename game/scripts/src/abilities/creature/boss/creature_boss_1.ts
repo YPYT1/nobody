@@ -26,6 +26,8 @@ export class creature_boss_1 extends BaseCreatureAbility {
             this.sector_distance,
             this._cast_point,
         )
+
+        
         return true
     }
 

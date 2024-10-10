@@ -166,7 +166,13 @@ export function sheetToKV(options: SheetToKVOptions) {
                         cell != `` &&
                         cell != undefined
                     ) {
-                        return `${indentStr}"${key}" { "ItemDef" "${cell}" }`;
+                        let value = cell.toString().split(` `);
+                        // console.log(cell,value)
+                        let res_str = `${indentStr}"${key}" {  `;
+                        if(value[0]){ res_str += `"ItemDef" "${value[0]}"`}
+                        if(value[1]){ res_str += `  "Skin" "${value[1]}"`}
+                        res_str += `}`
+                        return res_str;
                     }
 
                     // 处理写excel文件中的本地化文本

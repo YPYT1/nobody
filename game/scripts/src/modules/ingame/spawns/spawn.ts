@@ -556,7 +556,9 @@ export class Spawn extends UIEventRegisterClass {
             this.MonsterAmend(unit, "boss", 1, this._round_index);
             unit.AddNewModifier(unit, null, "modifier_state_boss_growup", {} )
             unit.AddNewModifier(unit, null, "modifier_custom_appearance_underground", { duration: 3 });
-
+            if(IsInToolsMode()){
+                unit.SetControllableByPlayer(0,false)
+            }
             GameRules.CMsg.SetBossHealthBar(unit);
 
             //切换成boss倒计时
@@ -588,6 +590,16 @@ export class Spawn extends UIEventRegisterClass {
             this._map_boss_unit = unit;
             this._map_boss_refresh = true;
             GameRules.GetGameModeEntity().StopThink("StartSpawnControl");
+
+
+            if (GameRules.Spawn._round_index < GameRules.Spawn._round_max) {
+                // 小boss
+                unit.SetIntAttr("is_final",0)
+            } else {
+                // 尾王
+                unit.SetIntAttr("is_final",1)
+            }
+
             return unit;
         }
     }

@@ -11,6 +11,7 @@ import { BaseCreatureAbility } from "../base_creature";
 export class creature_boss_4 extends BaseCreatureAbility {
 
     OnAbilityPhaseStart(): boolean {
+        this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
         return true
@@ -18,11 +19,13 @@ export class creature_boss_4 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_4_channel", {})
     }
 
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_4_channel");
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
     }
 }
 

@@ -25,6 +25,7 @@ export class creature_boss_20 extends BaseCreatureAbility {
     }
 
     OnAbilityPhaseStart(): boolean {
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_attack")
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
@@ -33,13 +34,14 @@ export class creature_boss_20 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_20_attack", {})
     }
 
     OnChannelFinish(interrupted: boolean): void {
-        print("OnChannelFinish", interrupted)
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_attack");
         this.hCaster.RemoveModifierByName("modifier_creature_boss_20_line")
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
     }
 
     OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {

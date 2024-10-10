@@ -1,4 +1,5 @@
 
+import { modifier_debuff_stunned } from "../../../modifier/modifier_debuff";
 import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 import { BaseCreatureAbility } from "../base_creature";
 
@@ -12,6 +13,7 @@ import { BaseCreatureAbility } from "../base_creature";
 export class creature_boss_25 extends BaseCreatureAbility {
 
     OnAbilityPhaseStart(): boolean {
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.hCaster.RemoveModifierByName("modifier_creature_boss_25_hits");
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin);
@@ -37,6 +39,7 @@ export class creature_boss_25 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
+        // this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         for (let i = 0; i < PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS); i++) {
             let place_vect = this.vOrigin + RandomVector(RandomInt(800, 1200)) as Vector;
             this.PlaceSpear(place_vect)
@@ -52,6 +55,7 @@ export class creature_boss_25 extends BaseCreatureAbility {
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_25_channel");
         this.hCaster.RemoveModifierByName("modifier_basic_countdown");
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
     }
 
     OnProjectileHit(target: CDOTA_BaseNPC | undefined, location: Vector): boolean | void {
@@ -83,6 +87,7 @@ export class modifier_creature_boss_25_hits extends BaseModifier {
         if (!IsServer()) { return }
         this.parent = this.GetCaster();
         this.need_stack = PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS)
+        print("this.need_stack", this.need_stack)
         this.SetStackCount(1)
     }
 
@@ -94,9 +99,12 @@ export class modifier_creature_boss_25_hits extends BaseModifier {
     OnStackCountChanged(stackCount: number): void {
         if (!IsServer()) { return }
         let stack = this.GetStackCount();
+        print("OnStackCountChanged:", stack, this.need_stack)
         if (stack >= this.need_stack) {
             // 移除无敌 和 增加眩晕BOss,
-            GameRules.BuffManager.AddGeneralDebuff(this.parent, this.parent, DebuffTypes.stunned, 4);
+            this.parent.InterruptChannel();
+            // GameRules.BuffManager.AddGeneralDebuff(this.parent, this.parent, DebuffTypes.stunned, 4);
+            this.parent.AddNewModifier(this.parent, this.GetAbility(), "modifier_creature_boss_25_stunned", { duration: 4 })
             this.Destroy()
         }
     }
@@ -256,3 +264,6 @@ export class modifier_creature_boss_25_spear extends BaseModifier {
         return "models/items/mars/mars_ti9_immortal_weapon/mars_ti9_immortal_weapon.vmdl"
     }
 }
+
+@registerModifier()
+export class modifier_creature_boss_25_stunned extends modifier_debuff_stunned { }

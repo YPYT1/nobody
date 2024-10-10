@@ -15,6 +15,7 @@ export class creature_boss_24 extends BaseCreatureAbility {
 
     shield_list: CDOTA_BaseNPC[];
     OnAbilityPhaseStart(): boolean {
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin);
         return true
@@ -24,6 +25,7 @@ export class creature_boss_24 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
+        // this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_basic_countdown", {
             duration: this.channel_timer
         })
@@ -53,6 +55,7 @@ export class creature_boss_24 extends BaseCreatureAbility {
 
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_basic_countdown")
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
         let cast_fx = ParticleManager.CreateParticle(
             "particles/custom/creature/boss/boss_24_explode.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,

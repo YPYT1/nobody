@@ -14,6 +14,7 @@ export class creature_boss_2 extends BaseCreatureAbility {
 
 
     OnAbilityPhaseStart(): boolean {
+        this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
         this.vPoint = this.GetCursorPosition();
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.line_width = this.GetSpecialValueFor("line_width");
@@ -86,7 +87,16 @@ export class modifier_creature_boss_2_channel extends BaseModifier {
             this.caster
         );
         let origin = Vector(this.origin.x, this.origin.y, this.origin.z + 50)
-        ParticleManager.SetParticleControl(this.effect_fx, 0, origin)
+        // ParticleManager.SetParticleControl(this.effect_fx, 0, origin)
+        ParticleManager.SetParticleControlEnt(
+            this.effect_fx,
+            0,
+            this.caster,
+            ParticleAttachment.POINT_FOLLOW,
+            "attach_hitloc",
+            Vector(0, 0, 0),
+            false
+        )
         ParticleManager.SetParticleControlEnt(
             this.effect_fx,
             9,

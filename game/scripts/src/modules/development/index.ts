@@ -27,6 +27,7 @@ export class Development extends UIEventRegisterClass {
         let unit = params.unit;
         let hUnit = EntIndexToHScript(unit) as CDOTA_BaseNPC;
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        hUnit.RemoveModifierByName("modifier_state_boss_phase_hp");
         hUnit.Kill(null, hHero)
         // hHero.ForceKill(true)
     }

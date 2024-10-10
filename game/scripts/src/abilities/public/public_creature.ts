@@ -31,6 +31,10 @@ export class modifier_public_creature extends BaseModifier {
     }
 
     OnIntervalThink(): void {
+        if (this.GetParent().IsAlive() == false) {
+            this.StartIntervalThink(-1);
+            return
+        }
         let enemies = FindUnitsInRadius(
             DotaTeam.BADGUYS,
             this.GetParent().GetAbsOrigin(),

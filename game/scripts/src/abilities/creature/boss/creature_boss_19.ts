@@ -20,6 +20,7 @@ export class creature_boss_19 extends BaseCreatureAbility {
     }
 
     OnAbilityPhaseStart(): boolean {
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
         return true
@@ -46,14 +47,17 @@ export class creature_boss_19 extends BaseCreatureAbility {
 
         for (let i = 0; i < note.length; i++) {
             let hHero = PlayerResource.GetSelectedHeroEntity(i as PlayerID);
-            hHero.RemoveModifierByName("modifier_creature_boss_19_note1")
-            hHero.RemoveModifierByName("modifier_creature_boss_19_note2")
-            hHero.RemoveModifierByName("modifier_creature_boss_19_note3")
-            hHero.RemoveModifierByName("modifier_creature_boss_19_note4")
-            let note_id = note[i]
-            hHero.AddNewModifier(this.hCaster, this, "modifier_creature_boss_19_note" + note_id, {
-                duration: 20
-            })
+            if (hHero) {
+                hHero.RemoveModifierByName("modifier_creature_boss_19_note1")
+                hHero.RemoveModifierByName("modifier_creature_boss_19_note2")
+                hHero.RemoveModifierByName("modifier_creature_boss_19_note3")
+                hHero.RemoveModifierByName("modifier_creature_boss_19_note4")
+                let note_id = note[i]
+                hHero.AddNewModifier(this.hCaster, this, "modifier_creature_boss_19_note" + note_id, {
+                    duration: 20
+                })
+            }
+
         }
 
     }
@@ -71,6 +75,8 @@ export class modifier_creature_boss_19 extends BaseModifier {
         if (!IsServer()) { return }
         this.hero_counts = PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS);
     }
+
+
     DeclareFunctions(): modifierfunction[] {
         return [
             ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
@@ -116,6 +122,16 @@ export class modifier_creature_boss_19 extends BaseModifier {
             return 0
         }
         return 0
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        for (let hHero of HeroList.GetAllHeroes()) {
+            hHero.RemoveModifierByName("modifier_creature_boss_19_note1")
+            hHero.RemoveModifierByName("modifier_creature_boss_19_note2")
+            hHero.RemoveModifierByName("modifier_creature_boss_19_note3")
+            hHero.RemoveModifierByName("modifier_creature_boss_19_note4")
+        }
     }
 }
 

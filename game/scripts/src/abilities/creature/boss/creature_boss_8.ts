@@ -9,7 +9,7 @@ import { BaseCreatureAbility } from "../base_creature";
 export class creature_boss_8 extends BaseCreatureAbility {
 
     OnAbilityPhaseStart(): boolean {
-        this._duration = 3;
+        this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
         return true

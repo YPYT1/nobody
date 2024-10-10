@@ -125,12 +125,14 @@ export class modifier_state_noheathbar extends BaseModifier {
 @registerModifier()
 export class modifier_state_boss_invincible extends BaseModifier {
 
+    viewer_id: ViewerID;
     IsHidden(): boolean {
         return true
     }
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.viewer_id = AddFOWViewer(DotaTeam.GOODGUYS, this.GetParent().GetAbsOrigin(), 1000, 10, false)
         let effect_fx = ParticleManager.CreateParticle(
             "particles/items_fx/black_king_bar_avatar.vpcf",
             ParticleAttachment.POINT_FOLLOW,
@@ -139,10 +141,27 @@ export class modifier_state_boss_invincible extends BaseModifier {
         this.AddParticle(effect_fx, false, false, -1, false, false)
     }
 
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        RemoveFOWViewer(DotaTeam.GOODGUYS, this.viewer_id)
+    }
+
     GetStatusEffectName(): string {
         return "particles/status_fx/status_effect_avatar.vpcf"
     }
+
+    DeclareFunctions(): modifierfunction[] {
+        return [
+            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
+        ]
+    }
+
+    GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
+        return -999
+    }
 }
+@registerModifier()
+export class modifier_state_boss_invincible_channel extends modifier_state_boss_invincible { }
 
 @registerModifier()
 export class modifier_state_boss_growup extends BaseModifier {
@@ -155,7 +174,7 @@ export class modifier_state_boss_growup extends BaseModifier {
 
     OnCreated(params: object): void {
         this.value = 0;
-        if(!IsServer()){ return }
+        if (!IsServer()) { return }
         this.StartIntervalThink(5)
     }
 
@@ -172,5 +191,23 @@ export class modifier_state_boss_growup extends BaseModifier {
 
     GetModifierMoveSpeedBonus_Percentage(): number {
         return this.value;
+    }
+}
+
+@registerModifier()
+export class modifier_state_boss_phase_hp extends BaseModifier {
+
+    GetAttributes(): DOTAModifierAttribute_t {
+        return ModifierAttribute.MULTIPLE
+    }
+
+    DeclareFunctions(): modifierfunction[] {
+        return [
+            ModifierFunction.MIN_HEALTH
+        ]
+    }
+
+    GetMinHealth(): number {
+        return this.GetParent().GetMaxHealth() * this.GetStackCount() * 0.01
     }
 }

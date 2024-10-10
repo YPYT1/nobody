@@ -77,9 +77,13 @@ export class DamageSystem {
         const hTarget = params.victim;
         // print(hAttacker == null, IsValid(hAttacker))
         if (hAttacker == null || IsValid(hAttacker)) { return 0 }
-        // print()
+        if (hTarget.HasModifier("modifier_state_boss_invincible")
+            || hTarget.HasModifier("modifier_state_boss_invincible_channel")
+        ) {
+            PopupDamageNumber(hAttacker, hTarget, params.damage_type, 0, 0, 0);
+            return 0
+        }
         const iPlayerID = hAttacker.GetPlayerOwnerID();
-        // print("hAttacker iPlayerID",iPlayerID)
         params.miss_flag = params.miss_flag ?? 0;
         if (hAttacker.GetTeam() == DotaTeam.BADGUYS) {
             return this.ApplyDamageForBadTeam(params)

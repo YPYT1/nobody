@@ -12,6 +12,7 @@ import { modifier_generic_arc_lua } from '../../../modifier/modifier_generic_arc
 export class creature_boss_17 extends BaseCreatureAbility {
 
     OnAbilityPhaseStart(): boolean {
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
         return true

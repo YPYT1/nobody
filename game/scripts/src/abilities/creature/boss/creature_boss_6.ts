@@ -17,6 +17,7 @@ export class creature_boss_6 extends BaseCreatureAbility {
     }
 
     OnAbilityPhaseStart(): boolean {
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vPoint = this.GetCursorPosition();
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.line_width = this.GetSpecialValueFor("line_width");
@@ -35,6 +36,7 @@ export class creature_boss_6 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
         this.hCaster.AddNewModifier(
             this.hCaster,
             this,
@@ -48,6 +50,7 @@ export class creature_boss_6 extends BaseCreatureAbility {
 
     OnChannelFinish(interrupted: boolean): void {
         this.hCaster.RemoveModifierByName("modifier_creature_boss_6_channel")
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel")
     }
 }
 
@@ -63,8 +66,15 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
     team: DotaTeam;
 
     npc_list: CDOTA_BaseNPC[];
+
+    interval: number;
+    timer: number;
+    speed: number;
     OnCreated(params: object): void {
+        this.timer = 0
+        this.interval = GameRules.GetGameFrameTime()
         if (!IsServer()) { return }
+        this.speed = 300;
         this.npc_list = [];
         this.line_width = this.GetAbility().GetSpecialValueFor("line_width");
         this.line_distance = this.GetAbility().GetSpecialValueFor("line_distance");
@@ -73,7 +83,7 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
         this.origin = this.GetParent().GetAbsOrigin()
         this.line_vect = this.origin + this.caster.GetForwardVector() * (this.line_distance - this.line_width * 0.5) as Vector
         this.target_vect = this.origin + this.caster.GetForwardVector() * (this.line_distance + this.line_width * 0.5) as Vector
-        this.StartIntervalThink(0.1)
+        this.StartIntervalThink(this.interval)
 
         this.PlayEffect(this.target_vect);
         let offset_vect1 = RotatePosition(this.origin, QAngle(0, 15, 0), this.target_vect);
@@ -83,6 +93,8 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
     }
 
     PlayEffect(vPos) {
+        AddFOWViewer(DotaTeam.GOODGUYS, vPos, 600, this.GetDuration(), false)
+        vPos.z += 50;
         const dummy = CreateModifierThinker(
             this.caster,
             this.GetAbility(),
@@ -92,11 +104,12 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
             DotaTeam.GOODGUYS,
             false
         )
+
         this.npc_list.push(dummy)
         let effect_fx = ParticleManager.CreateParticle(
             "particles/econ/items/lion/lion_demon_drain/lion_spell_mana_drain_demon.vpcf",
-            ParticleAttachment.ABSORIGIN_FOLLOW,
-            dummy
+            ParticleAttachment.CUSTOMORIGIN,
+            null
         )
         vPos.z += 30;
         // ParticleManager.SetParticleControl(effect_fx, 0, vPos)
@@ -109,19 +122,25 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
             Vector(0, 0, 50),
             true
         )
+
+        // let xx = this.caster.ScriptLookupAttachment()
+        // let yy = this.caster.attach
         ParticleManager.SetParticleControlEnt(
             effect_fx,
             1,
             this.caster,
             ParticleAttachment.POINT_FOLLOW,
-            "attach_mouth",
-            Vector(0, 0, 50),
+            "attach_hitloc",
+            Vector(0, 0, 0),
             true
         )
+        print("caster forward", this.caster.GetForwardVector())
+        ParticleManager.SetParticleControlTransformForward(effect_fx, 1, this.caster.GetAbsOrigin(), Vector(0.9, 0.9, 0))
         this.AddParticle(effect_fx, false, false, -1, false, false)
     }
 
     OnIntervalThink(): void {
+        this.timer += this.interval
         let enemies = FindUnitsInLine(
             this.team,
             this.origin,
@@ -132,14 +151,34 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE
         )
+        // print("this.timer ", this.timer)
         for (let enemy of enemies) {
-            this.ApplyDamage(enemy)
+            if (this.timer > 1) {
+                this.ApplyDamage(enemy)
+            }
+            // 吸附效果
+            this.PlayAdsorbEffect(enemy)
         }
 
+        if (this.timer > 1) {
+            this.timer = 0
+        }
     }
 
+    PlayAdsorbEffect(hTarget: CDOTA_BaseNPC) {
+        let target_vect = hTarget.GetAbsOrigin();
+        let direction = target_vect - this.origin as Vector;
+        let distance = direction.Length2D();
+        direction = direction.Normalized();
+        if (distance > 100) {
+            hTarget.SetOrigin(target_vect - direction * this.speed * this.interval as Vector)
+            // FindClearSpaceForUnit(, false)
+        } else {
+            FindClearSpaceForUnit(hTarget, target_vect - direction * this.speed * this.interval as Vector, false)
+        }
+    }
     ApplyDamage(hTarget: CDOTA_BaseNPC) {
-        const damage = hTarget.GetMaxHealth() * 0.025;
+        const damage = hTarget.GetMaxHealth() * 0.25;
         ApplyCustomDamage({
             victim: hTarget,
             attacker: this.GetCaster(),
@@ -148,7 +187,7 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
             damage_type: DamageTypes.PHYSICAL,
             miss_flag: 1,
         })
-        GameRules.BasicRules.RestoreMana(hTarget, -3, this.GetAbility())
+        GameRules.BasicRules.RestoreMana(hTarget, -30, this.GetAbility())
     }
 
     OnDestroy(): void {

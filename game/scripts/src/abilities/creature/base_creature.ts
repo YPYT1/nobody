@@ -10,6 +10,7 @@ export class BaseCreatureAbility extends BaseAbility {
     nPreviewFX: ParticleID;
     nPreviewFX_List: ParticleID[] = [];
     nPreviewFX_2: ParticleID;
+    nExclamationFx: ParticleID;
 
     _cast_point: number;
 
@@ -50,7 +51,10 @@ export class BaseCreatureAbility extends BaseAbility {
             ParticleManager.DestroyParticle(this.nPreviewFX_2, true);
             this.nPreviewFX_2 = null;
         }
-
+        if (this.nExclamationFx) {
+            ParticleManager.DestroyParticle(this.nExclamationFx, true);
+            this.nExclamationFx = null;
+        }
         for (let preview of this.nPreviewFX_List) {
             ParticleManager.DestroyParticle(preview, true);
         }
@@ -58,7 +62,7 @@ export class BaseCreatureAbility extends BaseAbility {
     }
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_treant/treant_overgrowth_cast.vpcf",context)
+        precacheResString("particles/units/heroes/hero_treant/treant_overgrowth_cast.vpcf", context)
     }
 
     OnUpgrade(): void {
@@ -73,5 +77,9 @@ export class BaseCreatureAbility extends BaseAbility {
         this.channel_timer = this.GetChannelTime()
         this.dmg_max_hp = this.GetSpecialValueFor("dmg_max_hp") * 0.01;
         this.dmg_cur_hp = this.GetSpecialValueFor("dmg_cur_hp") * 0.01;
+    }
+
+    OnChannelFinish(interrupted: boolean): void {
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel");
     }
 }

@@ -48,7 +48,7 @@ export class modifier_creature_boss_18 extends BaseModifier {
             this.parent.AddNewModifier(this.parent, this.GetAbility(), "modifier_creature_boss_18_buff", {
                 duration: this.duration
             })
-            return -100
+            return -999
         }
         return 0
     }
@@ -80,6 +80,6 @@ export class modifier_creature_boss_18_buff extends BaseModifier {
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
         let health_count = event.damage;
         GameRules.BasicRules.Heal(this.GetParent(), health_count)
-        return -100
+        return -999
     }
 }

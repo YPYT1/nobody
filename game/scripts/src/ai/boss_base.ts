@@ -30,7 +30,7 @@ export class CBossBase {
         this.hCurrorder = null;
         this.sUnitName = hUnit.GetUnitName();
         this.me.AddActivityModifier("run");
-        print("CBossBase constructor")
+        // print("CBossBase constructor")
         this._Init();
         this.me.SetContextThink("delay", () => {
             this.OnSetupAbilities();
@@ -41,24 +41,24 @@ export class CBossBase {
 
     _Init() { }
 
-    // 初始化技能和优先级
+    // 初始化技能,和血量阶段
     OnSetupAbilities() {
         let ability_count = this.me.GetAbilityCount();
-        for (let i = 0; i < ability_count; i++) {
-            let hAbility = this.me.GetAbilityByIndex(i);
-            if (hAbility) {
-                let ability_name = hAbility.GetAbilityName();
-                hAbility.SetLevel(1);
-                hAbility.SetActivated(true);
-                if (!hAbility.IsPassive() && !hAbility.IsHidden()) {
-                    this.AbilityPriority[ability_name] = i;
-                }
-            }
-        }
+        // for (let i = 0; i < ability_count; i++) {
+        //     let hAbility = this.me.GetAbilityByIndex(i);
+        //     if (hAbility) {
+        //         let ability_name = hAbility.GetAbilityName();
+        //         hAbility.SetLevel(1);
+        //         hAbility.SetActivated(true);
+        //         if (!hAbility.IsPassive() && !hAbility.IsHidden()) {
+        //             this.AbilityPriority[ability_name] = i;
+        //         }
+        //     }
+        // }
     }
 
     OnBaseThink(): number {
-        if (!this.me || this.me.IsNull() || !this.me.IsAlive()) {
+        if (!this.me || this.me.IsNull()) {
             return - 1;
         }
         // let order = null;
@@ -75,76 +75,14 @@ export class CBossBase {
         }
         let AbilitiesReady = this.GetReadyAbilitiesAndItems();
         print("AbilitiesReady ", AbilitiesReady.length);
-        if (AbilitiesReady.length == 0) {
-            ExecuteOrderFromTable({
-                UnitIndex: this.me.entindex(),
-                OrderType: UnitOrder.ATTACK_MOVE,
-                Position: this.hPlayerHeroes[0].GetAbsOrigin(),
-                Queue: false,
-            });
-            return 1;
-        } else {
-            // 释放技能
-            let ability_behavior = AbilitiesReady[0].GetBehaviorInt();
-            let Order: ExecuteOrderOptions;
-            let channel_time = AbilitiesReady[0].GetChannelTime();
-            let cast_point = AbilitiesReady[0].GetCastPoint();
-            let ability_range = AbilitiesReady[0].GetCastRange(this.me.GetOrigin(), this.me);
-            let enemies = FindUnitsInRadius(
-                this.me.GetTeam(),
-                this.me.GetOrigin(),
-                this.me,
-                ability_range,
-                UnitTargetTeam.ENEMY,
-                UnitTargetType.BASIC + UnitTargetType.HERO,
-                UnitTargetFlags.NONE,
-                FindOrder.ANY,
-                false
-            );
-            print("enemies", enemies.length, AbilitiesReady[0].GetAbilityName());
-            if (enemies.length == 0) {
-                ExecuteOrderFromTable({
-                    UnitIndex: this.me.entindex(),
-                    OrderType: UnitOrder.ATTACK_MOVE,
-                    Position: this.hPlayerHeroes[0].GetAbsOrigin(),
-                    Queue: false,
-                });
-                return 0.3;
-            }
-            if ((ability_behavior & AbilityBehavior.UNIT_TARGET) == AbilityBehavior.UNIT_TARGET) {
-                Order = {
-                    UnitIndex: this.me.entindex(),
-                    AbilityIndex: AbilitiesReady[0].entindex(),
-                    OrderType: UnitOrder.CAST_TARGET,
-                    TargetIndex: this.hPlayerHeroes[0].entindex(),
-                    Queue: false,
-                };
-            } else if ((ability_behavior & AbilityBehavior.POINT) == AbilityBehavior.POINT) {
-                Order = {
-                    UnitIndex: this.me.entindex(),
-                    AbilityIndex: AbilitiesReady[0].entindex(),
-                    OrderType: UnitOrder.CAST_POSITION,
-                    Position: this.hPlayerHeroes[0].GetOrigin(),
-                    Queue: false,
-                };
-            } else if ((ability_behavior & AbilityBehavior.NO_TARGET) == AbilityBehavior.NO_TARGET) {
-                Order = {
-                    UnitIndex: this.me.entindex(),
-                    AbilityIndex: AbilitiesReady[0].entindex(),
-                    OrderType: UnitOrder.CAST_NO_TARGET,
-                    Queue: false,
-                };
-            }
-            ExecuteOrderFromTable(Order);
-            return cast_point + channel_time + 1.01;
-        }
+        
 
         return 0.5;
     }
 
     OnBossCommonThink() {
         if (this.me.IsAlive() == false) { return 1; }
-        if (GameRules.IsGamePaused()) { return 0.03; }
+        if (GameRules.IsGamePaused()) { return 0.1; }
         if (this.me.IsChanneling()) { return 0.1; }
         return this.OnBaseThink();
     }

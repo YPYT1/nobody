@@ -104,6 +104,12 @@ export class modifier_basic_move extends BaseModifier {
         this.parent.move_state = state;
         if (state == false) {
             this.parent.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
+            ExecuteOrderFromTable({
+                UnitIndex: this.unit_index,
+                OrderType: UnitOrder.STOP,
+                // Position: origin,
+                Queue: false,
+            })
         }
         // if (state == false) {
         //     this.move_up = false;
