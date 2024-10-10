@@ -158,6 +158,11 @@
 				</Panel>
 			</Panel>
 		</Panel>
+		<Panel id="AttributeTooltip">
+			<Panel class="Border">
+				<Label text="{s:attr_tips}" html="true"/>
+			</Panel>
+		</Panel>
 		<!-- <Panel id="ArmsSelector" class="container">
 			<Panel id="ArmsList"></Panel>
             <Panel id="ArmsOption">

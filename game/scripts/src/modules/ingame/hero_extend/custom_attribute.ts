@@ -56,11 +56,11 @@ export class CustomAttribute {
         if (event.level % 5 == 0) {
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
         }
-        
+
         const rune_mdf = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
-        if(rune_mdf){
+        if (rune_mdf) {
             rune_mdf.OnLevelUprade()
-        } 
+        }
         GameRules.HeroTalentSystem.TalentUnlockLevel(event.player_id, event.level);
         this.AttributeInLevelUp(hHero)
     }
@@ -287,6 +287,10 @@ export class CustomAttribute {
         //     hUnit.custom_attribute_show[extra_key][1] += math.floor(extra_attribute_value[extra_key])
         // }
 
+        // 技能急速处理
+        let AbilityHaste = hUnit.custom_attribute_value.AbilityHaste ?? 0;
+        let AbilityCooldownLimit = hUnit.custom_attribute_table.AbilityCooldown.Limit ?? 0;
+        hUnit.custom_attribute_value.AbilityCooldown = math.min(AbilityCooldownLimit, 100 * AbilityHaste / (AbilityHaste + 150))
         if (!is_init) {
             const update_state = GameRules.GetDOTATime(false, false) > hUnit.last_attribute_update;
             // print("update", update_state)

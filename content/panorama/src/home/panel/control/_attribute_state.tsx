@@ -1,5 +1,5 @@
-import { ConvertAttributeToLabel } from "../../../utils/attribute_method";
-
+import { AttributeIsPercent, ConvertAttributeToLabel } from "../../../utils/attribute_method";
+const AttributeTooltip = $("#AttributeTooltip");
 const HeroInfoBtn = $("#HeroInfoBtn") as Button;
 const HeroAttributeContainer = $("#HeroAttributeContainer");
 const BaseAttributeList = $("#BaseAttributeList");
@@ -13,9 +13,6 @@ const base_attribute_list: AttributeMainKey[] = [
     "PhyicalArmor",
     "MoveSpeed",
     "AbilityHaste",
-    // "AbilityCooldown",
-    // "AbilityCooldown2",
-    // "EvasionProb",
 ]
 
 const adv_attribute_list: AttributeMainKey[] = [
@@ -33,9 +30,14 @@ const Attributelist: AttributeMainKey[] = ["AttackDamage", "PhyicalArmor", "Move
 
 let AttributeRowsList: { [key in AttributeMainKey]?: Panel } = {}
 
+/** 护甲减伤公式 */
+const PhyicalArmorDmgReduction = (PhyicalArmor: number) => {
+    return PhyicalArmor / (100 + Math.abs(PhyicalArmor));
+}
+
 const StartUpdateData = () => {
     UpdataAttributeData()
-    $.Schedule(0.3, StartUpdateData)
+    $.Schedule(1, StartUpdateData)
 }
 
 const UpdataAttributeData = () => {
@@ -51,16 +53,18 @@ const UpdataAttributeData = () => {
     if (netdata == null) { return }
     // 扩展数据
     let show = netdata.show;
-    let value = netdata.value
-    // $.Msg(["show",show.AttackDamage])
-    // $.Msg(netdata.value.AbilityCooldown2)
+    let value = netdata.value;
+    let table = netdata.table;
+
     for (let _key in AttributeRowsList) {
         let attr_key = _key as AttributeMainKey
         let attrPanel = AttributeRowsList[attr_key];
         if (attrPanel) {
-            attrPanel.SetDialogVariable("attr_value", ConvertAttributeToLabel(attr_key,value[attr_key]))
+            attrPanel.SetDialogVariable("attr_value", ConvertAttributeToLabel(attr_key, value[attr_key]))
         }
     }
+
+
 
     for (let _attr in value) {
         let attr_key = _attr as AttributeMainKey
@@ -68,10 +72,41 @@ const UpdataAttributeData = () => {
         if (PanelAttributeRow) {
             PanelAttributeRow.SetDialogVariable("stat_value", ConvertAttributeToLabel(attr_key, value[attr_key]))
         }
+        let sign = AttributeIsPercent(_attr as AttributeMainKey) ? "%" : ""
+        HeroAttributeContainer.SetDialogVariable(_attr, "<span class=\'bonus\'>" + value[attr_key] + sign + "</span>")
     }
-    // AttributeRowsList["AttackDamage"]?.SetDialogVariable("attr_value", `${value.AttackDamage}`)
-    // AttributeRowsList["MoveSpeed"]?.SetDialogVariable("attr_value", `${Entities.GetMoveSpeedModifier(queryUnit, Entities.GetBaseMoveSpeed(queryUnit))}`)
-    // AttributeRowsList["PhyicalArmor"]?.SetDialogVariable("attr_value", `${value.PhyicalArmor}`)
+    let aps = Entities.GetAttacksPerSecond(queryUnit);
+    HeroAttributeContainer.SetDialogVariable("APS", "<span class=\'bonus\'>" + (1 / aps).toFixed(2) + "</span>");
+    // 护甲减伤
+    let armor_reduction = Math.floor(PhyicalArmorDmgReduction(value.PhyicalArmor ?? 0) * 100);
+    HeroAttributeContainer.SetDialogVariable("ArmorReduction", "<span class=\'bonus\'>" + armor_reduction + "%</span>");
+
+    // $.Msg(["Update nettable"])
+    for (let _attr in table) {
+        let row_data = table[_attr as keyof typeof table];
+        
+        for (let row_key in row_data) {
+            let _value = row_data[row_key as keyof typeof row_data] ?? 0;
+            let dialog_key = _attr + "." + row_key
+            let sign = AttributeIsPercent(_attr as AttributeMainKey) ? "%" : ""
+            if (row_key == "Bonus") {
+                let attr_value = Math.floor((value[_attr as AttributeMainKey] ?? 0) - (row_data.Base ?? 0))
+                HeroAttributeContainer.SetDialogVariable(dialog_key, "<span class='bonus'>" + attr_value + sign + "</span>")
+            } else {
+                if (_attr == "AttackDamage"){
+
+                    $.Msg([_attr,dialog_key,sign])
+                }
+                if (row_key == "BasePercent" || row_key == "BonusPercent" || row_key == "TotalPercent") {
+                    sign = "%"
+                }
+                
+                HeroAttributeContainer.SetDialogVariable(dialog_key, "<span class='bonus'>" + _value + sign + "</span>")
+            }
+
+        }
+    }
+
 }
 
 export const CreatePanel_AttributeState = () => {
@@ -106,9 +141,9 @@ const InitHeroDetailsPanel = () => {
         let PanelAttributeRow = $.CreatePanel("Panel", BaseAttributeList, _attr);
         PanelAttributeRow.BLoadLayoutSnippet("PanelAttributeRow")
         PanelAttributeRow.SetDialogVariable("stat_label", $.Localize(`#custom_attribute_${_attr}`).replace("%", ""))
-
-       
         PanelAttributeRow.SetDialogVariable("stat_value", ConvertAttributeToLabel(_attr, 0))
+
+        SetAttributePanelEvent(PanelAttributeRow, _attr)
 
     }
 
@@ -118,6 +153,10 @@ const InitHeroDetailsPanel = () => {
         PanelAttributeRow.BLoadLayoutSnippet("PanelAttributeRow")
         PanelAttributeRow.SetDialogVariable("stat_label", $.Localize(`#custom_attribute_${_attr}`).replace("%", ""))
         PanelAttributeRow.SetDialogVariable("stat_value", ConvertAttributeToLabel(_attr, 0))
+
+        SetAttributePanelEvent(PanelAttributeRow, _attr)
+
+
     }
 
     HeroInfoBtn.SetPanelEvent("onactivate", () => {
@@ -127,6 +166,22 @@ const InitHeroDetailsPanel = () => {
     CreatePanel_AttributeState();
 }
 
+function SetAttributePanelEvent(PanelAttributeRow: Panel, _attr: string) {
+    PanelAttributeRow.SetPanelEvent("onmouseover", () => {
+        let offset = PanelAttributeRow.GetPositionWithinWindow()
+        let ScreenHeight = Game.GetScreenHeight();
+        AttributeTooltip.AddClass("Show");
+        let attr_tips_label = $.Localize(`#custom_attribute_${_attr}_tooltips`, HeroAttributeContainer)
+        attr_tips_label = attr_tips_label.replaceAll("\n", "<br>")
+        AttributeTooltip.SetDialogVariable("attr_tips", attr_tips_label)
+        AttributeTooltip.style.marginBottom = `${ScreenHeight - offset.y + 64}px`
+        AttributeTooltip.style.marginLeft = `${offset.x}px`
+    })
+
+    PanelAttributeRow.SetPanelEvent("onmouseout", () => {
+        AttributeTooltip.RemoveClass("Show");
+    })
+}
 (function () {
     InitHeroDetailsPanel()
 })();

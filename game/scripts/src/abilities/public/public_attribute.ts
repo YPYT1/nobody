@@ -215,8 +215,8 @@ export class modifier_public_attribute extends BaseModifier {
         }
 
 
-        let AbilityHaste = this.AttributeData.AbilityHaste ?? 0;
-        let ability_cd = math.min(ability_cd_limit * 0.01, AbilityHaste / (AbilityHaste + 150))
+        let AbilityCooldown1 = this.AttributeData.AbilityCooldown ?? 0;
+        let ability_cd = math.min(ability_cd_limit * 0.01, AbilityCooldown1)
         let AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01;
         let TotalCooldown = math.min(0.99, ability_cd + AbilityCooldown2);
         base_cd *= (1 - TotalCooldown);

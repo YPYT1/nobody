@@ -57,7 +57,7 @@
             height: 100%;
             flow-children: down;
             // border: 1px solid #f00;
-            
+
             .AttributeHeader {
                 margin-top: 8px;
                 width: 200px;
@@ -68,7 +68,7 @@
 
             .AttributeList {
                 flow-children: down;
-   
+
                 .PanelAttributeRow {
                     margin-top: 1px;
                     width: 250px;
@@ -110,5 +110,39 @@
         }
 
 
+    }
+}
+
+#AttributeTooltip {
+    width: 360px;
+    // height: 200px;
+    z-index: 99;
+    vertical-align: bottom;
+    // align: center center;
+    flow-children: down;
+    background-color: #111214f1;
+    padding: 1px;
+    opacity: 0;
+
+    transition-property: opacity;
+    transition-duration: 0.2s;
+
+    &.Show {
+        opacity: 1;
+    }
+    .Border {
+        width: 100%;
+        // height: 100%;
+        border: 1px solid #585858;
+        padding: 8px;
+    }
+
+    Label {
+        font-size: 18px;
+        color:#bcbcbc;
+    }
+
+    .bonus {
+        color:#00ff00;
     }
 }

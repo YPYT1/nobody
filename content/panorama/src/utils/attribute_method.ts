@@ -125,7 +125,12 @@ export const ConvertAttributeToLabel = (attr_key: AttributeMainKey, value: numbe
     if (is_pct) {
         res_label = `${value.toFixed(2)}%`
     } else {
-        res_label = `${Math.floor(value) }`
+        res_label = `${Math.floor(value)}`
     }
     return res_label
+}
+
+// 该属性是否为百分比属性
+export const AttributeIsPercent = (attr_key: AttributeMainKey) => {
+    return AttributeConst[attr_key].is_pct == 1;
 }
