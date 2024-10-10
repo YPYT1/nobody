@@ -437,7 +437,6 @@ export class Spawn extends UIEventRegisterClass {
     }
     //精英刷怪器
     CreateEliteTime() {
-        print("this.map_info_round[this._round_index].elite_name : " , this.map_info_round[this._round_index].elite_name);
         if (this.map_info_round[this._round_index].elite_name == "null") {
             return;
         }
@@ -450,29 +449,33 @@ export class Spawn extends UIEventRegisterClass {
             if (monster_refresh_count >= monster_count) {
                 return null;
             } else {
-                let coord_index = RandomInt(0, 199);
-                let elite_Vector = GameRules.Spawn._map_coord[coord_index];
-                let elite_spawn_name = GameRules.Spawn.map_info_round[this._round_index].elite_name;
-                let unit = GameRules.Spawn.CreateMonster(elite_spawn_name, elite_Vector, this._round_index);
-                if(GameRules.MapChapter.GameDifficultyNumber > 101){
-                    let long = GameRules.Spawn._elite_abi_list_.no_pass.length;
-                    let abl_i = RandomInt(0 , long - 1);
-                    let no_pass_name = GameRules.Spawn._elite_abi_list_.no_pass[abl_i];
-                    //增加一个主动
-                    unit.AddAbility(no_pass_name);
-                }
-                if(GameRules.MapChapter.GameDifficultyNumber >= 133){ 
-                    //增加一个被动
-                    let long = GameRules.Spawn._elite_abi_list_.pass.length;
-                    let abl_i = RandomInt(0 , long - 1);
-                    let pass_name = GameRules.Spawn._elite_abi_list_.pass[abl_i];
-                    unit.AddAbility(pass_name);
-                }
-                this._map_elite_spawn_list.push(unit);
+                let elite_spawn_name = GameRules.Spawn.map_info_round[GameRules.Spawn._round_index].elite_name;
+                GameRules.Spawn.CreateElite(elite_spawn_name);
             }
             monster_refresh_count++;
             return monster_t_time;
         }, 0)
+    }
+    //创建精英怪方法
+    CreateElite(elite_spawn_name : string){
+        let coord_index = RandomInt(0, 199);
+        let elite_Vector = GameRules.Spawn._map_coord[coord_index];
+        let unit = GameRules.Spawn.CreateMonster(elite_spawn_name, elite_Vector, GameRules.Spawn._round_index);
+        if(GameRules.MapChapter.GameDifficultyNumber > 101){
+            let long = GameRules.Spawn._elite_abi_list_.no_pass.length;
+            let abl_i = RandomInt(0 , long - 1);
+            let no_pass_name = GameRules.Spawn._elite_abi_list_.no_pass[abl_i];
+            //增加一个主动
+            unit.AddAbility(no_pass_name);
+        }
+        if(GameRules.MapChapter.GameDifficultyNumber >= 133){ 
+            //增加一个被动
+            let long = GameRules.Spawn._elite_abi_list_.pass.length;
+            let abl_i = RandomInt(0 , long - 1);
+            let pass_name = GameRules.Spawn._elite_abi_list_.pass[abl_i];
+            unit.AddAbility(pass_name);
+        }
+        this._map_elite_spawn_list.push(unit);
     }
     //boss定时器 
     CreateBossTime() {
@@ -1056,6 +1059,10 @@ export class Spawn extends UIEventRegisterClass {
         }
         if (cmd == "-st") {
 
+        }
+        if(cmd == "-elite"){
+            let elite_name = args[0] ?? "npc_monster_elite_1";
+            GameRules.Spawn.CreateElite(elite_name);
         }
         if (cmd == "--_player_sum_kill") {
             print("_player_sum_kill :")
