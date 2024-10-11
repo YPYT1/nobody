@@ -214,14 +214,13 @@ export class ResourceSystem extends UIEventRegisterClass {
         // print("DropResourceItem", resource, exp_type, DotaTeam.NOTEAM,exp_unit)
         exp_unit.SetMaterialGroup(`${exp_type}`);
         exp_unit.is_picking = false;
+        exp_unit.AddNewModifier(exp_unit, null, "modifier_state_lifetime", { duration: 120 })
         exp_unit.AddNewModifier(exp_unit, null, "modifier_pickitem_state", {})
         exp_unit.AddNewModifier(exp_unit, null, "modifier_generic_arc_lua", {
             speed: 250,
             distance: 0,
             duration: 0.5,
             height: 150,
-            // activity: GameActivity.DOTA_STUN_STATUE,
-            // isStun: 1,
         })
         exp_unit.drop_resource_type = resource;
         exp_unit.drop_resource_amount = this.exp_type_count[exp_type];
@@ -237,7 +236,6 @@ export class ResourceSystem extends UIEventRegisterClass {
     }
 
     RemoveAllDropItem() {
-
         let hDropItemList = FindUnitsInRadius(
             DotaTeam.NEUTRALS,
             Vector(0, 0, 0),

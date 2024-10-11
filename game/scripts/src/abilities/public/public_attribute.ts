@@ -86,14 +86,20 @@ export class modifier_public_attribute extends BaseModifier {
         )
         // print("ExpItems",ExpItems.length)
         for (let ExpItem of ExpItems) {
-            // print("RowName",ExpItem.GetUnitName())
-            if (ExpItem.GetUnitName() == "npc_exp"
+            // 拾取物品为经验
+            const unitname = ExpItem.GetUnitName()
+            if (unitname == "npc_exp"
                 && !ExpItem.HasModifier("modifier_pick_animation")
                 && !ExpItem.HasModifier("modifier_generic_arc_lua")
             ) {
                 ExpItem.AddNewModifier(ExpItem, null, "modifier_pick_animation", {
                     picker: this.iParentEntity,
                 })
+
+            } else {
+                UTIL_Remove(ExpItem);
+                GameRules.CustomItem.useItemEffect(unitname, this.hParent)
+                // 回血
             }
         }
 

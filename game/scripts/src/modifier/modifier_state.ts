@@ -211,3 +211,16 @@ export class modifier_state_boss_phase_hp extends BaseModifier {
         return this.GetParent().GetMaxHealth() * this.GetStackCount() * 0.01
     }
 }
+
+@registerModifier()
+export class modifier_state_lifetime extends BaseModifier {
+    
+    IsHidden(): boolean {
+        return true
+    }
+    
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        UTIL_RemoveImmediate(this.GetParent())
+    }
+}

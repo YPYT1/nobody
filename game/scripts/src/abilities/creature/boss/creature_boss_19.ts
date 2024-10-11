@@ -65,6 +65,7 @@ export class creature_boss_19 extends BaseCreatureAbility {
 
         }
         GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_11", {})
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_19_channel", {})
     }
 
     ClearCurrentPhase(): void {
@@ -74,6 +75,12 @@ export class creature_boss_19 extends BaseCreatureAbility {
             hHero.RemoveModifierByName("modifier_creature_boss_19_note3")
             hHero.RemoveModifierByName("modifier_creature_boss_19_note4")
         }
+    }
+
+    OnChannelFinish(interrupted: boolean): void {
+        this.hCaster.RemoveModifierByName("modifier_creature_boss_19_channel")
+        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel");
+        GameRules.CMsg.BossCastWarning(false)
     }
 }
 
@@ -148,6 +155,12 @@ export class modifier_creature_boss_19 extends BaseModifier {
     }
 }
 
+// @registerModifier()
+// export class modifier_creature_boss_19_channel extends BaseModifier {
+//     {
+//         activity = ""
+//     }
+// }
 // 红
 @registerModifier()
 export class modifier_creature_boss_19_note1 extends BaseModifier {
@@ -170,7 +183,7 @@ export class modifier_creature_boss_19_note1 extends BaseModifier {
     }
 
     OnDestroy(): void {
-        if(!IsServer()){ return }
+        if (!IsServer()) { return }
         GameRules.CMsg.BossCastWarning(false)
     }
 }

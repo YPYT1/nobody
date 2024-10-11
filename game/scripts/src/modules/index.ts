@@ -8,6 +8,7 @@ import { XNetTable } from './xnet-table';
 import * as public_const from "../json/config/public_const.json";
 import { ElementEffect } from './ingame/system/element_effect';
 import { DamageSystem } from './ingame/system/damage_system';
+import { CustomItem } from './ingame/system/custom_item';
 
 declare global {
 
@@ -20,6 +21,7 @@ declare global {
         ElementEffect: ElementEffect;
         DamageSystem: DamageSystem;
         Debug:Debug;
+        CustomItem:CustomItem;
         /**常量 */
         PUBLIC_CONST: typeof public_const;
     }
@@ -45,7 +47,7 @@ export function ActivateModules() {
     GameRules.MapChapter = new MapChapter()
     GameRules.ElementEffect = new ElementEffect();
     GameRules.DamageSystem = new DamageSystem();
-    
+    GameRules.CustomItem = new CustomItem();
     // @ts-expect-error @eslint-disable-next-line
     GameRules.ModuleActivated = true;
 

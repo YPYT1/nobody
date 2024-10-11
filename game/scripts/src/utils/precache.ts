@@ -62,6 +62,7 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/diy_particles/line_to_target.vpcf',
             'particles/units/heroes/hero_earthshaker/earthshaker_echoslam_start.vpcf',
             'particles/units/heroes/hero_techies/techies_remote_cart_explode.vpcf',
+            'particles/diy/elite_state.vpcf',
             ...drow_precache,
             ...skywrath_precache,
         ],
