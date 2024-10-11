@@ -11,6 +11,10 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_12 extends BaseCreatureAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_dark_willow/dark_willow_wisp_spell.vpcf", context)
+    }
+    
     GetIntrinsicModifierName(): string {
         return "modifier_creature_elite_12"
     }
@@ -21,7 +25,7 @@ export class modifier_creature_elite_12 extends BaseModifier {
 
     radius: number;
     dmg_max_hp: number;
-    
+
     DeclareFunctions(): modifierfunction[] {
         return [
             ModifierFunction.ON_DEATH

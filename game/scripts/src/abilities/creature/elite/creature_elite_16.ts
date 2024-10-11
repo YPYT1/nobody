@@ -10,6 +10,10 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_16 extends BaseCreatureAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_muerta/muerta_parting_shot_tether.vpcf", context)
+    }
+
     GetIntrinsicModifierName(): string {
         return "modifier_creature_elite_16"
     }
@@ -60,13 +64,15 @@ export class modifier_creature_elite_16_thinker extends BaseModifier {
     line_width: number;
     interval: number;
     team: DotaTeam;
-
+    speed: number;
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.speed = 35;
+        this.line_width = this.GetAbility().GetSpecialValueFor("line_width")
         this.line_distance = this.GetAbility().GetSpecialValueFor("line_distance");
         this.origin = this.GetParent().GetAbsOrigin();
         this.origin.z += 10;
-        this.team = this.GetParent().GetTeam();
+        this.team = this.GetCaster().GetTeam();
 
         let base_pos = this.origin + Vector(this.line_distance, 0, 0) as Vector
 
@@ -100,9 +106,9 @@ export class modifier_creature_elite_16_thinker extends BaseModifier {
 
     OnIntervalThink(): void {
 
-        this.line_pos1 = RotatePosition(this.origin, QAngle(0, 25 * this.interval, 0), this.line_pos1);
+        this.line_pos1 = RotatePosition(this.origin, QAngle(0, this.speed * this.interval, 0), this.line_pos1);
         ParticleManager.SetParticleControl(this.line_fx1, 1, this.line_pos1)
-
+        // print("this.line_pos1",this.line_pos1)
         let enemies = FindUnitsInLine(
             this.team,
             this.origin,
@@ -114,7 +120,7 @@ export class modifier_creature_elite_16_thinker extends BaseModifier {
             UnitTargetFlags.NONE
         )
 
-        this.line_pos2 = RotatePosition(this.origin, QAngle(0, 25 * this.interval, 0), this.line_pos2);
+        this.line_pos2 = RotatePosition(this.origin, QAngle(0, this.speed * this.interval, 0), this.line_pos2);
         ParticleManager.SetParticleControl(this.line_fx2, 1, this.line_pos2)
 
         let enemies2 = FindUnitsInLine(
@@ -139,7 +145,7 @@ export class modifier_creature_elite_16_thinker extends BaseModifier {
 
     ApplyDamage(hTarget: CDOTA_BaseNPC) {
         if (!hTarget.HasModifier("modifier_creature_elite_16_dmg")) {
-            const damage = this.GetParent().GetMaxHealth() * 0.2;
+            const damage = hTarget.GetMaxHealth() * 0.2;
             ApplyCustomDamage({
                 victim: hTarget,
                 attacker: this.GetCaster(),

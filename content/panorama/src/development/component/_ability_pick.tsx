@@ -161,7 +161,7 @@ const UnitAbilityImage = ({ order }: { order: number }) => {
     // }, []);
 
     useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
-    // useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);
+    useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);
     // useGameEvent("dota_portrait_ability_layout_changed", UpdateLocalPlayer, []);
     // useGameEvent("dota_ability_changed", UpdateLocalPlayer, []);
     // useGameEvent("dota_hero_ability_points_changed", UpdateLocalPlayer, []);

@@ -10,8 +10,14 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_boss_4 extends BaseCreatureAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_enigma/enigma_black_hole_scepter_pull_debuff.vpcf", context)
+        precacheResString("particles/units/heroes/hero_enigma/enigma_black_hole_scepter.vpcf", context)
+        precacheResString("particles/custom_diy/enigma/enigma_world_chasm/enigma_blackhole_ti5iy.vpcf", context)
+    }
+    
     OnAbilityPhaseStart(): boolean {
-        this.hCaster.AddNewModifier(this.hCaster,this,"modifier_state_boss_invincible",{})
+        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
         GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
@@ -59,12 +65,21 @@ export class modifier_creature_boss_4_channel extends BaseModifier {
         this.origin = this.caster.GetAbsOrigin();
         this.dmg_max_hp = 25;
         let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_enigma/enigma_blackhole.vpcf",
+            "particles/custom_diy/enigma/enigma_world_chasm/enigma_blackhole_ti5iy.vpcf",
             ParticleAttachment.ABSORIGIN,
             this.GetParent()
         )
         // ParticleManager.SetParticleControlTransform
+
         this.AddParticle(effect_fx, false, false, -1, false, false)
+
+        let aoe_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_enigma/enigma_black_hole_scepter.vpcf",
+            ParticleAttachment.POINT,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.radius, 1, 1))
+        this.AddParticle(aoe_fx, false, false, -1, false, false)
         // this.OnIntervalThink()
         this.StartIntervalThink(1)
     }
@@ -112,5 +127,18 @@ export class modifier_creature_boss_4_aura extends modifier_motion_adsorb {
 
     _OnCreated(params: any): void {
         this.speed = 275
+
+        let auraunit = this.GetAuraOwner()
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_enigma/enigma_black_hole_scepter_pull_debuff.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControlEnt(effect_fx, 0, this.GetParent(),
+            ParticleAttachment.POINT_FOLLOW,
+            "attach_hitloc", Vector(0, 0, 0), true
+        )
+        ParticleManager.SetParticleControl(effect_fx, 1, auraunit.GetAbsOrigin())
+        this.AddParticle(effect_fx, false, false, -1, false, false)
     }
 }

@@ -10,6 +10,10 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_17 extends BaseCreatureAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_techies/techies_land_mine_explode.vpcf", context)
+    }
+
     GetIntrinsicModifierName(): string {
         return "modifier_creature_elite_17"
     }
@@ -59,7 +63,8 @@ export class modifier_creature_elite_17_blast extends BaseModifier {
         this._radius = this.GetAbility().GetSpecialValueFor("radius")
         this.team = this.GetCaster().GetTeam()
         this.origin = this.GetParent().GetAbsOrigin();
-        GameRules.WarningMarker.Circular(this._radius, 3, this.origin, true)
+        let effect_fx = GameRules.WarningMarker.Circular(this._radius, this.GetDuration(), this.origin)
+        this.AddParticle(effect_fx, false, false, -1, false, false)
     }
 
     OnDestroy(): void {

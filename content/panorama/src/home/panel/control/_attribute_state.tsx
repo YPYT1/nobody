@@ -93,10 +93,6 @@ const UpdataAttributeData = () => {
                 let attr_value = Math.floor((value[_attr as AttributeMainKey] ?? 0) - (row_data.Base ?? 0))
                 HeroAttributeContainer.SetDialogVariable(dialog_key, "<span class='bonus'>" + attr_value + sign + "</span>")
             } else {
-                if (_attr == "AttackDamage"){
-
-                    $.Msg([_attr,dialog_key,sign])
-                }
                 if (row_key == "BasePercent" || row_key == "BonusPercent" || row_key == "TotalPercent") {
                     sign = "%"
                 }

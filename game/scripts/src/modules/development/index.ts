@@ -255,8 +255,9 @@ export class Development extends UIEventRegisterClass {
         }
 
         if (cmd == "-fow") {
-            AddFOWViewer(DotaTeam.GOODGUYS, hHero.GetAbsOrigin(), 7000, 10, false)
-            AddFOWViewer(DotaTeam.BADGUYS, hHero.GetAbsOrigin(), 7000, 10, false)
+            GameRules.GetGameModeEntity().SetFogOfWarDisabled(true)
+            // AddFOWViewer(DotaTeam.GOODGUYS, hHero.GetAbsOrigin(), 7000, 10, false)
+            // AddFOWViewer(DotaTeam.BADGUYS, hHero.GetAbsOrigin(), 7000, 10, false)
         }
 
         if (cmd == "-shuag") {

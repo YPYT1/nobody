@@ -13,7 +13,8 @@ export class creature_boss_6 extends BaseCreatureAbility {
     line_distance: number;
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/econ/items/lion/lion_demon_drain/lion_spell_mana_drain_demon.vpcf", context)
+        precacheResString("particles/units/heroes/hero_enigma/enigma_black_hole_scepter_pull_debuff.vpcf", context)
+        precacheResString("particles/custom_diy/lion/lion_spell_mana_drain_demon.vpcf", context)
     }
 
     OnAbilityPhaseStart(): boolean {
@@ -93,10 +94,10 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
         this.StartIntervalThink(this.interval)
 
         this.PlayEffect(this.target_vect);
-        let offset_vect1 = RotatePosition(this.origin, QAngle(0, 15, 0), this.target_vect);
-        this.PlayEffect(offset_vect1);
-        let offset_vect2 = RotatePosition(this.origin, QAngle(0, -15, 0), this.target_vect);
-        this.PlayEffect(offset_vect2);
+        // let offset_vect1 = RotatePosition(this.origin, QAngle(0, 15, 0), this.target_vect);
+        // this.PlayEffect(offset_vect1);
+        // let offset_vect2 = RotatePosition(this.origin, QAngle(0, -15, 0), this.target_vect);
+        // this.PlayEffect(offset_vect2);
     }
 
     PlayEffect(vPos) {
@@ -114,12 +115,11 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
 
         this.npc_list.push(dummy)
         let effect_fx = ParticleManager.CreateParticle(
-            "particles/econ/items/lion/lion_demon_drain/lion_spell_mana_drain_demon.vpcf",
+            "particles/custom_diy/lion/lion_spell_mana_drain_demon.vpcf",
             ParticleAttachment.CUSTOMORIGIN,
             null
         )
         vPos.z += 30;
-        // ParticleManager.SetParticleControl(effect_fx, 0, vPos)
         ParticleManager.SetParticleControlEnt(
             effect_fx,
             0,
@@ -129,9 +129,6 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
             Vector(0, 0, 50),
             true
         )
-
-        // let xx = this.caster.ScriptLookupAttachment()
-        // let yy = this.caster.attach
         ParticleManager.SetParticleControlEnt(
             effect_fx,
             1,
@@ -141,8 +138,8 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
             Vector(0, 0, 0),
             true
         )
-        print("caster forward", this.caster.GetForwardVector())
-        ParticleManager.SetParticleControlTransformForward(effect_fx, 1, this.caster.GetAbsOrigin(), Vector(0.9, 0.9, 0))
+        // print("caster forward", this.caster.GetForwardVector())
+        ParticleManager.SetParticleControlTransformForward(effect_fx, 2, this.caster.GetAbsOrigin(), this.caster.GetForwardVector())
         this.AddParticle(effect_fx, false, false, -1, false, false)
     }
 
@@ -173,16 +170,9 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
     }
 
     PlayAdsorbEffect(hTarget: CDOTA_BaseNPC) {
-        let target_vect = hTarget.GetAbsOrigin();
-        let direction = target_vect - this.origin as Vector;
-        let distance = direction.Length2D();
-        direction = direction.Normalized();
-        if (distance > 100) {
-            hTarget.SetOrigin(target_vect - direction * this.speed * this.interval as Vector)
-            // FindClearSpaceForUnit(, false)
-        } else {
-            FindClearSpaceForUnit(hTarget, target_vect - direction * this.speed * this.interval as Vector, false)
-        }
+        hTarget.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_boss_6_adsorb", {
+            duration: 0.1
+        })
     }
     ApplyDamage(hTarget: CDOTA_BaseNPC) {
         const damage = hTarget.GetMaxHealth() * 0.25;
@@ -211,5 +201,48 @@ export class modifier_creature_boss_6_dummy extends BaseModifier {
     OnDestroy(): void {
         if (!IsServer()) { return }
         UTIL_Remove(this.GetParent())
+    }
+}
+
+@registerModifier()
+export class modifier_creature_boss_6_adsorb extends BaseModifier {
+
+    me: CDOTA_BaseNPC;
+    dt: number;
+    speed: number;
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        this.speed = 300;
+        this.caster = this.GetCaster();
+        this.origin = this.caster.GetOrigin()
+        this.me = this.GetParent();
+        this.dt = GameRules.GetGameFrameTime()
+        this.StartIntervalThink(this.dt)
+
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_enigma/enigma_black_hole_scepter_pull_debuff.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControlEnt(effect_fx, 0, this.GetParent(),
+            ParticleAttachment.POINT_FOLLOW,
+            "attach_hitloc", Vector(0, 0, 0), true
+        )
+        ParticleManager.SetParticleControl(effect_fx, 1, this.origin)
+        this.AddParticle(effect_fx, false, false, -1, false, false)
+    }
+
+    OnIntervalThink(): void {
+        let target_vect = this.me.GetAbsOrigin();
+        let direction = target_vect - this.origin as Vector;
+        let distance = direction.Length2D();
+        direction = direction.Normalized();
+        if (distance > 100) {
+            this.me.SetOrigin(target_vect - direction * this.speed * this.dt as Vector)
+            // FindClearSpaceForUnit(, false)
+        } else {
+            FindClearSpaceForUnit(this.me, target_vect - direction * this.speed * this.dt as Vector, false)
+        }
     }
 }

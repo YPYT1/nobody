@@ -30,6 +30,7 @@ export class CBossBase {
         this.hCurrorder = null;
         this.sUnitName = hUnit.GetUnitName();
         this.me.AddActivityModifier("run");
+        this._Init()
         this.me.SetContextThink("delay", () => {
             this.OnSetupAbilities();
             return null;

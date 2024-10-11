@@ -17,4 +17,12 @@ export function Spawn(entityKeyValues: any) {
 
 class CustomAI_Elite extends CBossBase {
 
+    _Init(): void {
+        let effect = ParticleManager.CreateParticle(
+            "particles/diy/elite_state.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            thisEntity
+        )
+        
+    }
 }

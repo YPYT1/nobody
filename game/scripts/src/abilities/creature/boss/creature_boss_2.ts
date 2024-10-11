@@ -12,6 +12,9 @@ export class creature_boss_2 extends BaseCreatureAbility {
     line_width: number;
     line_distance: number;
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/custom/creature/elite/hellfire/hellfire_thrower.vpcf",context)
+    }
 
     OnAbilityPhaseStart(): boolean {
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
@@ -86,31 +89,44 @@ export class modifier_creature_boss_2_channel extends BaseModifier {
         let reverse = RandomInt(0, 1) == 0 ? 1 : -1;
         this.think_angle = (360 / this.GetDuration() * this.interval) * reverse;
 
+        // this.effect_fx = ParticleManager.CreateParticle(
+        //     "particles/econ/items/phoenix/phoenix_solar_forge/phoenix_sunray_solar_forge.vpcf",
+        //     ParticleAttachment.CUSTOMORIGIN,
+        //     this.caster
+        // );
+        // let origin = Vector(this.origin.x, this.origin.y, this.origin.z + 50)
+        // ParticleManager.SetParticleControlEnt(
+        //     this.effect_fx,
+        //     0,
+        //     this.caster,
+        //     ParticleAttachment.POINT_FOLLOW,
+        //     "attach_hitloc",
+        //     Vector(0, 0, 0),
+        //     false
+        // )
+        // ParticleManager.SetParticleControlEnt(
+        //     this.effect_fx,
+        //     9,
+        //     this.caster,
+        //     ParticleAttachment.POINT_FOLLOW,
+        //     "attach_hitloc",
+        //     Vector(0, 0, 0),
+        //     false
+        // )
         this.effect_fx = ParticleManager.CreateParticle(
-            "particles/econ/items/phoenix/phoenix_solar_forge/phoenix_sunray_solar_forge.vpcf",
-            ParticleAttachment.CUSTOMORIGIN,
+            "particles/custom/creature/elite/hellfire/hellfire_thrower.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
             this.caster
-        );
-        let origin = Vector(this.origin.x, this.origin.y, this.origin.z + 50)
-        // ParticleManager.SetParticleControl(this.effect_fx, 0, origin)
-        ParticleManager.SetParticleControlEnt(
-            this.effect_fx,
-            0,
-            this.caster,
-            ParticleAttachment.POINT_FOLLOW,
-            "attach_hitloc",
-            Vector(0, 0, 0),
-            false
         )
-        ParticleManager.SetParticleControlEnt(
-            this.effect_fx,
-            9,
-            this.caster,
-            ParticleAttachment.POINT_FOLLOW,
-            "attach_hitloc",
-            Vector(0, 0, 0),
-            false
-        )
+        // ParticleManager.SetParticleControlEnt(
+        //     this.effect_fx,
+        //     0,
+        //     this.caster,
+        //     ParticleAttachment.POINT_FOLLOW,
+        //     "attach_hitloc",
+        //     Vector(0,0,0),
+        //     true
+        // )
         this.AddParticle(this.effect_fx, false, false, -1, false, false)
         this.OnIntervalThink()
         this.StartIntervalThink(this.interval)
@@ -143,6 +159,8 @@ export class modifier_creature_boss_2_channel extends BaseModifier {
         for (let enemy of enemies) {
             this.ApplyDamage(enemy)
         }
+
+        DebugDrawLine(this.origin, target_vect, 255, 0, 0, true, 0.15)
     }
 
     ApplyDamage(hTarget: CDOTA_BaseNPC) {

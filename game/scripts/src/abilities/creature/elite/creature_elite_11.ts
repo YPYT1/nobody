@@ -31,6 +31,13 @@ export class modifier_creature_elite_11 extends BaseModifier {
         this.aura_radius = this.GetAbility().GetSpecialValueFor("aura_radius")
     }
 
+    GetEffectName(): string {
+        return "particles/custom/creature/elite/aura/speed_aura.vpcf"
+    }
+
+    GetEffectAttachType(): ParticleAttachment_t {
+        return ParticleAttachment.ABSORIGIN_FOLLOW
+    }
 }
 
 @registerModifier()
