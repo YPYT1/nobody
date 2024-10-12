@@ -460,7 +460,7 @@ export class Spawn extends UIEventRegisterClass {
     CreateElite(elite_spawn_name : string){
         let coord_index = RandomInt(0, 199);
         let elite_Vector = GameRules.Spawn._map_coord[coord_index];
-        let unit = GameRules.Spawn.CreateMonster(elite_spawn_name, elite_Vector, GameRules.Spawn._round_index);
+        let unit = GameRules.Spawn.CreateEliteMonster(elite_spawn_name, elite_Vector, GameRules.Spawn._round_index);
         if(GameRules.MapChapter.GameDifficultyNumber > 101){
             let long = GameRules.Spawn._elite_abi_list_.no_pass.length;
             let abl_i = RandomInt(0 , long - 1);
@@ -1057,7 +1057,17 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn.CreateBoss(boss_name);
         }
         if (cmd == "-sg") {
-            GameRules.Spawn.CreateMonsterTime()
+            let _name = args[0] ?? "1";
+            let name = "npc_monster_normal_" + _name;
+            let count = args[1] ? parseInt(args[1]) : 1;
+            for (let index = 0; index < count; index++) {
+                let _Vector = Vector()
+                let _map_coord_index = RandomInt(0, 199);
+                    //普通模式
+                _Vector = GameRules.Spawn._map_coord[_map_coord_index];
+                GameRules.Spawn.CreateMonster(name , _Vector ,this._round_index) 
+            }
+            
         }
         if (cmd == "-st") {
 
@@ -1148,7 +1158,7 @@ export class Spawn extends UIEventRegisterClass {
      * @param killer 击杀者
      */
     MapUnitKilled(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
-        //非英雄击杀
+        //非英雄击杀 boss击杀
         if(!killer.IsHero()){
             let unit_label = target.GetUnitLabel();
             let name = target.GetUnitName();
@@ -1157,9 +1167,18 @@ export class Spawn extends UIEventRegisterClass {
             if (unit_label == "creatur_normal") {
                 let ExpType = GetCommonProbability(KillExpDrop);
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
+                //掉落物品
+                // if(RollPercentage(2)){
+                //     GameRules.CustomItem.Drop( "hp", vect , 120);
+                // }
+                // if(RollPercentage(2)){
+                //     GameRules.CustomItem.Drop( "mp", vect , 120);
+                // }
             } else if (unit_label == "unit_elite"){
                 let ExpType = GetCommonProbability(KillExpDrop);
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
+                // GameRules.CustomItem.Drop("hp", vect , 120);
+                // GameRules.CustomItem.Drop("mp", vect , 120);
             }
             return 
         }
@@ -1178,6 +1197,13 @@ export class Spawn extends UIEventRegisterClass {
                 "Soul": KillSoul,
                 "Kills": 1,
             })
+            //掉落物品
+            if(RollPercentage(2)){
+                GameRules.CustomItem.Drop( "hp", vect , 120);
+            }
+            if(RollPercentage(2)){
+                GameRules.CustomItem.Drop( "mp", vect , 120);
+            }
             //处理数据
         } else if (unit_label == "unit_elite") {//unit_elite
             //判断是否掉落全体宝物箱 排除任务怪
@@ -1191,6 +1217,8 @@ export class Spawn extends UIEventRegisterClass {
                 "Soul": KillSoul,
                 "Kills": 1,
             })
+            GameRules.CustomItem.Drop("hp", vect , 120);
+            GameRules.CustomItem.Drop("mp", vect , 120);
         } else if (unit_label == "creature_boss") {//boss
             GameRules.Spawn.BossKill(target);
         }
@@ -1219,6 +1247,8 @@ export class Spawn extends UIEventRegisterClass {
         this._map_boss_refresh = false;
         
         if (GameRules.Spawn._round_index < GameRules.Spawn._round_max) {
+            let vect = killed_unit.GetAbsOrigin();
+            GameRules.CustomItem.Drop("mp", vect , 120);
             if(GameRules.MapChapter._game_select_phase != 999){
                 GameRules.Spawn.TemporarilyStopTheGame();
                 GameRules.ServiceInterface.SendLuaLog(-1);

@@ -9,7 +9,7 @@ export class CustomItem extends UIEventRegisterClass {
         super("CustomItem", true)
     }
 
-    Drop(item_key: ItemListKey, vPos: Vector) {
+    Drop(item_key: ItemListKey, vPos: Vector , time : number = -1) {
         let unit_name = "npc_item_" + item_key
         let ItemUnit = CreateUnitByName(unit_name, vPos, false, null, null, DotaTeam.NEUTRALS)
         if (ItemUnit) {
