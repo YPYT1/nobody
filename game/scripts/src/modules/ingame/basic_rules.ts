@@ -22,9 +22,10 @@ export class BasicRules extends UIEventRegisterClass {
     Heal(hCaster: CDOTA_BaseNPC, fHealAmount: number, hAbility?: CDOTABaseAbility) {
         hCaster.Heal(fHealAmount, hAbility);
 
+        // hCaster.HealWithParams()
         let effect_fx = ParticleManager.CreateParticle(
             "particles/generic_gameplay/generic_lifesteal.vpc",
-            ParticleAttachment.POINT,
+            ParticleAttachment.ABSORIGIN_FOLLOW,
             hCaster
         )
         ParticleManager.ReleaseParticleIndex(effect_fx)
@@ -32,12 +33,12 @@ export class BasicRules extends UIEventRegisterClass {
 
     /** 回蓝 */
     RestoreMana(hCaster: CDOTA_BaseNPC, fManaAmount: number, hAbility?: CDOTABaseAbility) {
-        if(fManaAmount < 0){
-            hCaster.Script_ReduceMana(math.abs(fManaAmount) ,hAbility)
+        if (fManaAmount < 0) {
+            hCaster.Script_ReduceMana(math.abs(fManaAmount), hAbility)
         } else {
             hCaster.GiveMana(fManaAmount)
         }
-        
+
     }
 
 

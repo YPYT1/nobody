@@ -129,7 +129,14 @@ export class DamageSystem {
             )
             DamageBonusMul += stack * stack_income
         }
-
+        // 目标是否为减速状态
+        const bTargetSlow = UnitIsSlowed(hTarget);
+        // print("CriticalChance1:", CriticalChance)
+        // talent 42	凌弱	对被减速的敌人造成伤害时，暴击概率提高%bonus_crit%%%
+        if (hAttacker.hero_talent["42"] && bTargetSlow) {
+            CriticalChance += GameRules.HeroTalentSystem.GetTalentKvOfUnit(hAttacker, "42", "bonus_crit");
+        }
+        // print("CriticalChance2:", CriticalChance)
         /** 综合乘区 */
         if (params.damage_type == DamageTypes.PHYSICAL) {
             // 物理伤害
@@ -251,6 +258,10 @@ export class DamageSystem {
         let EvasionProb = custom_attribute_value ? custom_attribute_value.EvasionProb : 0;
         if (params.miss_flag != 1 && RollPercentage(EvasionProb)) {
             // 闪避
+            let talent_mdf = params.victim.FindModifierByName("modifier_talent_effect") as modifier_talent_effect
+            if (talent_mdf) {
+                talent_mdf.OnDodge(params.attacker)
+            }
             GameRules.CMsg.Popups(params.victim, 'Miss', 0, params.victim.GetPlayerOwner())
             return 0
         }

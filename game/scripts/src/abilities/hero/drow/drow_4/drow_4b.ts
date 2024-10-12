@@ -49,11 +49,11 @@ export class modifier_drow_4b extends BaseHeroModifier {
     }
 
 
-    DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.COOLDOWN_REDUCTION_CONSTANT
-        ]
-    }
+    // DeclareFunctions(): modifierfunction[] {
+    //     return [
+    //         ModifierFunction.COOLDOWN_REDUCTION_CONSTANT
+    //     ]
+    // }
 
     // GetModifierCooldownReduction_Constant(event: ModifierAbilityEvent): number {
     //     if (event.ability != this.ability) { return 0 }
@@ -104,13 +104,5 @@ export class modifier_drow_4b_buff extends BaseModifier {
         if (!IsServer()) { return }
         GameRules.CustomAttribute.DelAttributeInKey(this.caster, this.buff_key)
     }
-    // DeclareFunctions(): modifierfunction[] {
-    //     return [
-    //         ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
-    //     ]
-    // }
 
-    // GetModifierMoveSpeedBonus_Percentage(): number {
-    //     return this.move_pct
-    // }
 }

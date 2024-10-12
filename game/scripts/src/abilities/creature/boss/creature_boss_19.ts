@@ -87,11 +87,12 @@ export class creature_boss_19 extends BaseCreatureAbility {
 @registerModifier()
 export class modifier_creature_boss_19 extends BaseModifier {
 
+    /** 反弹效率 */
     ReverseDmgPct: number
     hero_counts: number;
 
     OnCreated(params: object): void {
-        this.ReverseDmgPct = 100 * 0.01;
+        this.ReverseDmgPct = 0.1;
         if (!IsServer()) { return }
         this.hero_counts = PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS);
     }
@@ -125,8 +126,7 @@ export class modifier_creature_boss_19 extends BaseModifier {
         } else if (event.attacker.HasModifier("modifier_creature_boss_19_note4")) {
             // 黑色音符玩家攻击boss会将伤害转移给平均其他玩家身上。
             if (this.hero_counts <= 1) { return 0 }
-            // print("hero_counts",this.hero_counts)
-            let damage = event.damage / (this.hero_counts - 1)
+            let damage = 0.25 * event.damage / (this.hero_counts - 1)
             for (let hHero of HeroList.GetAllHeroes()) {
                 // print(hHero , event.attacker,hHero == event.attacker)
                 if (hHero == event.attacker) { continue }

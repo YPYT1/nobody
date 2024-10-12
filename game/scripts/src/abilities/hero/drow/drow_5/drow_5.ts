@@ -48,6 +48,7 @@ export class modifier_drow_5 extends BaseHeroModifier {
             this.DoExecutedAbility()
             this.ability.ManaCostAndConverDmgBonus()
             this.caster.RemoveModifierByName("modifier_drow_5_buff");
+            this.caster.RemoveModifierByName(this.branch_mdf);
             this.caster.AddNewModifier(this.caster, this.ability, this.branch_mdf, {
                 duration: this.duration
             })
@@ -191,6 +192,9 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
             'DamageBonusMul': {
                 "Base": dmg_bonus_pct
             },
+            'ManaCostRate': {
+                "MulRegion": -this.mana_pct,
+            }
         })
 
     }
@@ -202,9 +206,9 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
         ]
     }
 
-    GetModifierPercentageManacostStacking(): number {
-        return this.mana_pct
-    }
+    // GetModifierPercentageManacostStacking(): number {
+    //     return this.mana_pct
+    // }
 
 }
 

@@ -8,6 +8,10 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
 @registerAbility()
 export class drow_3b extends BaseHeroAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf", context)
+    }
+
     GetIntrinsicModifierName(): string {
         return "modifier_drow_3b"
     }

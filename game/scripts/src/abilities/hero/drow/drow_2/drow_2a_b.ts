@@ -16,6 +16,10 @@ export class drow_2a_b extends drow_2a {
     bb_state: boolean = false;
     cigu_value: number;
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf",context)
+    }
+
     GetIntrinsicModifierName(): string {
         return "modifier_drow_2a_b"
     }
@@ -30,7 +34,7 @@ export class drow_2a_b extends drow_2a {
             this.bb_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_34', 'bb_dmg')
         }
         let bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "17", "radius");
-        this.bb_radius = this.GetTypesAffixValue(this.bb_chance, "Aoe", "skv_aoe_radius")
+        this.bb_radius = this.GetTypesAffixValue(bb_radius, "Aoe", "skv_aoe_radius")
         // rune_35	游侠#10	连续射击【冰爆】的范围提高50%，且必定触发冰爆
         if (this.caster.rune_level_index.hasOwnProperty("rune_35")) {
             let bb_radius_bonus_pct = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_35', 'bb_radius_bonus_pct') * 0.01;
@@ -73,21 +77,21 @@ export class drow_2a_b extends drow_2a {
 
             // 减速的敌人有概率触发冰爆
             let is_slowed = UnitIsSlowed(target);
-            // print("bingbao",is_slowed)
+            print("bingbao",is_slowed)
             if (is_slowed && (this.bb_state || RollPercentage(this.bb_chance))) {
                 let vPos = target.GetAbsOrigin()
                 // let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
                 this.PlayEffectAoe(vPos, ability_damage, DamageBonusMul);
 
-                let aoe_multiple = this.GetTypesAffixValue(1, "Aoe", "skv_aoe_chance") - 1;
-                if (RollPercentage(aoe_multiple)) {
-                    let vPos2 = Vector(
-                        vPos.x + RandomInt(-this.bb_radius, this.bb_radius),
-                        vPos.y + RandomInt(-this.bb_radius, this.bb_radius),
-                        vPos.z
-                    );
-                    this.PlayEffectAoe(vPos2, ability_damage, DamageBonusMul);
-                }
+                // let aoe_multiple = this.GetTypesAffixValue(1, "Aoe", "skv_aoe_chance") - 1;
+                // if (RollPercentage(aoe_multiple)) {
+                //     let vPos2 = Vector(
+                //         vPos.x + RandomInt(-this.bb_radius, this.bb_radius),
+                //         vPos.y + RandomInt(-this.bb_radius, this.bb_radius),
+                //         vPos.z
+                //     );
+                //     this.PlayEffectAoe(vPos2, ability_damage, DamageBonusMul);
+                // }
 
             }
             return false
@@ -95,6 +99,7 @@ export class drow_2a_b extends drow_2a {
     }
 
     PlayEffectAoe(vPos: Vector, attack_damage: number, DamageBonusMul: number) {
+        print("playeffect aoe",this.bb_radius)
         let effect_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf",
             ParticleAttachment.CUSTOMORIGIN,

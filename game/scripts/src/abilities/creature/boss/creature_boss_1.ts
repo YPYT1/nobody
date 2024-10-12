@@ -41,7 +41,7 @@ export class creature_boss_1 extends BaseCreatureAbility {
         ProjectileManager.CreateLinearProjectile({
             Ability: this,
             EffectName: "particles/econ/items/queen_of_pain/qop_arcana/qop_arcana_sonic_wave.vpcf",
-            vSpawnOrigin: this.vOrigin,
+            vSpawnOrigin: this.vOrigin + Vector(0,0,100) as Vector,
             fDistance: this.sector_distance - 500,
             fStartRadius: this.sector_angle,
             fEndRadius: this.sector_angle,

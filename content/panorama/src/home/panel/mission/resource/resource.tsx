@@ -1,5 +1,5 @@
 export let ResourcePanel: { [key in PlayerResourceTyps]?: Panel } = {}
-export const resource_list: PlayerResourceTyps[] = ["Kills", "Soul"];
+export const resource_list: PlayerResourceTyps[] = [ "Soul"];
 
 
 export const CreatePanel = () => {

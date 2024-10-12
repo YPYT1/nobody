@@ -198,6 +198,7 @@ export class BaseHeroAbility extends BaseAbility {
         // GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, this.hero_talent, "", "bonus_value");
     }
 
+    /** 蓝量转换 */
     ManaCostAndConverDmgBonus() {
         let cost_mana = this.GetManaCost(-1);
         let blood_mage = this.caster.HasAbility("special_blood_mage");

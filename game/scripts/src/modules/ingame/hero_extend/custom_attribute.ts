@@ -233,6 +233,7 @@ export class CustomAttribute {
                 let mul_value = 1;
                 if (hUnit.custom_mul_attribute[main_key]) {
                     let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
+                    DeepPrintTable(attr_values)
                     let base_value = 100;
                     for (let value of attr_values) {
                         base_value *= (100 + value) * 0.01;
@@ -272,7 +273,6 @@ export class CustomAttribute {
                     mul_value = base_value * 0.01;
                 }
 
-                // print("main", main_key, mul_value)
                 hUnit.custom_attribute_table[main_key].MulRegion = mul_value
             }
         }
@@ -410,6 +410,7 @@ export class CustomAttribute {
      * @param mode `0`为增加 `-1`为减
      */
     ModifyAttribute(hUnit: CDOTA_BaseNPC, AttrList: CustomAttributeTableType, mode: number = 0) {
+        // DeepPrintTable(AttrList)
         if (mode == 0) {
             for (let key in AttrList) {
                 let attr_key = key as keyof typeof AttrList;
@@ -420,10 +421,8 @@ export class CustomAttribute {
                             let value = AttrList[key][k2] as number;
                             hUnit.custom_attribute_table[key][k2] += value
                         }
-
                     }
                 }
-
             }
         } else {
             for (let key in AttrList) {
@@ -553,6 +552,14 @@ export class CustomAttribute {
         }
         let temp_attr_list = hUnit.custom_attribute_key_table[key];
         hUnit.custom_attribute_key_table[key] = null;
+
+        // 移除对应的 独立乘算
+        for(let attr_key in temp_attr_list){
+            if (hUnit.custom_mul_attribute[attr_key] != null){
+                hUnit.custom_mul_attribute[attr_key][key] = null
+            }
+        }
+        
         this.ModifyAttribute(hUnit, temp_attr_list, -1)
     }
 
