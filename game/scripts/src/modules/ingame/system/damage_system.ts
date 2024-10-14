@@ -1,4 +1,5 @@
 
+import { modifier_skywrath_2b_shield } from "../../../abilities/hero/skywrath/skywrath_2/skywrath_2b";
 import { modifier_prop_effect } from "../../../modifier/prop_effect/modifier_prop_effect";
 import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_rune_effect";
 import { modifier_talent_effect } from "../../../modifier/talent_effect/modifier_talent_effect";
@@ -249,6 +250,13 @@ export class DamageSystem {
         if (params.victim.HasModifier("modifier_altar_effect_6")) {
             return 0
         }
+        // 雷电屏障
+        if (params.miss_flag != 1 && params.victim.HasModifier("modifier_skywrath_2b_shield")) {
+            let skywrath_2b = params.victim.FindModifierByName("modifier_skywrath_2b_shield") as modifier_skywrath_2b_shield;
+            skywrath_2b._OnHit(params.attacker);
+            return 0
+        }
+
         params.damage_type = DamageTypes.PURE;
         let custom_attribute_value = params.victim.custom_attribute_value;
         if (custom_attribute_value == null) {

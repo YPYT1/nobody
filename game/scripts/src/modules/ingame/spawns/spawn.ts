@@ -1046,6 +1046,7 @@ export class Spawn extends UIEventRegisterClass {
      * debug 命令
      */
     Debug(cmd: string, args: string[], player_id: PlayerID) {
+        const hHero = PlayerResource.GetSelectedHeroEntity(player_id)
         if (cmd == "-ss") {
             let round = parseInt(args[0])
         }
@@ -1061,10 +1062,7 @@ export class Spawn extends UIEventRegisterClass {
             let name = "npc_monster_normal_" + _name;
             let count = args[1] ? parseInt(args[1]) : 1;
             for (let index = 0; index < count; index++) {
-                let _Vector = Vector()
-                let _map_coord_index = RandomInt(0, 199);
-                    //普通模式
-                _Vector = GameRules.Spawn._map_coord[_map_coord_index];
+                let _Vector = hHero.GetAbsOrigin() + RandomVector(500) as Vector;
                 GameRules.Spawn.CreateMonster(name , _Vector ,this._round_index) 
             }
             

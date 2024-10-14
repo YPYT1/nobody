@@ -71,9 +71,9 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
     }
 
     UpdataAbilityValue(): void {
-        
         this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
         this.give_mana = this.ability.GetSpecialValueFor("give_mana");
+
     }
 
     OnIntervalThink(): void {
@@ -95,10 +95,10 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
                 FindOrder.CLOSEST,
                 false
             )
-            if (enemies.length <= 0) { 
+            if (enemies.length <= 0) {
                 this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
                 this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
-                return 
+                return
             }
             let hTarget = enemies[0];
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
@@ -153,6 +153,7 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
                 dt: this.damage_type,
                 SelfAbilityMul: SelfAbilityMul,
                 DamageBonusMul: DamageBonusMul,
+                c: 0,
             } as ProjectileExtraData
         })
     }

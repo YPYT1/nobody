@@ -110,6 +110,10 @@ export class modifier_basic_move extends BaseModifier {
                 // Position: origin,
                 Queue: false,
             })
+
+            
+        } else {
+            this.parent.RemoveModifierByName("modifier_skywrath_1c_lx_channel")
         }
         // if (state == false) {
         //     this.move_up = false;

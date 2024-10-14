@@ -24,6 +24,7 @@ export class ElementEffect {
         if (hTarget.IsBossCreature()) { return }
         if (hTarget.HasModifier("modifier_element_effect_ice")) {
             if (RollPercentage(15)) {
+                // 冰冻效果
                 hTarget.AddNewModifier(hCaster, null, "modifier_element_effect_ice_frozen", {
                     duration: 1
                 })

@@ -101,6 +101,7 @@ export class modifier_element_effect_ice extends BaseModifier {
 
 }
 
+/** 冰冻 */
 @registerModifier()
 export class modifier_element_effect_ice_frozen extends BaseModifier {
 

@@ -33,7 +33,7 @@ export class StackModifier extends BaseModifier {
     UpdateValue(params: any) { }
 }
 
-
+/** 每层的buff独立计算 */
 export class StackModifierIndep extends BaseModifier {
 
     max_stack: number;
@@ -49,7 +49,7 @@ export class StackModifierIndep extends BaseModifier {
         this.max_stack = params.fMaxStack ?? 999;
         this.stack_list = [fAddStack];
         let interval = this.GetAbility().GetSpecialValueFor("interval");
-        if (interval == 0) { interval = 0.5; }
+        if (interval == 0) { interval = 0.25; }
         this.SetStackCount(fAddStack);
         this.StartIntervalThink(interval);
     }

@@ -1,7 +1,12 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { modifier_skywrath_2a, skywrath_2a } from "./skywrath_2a";
+import { element_orb, modifier_skywrath_2a, modifier_skywrath_2a_surround, modifier_skywrath_2a_surround_collision, skywrath_2a } from "./skywrath_2a";
 
 
+/**
+ * 72	霜降	生成一枚常驻的冰块，缠绕周围，对触碰到的敌人造成冰元素伤害。提升30%/40%/50%基础技能伤害。
+73	零度	"冰块数量增加至2/3枚
+74	永冻	触碰到冰块的敌人强制冻结1秒。
+ */
 @registerAbility()
 export class skywrath_2a_b extends skywrath_2a {
 
@@ -12,4 +17,68 @@ export class skywrath_2a_b extends skywrath_2a {
 @registerModifier()
 export class modifier_skywrath_2a_b extends modifier_skywrath_2a {
 
+    surround_mdf = "modifier_skywrath_2a_b_surround";
+
+    UpdataSpecialValue(): void {
+        this.surround_count += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "73", "count")
+    }
+
+}
+
+@registerModifier()
+export class modifier_skywrath_2a_b_surround extends modifier_skywrath_2a_surround {
+
+    ModifierAura = "modifier_skywrath_2a_b_surround_collision";
+
+    C_OnCreated(params: any): void {
+        this.GetParent().summoned_damage = GameRules.GetDOTATime(false, false) + 1;
+        let effect_name = element_orb[ElementTypes.ICE];
+        let cast_fx = ParticleManager.CreateParticle(
+            effect_name,
+            ParticleAttachment.POINT_FOLLOW,
+            this.GetParent()
+        );
+        ParticleManager.SetParticleControlEnt(
+            cast_fx, 1, this.GetParent(), ParticleAttachment.POINT_FOLLOW, "", Vector(0, 0, 0), true
+        )
+        this.AddParticle(cast_fx, false, false, 1, false, false);
+    }
+
+    OnDestroy(): void {
+        if (!IsServer()) { return }
+        UTIL_Remove(this.GetParent())
+    }
+}
+
+
+@registerModifier()
+export class modifier_skywrath_2a_b_surround_collision extends modifier_skywrath_2a_surround_collision {
+
+    OnCreated_Extends() {
+        this.damage_type = DamageTypes.MAGICAL
+        this.element_type = ElementTypes.ICE;
+        const hParent = this.GetParent()
+        ApplyCustomDamage({
+            victim: this.GetParent(),
+            attacker: this.GetCaster(),
+            damage: this.ability_damage,
+            damage_type: this.damage_type,
+            ability: this.ability,
+            element_type: this.element_type,
+            is_primary: true,
+            // damage_vect: this.GetParent().GetAbsOrigin(),
+            SelfAbilityMul: this.SelfAbilityMul,
+        })
+
+        // 74 永东
+        const talent74 = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "74", "frozen_duration")
+        if (talent74 > 0) {
+            if (this.GetParent().CustomVariables == null || this.GetParent().CustomVariables["talent74"] == null) {
+                this.GetParent().CustomVariables = {}
+                this.GetParent().CustomVariables["talent74"] = 1;
+                GameRules.BuffManager.AddGeneralDebuff(this.caster, this.GetParent(), DebuffTypes.frozen, 1)
+            }
+        }
+
+    }
 }

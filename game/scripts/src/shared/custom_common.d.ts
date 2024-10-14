@@ -85,7 +85,8 @@ declare interface ProjectileExtraData {
     x?: number;
     /** Y坐标 */
     y?: number;
-
+    /** code */
+    c?: number;
     /** 技能基础伤害  */
     SelfAbilityMul?: number;
     /** `伤害加成` 后续会转为百分比小数  */

@@ -74,6 +74,9 @@ declare const enum DebuffTypes {
     chaos = 11,
     /** 不可操作 WASD失效*/
     un_controll = 12,
+    /** 冻结 */
+    frozen = 13
+
 }
 
 declare const enum CGMessageEventType {
