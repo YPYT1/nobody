@@ -730,7 +730,6 @@ export class MapChapter extends UIEventRegisterClass {
         }
         // let unitlist = Entities.FindAllByClassname("npc_exp");
         // print("unitlist", unitlist.length)
-        print("GameRules.Spawn._game_start : " , GameRules.Spawn._game_start)
         if (GameRules.Spawn._game_start == false && this._game_select_phase == 999) {
             this._game_select_phase = 0;
             this.GetGameSelectPhase(-1, {})
@@ -739,7 +738,7 @@ export class MapChapter extends UIEventRegisterClass {
                 //初始化可选技能 == 清理
                 GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(index)
                 //初始化可用符文 == 清理
-                GameRules.RuneSystem.InitPlayerUpgradeStatus(index , 0 )
+                GameRules.RuneSystem.InitPlayerUpgradeStatus(index)
                 //初始化神秘商店
                 GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(index)
 

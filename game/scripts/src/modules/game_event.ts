@@ -160,7 +160,7 @@ export class GameEvent {
             //初始化可选技能
             GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id)
             //初始化可用符文
-            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id, 1, hUnit)
+            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id, hUnit)
             //初始化神秘商店
             GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
 
