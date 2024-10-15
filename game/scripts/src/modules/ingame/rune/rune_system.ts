@@ -96,8 +96,12 @@ export class RuneSystem extends UIEventRegisterClass {
             }
         }
     }
-    InitPlayerUpgradeStatus( player_id : PlayerID , hero_id : number , hHero: CDOTA_BaseNPC = null) {
+    InitPlayerUpgradeStatus( player_id : PlayerID , hHero: CDOTA_BaseNPC = null) {
+        let hero_id = -1;
         //掉落列表初始化
+        if(hHero != null && hHero.IsHero()){
+            hero_id = hHero.GetHeroID();
+        }
         //公共物品物品
         let drop_info: { key: string[], pro: number[]; } = {
             key : [],
