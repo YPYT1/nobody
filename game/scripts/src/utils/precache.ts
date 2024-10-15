@@ -4,6 +4,7 @@ import { skywrath_precache } from "../kv_data/precache_data/hero_ability/skywrat
 import { HeroList } from "../kv_data/precache_data/hero_list";
 import "./../global/global_precache";
 import * as NpcAbilitiesCustomJson from "../json/npc_abilities_custom.json";
+import * as NpcUnitCustomJson from "../json/npc_units_custom.json";
 
 const abilities_list = Object.keys(NpcAbilitiesCustomJson)
 // 导出的预载入方法，用来给addon_game_mode.ts调用
@@ -82,7 +83,7 @@ export default function Precache(context: CScriptPrecacheContext) {
     precacheUnits(
         [
             // 单位名称
-            ...HeroList,
+            ...Object.keys(NpcUnitCustomJson),
         ],
         context
     );

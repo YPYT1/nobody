@@ -97,9 +97,13 @@ export class modifier_public_attribute extends BaseModifier {
                 })
 
             } else {
-                UTIL_Remove(ExpItem);
-                GameRules.CustomItem.useItemEffect(unitname, this.hParent)
-                // 回血
+                if (unitname == "npc_item_hp"
+                    || unitname == "npc_item_mp"
+                    || unitname == "npc_item_all"
+                ) {
+                    UTIL_Remove(ExpItem);
+                    GameRules.CustomItem.useItemEffect(unitname, this.hParent)
+                }
             }
         }
 
