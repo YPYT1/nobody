@@ -63,8 +63,8 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         for (let index = 0; index < GameRules.PUBLIC_CONST.PLAYER_COUNT; index++) {
             this.PlayerUpgradePool[index] = {};
             this.EvolutionPoint.push(0);
-            this.PlayerRefreshCount.push(GameRules.PUBLIC_CONST.PLAYER_REFRESH_COUNT)
-            this.PlayerSelectAmount.push(GameRules.PUBLIC_CONST.PLAYER_ARMS_SELECT_MAX)
+            // this.PlayerRefreshCount.push(GameRules.PUBLIC_CONST.PLAYER_REFRESH_COUNT)
+            // this.PlayerSelectAmount.push(GameRules.PUBLIC_CONST.PLAYER_ARMS_SELECT_MAX)
             this.PlayerFirstState.push(false)
             this.PlayerUpgradePoolFirstData.push([])
 

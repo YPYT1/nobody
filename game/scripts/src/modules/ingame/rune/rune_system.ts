@@ -95,6 +95,7 @@ export class RuneSystem extends UIEventRegisterClass {
                 this.rune_ability_values[i_key][A_key] = numlist;
             }
         }
+        this.player_refresh_count_config = GameRules.PUBLIC_CONST.PLAYER_REFRESH_COUNT_CONFIG
     }
     InitPlayerUpgradeStatus( player_id : PlayerID , hHero: CDOTA_BaseNPC = null) {
         let hero_id = -1;
@@ -1004,6 +1005,10 @@ export class RuneSystem extends UIEventRegisterClass {
             GameRules.RuneSystem.GetRuneSelectToPlayer(player_id , type);
         } else if (cmd == "-bwhq") { //获取符文信息
             GameRules.RuneSystem.GetPlayerRuneData(player_id, {});
+        } else if (cmd == "-fwsx") {
+            let count = tonumber(args[0]) ?? 1;
+            this.player_refresh_count[player_id] += count;
+            this.GetRuneSelectData(player_id, {});
         }
     }
 }

@@ -1196,10 +1196,10 @@ export class Spawn extends UIEventRegisterClass {
                 "Kills": 1,
             })
             //掉落物品
-            if(RollPercentage(2)){
+            if(RollPercentage(GameRules.PUBLIC_CONST.CREATUR_NORMAL_DROP_HP / 10)){
                 GameRules.CustomItem.Drop( "hp", vect , 120);
             }
-            if(RollPercentage(2)){
+            if(RollPercentage(GameRules.PUBLIC_CONST.CREATUR_NORMAL_DROP_MP / 10)){
                 GameRules.CustomItem.Drop( "mp", vect , 120);
             }
             //处理数据

@@ -52,10 +52,10 @@ export class ItemEvolution extends UIEventRegisterClass {
             }
         }
         //给英雄初始6个物品
-        for (let index = 0; index < 6; index++) {
-            let new_item = this.GetNewItem(GameRules.PUBLIC_CONST.HREO_INIT_ITEM_NAME);
-            hUnit.AddItem(new_item);
-        }
+        // for (let index = 0; index < 6; index++) {
+        //     let new_item = this.GetNewItem(GameRules.PUBLIC_CONST.HREO_INIT_ITEM_NAME);
+        //     hUnit.AddItem(new_item);
+        // }
     }
 
     /**
