@@ -232,16 +232,12 @@ export class modifier_altar_effect_7 extends ModifierAltarEffect {
 
 
     _OnCreated(params: any): void {
-        GameRules.PlayerAttribute.ModifyPlayerAttribute(this.player_id, {
-            "drop_double_exp": 100,
-        })
+        GameRules.ResourceSystem.ModifyAcquisitionRate(this.player_id, "SingleExp", 100)
     }
 
     OnDestroy(): void {
         if (!IsServer()) { return }
-        GameRules.PlayerAttribute.ModifyPlayerAttribute(this.player_id, {
-            "drop_double_exp": -100,
-        })
+        GameRules.ResourceSystem.ModifyAcquisitionRate(this.player_id, "SingleExp", -100)
     }
 
 }
@@ -254,16 +250,12 @@ export class modifier_altar_effect_8 extends ModifierAltarEffect {
     color = Vector(4, 109, 1);
 
     _OnCreated(params: any): void {
-        GameRules.PlayerAttribute.ModifyPlayerAttribute(this.player_id, {
-            "drop_double_soul": 100,
-        })
+        GameRules.ResourceSystem.ModifyAcquisitionRate(this.player_id, "Soul", 100)
     }
 
     OnDestroy(): void {
         if (!IsServer()) { return }
-        GameRules.PlayerAttribute.ModifyPlayerAttribute(this.player_id, {
-            "drop_double_soul": -100,
-        })
+        GameRules.ResourceSystem.ModifyAcquisitionRate(this.player_id, "Soul", -100)
     }
 }
 
