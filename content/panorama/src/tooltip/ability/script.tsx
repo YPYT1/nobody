@@ -181,7 +181,7 @@ function ResetAbilityElementAndType() {
 function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
     const QueryUnit = Players.GetLocalPlayerPortraitUnit();
     let player_id = Entities.GetPlayerOwnerID(QueryUnit)
-    let description = SetAbilityDescription(ability_name, ability_level, false);
+    let description = "";//SetAbilityDescription(ability_name, ability_level, false);
     let is_hero = Entities.IsHero(QueryUnit);
     if (!is_hero) {
         MainPanel.SetDialogVariable("description", description);
@@ -196,6 +196,8 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
     let in_slot = $.GetContextPanel().GetAttributeInt("slot", -1);
     let netdata = CustomNetTables.GetTableValue("hero_talent", `${player_id}`)
     // $.Msg(netdata)
+    let extra_desc = ""
+    MainPanel.SetDialogVariable("description", "");
     if (netdata != null) {
         for (let key in talent_data) {
             let level = 0;
@@ -203,15 +205,19 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
             if (level <= 0) { continue }
             let row_data = talent_data[key as keyof typeof talent_data]
             let link_ability = row_data.link_ability;
-            // $.Msg([link_ability,ability_name])
+
             if (link_ability == ability_name || (row_data.tier_number == 99 && (row_data.index - 1) == in_slot)) {
                 let is_ability = row_data.is_ability == 1;
-                // $.Msg([ability_name, key, netdata[key]])
+                let parent_ability_key = row_data.parent_ability_key;
+                if (parent_ability_key != "null" && parent_ability_key != key  ){
+                    let parent_data = talent_data[parent_ability_key as keyof typeof talent_data]
+                    let talent_desc = $.Localize(`#custom_talent_${parent_ability_key}_desc`)
+                    let desc = SetLabelDescriptionExtra(talent_desc, ability_level, parent_data.AbilityValues, parent_data.ObjectValues, false);
+                    MainPanel.SetDialogVariable("description", desc);
+                }
                 let extra_panel = $.CreatePanel("Panel", TalentAbilityExtra, "");;
                 extra_panel.BLoadLayoutSnippet("ExtraAbility");
                 extra_panel.SetHasClass("IsAbility", is_ability);
-
-
                 extra_panel.SetDialogVariableInt("talent_level", level);
                 extra_panel.SetDialogVariableInt("talent_max", row_data.max_number);
 
@@ -223,7 +229,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
 
                 let TalentData = GetHeroTalentTreeRowData(key);
                 let talent_desc = $.Localize(`#custom_talent_${key}_desc`)
-                let extra_desc = SetLabelDescriptionExtra(talent_desc, level - 1, TalentData.AbilityValues, TalentData.ObjectValues, true);
+                extra_desc += SetLabelDescriptionExtra(talent_desc, level - 1, TalentData.AbilityValues, TalentData.ObjectValues, true);
                 let description_lv2 = $.Localize(`#custom_talent_${key}_desc_lv2`);
                 if (description_lv2.indexOf("#") != 0) {
                     let is_act = level >= 2;
@@ -238,7 +244,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
         }
     }
 
-    MainPanel.SetDialogVariable("description", description);
+    // 
 }
 
 

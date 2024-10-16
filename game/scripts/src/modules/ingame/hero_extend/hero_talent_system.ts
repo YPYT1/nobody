@@ -708,6 +708,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     >( value_key: TIndex, k2: T1, level_index: number = 0) {
         let k2_key = k2 as string;
         // let value = this.talent_tree_values[hero][value_key];
+        DeepPrintTable(this.talent_tree_values)
         let length = this.talent_tree_values[value_key][k2_key].length;
         if (length > 0) {
             if (level_index < 0) {

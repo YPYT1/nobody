@@ -94,7 +94,6 @@ export const Init = () => {
         RuneSelectList.RemoveAndDeleteChildren();
         let select_index = 0;
         let reward_type = data.type;
-        $.Msg([reward_type])
         LocalPlayerRuneDialog.SetHasClass("type_0",reward_type == 0);
         LocalPlayerRuneDialog.SetHasClass("type_1",reward_type == 1);
         LocalPlayerRuneDialog.SetHasClass("type_2",reward_type == 2);

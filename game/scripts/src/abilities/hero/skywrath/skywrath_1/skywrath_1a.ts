@@ -174,12 +174,21 @@ export class modifier_skywrath_1a_yinlei_aura extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.caster = this.GetCaster();
         let yl_thunder_bonus = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "61", "yl_thunder_bonus");
+        let yinlei_mul = this.caster.GetTalentKv("93", "yinlei_mul");
+        if(yinlei_mul > 0){
+            yinlei_mul = -100
+        }
         GameRules.EnemyAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
             "ThunderDamageIncome": {
                 "Base": yl_thunder_bonus
+            },
+            "DmgReductionPct": {
+                "Base": yinlei_mul
             }
         })
+
     }
 
 

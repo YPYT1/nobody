@@ -9,6 +9,8 @@ import * as public_const from "../json/config/public_const.json";
 import { ElementEffect } from './ingame/system/element_effect';
 import { DamageSystem } from './ingame/system/damage_system';
 import { CustomItem } from './ingame/system/custom_item';
+import { HeroTalentObject } from '../kv_data/hero_talent_object';
+
 
 declare global {
 
@@ -20,15 +22,23 @@ declare global {
         MapChapter: MapChapter;
         ElementEffect: ElementEffect;
         DamageSystem: DamageSystem;
-        Debug:Debug;
-        CustomItem:CustomItem;
+        Debug: Debug;
+        CustomItem: CustomItem;
         /**常量 */
         PUBLIC_CONST: typeof public_const;
+    }
+
+    interface CDOTA_BaseNPC {
+        GetTalentKv<
+            TIndex extends keyof typeof HeroTalentObject,
+            T1 extends keyof typeof HeroTalentObject[TIndex]["AbilityValues"],
+        >(index_key: TIndex, ability_key: T1): number
     }
 }
 
 // @ts-expect-error @eslint-disable-next-line
 GameRules.ModuleActivated = GameRules.ModuleActivated ?? false;
+
 
 
 /**
@@ -53,6 +63,9 @@ export function ActivateModules() {
 
     // 如果某个模块不需要在其他地方使用，那么直接在这里使用即可
     new GameConfig();
-    
+
 
 }
+
+
+

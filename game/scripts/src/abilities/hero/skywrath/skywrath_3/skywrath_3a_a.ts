@@ -74,7 +74,7 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
                 this.GetAbility(),
                 "modifier_skywrath_3a_a_meteor",
                 {
-                    duration: 1.3,
+                    duration: 1.4,
                     manacost_bonus: params.value,
                 },
                 enemy.GetAbsOrigin() + RandomVector(50) as Vector,
@@ -91,7 +91,7 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
                 this.GetAbility(),
                 "modifier_skywrath_3a_a_meteor",
                 {
-                    duration: 2,
+                    duration: 1.4,
                     manacost_bonus: params.value,
                 },
                 vPos + RandomVector(RandomInt(300, this.range)) as Vector,
@@ -110,18 +110,15 @@ export class modifier_skywrath_3a_a_channel extends BaseModifier {
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
-        this.GetAbility().SetFrozenCooldown(true)
         this.caster = this.GetCaster();
         this.manacost_bonus = params.manacost_bonus;
         this.least_time = GameRules.GetDOTATime(false, false) + this.GetDuration()
-        GameRules.BasicRules.StopMove(this.caster);
         GameRules.CMsg.AbilityChannel(this.caster, this, 1)
     }
 
     OnDestroy(): void {
         if (!IsServer()) { return }
         GameRules.CMsg.AbilityChannel(this.caster, this, 0)
-        this.GetAbility().SetFrozenCooldown(false)
         if (this.least_time <= GameRules.GetDOTATime(false, false)) {
             // 成功吟唱
             let mdf = this.caster.FindModifierByName("modifier_skywrath_3a_a") as modifier_skywrath_3a_a;
@@ -188,7 +185,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
         for (let enemy of enemies) {
 
             let bonus = 0;
-            if (enemy.HasModifier("modifier_skywrath_3a_a_fentian")){
+            if (enemy.HasModifier("modifier_skywrath_3a_a_fentian")) {
                 bonus = meteor_bonus
             }
             ApplyCustomDamage({
@@ -205,23 +202,40 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
             })
 
             // fentian
-            if(meteor_duration > 0){
-                enemy.AddNewModifier(this.caster,this.GetAbility(),"modifier_skywrath_3a_a_fentian",{
-                    duration:meteor_duration
+            if (meteor_duration > 0) {
+                enemy.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3a_a_fentian", {
+                    duration: meteor_duration
                 })
             }
-            
+
         }
         // 89
         let explosion_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "89", "explosion_radius");
         if (explosion_radius > 0) {
             // 引爆火种
             let tinder_damage = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "89", "tinder_damage");
-            let tinder_list = Entities.FindAllByNameWithin("npc_summoned_tinder", this.parent_origin, this.radius + 25);
+            // let tinder_list = Entities.FindAllByNameWithin("npc_summoned_tinder", this.parent_origin, this.radius + 25);
+            // DebugDrawCircle(this.parent_origin, Vector(255, 0, 0), 100, 225, true, 1)
+            let tinder_list = FindUnitsInRadius(
+                this.team,
+                this.parent_origin,
+                null,
+                this.radius + 25,
+                UnitTargetTeam.FRIENDLY,
+                UnitTargetType.ALL,
+                UnitTargetFlags.INVULNERABLE,
+                FindOrder.ANY,
+                false
+            )
+
             for (let tinder of tinder_list) {
-                let tinder_origin = tinder.GetAbsOrigin();
-                UTIL_Remove(tinder);
-                this.PlayIgnite(tinder_origin, explosion_radius, tinder_damage)
+                let unitname = tinder.GetUnitName();
+                if (unitname == "npc_summoned_tinder") {
+                    let tinder_origin = tinder.GetAbsOrigin();
+                    UTIL_Remove(tinder);
+                    this.PlayIgnite(tinder_origin, explosion_radius, tinder_damage)
+                }
+
             }
 
         }
@@ -234,20 +248,24 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
         }
 
         this.StartIntervalThink(-1)
+
+        this.Destroy()
     }
 
     CreateTinder(tinder_duration: number) {
         let tinder = CreateUnitByName("npc_summoned_tinder", this.parent_origin, false, null, null, this.team);
-        tinder.AddNewModifier(this.caster, null, "modifier_skywrath_3a_a_tinder", { duration: tinder_duration })
+        tinder.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3a_a_tinder", { duration: tinder_duration })
+
+        // tinder.type
     }
 
     PlayIgnite(vPos: Vector, explosion_radius: number, tinder_damage: number) {
         let effect_fx = ParticleManager.CreateParticle(
-            "particles/econ/courier/courier_cluckles/courier_cluckles_ambient_rocket_explosion.vpcf",
-            ParticleAttachment.CUSTOMORIGIN,
-            null
+            "particles/dev/hero/drow/drow_1/explosion_arrow.vpcf",
+            ParticleAttachment.POINT,
+            this.GetParent()
         )
-        ParticleManager.SetParticleControl(effect_fx, 0, vPos)
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(explosion_radius,0,0))
         ParticleManager.ReleaseParticleIndex(effect_fx)
         let enemies = FindUnitsInRadius(
             this.team,
@@ -286,9 +304,8 @@ export class modifier_skywrath_3a_a_tinder extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
-        //
         let effect_fx = ParticleManager.CreateParticle(
-            "models/ui/candyworks/particles/candyworks_fireplace_light.vpcf",
+            "particles/world_environmental_fx/fire_torch.vpcf",
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         )
@@ -310,7 +327,7 @@ export class modifier_skywrath_3a_a_tinder extends BaseModifier {
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
-            [ModifierState.INVULNERABLE]: true,
+            [ModifierState.INVISIBLE]: true,
             [ModifierState.UNSELECTABLE]: true,
             [ModifierState.NO_HEALTH_BAR]: true,
             [ModifierState.NO_UNIT_COLLISION]: true,

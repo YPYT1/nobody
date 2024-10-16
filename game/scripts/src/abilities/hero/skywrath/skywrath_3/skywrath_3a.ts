@@ -57,29 +57,15 @@ export class modifier_modifier_skywrath_3a_channel extends BaseModifier {
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
-        this.GetAbility().SetFrozenCooldown(true)
         this.caster = this.GetCaster();
         this.manacost_bonus = params.manacost_bonus;
         this.least_time = GameRules.GetDOTATime(false, false) + this.GetDuration()
-        this.caster.AddNewModifier(this.caster, null, "modifier_basic_move", {
-            "UP": 0,
-            "DOWN": 0,
-            "LEFT": 0,
-            "RIGHT": 0
-        })
-        ExecuteOrderFromTable({
-            UnitIndex: this.caster.entindex(),
-            OrderType: UnitOrder.STOP,
-            Queue: false,
-        })
-
         GameRules.CMsg.AbilityChannel(this.caster, this, 1)
     }
 
     OnDestroy(): void {
         if (!IsServer()) { return }
         GameRules.CMsg.AbilityChannel(this.caster, this, 0)
-        this.GetAbility().SetFrozenCooldown(false)
         if (this.least_time <= GameRules.GetDOTATime(false, false)) {
             // 成功吟唱
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_modifier_skywrath_3a_bombing", {

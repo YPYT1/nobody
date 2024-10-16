@@ -1,0 +1,1 @@
+import "./cdota_basenpc";

@@ -27,6 +27,12 @@ export class EnemyAttribute {
         hUnit.enemy_attribute_table_key = {};
         hUnit.enemy_attribute_table = {};
         hUnit.SpecialMark = {};
+        for (let k in EnemyAttributeConst) {
+            let attr_key = k as EnemyAttributeKey;
+            hUnit.enemy_attribute_table[attr_key] = {
+                "Base": 0
+            }
+        }
     }
 
     ModifyAttribute(hUnit: CDOTA_BaseNPC, AttrList: EnemyAttributeValueType, mode: number = 0) {
@@ -38,17 +44,13 @@ export class EnemyAttribute {
                 let attr_key = key as keyof typeof AttrList;
                 let is_mul = EnemyAttributeConst[attr_key].is_mul == 1;
                 if (!is_mul) {
-                    for (let k2 in AttrList[attr_key]) {
-                        let value = AttrList[attr_key][k2] as number;
-                        if (hUnit.enemy_attribute_table[attr_key] == null) {
-                            hUnit.enemy_attribute_table[attr_key] = {
-                                "Base": 0,
-                            }
+                    for (let k2 in AttrList[key]) {
+                        if (k2 != "MulRegion") {
+                            let value = AttrList[key][k2] as number;
+                            hUnit.enemy_attribute_table[key][k2] += value
                         }
-                        hUnit.enemy_attribute_table[key][k2] += value
                     }
                 }
-
             }
         } else {
             for (let key in AttrList) {
@@ -56,17 +58,16 @@ export class EnemyAttribute {
                 let is_mul = EnemyAttributeConst[attr_key].is_mul == 1;
                 if (!is_mul) {
                     for (let k2 in AttrList[key]) {
-                        let value = AttrList[key][k2] as number;
-                        if (hUnit.enemy_attribute_table[attr_key] == null) {
-                            hUnit.enemy_attribute_table[attr_key] = {
-                                "Base": 0,
-                            }
+                        if (k2 != "MulRegion") {
+                            let value = AttrList[key][k2] as number;
+                            hUnit.enemy_attribute_table[key][k2] -= value
                         }
-                        hUnit.enemy_attribute_table[key][k2] -= value
+
                     }
                 }
             }
         }
+
 
         this.AttributeCalculate(hUnit, Object.keys(AttrList) as AttributeMainKey[]);
     }
@@ -115,7 +116,6 @@ export class EnemyAttribute {
                 timer_key,
                 () => {
                     let temp_attr_list = hUnit.enemy_attribute_table_key[key];
-                    DeepPrintTable(hUnit.custom_mul_attribute)
                     for (let attr_key in hUnit.custom_mul_attribute) {
                         hUnit.custom_mul_attribute[attr_key as AttributeMainKey][key] = null
                     }

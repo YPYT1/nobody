@@ -84,6 +84,11 @@ export class DamageSystem {
             PopupDamageNumber(hAttacker, hTarget, params.damage_type, 0, 0, 0);
             return 0
         }
+
+        if (hAttacker == hTarget) {
+            return ApplyDamage(params);
+        }
+
         const iPlayerID = hAttacker.GetPlayerOwnerID();
         params.miss_flag = params.miss_flag ?? 0;
         if (hAttacker.GetTeam() == DotaTeam.BADGUYS) {
@@ -115,8 +120,11 @@ export class DamageSystem {
         let AbilityImproved = (params.AbilityImproved ?? 0) + hAttacker.custom_attribute_value.AbilityImproved;
         let ElementDmgMul = (params.ElementDmgMul ?? 0) + hAttacker.custom_attribute_value.AllElementDamageBonus;
         let FinalDamageMul = (params.FinalDamageMul ?? 0) + hAttacker.custom_attribute_value.FinalDamageMul;
-        /** 元素伤害 */
-        let ElementResist = 100;
+        let DmgReductionPct = (100 - (params.victim.enemy_attribute_value.DmgReductionPct ?? 0)) * 0.01;
+        params.damage = params.damage * DmgReductionPct;
+        /** 元素抗性 */
+        let ElementResist = 100 - (params.victim.enemy_attribute_value.AllElementResist ?? 0);
+        print("ElementResist", ElementResist)
         // 乘区
         DamageBonusMul += this.GetBonusDamageFromProp(params)
         // 游侠天赋击破效果
@@ -206,8 +214,7 @@ export class DamageSystem {
             return ApplyDamage(params);
         }
 
-        // print(params.damage, "SelfAbilityMul:", SelfAbilityMul, DamageBonusMul, AbilityImproved, ElementDmgMul, FinalDamageMul, 'damagetype', params.damage_type)
-        // print("DamageBonusMul",DamageBonusMul)
+
         /**
          * 造成伤害1=(攻击者攻击力*【1+攻击力加成百分比】*对应技能伤害)*伤害加成*(1+最终伤害)*技能增强*元素伤害百分比*远程或近战伤害增加百分比
             造成伤害2=固定伤害（=攻击者固定伤害-受攻击者固定伤害减免）【造成伤害最小值1】
@@ -220,7 +227,7 @@ export class DamageSystem {
             * (1 + FinalDamageMul * 0.01)
             * ElementResist * 0.01
             ;
-        // print("increased_injury",increased_injury)
+        // print("increased_injury", increased_injury)
         // print("ElementResist", ElementResist)
         params.damage = math.floor(params.damage * increased_injury);
         // 暴击
@@ -253,7 +260,6 @@ export class DamageSystem {
      * @returns 
      */
     ApplyDamageForBadTeam(params: ApplyCustomDamageOptions) {
-
         // 无敌
         if (params.victim.HasModifier("modifier_altar_effect_6")) {
             return 0

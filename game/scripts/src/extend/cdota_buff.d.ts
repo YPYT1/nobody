@@ -8,6 +8,7 @@ declare interface CDOTA_Buff {
     origin: Vector;
 
     manacost_bonus:number;
+    attack_damage:number;
     /** `该技能加成` */
     SelfAbilityMul: number;
     /** `伤害加成` 后续会转为百分比小数  */

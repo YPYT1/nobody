@@ -50,7 +50,7 @@ export const Init = () => {
 const TestCode = () => {
 
     $.Schedule(1, () => {
-        $.Msg("test play 1")
+
 
         RadiantComplete.AddClass("Play")
         DireComplete.AddClass("Play")

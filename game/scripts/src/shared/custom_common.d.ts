@@ -34,7 +34,7 @@ declare interface ApplyCustomDamageOptions {
     damage_flags?: DOTADamageFlag_t;
     ability?: CDOTABaseAbility;
 
-    /** 主技能 作为Arms技能,而非其他类型,符文,特效*/
+    /** 主技能 作为主要技能,而非其他类型,符文,特效*/
     is_primary?: boolean;
     /** 特效伤害 为True时部分效果不会触发避免套娃 */
     special_effect?: boolean;

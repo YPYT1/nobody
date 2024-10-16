@@ -43,9 +43,7 @@ const CustomGameEventsSubscribe = () => {
     // 符文
     GameEvents.Subscribe("RuneSystem_GetPlayerRuneData", event => {
         let list_data = Object.values(event.data);
-        // $.Msg(["list_data", list_data])
         for (let row of list_data) {
-            // $.Msg(row)
             let name = row.name;
             let ItemBorder = ItemList_Rune.FindChildTraverse(name);
             if (ItemBorder == null) {
