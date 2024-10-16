@@ -8,11 +8,12 @@ export class StackModifier extends BaseModifier {
     OnCreated(params: any): void {
         if (!IsServer()) { return; }
         this.parent = this.GetParent()
+        this.caster = this.GetCaster();
         this.UpdateValue(params)
         let init_stack = params.init_stack ?? 1;
         this.max_stack = params.max_stack ?? 1;
         this.SetStackCount(init_stack);
-
+        
     }
 
     OnRefresh(params: any): void {

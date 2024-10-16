@@ -435,7 +435,7 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.NewArmsEvolution.ArmsGlobalInit();
 
         GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
-        let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
+        let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, this.ChapterData.z);
         this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
             this.ChapterData.map_name,
             vLocation,

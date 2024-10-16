@@ -217,6 +217,7 @@ export class modifier_skywrath_1c_lx_channel extends BaseModifier {
         if (!IsServer()) { return }
         this.count = 0;
         this.caster = this.GetCaster();
+        GameRules.CMsg.AbilityChannel(this.caster, this, 1)
         this.channel = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "66", "channel");
         this.ylong_count_bonus = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "66", "ylong_count_bonus");
         this.caster.AddNewModifier(this.caster, null, "modifier_basic_move", {
@@ -246,13 +247,13 @@ export class modifier_skywrath_1c_lx_channel extends BaseModifier {
 
     OnDestroy(): void {
         if (!IsServer()) { return }
+        GameRules.CMsg.AbilityChannel(this.caster, this, 0)
         let skywrath_1c = this.caster.FindModifierByName("modifier_skywrath_1c") as modifier_skywrath_1c;
         let count = this.GetStackCount()
         if (count > 0 && this.caster.IsAlive()) {
             skywrath_1c.PlayLongXiao(count)
         }
         let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
-        print("attack_rate1", attack_rate)
         skywrath_1c.StartIntervalThink(attack_rate)
 
     }

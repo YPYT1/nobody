@@ -145,6 +145,7 @@ export class DamageSystem {
 
             if (element_type == ElementTypes.FIRE) {
                 ElementDmgMul += params.attacker.custom_attribute_value.FireDamageBonus;
+                ElementDmgMul += params.victim.enemy_attribute_value.FireDamageIncome;
                 let EPent = params.attacker.custom_attribute_value.FirePent ?? 0;
                 let EResist = params.victim.enemy_attribute_value.FireResist ?? 0;
                 ElementResist += math.min(0, (EPent - EResist))
@@ -166,6 +167,7 @@ export class DamageSystem {
 
             } else if (element_type == ElementTypes.ICE) {
                 ElementDmgMul += params.attacker.custom_attribute_value.IceDamageBonus;
+                ElementDmgMul += params.victim.enemy_attribute_value.IceDamageIncome;
                 // 受到伤害=造成伤害*（1-元素抗性百分比（=受伤害者元素抗性-攻击者元素穿透）最小值0）*（1-伤害减免百分比）+造成伤害2【总值最小为0】
                 let EPent = params.attacker.custom_attribute_value.FirePent ?? 0;
                 let EResist = params.victim.enemy_attribute_value.FireResist ?? 0;
@@ -177,6 +179,7 @@ export class DamageSystem {
 
             } else if (element_type == ElementTypes.THUNDER) {
                 ElementDmgMul += params.attacker.custom_attribute_value.ThunderDamageBonus;
+                ElementDmgMul += params.victim.enemy_attribute_value.ThunderDamageIncome;
                 let EPent = params.attacker.custom_attribute_value.ThunderPent ?? 0;
                 let EResist = params.victim.enemy_attribute_value.ThunderResist ?? 0;
                 ElementResist += math.min(0, (EPent - EResist))
@@ -185,12 +188,17 @@ export class DamageSystem {
                 }
             } else if (element_type == ElementTypes.WIND) {
                 ElementDmgMul += params.attacker.custom_attribute_value.WindDamageBonus;
+                ElementDmgMul += params.victim.enemy_attribute_value.WindDamageIncome;
                 let EPent = params.attacker.custom_attribute_value.WindPent ?? 0;
                 let EResist = params.victim.enemy_attribute_value.WindResist ?? 0;
                 ElementResist += math.min(0, (EPent - EResist))
                 if (is_primary && params.damage_vect) {
                     GameRules.ElementEffect.SetWindPrimary(params.attacker, params.victim, params.damage_vect)
                 }
+            } else if (element_type == ElementTypes.LIGHT) {
+
+            } else if (element_type == ElementTypes.DARK) {
+
             }
         } else {
             // 真实伤害

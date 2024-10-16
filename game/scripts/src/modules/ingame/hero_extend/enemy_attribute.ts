@@ -8,7 +8,7 @@ export class EnemyAttribute {
         // print("[EnemyAttribute]:constructor")
     }
 
-    SetUnitAttr(hUnit:CDOTA_BaseNPC){
+    SetUnitAttr(hUnit: CDOTA_BaseNPC) {
         hUnit.enemy_attribute_value = {
             FireResist: 0,
             IceResist: 0,
@@ -16,6 +16,12 @@ export class EnemyAttribute {
             WindResist: 0,
             AllElementResist: 0,
             DmgReductionFixed: 0,
+            FireDamageIncome: 0,
+            "IceDamageIncome": 0,
+            "ThunderDamageIncome": 0,
+            "WindDamageIncome": 0,
+            "LightDamageIncome": 0,
+            "DarkDamageIncome": 0,
         };
         hUnit.custom_mul_attribute = {};
         hUnit.enemy_attribute_table_key = {};
@@ -26,7 +32,7 @@ export class EnemyAttribute {
     ModifyAttribute(hUnit: CDOTA_BaseNPC, AttrList: EnemyAttributeValueType, mode: number = 0) {
         if (hUnit.enemy_attribute_value == null) { hUnit.enemy_attribute_value = {} }
         if (hUnit.enemy_attribute_table == null) { hUnit.enemy_attribute_table = {} }
-        
+
         if (mode == 0) {
             for (let key in AttrList) {
                 let attr_key = key as keyof typeof AttrList;
@@ -130,7 +136,7 @@ export class EnemyAttribute {
             if (!is_mul) {
                 // 非乘算属性
                 let SubAttr = hUnit.enemy_attribute_table[main_key as keyof typeof hUnit.enemy_attribute_table];
-                let TotalAttrValue = (SubAttr["Base"]) * (1 + (SubAttr["BasePercent"] ?? 0)* 0.01)
+                let TotalAttrValue = (SubAttr["Base"]) * (1 + (SubAttr["BasePercent"] ?? 0) * 0.01)
                 hUnit.enemy_attribute_value[main_key] = TotalAttrValue;
             } else {
                 // 乘算属性处理

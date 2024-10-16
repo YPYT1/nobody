@@ -291,3 +291,58 @@
         vertical-align: middle;
     }
 }
+
+
+#LocalPlayerChannelPanel {
+    // width: 400px;
+    // border: 1px solid #ffffff;
+    horizontal-align: center;
+    margin-top: 30%;
+    transform: translateX(400px);
+    flow-children: down;
+
+    
+    .ChannelAbility {
+        flow-children: right;
+        margin-top: 8px;
+        
+        &.Closed {
+            opacity: 0;
+        }
+        
+        .AbilityImage {
+            width: 56px;
+            height: 56px;
+        }
+
+        #ChannelBar {
+            width: 280px;
+            height: 28px;
+            vertical-align: middle;
+            border-radius: 0px 4px 4px 0px;
+            border: 1px solid #000000;
+            border-left-width: 0px;
+            background-color: #464748;
+            // box-shadow: inset #1f2020 0px 2px 2px 4px;
+
+            .ProgressBarLeft {
+                height: 100%;
+                background-color: #727272;
+                transition-property: width;
+                transition-duration: 0.05s;
+
+            }
+
+            .ProgressBarRight {
+                height: 100%;
+                background-color: #0e0e0e;
+            }
+
+            .BarLabel {
+                align: center center;
+                color: #ffffff;
+                font-size: 17px;
+            }
+        }
+    }
+}

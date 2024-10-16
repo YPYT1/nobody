@@ -19,6 +19,16 @@
                 </Panel>
             </Panel>
         </snippet>
+        <snippet name="ChannelAbility">
+            <Panel class="ChannelAbility" hittest="false">
+                <Panel class="AbilityImage" hittest="false">
+                    <DOTAAbilityImage id="AbilityIcon" hittest="false"/>
+                </Panel>
+                <ProgressBar id="ChannelBar" hittest="false">
+                    <Label class="BarLabel" text="{d:value} / {d:max}" hittest="false"/>
+                </ProgressBar>
+            </Panel>
+        </snippet>
     </snippets>
 	<Panel class="message" hittest="false">
         <Panel id="TopCountdownMessage" hittest="false">
@@ -48,5 +58,9 @@
                 <Label id="WarningLabel" text="{s:warning_text}" />
             </Panel>
         </Panel>
+
+        <Panel id="LocalPlayerChannelPanel" hittest="false" />
+
+   
 	</Panel>
 </root>

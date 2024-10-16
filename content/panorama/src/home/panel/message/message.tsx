@@ -73,10 +73,11 @@ const CreateCommonMessage = (event: CommonMessageProps) => {
     MessagePanel.Data<PanelDataObject>().delete_time = (Game.GetDOTATime(false, false) + MESSAGE_DURATION);
 };
 
-
+const interval_time = 0.1
 function StartMessageTimer() {
     MessageTimer();
-    $.Schedule(0.1, StartMessageTimer);
+    UpdateAbilityChannel();
+    $.Schedule(interval_time, StartMessageTimer);
 }
 
 function MessageTimer() {
@@ -271,12 +272,12 @@ const CMsg_BossCastWarning = (params: CustomGameEventDeclarations["CMsg_BossCast
                 if (typeof (value) == "number") {
                     WarningLabel.SetDialogVariableInt(k, value)
                 } else {
-                    if(k == "ability"){
+                    if (k == "ability") {
                         WarningLabel.SetDialogVariable(k, $.Localize(`#DOTA_Tooltip_Ability_` + value))
                     } else {
                         WarningLabel.SetDialogVariable(k, $.Localize(`#` + value))
                     }
-                    
+
                 }
             }
         }
@@ -291,11 +292,56 @@ const CMsg_BossCastWarning = (params: CustomGameEventDeclarations["CMsg_BossCast
         BossCastWarningPanel.RemoveClass("Play")
     }
 
-
-
 }
 
+const LocalPlayerChannelPanel = $("#LocalPlayerChannelPanel");
+
+const UpdateAbilityChannel = () => {
+    if(Game.IsGamePaused()){ return }
+    const game_time = Game.GetDOTATime(false, false)
+    for (let i = 0; i < LocalPlayerChannelPanel.GetChildCount(); i++) {
+        let ChannelPanel = LocalPlayerChannelPanel.GetChild(i);
+        if (ChannelPanel) {
+            // interval_time
+            let ChannelBar = ChannelPanel.FindChildTraverse("ChannelBar") as ProgressBar;
+            ChannelBar.value += interval_time;
+            ChannelPanel.SetDialogVariableInt("value", ChannelBar.value)
+            let del_time = ChannelPanel.Data<PanelDataObject>().del_time as number;
+            if (del_time <= game_time && del_time != -1) {
+                ChannelPanel.AddClass("Closed");
+                ChannelPanel.Data<PanelDataObject>().del_time = -1;
+                ChannelPanel.DeleteAsync(1)
+            }
+        }
+    }
+}
+const CMsg_AbilityChannel = (params: CustomGameEventDeclarations["CMsg_AbilityChannel"]) => {
+    let data = params.data;
+    let state = data.state;
+    let ability_name = data.ability_name;
+    let channel_time = data.channel_time
+    if (state == 1) {
+        let ChannelPanel = $.CreatePanel("Panel", LocalPlayerChannelPanel, ability_name);
+        ChannelPanel.BLoadLayoutSnippet("ChannelAbility");
+        ChannelPanel.SetDialogVariableInt("value", 0)
+        ChannelPanel.SetDialogVariableInt("max", channel_time)
+        let ChannelBar = ChannelPanel.FindChildTraverse("ChannelBar") as ProgressBar;
+        ChannelBar.value = 0;
+        ChannelBar.max = channel_time
+        let AbilityIcon = ChannelPanel.FindChildTraverse("AbilityIcon") as AbilityImage;
+        AbilityIcon.abilityname = ability_name
+
+        ChannelPanel.Data<PanelDataObject>().del_time = Game.GetDOTATime(false, false) + channel_time
+    } else {
+        let ChannelPanel = LocalPlayerChannelPanel.FindChildTraverse(ability_name);
+        if (ChannelPanel) {
+            ChannelPanel.Data<PanelDataObject>().del_time = Game.GetDOTATime(false, false)
+        }
+
+    }
+}
 export const Init = () => {
+    LocalPlayerChannelPanel.RemoveAndDeleteChildren()
     StartMessageTimer();
 
     GameEvents.Subscribe("CMsg_SendCommonMsgToPlayer", event => {
@@ -309,6 +355,7 @@ export const Init = () => {
     GameEvents.Subscribe("CMsg_SendMsgToAll", CMsg_SendMsgToAll)
     GameEvents.Subscribe("CMsg_PopupUnitState", CMsg_PopupUnitState)
     GameEvents.Subscribe("CMsg_BossCastWarning", CMsg_BossCastWarning)
+    GameEvents.Subscribe("CMsg_AbilityChannel", CMsg_AbilityChannel)
 }
 
 (function () {

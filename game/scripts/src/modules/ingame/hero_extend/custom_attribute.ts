@@ -184,6 +184,17 @@ export class CustomAttribute {
                 hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);
                 this.AttributeCalculate(hUnit, Object.keys(AttributeConst) as AttributeMainKey[]);
 
+                this.ModifyAttribute(hUnit, {
+                    "MaxMana": {
+                        Base: 999
+                    },
+                    "ManaRegen": {
+                        Base: 99
+                    }
+                })
+
+                hUnit.AddNewModifier(hUnit, null, "modifier_item_aghanims_shard", {})
+                hUnit.AddNewModifier(hUnit, null, "modifier_item_ultimate_scepter_consumed", {})
                 return null
             }, 0.1)
         }
@@ -554,12 +565,12 @@ export class CustomAttribute {
         hUnit.custom_attribute_key_table[key] = null;
 
         // 移除对应的 独立乘算
-        for(let attr_key in temp_attr_list){
-            if (hUnit.custom_mul_attribute[attr_key] != null){
+        for (let attr_key in temp_attr_list) {
+            if (hUnit.custom_mul_attribute[attr_key] != null) {
                 hUnit.custom_mul_attribute[attr_key][key] = null
             }
         }
-        
+
         this.ModifyAttribute(hUnit, temp_attr_list, -1)
     }
 

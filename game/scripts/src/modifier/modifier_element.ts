@@ -73,6 +73,8 @@ export class modifier_element_effect_ice extends BaseModifier {
         if (t16_index >= 2) {
             this.move_slow_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '16', 'move_slow')
         }
+        this.move_slow_pct += GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '80', 'value')
+
     }
 
     IsDebuff(): boolean { return true }

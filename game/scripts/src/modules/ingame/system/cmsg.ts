@@ -270,6 +270,22 @@ export class CMsg extends UIEventRegisterClass {
         this.GetDamageRecord()
     }
 
+    AbilityChannel(hCaster: CDOTA_BaseNPC, hMdf: CDOTA_Buff, state: number) {
+        const ability_name = hMdf.GetAbility().GetAbilityName();
+        const channel_time = hMdf.GetDuration();
+        CustomGameEventManager.Send_ServerToPlayer(
+            hCaster.GetPlayerOwner(),
+            "CMsg_AbilityChannel",
+            {
+                data: {
+                    state: state,
+                    ability_name: ability_name,
+                    channel_time: channel_time,
+                }
+            }
+        )
+    }
+
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         if (cmd == "-msg") {
             let message = args[0];

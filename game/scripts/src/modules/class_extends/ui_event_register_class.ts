@@ -9,9 +9,9 @@ export class UIEventRegisterClass {
      * @param eventName 监听名
      * @param filter_func 禁止调用方法
      */
-    constructor(eventName: string , open_debug = false) {
+    constructor(eventName: string, open_debug = false) {
         CustomGameEventManager.RegisterListener(eventName, (_, event) => { this._UIEventRegister(event) });
-        if(open_debug){
+        if (open_debug) {
             GameRules.Debug.RegisterDebug(eventName)
         }
     }
@@ -27,7 +27,21 @@ export class UIEventRegisterClass {
         }
     }
 
+    StopMove(hUnit: CDOTA_BaseNPC) {
+        hUnit.AddNewModifier(hUnit, null, "modifier_basic_move", {
+            "UP": 0,
+            "DOWN": 0,
+            "LEFT": 0,
+            "RIGHT": 0
+        })
+        ExecuteOrderFromTable({
+            UnitIndex: hUnit.entindex(),
+            OrderType: UnitOrder.STOP,
+            Queue: false,
+        })
+    }
+    
     Debug(cmd: string, args: string[], player_id: PlayerID) {
-        
+
     }
 }

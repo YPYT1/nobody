@@ -89,6 +89,13 @@ declare interface CustomGameEventDeclarations {
         }
     }
 
+    CMsg_AbilityChannel: {
+        data: {
+            state: number;
+            ability_name: string;
+            channel_time: number;
+        }
+    }
     ResourceSystem_SendPlayerResources: {
         data: { [key in PlayerResourceTyps]: number }
     }
