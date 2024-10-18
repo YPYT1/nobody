@@ -40,7 +40,16 @@ export class modifier_skywrath_3b_a extends modifier_skywrath_3b {
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_a_jihan", {
                 duration: this.fazhen_duration,
                 manacost_bonus: manacost_bonus,
+                is_clone: 0,
             })
+
+            if (this.CheckClone()) {
+                this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_a_jihan", {
+                    duration: this.fazhen_duration,
+                    manacost_bonus: manacost_bonus,
+                    is_clone: 1,
+                })
+            }
         }
     }
 
@@ -62,11 +71,14 @@ export class modifier_skywrath_3b_a_jihan extends BaseModifier {
 
     radius: number;
 
+    rune76: number;
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.GetAbility().SetFrozenCooldown(true)
         this.caster = this.GetCaster()
+        this.parent = this.GetParent();
         this.team = this.caster.GetTeam()
+        this.is_clone = params.is_clone;
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null)
         this.SelfAbilityMul = this.caster.GetTalentKv("94", "base_value") + this.caster.GetTalentKv("95", "bonus_base");
         this.radius = this.caster.GetTalentKv("95", "jihan_radius");
@@ -74,10 +86,11 @@ export class modifier_skywrath_3b_a_jihan extends BaseModifier {
         let caster_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_caster.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
-            this.caster
+            this.parent
         )
         this.AddParticle(caster_fx, false, false, -1, false, false)
-
+        // rune_76	法爷#25	极寒领域对冻结的单位提升55%的最终伤害
+        this.rune76 = this.caster.GetRuneKv("rune_76", "value");
         let snow_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_snow.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
@@ -86,11 +99,13 @@ export class modifier_skywrath_3b_a_jihan extends BaseModifier {
         ParticleManager.SetParticleControl(snow_fx, 1, Vector(this.radius, 1, 1))
         this.AddParticle(snow_fx, false, false, -1, false, false)
         this.OnIntervalThink()
+
+
         this.StartIntervalThink(1)
     }
 
     OnIntervalThink(): void {
-        const origin = this.caster.GetAbsOrigin();
+        const origin = this.parent.GetAbsOrigin();
         const enemies = FindUnitsInRadius(
             this.team,
             origin,
@@ -103,6 +118,10 @@ export class modifier_skywrath_3b_a_jihan extends BaseModifier {
             false
         )
         for (let enemy of enemies) {
+            let FinalDamageMul = 0;
+            if (this.rune76 > 0 && enemy.State_Frozen()) {
+                FinalDamageMul += this.rune76
+            }
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.caster,
@@ -113,7 +132,9 @@ export class modifier_skywrath_3b_a_jihan extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.manacost_bonus
+                DamageBonusMul: this.manacost_bonus,
+                FinalDamageMul: FinalDamageMul,
+                is_clone: this.is_clone,
             })
         }
     }

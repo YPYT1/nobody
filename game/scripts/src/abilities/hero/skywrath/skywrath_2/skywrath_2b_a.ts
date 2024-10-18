@@ -14,7 +14,7 @@ export class skywrath_2b_a extends skywrath_2b {
 
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/units/heroes/hero_razor/razor_plasmafield.vpcf", context)
-        precacheResString("particles/econ/items/razor/razor_ti6/razor_plasmafield_ti6.vpcf",context)
+        precacheResString("particles/econ/items/razor/razor_ti6/razor_plasmafield_ti6.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -37,6 +37,10 @@ export class modifier_skywrath_2b_a extends modifier_skywrath_2b {
         this.kl_interval = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "78", "interval");
         this.kl_ring_distance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "78", "ring_distance");
         this.kl_ring_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "78", "ring_duration");
+        // rune_67	法爷#16	控雷生成的电圈将永久存在
+        if (this.caster.GetRuneKv("rune_67", "value")) {
+            this.kl_ring_duration = this.kl_interval + 1;
+        }
     }
 
     OnIntervalThink() {
@@ -50,9 +54,21 @@ export class modifier_skywrath_2b_a extends modifier_skywrath_2b {
                     manacost_bonus: 0,
                     ring_distance: this.kl_ring_distance,
                     ring_dmg_key: 1,
+                    is_clone: 0,
                 })
+                if (this.CheckClone()) {
+                    const clone_unit = this.caster.clone_unit;
+                    clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_2b_a_ring2", {
+                        duration: this.kl_ring_duration,
+                        manacost_bonus: 0,
+                        ring_distance: this.kl_ring_distance,
+                        ring_dmg_key: 1,
+                        is_clone: 1,
+                    })
+                }
             }
         }
+
         if (this.CastingConditions()) {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
@@ -62,7 +78,19 @@ export class modifier_skywrath_2b_a extends modifier_skywrath_2b {
                 manacost_bonus: manacost_bonus,
                 ring_distance: this.ring_distance,
                 ring_dmg_key: 0,
+                is_clone: 0,
             })
+
+            if (this.CheckClone()) {
+                const clone_unit = this.caster.clone_unit;
+                clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_2b_a_ring", {
+                    duration: this.duration,
+                    manacost_bonus: manacost_bonus,
+                    ring_distance: this.ring_distance,
+                    ring_dmg_key: 0,
+                    is_clone: 1,
+                })
+            }
         }
     }
 }
@@ -77,24 +105,18 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
     ring_dmg_key: string;
 
     stack_bonus_dmg: number;
+    is_clone: number;
+
     OnCreated(params: any): void {
         if (!IsServer()) { return }
-        this.dmg_interval = 1;
         this.caster = this.GetCaster()
         this.team = this.caster.GetTeam();
-        this.manacost_bonus = params.manacost_bonus;
+        this.is_clone = params.is_clone;
+        this.ring_dmg_key = "2b_a_ring_" + params.ring_dmg_key + this.is_clone;
         this.ring_distance = params.ring_distance;
-        this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
-        this.damage_type = DamageTypes.MAGICAL;
-        this.element_type = ElementTypes.THUNDER;
-        this.ring_dmg_key = "2b_a_ring_" + params.ring_dmg_key;
+        let ring_fx: ParticleID;
 
-        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
-        this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "76", "bonus_base");
-
-        this.stack_bonus_dmg = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "77", "stack_bonus_dmg");
-        let ring_fx:ParticleID;
-        if(params.ring_dmg_key == 0){
+        if (params.ring_dmg_key == 0) {
             ring_fx = ParticleManager.CreateParticle(
                 "particles/econ/items/razor/razor_ti6/razor_plasmafield_ti6.vpcf",
                 ParticleAttachment.ABSORIGIN_FOLLOW,
@@ -107,20 +129,44 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
                 this.GetParent()
             )
         }
-        
+
         ParticleManager.SetParticleControl(ring_fx, 1, Vector(9000, this.ring_distance, 1))
         this.AddParticle(ring_fx, false, false, -1, false, false);
         this.StartIntervalThink(0.1)
+
+        this.OnRefresh(params)
     }
 
     _OnCreated(params: any) {
 
     }
 
+    OnRefresh(params: any): void {
+        if (!IsServer()) { return }
+        this.manacost_bonus = params.manacost_bonus;
+        this.ring_distance = params.ring_distance;
+        this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+        this.damage_type = DamageTypes.MAGICAL;
+        this.element_type = ElementTypes.THUNDER;
+
+
+
+        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
+        this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "76", "bonus_base");
+        // rune_64	法爷#13	雷电屏障系列的技能基础伤害提高100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_64", "value")
+        this.dmg_interval = 1;
+        // rune_65	法爷#14	感电线圈伤害间隔减少50%
+        if (this.caster.GetRuneKv("rune_65", "value") > 0) {
+            this.dmg_interval = 0.5
+        }
+        this.stack_bonus_dmg = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "77", "stack_bonus_dmg");
+    }
+
     OnIntervalThink(): void {
         let enemies = FindUnitsInRing(
             this.team,
-            this.caster.GetAbsOrigin(),
+            this.GetParent().GetAbsOrigin(),
             this.ring_distance,
             32,
             UnitTargetTeam.ENEMY,
@@ -145,6 +191,7 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
                     is_primary: true,
                     damage_vect: this.GetParent().GetAbsOrigin(),
                     SelfAbilityMul: this.SelfAbilityMul,
+                    is_clone: this.is_clone,
                 })
 
                 if (this.stack_bonus_dmg > 0) {

@@ -8,6 +8,7 @@ export class modifier_element_effect_fire extends BaseModifier {
 
     dot_damage: number
     dot_interval: number
+    total_damage: number;
     element_type: ElementTypes
 
     parent: CDOTA_BaseNPC;
@@ -25,20 +26,22 @@ export class modifier_element_effect_fire extends BaseModifier {
 
         let interval_increase: number = params.interval_increase ?? 0;
         let base_interval = params.base_interval ?? 1;
-        let interval = base_interval / (1 + interval_increase * 0.01);
-        // print("base_interval", base_interval, "interval_increase", interval_increase, "interval", interval)
-        this.StartIntervalThink(interval)
+        this.dot_interval = base_interval / (1 + interval_increase * 0.01);
+        this.StartIntervalThink(this.dot_interval)
     }
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
         let burn_percent = this.caster.custom_attribute_value["BurningDmg"];
         this.dot_damage = math.floor(this.caster.GetAverageTrueAttackDamage(null) * burn_percent * 0.01);
+
+        this.total_damage = this.dot_damage * this.GetDuration() / this.dot_interval;
     }
 
     C_OnCreated(params: any): void { }
 
     OnIntervalThink(): void {
+        this.total_damage -= this.dot_damage
         ApplyCustomDamage({
             victim: this.parent,
             attacker: this.caster,
@@ -49,6 +52,21 @@ export class modifier_element_effect_fire extends BaseModifier {
             is_primary: false,
             special_effect: true,
         });
+    }
+
+    SettlementDamage() {
+        this.StartIntervalThink(-1)
+        ApplyCustomDamage({
+            victim: this.parent,
+            attacker: this.caster,
+            damage: this.total_damage,
+            damage_type: DamageTypes.MAGICAL,
+            ability: this.GetAbility(),
+            element_type: ElementTypes.FIRE,
+            is_primary: false,
+            special_effect: true,
+        });
+        this.Destroy()
     }
 
     GetEffectName(): string {

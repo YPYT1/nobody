@@ -209,13 +209,19 @@ export class BaseHeroAbility extends BaseAbility {
             return 0
         } else {
             this.UseResources(true, true, true, true)
+            let bonus_value = 0;
             if (this.caster.rune_level_index.hasOwnProperty("rune_4")) {
                 let max_mana = this.caster.GetMaxMana();
                 let cost_percent = math.floor((100 * cost_mana) / max_mana);
                 let value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_4", "value")
                 // print("has rune_4", 'cost_percent', cost_percent, 'value', value,value * cost_percent)
-                return value * cost_percent
+                bonus_value += value * cost_percent
             }
+            bonus_value += cost_mana * this.caster.GetTalentKv("107", "power")
+
+            // rune_79	法爷#28	聪慧每消耗1点蓝量该次技能提高2%的技能增强
+            bonus_value += cost_mana * this.caster.GetRuneKv("rune_79", "value")
+            return bonus_value
         }
 
         return 0
@@ -234,6 +240,18 @@ export class BaseHeroAbility extends BaseAbility {
         }
     }
 
+    IsClone(extraData: ProjectileExtraData) {
+        return (extraData.clone ?? 0)
+    }
+
+    CloneRes(extraData: ProjectileExtraData) {
+        return {
+            Clone: (extraData.clone ?? 0),
+            Shadow: ((extraData.clone ?? 0) == 1) && this.caster.GetTalentKv("117", "shadow") == 1
+        }
+
+    }
+
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: ProjectileExtraData): void | boolean {
 
     }
@@ -243,6 +261,7 @@ export class BaseHeroAbility extends BaseAbility {
 export class BaseHeroModifier extends BaseModifier {
 
     caster: CDOTA_BaseNPC;
+
     team: DotaTeam;
     ability: BaseHeroAbility;
     ability_damage: number;
@@ -320,6 +339,10 @@ export class BaseHeroModifier extends BaseModifier {
             && this.ability.IsMeetCastCondition()
             && !this.caster.IsHexed()
         )
+    }
+
+    CheckClone() {
+        return this.caster.clone_unit != null && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")
     }
 }
 

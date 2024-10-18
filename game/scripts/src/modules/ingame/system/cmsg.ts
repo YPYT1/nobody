@@ -271,11 +271,13 @@ export class CMsg extends UIEventRegisterClass {
     }
 
     AbilityChannel(hCaster: CDOTA_BaseNPC, hMdf: CDOTA_Buff, state: number) {
+        if (hMdf.GetAbility() == null) { return }
+        if ((hMdf.is_clone ?? 0) == 1) { return }
         hMdf.GetAbility().SetFrozenCooldown(state == 1);
-        if(state == 1){
+        if (state == 1) {
             GameRules.BasicRules.StopMove(hCaster)
         }
-       
+
         const ability_name = hMdf.GetAbility().GetAbilityName();
         const channel_time = hMdf.GetDuration();
         CustomGameEventManager.Send_ServerToPlayer(

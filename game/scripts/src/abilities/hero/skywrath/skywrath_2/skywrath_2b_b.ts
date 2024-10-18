@@ -38,7 +38,18 @@ export class modifier_skywrath_2b_b extends modifier_skywrath_2b {
                 manacost_bonus: manacost_bonus,
                 ring_distance: this.ring_distance,
                 ring_dmg_key: 0,
+                is_clone: 0,
             })
+
+            if (this.CheckClone()) {
+                this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_2b_b_ring", {
+                    duration: this.duration,
+                    manacost_bonus: manacost_bonus,
+                    ring_distance: this.ring_distance,
+                    ring_dmg_key: 0,
+                    is_clone: 1,
+                })
+            }
         }
     }
 }
@@ -54,9 +65,10 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
 
     lq_stack: number;
     lq_duration: number;
+
     OnCreated(params: any): void {
         if (!IsServer()) { return }
-        this.dmg_interval = 1;
+
         this.caster = this.GetCaster()
         this.team = this.caster.GetTeam();
         this.manacost_bonus = params.manacost_bonus;
@@ -64,13 +76,24 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.damage_type = DamageTypes.MAGICAL;
         this.element_type = ElementTypes.ICE;
-        this.ring_dmg_key = "skywrath_2b_b_" + params.ring_dmg_key;
+        this.is_clone = params.is_clone
+        this.ring_dmg_key = "skywrath_2b_b_" + params.ring_dmg_key + this.is_clone;
 
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
         this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "79", "bonus_base");
+        // rune_64	法爷#13	雷电屏障系列的技能基础伤害提高100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_64", "value")
 
-
+        this.dmg_interval = 1;
+        // rune_66	法爷#15	极寒冰圈伤害间隔减少50%
+        if (this.caster.GetRuneKv("rune_66", "value") > 0) {
+            this.dmg_interval = 0.5
+        }
         this.lq_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "81", 'lq_stack');
+        // rune_68	法爷#17	冷气效果上限提高一倍
+        if (this.caster.GetRuneKv("rune_68", "value")) {
+            this.lq_stack *= 2
+        }
         this.lq_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "81", 'lq_duration');
         let ring_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_razor/razor_plasmafield.vpcf",
@@ -111,6 +134,7 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
                     damage_vect: this.GetParent().GetAbsOrigin(),
                     SelfAbilityMul: this.SelfAbilityMul,
                     DamageBonusMul: this.manacost_bonus,
+                    is_clone: this.is_clone,
                 })
 
                 if (this.lq_stack > 0) {

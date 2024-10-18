@@ -16,6 +16,7 @@ export class skywrath_3a_b extends skywrath_3a {
 
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/units/heroes/hero_leshrac/leshrac_lightning_bolt.vpcf", context)
+        precacheResString("particles/units/heroes/hero_zeus/zeus_cloud_strike.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -41,7 +42,17 @@ export class modifier_skywrath_3a_b extends modifier_skywrath_3a {
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3a_b_channel", {
                 duration: this.channel,
                 manacost_bonus: manacost_bonus,
+                is_clone: 0,
             })
+
+            if (this.CheckClone()) {
+                this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3a_b_channel", {
+                    duration: this.channel,
+                    manacost_bonus: manacost_bonus,
+                    is_clone: 1,
+                })
+
+            }
         }
     }
 }
@@ -57,26 +68,31 @@ export class modifier_skywrath_3a_b_channel extends BaseModifier {
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
+        this.parent = this.GetParent();
         this.team = this.caster.GetTeamNumber();
         this.manacost_bonus = params.manacost_bonus;
+        this.is_clone = params.is_clone;
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.SelfAbilityMul = this.caster.GetTalentKv("86", "base_value");
         this.SelfAbilityMul += this.caster.GetTalentKv("91", "bonus_base");
+        // rune_69	法爷#18	元素轰炸系列的技能基础伤害提高100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_69", "value");
         this.radius = this.caster.GetTalentKv("91", "radius")
         this.cloud_list = [];
 
-        // let cloud_fx = ParticleManager.CreateParticle(
-        //     "particles/units/heroes/hero_zeus/zeus_cloud.vpcf",
-        //     ParticleAttachment.ABSORIGIN_FOLLOW,
-        //     this.caster
-        // )
-        // ParticleManager.SetParticleControl(cloud_fx, 2, Vector(0, 0, -200));
-        // this.AddParticle(cloud_fx, false, false, -1, false, false)
         GameRules.CMsg.AbilityChannel(this.caster, this, 1)
+
 
         // 雷云	"吟唱期间生成1/2朵雷云，雷云会随机打击1名敌人每次造成攻击力125%的雷元素技能基础伤害。
         let cloud_count = this.caster.GetTalentKv("92", "thundercloud_count");
         if (cloud_count > 0) {
+            let interval = 1.5;
+            // rune_73	法爷#22	雷云数量翻倍，雷云攻击间隔降低至0.75
+            let rune73 = this.caster.GetRuneKv("rune_73", "value");
+            if (rune73 > 0) {
+                cloud_count *= 2;
+                interval = 0.75
+            }
             let origin = this.GetParent().GetAbsOrigin()
             for (let i = 0; i < cloud_count; i++) {
                 let cloud = CreateModifierThinker(
@@ -84,7 +100,8 @@ export class modifier_skywrath_3a_b_channel extends BaseModifier {
                     this.GetAbility(),
                     "modifier_skywrath_3a_b_thundercloud",
                     {
-
+                        is_clone: this.is_clone,
+                        interval: interval
                     },
                     origin,
                     this.team,
@@ -97,7 +114,7 @@ export class modifier_skywrath_3a_b_channel extends BaseModifier {
     }
 
     OnIntervalThink(): void {
-        const origin = this.caster.GetAbsOrigin()
+        const origin = this.parent.GetAbsOrigin()
         let enemies = FindUnitsInRadius(
             this.team,
             origin,
@@ -131,7 +148,8 @@ export class modifier_skywrath_3a_b_channel extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.manacost_bonus
+                DamageBonusMul: this.manacost_bonus,
+                is_clone: this.is_clone,
             })
         }
     }
@@ -150,15 +168,21 @@ export class modifier_skywrath_3a_b_thundercloud extends BaseModifier {
 
     radius: number;
     parent_origin: Vector;
-    OnCreated(params: object): void {
+
+    attack_count: number;
+    OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.origin = this.GetParent().GetAbsOrigin()
         this.caster = this.GetCaster()
         this.team = this.caster.GetTeam();
         this.radius = this.caster.GetTalentKv("91", "radius")
+        this.is_clone = params.is_clone
         this.SelfAbilityMul = this.caster.GetTalentKv("92", "thundercloud_dmg")
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.parent_origin = this.origin + RandomVector(RandomInt(300, 600)) as Vector;
+        this.attack_count = 1;
+        // rune_74	法爷#23	雷云可攻击目标额外增加2名敌人
+        this.attack_count += this.caster.GetRuneKv("rune_74", "value");
 
         let effect_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_zeus/zeus_cloud.vpcf",
@@ -169,7 +193,8 @@ export class modifier_skywrath_3a_b_thundercloud extends BaseModifier {
         ParticleManager.SetParticleControl(effect_fx, 2, this.parent_origin + Vector(0, 0, 600) as Vector)
         this.AddParticle(effect_fx, false, false, -1, false, false)
         this.OnIntervalThink()
-        this.StartIntervalThink(1.5)
+        let interval = params.interval as number;
+        this.StartIntervalThink(interval)
     }
 
     OnIntervalThink(): void {
@@ -184,7 +209,9 @@ export class modifier_skywrath_3a_b_thundercloud extends BaseModifier {
             FindOrder.ANY,
             false
         )
+        let count = 0;
         for (let enemy of enemies) {
+            count += 1;
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.caster,
@@ -195,6 +222,7 @@ export class modifier_skywrath_3a_b_thundercloud extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
+                is_clone: this.is_clone,
             })
             let effect_fx = ParticleManager.CreateParticle(
                 "particles/units/heroes/hero_zeus/zeus_cloud_strike.vpcf",
@@ -204,8 +232,9 @@ export class modifier_skywrath_3a_b_thundercloud extends BaseModifier {
             ParticleManager.SetParticleControl(effect_fx, 0, this.parent_origin + Vector(0, 0, 600) as Vector)
             ParticleManager.SetParticleControl(effect_fx, 1, enemy.GetAbsOrigin())
             ParticleManager.ReleaseParticleIndex(effect_fx)
-
-            break;
+            if (count >= this.attack_count) {
+                return
+            }
         }
     }
 }

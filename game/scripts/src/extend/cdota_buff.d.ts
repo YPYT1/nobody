@@ -7,8 +7,8 @@ declare interface CDOTA_Buff {
     team: DotaTeam;
     origin: Vector;
 
-    manacost_bonus:number;
-    attack_damage:number;
+    manacost_bonus: number;
+    attack_damage: number;
     /** `该技能加成` */
     SelfAbilityMul: number;
     /** `伤害加成` 后续会转为百分比小数  */
@@ -24,6 +24,7 @@ declare interface CDOTA_Buff {
     /** 远程增伤 / */
     RangedDmgPct: number;
 
+    is_clone: number;
     // /** 吞噬效果 */
     // is_devour:boolean;
 }

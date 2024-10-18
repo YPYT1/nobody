@@ -28,11 +28,14 @@ export class skywrath_1b extends skywrath_1 {
         this.split_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "62", 'split_radius');
 
         this.frozen_mul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "64", 'frozen_mul');
+        // rune_56	法爷#5	霜冻触发时，伤害提高10倍
+        this.frozen_mul += this.caster.GetRuneKv("rune_56", "bonus_mul");
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             const code = extraData.c ?? 0;
+            const CloneRes = this.CloneRes(extraData)
             if (code == 0) {
                 let enemies = FindUnitsInRadius(
                     this.team,
@@ -64,6 +67,7 @@ export class skywrath_1b extends skywrath_1 {
                                 SelfAbilityMul: extraData.SelfAbilityMul,
                                 DamageBonusMul: extraData.DamageBonusMul,
                                 c: 1,
+                                clone: extraData.clone ?? 0,
                             } as ProjectileExtraData
                         })
                     }
@@ -81,12 +85,13 @@ export class skywrath_1b extends skywrath_1 {
                 victim: target,
                 attacker: this.caster,
                 damage: attack_damage,
-                damage_type: DamageTypes.MAGICAL,
+                damage_type: extraData.dt,
                 ability: this,
-                element_type: ElementTypes.ICE,
+                element_type: extraData.et,
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
+                is_clone: CloneRes.Clone,
                 // DamageBonusMul: extraData.DamageBonusMul,
                 // DamageBonusMul:0,
             })
@@ -101,5 +106,10 @@ export class modifier_skywrath_1b extends modifier_skywrath_1 {
     UpdataSpecialValue(): void {
         this.tracking_proj_name = "particles/units/heroes/hero_lich/lich_chain_frost.vpcf";
         this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "62", 'base_bonus');
+        // rune_55	法爷#4	寒风波技能基础伤害提高100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_55", "value");
+
+        this.element_type = ElementTypes.ICE
+        this.damage_type = DamageTypes.MAGICAL
     }
 }

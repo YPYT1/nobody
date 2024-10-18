@@ -26,7 +26,8 @@ export class skywrath_1 extends BaseHeroAbility {
         if (target) {
             let attack_damage = extraData.a;
             let SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
-
+            let clone_res = this.CloneRes(extraData);
+            
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -39,6 +40,7 @@ export class skywrath_1 extends BaseHeroAbility {
                 // 增伤
                 SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
                 DamageBonusMul: extraData.DamageBonusMul,
+                is_clone: clone_res.Clone
                 // DamageBonusMul:0,
 
             })
@@ -103,17 +105,8 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
             let hTarget = enemies[0];
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
             this.ability.ManaCostAndConverDmgBonus();
-            // 清空动作
-            if (this.caster.move_state) {
-                this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
-                this.caster.StartGesture(GameActivity.DOTA_CAST_ABILITY_1);
-            } else {
-                this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
-                this.caster.StartGesture(GameActivity.DOTA_ATTACK);
-            }
             this.caster.GiveMana(this.give_mana);
             this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, 0);
-            this.PlayAttackStart({ hTarget: hTarget })
             let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
             this.StartIntervalThink(attack_rate)
         }
@@ -138,7 +131,15 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
         SelfAbilityMul: number,
         DamageBonusMul: number,
     ) {
-        if (this.fakeAttack) { return }
+        // 清空动作
+        if (this.caster.move_state) {
+            this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
+            this.caster.StartGesture(GameActivity.DOTA_CAST_ABILITY_1);
+        } else {
+            this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
+            this.caster.StartGesture(GameActivity.DOTA_ATTACK);
+        }
+
         // print("this",this.tracking_proj_name)
         ProjectileManager.CreateTrackingProjectile({
             Source: hCaster,
@@ -156,5 +157,40 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
                 c: 0,
             } as ProjectileExtraData
         })
+
+        // 复制攻击
+        const clone_unit = this.caster.clone_unit;
+        if (clone_unit && clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
+            let enemies = FindUnitsInRadius(
+                this.team,
+                this.caster.clone_unit.GetAbsOrigin(),
+                null,
+                this.caster.Script_GetAttackRange() + 64,
+                UnitTargetTeam.ENEMY,
+                UnitTargetType.HERO + UnitTargetType.BASIC,
+                UnitTargetFlags.FOW_VISIBLE,
+                FindOrder.CLOSEST,
+                false
+            )
+            if (enemies.length > 0) {
+                ProjectileManager.CreateTrackingProjectile({
+                    Source: this.caster.clone_unit,
+                    Target: enemies[0],
+                    Ability: this.GetAbility(),
+                    EffectName: this.tracking_proj_name,
+                    iSourceAttachment: ProjectileAttachment.ATTACK_1,
+                    iMoveSpeed: hCaster.GetProjectileSpeed(),
+                    ExtraData: {
+                        a: attack_damage,
+                        et: this.element_type,
+                        dt: this.damage_type,
+                        SelfAbilityMul: SelfAbilityMul,
+                        DamageBonusMul: DamageBonusMul,
+                        c: 0,
+                        clone: 1,
+                    } as ProjectileExtraData
+                })
+            }
+        }
     }
 }

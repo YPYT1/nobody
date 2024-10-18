@@ -149,7 +149,7 @@ const element_color: [number, number, number][] = [
 ];
 
 const DamageFloating = (event: CustomGameEventDeclarations["Popup_DamageNumberToClients"]) => {
-    // $.Msg(["Popup_DamageNumberToClients",event])
+    $.Msg(["Popup_DamageNumberToClients",event])
     // return 
     const duration = 1;
     let params = event.data;

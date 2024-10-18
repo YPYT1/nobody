@@ -33,6 +33,10 @@ export class skywrath_2a extends BaseHeroAbility {
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_2a"
     }
+
+    UpdataAbilityValue(): void {
+        this.SetCustomAbilityType("Surround", true)
+    }
 }
 
 @registerModifier()
@@ -56,6 +60,8 @@ export class modifier_skywrath_2a extends BaseHeroModifier {
         if (this.CastingConditions()) {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
+            const clone_unit = this.caster.clone_unit;
+
             this.ExtraEffect()
             let total_count = this.surround_count
             // 1个 面向 2个对角 3
@@ -64,6 +70,7 @@ export class modifier_skywrath_2a extends BaseHeroModifier {
             let surround_distance = this.ability.GetTypesAffixValue(this.surround_radius, "Surround", "skv_surround_distance")
             for (let i = 0; i < total_count; i++) {
                 let surround_qangle = i * pre_angle;
+
                 let hSpirit = GameRules.SummonedSystem.CreatedUnit(
                     "npc_summoned_dummy",
                     this.caster.GetAbsOrigin() + Vector(0, 300, 0) as Vector,
@@ -78,12 +85,36 @@ export class modifier_skywrath_2a extends BaseHeroModifier {
                     surround_qangle: surround_qangle,
                     surround_speed: surround_speed,
                     surround_entity: this.caster.entindex(),
+                    manacost_bonus: manacost_bonus,
+                    is_clone: 0,
                 });
+                // 如果有克隆体
+                if (clone_unit != null && clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
+                    // const clone_factor = this.caster.clone_factor;
+                    let hSpirit2 = GameRules.SummonedSystem.CreatedUnit(
+                        "npc_summoned_dummy",
+                        clone_unit.GetAbsOrigin() + Vector(0, 300, 0) as Vector,
+                        this.caster,
+                        this.surround_duration,
+                        true
+                    )
+                    hSpirit2.AddNewModifier(this.caster, this.ability, this.surround_mdf, {
+                        duration: this.surround_duration,
+                        surround_distance: surround_distance,
+                        surround_qangle: surround_qangle,
+                        surround_speed: surround_speed,
+                        surround_entity: clone_unit.entindex(),
+                        manacost_bonus: manacost_bonus,
+                        is_clone: 1,
+                    });
+                }
             }
-
         }
     }
 
+    SummonedUnit(hUnit: CDOTA_BaseNPC, manacost_bonus: number, clone_factor: number) {
+
+    }
     ExtraEffect() {
 
     }
@@ -117,6 +148,8 @@ export class modifier_skywrath_2a_surround extends modifier_motion_surround {
     C_OnCreated(params: any): void {
         this.element_type = RandomInt(1, 4) as ElementTypes;
         this.GetParent().element_type = this.element_type
+        this.GetParent().manacost_bonus = params.manacost_bonus;
+        this.GetParent().is_clone = params.is_clone;
         let effect_name = element_orb[this.element_type];
         let cast_fx = ParticleManager.CreateParticle(
             effect_name,
@@ -152,6 +185,7 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
 
     damage_type: DamageTypes;
     element_type: ElementTypes;
+
     interval: number;
 
     GetAttributes(): DOTAModifierAttribute_t {
@@ -166,12 +200,20 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
-        this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "72", "base_bonus")
+        this.SelfAbilityMul += this.caster.GetTalentKv("72", "base_bonus");
+        // rune_59	法爷#8	元素缠绕系列技能基础伤害提高200%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_59", "value");
+
         this.ElementDmgMul = 0;
         this.DamageBonusMul = 0;
         this.interval = 1;
+        // rune_61	法爷#10	元素缠绕系列基础伤害间隔减少50%
+        let rune_61 = this.caster.GetRuneKv("rune_61", "interval_increase");
+        this.interval = this.interval * (100 - rune_61) * 0.01
+
         this.team = this.caster.GetTeamNumber();
         this.ability = this.GetAbility();
+        // const clone_factor = this.GetAuraOwner().clone_factor;
         this.ability_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.OnCreated_Extends();
 
@@ -180,7 +222,9 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
     OnCreated_Extends() {
         this.damage_type = DamageTypes.MAGICAL
         this.element_type = this.GetAuraOwner().element_type
-   
+        this.manacost_bonus = this.GetAuraOwner().manacost_bonus;
+
+        const is_clone = this.GetAuraOwner().is_clone
         ApplyCustomDamage({
             victim: this.GetParent(),
             attacker: this.GetCaster(),
@@ -191,11 +235,13 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
             is_primary: true,
             damage_vect: this.GetParent().GetAbsOrigin(),
             SelfAbilityMul: this.SelfAbilityMul,
+            DamageBonusMul: this.manacost_bonus,
+            is_clone: is_clone,
         })
 
         UTIL_Remove(this.GetAuraOwner())
 
     }
 
- 
+
 }

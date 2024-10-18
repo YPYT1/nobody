@@ -252,6 +252,8 @@ interface PlayEffectProps {
     bonus_pct?: number;
     /** 临时单位组 */
     unit_list?: CDOTA_BaseNPC[]
+    /** 克隆? */
+    is_clone?: number
 }
 
 

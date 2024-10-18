@@ -74,11 +74,14 @@ declare interface ApplyCustomDamageOptions {
     /** 远程/近战 */
     MeleeDmgPct?: number;
     RangedDmgPct?: number;
+    /** 来自克隆体 */
+    is_clone?:number
 }
 
 declare interface ProjectileExtraData {
     /** 技能基础伤害 */
     a: number;
+    /** 元素类型 */
     et?: ElementTypes;
     dt?: DamageTypes;
     /** x坐标 */
@@ -87,6 +90,8 @@ declare interface ProjectileExtraData {
     y?: number;
     /** code */
     c?: number;
+    /** 来自克隆体 */
+    clone?:number;
     /** 技能基础伤害  */
     SelfAbilityMul?: number;
     /** `伤害加成` 后续会转为百分比小数  */

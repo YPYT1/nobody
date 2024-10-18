@@ -25,10 +25,17 @@ export class modifier_skywrath_2a_a extends modifier_skywrath_2a {
     count: number = 0;
     surround_mdf = "modifier_skywrath_2a_a_surround";
     constant_cd = 0;
+
     UpdataSpecialValue(): void {
         this.SelfAbilityMul += 50;
         this.surround_count = 1;
         this.surround_limit = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "69", "fb_count");
+        // rune_60	法爷#9	炎爆每次生成火球时，一次性生成5个，火球数量上限+3
+        this.surround_limit += this.caster.GetRuneKv("rune_60", "limit");
+        let rune60_value = this.caster.GetRuneKv("rune_60", "value")
+        if (rune60_value > 0) {
+            this.surround_count = rune60_value
+        }
         this.surround_duration += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "71", "fb_duration_bonus")
         this.constant_cd = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "70", "reduce_interval")
     }
@@ -37,6 +44,7 @@ export class modifier_skywrath_2a_a extends modifier_skywrath_2a {
         if (this.CastingConditions() && this.count < this.surround_limit) {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
+            const clone_unit = this.caster.clone_unit;
             const max_count = this.surround_limit - this.count;
             let total_count = math.min(max_count, this.surround_count);
             // 1个 面向 2个对角 3
@@ -60,10 +68,34 @@ export class modifier_skywrath_2a_a extends modifier_skywrath_2a {
                     surround_qangle: surround_qangle,
                     surround_speed: surround_speed,
                     surround_entity: this.caster.entindex(),
+                    is_clone: 0,
                 });
+
+                if (this.CheckClone()) {
+                    let hSpirit2 = GameRules.SummonedSystem.CreatedUnit(
+                        "npc_summoned_dummy",
+                        clone_unit.GetAbsOrigin() + Vector(0, 300, 0) as Vector,
+                        this.caster,
+                        this.surround_duration,
+                        true
+                    )
+
+                    hSpirit2.AddNewModifier(this.caster, this.ability, this.surround_mdf, {
+                        duration: this.surround_duration,
+                        surround_distance: surround_distance,
+                        surround_qangle: surround_qangle,
+                        surround_speed: surround_speed,
+                        surround_entity: clone_unit.entindex(),
+                        is_clone: 1,
+                    });
+                }
             }
 
         }
+    }
+
+    SummonedUnit(hUnit: CDOTA_BaseNPC, manacost_bonus: number, clone_factor: number): void {
+
     }
 
     DeclareFunctions(): modifierfunction[] {
@@ -87,8 +119,12 @@ export class modifier_skywrath_2a_a_surround extends modifier_skywrath_2a_surrou
 
     ModifierAura = "modifier_skywrath_2a_a_surround_collision";
 
+    is_clone: number;
+
     C_OnCreated(params: any): void {
+        this.is_clone = params.is_clone
         this.GetParent().summoned_damage = GameRules.GetDOTATime(false, false) + 1;
+        this.GetParent().is_clone = params.is_clone
         let effect_name = element_orb[ElementTypes.FIRE];
         let cast_fx = ParticleManager.CreateParticle(
             effect_name,
@@ -100,11 +136,12 @@ export class modifier_skywrath_2a_a_surround extends modifier_skywrath_2a_surrou
         )
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
+
     OnDestroy(): void {
         if (!IsServer()) { return }
         if (IsValid(this.caster) == false) {
             let main_mdf = this.caster.FindModifierByName("modifier_skywrath_2a_a") as modifier_skywrath_2a_a;
-            if (main_mdf) main_mdf.count -= 1;
+            if (main_mdf && this.is_clone == 0) main_mdf.count -= 1;
         }
 
         UTIL_Remove(this.GetParent())
@@ -119,6 +156,8 @@ export class modifier_skywrath_2a_a_surround_collision extends modifier_skywrath
             this.GetAuraOwner().summoned_damage = GameRules.GetDOTATime(false, false) + this.interval
             this.damage_type = DamageTypes.MAGICAL
             this.element_type = ElementTypes.FIRE;
+            this.manacost_bonus = this.GetAuraOwner().manacost_bonus;
+            const is_clone = this.GetParent().is_clone;
             const vPos = this.GetParent().GetAbsOrigin();
             let enemies = FindUnitsInRadius(
                 this.team,
@@ -142,6 +181,8 @@ export class modifier_skywrath_2a_a_surround_collision extends modifier_skywrath
                     is_primary: true,
                     damage_vect: this.GetParent().GetAbsOrigin(),
                     SelfAbilityMul: this.SelfAbilityMul,
+                    DamageBonusMul: this.manacost_bonus,
+                    is_clone: is_clone,
                 })
             }
             let cast_fx = ParticleManager.CreateParticle(

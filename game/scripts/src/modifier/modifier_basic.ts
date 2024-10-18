@@ -98,6 +98,21 @@ export class modifier_basic_move extends BaseModifier {
             Position: origin,
             Queue: false,
         })
+
+        // 如果有克隆体
+        if (this.parent.clone_unit != null && this.parent.clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
+            let clone_origin = this.parent.clone_unit.GetOrigin();
+            if (this.move_up) { clone_origin.y += this.move_distance }
+            if (this.move_down) { clone_origin.y -= this.move_distance }
+            if (this.move_left) { clone_origin.x -= this.move_distance }
+            if (this.move_right) { clone_origin.x += this.move_distance }
+            ExecuteOrderFromTable({
+                UnitIndex: this.parent.clone_unit.entindex(),
+                OrderType: UnitOrder.MOVE_TO_POSITION,
+                Position: clone_origin,
+                Queue: false,
+            })
+        }
     }
 
     OnMoveStateChange(state: boolean) {
@@ -111,7 +126,7 @@ export class modifier_basic_move extends BaseModifier {
                 Queue: false,
             })
 
-            
+
         } else {
             this.parent.RemoveModifierByName("modifier_skywrath_1c_lx_channel")
             this.parent.RemoveModifierByName("modifier_modifier_skywrath_3a_channel")

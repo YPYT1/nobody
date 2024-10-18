@@ -180,7 +180,7 @@ export class RuneSystem extends UIEventRegisterClass {
             time : 0 , 
             type : type ,
         };
-        DeepPrintTable(fate_dota);
+        // DeepPrintTable(fate_dota);
         this.player_fate_data[player_id].push(fate_dota);
         this.player_challenge_number[player_id]++;
         //推送选择信息

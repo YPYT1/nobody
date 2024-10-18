@@ -21,6 +21,10 @@ export class skywrath_2b extends BaseHeroAbility {
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_2b"
     }
+
+    UpdataAbilityValue(): void {
+        // this.SetCustomAbilityType("",true)
+    }
 }
 @registerModifier()
 export class modifier_skywrath_2b extends BaseHeroModifier {
@@ -36,7 +40,8 @@ export class modifier_skywrath_2b extends BaseHeroModifier {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_2b_shield", {
-                duration: this.duration
+                duration: this.duration,
+                manacost_bonus: manacost_bonus,
             })
         }
     }
@@ -48,11 +53,12 @@ export class modifier_skywrath_2b_shield extends BaseModifier {
 
     ability_damage: number;
 
-    OnCreated(params: object): void {
+    OnCreated(params: any): void {
         if (!IsServer()) { return }
         let hit_count = 3;
         this.caster = this.GetCaster()
         this.ability_damage = this.caster.GetAverageTrueAttackDamage(null)
+        this.manacost_bonus = params.manacost_bonus;
         this.damage_type = DamageTypes.MAGICAL;
         this.element_type = ElementTypes.THUNDER;
 
@@ -73,10 +79,12 @@ export class modifier_skywrath_2b_shield extends BaseModifier {
 
     /** 技能的Ability更新 */
     UpdataAbilityValue() {
-        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value")
+        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
+        // rune_64	法爷#13	雷电屏障系列的技能基础伤害提高100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_64","value");
     }
     /** 技能的特殊词条更新 */
-    UpdataSpecialValue() { 
+    UpdataSpecialValue() {
 
     }
 
@@ -93,6 +101,7 @@ export class modifier_skywrath_2b_shield extends BaseModifier {
             is_primary: true,
             damage_vect: this.GetParent().GetAbsOrigin(),
             SelfAbilityMul: this.SelfAbilityMul,
+            DamageBonusMul: this.manacost_bonus,
         })
     }
 
