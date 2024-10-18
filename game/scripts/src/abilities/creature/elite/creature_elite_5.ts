@@ -22,9 +22,13 @@ export class modifier_creature_elite_5 extends BaseModifier {
     parent: CDOTA_BaseNPC;
     relieve_radius: number;
 
+    IsHidden(): boolean {
+        return true
+    }
+
     OnCreated(params: object): void {
-        this.relieve_radius = this.GetAbility().GetSpecialValueFor("relieve_radius")
         if (!IsServer()) { return }
+        this.relieve_radius = 300;
         this.parent = this.GetParent();
         this.StartIntervalThink(0.1)
         // 加个感叹号
@@ -49,7 +53,7 @@ export class modifier_creature_elite_5 extends BaseModifier {
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
-            [ModifierState.INVISIBLE]: true,
+            [ModifierState.INVISIBLE]: this.GetStackCount() < 1,
             [ModifierState.PROVIDES_VISION]: this.GetStackCount() > 0
         }
     }
@@ -63,15 +67,18 @@ export class modifier_creature_elite_5 extends BaseModifier {
     }
 
     GetModifierInvisibilityLevel(): number {
-        return 10
-    }
-
-    GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
-        this.Destroy()
-        return 0
+        return 1
     }
 
     GetModifierBaseDamageOutgoing_Percentage(event: ModifierAttackEvent): number {
         return 100
+    }
+
+    GetEffectName(): string {
+        return "particles/generic_hero_status/status_invisibility_start.vpcf"
+    }
+
+    GetEffectAttachType(): ParticleAttachment_t {
+        return ParticleAttachment.ABSORIGIN_FOLLOW
     }
 }
