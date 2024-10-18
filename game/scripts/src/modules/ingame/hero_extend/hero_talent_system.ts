@@ -707,8 +707,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         T1 extends keyof typeof TalentTreeObject[TIndex]["AbilityValues"],
     >( value_key: TIndex, k2: T1, level_index: number = 0) {
         let k2_key = k2 as string;
-        // let value = this.talent_tree_values[hero][value_key];
-        DeepPrintTable(this.talent_tree_values)
         let length = this.talent_tree_values[value_key][k2_key].length;
         if (length > 0) {
             if (level_index < 0) {
@@ -722,6 +720,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             return this.talent_tree_values[value_key][k2_key][level_index];
         }
     }
+    
     // GetTKV<
     //     TIndex extends keyof typeof TalentTreeObject[HeroName],
     //     T1 extends keyof typeof TalentTreeObject[HeroName][TIndex]["AbilityValues"],

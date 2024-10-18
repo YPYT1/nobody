@@ -1,4 +1,4 @@
-declare interface CDOTA_BaseNPC extends CBaseFlex {
+interface CDOTA_BaseNPC {
     isSpawned: boolean;
     last_attribute_update: number;
     /** 自定义属性总值 */
@@ -75,13 +75,18 @@ declare interface CDOTA_BaseNPC extends CBaseFlex {
 
     prop_count: { [key in PropName]?: number } // 这个修改成数量
 
-    rune_trigger_count : { [key in RuneName]?: number }; //值是触发子次数
+    rune_trigger_count: { [key in RuneName]?: number }; //值是触发子次数
 
     /** 饰品原始模型 */
-    wrarable_model:string;
+    wrarable_model: string;
     /** 上次击退时间 */
-    knockback_time:number;
+    knockback_time: number;
     /** 自身元素类型 */
-    element_type:ElementTypes
+    element_type: ElementTypes
+    manacost_bonus: number;
+    clone_unit: CDOTA_BaseNPC;
+    is_clone: number;
+
+   
 }
 

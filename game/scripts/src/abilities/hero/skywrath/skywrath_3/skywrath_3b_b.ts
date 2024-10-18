@@ -14,7 +14,7 @@ import { modifier_skywrath_3b, skywrath_3b } from "./skywrath_3b";
 export class skywrath_3b_b extends skywrath_3b {
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/ability/skywrath/skywrath_fazhen.vpcf",context)
+        precacheResString("particles/ability/skywrath/skywrath_fazhen.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -33,7 +33,16 @@ export class modifier_skywrath_3b_b extends modifier_skywrath_3b {
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_b_field", {
                 duration: this.fazhen_duration,
                 manacost_bonus: manacost_bonus,
+                is_clone: 0,
             })
+
+            if (this.CheckClone()) {
+                this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_b_field", {
+                    duration: this.fazhen_duration,
+                    manacost_bonus: manacost_bonus,
+                    is_clone: 1,
+                })
+            }
         }
     }
 
@@ -57,6 +66,8 @@ export class modifier_skywrath_3b_b_field extends BaseModifier {
         if (!IsServer()) { return }
         this.GetAbility().SetFrozenCooldown(true)
         this.caster = this.GetCaster();
+        this.GetParent().is_clone = params.is_clone;
+        this.is_clone = params.is_clone;
         this.radius = 600;//this.caster.GetTalentKv("97", "radius");
         this.manacost_bonus = params.manacost_bonus;
         let effect_fx = ParticleManager.CreateParticle(
@@ -68,15 +79,18 @@ export class modifier_skywrath_3b_b_field extends BaseModifier {
         this.AddParticle(effect_fx, false, false, -1, false, false)
 
         this.reduc_max_hppct = this.caster.GetTalentKv("98", "reduc_max_hppct");
-        if (this.reduc_max_hppct > 0) {
-            this.StartIntervalThink(1)
+        if (this.reduc_max_hppct > 0 && this.is_clone == 0) {
+            // rune_78	法爷#27	至暗移除生命值消耗
+            if (this.caster.GetRuneKv("rune_78", "value") == 0) {
+                this.StartIntervalThink(1)
+            }
+
         }
 
     }
 
     OnIntervalThink(): void {
         let health = this.caster.GetMaxHealth() * this.reduc_max_hppct * 0.01;
-
         ApplyCustomDamage({
             victim: this.caster,
             attacker: this.caster,
@@ -98,13 +112,19 @@ export class modifier_skywrath_3b_b_field_aura extends BaseModifier {
     attack_damage: number;
     buff_key = "skywrath_3b_b_field_aura";
 
+    GetAttributes(): DOTAModifierAttribute_t {
+        return
+    }
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.parent = this.GetParent();
         this.caster = this.GetCaster()
         this.team = this.caster.GetTeam()
+        this.is_clone = this.GetAuraOwner().is_clone;
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null)
         this.SelfAbilityMul = this.caster.GetTalentKv("94", "base_value") + this.caster.GetTalentKv("97", "bonus_base");
+        // rune_77	法爷#26	死亡空间的技能基础伤害提升100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_77", "value");
 
         this.OnIntervalThink()
         this.StartIntervalThink(1)
@@ -132,6 +152,7 @@ export class modifier_skywrath_3b_b_field_aura extends BaseModifier {
             // 增伤
             SelfAbilityMul: this.SelfAbilityMul,
             DamageBonusMul: 0,
+            is_clone: this.is_clone,
         })
     }
 

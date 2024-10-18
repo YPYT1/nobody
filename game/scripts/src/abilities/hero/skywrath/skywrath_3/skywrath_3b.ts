@@ -14,11 +14,15 @@ cd：30秒
 export class skywrath_3b extends BaseHeroAbility {
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_doom_bringer/doom_bringer_doom_aura.vpcf",context)
+        precacheResString("particles/units/heroes/hero_doom_bringer/doom_bringer_doom_aura.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_3b"
+    }
+
+    UpdataAbilityValue(): void {
+        this.SetCustomAbilityType("Dot", true)
     }
 }
 @registerModifier()
@@ -37,11 +41,20 @@ export class modifier_skywrath_3b extends BaseHeroModifier {
         if (this.CastingConditions()) {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
-            // 开始蓄力
+
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_fazhen", {
                 duration: this.fazhen_duration,
                 manacost_bonus: manacost_bonus,
+                is_clone: 0,
             })
+
+            if (this.CheckClone()) {
+                this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_fazhen", {
+                    duration: this.fazhen_duration,
+                    manacost_bonus: manacost_bonus,
+                    is_clone: 1,
+                })
+            }
         }
     }
 
@@ -55,8 +68,10 @@ export class modifier_skywrath_3b_fazhen extends BaseModifier {
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.GetAbility().SetFrozenCooldown(true)
-        this.caster = this.GetCaster()
+        this.caster = this.GetCaster();
+        this.parent = this.GetParent()
         this.team = this.caster.GetTeam()
+        this.is_clone = params.is_clone
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null)
         this.SelfAbilityMul = this.caster.GetTalentKv("94", "base_value")
         this.fazhen_radius = this.caster.GetTalentKv("94", "fazhen_radius");
@@ -64,7 +79,7 @@ export class modifier_skywrath_3b_fazhen extends BaseModifier {
         let effecf_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_doom_bringer/doom_bringer_doom_aura.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
-            this.caster
+            this.parent
         )
         ParticleManager.SetParticleControl(effecf_fx, 1, Vector(this.fazhen_radius, this.fazhen_radius, this.fazhen_radius))
         this.AddParticle(effecf_fx, false, false, -1, false, false)
@@ -74,12 +89,12 @@ export class modifier_skywrath_3b_fazhen extends BaseModifier {
     }
 
     OnIntervalThink(): void {
-        if(this.GetAbility() == null){
+        if (this.GetAbility() == null) {
             this.StartIntervalThink(-1)
             this.Destroy()
             return
         }
-        const origin = this.caster.GetAbsOrigin();
+        const origin = this.parent.GetAbsOrigin();
         const enemies = FindUnitsInRadius(
             this.team,
             origin,
@@ -102,14 +117,18 @@ export class modifier_skywrath_3b_fazhen extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.manacost_bonus
+                DamageBonusMul: this.manacost_bonus,
+                is_clone: this.is_clone,
             })
         }
     }
 
     OnDestroy(): void {
         if (!IsServer()) { return }
-        this.GetAbility().SetFrozenCooldown(false)
+        if (this.GetAbility()) {
+            this.GetAbility().SetFrozenCooldown(false)
+        }
+
     }
 
 }

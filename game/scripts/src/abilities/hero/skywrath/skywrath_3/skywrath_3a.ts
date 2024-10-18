@@ -21,6 +21,10 @@ export class skywrath_3a extends BaseHeroAbility {
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_3a"
     }
+
+    UpdataAbilityValue(): void {
+        this.SetCustomAbilityType("Aoe", true)
+    }
 }
 
 @registerModifier()
@@ -34,7 +38,7 @@ export class modifier_skywrath_3a extends BaseHeroModifier {
     }
 
     UpdataSpecialValue(): void {
-        
+
     }
 
     OnIntervalThink(): void {
@@ -45,6 +49,7 @@ export class modifier_skywrath_3a extends BaseHeroModifier {
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_modifier_skywrath_3a_channel", {
                 duration: 3,
                 manacost_bonus: manacost_bonus,
+                is_clone: 0,
             })
         }
     }
@@ -69,10 +74,16 @@ export class modifier_modifier_skywrath_3a_channel extends BaseModifier {
         if (this.least_time <= GameRules.GetDOTATime(false, false)) {
             // 成功吟唱
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_modifier_skywrath_3a_bombing", {
-                manacost_bonus: this.manacost_bonus
+                manacost_bonus: this.manacost_bonus,
+                is_clone: 0
             })
-        } else {
 
+            if (this.caster.clone_unit != null && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
+                this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_modifier_skywrath_3a_bombing", {
+                    manacost_bonus: this.manacost_bonus,
+                    is_clone: 1
+                })
+            }
         }
 
     }
@@ -87,6 +98,7 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
     range: number;
     explosion_radius: number;
     attack_damage: number;
+
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.manacost_bonus = params.manacost_bonus;
@@ -98,14 +110,16 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
         this.range = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "range");
         this.explosion_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "explosion_radius");
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
-
+        // rune_69	法爷#18	元素轰炸系列的技能基础伤害提高100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_69", "value");
+        this.is_clone = params.is_clone;
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null)
         this.OnIntervalThink()
         this.StartIntervalThink(1)
     }
 
     OnIntervalThink(): void {
-        if (this.wave >= this.max_wave) {
+        if (this.wave >= this.max_wave || this.GetAbility() == null) {
             this.StartIntervalThink(-1)
             this.Destroy();
             return
@@ -161,7 +175,8 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.manacost_bonus
+                DamageBonusMul: this.manacost_bonus,
+                is_clone: this.is_clone,
             })
         }
 

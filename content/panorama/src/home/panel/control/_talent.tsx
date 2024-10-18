@@ -233,14 +233,17 @@ const GameEventsSubscribe = () => {
                     TalentNode.SetDialogVariableInt("max", row_hero_data.max_number)
                     // 类型标签
                     let TypesLabel = TalentNode.FindChildTraverse("TypesLabel")!;
-                    let types_value = row_hero_data.mark_types;
+                    let types_value_list = row_hero_data.mark_types.split(",");
                     let has_newTypes = row_hero_data.mark_types != "Null";
                     TypesLabel.SetHasClass("Show", has_newTypes && level == 0)
                     for (let type_key in AbilityTypesJson) {
-                        TypesLabel.SetHasClass(type_key, types_value == type_key);
-                        if (types_value == type_key) {
-                            TypesLabel.SetDialogVariable("type_label", $.Localize("#custom_ability_type_" + type_key))
+                        for (let types_value of types_value_list) {
+                            TypesLabel.SetHasClass(type_key, types_value == type_key);
+                            if (types_value == type_key) {
+                                TypesLabel.SetDialogVariable("type_label", $.Localize("#custom_ability_type_" + type_key))
+                            }
                         }
+
                     }
                     // 元素
                     let ExtraElement = TalentNode.FindChildTraverse("ExtraElement")!;

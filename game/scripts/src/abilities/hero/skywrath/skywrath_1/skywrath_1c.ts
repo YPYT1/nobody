@@ -47,6 +47,7 @@ export class skywrath_1c extends skywrath_1 {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: extraData.SelfAbilityMul + this.BasicAbilityDmg,
+                is_clone: this.IsClone(extraData),
             })
 
             if (this.ylong_max_stack) {
@@ -70,6 +71,8 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
     UpdataSpecialValue(): void {
         this.tracking_proj_name = "particles/units/heroes/hero_lich/lich_chain_frost.vpcf";
         this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "62", 'base_bonus');
+        // rune_57	法爷#6	炎龙技能基础伤害提高100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_57", "value");
         this.line_speed = 700;
         this.line_width = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "65", "line_width");
         this.line_distance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "65", "line_distance");
@@ -125,7 +128,9 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
                 })
 
             } else {
-                this.PlayPerformAttack2(this.caster, hTarget.GetAbsOrigin(), attack_damage, this.SelfAbilityMul, 0);
+                const vDirection = (hTarget.GetAbsOrigin() - this.caster.GetAbsOrigin() as Vector).Normalized()
+                vDirection.z = 0
+                this.PlayPerformAttack2(vDirection, attack_damage, this.SelfAbilityMul, 0);
                 let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
                 this.StartIntervalThink(attack_rate)
             }
@@ -135,16 +140,16 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
     }
 
     PlayPerformAttack2(
-        hCaster: CDOTA_BaseNPC,
-        vPos: Vector,
+        vDirection: Vector,
         attack_damage: number,
         SelfAbilityMul: number,
         DamageBonusMul: number,
     ) {
+        print("vDirection",vDirection)
         let origin = this.caster.GetAbsOrigin();
-        let vDirection = (vPos - origin as Vector).Normalized()
-        vDirection.z = 0
-        if (this.fakeAttack) { return }
+        // let vDirection = (vPos - origin as Vector).Normalized()
+        // vDirection.z = 0
+        // if (this.fakeAttack) { return }
 
         ProjectileManager.CreateLinearProjectile({
             Ability: this.GetAbility(),
@@ -166,6 +171,52 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
                 c: 0,
             } as ProjectileExtraData
         })
+
+        // 复制攻击
+        if (this.caster.clone_unit && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
+            const clone_unit = this.caster.clone_unit;
+            // const clone_factor = clone_unit.clone_factor;
+            let enemies = FindUnitsInRadius(
+                this.team,
+                this.caster.clone_unit.GetAbsOrigin(),
+                null,
+                this.caster.Script_GetAttackRange() + 64,
+                UnitTargetTeam.ENEMY,
+                UnitTargetType.HERO + UnitTargetType.BASIC,
+                UnitTargetFlags.FOW_VISIBLE,
+                FindOrder.CLOSEST,
+                false
+            )
+            if (enemies.length > 0) {
+
+
+                const clone_origin = clone_unit.GetOrigin();
+                const clone_target = enemies[0].GetOrigin();
+                let vDirection2 = (clone_target - clone_origin as Vector).Normalized()
+                vDirection2.z = 0
+                ProjectileManager.CreateLinearProjectile({
+                    Ability: this.GetAbility(),
+                    EffectName: "particles/units/heroes/hero_lina/lina_spell_dragon_slave.vpcf",
+                    fDistance: this.line_distance,
+                    fStartRadius: this.line_width,
+                    fEndRadius: this.line_width,
+                    vSpawnOrigin: clone_origin,
+                    Source: this.caster.clone_unit,
+                    vVelocity: (vDirection * this.line_speed) as Vector,
+                    iUnitTargetTeam: UnitTargetTeam.ENEMY,
+                    iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
+                    ExtraData: {
+                        a: attack_damage,
+                        et: this.element_type,
+                        dt: this.damage_type,
+                        SelfAbilityMul: SelfAbilityMul,
+                        DamageBonusMul: DamageBonusMul,
+                        c: 0,
+                        clone: 1,
+                    } as ProjectileExtraData
+                })
+            }
+        }
     }
 
     /** 龙啸 */
@@ -189,10 +240,12 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
         }
         let count = 0
         let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
+        const vDirection = (vPos - this.caster.GetAbsOrigin() as Vector).Normalized()
+        vDirection.z = 0
         this.caster.SetContextThink("skywrath_lx", () => {
             count += 1;
             if (count < max_count) {
-                this.PlayPerformAttack2(this.caster, vPos, attack_damage, this.SelfAbilityMul, 0);
+                this.PlayPerformAttack2(vDirection, attack_damage, this.SelfAbilityMul, 0);
                 return 0.15
             }
             let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
@@ -217,27 +270,21 @@ export class modifier_skywrath_1c_lx_channel extends BaseModifier {
         if (!IsServer()) { return }
         this.count = 0;
         this.caster = this.GetCaster();
-        GameRules.CMsg.AbilityChannel(this.caster, this, 1)
+
         this.channel = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "66", "channel");
         this.ylong_count_bonus = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "66", "ylong_count_bonus");
-        this.caster.AddNewModifier(this.caster, null, "modifier_basic_move", {
-            "UP": 0,
-            "DOWN": 0,
-            "LEFT": 0,
-            "RIGHT": 0
-        })
-        ExecuteOrderFromTable({
-            UnitIndex: this.caster.entindex(),
-            OrderType: UnitOrder.STOP,
-            Queue: false,
-        })
-
-
         this.pre_count = this.ylong_count_bonus / this.channel * 0.5;
 
-        const effect_fx = GameRules.WarningMarker.CreateExclamation(this.caster)
-        this.AddParticle(effect_fx, false, false, -1, false, false)
-        this.StartIntervalThink(0.5)
+        // rune_58	法爷#7	龙啸不再需要蓄力即可发出最高数量炎龙
+        let lx_key = this.caster.GetRuneKv("rune_58", "lx_key");
+        if (lx_key == 1) {
+            this.SetStackCount(this.ylong_count_bonus)
+            this.Destroy();
+        } else {
+            GameRules.CMsg.AbilityChannel(this.caster, this, 1)
+            this.StartIntervalThink(0.5)
+        }
+
     }
 
     OnIntervalThink(): void {

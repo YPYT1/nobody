@@ -229,7 +229,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
 
                 let TalentData = GetHeroTalentTreeRowData(key);
                 let talent_desc = $.Localize(`#custom_talent_${key}_desc`)
-                extra_desc += SetLabelDescriptionExtra(talent_desc, level - 1, TalentData.AbilityValues, TalentData.ObjectValues, true);
+                let extra_desc = SetLabelDescriptionExtra(talent_desc, level - 1, TalentData.AbilityValues, TalentData.ObjectValues, true);
                 let description_lv2 = $.Localize(`#custom_talent_${key}_desc_lv2`);
                 if (description_lv2.indexOf("#") != 0) {
                     let is_act = level >= 2;

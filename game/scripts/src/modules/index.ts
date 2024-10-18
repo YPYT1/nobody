@@ -9,7 +9,7 @@ import * as public_const from "../json/config/public_const.json";
 import { ElementEffect } from './ingame/system/element_effect';
 import { DamageSystem } from './ingame/system/damage_system';
 import { CustomItem } from './ingame/system/custom_item';
-import { HeroTalentObject } from '../kv_data/hero_talent_object';
+
 
 
 declare global {
@@ -28,12 +28,14 @@ declare global {
         PUBLIC_CONST: typeof public_const;
     }
 
-    interface CDOTA_BaseNPC {
-        GetTalentKv<
-            TIndex extends keyof typeof HeroTalentObject,
-            T1 extends keyof typeof HeroTalentObject[TIndex]["AbilityValues"],
-        >(index_key: TIndex, ability_key: T1): number
-    }
+    // interface CDOTA_BaseNPC {
+    //     GetTalentKv<
+    //         TIndex extends keyof typeof HeroTalentObject,
+    //         T1 extends keyof typeof HeroTalentObject[TIndex]["AbilityValues"],
+    //     >(index_key: TIndex, ability_key: T1): number
+    // }
+
+
 }
 
 // @ts-expect-error @eslint-disable-next-line

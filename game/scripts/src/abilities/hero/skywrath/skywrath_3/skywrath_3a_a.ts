@@ -1,3 +1,5 @@
+import { StackModifier } from "../../../../modifier/extends/modifier_stack";
+import { modifier_element_effect_fire } from "../../../../modifier/modifier_element";
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
 import { modifier_skywrath_3a, skywrath_3a } from "./skywrath_3a";
 
@@ -34,10 +36,11 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
 
     UpdataSpecialValue(): void {
         this.channel_time = 3
-
-
         this.meteor_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "87", "meteor_count");
+        // rune_70	法爷#19	陨石雨数量增加1枚，范围扩大100码
+        this.meteor_count += this.caster.GetRuneKv("rune_70", "value");
         this.range = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "87", "range");
+
     }
 
     OnIntervalThink(): void {
@@ -53,8 +56,19 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
     }
 
     PlayEffect(params: PlayEffectProps) {
-        print("PlayEffect")
+        // print("PlayEffect")
         let vPos = this.caster.GetAbsOrigin();
+        this.PlayMeteor(vPos, params, 0)
+        if (this.CheckClone()) {
+            let clone_pos = this.caster.clone_unit.GetOrigin();
+            this.PlayMeteor(clone_pos, params, 1)
+        }
+
+
+    }
+
+
+    PlayMeteor(vPos: Vector, params: PlayEffectProps, is_clone: number) {
         let enemies = FindUnitsInRadius(
             this.team,
             vPos,
@@ -76,6 +90,7 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
                 {
                     duration: 1.4,
                     manacost_bonus: params.value,
+                    is_clone: is_clone
                 },
                 enemy.GetAbsOrigin() + RandomVector(50) as Vector,
                 this.team,
@@ -93,13 +108,13 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
                 {
                     duration: 1.4,
                     manacost_bonus: params.value,
+                    is_clone: is_clone
                 },
                 vPos + RandomVector(RandomInt(300, this.range)) as Vector,
                 this.team,
                 false
             )
         }
-
     }
 }
 
@@ -113,7 +128,14 @@ export class modifier_skywrath_3a_a_channel extends BaseModifier {
         this.caster = this.GetCaster();
         this.manacost_bonus = params.manacost_bonus;
         this.least_time = GameRules.GetDOTATime(false, false) + this.GetDuration()
-        GameRules.CMsg.AbilityChannel(this.caster, this, 1)
+        // rune_71	法爷#20	陨石雨变为瞬发不再吟唱
+        if (this.caster.GetRuneKv("rune_71", "value") > 0) {
+            this.least_time = 0;
+            this.Destroy()
+        } else {
+            GameRules.CMsg.AbilityChannel(this.caster, this, 1)
+        }
+
     }
 
     OnDestroy(): void {
@@ -122,7 +144,9 @@ export class modifier_skywrath_3a_a_channel extends BaseModifier {
         if (this.least_time <= GameRules.GetDOTATime(false, false)) {
             // 成功吟唱
             let mdf = this.caster.FindModifierByName("modifier_skywrath_3a_a") as modifier_skywrath_3a_a;
-            if (mdf) mdf.PlayEffect({ value: this.manacost_bonus });
+            if (mdf) {
+                mdf.PlayEffect({ value: this.manacost_bonus });
+            }
         }
 
     }
@@ -139,18 +163,22 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
-
+        this.is_clone = params.is_clone;
         this.manacost_bonus = params.manacost_bonus
         this.caster = this.GetCaster()
         this.parent = this.GetParent()
         this.team = this.caster.GetTeamNumber();
         this.radius = 200;
+        // rune_70	法爷#19	陨石雨数量增加1枚，范围扩大100码
+        this.radius += this.caster.GetRuneKv("rune_70", "radius");
         this.caster_origin = this.caster.GetAbsOrigin()
         this.parent_origin = this.parent.GetAbsOrigin();
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
 
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
         this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "87", "bonus_base");
+        // rune_69	法爷#18	元素轰炸系列的技能基础伤害提高100%
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_69", "value");
 
         let dealy = this.GetDuration();
 
@@ -179,14 +207,26 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
             FindOrder.ANY,
             false
         );
-
+        // rune_72	法爷#21	陨石雨命中时会直接结算敌方单位的灼烧伤害
+        let rune_72 = this.caster.GetRuneKv("rune_72", "value")
         const meteor_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "90", "meteor_duration");
         const meteor_bonus = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "90", "meteor_bonus");
+
+        // rune_75	法爷#24	焚天效果变为可叠加，至多叠加5层
+        let fentian_stack = 1;
+        fentian_stack = math.max(this.caster.GetRuneKv("rune_75", "value"), fentian_stack)
         for (let enemy of enemies) {
+            if (rune_72 > 0 && enemy.HasModifier("modifier_element_effect_fire")) {
+                let fire_mdf = enemy.FindModifierByName("modifier_element_effect_fire") as modifier_element_effect_fire;
+                if (fire_mdf) {
+                    fire_mdf.SettlementDamage()
+                }
+            }
 
             let bonus = 0;
             if (enemy.HasModifier("modifier_skywrath_3a_a_fentian")) {
-                bonus = meteor_bonus
+                let stack = enemy.GetModifierStackCount("modifier_skywrath_3a_a_fentian", this.caster)
+                bonus = stack * meteor_bonus
             }
             ApplyCustomDamage({
                 victim: enemy,
@@ -198,13 +238,15 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.manacost_bonus + meteor_bonus
+                DamageBonusMul: this.manacost_bonus + meteor_bonus,
+                is_clone: this.is_clone,
             })
 
             // fentian
             if (meteor_duration > 0) {
                 enemy.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3a_a_fentian", {
-                    duration: meteor_duration
+                    duration: meteor_duration,
+                    max_stack: fentian_stack
                 })
             }
 
@@ -265,7 +307,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
             ParticleAttachment.POINT,
             this.GetParent()
         )
-        ParticleManager.SetParticleControl(effect_fx, 1, Vector(explosion_radius,0,0))
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(explosion_radius, 0, 0))
         ParticleManager.ReleaseParticleIndex(effect_fx)
         let enemies = FindUnitsInRadius(
             this.team,
@@ -289,6 +331,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
                 is_primary: false,
                 // 增伤
                 SelfAbilityMul: tinder_damage,
+                is_clone: this.is_clone,
             })
         }
     }
@@ -336,9 +379,6 @@ export class modifier_skywrath_3a_a_tinder extends BaseModifier {
 }
 
 @registerModifier()
-export class modifier_skywrath_3a_a_fentian extends BaseModifier {
+export class modifier_skywrath_3a_a_fentian extends StackModifier {
 
-    IsHidden(): boolean {
-        return true
-    }
 }

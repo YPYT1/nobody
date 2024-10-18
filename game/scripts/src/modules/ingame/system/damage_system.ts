@@ -121,10 +121,16 @@ export class DamageSystem {
         let ElementDmgMul = (params.ElementDmgMul ?? 0) + hAttacker.custom_attribute_value.AllElementDamageBonus;
         let FinalDamageMul = (params.FinalDamageMul ?? 0) + hAttacker.custom_attribute_value.FinalDamageMul;
         let DmgReductionPct = (100 - (params.victim.enemy_attribute_value.DmgReductionPct ?? 0)) * 0.01;
+        if ((params.is_clone ?? 0) == 1) { params.damage = params.damage * 0.25; }
         params.damage = params.damage * DmgReductionPct;
+
+        if ((params.is_clone ?? 0) == 1 && params.attacker.GetTalentKv("117", "shadow") == 1) {
+            element_type = 6
+        }
+        // let element_type = params.element_type
+        // print("is_clone:", params.is_clone, params.attacker.GetTalentKv("117", "shadow"), element_type)
         /** 元素抗性 */
         let ElementResist = 100 - (params.victim.enemy_attribute_value.AllElementResist ?? 0);
-        print("ElementResist", ElementResist)
         // 乘区
         DamageBonusMul += this.GetBonusDamageFromProp(params)
         // 游侠天赋击破效果

@@ -21,6 +21,11 @@ export class modifier_skywrath_2a_b extends modifier_skywrath_2a {
 
     UpdataSpecialValue(): void {
         this.surround_count += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "73", "count")
+        //rune_63	法爷#12	霜降生成的冰块数量翻倍
+        const rune63 = this.caster.GetRuneKv("rune_63", "value")
+        if (rune63 > 0) {
+            this.surround_count *= 2
+        }
     }
 
 }
@@ -57,7 +62,16 @@ export class modifier_skywrath_2a_b_surround_collision extends modifier_skywrath
     OnCreated_Extends() {
         this.damage_type = DamageTypes.MAGICAL
         this.element_type = ElementTypes.ICE;
-        const hParent = this.GetParent()
+        this.manacost_bonus = this.GetAuraOwner().manacost_bonus;
+        let is_clone = this.GetAuraOwner().is_clone;
+        const hParent = this.GetParent();
+
+        // rune_62	法爷#11	霜降对被冻结的单位提高200%的最终伤害
+        let FinalDamageMul = 0
+        const rune62value = this.caster.GetRuneKv("rune_62", "value");
+        if (rune62value > 0 && this.GetParent().State_Frozen()) {
+            FinalDamageMul += rune62value
+        }
         ApplyCustomDamage({
             victim: this.GetParent(),
             attacker: this.GetCaster(),
@@ -68,6 +82,9 @@ export class modifier_skywrath_2a_b_surround_collision extends modifier_skywrath
             is_primary: true,
             // damage_vect: this.GetParent().GetAbsOrigin(),
             SelfAbilityMul: this.SelfAbilityMul,
+            DamageBonusMul: this.manacost_bonus,
+            FinalDamageMul: FinalDamageMul,
+            is_clone: is_clone,
         })
 
         // 74 永东
@@ -80,5 +97,6 @@ export class modifier_skywrath_2a_b_surround_collision extends modifier_skywrath
             }
         }
 
+        // 
     }
 }
