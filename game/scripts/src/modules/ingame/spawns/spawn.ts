@@ -670,6 +670,7 @@ export class Spawn extends UIEventRegisterClass {
 
         //设置怪物的波数
         hUnit.SetIntAttr("round_index" , round_index);
+        //设置抗性 
     }
 
     /**
@@ -1159,8 +1160,6 @@ export class Spawn extends UIEventRegisterClass {
     GeneralKilledEvent(entindex_killed: EntityIndex, entindex_attacker: EntityIndex, entindex_inflictor: EntityIndex) {
         let target = EntIndexToHScript(entindex_killed) as CDOTA_BaseNPC;
         let killer = EntIndexToHScript(entindex_attacker) as CDOTA_BaseNPC;
-
-
         if (target && target.HasAbility("public_immortal") && !target.IsHero()) {
 
         } else if (
@@ -1211,7 +1210,7 @@ export class Spawn extends UIEventRegisterClass {
      */
     MapUnitKilled(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
         //非英雄击杀 boss击杀
-        let round_index = killer.GetIntAttr("round_index");
+        let round_index = target.GetIntAttr("round_index");
         if(!killer.IsHero()){
             // killer.SetIntAttr("index" , 1);
             // killer.GetIntAttr("index");
@@ -1264,7 +1263,6 @@ export class Spawn extends UIEventRegisterClass {
         } else if (unit_label == "unit_elite") {//unit_elite
             //判断是否掉落全体宝物箱 排除任务怪
             let vect = target.GetAbsOrigin();
-            let name = target.GetUnitName();
             let KillExpDrop = GameRules.Spawn.map_info_round[round_index].elite_KillExpDrop;
             let KillSoul = GameRules.Spawn.map_info_round[round_index].elite_KillSoul;
             let ExpType = GetCommonProbability(KillExpDrop);
