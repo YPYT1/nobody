@@ -21,20 +21,19 @@ export class modifier_element_effect_fire extends BaseModifier {
         this.parent = this.GetParent();
         this.playerid = this.caster.GetPlayerOwnerID();
         this.element_type = ElementTypes.FIRE;
-        this.OnRefresh(params)
-        this.C_OnCreated(params);
-
         let interval_increase: number = params.interval_increase ?? 0;
         let base_interval = params.base_interval ?? 1;
         this.dot_interval = base_interval / (1 + interval_increase * 0.01);
+        this.C_OnCreated(params);
+        this.OnRefresh(params)
         this.StartIntervalThink(this.dot_interval)
+
     }
 
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
         let burn_percent = this.caster.custom_attribute_value["BurningDmg"];
         this.dot_damage = math.floor(this.caster.GetAverageTrueAttackDamage(null) * burn_percent * 0.01);
-
         this.total_damage = this.dot_damage * this.GetDuration() / this.dot_interval;
     }
 

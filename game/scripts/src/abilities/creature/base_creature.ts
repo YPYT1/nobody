@@ -19,6 +19,7 @@ export class BaseCreatureAbility extends BaseAbility {
     vTarget: Vector;
     hTarget: CDOTA_BaseNPC;
     hCaster: CDOTA_BaseNPC;
+    caster:CDOTA_BaseNPC
     particle_idx: ParticleID;
     // warning_fx: ParticleID;
     channel_timer: number;
@@ -68,6 +69,7 @@ export class BaseCreatureAbility extends BaseAbility {
 
     OnUpgrade(): void {
         this.hCaster = this.GetCaster();
+        this.caster = this.GetCaster();
         this._radius = this.GetSpecialValueFor("radius");
         this._damage_factor = this.GetSpecialValueFor("damage_factor");
         this._duration = this.GetSpecialValueFor("duration");

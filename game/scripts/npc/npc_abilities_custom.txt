@@ -9,6 +9,7 @@
 
 #base "abilities/creature/elite.txt"
 #base "abilities/creature/boss.txt"
+#base "abilities/creature/normal.txt"
 
 "DOTAAbilities"
 {

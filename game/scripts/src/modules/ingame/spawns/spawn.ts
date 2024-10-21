@@ -107,6 +107,9 @@ export class Spawn extends UIEventRegisterClass {
             boss_name_list: string[]; //boss名字列表
             boss_hp : number ; //boss基础血量
             boss_attack : number ; //boss基础倍率
+            boss_CElementResistance:number[],
+            elite_CElementResistance:number[],
+            monster_CElementResistance:number[],
         }
     } = {
 
@@ -263,6 +266,9 @@ export class Spawn extends UIEventRegisterClass {
                     boss_name_list: TwiceMapInfoRoundInit.boss_name,
                     boss_hp: TwiceMapInfoRoundInit.boss_hp,
                     boss_attack: TwiceMapInfoRoundInit.boss_attack,
+                    boss_CElementResistance:TwiceMapInfoRoundInit.boss_CElementResistance,
+                    elite_CElementResistance:TwiceMapInfoRoundInit.elite_CElementResistance,
+                    monster_CElementResistance:TwiceMapInfoRoundInit.monster_CElementResistance,
                 }
             }
         }
@@ -671,6 +677,33 @@ export class Spawn extends UIEventRegisterClass {
         //设置怪物的波数
         hUnit.SetIntAttr("round_index" , round_index);
         //设置抗性 
+        
+        let _CElementResistance:number[];
+        let map_info_round = GameRules.Spawn.map_info_round[round_index];
+        if (type == "boss"){
+            _CElementResistance =  map_info_round.boss_CElementResistance
+           
+        } else if (type == "elite"){
+            _CElementResistance =  map_info_round.elite_CElementResistance
+        } else if (type == "normal"){
+            _CElementResistance =  map_info_round.monster_CElementResistance
+        }
+
+        GameRules.EnemyAttribute.ModifyAttribute(hUnit,{
+            "FireResist":{
+                "Base":_CElementResistance[0],
+            },
+            "IceResist":{
+                "Base":_CElementResistance[1],
+            },
+            "ThunderResist":{
+                "Base":_CElementResistance[2],
+            },
+            "WindResist":{
+                "Base":_CElementResistance[3],
+            },
+        })
+
     }
 
     /**

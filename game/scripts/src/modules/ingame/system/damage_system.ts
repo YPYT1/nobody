@@ -231,7 +231,7 @@ export class DamageSystem {
             * (1 + AbilityImproved * 0.01)
             * (1 + ElementDmgMul * 0.01)
             * (1 + FinalDamageMul * 0.01)
-            * ElementResist * 0.01
+            * math.max(1,ElementResist)  * 0.01
             ;
         // print("increased_injury", increased_injury)
         // print("ElementResist", ElementResist)
