@@ -70,6 +70,8 @@ export class Spawn extends UIEventRegisterClass {
     _attack_equation: string = "attack";
     //难度护甲公式
     _armor_equation: string = "armor";
+    //每波时间
+    _round_time : number = 60;
     //回合分类
     _round_class: number = 1;
     //每组怪物集合
@@ -92,11 +94,19 @@ export class Spawn extends UIEventRegisterClass {
             monster_count_list: {
                 [monster_index: string]: number
             };
+            monster_hp : number; //普通怪物血量
+            monster_attack : number; //普通怪物血量
+            monster_KillExpDrop : number[] ; //普通怪物掉落
+            monster_KillSoul : number; //普通怪物灵魂
             elite_name: string; //精英怪名字
             elite_count: number; //精英数量
+            elite_hp: number; //精英怪血量
+            elite_attack: number; //精英攻击力
+            elite_KillExpDrop : number[] ; //精英掉落
+            elite_KillSoul : number; //精英灵魂
             boss_name_list: string[]; //boss名字列表
-            boss_hp_power : number ; //boss血量倍率
-            boss_attack_power : number ; //boss血量倍率
+            boss_hp : number ; //boss基础血量
+            boss_attack : number ; //boss基础倍率
         }
     } = {
 
@@ -204,6 +214,7 @@ export class Spawn extends UIEventRegisterClass {
         //难度血量公式
         this._hp_equation = MapInfoDifficultyData.hp_equation;
         this._attack_equation = MapInfoDifficultyData.attack_equation;
+        this._round_time = MapInfoDifficultyData.round_time;
 
         //回合数量修改
         let round_class = MapInfoDifficultyData.round_class;
@@ -216,34 +227,42 @@ export class Spawn extends UIEventRegisterClass {
             if (TwiceMapInfoRoundInit.round_class == round_class) {
                 let monster_list_kyes = Object.keys(TwiceMapInfoRoundInit.monster_list);
                 let new_monster_list: { [monster_index: string]: string } = {}
-                let monster_list_key = "1";
-                if (monster_list_kyes.length > 1) {
+                //根据玩家数量修改上线
+                let monster_count_list: { [index: string]: number } = {};
+                if (monster_list_kyes.length == 1) {
                     // let keys_index = RandomInt( 0 , monster_list_kyes.length - 1);
                     // let monster_list_key = monster_list_kyes[keys_index];
                     new_monster_list = {
-                        "1": TwiceMapInfoRoundInit.monster_list[monster_list_key] as string
+                        "1": TwiceMapInfoRoundInit.monster_list["1"] as string
                     }
+                    monster_count_list["1"] = math.ceil(TwiceMapInfoRoundInit.monster_count_list["1"]);
                 } else {
-                    new_monster_list = {
-                        "1": TwiceMapInfoRoundInit.monster_list[monster_list_key] as string
+                    for (let index = 1; index <= monster_list_kyes.length; index++) {
+                        new_monster_list[index.toString()] = TwiceMapInfoRoundInit.monster_list[index.toString()];
+                        monster_count_list[index.toString()] = math.ceil(TwiceMapInfoRoundInit.monster_count_list[index.toString()]
+                            * GameRules.PUBLIC_CONST.PLAYER_COUNT_REF_MONSTER[this.player_count - 1]);
                     }
                 }
-                //根据玩家数量修改上线
-                let monster_count_list: { [index: string]: number } = {};
-                monster_count_list["1"] = math.ceil(TwiceMapInfoRoundInit.monster_count_list[monster_list_key]
-                    * GameRules.PUBLIC_CONST.PLAYER_COUNT_REF_MONSTER[this.player_count - 1])
                 // TwiceMapInfoRoundInit.round_index;
                 this.map_info_round[TwiceMapInfoRoundInit.round_index] = {
                     monster_type: TwiceMapInfoRoundInit.monster_type,
                     t_time: TwiceMapInfoRoundInit.t_time,
                     monster_list: new_monster_list,
+                    monster_hp : TwiceMapInfoRoundInit.monster_hp,
+                    monster_attack : TwiceMapInfoRoundInit.monster_attack,
+                    monster_KillExpDrop: TwiceMapInfoRoundInit.monster_KillExpDrop,
+                    monster_KillSoul: TwiceMapInfoRoundInit.monster_KillSoul,
                     interval_time: TwiceMapInfoRoundInit.interval_time,
                     monster_count_list: monster_count_list,
                     elite_name: TwiceMapInfoRoundInit.elite_name,
                     elite_count: TwiceMapInfoRoundInit.elite_count,
+                    elite_hp: TwiceMapInfoRoundInit.elite_hp,
+                    elite_attack: TwiceMapInfoRoundInit.elite_attack,
+                    elite_KillExpDrop: TwiceMapInfoRoundInit.elite_KillExpDrop,
+                    elite_KillSoul: TwiceMapInfoRoundInit.elite_KillSoul,
                     boss_name_list: TwiceMapInfoRoundInit.boss_name,
-                    boss_hp_power: TwiceMapInfoRoundInit.boss_hp_power,
-                    boss_attack_power: TwiceMapInfoRoundInit.boss_attack_power,
+                    boss_hp: TwiceMapInfoRoundInit.boss_hp,
+                    boss_attack: TwiceMapInfoRoundInit.boss_attack,
                 }
             }
         }
@@ -349,9 +368,9 @@ export class Spawn extends UIEventRegisterClass {
             let boss_name_list_index = RandomInt(0, boss_name_list.length - 1);
             let boss_name = boss_name_list[boss_name_list_index];
             if (boss_name == "null") {
-                return 60;
+                return this._round_time;
             }else{
-                return 60 + this._game_boss_time;
+                return this._round_time + this._game_boss_time;
             }
         }, 0)
     }
@@ -442,7 +461,7 @@ export class Spawn extends UIEventRegisterClass {
         }
         let monster_count = this.map_info_round[this._round_index].elite_count;
         // 使用完毕 进入冷却 
-        let monster_t_time = 60 / this._monster_count;
+        let monster_t_time = this._round_time / this._monster_count;
         let monster_refresh_count = 0;//刷新总数    
         GameRules.GetGameModeEntity().SetContextThink("CreateEliteTime" + "_" + this._round_index, () => {
             //精英怪刷新
@@ -507,12 +526,12 @@ export class Spawn extends UIEventRegisterClass {
             }
             
             return null;
-        }, 30)
+        }, this._round_time / 2)
         //登场
         GameRules.GetGameModeEntity().SetContextThink("CreateBossTime" + "_" + this._round_index, () => {
             GameRules.Spawn.CreateBoss();
             return null;
-        }, 57)
+        }, this._round_time - 3)
         //结束
         GameRules.GetGameModeEntity().SetContextThink("GameOverTime", () => {
             //切换成正常倒计时
@@ -524,7 +543,7 @@ export class Spawn extends UIEventRegisterClass {
             }, 3)
             GameRules.MapChapter.GameLoser()
             return null;
-        }, 60 + this._game_boss_time);
+        }, this._round_time + this._game_boss_time);
     }
 
     /**
@@ -574,21 +593,21 @@ export class Spawn extends UIEventRegisterClass {
                 //击杀所有怪物 并停止怪物刷新
                 GameRules.GetGameModeEntity().StopThink("CreateMonsterTime" + "_" + this._round_index);
                 GameRules.GetGameModeEntity().StopThink("CreateEliteTime" + "_" + this._round_index);
-                // boss击杀小怪
-                for (let xgunit of GameRules.Spawn._map_Spawn_list) {
-                    if (xgunit.IsNull() == false) {
-                        xgunit.Kill(null , unit)
-                    }
-                }
-                GameRules.Spawn._spawn_count = 0;
-                GameRules.Spawn._map_Spawn_list = [];
-                // boss击杀精英
-                for (let jyunit of GameRules.Spawn._map_elite_spawn_list) {
-                    if (jyunit.IsNull() == false) {
-                        jyunit.Kill(null , unit)
-                    }
-                }
-                GameRules.Spawn._map_Spawn_list = [];
+                // // boss击杀小怪
+                // for (let xgunit of GameRules.Spawn._map_Spawn_list) {
+                //     if (xgunit.IsNull() == false) {
+                //         xgunit.Kill(null , unit)
+                //     }
+                // }
+                // GameRules.Spawn._spawn_count = 0;
+                // GameRules.Spawn._map_Spawn_list = [];
+                // // boss击杀精英
+                // for (let jyunit of GameRules.Spawn._map_elite_spawn_list) {
+                //     if (jyunit.IsNull() == false) {
+                //         jyunit.Kill(null , unit)
+                //     }
+                // }
+                // GameRules.Spawn._map_Spawn_list = [];
                 return null;
             }, 3)
 
@@ -612,6 +631,8 @@ export class Spawn extends UIEventRegisterClass {
     CreateMonster(bs_spawn_name: string, _Vector: Vector, round_index: number, is_mine_spawn: boolean = false, is_test: boolean = false): CDOTA_BaseNPC {
         // print("_Vector :" , _Vector )
         let unit = GameRules.Spawn.CreepNormalCreate(bs_spawn_name, _Vector);
+
+        GameRules.Spawn.map_info_round[this._round_index].monster_hp
         //属性修改
         this.MonsterAmend(unit, "normal", 1, round_index);
         return unit;
@@ -631,51 +652,37 @@ export class Spawn extends UIEventRegisterClass {
      * 统一的怪物数据修改
      * @param round_index 
      */
-    MonsterAmend(hUnit: CDOTA_BaseNPC, type: 'boss' | 'normal' | 'elite', level: number = 1, round_index: number = 1) {
-        //血量
-        let healthmax = hUnit.GetMaxHealth();
-        healthmax = this.GetCurrentRoundHP(healthmax , type , level , round_index);
+    MonsterAmend(hUnit: CDOTA_BaseNPC , 
+        type: 'boss' | 'normal' | 'elite', 
+        level: number = 1, 
+        round_index: number = 1 , 
+    ) {
+        let healthmax = this.GetCurrentRoundHP(type , level , round_index);
         if (healthmax > 4200452371273100000) {
             healthmax = 4200452371273100000;
         }
         GameRules.Spawn.SetUnitHealthLimit(hUnit, healthmax);
         //攻击力
-        let UnitDamage = hUnit.GetBaseDamageMin();
-
-        //配置加算
-        // if (this._unit_attack_equation[UnitName]) {
-        //     let attack_equation = {
-        //         attack: UnitDamage,
-        //         round: round_index,
-        //         level: level
-        //     }
-        //     UnitDamage = LFUN.eval(this._unit_attack_equation[UnitName], attack_equation)
-        // }
-        if (type == "boss") {
-            UnitDamage = math.ceil(GameRules.Spawn.map_info_round[round_index].boss_attack_power * UnitDamage);
-            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_BOSS_HP[this.player_count - 1];
-        } else if (type == "elite") {
-            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_LEADER_HP[this.player_count - 1]
-        } else if (type == "normal") {
-            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_MONSTER_HP[this.player_count - 1]
-        } 
-        //难度加算
-        let unit_damage_param = {
-            attack: UnitDamage,
-        }
-        UnitDamage = LFUN.eval(this._attack_equation, unit_damage_param)
+        let UnitDamage = this.GetCurrentRoundAttack(type , level , round_index);
         //人数加算 等级加算
         hUnit.SetBaseDamageMin(UnitDamage)
         hUnit.SetBaseDamageMax(UnitDamage)
+
+        //设置怪物的波数
+        hUnit.SetIntAttr("round_index" , round_index);
     }
 
-
-    GetCurrentRoundHP(healthmax : number , type: 'boss' | 'normal' | 'elite' , level: number = 1, round_index: number = 1) : number{
-        if(healthmax == -1){
-            healthmax = this.GetBaseNormalHP(type)
-        }
+    /**
+     * 获取加成后的血量
+     * @param healthmax 
+     * @param type 
+     * @param level 
+     * @param round_index 
+     * @returns 
+     */
+    GetCurrentRoundHP( type: 'boss' | 'normal' | 'elite' , level: number = 1, round_index: number = 1 ) : number{
+        let healthmax = this.GetBaseMonsterHP(type , round_index);
         if (type == "boss") {
-            healthmax = math.ceil(GameRules.Spawn.map_info_round[round_index].boss_hp_power * healthmax);
             // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_BOSS_HP[this.player_count - 1];
         } else if (type == "elite") {
             // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_LEADER_HP[this.player_count - 1]
@@ -689,17 +696,64 @@ export class Spawn extends UIEventRegisterClass {
         healthmax = LFUN.eval(this._hp_equation, eval_param);
         return healthmax;
     }
-
-    GetBaseNormalHP(type: 'boss' | 'normal' | 'elite') : number{
+    /**
+     * 获取怪物基础血量
+     * @param type 
+     * @returns 
+     */
+    GetBaseMonsterHP( type: 'boss' | 'normal' | 'elite' , round_index: number = 1 ) : number{
         let StatusHealth = 1;
         if(type == "normal"){
-            let name = GameRules.Spawn.map_info_round[GameRules.Spawn._round_index].monster_list[1];
-            StatusHealth = UnitNormal[name as keyof typeof UnitNormal].StatusHealth;
-        }else{
-            let name = GameRules.Spawn.map_info_round[GameRules.Spawn._round_index].monster_list[1];
-            StatusHealth = UnitNormal[name as keyof typeof UnitNormal].StatusHealth;
+            StatusHealth = GameRules.Spawn.map_info_round[round_index].monster_hp;
+        }else if (type == "elite"){
+            StatusHealth = GameRules.Spawn.map_info_round[round_index].elite_hp;
+        }else if (type == "boss"){
+            StatusHealth = GameRules.Spawn.map_info_round[round_index].boss_hp;
         }
         return StatusHealth;
+    }
+
+
+    /**
+     * 获取加成后的攻击力
+     * @param healthmax 
+     * @param type 
+     * @param level 
+     * @param round_index 
+     * @returns 
+     */
+    GetCurrentRoundAttack( type: 'boss' | 'normal' | 'elite' , level: number = 1, round_index: number = 1 ) : number{
+        let AttackMax = this.GetBaseMonsterAttack(type , round_index);
+        //普通加成
+        if (type == "boss") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_BOSS_HP[this.player_count - 1];
+        } else if (type == "elite") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_LEADER_HP[this.player_count - 1]
+        } else if (type == "normal") {
+            // healthmax = healthmax * GameRules.PUBLIC_CONST.PLAYER_COUNT_MONSTER_HP[this.player_count - 1]
+        } 
+        //难度加算  
+        let eval_param = {
+            attack: AttackMax,
+        }
+        AttackMax = LFUN.eval(this._attack_equation, eval_param);
+        return AttackMax;
+    }
+    /**
+     * 获取怪物基础攻击力
+     * @param type 
+     * @returns 
+     */
+    GetBaseMonsterAttack( type: 'boss' | 'normal' | 'elite' , round_index: number = 1 ) : number{
+        let StatusAttack = 1;
+        if(type == "normal"){
+            StatusAttack = GameRules.Spawn.map_info_round[round_index].monster_attack;
+        }else if (type == "elite"){
+            StatusAttack = GameRules.Spawn.map_info_round[round_index].elite_attack;
+        }else if (type == "boss"){
+            StatusAttack = GameRules.Spawn.map_info_round[round_index].boss_attack;
+        }
+        return StatusAttack;
     }
 
     /**
@@ -1157,12 +1211,14 @@ export class Spawn extends UIEventRegisterClass {
      */
     MapUnitKilled(target: CDOTA_BaseNPC, killer: CDOTA_BaseNPC) {
         //非英雄击杀 boss击杀
+        let round_index = killer.GetIntAttr("round_index");
         if(!killer.IsHero()){
+            // killer.SetIntAttr("index" , 1);
+            // killer.GetIntAttr("index");
             let unit_label = target.GetUnitLabel();
-            let name = target.GetUnitName();
-            let KillExpDrop = UnitNormal[name as keyof typeof UnitNormal].KillExpDrop;
             let vect = target.GetAbsOrigin();
             if (unit_label == "creatur_normal") {
+                let KillExpDrop = GameRules.Spawn.map_info_round[round_index].monster_KillExpDrop;
                 let ExpType = GetCommonProbability(KillExpDrop);
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
                 //掉落物品
@@ -1173,6 +1229,7 @@ export class Spawn extends UIEventRegisterClass {
                 //     GameRules.CustomItem.Drop( "mp", vect , 120);
                 // }
             } else if (unit_label == "unit_elite"){
+                let KillExpDrop = GameRules.Spawn.map_info_round[round_index].elite_KillExpDrop;
                 let ExpType = GetCommonProbability(KillExpDrop);
                 GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
                 // GameRules.CustomItem.Drop("hp", vect , 120);
@@ -1186,9 +1243,8 @@ export class Spawn extends UIEventRegisterClass {
         if (unit_label == "creatur_normal") {
             //判断是否掉落全体宝物箱 排除任务怪
             let vect = target.GetAbsOrigin();
-            let name = target.GetUnitName();
-            let KillExpDrop = UnitNormal[name as keyof typeof UnitNormal].KillExpDrop;
-            let KillSoul = UnitNormal[name as keyof typeof UnitNormal].KillSoul;
+            let KillExpDrop = GameRules.Spawn.map_info_round[round_index].monster_KillExpDrop;
+            let KillSoul = GameRules.Spawn.map_info_round[round_index].monster_KillSoul;
             let ExpType = GetCommonProbability(KillExpDrop);
             GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
             GameRules.ResourceSystem.ModifyResource(player_id, {
@@ -1209,8 +1265,8 @@ export class Spawn extends UIEventRegisterClass {
             //判断是否掉落全体宝物箱 排除任务怪
             let vect = target.GetAbsOrigin();
             let name = target.GetUnitName();
-            let KillExpDrop = EliteNormal[name as keyof typeof EliteNormal].KillExpDrop;
-            let KillSoul = EliteNormal[name as keyof typeof EliteNormal].KillSoul;
+            let KillExpDrop = GameRules.Spawn.map_info_round[round_index].elite_KillExpDrop;
+            let KillSoul = GameRules.Spawn.map_info_round[round_index].elite_KillSoul;
             let ExpType = GetCommonProbability(KillExpDrop);
             GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
             GameRules.ResourceSystem.ModifyResource(player_id, {
@@ -1248,7 +1304,7 @@ export class Spawn extends UIEventRegisterClass {
         
         if (GameRules.Spawn._round_index < GameRules.Spawn._round_max) {
             let vect = killed_unit.GetAbsOrigin();
-            GameRules.CustomItem.Drop("mp", vect , 120);
+            GameRules.CustomItem.Drop("all", vect , 120);
             if(GameRules.MapChapter._game_select_phase != 999){
                 GameRules.Spawn.TemporarilyStopTheGame();
                 GameRules.ServiceInterface.SendLuaLog(-1);

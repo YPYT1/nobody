@@ -5,8 +5,6 @@ import * as NpcHeroesCustom from "../../json/npc_heroes_custom.json"
 import { UIEventRegisterClass } from "../class_extends/ui_event_register_class";
 import { MissionSystem } from "../ingame/mission/mission_system";
 
-
-
 //营地信息
 
 @reloadable
@@ -22,7 +20,7 @@ export class MapChapter extends UIEventRegisterClass {
 
     MapIndex: keyof typeof MapInfo = "m1";
 
-    MAP_CAMP = { name: "camp", x: -6144, y: -6144 }
+    MAP_CAMP = { name: "camp", x: 0, y: 0 }
 
     hero_list: { [key: number]: string } = {}
 
@@ -275,8 +273,6 @@ export class MapChapter extends UIEventRegisterClass {
         }
     }
 
-    
-
     //确认难度
     SelectDifficultyAffirm(player_id: PlayerID, params: CGED["MapChapter"]["SelectDifficultyAffirm"]) {
         if (this._game_select_phase == 0) {
@@ -435,7 +431,7 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.NewArmsEvolution.ArmsGlobalInit();
 
         GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
-        let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, this.ChapterData.z);
+        let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
         this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
             this.ChapterData.map_name,
             vLocation,
@@ -444,6 +440,7 @@ export class MapChapter extends UIEventRegisterClass {
             this.OnSpawnRoomComplete,
             this
         );
+        print("ChapterMapHandle :" , this.ChapterMapHandle);
     }
 
     //根据选择刷出地图
@@ -757,7 +754,6 @@ export class MapChapter extends UIEventRegisterClass {
                 );
                 UTIL_Remove(hHero)
             }
-    
             if (this.ChapterMapHandle) {
                 UnloadSpawnGroupByHandle(this.ChapterMapHandle)
                 this.ChapterMapHandle = null;
