@@ -132,6 +132,7 @@ export class modifier_state_boss_invincible extends BaseModifier {
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
+        this.caster = this.GetCaster()
         this.viewer_id = AddFOWViewer(DotaTeam.GOODGUYS, this.GetParent().GetAbsOrigin(), 1000, 10, false)
         let effect_fx = ParticleManager.CreateParticle(
             "particles/items_fx/black_king_bar_avatar.vpcf",
@@ -139,8 +140,16 @@ export class modifier_state_boss_invincible extends BaseModifier {
             this.GetParent()
         )
         this.AddParticle(effect_fx, false, false, -1, false, false)
+        this.caster.SetSequence("cast2");
+        this.StartIntervalThink(0.1)
     }
 
+    OnIntervalThink(): void {
+        // print("modifier_state_boss_invincible");
+        // this.caster.StartGestureFadeWithSequenceSettings(GameActivity.DOTA_TAUNT)
+        // this.caster.StartGesture(GameActivity.DOTA_TAUNT)
+        this.StartIntervalThink(-1)
+    }
     OnDestroy(): void {
         if (!IsServer()) { return }
         RemoveFOWViewer(DotaTeam.GOODGUYS, this.viewer_id)
@@ -152,12 +161,22 @@ export class modifier_state_boss_invincible extends BaseModifier {
 
     DeclareFunctions(): modifierfunction[] {
         return [
-            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
+            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
+            ModifierFunction.OVERRIDE_ANIMATION,
+            ModifierFunction.OVERRIDE_ANIMATION_RATE
         ]
     }
 
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
         return -999
+    }
+
+    GetOverrideAnimation(): GameActivity_t {
+        return this.GetStackCount()
+    }
+
+    GetOverrideAnimationRate(): number {
+        return 10
     }
 }
 @registerModifier()

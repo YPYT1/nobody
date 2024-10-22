@@ -1,6 +1,9 @@
 import { reloadable } from "../../../utils/tstl-utils";
 
 import * as EnemyAttributeConst from "../../../json/config/game/enemy_attribute_const.json";
+import * as MonsterBossJson from "../../../json/units/monster/boss.json";
+
+
 @reloadable
 export class EnemyAttribute {
 
@@ -161,5 +164,15 @@ export class EnemyAttribute {
         let temp_attr_list = hUnit.enemy_attribute_table_key[key];
         hUnit.enemy_attribute_table_key[key] = null;
         this.ModifyAttribute(hUnit, temp_attr_list, -1)
+    }
+
+    /** 注册施法动画 */
+    SetCastAnimation(hUnit: CDOTA_BaseNPC) {
+        hUnit.custom_animation = {};
+        let unit_name = hUnit.GetUnitName();
+        let unit_kv = MonsterBossJson[unit_name as "npc_creature_boss_14"];
+        if (unit_kv == null){ return }
+        
+
     }
 }

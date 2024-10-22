@@ -9,7 +9,10 @@ export class creature_normal_1 extends BaseCreatureAbility {
     proj_name: string;
 
     Precache(context: CScriptPrecacheContext): void {
-
+        precacheResString("particles/dev/creature/creature_range_attack_fire.vpcf", context)
+        precacheResString("particles/dev/creature/creature_range_attack_ice.vpcf", context)
+        precacheResString("particles/dev/creature/creature_range_attack_thunder.vpcf", context)
+        precacheResString("particles/dev/creature/creature_range_attack_wind.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -23,10 +26,13 @@ export class creature_normal_1 extends BaseCreatureAbility {
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
-        this.proj_width = 32;
+        this.proj_width = 48;
         this.proj_speed = 500;
-        this.proj_name = "particles/dev/attack/attack_flame/attack_flame_2.vpcf";
-
+        // this.proj_name = "particles/dev/creature/creature_range_attack_fire.vpcf";
+        // this.proj_name = "particles/dev/creature/creature_range_attack_ice.vpcf";
+        // this.proj_name = "particles/dev/creature/creature_range_attack_thunder.vpcf";
+        // print("GameRules.GetGameTime()",GameRules.GetGameTime(),GameRules.GetDOTATime(false,false))
+        this.proj_name = "particles/dev/creature/creature_range_attack_wind.vpcf";
         let origin = this.hCaster.GetAbsOrigin();
         let attack_game = this.hCaster.GetAverageTrueAttackDamage(null);
         let target_pos = this.GetCursorPosition()
@@ -44,6 +50,7 @@ export class creature_normal_1 extends BaseCreatureAbility {
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,
             iUnitTargetFlags: UnitTargetFlags.NONE,
+            fExpireTime: GameRules.GetGameTime() + 3,
         });
     }
 
@@ -68,7 +75,7 @@ export class creature_normal_1 extends BaseCreatureAbility {
 export class modifier_creature_normal_1 extends BaseModifier {
 
     ability: CDOTABaseAbility;
-    hullradius:number;
+    hullradius: number;
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
@@ -98,7 +105,7 @@ export class modifier_creature_normal_1 extends BaseModifier {
                 this.team,
                 origin,
                 null,
-                550 + this.hullradius,
+                480 + this.hullradius,
                 UnitTargetTeam.ENEMY,
                 UnitTargetType.HERO + UnitTargetType.BASIC,
                 UnitTargetFlags.NONE,
@@ -119,6 +126,6 @@ export class modifier_creature_normal_1 extends BaseModifier {
                 this.StartIntervalThink(0.1)
             }
 
-        } 
+        }
     }
 }

@@ -44,7 +44,7 @@ declare const enum ElementTypeEnum {
 
 // }
 /** 按键移动方向 */
-type CMoveDirection = "UP" | "DOWN" | "LEFT" | "RIGHT";
+type CMoveDirection = "UP" | "DOWN" | "LEFT" | "RIGHT" | "SPACE";
 
 /** 负面状态类型 */
 declare const enum DebuffTypes {

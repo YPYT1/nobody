@@ -145,15 +145,37 @@ export class modifier_mission_npc extends BaseModifier {
         if (!IsServer()) { return }
         let hParent = this.GetParent();
         hParent.SetAngles(0, -90, 0);
-        hParent.StartGesture(GameActivity.DOTA_IDLE)
+        hParent.ClearActivityModifiers()
+        hParent.AddActivityModifier("idle_multi");
+        hParent.SetSequence("idle_multi")
+
+        this.StartIntervalThink(0.1)
+    }
+
+    OnIntervalThink(): void {
+        // print("modifier_mission_npc OnIntervalThink")
+        let hParent = this.GetParent();
+        
+        hParent.StartGesture(GameActivity.DOTA_CUSTOM_TOWER_IDLE)
+        this.StartIntervalThink(-1)
     }
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
             [ModifierState.INVULNERABLE]: true,
-            [ModifierState.NO_UNIT_COLLISION]: true,
-            [ModifierState.NO_HEALTH_BAR]: true,
-            [ModifierState.UNSELECTABLE]: true,
+            // [ModifierState.NO_UNIT_COLLISION]: true,
+            // [ModifierState.NO_HEALTH_BAR]: true,
+            // [ModifierState.UNSELECTABLE]: true,
         }
+    }
+
+    DeclareFunctions(): modifierfunction[] {
+        return [
+            ModifierFunction.OVERRIDE_ANIMATION
+        ]
+    }
+
+    GetOverrideAnimation(): GameActivity_t {
+        return GameActivity.DOTA_CUSTOM_TOWER_IDLE
     }
 }

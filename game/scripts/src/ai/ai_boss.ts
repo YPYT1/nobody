@@ -51,7 +51,7 @@ export class CustomAI_Boss {
         this.hCurrorder = null;
         this.sUnitName = hUnit.GetUnitName();
         this.me.AddActivityModifier("run");
-        
+
         // print("CBossBase constructor")
         this._Init();
         this.me.SetContextThink("delay", () => {
@@ -85,7 +85,7 @@ export class CustomAI_Boss {
         let is_final = this.me.GetIntAttr("is_final") == 1;
         // 得到当前难度对应的血量阶段
         // let boss_hp_phase = is_final ? diff_data.pt_boss : diff_data.ww_boss;
-        let boss_hp_phase = [75,50,25];
+        let boss_hp_phase = [75, 50, 25];
         boss_hp_phase.sort((a, b) => b - a)
         // DeepPrintTable(boss_hp_phase)
         let index = 0
@@ -123,6 +123,7 @@ export class CustomAI_Boss {
         let AbilitiesReady = this.GetReadyAbilitiesAndItems();
         // print("AbilitiesReady ", AbilitiesReady.length);
         if (AbilitiesReady.length == 0) {
+            if (IsInToolsMode()) { return 1 }
             ExecuteOrderFromTable({
                 UnitIndex: this.me.entindex(),
                 OrderType: UnitOrder.ATTACK_MOVE,
@@ -191,14 +192,14 @@ export class CustomAI_Boss {
 
             if (hPhase.activate == false && hPhase.hpPct > nPct) {
                 hPhase.activate = true;
-              
+
                 // 该阶段激活 移除上阶段的技能效果
-                if (i > 0){
+                if (i > 0) {
                     let LasthPhase = this.PhaseStatus[i - 1];
                     let LasthAbility = this.me.FindAbilityByName(LasthPhase.abilityname) as BaseCreatureAbility;
                     LasthAbility.ClearCurrentPhase();
                 }
-                
+
                 // 执行技能效果
                 let hAbility = this.me.FindAbilityByName(hPhase.abilityname)
                 // 移除锁血

@@ -6,7 +6,7 @@ declare interface CDOTA_Buff {
     parent: CDOTA_BaseNPC;
     team: DotaTeam;
     origin: Vector;
-
+    
     manacost_bonus: number;
     attack_damage: number;
     /** `该技能加成` */

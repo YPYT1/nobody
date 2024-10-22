@@ -29,6 +29,7 @@ export class public_blink extends BaseAbility {
             height: 100,
             speed: 1000,
             duration: 0.5,
+            path:1,
         })
 
         // let effect_fx = ParticleManager.CreateParticle(
@@ -49,7 +50,8 @@ export class public_blink extends BaseAbility {
 export class modifier_public_blink extends modifier_generic_arc_lua {
 
     _OnCreated(kv: any): void {
-        this.GetAbility().SetFrozenCooldown(true)
+        // this.bFindPath = GridNav.CanFindPath(this.vTarget, this.GetParent().GetOrigin());
+        // this.GetAbility().SetFrozenCooldown(true)
         // let effect_fx = ParticleManager.CreateParticle(
         //     "particles/ability/blink/blink_preimage.vpcf",
         //     ParticleAttachment.POINT_FOLLOW,
@@ -69,9 +71,11 @@ export class modifier_public_blink extends modifier_generic_arc_lua {
             [ModifierState.COMMAND_RESTRICTED]: this.isRestricted ?? false,
             [ModifierState.NO_UNIT_COLLISION]: true,
             [ModifierState.ROOTED]: true,
+            // [ModifierState.INVULNERABLE]: true,
         };
     }
+
     _OnDestroy(): void {
-        this.GetAbility().SetFrozenCooldown(false)
+        // this.GetAbility().SetFrozenCooldown(false)
     }
 }

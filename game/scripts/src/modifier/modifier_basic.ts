@@ -48,6 +48,19 @@ export class modifier_basic_move extends BaseModifier {
         if (params.DOWN) { this.move_down = params.DOWN == 1; }
         if (params.LEFT) { this.move_left = params.LEFT == 1; }
         if (params.RIGHT) { this.move_right = params.RIGHT == 1; }
+        if (params.SPACE == 1) {
+            const ability = this.parent.FindAbilityByName("public_blink");
+            if (ability && ability.IsCooldownReady()) {
+                ExecuteOrderFromTable({
+                    UnitIndex: this.unit_index,
+                    AbilityIndex: ability.entindex(),
+                    OrderType: UnitOrder.CAST_NO_TARGET,
+                    Queue: false
+
+                })
+            }
+            return
+        }
 
         this.parent.FadeGesture(GameActivity.DOTA_ATTACK);
         // print(this.move_up, this.move_left, this.move_down, this.move_right);

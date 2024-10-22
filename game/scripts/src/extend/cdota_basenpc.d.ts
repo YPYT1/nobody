@@ -87,6 +87,11 @@ interface CDOTA_BaseNPC {
     clone_unit: CDOTA_BaseNPC;
     is_clone: number;
 
-   
+    custom_animation: {
+        [key: string]: {
+            seq: string,
+            act: GameActivity_t
+        }
+    }
 }
 

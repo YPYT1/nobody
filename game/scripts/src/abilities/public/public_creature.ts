@@ -39,13 +39,14 @@ export class modifier_public_creature extends BaseModifier {
             DotaTeam.BADGUYS,
             this.GetParent().GetAbsOrigin(),
             null,
-            200,
+            125,
             UnitTargetTeam.ENEMY,
             UnitTargetType.HERO + UnitTargetType.BASIC,
             UnitTargetFlags.PLAYER_CONTROLLED,
             FindOrder.ANY,
             false
         );
+        this.SetStackCount(enemies.length)
         if (enemies.length > 0) {
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
             for (let enemy of enemies) {
@@ -62,10 +63,11 @@ export class modifier_public_creature extends BaseModifier {
             // 播放声音
 
             // 动作
-            this.caster.StartGesture(GameActivity.DOTA_ATTACK)
+            // this.caster.StartGesture(GameActivity.DOTA_ATTACK)
         }
 
     }
+
 
 
     DeclareFunctions(): modifierfunction[] {
@@ -76,9 +78,9 @@ export class modifier_public_creature extends BaseModifier {
     }
 
     GetModifierProcAttack_Feedback(event: ModifierAttackEvent): number {
-        return -event.damage
+        return -event.damage * 2
     }
-    
+
     GetModifierAttackSpeedBaseOverride(): number {
         return 0.001
     }
@@ -86,10 +88,11 @@ export class modifier_public_creature extends BaseModifier {
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
             [ModifierState.NO_HEALTH_BAR]: true,
+            [ModifierState.ALLOW_PATHING_THROUGH_CLIFFS]: true,
             // [ModifierState.FORCED_FLYING_VISION]: true,
-            // [ModifierState.DISARMED]: true,
+            [ModifierState.DISARMED]: this.GetStackCount() > 0,
         }
     }
 
-    
+
 }

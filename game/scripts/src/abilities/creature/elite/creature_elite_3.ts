@@ -11,7 +11,11 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_3 extends BaseCreatureAbility {
 
-    // particles/units/heroes/hero_gyrocopter/gyro_guided_missile_target.vpcf
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_gyrocopter/gyro_guided_missile_target.vpcf", context)
+        precacheResString("particles/units/heroes/hero_gyrocopter/gyro_guided_missile.vpcf", context)
+    }
+
     OnSpellStart(): void {
         let hTarget = this.GetCursorTarget();
 

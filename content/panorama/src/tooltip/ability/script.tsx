@@ -179,7 +179,7 @@ function ResetAbilityElementAndType() {
 }
 
 function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
-    const QueryUnit = Players.GetLocalPlayerPortraitUnit();
+    const QueryUnit = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
     let player_id = Entities.GetPlayerOwnerID(QueryUnit)
     let description = "";//SetAbilityDescription(ability_name, ability_level, false);
     let is_hero = Entities.IsHero(QueryUnit);

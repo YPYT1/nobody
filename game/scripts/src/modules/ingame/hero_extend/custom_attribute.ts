@@ -209,7 +209,7 @@ export class CustomAttribute {
         hUnit.AddAbility("public_null_3").SetLevel(1);
         hUnit.AddAbility("public_null_4").SetLevel(1);
         hUnit.AddAbility("public_null_5").SetLevel(1);
-
+        hUnit.AddAbility("public_blink").SetLevel(1);
         hUnit.AddAbility("public_arms").SetLevel(1);
         hUnit.AddAbility("public_attribute").SetLevel(1);
         hUnit.AddAbility("custom_datadriven_hero").SetLevel(1);

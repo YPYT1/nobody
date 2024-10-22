@@ -574,14 +574,14 @@ export class Spawn extends UIEventRegisterClass {
             //     {}
             // );
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.WARNINGBOSS);
-
+            
             let unit : CDOTA_BaseNPC;
             if(boss_name != ""){
                 unit = GameRules.Spawn.CreepNormalCreate( boss_name , this.StageBossVector);
             }else{
                 unit = GameRules.Spawn.CreepNormalCreate( GameRules.Spawn._game_boss_name , this.StageBossVector);
             }
-            
+            GameRules.EnemyAttribute.SetCastAnimation(unit)
 
             this.MonsterAmend(unit, "boss", 1, this._round_index);
             unit.AddNewModifier(unit, null, "modifier_state_boss_growup", {} )

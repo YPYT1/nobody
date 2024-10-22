@@ -58,6 +58,9 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     parent: CDOTA_BaseNPC;
 
     endCallback: any;
+    /** 终点路径判断 */
+    path: boolean;
+
     IsHidden(): boolean {
         return true;
     }
@@ -140,6 +143,10 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
         if ((this.fix_duration && this.GetElapsedTime()) >= this.duration) { return; }
         let pos = me.GetOrigin() + this.direction * this.speed * dt as Vector;
+        if (this.path == false && GridNav.CanFindPath(me.GetOrigin(), pos) == false) {
+            this.Destroy()
+            return
+        }
         me.SetOrigin(pos);
     }
 
@@ -179,6 +186,7 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     SetJumpParameters(kv: any) {
         this.parent = this.GetParent();
 
+
         this.fix_end = true;
         this.fix_duration = true;
         this.fix_height = true;
@@ -197,7 +205,7 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         this.activity = kv.activity ?? 0;
         this.SetStackCount(this.activity);
 
-
+        this.path = true
         if (kv.target_x && kv.target_y) {
             let origin = this.parent.GetOrigin();
             let dir = Vector(kv.target_x, kv.target_y, 0) - origin as Vector;
@@ -205,7 +213,12 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
             dir.z = 0;
             dir = dir.Normalized();
             this.direction = dir;
+            if ((kv.path ?? 0) == 1) {
+                this.path = GridNav.CanFindPath(Vector(kv.target_x, kv.target_y, 0), origin);
+            }
         }
+
+
 
         if (kv.distance) {
             this.distance = kv.distance;

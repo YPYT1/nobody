@@ -86,14 +86,24 @@ const InputButton = () => {
 
 let lock_camera = false;
 function Onkey_Backspace_Down() {
-    GameUI.SetCameraTarget(-1 as EntityIndex);
-    if (lock_camera) {
-        GameUI.SetCameraTarget(-1 as EntityIndex);
-    } else {
-        let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-        GameUI.SetCameraTarget(hero_entity);
-    }
-    lock_camera = !lock_camera
+    MoveStateEvent({ Direction: "SPACE", State: 1 })
+    // let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+    // // GameUI.SetCameraTarget(-1 as EntityIndex);
+    // // if (lock_camera) {
+    // //     GameUI.SetCameraTarget(-1 as EntityIndex);
+    // // } else {
+
+    // //     GameUI.SetCameraTarget(hero_entity);
+    // // }
+    // // lock_camera = !lock_camera
+
+    // let ability = Entities.GetAbility(hero_entity, 5);
+    // Game.PrepareUnitOrders({
+    //     UnitIndex: hero_entity,
+    //     AbilityIndex: ability,
+    //     OrderType: dotaunitorder_t.DOTA_UNIT_ORDER_CAST_NO_TARGET,
+    //     QueueBehavior: OrderQueueBehavior_t.DOTA_ORDER_QUEUE_ALWAYS
+    // })
 }
 
 function Onkey_Backspace_Up() { }
