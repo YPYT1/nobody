@@ -39,7 +39,7 @@ export class creature_normal_1 extends BaseCreatureAbility {
             fStartRadius: this.proj_width,
             fEndRadius: this.proj_width,
             vVelocity: (direction * this.proj_speed) as Vector,
-            fDistance: 1000,
+            fDistance: 1500,
             Source: this.caster,
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.BASIC + UnitTargetType.HERO,
@@ -68,13 +68,15 @@ export class creature_normal_1 extends BaseCreatureAbility {
 export class modifier_creature_normal_1 extends BaseModifier {
 
     ability: CDOTABaseAbility;
+    hullradius:number;
 
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         this.ability = this.GetAbility();
         this.team = this.caster.GetTeam()
-
+        this.hullradius = this.caster.GetHullRadius();
+        // print("hullradius",this.hullradius)
         this.OnRefresh(params)
         this.StartIntervalThink(0.1)
     }
@@ -96,7 +98,7 @@ export class modifier_creature_normal_1 extends BaseModifier {
                 this.team,
                 origin,
                 null,
-                500,
+                550 + this.hullradius,
                 UnitTargetTeam.ENEMY,
                 UnitTargetType.HERO + UnitTargetType.BASIC,
                 UnitTargetFlags.NONE,

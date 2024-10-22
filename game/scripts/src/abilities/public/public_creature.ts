@@ -70,10 +70,15 @@ export class modifier_public_creature extends BaseModifier {
 
     DeclareFunctions(): modifierfunction[] {
         return [
-            ModifierFunction.ATTACKSPEED_BASE_OVERRIDE
+            ModifierFunction.ATTACKSPEED_BASE_OVERRIDE,
+            ModifierFunction.PROCATTACK_FEEDBACK,
         ]
     }
 
+    GetModifierProcAttack_Feedback(event: ModifierAttackEvent): number {
+        return -event.damage
+    }
+    
     GetModifierAttackSpeedBaseOverride(): number {
         return 0.001
     }
@@ -85,4 +90,6 @@ export class modifier_public_creature extends BaseModifier {
             // [ModifierState.DISARMED]: true,
         }
     }
+
+    
 }
