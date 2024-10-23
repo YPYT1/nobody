@@ -11,6 +11,10 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_elite_8 extends BaseCreatureAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_invoker/invoker_sun_strike.vpcf",context)
+    }
+    
     OnAbilityPhaseStart(): boolean {
         this.vPoint = this.GetCursorPosition();
         this.nPreviewFX = GameRules.WarningMarker.Circular(this._radius, this._cast_point, this.vPoint)

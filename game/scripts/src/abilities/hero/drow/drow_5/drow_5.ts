@@ -193,7 +193,7 @@ export class modifier_drow_5_branch_c extends modifier_drow_5_buff {
                 "Base": dmg_bonus_pct
             },
             'ManaCostRate': {
-                "MulRegion": -this.mana_pct,
+                "Base": -this.mana_pct,
             }
         })
 

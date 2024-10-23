@@ -65,7 +65,7 @@ export class modifier_talent_effect_drow extends modifier_talent_effect {
         }
 
         // 43	潜能激发	蓝量小于最大蓝量的20%/30%时，每秒恢复5点蓝量。
-        if (this.object['39']) {
+        if (this.object['43']) {
             let mana_low = this.GetObject("43", 'mana_low');
             if (caster_mp_pct < mana_low) {
                 let res_mana = this.GetObject("43", "res_mana");
@@ -97,7 +97,7 @@ export class modifier_talent_effect_drow extends modifier_talent_effect {
             let duration = this.GetObject('53', 'duration');
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, 'kv_t_53', {
                 'AttackSpeed': {
-                    "BasePercent": add_as_pct,
+                    "Base": add_as_pct,
                 },
                 'MoveSpeed': {
                     "BasePercent": add_mv_pct,

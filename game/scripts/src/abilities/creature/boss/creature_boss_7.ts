@@ -9,6 +9,10 @@ import { BaseCreatureAbility } from "../base_creature";
 @registerAbility()
 export class creature_boss_7 extends BaseCreatureAbility {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf",context)
+    }
+    
     OnAbilityPhaseStart(): boolean {
         this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
         this.vOrigin = this.hCaster.GetAbsOrigin();
