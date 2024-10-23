@@ -20,14 +20,31 @@ export class MapChapter extends UIEventRegisterClass {
 
     MapIndex: keyof typeof MapInfo = "m1";
 
-    MAP_CAMP = { name: "camp", x: 0, y: 0 }
+    MAP_CAMP = { name: "camp", x: 0, y: 0 };
+
+
+    map_list_config : {
+        [ map_key : string] : {
+            x : number,
+            y : number,
+        }
+    } = {};
+
+    map_list_init : { x : number , y : number}[] = [
+        { x : -8192 , y : 8192 },
+        { x : 8192 , y : 8192 },
+        { x : 8192 , y : -8192 },
+        { x : -8192 , y : -8192 },
+    ];
+
+    map_list_count : number = 0;
 
     hero_list: { [key: number]: string } = {}
 
     // 1 选择地图难度 2选择英雄 3游戏开始了
     _game_select_phase: number = 0;
     //地图数据
-    ChapterData  :  typeof MapInfo["m1"] = null;
+    ChapterData : typeof MapInfo["m1"] = null;
     //根据等级可用地图
     _map_list : { [key : string ] : UserMapSelectDifficulty }  = {};
     //玩家已通关的难度  
@@ -232,7 +249,15 @@ export class MapChapter extends UIEventRegisterClass {
             
             //强制默认为 134
             this.GameDifficultyNumber = 134;
-            this.MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
+            let MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
+            if(!this.map_list_config.hasOwnProperty(MapIndex)){
+                let ky_count = Object.keys(this.map_list_config).length;
+                if(ky_count >= this.map_list_init.length){
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "地图超过最大使用量");
+                    return ; 
+                }   
+            }
+            this.MapIndex = MapIndex;
         }
         CustomGameEventManager.Send_ServerToAllClients(
             "MapChapter_SelectDifficulty",
@@ -299,7 +324,6 @@ export class MapChapter extends UIEventRegisterClass {
                 }
                 GameRules.MapChapter.GetPlayerHeroList(index, {})
             }
-            
         }
         CustomNetTables.SetTableValue("game_setting", "game_mode",  {
             mode : 0 , 
@@ -402,7 +426,6 @@ export class MapChapter extends UIEventRegisterClass {
             this.player_select_hero[player_id].state = 1;
             GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
         }
-        DeepPrintTable(this.player_select_hero);
         for (const date of this.player_select_hero) {
             if (date.state != 1) {
                 return
@@ -414,8 +437,6 @@ export class MapChapter extends UIEventRegisterClass {
         this.GetGameSelectPhase(-1, {})
 
         GameRules.MapChapter.is_new_player = 0;
-
-        this.ChapterData = MapInfo[this.MapIndex];
 
         GameRules.GetGameModeEntity().StopThink("SELECT_HERO_AFFIRM");
 
@@ -431,16 +452,38 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.NewArmsEvolution.ArmsGlobalInit();
 
         GameRules.MapChapter.GetPlayerSelectHeroList(-1, {})
-        let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
-        this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
-            this.ChapterData.map_name,
-            vLocation,
-            false,
-            this.OnRoomReadyToSpawn,
-            this.OnSpawnRoomComplete,
-            this
-        );
-        print("ChapterMapHandle :" , this.ChapterMapHandle);
+
+
+        this.ChapterData = MapInfo[this.MapIndex];
+
+        if(this.map_list_config.hasOwnProperty(this.MapIndex)){
+            this.ChapterData.map_centre_x = this.map_list_config[this.MapIndex].x
+            this.ChapterData.map_centre_y = this.map_list_config[this.MapIndex].y
+            this.ChapterData.map_x = this.map_list_config[this.MapIndex].x;
+            this.ChapterData.map_y = this.map_list_config[this.MapIndex].y;
+            this.ChapterData.z = 0;
+
+            GameRules.MapChapter.GameStart()
+
+        }else{  
+            this.ChapterData.map_centre_x = this.map_list_init[this.map_list_count].x
+            this.ChapterData.map_centre_y = this.map_list_init[this.map_list_count].y
+            this.ChapterData.map_x = this.map_list_init[this.map_list_count].x;
+            this.ChapterData.map_y = this.map_list_init[this.map_list_count].y;
+            this.ChapterData.z = 0;
+
+            let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
+            this.ChapterMapHandle = DOTA_SpawnMapAtPosition(
+                this.ChapterData.map_name,
+                vLocation,
+                false,
+                this.OnRoomReadyToSpawn,
+                this.OnSpawnRoomComplete,
+                this
+            );
+        }
+        
+        
     }
 
     //根据选择刷出地图
@@ -451,14 +494,27 @@ export class MapChapter extends UIEventRegisterClass {
 
     //游戏地图创建前置
     OnRoomReadyToSpawn(spawnGroupHandle: SpawnGroupHandle) {
-        print("OnCampReadyToSpawn", spawnGroupHandle);
+        // print("OnCampReadyToSpawn", spawnGroupHandle);
         ManuallyTriggerSpawnGroupCompletion(spawnGroupHandle)
     }
     shiye : ViewerID;
     //游戏地图创建后置
     OnSpawnRoomComplete(spawnGroupHandle: SpawnGroupHandle) {
-        print("OnSpawnRoomComplete", spawnGroupHandle);
+        // print("OnSpawnRoomComplete", spawnGroupHandle);
         // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
+
+        //记录生成的地图信息
+        GameRules.MapChapter.map_list_config[this.MapIndex] = {
+            x : this.ChapterData.map_centre_x,
+            y : this.ChapterData.map_centre_y,
+        }
+        GameRules.MapChapter.map_list_count ++;
+
+        GameRules.MapChapter.GameStart()
+    }
+
+    //游戏开始前操作
+    GameStart(){
         let vLocation = Vector(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y, 0);
         this.shiye  = AddFOWViewer(DotaTeam.BADGUYS,vLocation , 9999 , 999999 , true);
         GameRules.Altar.SetMapCenter();
@@ -482,13 +538,11 @@ export class MapChapter extends UIEventRegisterClass {
         }
         this.game_count ++;
         this.NewPlay(-1 , {});
-        
-        this._game_select_phase = 3
+        this._game_select_phase = 3;
         this.GetGameSelectPhase(-1, {})
         //初始化 刷怪地点
         GameRules.Spawn.Init(this.ChapterData.map_centre_x, this.ChapterData.map_centre_y)
         GameRules.Spawn._game_start = true;
-
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawnHint",
             () => {
@@ -505,7 +559,6 @@ export class MapChapter extends UIEventRegisterClass {
             },
             1
         );
-
         GameRules.GetGameModeEntity().SetContextThink(
             "StartSpawn",
             () => {
@@ -754,10 +807,11 @@ export class MapChapter extends UIEventRegisterClass {
                 );
                 UTIL_Remove(hHero)
             }
-            if (this.ChapterMapHandle) {
-                UnloadSpawnGroupByHandle(this.ChapterMapHandle)
-                this.ChapterMapHandle = null;
-            }
+            //不移除地图
+            // if (this.ChapterMapHandle) { 
+            //     UnloadSpawnGroupByHandle(this.ChapterMapHandle)
+            //     this.ChapterMapHandle = null;
+            // }
             GameRules.MapChapter.SelectDifficulty( -1 , { difficulty : "-1"})
 
             GameRules.ResourceSystem.InitAllPlayer();

@@ -222,7 +222,6 @@ export class Spawn extends UIEventRegisterClass {
         //回合数量修改
         let round_class = MapInfoDifficultyData.round_class;
 
-
         // 回合内怪物信息
         for (let key in MapInfoRound) {
             let TwiceMapInfoRoundInit = MapInfoRound[key as keyof typeof MapInfoRound];
@@ -286,6 +285,8 @@ export class Spawn extends UIEventRegisterClass {
     }
 
     OnSpawnLoadCoord() {
+        //重置地图上小怪坐标
+        this._map_coord = [];
         for (let index = 0; index < 200; index++) {
             let _Vector = Vector(this._Vector.x + RandomInt(3300, 3800), this._Vector.y, 128);
             let RandomQAngle = 0;
@@ -390,6 +391,7 @@ export class Spawn extends UIEventRegisterClass {
         //怪物数量 
         this._monster_count = 0;
         this._monster_count_interval = {};
+        DeepPrintTable(this.map_info_round);
         //普通怪总和
         for (let index = 1; index <= Object.keys(this.map_info_round[this._round_index].monster_count_list).length; index++) {
             this._monster_count += tonumber(this.map_info_round[this._round_index].monster_count_list[index.toString()])
@@ -949,7 +951,7 @@ export class Spawn extends UIEventRegisterClass {
     }
 
     /**
-     * 向目标单位周围一次性刷怪
+     * 向目标单位周围一次性刷怪s
      * @param target 目标单位
      * @param task_name 任务名 传入同名任务则会增加到同一任务怪物数组中去 如果需要清理怪物 需使用TaskSpawnStop方法
      * @param count 刷怪总数
@@ -1081,8 +1083,6 @@ export class Spawn extends UIEventRegisterClass {
             return null
         }, 0)
     }
-
-
     //清空所有怪物
     StopAllSpawnAndMonster() {
         GameRules.GetGameModeEntity().SetContextThink("StopAllSpawnAndMonster", () => {
