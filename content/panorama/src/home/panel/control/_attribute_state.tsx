@@ -67,14 +67,16 @@ const UpdataAttributeData = () => {
 
 
     for (let _attr in value) {
-        let attr_key = _attr as AttributeMainKey
+        let attr_key = _attr as AttributeMainKey;
+        let attr_value = Math.floor(value[attr_key] ?? 0)
         let PanelAttributeRow = HeroAttributeContainer.FindChildTraverse(attr_key);
         if (PanelAttributeRow) {
-            PanelAttributeRow.SetDialogVariable("stat_value", ConvertAttributeToLabel(attr_key, value[attr_key]))
+            PanelAttributeRow.SetDialogVariable("stat_value", ConvertAttributeToLabel(attr_key, attr_value))
         }
         let sign = AttributeIsPercent(_attr as AttributeMainKey) ? "%" : ""
-        HeroAttributeContainer.SetDialogVariable(_attr, "<span class=\'bonus\'>" + value[attr_key] + sign + "</span>")
+        HeroAttributeContainer.SetDialogVariable(_attr, "<span class=\'bonus\'>" + attr_value + sign + "</span>")
     }
+
     let aps = Entities.GetAttacksPerSecond(queryUnit);
     HeroAttributeContainer.SetDialogVariable("APS", "<span class=\'bonus\'>" + (1 / aps).toFixed(2) + "</span>");
     // 护甲减伤
@@ -84,7 +86,7 @@ const UpdataAttributeData = () => {
     // $.Msg(["Update nettable"])
     for (let _attr in table) {
         let row_data = table[_attr as keyof typeof table];
-        
+
         for (let row_key in row_data) {
             let _value = row_data[row_key as keyof typeof row_data] ?? 0;
             let dialog_key = _attr + "." + row_key
@@ -96,7 +98,7 @@ const UpdataAttributeData = () => {
                 if (row_key == "BasePercent" || row_key == "BonusPercent" || row_key == "TotalPercent") {
                     sign = "%"
                 }
-                
+
                 HeroAttributeContainer.SetDialogVariable(dialog_key, "<span class='bonus'>" + _value + sign + "</span>")
             }
 

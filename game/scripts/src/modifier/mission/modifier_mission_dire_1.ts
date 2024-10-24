@@ -35,6 +35,6 @@ export class modifier_mission_dire_1 extends BaseModifier {
     OnDestroy(): void {
         if (!IsServer()) { return }
         GameRules.MissionSystem.DireMissionHandle.EndOfMission(this.state)
-        UTIL_Remove(this.GetParent())
+        // UTIL_Remove(this.GetParent())
     }
 }

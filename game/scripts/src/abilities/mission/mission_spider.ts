@@ -38,18 +38,18 @@ export class mission_spider extends BaseCreatureAbility {
     OnAbilityPhaseStart(): boolean {
         let vCaster = this.hCaster.GetAbsOrigin()
         let line_pos = vCaster + this.hCaster.GetForwardVector() * 1000 as Vector;
-        // for (let i = 0; i < 6; i++) {
-        //     let nPreviewFX = GameRules.WarningMarker.Line(this.hCaster, 128, vCaster, line_pos, -1, 1, Vector(255, 0, 0));
-        //     this.nPreviewFX_List.push(nPreviewFX)
-        //     line_pos = RotatePosition(vCaster, QAngle(0, 60, 0), line_pos);
-        // }
-        this.nPreviewFX = GameRules.WarningMarker.Circular(300, 1, vCaster)
+        for (let i = 0; i < 6; i++) {
+            let nPreviewFX = GameRules.WarningMarker.Line(this.hCaster, 128, vCaster, line_pos, -1, 1, Vector(255, 0, 0));
+            this.nPreviewFX_List.push(nPreviewFX)
+            line_pos = RotatePosition(vCaster, QAngle(0, 60, 0), line_pos);
+        }
+        // this.nPreviewFX = GameRules.WarningMarker.Circular(300, 1, vCaster)
         this.nPreviewFX_2 = GameRules.WarningMarker.CreateExclamation(this.hCaster);
         return true
     }
 
     OnSpellStart(): void {
-        print("mission_spider OnSpellStart")
+        // print("mission_spider OnSpellStart")
         this.DestroyWarningFx();
         // 发射
         let vCaster = this.hCaster.GetAbsOrigin()

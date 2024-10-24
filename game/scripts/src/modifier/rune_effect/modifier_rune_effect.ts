@@ -299,14 +299,21 @@ export class modifier_rune_effect extends BaseModifier {
 
         // rune_101	飞毛腿	自身每拥有1%移速加成，自身造成的伤害提高1%
         if (this._rune_object["rune_101"]) {
-            let ms_pct = math.floor(math.max(this.caster.custom_attribute_value.MoveSpeed - 350, 0) / 350)
+            let ms_pct = math.floor(
+                100 * math.max(this.caster.custom_attribute_value.MoveSpeed - 350, 0) / 350
+            );
+            // print("ms_pct", ms_pct)
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_24", {
                 "DamageBonusMul": {
                     "Base": ms_pct
                 }
             });
         }
-
+        // rune_110	代谢增速	每秒恢复50%最大生命值，但最大生命值减少60%
+        if (this._rune_object["rune_110"]) {
+            let health_amount = this.caster.GetMaxHealth() * this.Rune_Object("rune_110", "heal_pct") * 0.01
+            GameRules.BasicRules.Heal(this.caster, health_amount)
+        }
         // rune_114	无人之境	每过15秒，获得伤害加成在-50%~125%波动，持续15秒
         if (this._rune_object["rune_114"]) {
             this.timer_114 += 1;

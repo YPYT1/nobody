@@ -80,13 +80,14 @@ export class modifier_mission_thinker extends BaseModifier {
                 if (this.mission_type == 1) {
                     // 天辉蓝色
                     ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(255, 165, 0))
+                    ParticleManager.SetParticleControl(this.cast_fx, 4, Vector(255, 165, 0))
                 } else if (this.mission_type == 2) {
                     //  夜宴红色
-                    ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(255, 10, 10))
+                    ParticleManager.SetParticleControl(this.cast_fx, 3, Vector(255, 0, 0))
+                    ParticleManager.SetParticleControl(this.cast_fx, 4, Vector(255, 10, 10))
                 }
-                ParticleManager.SetParticleControl(this.cast_fx, 4, Vector(255, 200, 100))
-                // ParticleManager.ReleaseParticleIndex
-                // ParticleManager.SetParticleControl(this.cast_fx, 1, Vector(5, 0, 0))
+                
+
             }
             if (this.residence_time >= 5) {
                 this.residence_time = 0;
@@ -145,7 +146,7 @@ export class modifier_mission_npc extends BaseModifier {
         if (!IsServer()) { return }
         let hParent = this.GetParent();
         hParent.SetAngles(0, -90, 0);
-        hParent.ClearActivityModifiers()
+        // hParent.ClearActivityModifiers()
         hParent.AddActivityModifier("idle_multi");
         hParent.SetSequence("idle_multi")
 
@@ -153,9 +154,7 @@ export class modifier_mission_npc extends BaseModifier {
     }
 
     OnIntervalThink(): void {
-        // print("modifier_mission_npc OnIntervalThink")
         let hParent = this.GetParent();
-        
         hParent.StartGesture(GameActivity.DOTA_CUSTOM_TOWER_IDLE)
         this.StartIntervalThink(-1)
     }
@@ -163,9 +162,9 @@ export class modifier_mission_npc extends BaseModifier {
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
             [ModifierState.INVULNERABLE]: true,
-            // [ModifierState.NO_UNIT_COLLISION]: true,
-            // [ModifierState.NO_HEALTH_BAR]: true,
-            // [ModifierState.UNSELECTABLE]: true,
+            [ModifierState.NO_UNIT_COLLISION]: true,
+            [ModifierState.NO_HEALTH_BAR]: true,
+            [ModifierState.UNSELECTABLE]: true,
         }
     }
 

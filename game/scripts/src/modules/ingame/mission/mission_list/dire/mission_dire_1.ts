@@ -23,4 +23,8 @@ export class Mission_Dire_1 extends MissionModule {
         this.units.push(spider)
     }
 
+    MissionOverTime(): void {
+        this.EndOfMission(false)
+    }
+
 }

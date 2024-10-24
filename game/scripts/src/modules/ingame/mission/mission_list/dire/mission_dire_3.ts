@@ -22,7 +22,7 @@ export class Mission_Dire_3 extends MissionModule {
         this.progress_value = 0;
         this.progress_max = this.limit_time
         
-        this.the_npc = CreateModifierThinker(
+        const the_npc = CreateModifierThinker(
             null,
             null,
             "modifier_mission_dire_3_thinker",
@@ -36,6 +36,7 @@ export class Mission_Dire_3 extends MissionModule {
             DotaTeam.BADGUYS,
             false
         )
+        this.units.push(the_npc)
     }
 
 

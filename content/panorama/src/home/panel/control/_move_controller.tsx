@@ -84,18 +84,9 @@ const InputButton = () => {
     )
 }
 
-let lock_camera = false;
+
 function Onkey_Backspace_Down() {
     MoveStateEvent({ Direction: "SPACE", State: 1 })
-    // let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    // // GameUI.SetCameraTarget(-1 as EntityIndex);
-    // // if (lock_camera) {
-    // //     GameUI.SetCameraTarget(-1 as EntityIndex);
-    // // } else {
-
-    // //     GameUI.SetCameraTarget(hero_entity);
-    // // }
-    // // lock_camera = !lock_camera
 
     // let ability = Entities.GetAbility(hero_entity, 5);
     // Game.PrepareUnitOrders({
@@ -108,6 +99,19 @@ function Onkey_Backspace_Down() {
 
 function Onkey_Backspace_Up() { }
 
+let lock_camera = false;
+function OnKey_Down_U() {
+    let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+    // GameUI.SetCameraTarget(-1 as EntityIndex);
+    if (lock_camera) {
+        GameUI.SetCameraTarget(-1 as EntityIndex);
+    } else {
+
+        GameUI.SetCameraTarget(hero_entity);
+    }
+    lock_camera = !lock_camera
+
+}
 export function OnInitMoveHotkey() {
     // GameUI.SetCameraTarget(-1 as EntityIndex);
     // UPARROW
@@ -121,6 +125,8 @@ export function OnInitMoveHotkey() {
     SetHotKey("A", OnKey_Down_A, OnKey_Up_A);
     SetHotKey("S", OnKey_Down_S, OnKey_Up_S);
     SetHotKey("D", OnKey_Down_D, OnKey_Up_D);
+
+    SetHotKey("U", OnKey_Down_U);
     // SetHotKey("S1_UP", OnKey_Down_W, OnKey_Up_W);
     // SetHotKey("S1_LEFT", OnKey_Down_A, OnKey_Up_A);
     // SetHotKey("S1_DOWN", OnKey_Down_S, OnKey_Up_S);

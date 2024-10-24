@@ -53,7 +53,9 @@ export class modifier_mission_dire_3_sun_strike extends BaseModifier {
         if (!IsServer()) { return }
         this.sun_radius = params.sun_radius;
         let delay = this.GetDuration()
-        GameRules.WarningMarker.Circular(this.sun_radius, delay, this.GetParent().GetAbsOrigin(), true, Vector(255, 0, 0))
+        let warning_fx = GameRules.WarningMarker.Circular(
+            this.sun_radius, delay, this.GetParent().GetAbsOrigin(), false, Vector(255, 0, 0))
+        this.AddParticle(warning_fx,false,false,-1,false,false)
         let effect_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_invoker/invoker_sun_strike_team.vpcf",
             ParticleAttachment.POINT,

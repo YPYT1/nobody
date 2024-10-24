@@ -23,7 +23,6 @@ export class Mission_Radiant_5 extends MissionModule {
     _CreatePig(vect: Vector) {
         let vOrigin = vect + RandomVector(RandomInt(0, 200));
         let pig = CreateUnitByName("npc_mission_pig", vect, false, null, null, DotaTeam.GOODGUYS);
-        // print("this.the_npc",this.the_npc,this.limit_time)
         pig.AddNewModifier(pig, null, "modifier_mission_radiant_5_ai", {
             duration: this.limit_time
         })

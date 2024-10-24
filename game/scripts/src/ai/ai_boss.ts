@@ -55,7 +55,7 @@ export class CustomAI_Boss {
         // print("CBossBase constructor")
         this._Init();
         this.me.SetContextThink("delay", () => {
-            this.OnSetupAbilities();
+            this.OnSetup();
             return null;
         }, 0.5);
         this.me.SetThink("OnBossCommonThink", this, "OnBossCommonThink", 1);
@@ -64,7 +64,7 @@ export class CustomAI_Boss {
     _Init() { }
 
     // 初始化技能和优先级
-    OnSetupAbilities() {
+    OnSetup() {
         // 获取技能池子
         this.me.RemoveAbility("twin_gate_portal_warp");
         let ability_pool: string[] = []
@@ -102,6 +102,14 @@ export class CustomAI_Boss {
             mdf.SetStackCount(boss_hp_phase[0])
         }
 
+        // 注册移动动作
+        if (this.me.custom_animation["move"]){
+            let act = this.me.custom_animation["move"].seq
+            // this.me.ClearActivityModifiers();
+            this.me.AddActivityModifier(act)
+            // this.me.SetSequence(act)
+        }
+        
     }
 
     OnBaseThink(): number {

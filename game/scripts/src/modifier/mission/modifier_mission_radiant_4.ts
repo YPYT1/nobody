@@ -22,7 +22,7 @@ export class modifier_mission_radiant_4_points extends BaseModifier {
         ParticleManager.SetParticleControl(origin_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
         ParticleManager.SetParticleControl(origin_fx, 1, Vector(15, 0, 0))
         ParticleManager.SetParticleControl(origin_fx, 2, Vector(this.relay_radius - 16, 0, 0))
-        ParticleManager.SetParticleControl(origin_fx, 3, Vector(255, 255, 255))
+        ParticleManager.SetParticleControl(origin_fx, 3, Vector(0, 255, 0))
         this.AddParticle(origin_fx, false, false, -1, false, false)
 
         let glow_fx = ParticleManager.CreateParticle(
@@ -30,9 +30,22 @@ export class modifier_mission_radiant_4_points extends BaseModifier {
             ParticleAttachment.POINT,
             this.GetParent()
         )
-        ParticleManager.SetParticleControl(glow_fx, 6, Vector(255, 255, 255))
+        ParticleManager.SetParticleControl(glow_fx, 6, Vector(0, 255, 0))
         this.AddParticle(glow_fx, false, false, -1, false, false);
         
+        // 遍历每个玩家添加箭头
+        for(let hHero of HeroList.GetAllHeroes()){
+            let arrow_pfx = ParticleManager.CreateParticle(
+                "particles/diy_particles/move.vpcf",
+                ParticleAttachment.ABSORIGIN_FOLLOW,
+                hHero,
+            );
+            ParticleManager.SetParticleControl(arrow_pfx, 1, Vector(this.origin.x, this.origin.y, this.origin.z + 5));
+            ParticleManager.SetParticleControl(arrow_pfx, 6, Vector(0, 255, 0));
+            this.AddParticle(arrow_pfx, false, false, -1, false, false);
+        }
+        
+
         this.StartIntervalThink(0.1)
     }
 

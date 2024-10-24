@@ -171,8 +171,41 @@ export class EnemyAttribute {
         hUnit.custom_animation = {};
         let unit_name = hUnit.GetUnitName();
         let unit_kv = MonsterBossJson[unit_name as "npc_creature_boss_14"];
-        if (unit_kv == null){ return }
-        
+        if (unit_kv == null) { return }
 
+        // 攻击
+        if (unit_kv.Animation_Attack) {
+            let AnimationArr = unit_kv.Animation_Attack.split("\n");
+            let act = tonumber(AnimationArr[1]) as GameActivity
+            hUnit.custom_animation["attack"] = {
+                seq: AnimationArr[0],
+                act: act,
+            }
+        }
+        // 施法
+        if (unit_kv.Animation_Cast) {
+            let AnimationArr = unit_kv.Animation_Cast.split("\n");
+            let act = tonumber(AnimationArr[1]) as GameActivity
+            hUnit.custom_animation["cast"] = {
+                seq: AnimationArr[0],
+                act: act,
+            }
+        }
+        // 移动
+        if (unit_kv.Animation_Move) {
+            hUnit.custom_animation["move"] = {
+                seq: unit_kv.Animation_Move,
+                act: GameActivity.DOTA_RUN,
+            }
+        }
+        // 死亡
+        if (unit_kv.Animation_Death) {
+            hUnit.custom_animation["death"] = {
+                seq: unit_kv.Animation_Death,
+                act: GameActivity.DOTA_DIE,
+            }
+        }
+
+        DeepPrintTable(hUnit.custom_animation)
     }
 }

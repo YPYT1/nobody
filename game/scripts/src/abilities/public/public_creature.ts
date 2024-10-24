@@ -13,8 +13,9 @@ export class public_creature extends BaseAbility {
 export class modifier_public_creature extends BaseModifier {
 
     caster: CDOTA_BaseNPC;
+    state: boolean;
     attack_damage: number;
-
+    attack_act: GameActivity;
     IsHidden(): boolean {
         return true
     }
@@ -22,17 +23,28 @@ export class modifier_public_creature extends BaseModifier {
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
-        this.StartIntervalThink(1)
+        this.state = true;
+        this.StartIntervalThink(0.1)
     }
 
     OnRefresh(params: object): void {
         if (!IsServer()) { return }
-
     }
 
     OnIntervalThink(): void {
         if (this.GetParent().IsAlive() == false) {
             this.StartIntervalThink(-1);
+            return
+        }
+        if (this.state) {
+            this.state = false;
+            if (this.caster.custom_animation != null && this.caster.custom_animation["attack"]) {
+                print("modifier_public_creature")
+                let attack = this.caster.custom_animation["attack"];
+                this.caster.AddActivityModifier(attack.seq);
+                this.attack_act = attack.act ?? GameActivity.DOTA_ATTACK;
+            }
+            this.StartIntervalThink(1)
             return
         }
         let enemies = FindUnitsInRadius(
@@ -63,7 +75,10 @@ export class modifier_public_creature extends BaseModifier {
             // 播放声音
 
             // 动作
-            // this.caster.StartGesture(GameActivity.DOTA_ATTACK)
+            if (this.attack_act) {
+                this.caster.StartGesture(this.attack_act)
+            }
+
         }
 
     }

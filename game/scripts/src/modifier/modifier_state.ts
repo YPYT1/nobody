@@ -140,11 +140,20 @@ export class modifier_state_boss_invincible extends BaseModifier {
             this.GetParent()
         )
         this.AddParticle(effect_fx, false, false, -1, false, false)
-        this.caster.SetSequence("cast2");
+        // this.caster.SetSequence("cast2");
+        // this.caster.ClearActivityModifiers();
         this.StartIntervalThink(0.1)
     }
 
     OnIntervalThink(): void {
+        if (this.caster.custom_animation != null && this.caster.custom_animation["cast"]){
+            let cast = this.caster.custom_animation["cast"];
+            this.caster.RemoveGesture(cast.act)
+            this.caster.AddActivityModifier(cast.seq);
+            this.caster.StartGesture(cast.act)
+            this.SetStackCount(cast.act)
+
+        }
         // print("modifier_state_boss_invincible");
         // this.caster.StartGestureFadeWithSequenceSettings(GameActivity.DOTA_TAUNT)
         // this.caster.StartGesture(GameActivity.DOTA_TAUNT)

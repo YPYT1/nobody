@@ -12,6 +12,10 @@ export class modifier_mission_dire_2 extends BaseModifier {
 
     IsHidden(): boolean { return true }
 
+    RemoveOnDeath(): boolean {
+        return true
+    }
+
     IsAura(): boolean { return true; }
     GetAuraRadius(): number { return 200; }
     GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
@@ -70,15 +74,17 @@ export class modifier_mission_dire_2 extends BaseModifier {
     OnDeath(event: ModifierInstanceEvent): void {
         if (IsServer()) {
             if (event.unit == this.GetParent()) {
-                this.state = true
+                this.state = true;
+                this.Destroy();
             }
         }
     }
 
     OnDestroy(): void {
         if (!IsServer()) { return }
+        print("modifier_mission_dire_2 OnDestroy")
         GameRules.MissionSystem.DireMissionHandle.EndOfMission(this.state)
-        UTIL_Remove(this.GetParent())
+        // UTIL_Remove(this.GetParent())
     }
 
 }
