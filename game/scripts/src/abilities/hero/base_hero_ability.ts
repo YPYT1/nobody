@@ -92,12 +92,14 @@ export class BaseHeroAbility extends BaseAbility {
             },
             element_type: [],
         };
+
+        // this.GetTypesAffixValue(11, "All", "")
     }
 
-    GetTypesAffixValue<T1 extends keyof SpecialvalueOfTableProps, T2 extends keyof SpecialvalueOfTableProps[T1]>(
-        flBaseValue: number, skv_affix: T1, skv_key: T2
+    GetTypesAffixValue<T1 extends keyof SpecialvalueOfTableProps, T2 extends SpecialvalueOfTableProps[T1]>(
+        flBaseValue: number, skv_affix: T1, skv_key: keyof T2
     ) {
-        if (this.custom_ability_types == null) { return 0 }
+        if (this.custom_ability_types == null) { return flBaseValue }
         let skv_type = this.custom_ability_types.skv_type[skv_affix]
         if (!skv_type) { return flBaseValue }
         const row_data = GameRules.CustomOverrideAbility.OverrideSpecialValue[this.player_id][skv_key as string]
@@ -194,10 +196,6 @@ export class BaseHeroAbility extends BaseAbility {
 
     }
 
-    GetTalentKv(talent_key: string, talent_special: string) {
-        // GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, this.hero_talent, "", "bonus_value");
-    }
-
     /** 蓝量转换 */
     ManaCostAndConverDmgBonus() {
         let cost_mana = this.GetManaCost(-1);
@@ -250,6 +248,16 @@ export class BaseHeroAbility extends BaseAbility {
             Shadow: ((extraData.clone ?? 0) == 1) && this.caster.GetTalentKv("117", "shadow") == 1
         }
 
+    }
+
+    MultiCastAoe(vPos: Vector, fDamage?: number, count: number = 1) {
+        this.caster.AddNewModifier(this.caster, this, "modifier_state_multi_cast_of_aoe", {
+            pos_x: vPos.x,
+            pos_y: vPos.y,
+            pos_z: vPos.z,
+            _multi_count: count,
+            _damage: fDamage ?? 0,
+        })
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: ProjectileExtraData): void | boolean {
@@ -344,6 +352,8 @@ export class BaseHeroModifier extends BaseModifier {
     CheckClone() {
         return this.caster.clone_unit != null && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")
     }
+
+    
 }
 
 const SpecialvalueOfTableSpecialObject = {

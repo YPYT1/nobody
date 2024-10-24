@@ -59,20 +59,26 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
 
     manacost_bonus: number;
     ring_distance: number;
+    ring_width: number;
+    ring_d_final: number;
     attack_damage: number;
     dmg_interval: number;
     ring_dmg_key: string;
 
     lq_stack: number;
     lq_duration: number;
+    hAbility: skywrath_2b_b;
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
-
+        this.hAbility = this.GetAbility() as skywrath_2b_b
         this.caster = this.GetCaster()
         this.team = this.caster.GetTeam();
         this.manacost_bonus = params.manacost_bonus;
-        this.ring_distance = params.ring_distance;
+        this.ring_distance = this.hAbility.GetTypesAffixValue(params.ring_distance, "Ring", "skv_ring_range")
+        this.ring_width = this.hAbility.GetTypesAffixValue(32, "Ring", "skv_ring_width");
+        this.ring_d_final = this.hAbility.GetTypesAffixValue(0, "Ring", "skv_ring_d_final");
+        // print("skv_ring_d_final",skv_ring_d_final)
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.damage_type = DamageTypes.MAGICAL;
         this.element_type = ElementTypes.ICE;
@@ -89,6 +95,7 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
         if (this.caster.GetRuneKv("rune_66", "value") > 0) {
             this.dmg_interval = 0.5
         }
+        this.dmg_interval = this.dmg_interval * 100 / (100 + this.hAbility.GetTypesAffixValue(0, "Ring", "skv_ring_interval"))
         this.lq_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "81", 'lq_stack');
         // rune_68	法爷#17	冷气效果上限提高一倍
         if (this.caster.GetRuneKv("rune_68", "value")) {
@@ -105,16 +112,15 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
         this.StartIntervalThink(0.1)
     }
 
-    _OnCreated(params: any) {
 
-    }
+
 
     OnIntervalThink(): void {
         let enemies = FindUnitsInRing(
             this.team,
             this.caster.GetAbsOrigin(),
             this.ring_distance,
-            32,
+            this.ring_width,
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.FOW_VISIBLE
@@ -134,6 +140,7 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
                     damage_vect: this.GetParent().GetAbsOrigin(),
                     SelfAbilityMul: this.SelfAbilityMul,
                     DamageBonusMul: this.manacost_bonus,
+                    FinalDamageMul: this.ring_d_final,
                     is_clone: this.is_clone,
                 })
 

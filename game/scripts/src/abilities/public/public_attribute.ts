@@ -1,4 +1,5 @@
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../utils/dota_ts_adapter";
+import { BaseHeroAbility } from "../hero/base_hero_ability";
 
 // import * as NpcAbilityCustom from "./../../json/npc_abilities_custom.json"
 
@@ -213,6 +214,7 @@ export class modifier_public_attribute extends BaseModifier {
         if (event.ability == null) { return 100 }
         let hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
         let ability_name = event.ability.GetAbilityName()
+        let hAbility = event.ability as BaseHeroAbility;
         let ability_cd_limit = 55;
         let base_cd = 100;
         if (IsServer()) {
@@ -222,13 +224,22 @@ export class modifier_public_attribute extends BaseModifier {
                 let fuchou_cd = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_51', 'fuchou_cd') * 0.01;
                 base_cd *= (1 - fuchou_cd)
             }
+            // 召唤技能冷却
+            if (hAbility.GetCustomAbilityType != null) {
+                let custom_at = hAbility.GetCustomAbilityType();
+                if (custom_at.indexOf("Summon") != -1) {
+                    let skv_summon_cooldown = hAbility.GetTypesAffixValue(1, "Summon", "skv_summon_cooldown") * 0.01;
+                    base_cd *= (1 - skv_summon_cooldown)
+                }
+            }
         }
 
         let AbilityCooldown1 = this.AttributeData.AbilityCooldown ?? 0;
         let ability_cd = math.min(ability_cd_limit * 0.01, AbilityCooldown1)
         base_cd *= (1 - ability_cd)
         let AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01;
-        base_cd *= (1 - AbilityCooldown2)
+        base_cd *= (1 - AbilityCooldown2);
+
         return 100 - base_cd
     }
 

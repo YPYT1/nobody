@@ -23,7 +23,7 @@ export class skywrath_2b extends BaseHeroAbility {
     }
 
     UpdataAbilityValue(): void {
-        // this.SetCustomAbilityType("",true)
+        // this.SetCustomAbilityType("Ring",true)
     }
 }
 @registerModifier()

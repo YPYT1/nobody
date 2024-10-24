@@ -13,10 +13,51 @@ import { element_orb, modifier_skywrath_2a, modifier_skywrath_2a_surround, modif
 @registerAbility()
 export class skywrath_2a_a extends skywrath_2a {
 
+    aoe_radius:number;
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_2a_a"
     }
 
+    UpdataSpecialValue(): void {
+        this.aoe_radius = this.GetTypesAffixValue(this.caster.GetTalentKv("69","bz_radius"),"Aoe","skv_aoe_radius") 
+    }
+
+    TriggerActive(params: PlayEffectProps): void {
+        const damage = this.caster.GetAverageTrueAttackDamage(null);
+        let enemies = FindUnitsInRadius(
+            this.team,
+            params.vPos,
+            null,
+            this.aoe_radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.HERO + UnitTargetType.BASIC,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        )
+        for (let enemy of enemies) {
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.caster,
+                damage: damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: ElementTypes.FIRE,
+                is_primary: true,
+                SelfAbilityMul: params.SelfAbilityMul,
+                DamageBonusMul: params.DamageBonusMul ?? 0,
+                is_clone: params.is_clone ?? 0,
+            })
+        }
+        let cast_fx = ParticleManager.CreateParticle(
+            "particles/dev/hero/drow/drow_1/explosion_arrow.vpcf",
+            ParticleAttachment.WORLDORIGIN,
+            null
+        )
+        ParticleManager.SetParticleControl(cast_fx, 0, params.vPos);
+        ParticleManager.SetParticleControl(cast_fx, 1, Vector(this.aoe_radius, 1, 1));
+        ParticleManager.ReleaseParticleIndex(cast_fx);
+    }
 }
 
 @registerModifier()
@@ -49,8 +90,8 @@ export class modifier_skywrath_2a_a extends modifier_skywrath_2a {
             let total_count = math.min(max_count, this.surround_count);
             // 1个 面向 2个对角 3
             let pre_angle = 360 / total_count;
-            let surround_speed = this.ability.GetTypesAffixValue(300, "Surround", "skv_surround_speed");
-            let surround_distance = this.ability.GetTypesAffixValue(this.surround_radius, "Surround", "skv_surround_distance")
+            let surround_speed = 300// this.ability.GetTypesAffixValue(300, "Surround", "skv_surround_speed");
+            let surround_distance = this.surround_radius;//this.ability.GetTypesAffixValue(, "Surround", "skv_surround_distance")
             for (let i = 0; i < total_count; i++) {
                 this.count += 1;
                 let surround_qangle = i * pre_angle;
@@ -156,44 +197,19 @@ export class modifier_skywrath_2a_a_surround_collision extends modifier_skywrath
             this.GetAuraOwner().summoned_damage = GameRules.GetDOTATime(false, false) + this.interval
             this.damage_type = DamageTypes.MAGICAL
             this.element_type = ElementTypes.FIRE;
-            this.manacost_bonus = this.GetAuraOwner().manacost_bonus;
+            const manacost_bonus = this.GetAuraOwner().manacost_bonus;
             const is_clone = this.GetParent().is_clone;
             const vPos = this.GetParent().GetAbsOrigin();
-            let enemies = FindUnitsInRadius(
-                this.team,
-                vPos,
-                null,
-                150,
-                UnitTargetTeam.ENEMY,
-                UnitTargetType.HERO + UnitTargetType.BASIC,
-                UnitTargetFlags.NONE,
-                FindOrder.ANY,
-                false
-            )
-            for (let enemy of enemies) {
-                ApplyCustomDamage({
-                    victim: enemy,
-                    attacker: this.GetCaster(),
-                    damage: this.ability_damage,
-                    damage_type: this.damage_type,
-                    ability: this.ability,
-                    element_type: this.element_type,
-                    is_primary: true,
-                    damage_vect: this.GetParent().GetAbsOrigin(),
-                    SelfAbilityMul: this.SelfAbilityMul,
-                    DamageBonusMul: this.manacost_bonus,
-                    is_clone: is_clone,
-                })
+            this.GetAbility().TriggerActive({
+                vPos: vPos,
+                is_clone: is_clone,
+                DamageBonusMul: manacost_bonus,
+                SelfAbilityMul: this.SelfAbilityMul,
+            })
+            let aoe_multiple = this.GetAbility().GetTypesAffixValue(0, "Aoe", "skv_aoe_chance");
+            if (RollPercentage(aoe_multiple)) {
+                this.GetAbility().MultiCastAoe(vPos)
             }
-            let cast_fx = ParticleManager.CreateParticle(
-                "particles/dev/hero/drow/drow_1/explosion_arrow.vpcf",
-                ParticleAttachment.WORLDORIGIN,
-                null
-            )
-            ParticleManager.SetParticleControl(cast_fx, 0, vPos);
-            ParticleManager.SetParticleControl(cast_fx, 1, Vector(150, 1, 1));
-            ParticleManager.ReleaseParticleIndex(cast_fx);
-
             let talent71 = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "71", "fb_duration_bonus")
             if (this.GetAuraOwner()) {
                 if (talent71 == 0) {

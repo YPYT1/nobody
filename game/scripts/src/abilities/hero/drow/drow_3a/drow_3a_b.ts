@@ -12,10 +12,55 @@ import { drow_3a, modifier_drow_3a, modifier_drow_3a_summoned, modifier_drow_3a_
 @registerAbility()
 export class drow_3a_b extends drow_3a {
 
+    bx_radius: number;
+    
     GetIntrinsicModifierName(): string {
         return "modifier_drow_3a_b"
     }
 
+    UpdataSpecialValue(): void {
+        let bx_radius = this.caster.GetTalentKv('33', 'radius')
+        this.bx_radius = this.GetTypesAffixValue(bx_radius, "Aoe", "skv_aoe_radius")
+    }
+    TriggerActive(params: PlayEffectProps): void {
+        const vPos = params.vPos;
+        let ability_damage = params.damage;
+        CreateModifierThinker(
+            this.caster,
+            this,
+            "modifier_drow_3a_b_cowlofice",
+            {
+                duration: 2,
+                bx_radius: this.bx_radius,
+            },
+            vPos,
+            this.caster.GetTeamNumber(),
+            false
+        )
+
+        let enemies = FindUnitsInRadius(
+            this.team,
+            vPos,
+            null,
+            this.bx_radius,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.HERO + UnitTargetType.BASIC,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        );
+        for (let enemy of enemies) {
+            ApplyCustomDamage({
+                victim: enemy,
+                attacker: this.caster,
+                damage: ability_damage,
+                damage_type: DamageTypes.MAGICAL,
+                ability: this,
+                element_type: ElementTypes.ICE,
+            })
+
+        }
+    }
 }
 
 @registerModifier()
@@ -24,7 +69,7 @@ export class modifier_drow_3a_b extends modifier_drow_3a {
     surround_mdf = "modifier_drow_3a_b_summoned";
 
     UpdataSpecialValue(): void {
-        this.bonus_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "32", 'bonus_count')
+        this.bonus_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "32", 'bonus_count')
 
     }
 
@@ -87,7 +132,7 @@ export class modifier_drow_3a_b_summoned extends modifier_drow_3a_summoned {
                     // 速度跟龙
                     FindClearSpaceForUnit(enemy, target_vect - direction * 15 as Vector, false)
                     // enemy.SetAbsOrigin()
-                } 
+                }
             }
         }
 
@@ -154,9 +199,9 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
         if (this.caster.rune_level_index.hasOwnProperty("rune_43")) {
             this.bx_limit_pct *= 2;
         }
-        let bx_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '33', 'radius')
-        let hAbility = this.GetAbility()
-        this.bx_radius = hAbility.GetTypesAffixValue(bx_radius, "Aoe", "skv_aoe_radius")
+
+
+
     }
 
 
@@ -169,61 +214,18 @@ export class modifier_drow_3a_b_storage extends BaseModifier {
         let hCaster = this.GetCaster();
         let hAbility = this.GetAbility();
         if (hCaster == null || hAbility == null) { return }
+
+        let damage = math.min(hCaster.GetAverageTrueAttackDamage(null) * this.bx_limit_pct * 0.01, this.bx_record_dmg);
         let vPos = hCaster.GetAbsOrigin();
-        this.PlayEffectAoe(vPos);
-
-        let aoe_multiple = hAbility.GetTypesAffixValue(1, "Aoe", "skv_aoe_chance") - 1;
+        hAbility.TriggerActive({ vPos: vPos, damage: damage })
+        let aoe_multiple = hAbility.GetTypesAffixValue(0, "Aoe", "skv_aoe_chance");
         if (RollPercentage(aoe_multiple)) {
-            let vPos2 = Vector(
-                vPos.x + RandomInt(-this.bx_radius, this.bx_radius),
-                vPos.y + RandomInt(-this.bx_radius, this.bx_radius),
-                vPos.z
-            );
-            this.PlayEffectAoe(vPos2);
+            this.GetAbility().MultiCastAoe(vPos, damage)
         }
+
 
     }
 
-    PlayEffectAoe(vPos: Vector) {
-        let hCaster = this.GetCaster();
-        let hAbility = this.GetAbility();
-        let ability_damage = math.min(hCaster.GetAverageTrueAttackDamage(null) * this.bx_limit_pct * 0.01, this.bx_record_dmg);
-        CreateModifierThinker(
-            hCaster,
-            hAbility,
-            "modifier_drow_3a_b_cowlofice",
-            {
-                duration: 2,
-                bx_radius: this.bx_radius,
-            },
-            vPos,
-            hCaster.GetTeamNumber(),
-            false
-        )
-
-        let enemies = FindUnitsInRadius(
-            hCaster.GetTeam(),
-            vPos,
-            null,
-            this.bx_radius,
-            UnitTargetTeam.ENEMY,
-            UnitTargetType.HERO + UnitTargetType.BASIC,
-            UnitTargetFlags.NONE,
-            FindOrder.ANY,
-            false
-        );
-        for (let enemy of enemies) {
-            ApplyCustomDamage({
-                victim: enemy,
-                attacker: hCaster,
-                damage: ability_damage,
-                damage_type: DamageTypes.MAGICAL,
-                ability: hAbility,
-                element_type: ElementTypes.ICE,
-            })
-
-        }
-    }
 }
 
 @registerModifier()

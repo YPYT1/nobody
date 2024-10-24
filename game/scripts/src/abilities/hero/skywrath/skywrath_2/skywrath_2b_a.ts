@@ -106,16 +106,19 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
 
     stack_bonus_dmg: number;
     is_clone: number;
+    hAbility: skywrath_2b_a;
 
+    ring_d_final: number;
     OnCreated(params: any): void {
         if (!IsServer()) { return }
+        this.hAbility = this.GetAbility() as skywrath_2b_a
         this.caster = this.GetCaster()
         this.team = this.caster.GetTeam();
         this.is_clone = params.is_clone;
         this.ring_dmg_key = "2b_a_ring_" + params.ring_dmg_key + this.is_clone;
-        this.ring_distance = params.ring_distance;
+        this.ring_distance = this.hAbility.GetTypesAffixValue(params.ring_distance, "Ring", "skv_ring_range")
+        // print("ring_distance:",params.ring_distance,this.ring_distance)
         let ring_fx: ParticleID;
-
         if (params.ring_dmg_key == 0) {
             ring_fx = ParticleManager.CreateParticle(
                 "particles/econ/items/razor/razor_ti6/razor_plasmafield_ti6.vpcf",
@@ -144,11 +147,11 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
     OnRefresh(params: any): void {
         if (!IsServer()) { return }
         this.manacost_bonus = params.manacost_bonus;
-        this.ring_distance = params.ring_distance;
+        this.ring_distance = this.hAbility.GetTypesAffixValue(params.ring_distance, "Ring", "skv_ring_range")
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.damage_type = DamageTypes.MAGICAL;
         this.element_type = ElementTypes.THUNDER;
-
+        this.ring_d_final = this.hAbility.GetTypesAffixValue(0, "Ring", "skv_ring_d_final")
 
 
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
@@ -160,6 +163,7 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
         if (this.caster.GetRuneKv("rune_65", "value") > 0) {
             this.dmg_interval = 0.5
         }
+        this.dmg_interval = this.dmg_interval * 100 / (100 + this.hAbility.GetTypesAffixValue(0, "Ring", "skv_ring_interval"))
         this.stack_bonus_dmg = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "77", "stack_bonus_dmg");
     }
 
@@ -191,7 +195,9 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
                     is_primary: true,
                     damage_vect: this.GetParent().GetAbsOrigin(),
                     SelfAbilityMul: this.SelfAbilityMul,
+                    FinalDamageMul: this.ring_d_final,
                     is_clone: this.is_clone,
+
                 })
 
                 if (this.stack_bonus_dmg > 0) {

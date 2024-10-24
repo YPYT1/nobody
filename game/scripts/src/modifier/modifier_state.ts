@@ -146,7 +146,7 @@ export class modifier_state_boss_invincible extends BaseModifier {
     }
 
     OnIntervalThink(): void {
-        if (this.caster.custom_animation != null && this.caster.custom_animation["cast"]){
+        if (this.caster.custom_animation != null && this.caster.custom_animation["cast"]) {
             let cast = this.caster.custom_animation["cast"];
             this.caster.RemoveGesture(cast.act)
             this.caster.AddActivityModifier(cast.seq);
@@ -242,13 +242,90 @@ export class modifier_state_boss_phase_hp extends BaseModifier {
 
 @registerModifier()
 export class modifier_state_lifetime extends BaseModifier {
-    
+
     IsHidden(): boolean {
         return true
     }
-    
+
     OnDestroy(): void {
         if (!IsServer()) { return }
         UTIL_RemoveImmediate(this.GetParent())
     }
+}
+
+/** 多重施法 范围型 */
+@registerModifier()
+export class modifier_state_multi_cast_of_aoe extends BaseModifier {
+
+    cast_point: Vector;
+    ability: CDOTABaseAbility;
+    _damage: number;
+    IsHidden(): boolean {
+        return true;
+    }
+
+    GetAttributes(): ModifierAttribute {
+        return ModifierAttribute.MULTIPLE;
+    }
+
+    ShouldUseOverheadOffset(): boolean {
+        return true;
+    }
+
+    OnCreated(params: any): void {
+        if (!IsServer()) { return; }
+        this.ability = this.GetAbility()
+        this._damage = params._damage;
+        this._multi_count = params._multi_count;
+        this._count = 0;
+
+        this.cast_point = Vector(params.pos_x, params.pos_y, params.pos_z)
+
+        this.StartIntervalThink(0.25)
+    }
+
+    OnIntervalThink(): void {
+        let hCaster = this.GetCaster();
+        this._count += 1;
+        this.ability.TriggerActive({
+            vPos: this.cast_point,
+            damage: this._damage,
+        })
+        this.PlayEffects(this._count + 1);
+        this._multi_count -= 1;
+        if (this._multi_count <= 0) {
+            this.StartIntervalThink(-1);
+            this.Destroy();
+        }
+    }
+
+    PlayEffects(value: number) {
+        let sound = math.min(value - 1, 3);
+        let sound_cast = "Hero_OgreMagi.Fireblast.x" + sound;
+        EmitSoundOn(sound_cast, this.GetCaster());
+
+        let effect_cast = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_ogre_magi/ogre_magi_multicast.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            this.GetCaster()
+        );
+        ParticleManager.SetParticleControl(effect_cast, 1, Vector(value, 2, 0));
+        ParticleManager.ReleaseParticleIndex(effect_cast);
+
+    }
+
+
+    effect_cast: ParticleID;
+    _vect_x: number;
+    _vect_y: number;
+    _vect_z: number;
+    _multi_limit: number;
+    _multi_chance: number;
+    _multi_count: number;
+    _count: number;
+    _target: CDOTA_BaseNPC;
+    _behavior: AbilityBehavior;
+    _cast_range: number;
+
+
 }

@@ -67,7 +67,7 @@ export const HeroList = [
     // "npc_dota_hero_night_stalker",
     // "npc_dota_hero_nyx_assassin",
     // "npc_dota_hero_obsidian_destroyer",
-    // "npc_dota_hero_ogre_magi",
+    "npc_dota_hero_ogre_magi",
     "npc_dota_hero_omniknight",
     // "npc_dota_hero_oracle",
     // "npc_dota_hero_pangolier",

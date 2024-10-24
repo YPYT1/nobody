@@ -36,4 +36,7 @@ declare interface CDOTABaseAbility extends CBaseEntity {
         T1 extends keyof SpecialvalueOfTableProps,
         T2 extends keyof SpecialvalueOfTableProps[T1]
     >(name: string, skv_affix: T1, skv_key: T2): number;
+
+    TriggerActive(params: PlayEffectProps): void;
+    MultiCastAoe(vPos: Vector, fDamage?: number, count?: number):void;
 }

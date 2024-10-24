@@ -27,4 +27,6 @@ declare interface CDOTA_Buff {
     is_clone: number;
     // /** 吞噬效果 */
     // is_devour:boolean;
+
+    surround_d_final:number;
 }

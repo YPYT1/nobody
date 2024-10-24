@@ -254,6 +254,14 @@ interface PlayEffectProps {
     unit_list?: CDOTA_BaseNPC[]
     /** 克隆? */
     is_clone?: number
+    // 爆炸范围
+    radius?: number;
+
+    damage_type?: DamageTypes,
+    element_type?: ElementTypes,
+    
+    SelfAbilityMul?: number;
+    DamageBonusMul?: number;
 }
 
 
@@ -263,36 +271,43 @@ interface PlayEffectProps {
 interface SpecialvalueOfTableProps {
 
     Missile: {
-        skv_missile_count: { Base, Percent, Multiple, Correct };
+        skv_missile_count: number;
         skv_missile_speed: number;
         skv_missile_distance: number;
-        skv_missile_dmg: number;
+        skv_missile_d_final: number;
+        skv_missile_d_bonus: number;
+        skv_missile_d_ability: number
     };
     Aoe: {
         skv_aoe_radius: number;
         skv_aoe_chance: number; // 多重概率
-        skv_aoe_dmg: number;
         skv_aoe_correct: number; // AOE伤害独立乘区
+        skv_aoe_d_final: number;
+        skv_aoe_d_bonus: number;
+        skv_aoe_d_ability: number;
     };
     Targeting: {
         skv_targeting_count: number;
-        skv_targeting_dmg: number;
         skv_targeting_multiple1: number;
         skv_targeting_multiple2: number;
         skv_targeting_multiple3: number;
+        skv_targeting_d_final: number;
+        skv_targeting_d_bonus: number;
+        skv_targeting_d_ability: number;
     };
     Dot: {
         skv_dot_duration: number;
         skv_dot_interval: number;
-        skv_dot_dmg: number;
-
+        skv_dot_d_final: number;
+        skv_dot_d_bonus: number;
+        skv_dot_d_ability: number;
     };
     Growth: {
         skv_growth_bonus: number;
     };
     Surround: {
         skv_surround_speed: number;
-        skv_surround_dmg: number;
+        skv_surround_d_final: number;
         skv_surround_count: number;
         skv_surround_distance: number;
     };
@@ -305,38 +320,26 @@ interface SpecialvalueOfTableProps {
     Summon: {
         skv_summon_duration: number;
         skv_summon_strength: number;
-        skv_summon_haste: number;
-        skv_summon_dmg: number;
+        skv_summon_cooldown: number;
+        skv_summon_d_final: number;
     };
     Orb: {
         skv_orb_chance: number;
         skv_orb_required: number;
-        skv_orb_dmg: number;
     };
     Ring: {
         skv_ring_interval: number;
         skv_ring_range: number;
         skv_ring_width: number;
-        skv_ring_dmg: number;
+        skv_ring_d_final: number;
     };
     Bounce: {
         skv_bounce_count: number;
         skv_bounce_increase: number;
         skv_bounce_reduction: number;
-        skv_bounce_dmg: number;
+        skv_bounce_d_final: number;
+        skv_bounce_d_bonus: number;
     };
-}
-
-
-interface SpecialvalueOfTableSpecialProps {
-
-    Aoe: {
-        skv_targeting_multiple: {
-            skv_targeting_multiple1: number;
-            skv_targeting_multiple2: number;
-            skv_targeting_multiple3: number;
-        }
-    }
 }
 
 declare type PopupsType = "Damage" | "Miss" | "Heal"

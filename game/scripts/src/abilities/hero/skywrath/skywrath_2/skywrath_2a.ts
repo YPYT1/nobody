@@ -66,8 +66,8 @@ export class modifier_skywrath_2a extends BaseHeroModifier {
             let total_count = this.surround_count
             // 1个 面向 2个对角 3
             let pre_angle = 360 / total_count;
-            let surround_speed = this.ability.GetTypesAffixValue(300, "Surround", "skv_surround_speed");
-            let surround_distance = this.ability.GetTypesAffixValue(this.surround_radius, "Surround", "skv_surround_distance")
+            let surround_speed = 300;//this.ability.GetTypesAffixValue(300, "Surround", "skv_surround_speed");
+            let surround_distance = this.surround_radius;//this.ability.GetTypesAffixValue(, "Surround", "skv_surround_distance")
             for (let i = 0; i < total_count; i++) {
                 let surround_qangle = i * pre_angle;
 

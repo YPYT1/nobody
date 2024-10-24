@@ -50,8 +50,8 @@ export class modifier_drow_3a extends BaseHeroModifier {
             total_count += this.ability.GetTypesAffixValue(0, "Surround", "skv_surround_count");
             // 1个 面向 2个对角 3
             let pre_angle = 360 / total_count;
-            let surround_speed = this.ability.GetTypesAffixValue(300, "Surround", "skv_surround_speed");
-            let surround_distance = this.ability.GetTypesAffixValue(500, "Surround", "skv_surround_distance")
+            let surround_speed = 300;//this.ability.GetTypesAffixValue(300, "Surround", "skv_surround_speed");
+            let surround_distance = 500;//this.ability.GetTypesAffixValue(500, "Surround", "skv_surround_distance")
             for (let i = 0; i < total_count; i++) {
                 let surround_qangle = i * pre_angle;
                 let hSpirit = GameRules.SummonedSystem.CreatedUnit(
@@ -114,12 +114,12 @@ export class modifier_drow_3a_summoned extends modifier_motion_surround {
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 
-    _OnIntervalThink(){
-        if(!this.caster.IsAlive()){
+    _OnIntervalThink() {
+        if (!this.caster.IsAlive()) {
             this.Destroy()
         }
     }
-    
+
     OnDestroy(): void {
         if (!IsServer()) { return }
         UTIL_Remove(this.GetParent())
@@ -129,7 +129,7 @@ export class modifier_drow_3a_summoned extends modifier_motion_surround {
 @registerModifier()
 export class modifier_drow_3a_summoned_collision extends BaseModifier {
 
-    caster: CDOTA_BaseNPC;
+    // caster: CDOTA_BaseNPC;
     team: DotaTeam;
     ability_damage: number;
     ability: CDOTABaseAbility;
@@ -138,6 +138,7 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
     damage_type: DamageTypes;
     element_type: ElementTypes;
     interval: number;
+
 
     GetAttributes(): DOTAModifierAttribute_t {
         return ModifierAttribute.MULTIPLE
@@ -151,6 +152,7 @@ export class modifier_drow_3a_summoned_collision extends BaseModifier {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
+        this.surround_d_final = this.GetAbility().GetTypesAffixValue(0, "Surround", "skv_surround_d_final")
         // rune_40	游侠#15	风暴环绕的基础伤害提高100%
         this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_40', 'base_value');
         this.ElementDmgMul = 0;

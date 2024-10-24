@@ -64,8 +64,6 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/units/heroes/hero_earthshaker/earthshaker_echoslam_start.vpcf',
             'particles/units/heroes/hero_techies/techies_remote_cart_explode.vpcf',
             'particles/diy/elite_state.vpcf',
-            'particles/units/heroes/hero_invoker/invoker_sun_strike_team.vpcf',
-            'particles/units/heroes/hero_invoker/invoker_sun_strike.vpcf',
             ...drow_precache,
             ...skywrath_precache,
         ],
@@ -86,6 +84,7 @@ export default function Precache(context: CScriptPrecacheContext) {
         [
             // 单位名称
             ...Object.keys(NpcUnitCustomJson),
+            ...HeroList,
         ],
         context
     );

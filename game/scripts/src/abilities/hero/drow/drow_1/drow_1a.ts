@@ -35,33 +35,30 @@ export class drow_1a extends drow_1 {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            // print("this.SelfAbilityMul",this.SelfAbilityMul)
-            let SelfAbilityMul = extraData.SelfAbilityMul;
-            let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
-            let has_run50buff = this.caster.HasModifier("modifier_drow_5_buff_rune50");
-            if (has_run50buff) { attack_damage *= 2 }
-            let vPos = target.GetAbsOrigin();
-            this.PlayEffectAoe(vPos, attack_damage, SelfAbilityMul);
+            this.SelfAbilityMul = extraData.SelfAbilityMul
 
-            let aoe_multiple = this.GetTypesAffixValue(1, "Aoe", "skv_aoe_chance") - 1;
+            let damage = this.caster.GetAverageTrueAttackDamage(null);
+            let has_run50buff = this.caster.HasModifier("modifier_drow_5_buff_rune50");
+            if (has_run50buff) { damage *= 2 }
+            let vPos = target.GetAbsOrigin();
+            this.TriggerActive({ vPos, damage })
+            let aoe_multiple = this.GetTypesAffixValue(0, "Aoe", "skv_aoe_chance");
             if (RollPercentage(aoe_multiple)) {
-                let vPos2 = Vector(
-                    vPos.x + RandomInt(-this.aoe_radius, this.aoe_radius),
-                    vPos.y + RandomInt(-this.aoe_radius, this.aoe_radius),
-                    vPos.z
-                );
-                this.PlayEffectAoe(vPos2, attack_damage, SelfAbilityMul, true);
+                this.MultiCastAoe(vPos, damage)
             }
         }
     }
 
-    PlayEffectAoe(vPos: Vector, aoe_damage: number, SelfAbilityMul: number, second: boolean = false,) {
+    TriggerActive(params: PlayEffectProps) {
+        let vPos = params.vPos;
+        let damage = params.damage;
+        // const SelfAbilityMul = params.SelfAbilityMul;
+        //PlayEffectAoe(vPos: Vector, aoe_damage: number, SelfAbilityMul: number) {
         // 浓缩伤害
         if (RollPercentage(this.mul_chance)) {
-            aoe_damage *= this.mul_value
+            damage *= this.mul_value
         }
         let has_pojun = false;
-
         let enemies = FindUnitsInRadius(
             this.team,
             vPos,
@@ -88,12 +85,12 @@ export class drow_1a extends drow_1 {
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.caster,
-                damage: aoe_damage,
+                damage: damage,
                 damage_type: DamageTypes.MAGICAL,
                 element_type: ElementTypes.FIRE,
                 ability: this,
                 is_primary: true,
-                SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
+                SelfAbilityMul: this.SelfAbilityMul + this.BasicAbilityDmg,
                 DamageBonusMul: this.DamageBonusMul + bonus,
                 // bonus_percent: bonus_percent,
             })

@@ -1,3 +1,4 @@
+import { BaseHeroAbility } from '../abilities/hero/base_hero_ability';
 import { BaseModifier, registerModifier, BaseModifierMotionBoth, BaseModifierMotionHorizontal } from '../utils/dota_ts_adapter';
 
 @registerModifier()
@@ -370,6 +371,11 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
         this.final_distance = params.surround_distance;
         this.surround_qangle = params.surround_qangle;
         this.surround_speed = params.surround_speed * 0.01;
+        if (this.GetAbility() != null) {
+            const hAbility = this.GetAbility() as BaseHeroAbility;
+            this.surround_speed = hAbility.GetTypesAffixValue(params.surround_speed, "Surround", "skv_surround_speed") * 0.01;
+            this.final_distance = hAbility.GetTypesAffixValue(params.surround_distance, "Surround", "skv_surround_distance");
+        }
         this.surround_entity = params.surround_entity;
         this.surround_height = params.surround_height ?? 0;
         this.forward_offset = params.forward_offset ?? 0;
