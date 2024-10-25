@@ -687,7 +687,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         let new_ability = hUnit.AddAbility(ability_name)
         new_ability.SetLevel(SetLevel);
 
-        if (GameRules.MapChapter._game_select_phase == 999) {
+        if (GameRules.MapChapter._game_select_phase == 999 && !IsInToolsMode()) {
             hUnit.GetAbilityByIndex(order).SetActivated(false);
         }
 

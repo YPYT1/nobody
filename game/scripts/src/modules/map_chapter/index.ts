@@ -99,7 +99,7 @@ export class MapChapter extends UIEventRegisterClass {
             user_difficulty: 113, // 玩家最高可选难度
             difficulty_max: 115, // 地图最高难度    
             map_key: "m1", //地图编号 m1 m2 
-        }
+        }   
         this._map_list["c3"] = {
             user_difficulty: 124, // 玩家最高可选难度   
             difficulty_max: 124, // 地图最高难度
@@ -113,6 +113,32 @@ export class MapChapter extends UIEventRegisterClass {
         this._map_list["c5"] = {
             user_difficulty: 140, // 玩家最高可选难度   
             difficulty_max: 140, // 地图最高难度
+            map_key: "m1", //地图编号 m1 m2 
+        }
+
+        this._map_list["c6"] = {
+            user_difficulty: 208, // 玩家最高可选难度
+            difficulty_max: 208, // 地图最高难度
+            map_key: "m1", //地图编号 m1 m2 
+        };
+        this._map_list["c7"] = {
+            user_difficulty: 213, // 玩家最高可选难度
+            difficulty_max: 215, // 地图最高难度    
+            map_key: "m1", //地图编号 m1 m2 
+        }   
+        this._map_list["c8"] = {
+            user_difficulty: 224, // 玩家最高可选难度   
+            difficulty_max: 224, // 地图最高难度
+            map_key: "m1", //地图编号 m1 m2 
+        }
+        this._map_list["c9"] = {
+            user_difficulty: 232, // 玩家最高可选难度   
+            difficulty_max: 232, // 地图最高难度
+            map_key: "m1", //地图编号 m1 m2 
+        }
+        this._map_list["c10"] = {
+            user_difficulty: 240, // 玩家最高可选难度   
+            difficulty_max: 240, // 地图最高难度
             map_key: "m1", //地图编号 m1 m2 
         }
 

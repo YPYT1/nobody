@@ -391,7 +391,6 @@ export class Spawn extends UIEventRegisterClass {
         //怪物数量 
         this._monster_count = 0;
         this._monster_count_interval = {};
-        DeepPrintTable(this.map_info_round);
         //普通怪总和
         for (let index = 1; index <= Object.keys(this.map_info_round[this._round_index].monster_count_list).length; index++) {
             this._monster_count += tonumber(this.map_info_round[this._round_index].monster_count_list[index.toString()])
@@ -1089,9 +1088,11 @@ export class Spawn extends UIEventRegisterClass {
             GameRules.Spawn._game_start = false;
             GameRules.MapChapter._game_select_phase = 999;
             //禁用英雄技能
-            for (const hero of HeroList.GetAllHeroes()) {
-                for (let index = 0; index < 5; index++) {
-                    hero.GetAbilityByIndex(index).SetActivated(false);
+            if(!IsInToolsMode()){ //测试模式下不禁用
+                for (const hero of HeroList.GetAllHeroes()) {
+                    for (let index = 0; index < 5; index++) {
+                        hero.GetAbilityByIndex(index).SetActivated(false);
+                    }
                 }
             }
             //移除物品
