@@ -17,7 +17,7 @@ export class skywrath_1c extends skywrath_1 {
     ylong_stack_duration: number;
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_lina/lina_spell_dragon_slave.vpcf", context)
+        precacheResString("particles/custom/hero/skywrath1c/lina_spell_dragon_slave.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {

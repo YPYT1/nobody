@@ -13,7 +13,12 @@ export class skywrath_2a_b extends skywrath_2a {
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_2a_b"
     }
+
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/custom/hero/skywrath2a/surround_orb_ice_2.vpcf", context)
+    }
 }
+
 @registerModifier()
 export class modifier_skywrath_2a_b extends modifier_skywrath_2a {
 

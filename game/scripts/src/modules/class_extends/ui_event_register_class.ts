@@ -28,7 +28,6 @@ export class UIEventRegisterClass {
     }
 
     StopMove(hUnit: CDOTA_BaseNPC) {
-        // print("StopMove")
         hUnit.AddNewModifier(hUnit, null, "modifier_basic_move", {
             "UP": 0,
             "DOWN": 0,

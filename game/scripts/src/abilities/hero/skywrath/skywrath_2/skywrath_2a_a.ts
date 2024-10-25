@@ -20,6 +20,7 @@ export class skywrath_2a_a extends skywrath_2a {
 
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/econ/items/phoenix/phoenix_ti10_immortal/phoenix_ti10_fire_spirit_ground.vpcf",context)
+        precacheResString("particles/custom/hero/skywrath2a/surround_orb_fire_2.vpcf",context);
     }
     UpdataSpecialValue(): void {
         this.aoe_radius = this.GetTypesAffixValue(this.caster.GetTalentKv("69","bz_radius"),"Aoe","skv_aoe_radius") 
