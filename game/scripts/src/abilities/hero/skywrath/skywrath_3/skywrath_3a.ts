@@ -46,7 +46,7 @@ export class modifier_skywrath_3a extends BaseHeroModifier {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             // 开始蓄力
-            this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_modifier_skywrath_3a_channel", {
+            this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3a_channel", {
                 duration: 3,
                 manacost_bonus: manacost_bonus,
                 is_clone: 0,
@@ -56,7 +56,7 @@ export class modifier_skywrath_3a extends BaseHeroModifier {
 }
 
 @registerModifier()
-export class modifier_modifier_skywrath_3a_channel extends BaseModifier {
+export class modifier_skywrath_3a_channel extends BaseModifier {
 
     least_time: number;
 
@@ -89,6 +89,11 @@ export class modifier_modifier_skywrath_3a_channel extends BaseModifier {
     }
 }
 
+const element_color = [
+    [0,0,0],
+    [255,0,0],
+
+]
 @registerModifier()
 export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
 
@@ -141,17 +146,20 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
     }
 
     PlayBombing(vPos: Vector) {
+        vPos.z + 10;
+        let element_type = RandomInt(1, 4)
         let aoe_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_sandking/sandking_scorpion_strike_aoe.vpcf",
+            "particles/custom/hero/skywrath3a/element_aoe.vpcf",
             ParticleAttachment.CUSTOMORIGIN,
             null
         )
         ParticleManager.SetParticleControl(aoe_fx, 0, vPos)
         ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.explosion_radius, 1, 1))
+        ParticleManager.SetParticleControl(aoe_fx, 2, Vector(255, 100, 1))
         ParticleManager.ReleaseParticleIndex(aoe_fx);
 
 
-        let element_type = RandomInt(1, 4)
+        
         let enemies = FindUnitsInRadius(
             this.team,
             vPos,

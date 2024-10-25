@@ -15,10 +15,10 @@ cd：10秒"
  */
 
 export const element_orb = {
-    [ElementTypes.WIND]: "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf",
-    [ElementTypes.THUNDER]: "particles/units/heroes/hero_invoker_kid/invoker_kid_wex_orb.vpcf",
-    [ElementTypes.ICE]: "particles/units/heroes/hero_invoker_kid/invoker_kid_quas_orb.vpcf",
-    [ElementTypes.FIRE]: "particles/units/heroes/hero_invoker_kid/invoker_kid_exort_orb.vpcf",
+    [ElementTypes.WIND]: "particles/custom/hero/skywrath2a/surround_orb_wind.vpcf",
+    [ElementTypes.THUNDER]: "particles/custom/hero/skywrath2a/surround_orb_thunder.vpcf",
+    [ElementTypes.ICE]: "particles/custom/hero/skywrath2a/surround_orb_ice.vpcf",
+    [ElementTypes.FIRE]: "particles/custom/hero/skywrath2a/surround_orb_fire.vpcf",
 }
 
 @registerAbility()

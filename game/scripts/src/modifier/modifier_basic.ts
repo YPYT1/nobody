@@ -141,8 +141,11 @@ export class modifier_basic_move extends BaseModifier {
 
 
         } else {
-            this.parent.RemoveModifierByName("modifier_skywrath_1c_lx_channel")
-            this.parent.RemoveModifierByName("modifier_modifier_skywrath_3a_channel")
+            this.parent.RemoveModifierByName("modifier_skywrath_1c_lx_channel");
+            this.parent.RemoveModifierByName("modifier_skywrath_3a_channel");
+            this.parent.RemoveModifierByName("modifier_skywrath_3a_b_channel");
+            this.parent.RemoveModifierByName("modifier_skywrath_3a_a_channel");
+            
         }
         // if (state == false) {
         //     this.move_up = false;

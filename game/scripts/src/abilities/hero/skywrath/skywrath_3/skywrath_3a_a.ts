@@ -196,6 +196,15 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
     }
 
     OnIntervalThink(): void {
+        // effect
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/custom/hero/skywrath3a/sun_strike.vpcf",
+            ParticleAttachment.CUSTOMORIGIN,
+            null
+        )
+        ParticleManager.SetParticleControl(effect_fx,0,this.parent_origin)
+        ParticleManager.ReleaseParticleIndex(effect_fx);
+
         let enemies = FindUnitsInRadius(
             this.team,
             this.parent_origin,

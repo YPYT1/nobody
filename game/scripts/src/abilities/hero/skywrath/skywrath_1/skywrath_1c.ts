@@ -58,6 +58,82 @@ export class skywrath_1c extends skywrath_1 {
             }
         }
     }
+
+    // TriggerActive(params: PlayEffectProps): void {
+    //     let vDir = params.vPos;
+    //     let origin = this.caster.GetAbsOrigin();
+    //     let attackrange = this.caster.Script_GetAttackRange() + 64
+    //     // let vDirection = (vPos - origin as Vector).Normalized()
+    //     // vDirection.z = 0
+    //     // if (this.fakeAttack) { return }
+
+    //     ProjectileManager.CreateLinearProjectile({
+    //         Ability: this.GetAbility(),
+    //         EffectName: "particles/custom/hero/skywrath1c/lina_spell_dragon_slave.vpcf",
+    //         fDistance: attackrange,
+    //         fStartRadius: this.line_width,
+    //         fEndRadius: this.line_width,
+    //         vSpawnOrigin: origin,
+    //         // Source: this.caster,
+    //         vVelocity: (vDirection * this.line_speed) as Vector,
+    //         iUnitTargetTeam: UnitTargetTeam.ENEMY,
+    //         iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
+    //         ExtraData: {
+    //             a: attack_damage,
+    //             et: this.element_type,
+    //             dt: this.damage_type,
+    //             SelfAbilityMul: SelfAbilityMul,
+    //             DamageBonusMul: DamageBonusMul,
+    //             c: 0,
+    //         } as ProjectileExtraData
+    //     })
+
+    //     // 复制攻击
+    //     if (this.caster.clone_unit && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
+    //         const clone_unit = this.caster.clone_unit;
+    //         // const clone_factor = clone_unit.clone_factor;
+    //         let enemies = FindUnitsInRadius(
+    //             this.team,
+    //             this.caster.clone_unit.GetAbsOrigin(),
+    //             null,
+    //             this.caster.Script_GetAttackRange() + 64,
+    //             UnitTargetTeam.ENEMY,
+    //             UnitTargetType.HERO + UnitTargetType.BASIC,
+    //             UnitTargetFlags.FOW_VISIBLE,
+    //             FindOrder.CLOSEST,
+    //             false
+    //         )
+    //         if (enemies.length > 0) {
+
+
+    //             const clone_origin = clone_unit.GetOrigin();
+    //             const clone_target = enemies[0].GetOrigin();
+    //             let vDirection2 = (clone_target - clone_origin as Vector).Normalized()
+    //             vDirection2.z = 0
+    //             ProjectileManager.CreateLinearProjectile({
+    //                 Ability: this.GetAbility(),
+    //                 EffectName: "particles/units/heroes/hero_lina/lina_spell_dragon_slave.vpcf",
+    //                 fDistance: this.line_distance,
+    //                 fStartRadius: this.line_width,
+    //                 fEndRadius: this.line_width,
+    //                 vSpawnOrigin: clone_origin,
+    //                 Source: this.caster.clone_unit,
+    //                 vVelocity: (vDirection * this.line_speed) as Vector,
+    //                 iUnitTargetTeam: UnitTargetTeam.ENEMY,
+    //                 iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
+    //                 ExtraData: {
+    //                     a: attack_damage,
+    //                     et: this.element_type,
+    //                     dt: this.damage_type,
+    //                     SelfAbilityMul: SelfAbilityMul,
+    //                     DamageBonusMul: DamageBonusMul,
+    //                     c: 0,
+    //                     clone: 1,
+    //                 } as ProjectileExtraData
+    //             })
+    //         }
+    //     }
+    // }
 }
 
 @registerModifier()
@@ -145,20 +221,21 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
         SelfAbilityMul: number,
         DamageBonusMul: number,
     ) {
-        print("vDirection",vDirection)
+        // print("vDirection",vDirection)
         let origin = this.caster.GetAbsOrigin();
+        let attackrange = this.caster.Script_GetAttackRange() + 64
         // let vDirection = (vPos - origin as Vector).Normalized()
         // vDirection.z = 0
         // if (this.fakeAttack) { return }
 
         ProjectileManager.CreateLinearProjectile({
             Ability: this.GetAbility(),
-            EffectName: "particles/units/heroes/hero_lina/lina_spell_dragon_slave.vpcf",
-            fDistance: this.line_distance,
+            EffectName: "particles/custom/hero/skywrath1c/lina_spell_dragon_slave.vpcf",
+            fDistance: attackrange,
             fStartRadius: this.line_width,
             fEndRadius: this.line_width,
             vSpawnOrigin: origin,
-            Source: this.caster,
+            // Source: this.caster,
             vVelocity: (vDirection * this.line_speed) as Vector,
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
@@ -202,6 +279,7 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
                     fEndRadius: this.line_width,
                     vSpawnOrigin: clone_origin,
                     Source: this.caster.clone_unit,
+                    fExpireTime:GameRules.GetGameTime() + 3,
                     vVelocity: (vDirection * this.line_speed) as Vector,
                     iUnitTargetTeam: UnitTargetTeam.ENEMY,
                     iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
@@ -246,7 +324,7 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
             count += 1;
             if (count < max_count) {
                 this.PlayPerformAttack2(vDirection, attack_damage, this.SelfAbilityMul, 0);
-                return 0.15
+                return 0.35
             }
             let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
             this.StartIntervalThink(attack_rate)

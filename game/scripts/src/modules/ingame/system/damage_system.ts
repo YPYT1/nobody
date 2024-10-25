@@ -253,9 +253,9 @@ export class DamageSystem {
         let actual_damage = math.min(params.damage, params.victim.GetHealth());
         GameRules.CMsg.AddDamageRecord(iPlayerID, actual_damage);
         // 击飞
-        if (params.damage < params.victim.GetHealth()) {
-            this.OnKnockback(params.victim, params.attacker)
-        }
+        // if (params.damage < params.victim.GetHealth()) {
+        //     this.OnKnockback(params.victim, params.attacker)
+        // }
 
         return ApplyDamage(params);
     }

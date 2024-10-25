@@ -246,7 +246,7 @@ export const HeroDemo = () => {
                     </Panel>
                 </Panel>
             </Panel>
-            <Button id='DevelopmentButton' className='btn' onactivate={ToggleHandle} >
+            <Button id='DevelopmentButton' className='btn dev' onactivate={ToggleHandle} >
                 <Label text={"开发工具切换"} />
             </Button>
             <Panel id='DevelopmentPopups' className={`Dev Popups ${PopupsViews}`} hittest={false}>

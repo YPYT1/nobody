@@ -39,6 +39,7 @@ export class modifier_skywrath_3a_b extends modifier_skywrath_3a {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             // 开始蓄力
+            this.caster.RemoveModifierByName("modifier_skywrath_3a_b_channel");
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3a_b_channel", {
                 duration: this.channel,
                 manacost_bonus: manacost_bonus,
@@ -81,8 +82,21 @@ export class modifier_skywrath_3a_b_channel extends BaseModifier {
         this.cloud_list = [];
 
         GameRules.CMsg.AbilityChannel(this.caster, this, 1)
+        // xx
+        let dust_impact = ParticleManager.CreateParticle(
+            "particles/generic_gameplay/dust_impact.vpcf",
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            this.caster
+        )
+        ParticleManager.ReleaseParticleIndex(dust_impact)
 
-
+        let aoe_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_zeus/zeus_cloud.vpcf",
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            this.caster
+        )
+        ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.radius, 0, 0))
+        this.AddParticle(aoe_fx, false, false, -1, false, false)
         // 雷云	"吟唱期间生成1/2朵雷云，雷云会随机打击1名敌人每次造成攻击力125%的雷元素技能基础伤害。
         let cloud_count = this.caster.GetTalentKv("92", "thundercloud_count");
         if (cloud_count > 0) {
@@ -128,14 +142,40 @@ export class modifier_skywrath_3a_b_channel extends BaseModifier {
         )
         const caster_origin = origin + Vector(0, 0, 600) as Vector;
 
+        let effecf_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            this.caster
+        )
+        // print("effecf_fx",effecf_fx)
+        ParticleManager.SetParticleControlEnt(
+            effecf_fx,
+            1,
+            this.caster,
+            ParticleAttachment.POINT_FOLLOW,
+            "attach_hitloc",
+            Vector(0, 0, 0)
+            , false
+        )
+        ParticleManager.SetParticleControlEnt(
+            effecf_fx,
+            2,
+            this.caster,
+            ParticleAttachment.POINT_FOLLOW,
+            "attach_hitloc",
+            Vector(0, 0, 0)
+            , false
+        )
+        ParticleManager.ReleaseParticleIndex(effecf_fx);
+
         for (let enemy of enemies) {
             let cast_fx = ParticleManager.CreateParticle(
-                "particles/units/heroes/hero_leshrac/leshrac_lightning_bolt.vpcf",
-                ParticleAttachment.CUSTOMORIGIN,
-                null
+                "particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf",
+                ParticleAttachment.POINT,
+                enemy
             )
-            ParticleManager.SetParticleControl(cast_fx, 0, caster_origin)
-            ParticleManager.SetParticleControl(cast_fx, 1, enemy.GetAbsOrigin())
+            // ParticleManager.SetParticleControl(cast_fx, 0, enemy.GetAbsOrigin()+ Vector())
+            ParticleManager.SetParticleControl(cast_fx, 1, enemy.GetAbsOrigin() + Vector(0, 0, 1500) as Vector)
             ParticleManager.ReleaseParticleIndex(cast_fx);
 
             ApplyCustomDamage({
@@ -189,7 +229,7 @@ export class modifier_skywrath_3a_b_thundercloud extends BaseModifier {
             ParticleAttachment.CUSTOMORIGIN,
             null
         )
-        ParticleManager.SetParticleControl(effect_fx, 0, this.parent_origin);
+        ParticleManager.SetParticleControl(effect_fx, 0, this.parent_origin + Vector(0, 0, -300) as Vector);
         ParticleManager.SetParticleControl(effect_fx, 2, this.parent_origin + Vector(0, 0, 600) as Vector)
         this.AddParticle(effect_fx, false, false, -1, false, false)
         this.OnIntervalThink()

@@ -18,6 +18,9 @@ export class skywrath_2a_a extends skywrath_2a {
         return "modifier_skywrath_2a_a"
     }
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/econ/items/phoenix/phoenix_ti10_immortal/phoenix_ti10_fire_spirit_ground.vpcf",context)
+    }
     UpdataSpecialValue(): void {
         this.aoe_radius = this.GetTypesAffixValue(this.caster.GetTalentKv("69","bz_radius"),"Aoe","skv_aoe_radius") 
     }
@@ -50,7 +53,7 @@ export class skywrath_2a_a extends skywrath_2a {
             })
         }
         let cast_fx = ParticleManager.CreateParticle(
-            "particles/dev/hero/drow/drow_1/explosion_arrow.vpcf",
+            "particles/econ/items/phoenix/phoenix_ti10_immortal/phoenix_ti10_fire_spirit_ground.vpcf",
             ParticleAttachment.WORLDORIGIN,
             null
         )
@@ -166,7 +169,7 @@ export class modifier_skywrath_2a_a_surround extends modifier_skywrath_2a_surrou
         this.is_clone = params.is_clone
         this.GetParent().summoned_damage = GameRules.GetDOTATime(false, false) + 1;
         this.GetParent().is_clone = params.is_clone
-        let effect_name = element_orb[ElementTypes.FIRE];
+        let effect_name = "particles/custom/hero/skywrath2a/surround_orb_fire_2.vpcf";
         let cast_fx = ParticleManager.CreateParticle(
             effect_name,
             ParticleAttachment.POINT_FOLLOW,

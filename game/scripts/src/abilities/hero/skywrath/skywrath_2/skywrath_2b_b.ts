@@ -103,11 +103,11 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
         }
         this.lq_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "81", 'lq_duration');
         let ring_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_razor/razor_plasmafield.vpcf",
+            "particles/custom/hero/skywrath3a/ring_ice.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.GetParent()
         )
-        ParticleManager.SetParticleControl(ring_fx, 1, Vector(9000, this.ring_distance, 1))
+        ParticleManager.SetParticleControl(ring_fx, 1, Vector(this.ring_distance, 0, 0))
         this.AddParticle(ring_fx, false, false, -1, false, false);
         this.StartIntervalThink(0.1)
     }

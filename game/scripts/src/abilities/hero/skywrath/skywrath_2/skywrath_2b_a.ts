@@ -119,21 +119,14 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
         this.ring_distance = this.hAbility.GetTypesAffixValue(params.ring_distance, "Ring", "skv_ring_range")
         // print("ring_distance:",params.ring_distance,this.ring_distance)
         let ring_fx: ParticleID;
-        if (params.ring_dmg_key == 0) {
-            ring_fx = ParticleManager.CreateParticle(
-                "particles/econ/items/razor/razor_ti6/razor_plasmafield_ti6.vpcf",
-                ParticleAttachment.ABSORIGIN_FOLLOW,
-                this.GetParent()
-            )
-        } else {
-            ring_fx = ParticleManager.CreateParticle(
-                "particles/units/heroes/hero_razor/razor_plasmafield.vpcf",
-                ParticleAttachment.ABSORIGIN_FOLLOW,
-                this.GetParent()
-            )
-        }
 
-        ParticleManager.SetParticleControl(ring_fx, 1, Vector(9000, this.ring_distance, 1))
+        ring_fx = ParticleManager.CreateParticle(
+            "particles/custom/hero/skywrath3a/ring_thunder.vpcf",
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            this.GetParent()
+        )
+
+        ParticleManager.SetParticleControl(ring_fx, 1, Vector(2000, this.ring_distance, 1))
         this.AddParticle(ring_fx, false, false, -1, false, false);
         this.StartIntervalThink(0.1)
 

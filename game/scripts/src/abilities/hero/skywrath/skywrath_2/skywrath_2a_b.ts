@@ -37,7 +37,7 @@ export class modifier_skywrath_2a_b_surround extends modifier_skywrath_2a_surrou
 
     C_OnCreated(params: any): void {
         this.GetParent().summoned_damage = GameRules.GetDOTATime(false, false) + 1;
-        let effect_name = element_orb[ElementTypes.ICE];
+        let effect_name = "particles/custom/hero/skywrath2a/surround_orb_ice_2.vpcf";
         let cast_fx = ParticleManager.CreateParticle(
             effect_name,
             ParticleAttachment.POINT_FOLLOW,

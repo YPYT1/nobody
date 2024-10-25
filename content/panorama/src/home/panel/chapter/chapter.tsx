@@ -221,7 +221,7 @@ export const CreatePanel = () => {
         const ChapterList = ChapterPageInfo.FindChildTraverse("ChapterList")!
         for (let chapter_key in PageData) {
             let data = PageData[chapter_key];
-
+            let chapter_data = ChapterInfo[chapter_key as keyof typeof ChapterInfo];
             let ChapterSelectBtn = $.CreatePanel("RadioButton", ChapterList, `Chapter_${chapter_key}`)
             ChapterSelectBtn.BLoadLayoutSnippet("ChapterSelectBtn");
             ChapterSelectBtn.SetHasClass("is_boss", data.is_boss == 1);
@@ -230,6 +230,7 @@ export const CreatePanel = () => {
             ChapterSelectBtn.SetPanelEvent("onactivate", () => {
                 ShowChapterInfoTips(ChapterSelectBtn, chapter_key)
             })
+            ChapterSelectBtn.style.transform = `translateX(${chapter_data.x}px) translateY(${chapter_data.y}px)`
         }
     }
     total_page = PageList.GetChildCount();
