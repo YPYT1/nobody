@@ -13,17 +13,21 @@ import { element_orb, modifier_skywrath_2a, modifier_skywrath_2a_surround, modif
 @registerAbility()
 export class skywrath_2a_a extends skywrath_2a {
 
-    aoe_radius:number;
+    aoe_radius: number;
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_2a_a"
     }
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/econ/items/phoenix/phoenix_ti10_immortal/phoenix_ti10_fire_spirit_ground.vpcf",context)
-        precacheResString("particles/custom/hero/skywrath2a/surround_orb_fire_2.vpcf",context);
+        precacheResString("particles/econ/items/phoenix/phoenix_ti10_immortal/phoenix_ti10_fire_spirit_ground.vpcf", context)
+        precacheResString("particles/custom/hero/skywrath2a/surround_orb_fire_2.vpcf", context);
+        precacheResString("particles/custom/hero/skywrath2a/aoe_explosion.vpcf",context)
     }
+
     UpdataSpecialValue(): void {
-        this.aoe_radius = this.GetTypesAffixValue(this.caster.GetTalentKv("69","bz_radius"),"Aoe","skv_aoe_radius") 
+        let aoe_radius = this.caster.GetTalentKv("69", "bz_radius")
+        this.aoe_radius = this.GetTypesAffixValue(aoe_radius, "Aoe", "skv_aoe_radius");
+        
     }
 
     TriggerActive(params: PlayEffectProps): void {
@@ -54,7 +58,7 @@ export class skywrath_2a_a extends skywrath_2a {
             })
         }
         let cast_fx = ParticleManager.CreateParticle(
-            "particles/econ/items/phoenix/phoenix_ti10_immortal/phoenix_ti10_fire_spirit_ground.vpcf",
+            "particles/custom/hero/skywrath2a/aoe_explosion.vpcf",
             ParticleAttachment.WORLDORIGIN,
             null
         )
@@ -72,15 +76,20 @@ export class modifier_skywrath_2a_a extends modifier_skywrath_2a {
     constant_cd = 0;
 
     UpdataSpecialValue(): void {
+        let hAbility = this.GetAbility();
         this.SelfAbilityMul += 50;
-        this.surround_count = 1;
-        this.surround_limit = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "69", "fb_count");
+
+        let surround_limit = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "69", "fb_count");
         // rune_60	法爷#9	炎爆每次生成火球时，一次性生成5个，火球数量上限+3
-        this.surround_limit += this.caster.GetRuneKv("rune_60", "limit");
+        surround_limit += this.caster.GetRuneKv("rune_60", "limit");
+        this.surround_limit = hAbility.GetTypesAffixValue(surround_limit, "Surround", "skv_surround_count");;
         let rune60_value = this.caster.GetRuneKv("rune_60", "value")
         if (rune60_value > 0) {
             this.surround_count = rune60_value
+        } else {
+            this.surround_count = 1
         }
+        this.surround_count = hAbility.GetTypesAffixValue(this.surround_count, "Surround", "skv_surround_count");;
         this.surround_duration += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "71", "fb_duration_bonus")
         this.constant_cd = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "70", "reduce_interval")
     }
@@ -220,7 +229,6 @@ export class modifier_skywrath_2a_a_surround_collision extends modifier_skywrath
                     let surround_mdf = this.GetAuraOwner().FindModifierByName("modifier_skywrath_2a_a_surround");
                     if (surround_mdf) surround_mdf.Destroy()
                 }
-
             }
         }
 

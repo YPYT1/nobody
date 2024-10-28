@@ -42,6 +42,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
     proj_name: string;
     proj_distance: number;
 
+    
     UpdataAbilityValue(): void {
         this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
         this.DamageBonusMul = 0;
@@ -53,6 +54,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
         this.proj_name = G_PorjLinear.drow.none;
         this.proj_distance = this.ability.GetSpecialValueFor("proj_distance");
 
+        this.proj_distance = this.ability.GetTypesAffixValue(this.proj_distance, "Missile", "skv_missile_distance");
         // rune_36	游侠#11	散射的基础伤害提高200%
         if (this.caster.rune_level_index.hasOwnProperty("rune_36")) {
             this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_36', 'base_value')

@@ -18,6 +18,7 @@ export class drow_1 extends BaseHeroAbility {
 
     UpdataAbilityValue(): void {
         this.BasicAbilityDmg = this.caster.custom_attribute_value.BasicAbilityDmg;
+        this.DamageBonusMul = 0;
         // this.SelfAbilityMul = 100;
     }
 

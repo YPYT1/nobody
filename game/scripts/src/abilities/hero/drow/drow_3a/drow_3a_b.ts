@@ -22,6 +22,7 @@ export class drow_3a_b extends drow_3a {
         let bx_radius = this.caster.GetTalentKv('33', 'radius')
         this.bx_radius = this.GetTypesAffixValue(bx_radius, "Aoe", "skv_aoe_radius")
     }
+    
     TriggerActive(params: PlayEffectProps): void {
         const vPos = params.vPos;
         let ability_damage = params.damage;

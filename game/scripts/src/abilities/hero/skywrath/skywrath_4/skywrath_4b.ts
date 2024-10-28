@@ -25,6 +25,7 @@ export class modifier_skywrath_4b extends BaseHeroModifier {
     UpdataAbilityValue(): void {
         this.reduce_cd = this.caster.GetTalentKv("109", "reduce_cd");
         this.duration = this.caster.GetTalentKv("108", "duration");
+        this.duration = this.ability.GetTypesAffixValue(this.duration,"Dot","skv_dot_duration");
     }
 
     OnIntervalThink(): void {

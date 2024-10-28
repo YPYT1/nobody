@@ -26,6 +26,8 @@ export class modifier_skywrath_4a extends BaseHeroModifier {
         this.max_mana = this.caster.GetTalentKv("105", "value");
         this.mana_regen = this.caster.GetTalentKv("106", "value");
 
+        this.max_mana = this.ability.GetTypesAffixValue(this.max_mana, "Buff", "skv_buff_increase");
+        this.mana_regen = this.ability.GetTypesAffixValue(this.mana_regen, "Buff", "skv_buff_increase");
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             "MaxMana": {
                 "Base": this.max_mana,

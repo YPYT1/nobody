@@ -68,7 +68,8 @@ export class modifier_skywrath_3b_b_field extends BaseModifier {
         this.caster = this.GetCaster();
         this.GetParent().is_clone = params.is_clone;
         this.is_clone = params.is_clone;
-        this.radius = 600;//this.caster.GetTalentKv("97", "radius");
+        this.radius = this.caster.GetTalentKv("97", "radius");
+        this.radius = this.GetAbility().GetTypesAffixValue(this.radius, "Aoe", "skv_aoe_radius");
         this.manacost_bonus = params.manacost_bonus;
         let effect_fx = ParticleManager.CreateParticle(
             "particles/ability/skywrath/skywrath_fazhen.vpcf",
@@ -126,8 +127,11 @@ export class modifier_skywrath_3b_b_field_aura extends BaseModifier {
         // rune_77	法爷#26	死亡空间的技能基础伤害提升100%
         this.SelfAbilityMul += this.caster.GetRuneKv("rune_77", "value");
 
+        let interval_increase = this.GetAbility().GetTypesAffixValue(0, "Dot", "skv_dot_interval");
+        let base_interval = 1
+        let dot_interval = base_interval / (1 + interval_increase * 0.01);
         this.OnIntervalThink()
-        this.StartIntervalThink(1)
+        this.StartIntervalThink(dot_interval)
 
         const element_resist = this.caster.GetTalentKv("98", "element_resist");
         if (element_resist != 0) {

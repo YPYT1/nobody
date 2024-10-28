@@ -25,6 +25,7 @@ export class skywrath_3a_a extends skywrath_3a {
         precacheResString("models/ui/candyworks/particles/candyworks_fireplace_light.vpcf", context)
         precacheResString("particles/custom/hero/skywrath3a/sun_strike.vpcf", context);
         precacheResString("particles/econ/courier/courier_cluckles/courier_cluckles_ambient_rocket_explosion.vpcf", context)
+        precacheResString("particles/custom/hero/skywrath3a/tinder_explosion.vpcf", context)
     }
 }
 
@@ -37,10 +38,14 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
 
     UpdataSpecialValue(): void {
         this.channel_time = 3
-        this.meteor_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "87", "meteor_count");
+        let meteor_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "87", "meteor_count");
         // rune_70	法爷#19	陨石雨数量增加1枚，范围扩大100码
-        this.meteor_count += this.caster.GetRuneKv("rune_70", "value");
+        meteor_count += this.caster.GetRuneKv("rune_70", "value");
+
+        this.meteor_count = this.GetAbility().GetTypesAffixValue(meteor_count, "Targeting", "skv_targeting_count");
+
         this.range = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "87", "range");
+
 
     }
 
@@ -89,7 +94,6 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
                 this.GetAbility(),
                 "modifier_skywrath_3a_a_meteor",
                 {
-                    duration: 1.4,
                     manacost_bonus: params.value,
                     is_clone: is_clone
                 },
@@ -107,7 +111,6 @@ export class modifier_skywrath_3a_a extends modifier_skywrath_3a {
                 this.GetAbility(),
                 "modifier_skywrath_3a_a_meteor",
                 {
-                    duration: 1.4,
                     manacost_bonus: params.value,
                     is_clone: is_clone
                 },
@@ -162,6 +165,9 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
     radius: number;
     attack_damage: number;
 
+    mutle_chance: number;
+    is_multi: boolean;
+
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.is_clone = params.is_clone;
@@ -169,9 +175,10 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
         this.caster = this.GetCaster()
         this.parent = this.GetParent()
         this.team = this.caster.GetTeamNumber();
-        this.radius = 150;// 200;
+        let radius = this.caster.GetTalentKv("87", "radius");
         // rune_70	法爷#19	陨石雨数量增加1枚，范围扩大100码
-        this.radius += this.caster.GetRuneKv("rune_70", "radius");
+        radius += this.caster.GetRuneKv("rune_70", "radius");
+        this.radius = this.GetAbility().GetTypesAffixValue(radius, "Aoe", "skv_aoe_radius");
         this.caster_origin = this.caster.GetAbsOrigin()
         this.parent_origin = this.parent.GetAbsOrigin();
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
@@ -193,6 +200,9 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
         ParticleManager.SetParticleControl(effect_fx, 2, Vector(1.3, 0, 0))
         ParticleManager.ReleaseParticleIndex(effect_fx)
 
+        this.is_multi = false;
+        this.mutle_chance = this.GetAbility().GetTypesAffixValue(0, "Aoe", "skv_aoe_chance");
+        print("this.mutle_chance", this.mutle_chance)
         this.StartIntervalThink(1.3)
     }
 
@@ -299,10 +309,32 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
             // 创建火种
             this.CreateTinder(tinder_duration)
         }
-
+        print("this.is_multi", this.is_multi, this.mutle_chance,RollPercentage(this.mutle_chance))
+        if (RollPercentage(this.mutle_chance)) {
+            this.mutle_chance = 0;
+            this.is_multi = true;
+            this.StartIntervalThink(0.25)
+            return
+        }
+        if (this.is_multi) { this.PlayMultiCast() }
         this.StartIntervalThink(-1)
-
         this.Destroy()
+    }
+
+    PlayMultiCast() {
+        let value = 2;
+        let sound_cast = "Hero_OgreMagi.Fireblast.x1";
+        EmitSoundOn(sound_cast, this.GetParent());
+
+        let effect_cast = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_ogre_magi/ogre_magi_multicast.vpcf",
+            ParticleAttachment.CUSTOMORIGIN,
+            null
+        );
+        ParticleManager.SetParticleControl(effect_cast, 0, this.GetParent().GetAbsOrigin())
+        ParticleManager.SetParticleControl(effect_cast, 1, Vector(value, 2, 0));
+        ParticleManager.ReleaseParticleIndex(effect_cast);
+
     }
 
     CreateTinder(tinder_duration: number) {
@@ -314,7 +346,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
 
     PlayIgnite(vPos: Vector, explosion_radius: number, tinder_damage: number) {
         let effect_fx = ParticleManager.CreateParticle(
-            "particles/dev/hero/drow/drow_1/explosion_arrow.vpcf",
+            "particles/custom/hero/skywrath3a/tinder_explosion.vpcf",
             ParticleAttachment.POINT,
             this.GetParent()
         )

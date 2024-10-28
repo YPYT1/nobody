@@ -31,7 +31,9 @@ export class modifier_skywrath_3a_b extends modifier_skywrath_3a {
     channel: number;
 
     UpdataSpecialValue(): void {
-        this.channel = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "91", "channel")
+        let channel = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "91", "channel")
+
+        this.channel = this.GetAbility().GetTypesAffixValue(channel, "Dot", "skv_dot_duration")
     }
 
     OnIntervalThink(): void {
@@ -124,7 +126,10 @@ export class modifier_skywrath_3a_b_channel extends BaseModifier {
                 this.cloud_list.push(cloud)
             }
         }
-        this.StartIntervalThink(1)
+        let interval_increase = this.GetAbility().GetTypesAffixValue(0, "Dot", "skv_dot_interval");
+        let base_interval = 1
+        let dot_interval = base_interval / (1 + interval_increase * 0.01);
+        this.StartIntervalThink(dot_interval)
     }
 
     OnIntervalThink(): void {

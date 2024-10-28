@@ -31,6 +31,7 @@ export class drow_1a extends drow_1 {
         let aoe_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "2", "skv_aoe_radius")
             + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "4", "skv_aoe_radius");
         this.aoe_radius = this.GetTypesAffixValue(aoe_radius, "Aoe", "skv_aoe_radius")
+        this.DamageBonusMul += this.GetTypesAffixValue(0, "Aoe", "skv_aoe_d_bonus")
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {

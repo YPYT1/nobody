@@ -53,7 +53,8 @@ export class modifier_skywrath_2a extends BaseHeroModifier {
         this.SelfAbilityMul = hAbility.GetSpecialValueFor("base_value");
         this.surround_radius = 650;//hAbility.GetSpecialValueFor("surround_radius");
         this.surround_duration = 8;//hAbility.GetSpecialValueFor("surround_duration");
-        this.surround_count = 1;
+        this.surround_count = hAbility.GetTypesAffixValue(1, "Surround", "skv_surround_count");
+
     }
 
     OnIntervalThink() {
@@ -223,8 +224,8 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
         this.damage_type = DamageTypes.MAGICAL
         this.element_type = this.GetAuraOwner().element_type
         this.manacost_bonus = this.GetAuraOwner().manacost_bonus;
-
-        const is_clone = this.GetAuraOwner().is_clone
+        const is_clone = this.GetAuraOwner().is_clone;
+        
         ApplyCustomDamage({
             victim: this.GetParent(),
             attacker: this.GetCaster(),
@@ -239,7 +240,7 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
             is_clone: is_clone,
         })
 
-        UTIL_Remove(this.GetAuraOwner())
+        // UTIL_Remove(this.GetAuraOwner())
 
     }
 

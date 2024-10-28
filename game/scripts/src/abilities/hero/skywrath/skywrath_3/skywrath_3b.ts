@@ -34,7 +34,8 @@ export class modifier_skywrath_3b extends BaseHeroModifier {
 
     UpdataAbilityValue(): void {
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
-        this.fazhen_duration = this.caster.GetTalentKv("94", "fazhen_duration");
+        let fazhen_duration = this.caster.GetTalentKv("94", "fazhen_duration");
+        this.fazhen_duration = this.ability.GetTypesAffixValue(fazhen_duration,"Dot","skv_dot_duration");
     }
 
     OnIntervalThink(): void {
@@ -84,8 +85,11 @@ export class modifier_skywrath_3b_fazhen extends BaseModifier {
         ParticleManager.SetParticleControl(effecf_fx, 1, Vector(this.fazhen_radius, this.fazhen_radius, this.fazhen_radius))
         this.AddParticle(effecf_fx, false, false, -1, false, false)
 
+        let interval_increase = this.GetAbility().GetTypesAffixValue(0, "Dot", "skv_dot_interval");
+        let base_interval = 1
+        let dot_interval = base_interval / (1 + interval_increase * 0.01);
         this.OnIntervalThink()
-        this.StartIntervalThink(1)
+        this.StartIntervalThink(dot_interval)
     }
 
     OnIntervalThink(): void {

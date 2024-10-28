@@ -109,6 +109,7 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
     explosion_radius: number;
     attack_damage: number;
 
+    Aoe_DamageBonusMul:number;
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.manacost_bonus = params.manacost_bonus;
@@ -118,8 +119,11 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
         this.max_wave = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "max_wave")
         this.explosion_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "explosion_count");
         this.range = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "range");
-        this.explosion_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "explosion_radius");
+        let explosion_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "explosion_radius");
+        this.explosion_radius = this.GetAbility().GetTypesAffixValue(explosion_radius,"Aoe","skv_aoe_radius");
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
+        this.Aoe_DamageBonusMul = this.GetAbility().GetTypesAffixValue(0,"Aoe","skv_aoe_d_bonus");
+
         // rune_69	法爷#18	元素轰炸系列的技能基础伤害提高100%
         this.SelfAbilityMul += this.caster.GetRuneKv("rune_69", "value");
         this.is_clone = params.is_clone;
@@ -188,7 +192,7 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.manacost_bonus,
+                DamageBonusMul: this.manacost_bonus + this.Aoe_DamageBonusMul,
                 is_clone: this.is_clone,
             })
         }

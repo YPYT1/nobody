@@ -19,6 +19,10 @@ export class drow_3b extends BaseHeroAbility {
     UpdataAbilityValue(): void {
         this.SetCustomAbilityType("Aoe", true)
     }
+
+    TriggerActive(params: PlayEffectProps): void {
+
+    }
 }
 
 @registerModifier()
@@ -28,9 +32,11 @@ export class modifier_drow_3b extends BaseHeroModifier {
     arrow_count: number;
     mdf_thinker = "modifier_drow_3b_thinker";
 
+    aoe_chance: number;
     UpdataAbilityValue(): void {
         let hAbility = this.GetAbility();
         this.radius = hAbility.GetSpecialValueForTypes("radius", 'Aoe', 'skv_aoe_radius');
+
         this.arrow_count = hAbility.GetSpecialValueFor("arrow_count")
             + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "38", 'bonus_arrow')
 
@@ -43,6 +49,8 @@ export class modifier_drow_3b extends BaseHeroModifier {
         }
 
         this.DamageBonusMul = 0;
+        this.aoe_chance = this.ability.GetTypesAffixValue(0, "Aoe", "skv_aoe_chance");
+
     }
 
     OnIntervalThink(): void {
@@ -75,8 +83,6 @@ export class modifier_drow_3b extends BaseHeroModifier {
         )
         ParticleManager.ReleaseParticleIndex(cast_fx);
         let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
-        // let bp_ingame = this.base_value - 100
-        // let bp_server = 0;
         CreateModifierThinker(
             this.caster,
             this.ability,
@@ -92,6 +98,24 @@ export class modifier_drow_3b extends BaseHeroModifier {
             this.team,
             false
         )
+
+        if (RollPercentage(this.aoe_chance)) {
+            CreateModifierThinker(
+                this.caster,
+                this.ability,
+                this.mdf_thinker,
+                {
+                    radius: this.radius,
+                    arrow_count: this.arrow_count,
+                    ability_damage: attack_damage,
+                    SelfAbilityMul: this.SelfAbilityMul,
+                    DamageBonusMul: this.DamageBonusMul,
+                },
+                vPos + RandomVector(RandomInt(100, 300)) as Vector,
+                this.team,
+                false
+            )
+        }
     }
 }
 

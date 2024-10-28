@@ -83,6 +83,9 @@ export class modifier_skywrath_3b_a_jihan extends BaseModifier {
         this.attack_damage = this.caster.GetAverageTrueAttackDamage(null)
         this.SelfAbilityMul = this.caster.GetTalentKv("94", "base_value") + this.caster.GetTalentKv("95", "bonus_base");
         this.radius = this.caster.GetTalentKv("95", "jihan_radius");
+
+        this.radius = this.GetAbility().GetTypesAffixValue(this.radius,"Aoe","skv_aoe_radius");
+        
         this.manacost_bonus = params.manacost_bonus;
         let caster_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_caster.vpcf",
@@ -99,10 +102,12 @@ export class modifier_skywrath_3b_a_jihan extends BaseModifier {
         )
         ParticleManager.SetParticleControl(snow_fx, 1, Vector(this.radius, 1, 1))
         this.AddParticle(snow_fx, false, false, -1, false, false)
+        
+        let interval_increase = this.GetAbility().GetTypesAffixValue(0, "Dot", "skv_dot_interval");
+        let base_interval = 1
+        let dot_interval = base_interval / (1 + interval_increase * 0.01);
         this.OnIntervalThink()
-
-
-        this.StartIntervalThink(1)
+        this.StartIntervalThink(dot_interval)
     }
 
     OnIntervalThink(): void {
