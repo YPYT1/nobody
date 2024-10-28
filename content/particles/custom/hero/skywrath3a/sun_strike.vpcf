@@ -3,7 +3,7 @@
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
 	m_nMaxParticles = 1
-	m_nBehaviorVersion = 4
+	m_nBehaviorVersion = 12
 	m_nFirstMultipleOverride_BackwardCompat = 5
 	m_controlPointConfigurations = 
 	[
@@ -18,9 +18,29 @@
 				{
 					m_iControlPoint = 1
 					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_vecOffset = [ 500.0, 0.0, 0.0 ]
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 2
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 9
+					m_iAttachType = "PATTACH_WORLDORIGIN"
 					m_entityName = "self"
 				},
 			]
+			m_previewState = 
+			{
+				m_groundType = "PET_GROUND_PLANE"
+			}
 		},
 	]
 	m_Emitters = 
@@ -174,6 +194,7 @@
 		},
 		{
 			m_ChildRef = resource:"particles/custom/hero/skywrath3a/sun_strikec.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/custom/hero/skywrath3a/sun_strikex.vpcf"
@@ -208,9 +229,11 @@
 		},
 		{
 			m_ChildRef = resource:"particles/custom/hero/skywrath3a/sun_strikeh.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/custom/hero/skywrath3a/sun_strikec0.vpcf"
+			m_bDisableChild = true
 		},
 		{
 			m_ChildRef = resource:"particles/custom/hero/skywrath3a/sun_strikev.vpcf"

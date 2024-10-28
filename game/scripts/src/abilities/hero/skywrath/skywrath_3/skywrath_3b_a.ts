@@ -16,6 +16,7 @@ export class skywrath_3b_a extends skywrath_3b {
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_caster.vpcf", context)
         precacheResString("particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_snow.vpcf", context)
+        precacheResString("particles/custom/hero/skywrath3b/jihan_fazhen.vpcf",context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -92,7 +93,7 @@ export class modifier_skywrath_3b_a_jihan extends BaseModifier {
         // rune_76	法爷#25	极寒领域对冻结的单位提升55%的最终伤害
         this.rune76 = this.caster.GetRuneKv("rune_76", "value");
         let snow_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_crystalmaiden/maiden_freezing_field_snow.vpcf",
+            "particles/custom/hero/skywrath3b/jihan_fazhen.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.caster
         )

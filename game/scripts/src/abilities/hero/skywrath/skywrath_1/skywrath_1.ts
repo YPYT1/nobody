@@ -13,6 +13,10 @@ export class skywrath_1 extends BaseHeroAbility {
     /** Q技能伤害加成 */
     BasicAbilityDmg: number;
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/econ/items/skywrath_mage/skywrath_arcana/skywrath_arcana_bolt_v2.vpcf",context)
+    }
+    
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_1"
     }
@@ -27,7 +31,7 @@ export class skywrath_1 extends BaseHeroAbility {
             let attack_damage = extraData.a;
             let SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
             let clone_res = this.CloneRes(extraData);
-            
+
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -68,7 +72,7 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
         this.fakeAttack = false;
         this.useProjectile = true;
         this.SelfAbilityPow = 1;
-        this.tracking_proj_name = G_PorjTrack.skywrath.none;
+        this.tracking_proj_name = "particles/econ/items/skywrath_mage/skywrath_arcana/skywrath_arcana_bolt_v2.vpcf";
         this.move_mdf = this.caster.FindModifierByName("modifier_basic_move") as modifier_basic_move;
     }
 
@@ -132,13 +136,10 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
         DamageBonusMul: number,
     ) {
         // 清空动作
-        if (this.caster.move_state) {
-            this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
-            this.caster.StartGesture(GameActivity.DOTA_CAST_ABILITY_1);
-        } else {
-            this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
-            this.caster.StartGesture(GameActivity.DOTA_ATTACK);
-        }
+
+        this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_3);
+        this.caster.StartGesture(GameActivity.DOTA_CAST_ABILITY_3);
+
 
         // print("this",this.tracking_proj_name)
         ProjectileManager.CreateTrackingProjectile({

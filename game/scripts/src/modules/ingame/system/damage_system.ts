@@ -121,12 +121,26 @@ export class DamageSystem {
         let ElementDmgMul = (params.ElementDmgMul ?? 0) + hAttacker.custom_attribute_value.AllElementDamageBonus;
         let FinalDamageMul = (params.FinalDamageMul ?? 0) + hAttacker.custom_attribute_value.FinalDamageMul;
         let DmgReductionPct = (100 - (params.victim.enemy_attribute_value.DmgReductionPct ?? 0)) * 0.01;
-        if ((params.is_clone ?? 0) == 1) { params.damage = params.damage * 0.25; }
+        if ((params.is_clone ?? 0) == 1) {
+            // 如果是克隆体
+            let clone_base_factor = 0.25;
+            // 114	冰语	分身获得冰元素之力，模仿冰元素技能时伤害额外提升25%，且提高50%的冰元素伤害
+            if (params.attacker.GetTalentKv("114", "image_dmg_bonus") > 0) {
+                clone_base_factor += params.attacker.GetTalentKv("114", "image_dmg_bonus") * 0.01
+            } else if (params.attacker.GetTalentKv("115", "image_dmg_bonus") > 0) {
+                // 115	雷临	分身获得雷元素之力，模仿雷元素技能时伤害额外提升25%，
+                clone_base_factor += params.attacker.GetTalentKv("115", "image_dmg_bonus") * 0.01
+            } else if (params.attacker.GetTalentKv("116", "image_dmg_bonus") > 0) {
+                // 116	火烬	分身获得火元素之力，模仿火元素技能时伤害额外提升75%
+                clone_base_factor += params.attacker.GetTalentKv("116", "image_dmg_bonus") * 0.01
+            } else if (params.attacker.GetTalentKv("117", "shadow") > 0) {
+                element_type = 6
+            }
+            params.damage = params.damage * clone_base_factor;
+        }
         params.damage = params.damage * DmgReductionPct;
 
-        if ((params.is_clone ?? 0) == 1 && params.attacker.GetTalentKv("117", "shadow") == 1) {
-            element_type = 6
-        }
+
         // let element_type = params.element_type
         // print("is_clone:", params.is_clone, params.attacker.GetTalentKv("117", "shadow"), element_type)
         /** 元素抗性 */
@@ -231,7 +245,7 @@ export class DamageSystem {
             * (1 + AbilityImproved * 0.01)
             * (1 + ElementDmgMul * 0.01)
             * (1 + FinalDamageMul * 0.01)
-            * math.max(1,ElementResist)  * 0.01
+            * math.max(1, ElementResist) * 0.01
             ;
         // print("increased_injury", increased_injury)
         // print("ElementResist", ElementResist)

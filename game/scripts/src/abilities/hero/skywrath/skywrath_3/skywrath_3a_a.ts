@@ -23,6 +23,7 @@ export class skywrath_3a_a extends skywrath_3a {
         precacheResString("particles/units/heroes/hero_invoker/invoker_chaos_meteor.vpcf", context);
         precacheResString("particles/units/heroes/hero_invoker/invoker_chaos_meteor_fly.vpcf", context)
         precacheResString("models/ui/candyworks/particles/candyworks_fireplace_light.vpcf", context)
+        precacheResString("particles/custom/hero/skywrath3a/sun_strike.vpcf", context);
         precacheResString("particles/econ/courier/courier_cluckles/courier_cluckles_ambient_rocket_explosion.vpcf", context)
     }
 }
@@ -168,7 +169,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
         this.caster = this.GetCaster()
         this.parent = this.GetParent()
         this.team = this.caster.GetTeamNumber();
-        this.radius = 200;
+        this.radius = 150;// 200;
         // rune_70	法爷#19	陨石雨数量增加1枚，范围扩大100码
         this.radius += this.caster.GetRuneKv("rune_70", "radius");
         this.caster_origin = this.caster.GetAbsOrigin()
@@ -202,7 +203,8 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
             ParticleAttachment.CUSTOMORIGIN,
             null
         )
-        ParticleManager.SetParticleControl(effect_fx,0,this.parent_origin)
+        ParticleManager.SetParticleControl(effect_fx, 0, this.parent_origin);
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.radius, 0, 0));
         ParticleManager.ReleaseParticleIndex(effect_fx);
 
         let enemies = FindUnitsInRadius(

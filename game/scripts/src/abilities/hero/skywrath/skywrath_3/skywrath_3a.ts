@@ -16,6 +16,7 @@ export class skywrath_3a extends BaseHeroAbility {
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/units/heroes/hero_sandking/sandking_scorpion_strike_aoe.vpcf", context)
         precacheResString("particles/units/heroes/hero_sandking/sandking_epicenter.vpcf", context)
+        precacheResString("particles/custom/hero/skywrath3a/element_aoe.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -89,11 +90,15 @@ export class modifier_skywrath_3a_channel extends BaseModifier {
     }
 }
 
+/** 元素颜色 */
 const element_color = [
-    [0,0,0],
-    [255,0,0],
+    Vector(0, 0, 0),
+    Vector(255, 69, 0), // 火
+    Vector(0, 191, 255), // 冰
+    Vector(147, 112, 219), // 雷
+    Vector(50, 205, 50), // 风
+];
 
-]
 @registerModifier()
 export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
 
@@ -155,11 +160,11 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
         )
         ParticleManager.SetParticleControl(aoe_fx, 0, vPos)
         ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.explosion_radius, 1, 1))
-        ParticleManager.SetParticleControl(aoe_fx, 2, Vector(255, 100, 1))
+        ParticleManager.SetParticleControl(aoe_fx, 2, element_color[element_type])
         ParticleManager.ReleaseParticleIndex(aoe_fx);
 
 
-        
+
         let enemies = FindUnitsInRadius(
             this.team,
             vPos,
