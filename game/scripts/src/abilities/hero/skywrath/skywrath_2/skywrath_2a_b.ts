@@ -77,6 +77,8 @@ export class modifier_skywrath_2a_b_surround_collision extends modifier_skywrath
         if (rune62value > 0 && this.GetParent().State_Frozen()) {
             FinalDamageMul += rune62value
         }
+
+        let surround_d_final = this.ability.GetTypesAffixValue(0, "Surround", "skv_surround_d_final")
         ApplyCustomDamage({
             victim: this.GetParent(),
             attacker: this.GetCaster(),
@@ -88,7 +90,7 @@ export class modifier_skywrath_2a_b_surround_collision extends modifier_skywrath
             // damage_vect: this.GetParent().GetAbsOrigin(),
             SelfAbilityMul: this.SelfAbilityMul,
             DamageBonusMul: this.manacost_bonus,
-            FinalDamageMul: FinalDamageMul,
+            FinalDamageMul: FinalDamageMul + surround_d_final,
             is_clone: is_clone,
         })
 

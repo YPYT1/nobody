@@ -32,7 +32,7 @@
     // flow-children: down;
     vertical-align: bottom;
     // border: 1px solid #fff;
-    margin-bottom: 200px;
+    // margin-bottom: 200px;
 
     // visibility: collapse;
     #CenterPanel {
@@ -544,4 +544,121 @@
 
     }
 
+}
+
+#JumpPanel {
+    vertical-align: bottom;
+    // border: 1px solid #fff;
+
+    .JumpBorder {
+        width: 76px;
+        height: 74px;
+        background-image: url("file://{images}/custom_game/hud/control/jump/jump_border_1.png");
+        transition-property: background-image;
+        transition-duration: 0.2s;
+    }
+
+    #AbilityPanel {
+        width: 76px;
+        height: 74px;
+        margin-bottom: 12px;
+        // jump_border_1
+
+
+
+        #AbilityImage {
+            width: 40px;
+            height: 40px;
+            margin-top: 4px;
+            align: center center;
+            background-image: url("file://{images}/custom_game/hud/control/jump/jump_icon.png");
+            background-size: 100%;
+            z-index: -1;
+        }
+
+    }
+
+    #AbilityCharge {
+        horizontal-align: center;
+        flow-children: right;
+        vertical-align: bottom;
+
+        .ChargePoint {
+            width: 22px;
+            height: 22px;
+            background-image: url("file://{images}/custom_game/hud/control/jump/charges_d.png");
+            margin-left: -2px;
+            margin-right: -2px;
+        }
+
+        .No2 {
+            margin-top: 4px;
+        }
+
+        &.charge1 {
+            .No1 {
+                background-image: url("file://{images}/custom_game/hud/control/jump/charges_h.png");
+            }
+        }
+
+        &.charge2 {
+
+            .No2,
+            .No1 {
+                background-image: url("file://{images}/custom_game/hud/control/jump/charges_h.png");
+            }
+        }
+
+        &.charge3 {
+
+            .No3,
+            .No2,
+            .No1 {
+                background-image: url("file://{images}/custom_game/hud/control/jump/charges_h.png");
+            }
+        }
+    }
+
+    &.in_cooldown {
+        #Cooldown {
+            visibility: visible;
+        }
+
+        .JumpBorder {
+            background-image: url("file://{images}/custom_game/hud/control/jump/jump_border_2.png");
+        }
+
+        // jump_border_2
+    }
+
+    #Cooldown {
+        width: 40px;
+        height: 40px;
+        margin-top: 4px;
+        border-radius: 50%;
+        align: center center;
+        visibility: collapse;
+
+        #CooldownOverlay {
+            width: 100%;
+            height: 100%;
+            transition-property: clip;
+            transition-timing-function: ease-in-out;
+            // transition-duration: 0.05s;
+            // margin: 1px;
+            background-color: #000000dc;
+            // visibility: ;
+        }
+
+        #CooldownTimer {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px 2.0 #111111;
+            width: 100%;
+            text-align: center;
+            vertical-align: center;
+            text-overflow: shrink;
+        }
+    }
 }

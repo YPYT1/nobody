@@ -21,17 +21,18 @@ export class skywrath_2a_a extends skywrath_2a {
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/econ/items/phoenix/phoenix_ti10_immortal/phoenix_ti10_fire_spirit_ground.vpcf", context)
         precacheResString("particles/custom/hero/skywrath2a/surround_orb_fire_2.vpcf", context);
-        precacheResString("particles/custom/hero/skywrath2a/aoe_explosion.vpcf",context)
+        precacheResString("particles/custom/hero/skywrath2a/aoe_explosion.vpcf", context)
     }
 
     UpdataSpecialValue(): void {
         let aoe_radius = this.caster.GetTalentKv("69", "bz_radius")
         this.aoe_radius = this.GetTypesAffixValue(aoe_radius, "Aoe", "skv_aoe_radius");
-        
+
     }
 
     TriggerActive(params: PlayEffectProps): void {
         const damage = this.caster.GetAverageTrueAttackDamage(null);
+        let surround_d_final = this.GetTypesAffixValue(0, "Surround", "skv_surround_d_final")
         let enemies = FindUnitsInRadius(
             this.team,
             params.vPos,
@@ -54,6 +55,7 @@ export class skywrath_2a_a extends skywrath_2a {
                 is_primary: true,
                 SelfAbilityMul: params.SelfAbilityMul,
                 DamageBonusMul: params.DamageBonusMul ?? 0,
+                FinalDamageMul: surround_d_final,
                 is_clone: params.is_clone ?? 0,
             })
         }

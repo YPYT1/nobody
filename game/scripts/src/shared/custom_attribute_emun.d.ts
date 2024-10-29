@@ -259,9 +259,10 @@ interface PlayEffectProps {
 
     damage_type?: DamageTypes,
     element_type?: ElementTypes,
-    
+
     SelfAbilityMul?: number;
     DamageBonusMul?: number;
+    FinalDamageMul?: number;
 }
 
 

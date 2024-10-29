@@ -53,8 +53,8 @@ export class modifier_drow_1c extends modifier_drow_1 {
 
     UpdataSpecialValue(): void {
         this.fakeAttack = true;
-        this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "8", 'targes') - 1;
-        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  "9", "bonus_value");
+        this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "8", 'targes') - 1;
+        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "9", "bonus_value");
         this.SelfAbilityMul += bonus_value
         if (bonus_value > 0) {
             this.element_type = ElementTypes.ICE;
@@ -74,8 +74,8 @@ export class modifier_drow_1c extends modifier_drow_1 {
             bonus_targets += (extra_index + 1)
         }
         let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
-        let ssk_21_bonus = this.ability.GetServerSkillEffect("21", bonus_targets);
-        let DamageBonusMul = this.DamageBonusMul + ssk_21_bonus
+        let FinalDamageMul = this.ability.GetServerSkillEffect("21", bonus_targets);
+        let DamageBonusMul = this.DamageBonusMul
         let enemies = FindUnitsInRadius(
             this.team,
             this.caster.GetAbsOrigin(),
@@ -89,11 +89,11 @@ export class modifier_drow_1c extends modifier_drow_1 {
         )
         this.fakeAttack = false;
         let count = 0;
-        this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, DamageBonusMul)
+        this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, DamageBonusMul, FinalDamageMul)
         for (let enemy of enemies) {
             if (enemy != hTarget) {
                 count += 1;
-                this.PlayPerformAttack(this.caster, enemy, attack_damage, this.SelfAbilityMul, DamageBonusMul)
+                this.PlayPerformAttack(this.caster, enemy, attack_damage, this.SelfAbilityMul, DamageBonusMul, FinalDamageMul)
             }
             if (count >= this.targes + bonus_targets) {
                 break

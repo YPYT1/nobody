@@ -96,10 +96,10 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 FindOrder.CLOSEST,
                 false
             )
-            if (enemies.length <= 0) { 
+            if (enemies.length <= 0) {
                 this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
                 this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
-                return 
+                return
             }
             let hTarget = enemies[0];
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
@@ -138,6 +138,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
         attack_damage: number,
         SelfAbilityMul: number,
         DamageBonusMul: number,
+        FinalDamageMul: number = 0,
     ) {
         if (this.fakeAttack) { return }
         // print("this",this.tracking_proj_name)
@@ -154,6 +155,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 dt: this.damage_type,
                 SelfAbilityMul: SelfAbilityMul,
                 DamageBonusMul: DamageBonusMul,
+                FinalDamageMul: FinalDamageMul
             } as ProjectileExtraData
         })
     }

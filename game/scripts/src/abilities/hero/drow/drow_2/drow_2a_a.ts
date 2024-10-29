@@ -37,7 +37,7 @@ export class drow_2a_a extends drow_2a {
             let ability_damage = extraData.a;
             let SelfAbilityMul = extraData.SelfAbilityMul;
             let DamageBonusMul = extraData.DamageBonusMul;
-
+            let FinalDamageMul = extraData.FinalDamageMul ?? 0;
             if (this.talent_14 > 0) {
                 let ElementDmgMul = extraData.ElementDmgMul;
                 let damage_vect = Vector(extraData.x, extraData.y, 0);
@@ -52,7 +52,8 @@ export class drow_2a_a extends drow_2a {
                     damage_vect: damage_vect,
                     SelfAbilityMul: SelfAbilityMul,
                     DamageBonusMul: DamageBonusMul,
-                    ElementDmgMul: ElementDmgMul
+                    ElementDmgMul: ElementDmgMul,
+                    FinalDamageMul: FinalDamageMul,
                 })
             } else {
                 ApplyCustomDamage({
@@ -65,6 +66,7 @@ export class drow_2a_a extends drow_2a {
                     is_primary: true,
                     SelfAbilityMul: SelfAbilityMul,
                     DamageBonusMul: DamageBonusMul,
+                    FinalDamageMul: FinalDamageMul,
                 })
             }
 

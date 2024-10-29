@@ -49,11 +49,10 @@ export class modifier_skywrath_2a extends BaseHeroModifier {
     surround_mdf = "modifier_skywrath_2a_surround";
 
     UpdataAbilityValue(): void {
-        const hAbility = this.GetAbility();
-        this.SelfAbilityMul = hAbility.GetSpecialValueFor("base_value");
-        this.surround_radius = 650;//hAbility.GetSpecialValueFor("surround_radius");
-        this.surround_duration = 8;//hAbility.GetSpecialValueFor("surround_duration");
-        this.surround_count = hAbility.GetTypesAffixValue(1, "Surround", "skv_surround_count");
+        this.SelfAbilityMul = this.caster.GetTalentKv("68", "base_value");
+        this.surround_radius = this.caster.GetTalentKv("68", "radius");
+        this.surround_duration = this.caster.GetTalentKv("68", "duration");
+        this.surround_count = this.ability.GetTypesAffixValue(1, "Surround", "skv_surround_count");
 
     }
 
@@ -189,6 +188,7 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
 
     interval: number;
 
+
     GetAttributes(): DOTAModifierAttribute_t {
         return ModifierAttribute.MULTIPLE
     }
@@ -216,6 +216,7 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
         this.ability = this.GetAbility();
         // const clone_factor = this.GetAuraOwner().clone_factor;
         this.ability_damage = this.caster.GetAverageTrueAttackDamage(null);
+        this.surround_d_final = this.ability.GetTypesAffixValue(0, "Surround", "skv_surround_d_final")
         this.OnCreated_Extends();
 
     }
@@ -225,7 +226,8 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
         this.element_type = this.GetAuraOwner().element_type
         this.manacost_bonus = this.GetAuraOwner().manacost_bonus;
         const is_clone = this.GetAuraOwner().is_clone;
-        
+
+
         ApplyCustomDamage({
             victim: this.GetParent(),
             attacker: this.GetCaster(),
@@ -237,6 +239,7 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
             damage_vect: this.GetParent().GetAbsOrigin(),
             SelfAbilityMul: this.SelfAbilityMul,
             DamageBonusMul: this.manacost_bonus,
+            FinalDamageMul: this.surround_d_final,
             is_clone: is_clone,
         })
 

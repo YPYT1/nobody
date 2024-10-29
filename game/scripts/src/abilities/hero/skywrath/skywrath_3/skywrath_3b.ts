@@ -30,12 +30,14 @@ export class modifier_skywrath_3b extends BaseHeroModifier {
 
     duration: number;
     fazhen_duration: number;
-
+    aoe_multiple: number;
 
     UpdataAbilityValue(): void {
         this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
         let fazhen_duration = this.caster.GetTalentKv("94", "fazhen_duration");
         this.fazhen_duration = this.ability.GetTypesAffixValue(fazhen_duration,"Dot","skv_dot_duration");
+        // print("fazhen_duration",fazhen_duration,this.fazhen_duration)
+        this.aoe_multiple = this.ability.GetTypesAffixValue(0, "Aoe", "skv_aoe_chance");
     }
 
     OnIntervalThink(): void {

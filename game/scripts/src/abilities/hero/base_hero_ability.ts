@@ -186,8 +186,8 @@ export class BaseHeroAbility extends BaseAbility {
         let ability_types = this.custom_ability_types.skv_type
         if ((ability_types.Targeting && ss_level > 0) || test_mode) {
             if (key == "21") {
-                //  21	目标·命运	目标型技能根据释放时的额外目标数量，提升技能伤害55%*额外目标数
-                return input_value * 55
+                // 目标型技能释放时，提升技能（25%*最大额外目标数）的最终伤害
+                return input_value * 25
             }
         }
 
@@ -353,7 +353,19 @@ export class BaseHeroModifier extends BaseModifier {
         return this.caster.clone_unit != null && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")
     }
 
-    
+    PlayMultiCast(value: number) {
+        let sound = math.min(value - 1, 3);
+        let sound_cast = "Hero_OgreMagi.Fireblast.x" + sound;
+        EmitSoundOn(sound_cast, this.GetCaster());
+
+        let effect_cast = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_ogre_magi/ogre_magi_multicast.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            this.GetCaster()
+        );
+        ParticleManager.SetParticleControl(effect_cast, 1, Vector(value, 2, 0));
+        ParticleManager.ReleaseParticleIndex(effect_cast);
+    }
 }
 
 const SpecialvalueOfTableSpecialObject = {

@@ -168,6 +168,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
     mutle_chance: number;
     is_multi: boolean;
 
+    Aoe_DamageBonusMul:number;
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.is_clone = params.is_clone;
@@ -202,7 +203,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
 
         this.is_multi = false;
         this.mutle_chance = this.GetAbility().GetTypesAffixValue(0, "Aoe", "skv_aoe_chance");
-        print("this.mutle_chance", this.mutle_chance)
+        this.Aoe_DamageBonusMul = this.GetAbility().GetTypesAffixValue(0,"Aoe","skv_aoe_d_bonus");
         this.StartIntervalThink(1.3)
     }
 
@@ -259,7 +260,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.manacost_bonus + meteor_bonus,
+                DamageBonusMul: this.manacost_bonus + meteor_bonus + this.Aoe_DamageBonusMul,
                 is_clone: this.is_clone,
             })
 

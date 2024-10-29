@@ -2,7 +2,7 @@ import { registerAbility, registerModifier } from "../../../../utils/dota_ts_ada
 import { drow_2b, modifier_drow_2b } from "./drow_2b";
 
 /**
- * 火力覆盖【范围型】《火》（3/3）：
+ * 火力覆盖【弹道型】《火》（3/3）：
 散射技能赋予火元素效果，伤害变为火元素伤害。伤害提高 60%/90%/120%
 20.节减（2/2）：散射技能蓝耗下降5/10点
 21.压制（3/3）：对生命值高于50%的单位造成伤害提升 30%/60%/100%

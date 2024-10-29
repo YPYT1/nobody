@@ -297,7 +297,7 @@ const CMsg_BossCastWarning = (params: CustomGameEventDeclarations["CMsg_BossCast
 const LocalPlayerChannelPanel = $("#LocalPlayerChannelPanel");
 
 const UpdateAbilityChannel = () => {
-    if(Game.IsGamePaused()){ return }
+    if (Game.IsGamePaused()) { return }
     const game_time = Game.GetDOTATime(false, false)
     for (let i = 0; i < LocalPlayerChannelPanel.GetChildCount(); i++) {
         let ChannelPanel = LocalPlayerChannelPanel.GetChild(i);
@@ -305,7 +305,7 @@ const UpdateAbilityChannel = () => {
             // interval_time
             let ChannelBar = ChannelPanel.FindChildTraverse("ChannelBar") as ProgressBar;
             ChannelBar.value += interval_time;
-            ChannelPanel.SetDialogVariableInt("value", ChannelBar.value)
+            ChannelPanel.SetDialogVariable("value", "" + ChannelBar.value.toFixed(1))
             let del_time = ChannelPanel.Data<PanelDataObject>().del_time as number;
             if (del_time <= game_time && del_time != -1) {
                 ChannelPanel.AddClass("Closed");
@@ -325,6 +325,7 @@ const CMsg_AbilityChannel = (params: CustomGameEventDeclarations["CMsg_AbilityCh
         ChannelPanel.BLoadLayoutSnippet("ChannelAbility");
         ChannelPanel.SetDialogVariableInt("value", 0)
         ChannelPanel.SetDialogVariableInt("max", channel_time)
+        ChannelPanel.SetDialogVariable("abilityname", $.Localize("#DOTA_Tooltip_Ability_" + ability_name));
         let ChannelBar = ChannelPanel.FindChildTraverse("ChannelBar") as ProgressBar;
         ChannelBar.value = 0;
         ChannelBar.max = channel_time

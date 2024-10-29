@@ -25,7 +25,7 @@
                     <DOTAAbilityImage id="AbilityIcon" hittest="false"/>
                 </Panel>
                 <ProgressBar id="ChannelBar" hittest="false">
-                    <Label class="BarLabel" text="{d:value} / {d:max}" hittest="false"/>
+                    <Label class="BarLabel" text="{s:value}/{d:max}" hittest="false"/>
                 </ProgressBar>
             </Panel>
         </snippet>

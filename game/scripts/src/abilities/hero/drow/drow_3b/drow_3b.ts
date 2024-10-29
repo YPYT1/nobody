@@ -100,22 +100,49 @@ export class modifier_drow_3b extends BaseHeroModifier {
         )
 
         if (RollPercentage(this.aoe_chance)) {
-            CreateModifierThinker(
-                this.caster,
-                this.ability,
-                this.mdf_thinker,
-                {
-                    radius: this.radius,
-                    arrow_count: this.arrow_count,
-                    ability_damage: attack_damage,
-                    SelfAbilityMul: this.SelfAbilityMul,
-                    DamageBonusMul: this.DamageBonusMul,
-                },
-                vPos + RandomVector(RandomInt(100, 300)) as Vector,
-                this.team,
-                false
-            )
+            this.caster.SetContextThink("drow_3b_multicast", () => {
+                this.PlayEffects(2);
+                let vPos = this.caster.GetAbsOrigin();
+                let cast_fx = ParticleManager.CreateParticle(
+                    "particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf",
+                    ParticleAttachment.POINT,
+                    this.caster,
+                )
+                ParticleManager.ReleaseParticleIndex(cast_fx);
+                CreateModifierThinker(
+                    this.caster,
+                    this.ability,
+                    this.mdf_thinker,
+                    {
+                        radius: this.radius,
+                        arrow_count: this.arrow_count,
+                        ability_damage: attack_damage,
+                        SelfAbilityMul: this.SelfAbilityMul,
+                        DamageBonusMul: this.DamageBonusMul,
+                    },
+                    vPos + RandomVector(RandomInt(100, 300)) as Vector,
+                    this.team,
+                    false
+                )
+                return null
+            }, 0.25)
+
         }
+    }
+
+    PlayEffects(value: number) {
+        let sound = math.min(value - 1, 3);
+        let sound_cast = "Hero_OgreMagi.Fireblast.x" + sound;
+        EmitSoundOn(sound_cast, this.GetCaster());
+
+        let effect_cast = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_ogre_magi/ogre_magi_multicast.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            this.GetCaster()
+        );
+        ParticleManager.SetParticleControl(effect_cast, 1, Vector(value, 2, 0));
+        ParticleManager.ReleaseParticleIndex(effect_cast);
+
     }
 }
 

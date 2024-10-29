@@ -30,6 +30,7 @@ export class modifier_skywrath_3b_b extends modifier_skywrath_3b {
             this.DoExecutedAbility()
             let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             // 开始蓄力
+            this.caster.RemoveModifierByName("modifier_skywrath_3b_b_field")
             this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_b_field", {
                 duration: this.fazhen_duration,
                 manacost_bonus: manacost_bonus,
@@ -37,11 +38,33 @@ export class modifier_skywrath_3b_b extends modifier_skywrath_3b {
             })
 
             if (this.CheckClone()) {
+                this.caster.clone_unit.RemoveModifierByName("modifier_skywrath_3b_b_field")
                 this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_b_field", {
                     duration: this.fazhen_duration,
                     manacost_bonus: manacost_bonus,
                     is_clone: 1,
                 })
+            }
+
+            if (RollPercentage(this.aoe_multiple)) {
+                this.caster.SetContextThink("multicast_skywrath_3b_b", () => {
+                    this.PlayMultiCast(2);
+                    this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_b_field", {
+                        duration: this.fazhen_duration,
+                        manacost_bonus: manacost_bonus,
+                        is_clone: 0,
+                    })
+
+                    if (this.CheckClone()) {
+                        this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3b_b_field", {
+                            duration: this.fazhen_duration,
+                            manacost_bonus: manacost_bonus,
+                            is_clone: 1,
+                        })
+                    }
+                    return null
+                }, 0.25)
+
             }
         }
     }
@@ -60,6 +83,10 @@ export class modifier_skywrath_3b_b_field extends BaseModifier {
     GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
     GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
     GetModifierAura() { return "modifier_skywrath_3b_b_field_aura"; }
+
+    GetAttributes(): DOTAModifierAttribute_t {
+        return ModifierAttribute.MULTIPLE
+    }
 
     OnCreated(params: any): void {
         this.radius = 0;
@@ -114,8 +141,9 @@ export class modifier_skywrath_3b_b_field_aura extends BaseModifier {
     buff_key = "skywrath_3b_b_field_aura";
 
     GetAttributes(): DOTAModifierAttribute_t {
-        return
+        return ModifierAttribute.MULTIPLE
     }
+
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.parent = this.GetParent();

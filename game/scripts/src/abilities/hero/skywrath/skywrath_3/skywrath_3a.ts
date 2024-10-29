@@ -110,6 +110,7 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
     attack_damage: number;
 
     Aoe_DamageBonusMul:number;
+    
     OnCreated(params: any): void {
         if (!IsServer()) { return }
         this.manacost_bonus = params.manacost_bonus;

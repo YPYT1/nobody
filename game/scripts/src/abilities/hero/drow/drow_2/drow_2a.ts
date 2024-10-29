@@ -23,6 +23,7 @@ export class drow_2a extends BaseHeroAbility {
             // let bp_server = extraData.bp_server;
             let SelfAbilityMul = extraData.SelfAbilityMul;
             let DamageBonusMul = extraData.DamageBonusMul;
+            let FinalDamageMul = extraData.FinalDamageMul ?? 0;
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -30,8 +31,9 @@ export class drow_2a extends BaseHeroAbility {
                 damage_type: DamageTypes.PHYSICAL,
                 ability: this,
                 is_primary: true,
-                SelfAbilityMul:SelfAbilityMul,
-                DamageBonusMul:DamageBonusMul,
+                SelfAbilityMul: SelfAbilityMul,
+                DamageBonusMul: DamageBonusMul,
+                FinalDamageMul: FinalDamageMul,
                 // bp_ingame: bp_ingame,
                 // bp_server: bp_server,
             })
@@ -93,6 +95,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
         let vTarget = hTarget.GetAbsOrigin();
         let count = 0;
         let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
+        let FinalDamageMul = this.ability.GetServerSkillEffect("21", this.proj_count);
         this.caster.SetContextThink("drow_2a_shot", () => {
             // print("proj_width",this.proj_width)
             let vCaster = this.caster.GetAbsOrigin() + RandomVector(100) as Vector;
@@ -119,6 +122,7 @@ export class modifier_drow_2a extends BaseHeroModifier {
                     SelfAbilityMul: this.SelfAbilityMul,
                     DamageBonusMul: this.DamageBonusMul + params.value,
                     ElementDmgMul: this.ElementDmgMul,
+                    FinalDamageMul: FinalDamageMul,
                 } as ProjectileExtraData
             })
             count += 1;
