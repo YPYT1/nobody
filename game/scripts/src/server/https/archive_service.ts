@@ -342,7 +342,6 @@ export class ArchiveService extends UIEventRegisterClass {
             steam_id = this.debug_steam_id[player_id];
         }
         let param_data = {
-            gid: this._game_id,
             sid : steam_id.toString(),
             Equip_cfg : JSON.encode(Equip_cfg_obj),
         }
@@ -370,7 +369,6 @@ export class ArchiveService extends UIEventRegisterClass {
     //获取缓存
     PostLuaLog(player_id: PlayerID  , data_string : { [sid: string]: string; }) {
         let param_data = <GameLogParam>{
-            gid : this._game_id,
             data : data_string , 
         }
         // DeepPrintTable(param_data)

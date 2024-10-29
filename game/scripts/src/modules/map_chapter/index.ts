@@ -79,7 +79,7 @@ export class MapChapter extends UIEventRegisterClass {
     game_count = 0;
 
     constructor() {
-        super("MapChapter") 
+        super("MapChapter", true) 
         print("[MapChapter]:constructor")
     }
 
@@ -852,6 +852,7 @@ export class MapChapter extends UIEventRegisterClass {
 
     //游戏胜利 普通关卡
     GameWin() {
+        print("GameWin : " )
         Timers.CreateTimer(3, () => {
             let player_count = GetPlayerCount();
 

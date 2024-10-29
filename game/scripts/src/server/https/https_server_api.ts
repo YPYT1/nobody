@@ -13,7 +13,7 @@ const ACTION_GAME_OVER = "/game_over";
 const ACTION_GAME_DHM = "/gamedhm";
 
 
-// 3.1 添加装备
+// 3.1 添加装备 
 const ACTION_ADD_EQUIP = "/add_equip";
 // 3.2 查看装备
 const ACTION_GET_EQUIP = "/get_equip";

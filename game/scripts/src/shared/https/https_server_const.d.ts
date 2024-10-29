@@ -173,7 +173,6 @@ declare interface UpdateEquipReturn {
  * 日志信息
  */
 declare interface GameLogParam {
-    gid: string, //游戏id
     data : { [ sid : string] : string} , //记录数据
 }
 /**
