@@ -91,14 +91,25 @@ export class modifier_element_effect_ice extends BaseModifier {
             this.move_slow_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '16', 'move_slow')
         }
         this.move_slow_pct += GameRules.HeroTalentSystem.GetTalentKvOfUnit(hCaster, '80', 'value')
-
+        this.SetHasCustomTransmitterData(true);
     }
 
     IsDebuff(): boolean { return true }
 
+    AddCustomTransmitterData() {
+        return {
+            move_slow_pct: this.move_slow_pct
+        }
+    }
+
+    HandleCustomTransmitterData(data: any) {
+        this.move_slow_pct = data.move_slow_pct
+    }
+
     DeclareFunctions(): modifierfunction[] {
         return [
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
+            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
+            ModifierFunction.MOVESPEED_ABSOLUTE_MIN
         ]
     }
 
@@ -110,6 +121,10 @@ export class modifier_element_effect_ice extends BaseModifier {
         return "particles/status_fx/status_effect_frost.vpcf"
     }
 
+
+    // GetModifierMoveSpeed_AbsoluteMin(): number {
+    //     return 100
+    // }
     // CheckState(): Partial<Record<ModifierState, boolean>> {
     //     return {
     //         [ModifierState.STUNNED]: true,

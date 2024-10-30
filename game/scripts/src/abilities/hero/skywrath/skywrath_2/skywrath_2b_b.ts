@@ -13,6 +13,10 @@ import { modifier_skywrath_2b, skywrath_2b } from "./skywrath_2b";
 @registerAbility()
 export class skywrath_2b_b extends skywrath_2b {
 
+    Precache(context: CScriptPrecacheContext): void {
+        precacheResString("particles/custom/hero/skywrath3a/ring_ice.vpcf",context)
+    }
+
     GetIntrinsicModifierName(): string {
         return "modifier_skywrath_2b_b"
     }
@@ -85,7 +89,7 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
         this.is_clone = params.is_clone
         this.ring_dmg_key = "skywrath_2b_b_" + params.ring_dmg_key + this.is_clone;
 
-        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
+        this.SelfAbilityMul = this.caster.GetTalentKv("75","base_value")
         this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "79", "bonus_base");
         // rune_64	法爷#13	雷电屏障系列的技能基础伤害提高100%
         this.SelfAbilityMul += this.caster.GetRuneKv("rune_64", "value")
@@ -98,7 +102,7 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
         this.dmg_interval = this.dmg_interval * 100 / (100 + this.hAbility.GetTypesAffixValue(0, "Ring", "skv_ring_interval"))
         this.lq_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "81", 'lq_stack');
         // rune_68	法爷#17	冷气效果上限提高一倍
-        if (this.caster.GetRuneKv("rune_68", "value")) {
+        if (this.caster.GetRuneKv("rune_68", "value") > 0) {
             this.lq_stack *= 2
         }
         this.lq_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "81", 'lq_duration');
@@ -118,7 +122,7 @@ export class modifier_skywrath_2b_b_ring extends BaseModifier {
     OnIntervalThink(): void {
         let enemies = FindUnitsInRing(
             this.team,
-            this.caster.GetAbsOrigin(),
+            this.GetParent().GetAbsOrigin(),
             this.ring_distance,
             this.ring_width,
             UnitTargetTeam.ENEMY,
@@ -163,7 +167,7 @@ export class modifier_skywrath_2b_b_stack extends StackModifier {
     buff_key = "skywrath_2b_b_stack";
 
     IsHidden(): boolean {
-        return true
+        return false
     }
 
     OnStackCountChanged(stackCount: number): void {

@@ -79,7 +79,7 @@ export class modifier_skywrath_2a_a extends modifier_skywrath_2a {
 
     UpdataSpecialValue(): void {
         let hAbility = this.GetAbility();
-        this.SelfAbilityMul += 50;
+        // this.SelfAbilityMul += 50;
 
         let surround_limit = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "69", "fb_count");
         // rune_60	法爷#9	炎爆每次生成火球时，一次性生成5个，火球数量上限+3
@@ -187,9 +187,6 @@ export class modifier_skywrath_2a_a_surround extends modifier_skywrath_2a_surrou
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         );
-        ParticleManager.SetParticleControlEnt(
-            cast_fx, 1, this.GetParent(), ParticleAttachment.POINT_FOLLOW, "attach_hitloc", Vector(0, 0, 0), true
-        )
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 
@@ -212,6 +209,7 @@ export class modifier_skywrath_2a_a_surround_collision extends modifier_skywrath
             this.GetAuraOwner().summoned_damage = GameRules.GetDOTATime(false, false) + this.interval
             this.damage_type = DamageTypes.MAGICAL
             this.element_type = ElementTypes.FIRE;
+            this.SelfAbilityMul += this.caster.GetTalentKv("69","base_bonus");
             const manacost_bonus = this.GetAuraOwner().manacost_bonus;
             const is_clone = this.GetParent().is_clone;
             const vPos = this.GetParent().GetAbsOrigin();

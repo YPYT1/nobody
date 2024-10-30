@@ -123,7 +123,7 @@ export class modifier_skywrath_2a extends BaseHeroModifier {
 @registerModifier()
 export class modifier_skywrath_2a_surround extends modifier_motion_surround {
 
-    aura_radius = 100;
+    aura_radius = 125;
     ModifierAura = "modifier_skywrath_2a_surround_collision";
     element_type: ElementTypes;
 
@@ -156,9 +156,6 @@ export class modifier_skywrath_2a_surround extends modifier_motion_surround {
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.GetParent()
         );
-        ParticleManager.SetParticleControlEnt(
-            cast_fx, 1, this.GetParent(), ParticleAttachment.POINT_FOLLOW, "", Vector(0, 0, 0), true
-        )
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 
@@ -200,7 +197,7 @@ export class modifier_skywrath_2a_surround_collision extends BaseModifier {
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
-        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
+        this.SelfAbilityMul = this.caster.GetTalentKv("68", "base_value")
         this.SelfAbilityMul += this.caster.GetTalentKv("72", "base_bonus");
         // rune_59	法爷#8	元素缠绕系列技能基础伤害提高200%
         this.SelfAbilityMul += this.caster.GetRuneKv("rune_59", "value");

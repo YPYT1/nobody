@@ -58,6 +58,7 @@ export class modifier_basic_move extends BaseModifier {
                     Queue: false
 
                 })
+                this.RemoveChannelBuff()
             }
             return
         }
@@ -141,11 +142,7 @@ export class modifier_basic_move extends BaseModifier {
 
 
         } else {
-            this.parent.RemoveModifierByName("modifier_skywrath_1c_lx_channel");
-            this.parent.RemoveModifierByName("modifier_skywrath_3a_channel");
-            this.parent.RemoveModifierByName("modifier_skywrath_3a_b_channel");
-            this.parent.RemoveModifierByName("modifier_skywrath_3a_a_channel");
-            
+            this.RemoveChannelBuff()
         }
         // if (state == false) {
         //     this.move_up = false;
@@ -181,6 +178,13 @@ export class modifier_basic_move extends BaseModifier {
             }
         }
 
+    }
+
+    RemoveChannelBuff() {
+        this.parent.RemoveModifierByName("modifier_skywrath_1c_lx_channel");
+        this.parent.RemoveModifierByName("modifier_skywrath_3a_channel");
+        this.parent.RemoveModifierByName("modifier_skywrath_3a_b_channel");
+        this.parent.RemoveModifierByName("modifier_skywrath_3a_a_channel");
     }
 }
 

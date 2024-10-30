@@ -15,6 +15,7 @@ export class skywrath_2b_a extends skywrath_2b {
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/units/heroes/hero_razor/razor_plasmafield.vpcf", context)
         precacheResString("particles/econ/items/razor/razor_ti6/razor_plasmafield_ti6.vpcf", context)
+        precacheResString("particles/custom/hero/skywrath3a/ring_thunder.vpcf",context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -38,7 +39,7 @@ export class modifier_skywrath_2b_a extends modifier_skywrath_2b {
         this.kl_ring_distance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "78", "ring_distance");
         this.kl_ring_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "78", "ring_duration");
         // rune_67	法爷#16	控雷生成的电圈将永久存在
-        if (this.caster.GetRuneKv("rune_67", "value")) {
+        if (this.caster.GetRuneKv("rune_67", "value") > 0 ) {
             this.kl_ring_duration = this.kl_interval + 1;
         }
     }
@@ -117,24 +118,15 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
         this.is_clone = params.is_clone;
         this.ring_dmg_key = "2b_a_ring_" + params.ring_dmg_key + this.is_clone;
         this.ring_distance = this.hAbility.GetTypesAffixValue(params.ring_distance, "Ring", "skv_ring_range")
-        // print("ring_distance:",params.ring_distance,this.ring_distance)
-        let ring_fx: ParticleID;
-
-        ring_fx = ParticleManager.CreateParticle(
+        let ring_fx = ParticleManager.CreateParticle(
             "particles/custom/hero/skywrath3a/ring_thunder.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.GetParent()
         )
-
         ParticleManager.SetParticleControl(ring_fx, 1, Vector(2000, this.ring_distance, 1))
         this.AddParticle(ring_fx, false, false, -1, false, false);
         this.StartIntervalThink(0.1)
-
         this.OnRefresh(params)
-    }
-
-    _OnCreated(params: any) {
-
     }
 
     OnRefresh(params: any): void {
@@ -145,10 +137,8 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
         this.damage_type = DamageTypes.MAGICAL;
         this.element_type = ElementTypes.THUNDER;
         this.ring_d_final = this.hAbility.GetTypesAffixValue(0, "Ring", "skv_ring_d_final")
-
-
-        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
-        this.SelfAbilityMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "76", "bonus_base");
+        this.SelfAbilityMul = this.caster.GetTalentKv("75", "base_value")
+        this.SelfAbilityMul += this.caster.GetTalentKv("76", "bonus_base")
         // rune_64	法爷#13	雷电屏障系列的技能基础伤害提高100%
         this.SelfAbilityMul += this.caster.GetRuneKv("rune_64", "value")
         this.dmg_interval = 1;

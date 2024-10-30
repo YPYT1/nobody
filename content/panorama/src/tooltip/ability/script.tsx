@@ -212,7 +212,7 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
                 if (parent_ability_key != "null" && parent_ability_key != key  ){
                     let parent_data = talent_data[parent_ability_key as keyof typeof talent_data]
                     let talent_desc = $.Localize(`#custom_talent_${parent_ability_key}_desc`)
-                    let desc = SetLabelDescriptionExtra(talent_desc, ability_level, parent_data.AbilityValues, parent_data.ObjectValues, false);
+                    let desc = SetLabelDescriptionExtra(talent_desc, ability_level - 1, parent_data.AbilityValues, parent_data.ObjectValues, false);
                     MainPanel.SetDialogVariable("description", desc);
                 }
                 let extra_panel = $.CreatePanel("Panel", TalentAbilityExtra, "");;

@@ -250,6 +250,8 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
                 let stack = enemy.GetModifierStackCount("modifier_skywrath_3a_a_fentian", this.caster)
                 bonus = stack * meteor_bonus
             }
+            // print("bonus",bonus)
+
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.caster,
@@ -260,7 +262,7 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.manacost_bonus + meteor_bonus + this.Aoe_DamageBonusMul,
+                DamageBonusMul: this.manacost_bonus + bonus + this.Aoe_DamageBonusMul,
                 is_clone: this.is_clone,
             })
 
@@ -310,7 +312,6 @@ export class modifier_skywrath_3a_a_meteor extends BaseModifier {
             // 创建火种
             this.CreateTinder(tinder_duration)
         }
-        print("this.is_multi", this.is_multi, this.mutle_chance,RollPercentage(this.mutle_chance))
         if (RollPercentage(this.mutle_chance)) {
             this.mutle_chance = 0;
             this.is_multi = true;
@@ -425,4 +426,7 @@ export class modifier_skywrath_3a_a_tinder extends BaseModifier {
 @registerModifier()
 export class modifier_skywrath_3a_a_fentian extends StackModifier {
 
+    IsHidden(): boolean {
+        return false
+    }
 }

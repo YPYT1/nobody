@@ -28,6 +28,9 @@ export class skywrath_1c extends skywrath_1 {
         this.ylong_stack_dmg = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "67", "ylong_stack_dmg");
         this.ylong_max_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "67", "ylong_max_stack");
         this.ylong_stack_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "67", "ylong_stack_duration");
+
+        this.SelfAbilityMul = this.caster.GetTalentKv("58", "base_value");
+        this.SelfAbilityMul += this.caster.GetTalentKv("65", "base_bonus");
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
@@ -37,6 +40,7 @@ export class skywrath_1c extends skywrath_1 {
                 let stack = target.GetModifierStackCount("modifier_skywrath_1c_lystack", this.caster);
                 attack_damage = attack_damage * (1 + this.ylong_stack_dmg * stack * 0.01)
             }
+            // print("attack_damage", attack_damage, extraData.SelfAbilityMul, this.BasicAbilityDmg)
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -46,94 +50,27 @@ export class skywrath_1c extends skywrath_1 {
                 element_type: ElementTypes.FIRE,
                 is_primary: true,
                 // 增伤
-                SelfAbilityMul: extraData.SelfAbilityMul + this.BasicAbilityDmg,
-                is_clone: this.IsClone(extraData),
+                SelfAbilityMul: this.SelfAbilityMul + this.BasicAbilityDmg,
+                is_clone: extraData.clone,
             })
 
             if (this.ylong_max_stack) {
-                target.AddNewModifier(this.caster, this, "modifier_skywrath_1c_lystack", {
-                    duration: this.ylong_stack_duration,
-                    max_stack: this.ylong_max_stack,
-                })
+                let longyin_buff = target.FindModifierByNameAndCaster("modifier_skywrath_1c_lystack", this.caster);
+                if (longyin_buff == null) {
+                    target.AddNewModifier(this.caster, this, "modifier_skywrath_1c_lystack", {
+                        duration: this.ylong_stack_duration,
+                        max_stack: this.ylong_max_stack,
+                    })
+                } else {
+                    longyin_buff.IncrementStackCount();
+                }
+
+
             }
         }
     }
 
-    // TriggerActive(params: PlayEffectProps): void {
-    //     let vDir = params.vPos;
-    //     let origin = this.caster.GetAbsOrigin();
-    //     let attackrange = this.caster.Script_GetAttackRange() + 64
-    //     // let vDirection = (vPos - origin as Vector).Normalized()
-    //     // vDirection.z = 0
-    //     // if (this.fakeAttack) { return }
 
-    //     ProjectileManager.CreateLinearProjectile({
-    //         Ability: this.GetAbility(),
-    //         EffectName: "particles/custom/hero/skywrath1c/lina_spell_dragon_slave.vpcf",
-    //         fDistance: attackrange,
-    //         fStartRadius: this.line_width,
-    //         fEndRadius: this.line_width,
-    //         vSpawnOrigin: origin,
-    //         // Source: this.caster,
-    //         vVelocity: (vDirection * this.line_speed) as Vector,
-    //         iUnitTargetTeam: UnitTargetTeam.ENEMY,
-    //         iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
-    //         ExtraData: {
-    //             a: attack_damage,
-    //             et: this.element_type,
-    //             dt: this.damage_type,
-    //             SelfAbilityMul: SelfAbilityMul,
-    //             DamageBonusMul: DamageBonusMul,
-    //             c: 0,
-    //         } as ProjectileExtraData
-    //     })
-
-    //     // 复制攻击
-    //     if (this.caster.clone_unit && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
-    //         const clone_unit = this.caster.clone_unit;
-    //         // const clone_factor = clone_unit.clone_factor;
-    //         let enemies = FindUnitsInRadius(
-    //             this.team,
-    //             this.caster.clone_unit.GetAbsOrigin(),
-    //             null,
-    //             this.caster.Script_GetAttackRange() + 64,
-    //             UnitTargetTeam.ENEMY,
-    //             UnitTargetType.HERO + UnitTargetType.BASIC,
-    //             UnitTargetFlags.FOW_VISIBLE,
-    //             FindOrder.CLOSEST,
-    //             false
-    //         )
-    //         if (enemies.length > 0) {
-
-
-    //             const clone_origin = clone_unit.GetOrigin();
-    //             const clone_target = enemies[0].GetOrigin();
-    //             let vDirection2 = (clone_target - clone_origin as Vector).Normalized()
-    //             vDirection2.z = 0
-    //             ProjectileManager.CreateLinearProjectile({
-    //                 Ability: this.GetAbility(),
-    //                 EffectName: "particles/units/heroes/hero_lina/lina_spell_dragon_slave.vpcf",
-    //                 fDistance: this.line_distance,
-    //                 fStartRadius: this.line_width,
-    //                 fEndRadius: this.line_width,
-    //                 vSpawnOrigin: clone_origin,
-    //                 Source: this.caster.clone_unit,
-    //                 vVelocity: (vDirection * this.line_speed) as Vector,
-    //                 iUnitTargetTeam: UnitTargetTeam.ENEMY,
-    //                 iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
-    //                 ExtraData: {
-    //                     a: attack_damage,
-    //                     et: this.element_type,
-    //                     dt: this.damage_type,
-    //                     SelfAbilityMul: SelfAbilityMul,
-    //                     DamageBonusMul: DamageBonusMul,
-    //                     c: 0,
-    //                     clone: 1,
-    //                 } as ProjectileExtraData
-    //             })
-    //         }
-    //     }
-    // }
 }
 
 @registerModifier()
@@ -206,7 +143,7 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
             } else {
                 const vDirection = (hTarget.GetAbsOrigin() - this.caster.GetAbsOrigin() as Vector).Normalized()
                 vDirection.z = 0
-                this.PlayPerformAttack2(vDirection, attack_damage, this.SelfAbilityMul, 0);
+                this.PlayPerformAttack2(vDirection, attack_damage);
                 let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
                 this.StartIntervalThink(attack_rate)
             }
@@ -215,12 +152,7 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
         }
     }
 
-    PlayPerformAttack2(
-        vDirection: Vector,
-        attack_damage: number,
-        SelfAbilityMul: number,
-        DamageBonusMul: number,
-    ) {
+    PlayPerformAttack2(vDirection: Vector, attack_damage: number,) {
         // print("vDirection",vDirection)
         let origin = this.caster.GetAbsOrigin();
         let attackrange = this.caster.Script_GetAttackRange() + 64
@@ -235,7 +167,7 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
             fStartRadius: this.line_width,
             fEndRadius: this.line_width,
             vSpawnOrigin: origin,
-            // Source: this.caster,
+            Source: this.caster,
             vVelocity: (vDirection * this.line_speed) as Vector,
             iUnitTargetTeam: UnitTargetTeam.ENEMY,
             iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
@@ -243,9 +175,7 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
                 a: attack_damage,
                 et: this.element_type,
                 dt: this.damage_type,
-                SelfAbilityMul: SelfAbilityMul,
-                DamageBonusMul: DamageBonusMul,
-                c: 0,
+                clone: 0,
             } as ProjectileExtraData
         })
 
@@ -265,8 +195,6 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
                 false
             )
             if (enemies.length > 0) {
-
-
                 const clone_origin = clone_unit.GetOrigin();
                 const clone_target = enemies[0].GetOrigin();
                 let vDirection2 = (clone_target - clone_origin as Vector).Normalized()
@@ -279,7 +207,7 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
                     fEndRadius: this.line_width,
                     vSpawnOrigin: clone_origin,
                     Source: this.caster.clone_unit,
-                    fExpireTime:GameRules.GetGameTime() + 3,
+                    // fExpireTime:GameRules.GetGameTime() + 3,
                     vVelocity: (vDirection * this.line_speed) as Vector,
                     iUnitTargetTeam: UnitTargetTeam.ENEMY,
                     iUnitTargetType: UnitTargetType.HERO + UnitTargetType.BASIC,
@@ -287,9 +215,6 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
                         a: attack_damage,
                         et: this.element_type,
                         dt: this.damage_type,
-                        SelfAbilityMul: SelfAbilityMul,
-                        DamageBonusMul: DamageBonusMul,
-                        c: 0,
                         clone: 1,
                     } as ProjectileExtraData
                 })
@@ -322,8 +247,8 @@ export class modifier_skywrath_1c extends modifier_skywrath_1 {
         vDirection.z = 0
         this.caster.SetContextThink("skywrath_lx", () => {
             count += 1;
-            if (count < max_count) {
-                this.PlayPerformAttack2(vDirection, attack_damage, this.SelfAbilityMul, 0);
+            if (count <= max_count) {
+                this.PlayPerformAttack2(vDirection, attack_damage);
                 return 0.35
             }
             let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);

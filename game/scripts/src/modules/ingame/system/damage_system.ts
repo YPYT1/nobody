@@ -162,8 +162,11 @@ export class DamageSystem {
         const bTargetSlow = UnitIsSlowed(hTarget);
         // print("CriticalChance1:", CriticalChance)
         // talent 42	凌弱	对被减速的敌人造成伤害时，暴击概率提高%bonus_crit%%%
-        if (hAttacker.hero_talent["42"] && bTargetSlow) {
-            CriticalChance += GameRules.HeroTalentSystem.GetTalentKvOfUnit(hAttacker, "42", "bonus_crit");
+        if (bTargetSlow) {
+            if (hAttacker.hero_talent["42"] || hAttacker.hero_talent["100"]) {
+                CriticalChance += GameRules.HeroTalentSystem.GetTalentKvOfUnit(hAttacker, "42", "bonus_crit");
+            }
+
         }
         // print("CriticalChance2:", CriticalChance)
         /** 综合乘区 */
@@ -247,6 +250,14 @@ export class DamageSystem {
             * (1 + FinalDamageMul * 0.01)
             * math.max(1, ElementResist) * 0.01
             ;
+        // 根据单位类型进行提升伤害
+        if (params.victim.IsBossCreature()) {
+            let CreatureDmgLeader = (params.attacker.custom_attribute_value.CreatureDmgLeader ?? 0) * 0.01;
+            increased_injury *= (1 + CreatureDmgLeader)
+        } else {
+            let CreatureDmgNormal = (params.attacker.custom_attribute_value.CreatureDmgNormal ?? 0) * 0.01;
+            increased_injury *= (1 + CreatureDmgNormal)
+        }
         // print("increased_injury", increased_injury)
         // print("ElementResist", ElementResist)
         params.damage = math.floor(params.damage * increased_injury);

@@ -48,9 +48,6 @@ export class modifier_skywrath_2a_b_surround extends modifier_skywrath_2a_surrou
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         );
-        ParticleManager.SetParticleControlEnt(
-            cast_fx, 1, this.GetParent(), ParticleAttachment.POINT_FOLLOW, "", Vector(0, 0, 0), true
-        )
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 

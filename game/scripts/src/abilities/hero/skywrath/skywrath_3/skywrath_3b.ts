@@ -113,13 +113,14 @@ export class modifier_skywrath_3b_fazhen extends BaseModifier {
             false
         )
         for (let enemy of enemies) {
+            let element_type = RandomInt(1,6)
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.caster,
                 damage: this.attack_damage,
                 damage_type: DamageTypes.MAGICAL,
                 ability: this.GetAbility(),
-                element_type: ElementTypes.FIRE,
+                element_type: element_type,
                 is_primary: true,
                 // 增伤
                 SelfAbilityMul: this.SelfAbilityMul,

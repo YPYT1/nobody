@@ -62,6 +62,9 @@ export class modifier_skywrath_2b_shield extends BaseModifier {
         this.damage_type = DamageTypes.MAGICAL;
         this.element_type = ElementTypes.THUNDER;
 
+        this.SelfAbilityMul = this.caster.GetTalentKv("75","base_value")
+        this.SelfAbilityMul += this.caster.GetRuneKv("rune_64","value");
+
         this.SetStackCount(hit_count);
         let effect_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_antimage/antimage_counter.vpcf",
@@ -77,20 +80,10 @@ export class modifier_skywrath_2b_shield extends BaseModifier {
         this.AddParticle(effect_fx, false, false, -1, false, false)
     }
 
-    /** 技能的Ability更新 */
-    UpdataAbilityValue() {
-        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
-        // rune_64	法爷#13	雷电屏障系列的技能基础伤害提高100%
-        this.SelfAbilityMul += this.caster.GetRuneKv("rune_64","value");
-    }
-    /** 技能的特殊词条更新 */
-    UpdataSpecialValue() {
-
-    }
-
     _OnHit(hTarget: CDOTA_BaseNPC) {
         this.DecrementStackCount();
         // 反击
+        print("_OnHit",this.ability_damage,this.SelfAbilityMul)
         ApplyCustomDamage({
             victim: hTarget,
             attacker: this.GetCaster(),
