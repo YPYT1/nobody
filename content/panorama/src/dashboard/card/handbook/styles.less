@@ -1,0 +1,376 @@
+@rare_2: #4dc441;
+@rare_3: #45a3cf;
+@rare_4: #b84bdd;
+@rare_5: #deb53b;
+@rare_6: #e74f3f;
+
+.TopContent {
+    width: 100%;
+    height: 48px;
+    flow-children: right;
+    // border: 1px solid #ffffff;
+    padding: 2px;
+}
+
+#CardRarityDropDown {
+    width: 162px;
+    height: 28px;
+    margin-left: 4px;
+    border: 1px solid #ddd;
+    background-color: #090909;
+    vertical-align: middle;
+
+
+
+    Label {
+        vertical-align: middle;
+        font-size: 14px;
+        margin-left: 4px;
+    }
+}
+
+#CardRarityDropDownDropDownMenu {
+    width: 162px;
+}
+
+#CardSearchInput {
+    margin-left: 12px;
+    vertical-align: middle;
+    width: 162px;
+    height: 28px;
+    border-color: #ddd;
+
+    font-size: 16px;
+    line-height: 24px;
+    padding-left: 4px;
+}
+
+.CardCountPanel {
+    margin-left: 600px;
+    vertical-align: middle;
+    // border: 1px solid #fff;
+    flow-children: right;
+
+    .CardIcon {
+        width: 38px;
+        height: 30px;
+        background-image: url("file://{images}/custom_game/dashboard/card/card_count.png");
+        // 
+    }
+
+    Label {
+        margin-left: 4px;
+        font-size: 16px;
+        color: #acacac;
+        vertical-align: middle;
+    }
+}
+
+#OncClickAdd {
+    vertical-align: middle;
+    margin-right: 12px;
+    horizontal-align: right;
+}
+
+.NavContent {
+    width: 100%;
+    margin-top: 48px;
+    height: 100%;
+    // border: 1px solid #fff;
+    flow-children: right;
+
+    .CardListView {
+        width: 1060px;
+        height: 100%;
+        // border: 1px solid #f0f;
+        padding: 4px;
+
+        #CardList {
+            width: 100%;
+            height: 100%;
+            // border: 1px solid #f00;
+            flow-children: right-wrap;
+            overflow: squish scroll;
+
+            VerticalScrollBar {
+                width: 7px;
+                background-color: #ffffff0a;
+            }
+
+            .ScrollThumb {
+                background-color: #6b6b6b;
+                height: 24px;
+            }
+        }
+    }
+
+    .CardComposeView {
+        border: 1px solid rgba(48, 48, 48, 0.103);
+        width: 380px;
+        flow-children: down;
+        height: 100%;
+        horizontal-align: right;
+
+        #ComposeList {
+            width: 100%;
+            flow-children: down;
+        }
+
+        .ComposeButtonGroup {
+            width: 380px;
+            margin-top: 12px;
+            flow-children: right;
+
+            .ComposeButton {
+                width: 50%;
+                flow-children: down;
+
+                .ComposeCost {
+                    flow-children: right;
+                    horizontal-align: center;
+
+                    .CostIcon {
+                        width: 26px;
+                        height: 26px;
+                        background-image: url("file://{images}/custom_game/dashboard/card/currency.png");
+                        background-size: 100%;
+                    }
+
+                    Label {
+                        margin-left: 4px;
+                        vertical-align: middle;
+                        font-size: 16px;
+                        color:#d9d9d9;
+                    }
+                }
+                Button {
+                    margin-top: 8px;
+                    horizontal-align: center;
+                }
+            }
+        }
+    }
+}
+
+.Card {
+    width: 158px;
+    height: 204px;
+    overflow: noclip;
+    margin: 4px;
+
+    &.rare_2 {
+        .CardName {
+            color: #4dc441;
+        }
+
+        .CardRarity {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_2.png");
+        }
+
+        .CardBorder {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_r2.png");
+        }
+    }
+
+    &.rare_3 {
+        .CardName {
+            color: #45a3cf;
+        }
+
+        .CardRarity {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_3.png");
+        }
+
+        .CardBorder {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_r3.png");
+        }
+    }
+
+    &.rare_4 {
+        .CardName {
+            color: #b84bdd;
+        }
+
+        .CardRarity {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_4.png");
+        }
+
+        .CardBorder {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_r4.png");
+        }
+    }
+
+    &.rare_5 {
+        .CardName {
+            color: #deb53b;
+        }
+
+        .CardRarity {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_5.png");
+        }
+
+        .CardBorder {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_r5.png");
+        }
+    }
+
+    &.rare_6 {
+        .CardName {
+            color: #e74f3f;
+        }
+
+        .CardRarity {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_6.png");
+        }
+
+        .CardBorder {
+            background-image: url("file://{images}/custom_game/dashboard/card/card_r6.png");
+        }
+    }
+
+    &:hover {
+        .CardHover {
+            opacity: 0.6;
+        }
+    }
+
+    .CardHover {
+        width: 115%;
+        height: 110%;
+        background-image: url("file://{images}/custom_game/dashboard/card/card_hover.png");
+        background-repeat: no-repeat;
+        background-size: 100%;
+        align: center center;
+        opacity: 0;
+    }
+
+    .CardBorder {
+        width: 100%;
+        height: 100%;
+        background-image: url("file://{images}/custom_game/dashboard/card/card_r2.png");
+        background-size: 100%;
+    }
+
+
+    .CardRarity {
+        width: 48px;
+        height: 48px;
+        margin-left: 16px;
+        margin-bottom: 12px;
+        vertical-align: bottom;
+
+        background-size: 100%;
+    }
+
+    .CardCount {
+        width: 80%;
+        background-color: #00000099;
+        horizontal-align: center;
+        vertical-align: bottom;
+        margin-bottom: 2px;
+        font-size: 18px;
+        padding: 2px;
+        color: #ffffff;
+        text-align: right;
+        padding-right: 8px;
+    }
+
+    .CardName {
+        margin-top: 9px;
+        horizontal-align: center;
+        font-size: 16px;
+    }
+
+    #CardImage {
+        width: 140px;
+        height: 200px;
+        horizontal-align: center;
+        vertical-align: middle;
+        background-image: url("file://{images}/custom_game/dashboard/card/default_card_bg.png");
+        background-size: 100%;
+    }
+}
+
+.CardCompose {
+    border: 2px solid #404345;
+    flow-children: right;
+    width: 360px;
+    height: 66px;
+    background-color: #141719;
+    margin-top: 4px;
+    margin-bottom: 4px;
+
+    #SourceList {
+        margin-left: 4px;
+        flow-children: right;
+        vertical-align: middle;
+        // margin-top: 4px;
+        // margin-bottom: 4px;
+
+        .Item {
+            width: 52px;
+            height: 52px;
+            margin-left: 4px;
+            margin-right: 4px;
+            background-image: url("file://{images}/custom_game/dashboard/card/compose_add.png");
+            background-repeat: no-repeat;
+            border: 1px solid #000000;
+
+            &.has_item{
+                &:hover {
+                    brightness: 2;
+                }
+
+                Label {
+                    visibility: visible;
+                }
+            }
+
+            &.rare_2 {
+                border-color: @rare_2;
+            }
+
+            &.rare_3 {
+                border-color: @rare_3;
+            }
+
+            &.rare_4 {
+                border-color: @rare_4;
+            }
+
+            &.rare_5 {
+                border-color: @rare_5;
+            }
+
+            &.rare_6 {
+                border-color: @rare_6;
+            }
+
+            Label {
+                visibility: collapse;
+                horizontal-align: center;
+                vertical-align: bottom;
+            }
+        }
+    }
+
+    .ComposeArrow {
+        width: 61px;
+        height: 54px;
+        vertical-align: middle;
+        margin-left: 24px;
+        background-image: url("file://{images}/custom_game/dashboard/card/compose_arrow.png");
+        background-repeat: no-repeat;
+    }
+
+    #ComposeResults {
+        horizontal-align: right;
+        margin-right: 8px;
+        width: 52px;
+        height: 52px;
+        background-image: url("file://{images}/custom_game/dashboard/card/compose_res.png");
+        background-repeat: no-repeat;
+        vertical-align: middle;
+        // 
+    }
+}

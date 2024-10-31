@@ -1,0 +1,33 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+        <include src="./../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+        
+	</scripts>
+    <snippets>
+        <snippet name="CardNavRadioButton">
+            <RadioButton group="CardNavRadioButton" text="{s:button_txt}"/>
+        </snippet>
+    </snippets>
+	<Panel class="DashBoardPanel">
+
+        <Panel class="BoardContainer">
+            <Panel class="BoardHeader">
+                <Panel class="BoardTypeImage"/>
+                <Button id="DashboardClosedBtn" class="ClosedBtn" />
+            </Panel>
+            <Panel class="BoardContent">
+                <Panel id="NavButtonList" class="NavButtonGroupHor">
+                
+                </Panel>
+                <Panel id="ContentFrame" class="ContentFrame">
+
+                </Panel>
+            </Panel>
+        </Panel>
+
+	</Panel>
+</root>

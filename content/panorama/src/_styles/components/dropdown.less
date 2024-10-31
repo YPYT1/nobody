@@ -1,0 +1,73 @@
+DropDown {
+    background-image: url("s2r://panorama/images/control_icons/arrow_dropdown_png.vtex");
+    background-repeat: no-repeat;
+    background-position: right 24px 35%;
+    background-size: 20px 20px;
+}
+
+DropDownMenu {
+    // visibility: collapse;
+    flow-children: down;
+    // background-color: #3d4448;
+    color: #e1e1e1;
+    // font-size: 28px;
+    overflow: squish scroll;
+    z-index: 0;
+    transform: translateY(-40px);
+    opacity: 0.0;
+    transition-property: opacity, transform;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-in;
+    box-shadow: fill #00000066 0px 0px 6px 0px;
+
+    Label {
+        vertical-align: middle;
+        margin-top: 0px 0px;
+        margin-right: 0px;
+        margin-left: 0px;
+        padding: 0px;
+        // padding-left: 16px;
+        color: #d4d4d4;
+        // background-color: #3d4448;
+        font-size: 18px;
+        font-weight: normal;
+        z-index: 0;
+        // border-top: 1px solid #47474766;
+        // border-bottom: 1px solid #47474766;
+        transition-property: background-color;
+        transition-duration: 0.15s;
+        transition-timing-function: ease-in-out;
+
+        &:hover {
+            background-color: #96a4ad;
+        }
+    }
+}
+
+DropDownMenu.DropDownMenuVisible {
+    // width: 180px;
+    opacity: 1.0;
+    // max-height: 400px;
+    transition-property: box-shadow;
+    transform: translateY(0px);
+    flow-children: down;
+    background-color: #000000;
+    border: 1px solid #333333;
+    // border-radius: 8px;
+
+    Label {
+        width: 100%;
+        padding: 4px 0px;
+        margin: 0px;
+        text-align: center;
+        background-size: 100%;
+        font-size: 18px;
+        font-weight: normal;
+        z-index: 0;
+
+        &:hover {
+            background-color: #818181;
+        }
+    }
+
+}

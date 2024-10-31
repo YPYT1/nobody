@@ -350,8 +350,11 @@ export class ServiceInterface extends UIEventRegisterClass{
             }
             //根据合成的等级获取新卡片
             let new_card : number[] = [];
+            DeepPrintTable(list_obj)
             for (const list_key in list_obj) {
-                let cid = list_obj[list_key][1];
+                DeepPrintTable(list_obj[list_key])
+                let cid = list_obj[list_key]["0"];
+                print("cid",cid)
                 let rarity = PictuerCardData[cid as keyof typeof PictuerCardData].rarity;
                 if(RollPercentage(13)){
                     rarity = rarity + 2;
@@ -363,6 +366,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                 let length = GameRules.ServiceData.server_pictuer_card_rarity[rarity].length;
                 let RInt = RandomInt(0 , length - 1);
                 let get_c_id = GameRules.ServiceData.server_pictuer_card_rarity[rarity][RInt];
+                DeepPrintTable(GameRules.ServiceData.server_pictuer_card_rarity[rarity])
                 let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
                 new_card.push(get_item_id);
                 //特殊卡片处理

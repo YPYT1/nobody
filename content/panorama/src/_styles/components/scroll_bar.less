@@ -1,0 +1,19 @@
+VerticalScrollBar,
+HTMLVerticalScrollBar {
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+
+    width: 8px;
+    height: 100%;
+    horizontal-align: right;
+    layout-position: fixed;
+    transition-property: transform;
+
+    .ScrollThumb {
+        // min-height: 32px;
+        background-color: #566767;
+        border-top: 1px solid #aaaaaa22;
+        border-right: 1px solid #000000aa;
+        transition-property: background-color, transform, position;
+    }
+}

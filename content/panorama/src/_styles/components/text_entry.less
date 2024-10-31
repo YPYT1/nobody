@@ -1,0 +1,28 @@
+TextEntry {
+    border-width: 1px;
+    border-style: solid;
+    background-color: #000000;
+    color: #ffffff;
+
+    background-image: url("s2r://panorama/images/control_icons/icon_search_png.vtex");
+
+    background-repeat: no-repeat;
+    background-position: 8px 35%;
+    background-size: 20px 20px;
+
+
+    &:focus,
+    &.HasInput {
+        background-image: none;
+
+        Label {
+            visibility: collapse;
+        }
+    }
+
+    Label {
+        margin-left: 24px;
+        vertical-align: middle;
+        color: #a3a3a399;
+    }
+}

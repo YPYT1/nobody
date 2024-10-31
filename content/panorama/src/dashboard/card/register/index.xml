@@ -1,0 +1,13 @@
+<root>
+	<styles>
+		<include src="./../styles.less" />
+        <include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+	<Panel class="nav_content register">
+
+        <Label text="register"/>
+	</Panel>
+</root>

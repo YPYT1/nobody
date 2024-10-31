@@ -1,0 +1,96 @@
+<root>
+	<styles>
+		<include src="./../styles.less" />
+        <include src="./styles.less" />
+        <include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+    <snippets>
+        <snippet name="Card">
+            <Panel class="Card">
+                <Image id="CardImage"/>
+                <Label class="CardCount" text="{d:count}"/>
+                <Panel class="CardRarity"/>
+                <Panel class="CardBorder"/>
+                <Panel class="CardHover"/>
+                <Label class="CardName" text="{s:card_name}"/>
+                
+            </Panel>
+        </snippet>
+
+        <snippet name="CardCompose">
+            <Panel class="CardCompose">
+                <Panel id="SourceList">
+                    <Image class="Item" >
+                        <Label text="{s:item_id}"/>
+                    </Image>
+                    <Image class="Item" >
+                        <Label text="{s:item_id}"/>
+                    </Image>
+                    <Image class="Item" >
+                        <Label text="{s:item_id}"/>
+                    </Image>
+                </Panel>
+                <Panel class="ComposeArrow"/>
+                <Panel id="ComposeResults" />
+
+                
+            </Panel>
+        </snippet>
+    </snippets>
+    
+	<Panel class="nav_content handbook">
+        <Panel class="TopContent">
+            <DropDown id="CardRarityDropDown" class="CustomDropDown" >
+                <Label text="all" id="all" />
+                <Label text="SSS" id="1" />
+                <Label text="S" id="2" />
+                <Label text="A" id="3" />
+                <Label text="B" id="4" />
+                <Label text="C" id="5" />
+            </DropDown>
+            <TextEntry id="CardSearchInput" class="TextSearch" maxchars="32" placeholder="搜索"  />
+
+            <Panel class="CardCountPanel">
+                <Panel class="CardIcon"/>
+                <Label class="CardCount" text="{d:card_count}/{d:card_max}"/>
+            </Panel>
+
+            <Button id="OncClickAdd" class="dashboard_btn green">
+                <Label text="一键添加"/>
+            </Button>
+
+          
+        </Panel>
+        <Panel class="NavContent">
+            <Panel class="CardListView">
+                <Panel id="CardList" />
+            </Panel>
+            <Panel class="CardComposeView">
+                <Panel id="ComposeList" />
+                <Panel class="ComposeButtonGroup">
+                    <Panel class="ComposeButton">
+                        <Panel class="ComposeCost">
+                            <Panel class="CostIcon"/>
+                            <Label text="{d:compose_cost}"/>
+                        </Panel>
+                        <Button id="ButtonComposeMode1" class="dashboard_btn">
+                            <Label text="快速合成"/>
+                        </Button>
+                    </Panel>
+                    <Panel class="ComposeButton">
+                        <Panel class="ComposeCost">
+                            <Panel class="CostIcon"/>
+                            <Label text="{d:compose_cost}"/>
+                        </Panel>
+                        <Button id="ButtonComposeMode2" class="dashboard_btn yellow">
+                            <Label text="赌怪!"/>
+                        </Button>
+                    </Panel>
+                </Panel>
+            </Panel>
+        </Panel>
+	</Panel>
+</root>
