@@ -10,25 +10,25 @@ export const DASHBOARD_NAVBAR = {
         }
     },
 
-    "equip": {
+    "card": {
         "Show": true,
+        "Sub": {
+            "handbook": true,
+            "register": true,
+        }
     },
 
-    "backpack": {
-        "Show": true,
-    },
+    // "store": {
+    //     "Show": true,
+    // },
 
-    "store": {
-        "Show": true,
-    },
+    // "achievement": {
+    //     "Show": true,
+    // },
 
-    "achievement": {
-        "Show": true,
-    },
-
-    "event": {
-        "Show": true,
-    },
+    // "event": {
+    //     "Show": true,
+    // },
 };
 
 

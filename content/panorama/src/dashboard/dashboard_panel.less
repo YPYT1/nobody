@@ -1,34 +1,94 @@
 .DashBoardPanel {
     align: center center;
-    // border: 1px solid #ffffff;
+    transition-property: opacity, pre-transform-scale2d, visibility;
+    transition-duration: 0.2s;
+    opacity: 0;
+    pre-transform-scale2d: 0;
+    
+    &.Show {
+        opacity: 1;
+        pre-transform-scale2d: 1;
+    }
 
+    .ClosedBtn {
+        width: 66px;
+        height: 59px;
+        horizontal-align: right;
+        vertical-align: middle;
+        background-image: url("file://{images}/custom_game/hud/chapter/closed_btn.png");
+        margin-right: 24px;
+        margin-top: 12px;
 
-    .MainPanel {
+        &:hover {
+            brightness: 2;
+        }
+
+        &:active {
+            // pre-transform-scale2d: 0.85;
+            brightness: 0.9;
+        }
+    }
+
+    .BoardContainer {
         width: 1627px;
         height: 892px;
         background-image: url("file://{images}/custom_game/dashboard/dashboard_panel.png");
+        background-repeat: no-repeat;
+        overflow: noclip;
 
-        .Header {
+        .BoardHeader {
+            // border: 1px solid #fff;
             width: 100%;
-
-            #ClosedBtn {
-                width: 66px;
-                height: 59px;
-                horizontal-align: right;
-                vertical-align: middle;
-                background-image: url("file://{images}/custom_game/hud/chapter/closed_btn.png");
-                margin-right: 24px;
-                margin-top: 12px;
-
-                &:hover {
-                    brightness: 2;
-                }
-
-                &:active {
-                    pre-transform-scale2d: 0.85;
-                    brightness: 0.9;
-                }
-            }
+            overflow: noclip;
         }
+
+        .BoardTypeImage {
+            width: 246px;
+            height: 70px;
+            background-image: url("file://{images}/custom_game/dashboard/card/type_card.png");
+            transform: translateX(-8px) translateY(-8px);
+            // type_card
+        }
+
     }
+
+    .BoardContent {
+        width: 1468px;
+        margin-top: 72px;
+        horizontal-align: center;
+        flow-children: down;
+        // border: 1px solid #fff;
+    }
+}
+
+.nav_content {
+    visibility: collapse;
+}
+
+// 横向版本
+.NavButtonGroupHor {
+
+    flow-children: right;
+
+    >RadioButton {
+        width: 144px;
+        height: 40px;
+        background-repeat: no-repeat;
+        transition-property: background-image;
+        transition-duration: 0.15s;
+
+        &:selected {
+            background-image: url("file://{images}/custom_game/dashboard/nav_radiobtn_hor.png");
+        }
+
+        Label {
+            align: center center;
+            font-size: 18px;
+            color: #ffffff;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+        }
+
+        // 
+    }
+
 }
