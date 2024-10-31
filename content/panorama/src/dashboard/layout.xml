@@ -4,6 +4,7 @@
     </scripts>
     <styles>
         <include src="./styles.less" />
+        <include src="./../_styles/styles.less" />
     </styles>
     <snippets>
         <snippet name="DashboardButton">
@@ -15,9 +16,9 @@
     </snippets>
     <Panel class="dashboard" hittest="false">
         <Panel id="DashboardMainPage" hittest="false">
-            <Panel id="DashboardButtonList">
+            <Panel id="DashboardButtons">
                 <Button id="ReturnButton" class="TooltipButton"/>
-                <Panel id="MenuButtonList" />
+                <Panel id="DashboardButtonList" />
             </Panel>
             <Panel id="DashboardList" hittest="false"/>
         </Panel>

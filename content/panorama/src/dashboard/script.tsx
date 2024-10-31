@@ -4,10 +4,12 @@ import { HideCustomTooltip, ShowCustomTextTooltip } from '../utils/custom_toolti
 import { FindOfficialHUDUI } from '../common/panel_operaton';
 
 const DashboardList = $("#DashboardList");
-let open_board = false;
-
+const DashboardButtonList = $("#DashboardButtonList");
 const DASHBOARD_LIST = Object.keys(DASHBOARD_NAVBAR);
+const dashboard_path = "file://{resources}/layout/custom_game/dashboard/";
 
+
+let open_board = false;
 const Initialize = () => {
     FindOfficialHUDUI("MenuButtons")!.visible = false;
     CreateMenuButtons()
@@ -26,15 +28,14 @@ const CreateMenuButtons = () => {
         HideCustomTooltip();
     })
 
-    let MenuButtonList = $("#MenuButtonList");
-    MenuButtonList.RemoveAndDeleteChildren();
+
+    DashboardButtonList.RemoveAndDeleteChildren();
     // SettingsButton
-    let SettingsButton = $.CreatePanel("RadioButton", MenuButtonList, "settingsButton", {
+    let SettingsButton = $.CreatePanel("Button", DashboardButtonList, "settingsButton", {
         class: 'DashboardButton',
         group: 'MenuRadioGroup',
     });
     SettingsButton.BLoadLayoutSnippet("DashboardButton");
-    // const DashboardButton = SettingsButton.FindChildTraverse("DashboardButton") as Button;
     SettingsButton.SetPanelEvent("onactivate", () => {
         $.DispatchEvent('DOTAShowSettingsPopup');
     })
@@ -49,16 +50,33 @@ const CreateMenuButtons = () => {
     for (let dashboard_id in DASHBOARD_NAVBAR) {
         let row_data = DASHBOARD_NAVBAR[dashboard_id as keyof typeof DASHBOARD_NAVBAR];
         if (row_data.Show) {
-            let DashboardButton = $.CreatePanel("RadioButton", MenuButtonList, dashboard_id + "Button", {
+            let DashboardButton = $.CreatePanel("Button", DashboardButtonList, dashboard_id + "Button", {
                 class: 'DashboardButton',
-                group: 'MenuRadioGroup',
             });
             DashboardButton.BLoadLayoutSnippet("DashboardButton")
             SetDashboardButton(DashboardButton, dashboard_id)
+
+
+            let DashboardPanel = DashboardList.FindChildTraverse(dashboard_id)!;
+            if (DashboardPanel == null) {
+                DashboardPanel = $.CreatePanel("Panel", DashboardList, dashboard_id);
+            }
+            DashboardPanel.BLoadLayout(dashboard_path + dashboard_id + "/index.xml", true, false);
+
+            const DashboardClosedBtn = DashboardPanel.FindChildTraverse("DashboardClosedBtn");
+            if (DashboardClosedBtn) {
+                // let row_board = DashboardList.FindChildTraverse(id);
+                DashboardClosedBtn.SetPanelEvent("onactivate", () => {
+                    DashboardPanel.SetHasClass("Show", false);
+                    DashboardButton.SetHasClass("Selected", false);
+                    DashboardList.SetHasClass("IsOpen", false);
+                })
+
+            }
         }
     }
 
-    DashboardList.RemoveAndDeleteChildren()
+
     // let personal = $.CreatePanel("Panel", DashboardList, "personal",{
     //     class:"DashBoardPanel"
     // });
@@ -69,8 +87,26 @@ const CreateMenuButtons = () => {
 const SetDashboardButton = (MenuButton: Button, dashboard_id: string) => {
     // const DashboardButton = MenuButton.FindChildTraverse("DashboardButton") as Button;
     MenuButton.SetPanelEvent("onactivate", () => {
-        $.Msg(["MenuButton onactivate", dashboard_id])
-        // $.DispatchEvent('DOTAShowSettingsPopup');
+        for (let id in DASHBOARD_NAVBAR) {
+            let row_board = DashboardList.FindChildTraverse(id);
+            let row_button = DashboardButtonList.FindChildTraverse(id + "Button");
+            if (row_board && row_button) {
+
+                if (id == dashboard_id) {
+                    row_board.ToggleClass("Show");
+                    row_button.ToggleClass("Selected");
+                    open_board = MenuButton.BHasClass("Selected");
+                    DashboardList.SetHasClass("IsOpen", open_board);
+                    // DashboardList.SetHasClass("IsClosed", !open_board);
+                } else {
+                    row_board.SetHasClass("Show", false);
+                    row_button.SetHasClass("Selected", false);
+                }
+            }
+        }
+
+
+
     })
     MenuButton.SetPanelEvent("onmouseover", () => {
         ShowCustomTextTooltip(MenuButton, "", dashboard_id);

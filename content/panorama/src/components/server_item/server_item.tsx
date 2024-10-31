@@ -16,9 +16,13 @@ const SetItemValue = (params: { item_id: string, item_count: number }) => {
         for (let rare of rare_list) {
             ServerItemPanel.SetHasClass(`rare_${rare}`, rarity == rare);
         }
-        let image_src = GetTextureSrc(data.AbilityTextureName);
-        // $.Msg(["image_src",image_src])
-        ServerItemIcon.SetImage(image_src);
+        if (data.affiliation_class == 23) {
+
+        } else {
+            let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
+            ServerItemIcon.SetImage(image_src);
+        }
+
         ServerItemPanel.SetDialogVariable("count", `${item_count}`)
         if (item_count <= 0) {
             ServerItemPanel.SetHasClass("zero", true)

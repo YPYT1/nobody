@@ -6,17 +6,8 @@
 		<include src="./script.tsx" />
 	</scripts>
 	<Panel class="DashBoardPanel">
-		<Panel id="SubContentList" class="PanelClass">
+        <Panel class="BoardContainer">
             
-        </Panel>
-        <Panel class="MainPanel">
-            <Panel class="Header">
-                <Panel  class="Title">
-                    <Label text="#请选择关卡"/>
-                </Panel>
-                <Button id="ClosedBtn" class="ClosedBtn" />
-            </Panel>
-            <Panel id="NavButtonList" />
         </Panel>
 	</Panel>
 </root>

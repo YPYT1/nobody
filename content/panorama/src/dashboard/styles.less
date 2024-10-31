@@ -11,7 +11,7 @@
 
 }
 
-#DashboardButtonList {
+#DashboardButtons {
     z-index: 9;
     flow-children: right;
     width: 615px;
@@ -27,7 +27,7 @@
         background-image: url("file://{images}/custom_game/dashboard/icons/retrun.png");
     }
 
-    #MenuButtonList {
+    #DashboardButtonList {
         // height: 51px;
         margin-top: 1px;
         margin-left: 12px;
@@ -43,8 +43,8 @@
 
         // border: 1px solid #ffffff;
         // padding: 4px;
-        margin-left: 6px;
-        margin-right: 6px;
+        margin-left: 4px;
+        margin-right: 4px;
         width: 48px;
         height: 37px;
         overflow: noclip;
@@ -55,6 +55,7 @@
         // transition-property: background-size;
         // transition-duration: 0.15s;
         // brightness: 1.1;
+
 
         #ButtonIcon {
             // width: 0px;
@@ -81,45 +82,29 @@
             height: 29px;
             vertical-align: middle;
             horizontal-align: center;
-        
+
             blur: gaussian(1);
             pre-transform-scale2d: 0;
             // wash-color: #e93939;
             // border: 1px solid #ffffff;
-            
+
         }
 
-        &:selected,
-        &:hover {
+        &.Selected {
             #ButtonIcon {
                 brightness: 2;
                 pre-transform-scale2d: 1.2;
             }
-
-       
-
         }
 
-        // Button {
-        //     width: 30px;
-        //     height: 29px;
-        //     align: center center;
-        //     transition-property: pre-transform-scale2d;
-        //     transition-duration: 0.125s;
-        //     tooltip-position: bottom;
-        //     // border: 1px solid #ffffff;
-        //     // background-image: url("file://{images}/custom_game/dashboard/icons/achievement.png");
-        //     background-size: 100%;
-        //     background-repeat: no-repeat;
-        //     margin-left: 10px;
-        //     margin-right: 10px;
+        &:hover {
+            #ButtonIcon {
+                brightness: 2;
 
-        //     &:hover {
-        //         pre-transform-scale2d: 1.2;
-        //     }
+            }
 
-        // }
 
+        }
 
     }
 
@@ -139,7 +124,7 @@
         background-image: url("file://{images}/custom_game/dashboard/icons/backpack.png");
     }
 
-    #equipButton#ButtonIcon {
+    #equipButton #ButtonIcon {
         background-image: url("file://{images}/custom_game/dashboard/icons/equip.png");
     }
 
@@ -154,6 +139,10 @@
     #storeButton #ButtonIcon {
         background-image: url("file://{images}/custom_game/dashboard/icons/store.png");
     }
+
+    #cardButton #ButtonIcon {
+        background-image: url("file://{images}/custom_game/dashboard/icons/card.png");
+    }
 }
 
 .TooltipButton {
@@ -163,4 +152,21 @@
 #DashboardList {
     width: 100%;
     height: 100%;
+    background-color: #00000099;
+    opacity: 0;
+    // 
+    transition-property: opacity, pre-transform-scale2d;
+    transition-duration: 0.2s;
+
+    
+
+    &.IsOpen {
+        opacity: 1;
+
+   
+
+        // pre-transform-scale2d: 1;
+    }
+
+
 }
