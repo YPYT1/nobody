@@ -44,7 +44,7 @@ declare interface CGED {
         GetArmssSelectData : {//直接获取选技能列表
 
         }
-        PostSelectArms : {//选择列表 必须要有技能点
+        PostSelectArms : {//选择列表 必须要有技能点 
             index : number //选择的下标
         }
     }
@@ -321,7 +321,7 @@ declare interface CGED {
         }
         //卡片合成
         CompoundCard : {
-            list : string[][],  //结构 [ [ 3 ,4 ,6] , [ 5 ,7 , 9] ] 为两个合成 最多十个
+            list : string[][],  //结构 [ [ "3","4" ,"6"] , [ "5" , "7" , "9" ] ] 为两个合成 最多八个 卡片id
         }
 
         //获取图鉴信息

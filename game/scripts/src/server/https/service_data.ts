@@ -25,7 +25,7 @@ export class ServiceData extends UIEventRegisterClass {
     server_pictuer_card_rarity : { [ rarity : number] : string[] } = {};
     //特殊合成分类
     server_pictuer_card_special : { [ card_id : string ] : number[] } = {};
-    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 服务器
+    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 服务器  
     server_player_config_pictuer_fetter : string[][][] = [];
 
     constructor(){
@@ -53,7 +53,7 @@ export class ServiceData extends UIEventRegisterClass {
                 if(is_ok == false){
                     this.server_monster_package_list[0].push({
                         id : tostring(item_id),
-                        "class" : 11 , 
+                        "class" : 23 , 
                         "lv" : 1,
                         "number" : 1,
                         "customs" : "",
@@ -122,7 +122,7 @@ export class ServiceData extends UIEventRegisterClass {
                 if(is_ok == false){
                     this.server_monster_package_list[0].push({
                         id : tostring(item_id),
-                        "class" : 11 , 
+                        "class" : 23 , 
                         "lv" : 1,
                         "number" : 1,
                         "customs" : "",

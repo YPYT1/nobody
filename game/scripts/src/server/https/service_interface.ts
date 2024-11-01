@@ -350,25 +350,26 @@ export class ServiceInterface extends UIEventRegisterClass{
             }
             //根据合成的等级获取新卡片
             let new_card : number[] = [];
-            DeepPrintTable(list_obj)
+            let new_card_string : string[] = [];
             for (const list_key in list_obj) {
-                DeepPrintTable(list_obj[list_key])
-                let cid = list_obj[list_key]["0"];
-                print("cid",cid)
-                let rarity = PictuerCardData[cid as keyof typeof PictuerCardData].rarity;
-                if(RollPercentage(13)){
-                    rarity = rarity + 2;
-                }else{
-                    rarity = rarity + 1;
+                for(const d_key in list_obj[list_key]){
+                    let cid = list_obj[list_key][d_key];        
+                    let rarity = PictuerCardData[cid as keyof typeof PictuerCardData].rarity;
+                    if(RollPercentage(13)){
+                        rarity = rarity + 2;
+                    }else{
+                        rarity = rarity + 1;
+                    }
+                    rarity = math.min( 5 , rarity );
+                    //普通卡片处理
+                    let length = GameRules.ServiceData.server_pictuer_card_rarity[rarity].length;
+                    let RInt = RandomInt(0 , length - 1);
+                    let get_c_id = GameRules.ServiceData.server_pictuer_card_rarity[rarity][RInt];
+                    let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
+                    new_card.push(get_item_id);
+                    new_card_string.push(get_item_id.toString());
                 }
-                rarity = math.min( 5 , rarity );
-                //普通卡片处理
-                let length = GameRules.ServiceData.server_pictuer_card_rarity[rarity].length;
-                let RInt = RandomInt(0 , length - 1);
-                let get_c_id = GameRules.ServiceData.server_pictuer_card_rarity[rarity][RInt];
-                DeepPrintTable(GameRules.ServiceData.server_pictuer_card_rarity[rarity])
-                let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
-                new_card.push(get_item_id);
+                
                 //特殊卡片处理
             }
 
@@ -404,6 +405,8 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
             }
             this.GetPlayerCardList(player_id , {});
+
+            this.GetCompoundCardList(player_id , new_card_string);
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片合成最大不能超过8个...");
         }
@@ -423,7 +426,24 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
             }
         );
-        
+    }
+
+    /**
+     * 通过合成获得新卡片
+     * @param player_id 
+     * @param params 
+     */
+    GetCompoundCardList(player_id: PlayerID , cardlist : string[] , type : number = 1){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetCompoundCardList",
+            {
+                data: {
+                    card : cardlist, //卡片id
+                    type : type , // 0 正常显示 1 背对显示
+                }
+            }
+        );
     }
     /**
      * 玩家日志log
@@ -572,7 +592,7 @@ export class ServiceInterface extends UIEventRegisterClass{
         // }
         // //卡片合成
         // CompoundCard : {
-        //     list : string[][],  //结构 [ [ 3 ,4 ,6] , [ 5 ,7 , 9] ] 为两个合成 最多十个
+        //     list : string[][],  //结构 [ [ 3 ,4 ,6] , [ 5 ,7 , 9] ] 为两个合成 最多八个
         // }
 
         // //获取图鉴信息

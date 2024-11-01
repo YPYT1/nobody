@@ -178,6 +178,16 @@ declare interface CustomGameEventDeclarations {
             card : AM2_Server_Backpack[],
         };
     }
+    /**
+     * 获取图鉴配置
+     */
+    ServiceInterface_GetCompoundCardList : {
+        data: {
+            card : string[], //卡片id
+            type : number , // 0 正常显示 1 背对显示
+        };
+    }
+
     //玩家生命数
     GameInformation_GetPlayerLifeData : {
         data: {
