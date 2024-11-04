@@ -1,6 +1,7 @@
 <root>
     <scripts>
         <include src="./script.tsx" />
+        <include src="./../_global/global.tsx" />
     </scripts>
     <styles>
         <include src="./styles.less" />

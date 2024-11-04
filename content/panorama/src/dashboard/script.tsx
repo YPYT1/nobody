@@ -82,6 +82,7 @@ const CreateMenuButtons = () => {
     // });
     // personal.BLoadLayout("file://{resources}/layout/custom_game/dashboard/personal/index.xml", true, false);
 
+    DashboardList.SetHasClass("IsOpen", false);
 }
 
 const SetDashboardButton = (MenuButton: Button, dashboard_id: string) => {

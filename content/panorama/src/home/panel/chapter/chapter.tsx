@@ -1,7 +1,8 @@
-import { CreateServerItem } from "../../../common/server_item";
+
 import { default as ChapterInfo } from "../../../json/config/chapter_info.json"
 import { default as NpcHeroesCustom } from "../../../json/npc_heroes_custom.json"
 
+const CreateServerItem =GameUI.CustomUIConfig().CreateServerItem;
 const localPlayer = Game.GetLocalPlayerID();
 const MainPanel = $.GetContextPanel();
 const ChapterContainer = $("#ChapterContainer")

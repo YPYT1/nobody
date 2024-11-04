@@ -1,4 +1,4 @@
-import { CreateServerItem } from "../../../common/server_item";
+// import { CreateServerItem } from "../../../common/server_item";
 
 const ShowBtn = $("#ShowBtn");
 const ClosedBtn = $("#ClosedBtn");
@@ -7,6 +7,7 @@ const ModelScene = $("#ModelScene") as ScenePanel;
 const MainPanel = $.GetContextPanel();
 const GameEndContainer = $("#GameEndContainer");
 
+const CreateServerItem = GameUI.CustomUIConfig().CreateServerItem;
 
 const Init = () => {
 

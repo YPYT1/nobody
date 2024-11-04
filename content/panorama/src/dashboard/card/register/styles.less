@@ -1,0 +1,334 @@
+.TopContent {
+    width: 100%;
+    height: 48px;
+    flow-children: right;
+    // border: 1px solid #ffffff;
+    padding: 2px;
+}
+
+.NavContent {
+    width: 100%;
+    margin-top: 48px;
+    height: 100%;
+    padding: 4px;
+    padding-bottom: 12px;
+    // border: 1px solid #fff;
+    flow-children: right;
+
+    .NavContentLeft {
+        width: 850px;
+        height: 100%;
+        // border: 1px solid #fff;
+        flow-children: down;
+
+
+
+    }
+}
+
+#AllPictuerList {
+    width: 840px;
+    height: 100%;
+    flow-children: down;
+    overflow: squish scroll;
+}
+
+
+
+.PictuerGroupRow {
+    margin-left: 8px;
+    width: 810px;
+
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border: 2px solid #404345;
+    flow-children: down;
+
+    &.cost_2 {
+        .Header {
+            background-image: url("file://{images}/custom_game/dashboard/card/pic_cost_2.png");
+        }
+    }
+
+    &.cost_3 {
+        .Header {
+            background-image: url("file://{images}/custom_game/dashboard/card/pic_cost_3.png");
+        }
+    }
+
+    &.cost_5 {
+        .Header {
+            background-image: url("file://{images}/custom_game/dashboard/card/pic_cost_5.png");
+        }
+    }
+
+    .Header {
+        width: 100%;
+        flow-children: right;
+        height: 38px;
+        background-size: 100%;
+        background-color: #232526;
+
+        .PictuerCost {
+            width: 46px;
+            height: 36px;
+            vertical-align: middle;
+            background-image: url("file://{images}/custom_game/dashboard/card/star_1.png");
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+
+            Label {
+                align: center center;
+                font-size: 20px;
+                color: #ffffff;
+                font-weight: bold;
+                text-shadow: 0px 0px 2px 2.0 #000000;
+            }
+        }
+
+        .PictuerName {
+            font-size: 18px;
+            color: #ffffff;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+            vertical-align: middle;
+        }
+    }
+
+    .Body {
+        width: 100%;
+        height: 180px;
+        background-color: #141719;
+        flow-children: right;
+
+        #List {
+            vertical-align: middle;
+            width: 80%;
+            // height: 100%;
+            flow-children: right;
+            // border: 1px solid #fff;
+        }
+
+        .Card {
+            width: 116px;
+            height: 150px;
+
+            &:hover {
+                brightness: 1.5;
+
+                .CardHover {
+                    opacity: 0;
+                }
+            }
+
+            #CardImage {
+                width: 100px;
+                height: 144px;
+            }
+        }
+    }
+
+    .Option {
+        horizontal-align: right;
+        margin-right: 8px;
+        // border: 1px solid #ffffff;
+        height: 100%;
+
+        #EquipPictuerButton {
+            vertical-align: middle;
+        }
+
+        .FooterToggle {
+            width: 98px;
+            height: 30px;
+            background-image: url("file://{images}/custom_game/dashboard/card/toggle_btn_1.png");
+            vertical-align: bottom;
+
+            &:selected {
+                background-image: url("file://{images}/custom_game/dashboard/card/toggle_btn_2.png");
+            }
+            &:hover {
+                brightness: 2;
+            }
+        }
+    }
+
+
+    &.ShowExtends {
+        .Footer {
+            visibility: visible;
+        }
+    }
+
+    .Footer {
+        width: 100%;
+        visibility: collapse;
+        border-top: 2px solid #404345;
+
+        #FooterAttributeList {
+            width: 100%;
+            flow-children: right-wrap;
+
+            .FooterAttribute {
+                width: 49%;
+                flow-children: right;
+                
+                padding: 8px;
+                wash-color: #6e6e6e;
+                border-bottom: 1px solid #777777;
+                &.On {
+                    wash-color: #ffffff;
+                    border-bottom: 1px solid #232526;
+                }
+                .Index {
+                    margin-left: 4px;
+                    width: 22px;
+                    height: 26px;
+                    vertical-align: middle;
+                    background-image: url("file://{images}/custom_game/dashboard/card/attr_index_on.png");
+                    padding: 4px;
+
+                    Label {
+                        // margin-left: 1px;
+                        align: center center;
+                        font-size: 16px;
+                        text-align: center;
+                        // font-weight: bold;
+                        color: #ffffff;
+
+                    }
+                }
+
+                .AttributeInfo {
+                    width: 100%;
+                    margin-left: 8px;
+                    vertical-align: middle;
+                    flow-children: right;
+
+                    #StatIcon {
+                        vertical-align: middle;
+                        width: 24px;
+                        height: 24px;
+                        background-size: 100%;
+                    }
+
+                    .Name {
+                        margin-left: 4px;
+                        vertical-align: middle;
+                        font-size: 18px;
+                        
+                    }
+
+                    .Value {
+                        font-size: 18px;
+                        vertical-align: middle;
+                        horizontal-align: right;
+                    }
+                }
+
+                .AttributeSpecial {
+                    width: 100%;
+                    height: 48px;
+                    margin-left: 8px;
+                    visibility: collapse;
+
+                    Label {
+                        text-overflow: shrink;
+                        vertical-align: middle;
+                        font-size: 18px;
+                        color: #ffffff;
+                    }
+                    
+                    
+                    
+                    
+                }
+
+                &.Special {
+                    width: 100%;
+
+                    .AttributeInfo {
+                        visibility: collapse;
+                    }
+
+                    .AttributeSpecial {
+                        visibility: visible;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#EquipPictureList .PictuerGroupRow {
+    width: 560px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    // background-color: #000000;
+    // box-shadow: #ffffff80 0px 0px 2px 0px;;
+    border: 1px solid #44b4ff;
+    // border-brush: gradient( radial, 50% 50%, 0% 0%, 80% 80%, from( #ffffff99 ), to( #ff0000 ) );
+    box-shadow: hollow #2e73a1aa 0px 0px 6px 0px; 
+}
+
+.NavContentRight {
+    // border: 1px solid #fff;
+    flow-children: down;
+    height: 100%;
+}
+
+.PictuerHeader {
+    width: 590px;
+    height: 96px;
+    background-image: url("file://{images}/custom_game/dashboard/card/right_cost_info.png");
+    flow-children: right;
+
+    .StarLevel {
+        width: 80px;
+        height: 96px;
+        // border: 1px solid #fff;
+        
+        Label {
+            align: center center;
+            text-align: center;
+            font-size: 48px;
+            color:#fff79f;
+            font-weight: bold;
+            text-shadow: 0px 0px 6px 6.0 #53291f;
+        }
+    }
+
+    .Header {
+        flow-children: down;
+        // border: 1px solid #fff;
+        width: 100%;
+
+        Label {
+            margin-left: 8px;
+            margin-top: 17px;
+            font-size: 18px;
+            color:#fff;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+        }
+
+        #StarCostInfo {
+            margin-top: 4px;
+            width: 100%;
+            flow-children: right;
+
+            .Star {
+                width: 46px;
+                height: 44px;
+                margin-right: -14px;
+                background-image: url("file://{images}/custom_game/dashboard/card/star_1.png");
+            }
+        }
+    }
+}
+
+
+#EquipPictureList {
+    width: 100%;
+    height: 100%;
+    overflow: squish scroll;
+    flow-children: down;
+}

@@ -122,6 +122,7 @@ export function sheetToKV(options: SheetToKVOptions) {
 
         let attachWearablesBlock = false;
         let abilityValuesBlock = false;
+        let listValuesBlock = false;
         let varIndex = 0;
         let indentLevel = 1;
 
@@ -156,6 +157,9 @@ export function sheetToKV(options: SheetToKVOptions) {
                     ) abilityValuesBlock = true;
                     if (abilityValuesBlock && key == '[}]') abilityValuesBlock = false;
 
+                    if ( key == 'ListValues[{]' ) listValuesBlock = true;
+                    if (listValuesBlock && key == '[}]') listValuesBlock = false;
+
                     // 获取该单元格的值
                     let cell: string = row[i];
                     checkSpace(cell);
@@ -175,6 +179,33 @@ export function sheetToKV(options: SheetToKVOptions) {
                         return res_str;
                     }
 
+                    if ( listValuesBlock 
+                        && key !== `ListValues[{]`
+                    ){
+                        // console.log(["listvalue",key,cell])
+                        if (cell == `` || cell == undefined) return;
+                        let values_key = `${key}`;
+                        let datas = cell.toString().split(' ');
+                        cell = cell.replace(`${datas[0]} `, `"${datas[0]}"`);
+                        
+                        /**
+                         * LIST输出格式
+                         * 01 {
+                         *  "XXX" {
+                         *      "AttackDamage" {
+					                "Base"	"10"
+				                }
+                         *  }
+                         * }
+                         */
+                        console.log("cell",cell)
+                    
+                        let sub_indentStr = (indent || `\t`).repeat(indentLevel + 1);
+                        let end_indentStr = (indent || `\t`).repeat(indentLevel);
+                        let cell_text = cell.replaceAll("\n","\n"+ sub_indentStr).replaceAll("\n}","}");
+                        
+                        return `${indentStr}"${values_key}"{\n${sub_indentStr}${cell_text}\n${end_indentStr}}`;
+                    }
                     // 处理写excel文件中的本地化文本
                     if (key.startsWith(`#Loc`)) {
                         if (cell == `` || cell == undefined) return;
@@ -194,6 +225,7 @@ export function sheetToKV(options: SheetToKVOptions) {
                         && key !== `ConversionValue[{]` 
                         && key !== `AttributeValues[{]`
                         && key !== `ObjectValues[{]`
+                        && key !== `ListValues[{]`
                         )
                     
                     ) {

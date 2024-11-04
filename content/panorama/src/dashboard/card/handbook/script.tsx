@@ -1,6 +1,6 @@
-import { GetServerItemData } from "../../../common/server_item";
 
 const MainPanel = $.GetContextPanel();
+const CardRarityDropDown = $("#CardRarityDropDown") as DropDown;
 const CardSearchInput = $("#CardSearchInput") as TextEntry;
 const CardList = $("#CardList");
 const ComposeList = $("#ComposeList");
@@ -14,12 +14,16 @@ const ROW_CARD_LIMIT = 3;
 const MAX_COMPOSE_LIMIT = 8;
 let card_compose_list: string[][] = []
 
+const RarityOptionList = ["all", "ss", "s", "a", "b", "c"];
+
+// 快捷方法
+const GetServerItemData = GameUI.CustomUIConfig().GetServerItemData;
 
 export const Init = () => {
     MainPanel.SetDialogVariableInt("card_count", 0);
     MainPanel.SetDialogVariableInt("card_max", 0);
     MainPanel.SetDialogVariableInt("compose_cost", 0)
-    //
+
     InitComposeButton();
     InitComposeViews();
     CustomEventSubscribe();
@@ -90,7 +94,7 @@ const SendCompoundCard = () => {
 
 const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
     let data = params.data;
-    // $.Msg(["data",data])
+    $.Msg(["data",data])
     // 清空合成表
     card_compose_list = [[], [], [], [], [], [], [], []]
     UpdateComposeInfo();

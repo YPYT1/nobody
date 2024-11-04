@@ -1,5 +1,6 @@
 <root>
 	<styles>
+        <include src="./../../styles.less" />
 		<include src="./../styles.less" />
         <include src="./styles.less" />
         <include src="./../../../_styles/styles.less" />
@@ -44,12 +45,12 @@
 	<Panel class="nav_content handbook">
         <Panel class="TopContent">
             <DropDown id="CardRarityDropDown" class="CustomDropDown" >
-                <Label text="all" id="all" />
-                <Label text="SSS" id="1" />
-                <Label text="S" id="2" />
-                <Label text="A" id="3" />
-                <Label text="B" id="4" />
-                <Label text="C" id="5" />
+                <Label id="all" text="ALL" />
+                <Label id="ss" text="SS" />
+                <Label id="s" text="S" />
+                <Label id="a" text="A" />
+                <Label id="b" text="B" />
+                <Label id="c" text="C" />
             </DropDown>
             <TextEntry id="CardSearchInput" class="TextSearch" maxchars="32" placeholder="搜索"  />
 
@@ -62,7 +63,6 @@
                 <Label text="一键添加"/>
             </Button>
 
-          
         </Panel>
         <Panel class="NavContent">
             <Panel class="CardListView">

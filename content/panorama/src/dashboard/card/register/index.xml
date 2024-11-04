@@ -1,13 +1,110 @@
 <root>
 	<styles>
+		<include src="./styles.less" />
 		<include src="./../styles.less" />
+		<include src="./../../styles.less" />
         <include src="./../../../_styles/styles.less" />
 	</styles>
 	<scripts>
 		<include src="./script.tsx" />
 	</scripts>
-	<Panel class="nav_content register">
 
-        <Label text="register"/>
+	<snippets>
+		<snippet name="PictuerGroupRow">
+			<Panel class="PictuerGroupRow">
+				<Panel class="Header">
+					<Panel class="PictuerCost">
+						<Label text="{d:pictuer_cost}"/>
+					</Panel>
+					<Label class="PictuerName" text="{s:pictuer_name}"/>
+				</Panel>
+				<Panel class="Body">
+					<Panel id="List">
+
+					</Panel>
+					<Panel class="Option">
+						<Button id="EquipPictuerButton" class="dashboard_btn green">
+							<Label text="装备部件"/>
+						</Button>
+						<ToggleButton id="FooterToggle" class="FooterToggle" />
+					</Panel>
+				</Panel>
+				<Panel class="Footer">
+					<Panel id="FooterAttributeList"/>
+				</Panel>
+			</Panel>
+		</snippet>
+
+		<snippet name="Card">
+			<Button class="Card">
+                <Image id="CardImage"/>
+                
+                <Panel class="CardRarity"/>
+                <Panel class="CardBorder"/>
+                <Panel class="CardHover"/>
+                <Label class="CardName" text="{s:card_name}"/>
+            </Button>
+		</snippet>
+		<snippet name="FooterAttribute">
+			<Panel class="FooterAttribute">
+				<Panel class="Index">
+					<Label text="{d:index}"/>
+				</Panel>
+				<Panel class="AttributeInfo">
+					<Panel id="StatIcon" />
+					<Label class="Name" text="{s:attribute_name}"/>
+					<Label class="Value" text="{s:attribute_value}"/>
+				</Panel>
+				<Panel class="AttributeSpecial" >
+					<Label text="{s:special_text}"/>
+				</Panel>
+				
+			</Panel>
+		</snippet>
+		<snippet name="PictureItem">
+			<Panel class="PictureItem PictuerGroupRow">
+				<Panel class="Header">
+					<Panel class="PictuerCost">
+						<Label text="{d:pictuer_cost}"/>
+					</Panel>
+					<Label class="PictuerName" text="{s:pictuer_name}"/>
+					<Button id="UnEquipPictureBtn"/>
+				</Panel>
+				<Panel class="Footer">
+					<Panel id="FooterAttributeList"/>
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="nav_content register">
+		<Panel class="TopContent">
+            <TextEntry id="CardSearchInput" class="TextSearch" maxchars="16" placeholder="搜索"  />
+
+            <Panel class="CardCountPanel">
+                <Panel class="CardIcon"/>
+                <Label class="CardCount" text="{d:card_count}/{d:card_max}"/>
+            </Panel>
+
+        </Panel>
+		<Panel class="NavContent">
+			<Panel class="NavContentLeft">
+				<Panel id="AllPictuerList" />
+			</Panel>
+
+			<Panel class="NavContentRight">
+				<Panel class="PictuerHeader">
+					<Panel class="StarLevel">
+						<Label text="{d:star_level}"/>
+					</Panel>
+					<Panel class="Header">
+						<Label text="羁绊激活星级"/>
+						<Panel id="StarCostInfo">
+							
+						</Panel>
+					</Panel>
+				</Panel>
+				<Panel id="EquipPictureList" />
+			</Panel>
+		</Panel>
 	</Panel>
 </root>
