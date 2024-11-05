@@ -105,7 +105,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             level_obj[index.toString()] = RandomInt(10000 , 920000);
         }
         for (const key in level_obj) {
-            let lvdata = this.GetServerSkillfulLevel( key , level_obj[key]);
+            let lvdata = this.GetServerSkillfulLevel( key , level_obj[key]);    
             this.PlayerServerSkillLevelCount[player_id].level[key] = {
                 "lv" : lvdata.level,
                 "exp" : level_obj[key],
@@ -208,7 +208,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                     CustomDeepCopy(server_pictuer_fetter_copy) as Server_PICTUER_FETTER_CONFIG;
 
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:激活成功...");
-                GameRules.ServiceInterface.GetPictuerFetterList(player_id , {})
+                GameRules.ServiceInterface.GetPlayerCardList(player_id , {})
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片不足...");
             }
@@ -273,23 +273,6 @@ export class ServiceInterface extends UIEventRegisterClass{
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:此图鉴不存在...");    
         }
-    }
-
-    /**
-     * 获取图鉴收集信息
-     * @param player_id 
-     * @param params 
-     */
-    GetPictuerFetterList(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPictuerFetterList"]){
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "ServiceInterface_GetPictuerFetterList",
-            {
-                data: {
-                    card : GameRules.ServiceData.server_pictuer_fetter_list[player_id],
-                }
-            }
-        );
     }
 
     /**
@@ -441,6 +424,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             {
                 data: {
                     card : GameRules.ServiceData.server_monster_package_list[player_id],
+                    pictuer_list : GameRules.ServiceData.server_pictuer_fetter_list[player_id],
                 }
             }
         );
@@ -466,7 +450,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     /**
      * 玩家日志log
      */
-    player_log_data : string[] = []
+    player_log_data : string[] = [];
     /**
      * 日志系统
      * @param msg 

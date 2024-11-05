@@ -61,8 +61,6 @@ export class ServiceData extends UIEventRegisterClass {
                 })
             }
         }
-        DeepPrintTable(this.server_monster_package_list[0]);
-
         for(let key in PictuerCardData){
             let CardData = PictuerCardData[key as keyof typeof PictuerCardData];
             if(CardData.compound_type == 1){

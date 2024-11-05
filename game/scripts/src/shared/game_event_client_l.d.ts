@@ -171,19 +171,12 @@ declare interface CustomGameEventDeclarations {
         };
     }
     /**
-     * 获取图鉴配置
+     * 获取玩家所有卡片
      */
     ServiceInterface_GetPlayerCardList : {
         data: {
             card : AM2_Server_Backpack[],
-        };
-    }
-    /**
-     * 获取图鉴激活数据
-     */
-    ServiceInterface_GetPictuerFetterList : {
-        data: {
-            card : Server_PICTUER_FETTER_CONFIG,
+            pictuer_list : Server_PICTUER_FETTER_CONFIG, //我的图鉴列表
         };
     }
     /**
