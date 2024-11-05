@@ -27,7 +27,21 @@
 
                 </Panel>
             </Panel>
-        </Panel>
 
+        </Panel>
+        <Button id="PopupsBackground" class="PopupsBackground">
+            <Panel id="CompoundCard" class="PopupsBox">
+                <Panel id="CardList" class="PopupsBody">
+                    <Panel class="CardItem" />
+                    <Panel class="CardItem" />
+
+                </Panel>
+                <Panel class="PopupsFooter">
+                    <Button id="ClosedPopupsBtn" class="dashboard_btn">
+                        <Label text="焯" />
+                    </Button>
+                </Panel>
+            </Panel>
+        </Button>
 	</Panel>
 </root>

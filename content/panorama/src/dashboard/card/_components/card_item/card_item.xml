@@ -1,0 +1,21 @@
+<root>
+    <styles>
+        <include src="./card_item.less" />
+        <include src="./../../../../_styles/styles.less" />
+    </styles>
+    <scripts>
+		<include src="./card_item.tsx" />
+	</scripts>
+    <Panel class="CardItem">
+        <Panel class="CardImage">
+            <Image id="CardImage"/>
+        </Panel>
+        
+        <Label class="CardCount" text="{d:count}"/>
+        <Panel class="CardRarity"/>
+        <Panel class="EquipTips" />
+        <Panel class="CardBorder"/>
+        <Panel class="CardHover"/>
+        <Label class="CardName" text="{s:card_name}"/>
+    </Panel>
+</root>

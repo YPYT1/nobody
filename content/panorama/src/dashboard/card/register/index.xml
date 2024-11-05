@@ -38,11 +38,12 @@
 		<snippet name="Card">
 			<Button class="Card">
                 <Image id="CardImage"/>
-                
-                <Panel class="CardRarity"/>
                 <Panel class="CardBorder"/>
                 <Panel class="CardHover"/>
                 <Label class="CardName" text="{s:card_name}"/>
+				
+					
+			
             </Button>
 		</snippet>
 		<snippet name="FooterAttribute">

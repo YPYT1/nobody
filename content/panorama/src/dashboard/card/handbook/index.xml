@@ -17,7 +17,6 @@
                 <Panel class="CardBorder"/>
                 <Panel class="CardHover"/>
                 <Label class="CardName" text="{s:card_name}"/>
-                
             </Panel>
         </snippet>
 

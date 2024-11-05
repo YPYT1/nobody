@@ -198,12 +198,9 @@ export function sheetToKV(options: SheetToKVOptions) {
                          *  }
                          * }
                          */
-                        console.log("cell",cell)
-                    
                         let sub_indentStr = (indent || `\t`).repeat(indentLevel + 1);
                         let end_indentStr = (indent || `\t`).repeat(indentLevel);
                         let cell_text = cell.replaceAll("\n","\n"+ sub_indentStr).replaceAll("\n}","}");
-                        
                         return `${indentStr}"${values_key}"{\n${sub_indentStr}${cell_text}\n${end_indentStr}}`;
                     }
                     // 处理写excel文件中的本地化文本

@@ -41,141 +41,164 @@
     }
 }
 
-.Card {
-    width: 158px; // 102
-    height: 204px; // 148
-    overflow: noclip;
-    margin: 4px;
+// .Card {
+//     width: 158px; // 102
+//     height: 204px; // 148
+//     overflow: noclip;
+//     margin: 4px;
 
-    &.rare_2 {
-        .CardName {
-            color: #4dc441;
-        }
+//     #CardImage {
+//         width: 100%;
+//         height: 100%;
+//         background-color: #000000;
+//         background-image: url("file://{images}/custom_game/dashboard/card/default_icon.png");
+//     }
 
-        .CardRarity {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_2.png");
-        }
+//     &.rare_2 {
+//         .CardName {
+//             color: #4dc441;
+//         }
 
-        .CardBorder {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_r2.png");
-        }
-    }
+//         .CardRarity {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_icon_2.png");
+//         }
 
-    &.rare_3 {
-        .CardName {
-            color: #45a3cf;
-        }
+//         .CardBorder {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_r2.png");
+//         }
+//     }
 
-        .CardRarity {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_3.png");
-        }
+//     &.rare_3 {
+//         .CardName {
+//             color: #45a3cf;
+//         }
 
-        .CardBorder {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_r3.png");
-        }
-    }
+//         .CardRarity {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_icon_3.png");
+//         }
 
-    &.rare_4 {
-        .CardName {
-            color: #b84bdd;
-        }
+//         .CardBorder {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_r3.png");
+//         }
+//     }
 
-        .CardRarity {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_4.png");
-        }
+//     &.rare_4 {
+//         .CardName {
+//             color: #b84bdd;
+//         }
 
-        .CardBorder {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_r4.png");
-        }
-    }
+//         .CardRarity {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_icon_4.png");
+//         }
 
-    &.rare_5 {
-        .CardName {
-            color: #deb53b;
-        }
+//         .CardBorder {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_r4.png");
+//         }
+//     }
 
-        .CardRarity {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_5.png");
-        }
+//     &.rare_5 {
+//         .CardName {
+//             color: #deb53b;
+//         }
 
-        .CardBorder {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_r5.png");
-        }
-    }
+//         .CardRarity {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_icon_5.png");
+//         }
 
-    &.rare_6 {
-        .CardName {
-            color: #e74f3f;
-        }
+//         .CardBorder {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_r5.png");
+//         }
+//     }
 
-        .CardRarity {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_icon_6.png");
-        }
+//     &.rare_6 {
+//         .CardName {
+//             color: #e74f3f;
+//         }
 
-        .CardBorder {
-            background-image: url("file://{images}/custom_game/dashboard/card/card_r6.png");
-        }
-    }
+//         .CardRarity {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_icon_6.png");
+//         }
 
-    &:hover {
-        .CardHover {
-            opacity: 0.6;
-        }
-    }
+//         .CardBorder {
+//             background-image: url("file://{images}/custom_game/dashboard/card/card_r6.png");
+//         }
+//     }
 
-    .CardHover {
-        width: 115%;
-        height: 110%;
-        background-image: url("file://{images}/custom_game/dashboard/card/card_hover.png");
-        background-repeat: no-repeat;
-        background-size: 100%;
-        align: center center;
-        opacity: 0;
-    }
+//     &:hover {
+//         .CardHover {
+//             opacity: 0.6;
+//         }
+//     }
 
-    .CardBorder {
-        width: 100%;
-        height: 100%;
-        background-image: url("file://{images}/custom_game/dashboard/card/card_r2.png");
-        background-size: 100%;
-    }
+//     .CardHover {
+//         width: 115%;
+//         height: 110%;
+//         background-image: url("file://{images}/custom_game/dashboard/card/card_hover.png");
+//         background-repeat: no-repeat;
+//         background-size: 100%;
+//         align: center center;
+//         opacity: 0;
+//     }
+
+//     .CardBorder {
+//         width: 100%;
+//         height: 100%;
+//         background-image: url("file://{images}/custom_game/dashboard/card/card_r2.png");
+//         background-size: 100%;
+//     }
 
 
-    .CardRarity {
-        width: 48px;
-        height: 48px;
-        margin-left: 16px;
-        margin-bottom: 12px;
-        vertical-align: bottom;
+//     .CardRarity {
+//         width: 48px;
+//         height: 48px;
+//         margin-left: 16px;
+//         margin-bottom: 12px;
+//         vertical-align: bottom;
 
-        background-size: 100%;
-    }
+//         background-size: 100%;
+//     }
 
-    .CardCount {
-        width: 80%;
-        background-color: #00000099;
-        horizontal-align: center;
-        vertical-align: bottom;
-        margin-bottom: 2px;
-        font-size: 18px;
-        padding: 2px;
-        color: #ffffff;
-        text-align: right;
-        padding-right: 8px;
-    }
+//     .CardCount {
+//         width: 80%;
+//         background-color: #00000099;
+//         horizontal-align: center;
+//         vertical-align: bottom;
+//         margin-bottom: 2px;
+//         font-size: 18px;
+//         padding: 2px;
+//         color: #ffffff;
+//         text-align: right;
+//         padding-right: 8px;
+//     }
 
-    .CardName {
-        margin-top: 9px;
-        horizontal-align: center;
-        font-size: 16px;
-    }
+//     .CardName {
+//         margin-top: 9px;
+//         horizontal-align: center;
+//         font-size: 16px;
+//     }
 
-    #CardImage {
-        width: 140px;
-        height: 200px;
-        horizontal-align: center;
-        vertical-align: middle;
-        background-image: url("file://{images}/custom_game/dashboard/card/default_card_bg.png");
-        background-size: 100%;
-    }
-}
+//     #CardImage {
+//         width: 140px;
+//         height: 200px;
+//         horizontal-align: center;
+//         vertical-align: middle;
+//         background-image: url("file://{images}/custom_game/dashboard/card/default_card_bg.png");
+//         background-size: 100%;
+//     }
+
+//     .EquipTips {
+//         width: 98px;
+//         height: 26px;
+//         vertical-align: middle;
+//         horizontal-align: center;
+//         background-image: url("file://{images}/custom_game/dashboard/card/card_equip.png");
+//         background-size: 100%;
+//         visibility: collapse;
+//     }
+
+//     &.UnEquip {
+//         .EquipTips {
+//             visibility: visible;
+//         }
+//     }
+// }

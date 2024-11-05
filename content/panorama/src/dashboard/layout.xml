@@ -1,7 +1,6 @@
 <root>
     <scripts>
         <include src="./script.tsx" />
-        <include src="./../_global/global.tsx" />
     </scripts>
     <styles>
         <include src="./styles.less" />
@@ -23,6 +22,6 @@
             </Panel>
             <Panel id="DashboardList" hittest="false"/>
         </Panel>
-        <Button id="GenericPopups" class="PopupsBackground" />
+        
     </Panel>
 </root>

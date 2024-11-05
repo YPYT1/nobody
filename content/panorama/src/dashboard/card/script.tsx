@@ -8,6 +8,7 @@ const NavButtonList = $("#NavButtonList");
 const ContentFrame = $("#ContentFrame");
 
 const FRAME_PATH = "file://{resources}/layout/custom_game/dashboard/card/";
+
 export const Init = () => {
     $.Msg(["card Layout"])
     // 加载nav button
@@ -36,6 +37,37 @@ export const Init = () => {
             order++;
         }
     }
+
+    InitCardPopups();
+    CustomEventSub();
+}
+
+// Card Popups
+const PopupsBackground = $("#PopupsBackground");
+const CompoundCard = $("#CompoundCard");
+
+const InitCardPopups = () => {
+    SetPopupsClosedBtn(CompoundCard)
+}
+
+const SetPopupsClosedBtn = (e: Panel) => {
+    const ClosedPopupsBtn = e.FindChildTraverse("ClosedPopupsBtn");
+    ClosedPopupsBtn?.SetPanelEvent("onactivate", () => {
+        e.AddClass("Closed");
+        e.RemoveClass("Open");
+        PopupsBackground.RemoveClass("Show");
+    })
+}
+
+const GetCompoundCardList = (event: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetCompoundCardList"]>) => {
+
+    let data = event.data;
+    $.Msg(["GetCompoundCardList",data])
+}
+
+const CustomEventSub = () => {
+
+    GameEvents.Subscribe("ServiceInterface_GetCompoundCardList", GetCompoundCardList)
 }
 
 (() => {

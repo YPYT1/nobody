@@ -1,8 +1,11 @@
+import { GetTextureSrc } from "../../../common/custom_kv_method";
+import { LoadComponent_Card } from "../_components/component_manager";
 
 
 const MainPanel = $.GetContextPanel();
 const AllPictuerList = $("#AllPictuerList");
 const PictuerFetterConfig = GameUI.CustomUIConfig()._PictuerFetterConfig;
+const GetPictureCardData = GameUI.CustomUIConfig().GetPictureCardData;
 
 export const Init = () => {
     MainPanel.SetDialogVariableInt("card_count", 0);
@@ -12,15 +15,25 @@ export const Init = () => {
     InitPictureCostInfo()
     CustomEventSubscribe();
 }
+
+
 const CustomEventSubscribe = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetConfigPictuerFetter", event => {
 
     })
+
+    GameEvents.Subscribe("ServiceInterface_GetPictuerFetterList", event => {
+        let data = event.data
+        $.Msg(["data", data])
+    })
+
+    GameEvents.Subscribe("ServiceInterface_GetPlayerCardList", GetPlayerCardList);
 }
 
 const StarCostInfo = $("#StarCostInfo");
 const EquipPictureList = $("#EquipPictureList");
+
 const InitPictureCostInfo = () => {
     MainPanel.SetDialogVariableInt("star_level", 14);
 
@@ -44,6 +57,8 @@ const InitPictureCostInfo = () => {
     //     SetPictureAttributeList(FooterAttributeList, row_data);
     // }
 }
+
+
 const InitAllPictuerList = () => {
     AllPictuerList.RemoveAndDeleteChildren();
     // $.Msg(["PictuerFetterConfig", PictuerFetterConfig])
@@ -60,11 +75,27 @@ const InitAllPictuerList = () => {
 
 
         const List = PictuerGroupRow.FindChildTraverse("List")!;
+        // $.Msg(row_data.card_ids)
         for (let card_id of row_data.card_ids) {
+            const card_data = GetPictureCardData(`${card_id}`);
             let CardPanel = $.CreatePanel("Button", List, "card_" + card_id);
-            CardPanel.BLoadLayoutSnippet("Card");
-            CardPanel.SetDialogVariable("card_name", $.Localize(`#custom_server_card_${card_id}`))
+            // CardPanel.BLoadLayoutSnippet("Card");
+
+            let _CardPanel = LoadComponent_Card(CardPanel,"card_item")
+            // CardPanel.BLoadLayout("file://{resources}/layout/custom_game/dashboard/card/_components/card_item/card_item.xml",true,false);
+            _CardPanel.SetCardItem(`${card_id}`,false);
+
+            CardPanel.AddClass("PictureMode");
+            CardPanel.AddClass("Null"); // 卡片3状态 默认空Null 未登记UnEquip 已登记Equip
+            // CardPanel.SetHasClass("rare_" + card_data.rarity, true)
+            // $.Msg(["card_id",card_id])
+
+            
+            // $.Msg(["AbilityTextureName3:",card_data])
+            
+            // CardPanel.SetDialogVariable("card_name", $.Localize(`#custom_server_card_${card_id}`))
             // CardPanel.AddClass("Card")
+
 
             CardPanel.SetPanelEvent("onactivate", () => {
                 // 关于登记
@@ -72,13 +103,36 @@ const InitAllPictuerList = () => {
             })
         }
 
-       
+
         const FooterAttributeList = PictuerGroupRow.FindChildTraverse("FooterAttributeList")!;
         SetPictureAttributeList(FooterAttributeList, row_data);
     }
+
+    // 读取卡片列表
+    GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+        event_name: "GetPlayerCardList",
+        params: {}
+    })
+
+    GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+        event_name: "GetPictuerFetterList",
+        params: {
+
+        }
+    })
 }
 
-const SetPictureAttributeList = (FooterAttributeList: Panel, row_data:typeof PictuerFetterConfig[keyof typeof PictuerFetterConfig]) => {
+const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
+    let card_list = Object.values(params.data.card);
+    let card_object: { [card_id: string]: AM2_Server_Backpack } = {};
+   
+    for (let card_data of card_list) {
+        
+    }
+
+}
+
+const SetPictureAttributeList = (FooterAttributeList: Panel, row_data: typeof PictuerFetterConfig[keyof typeof PictuerFetterConfig]) => {
     const ListValues = row_data.ListValues as { [key: string]: CustomAttributeTableType };
     let order = 1;
     for (let key in ListValues) {

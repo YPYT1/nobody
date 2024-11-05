@@ -92,3 +92,44 @@
     }
 
 }
+
+
+.PopupsBackground {
+    width: 100%;
+    height: 100%;
+    background-color: #00000099;
+    opacity: 0;
+    
+    &.Show {
+        opacity: 1;
+    }
+
+
+    .PopupsBox {
+        width: 804px;
+        height: 568px;
+        align: center center;
+        background-image: url("file://{images}/custom_game/dashboard/popups_box.png");
+        flow-children: down;
+        visibility: collapse;
+
+        &.Open {
+            visibility: visible;
+        }
+        
+        .PopupsBody {
+            width: 100%;
+            border: 1px solid #ffffff;
+        }
+
+        .PopupsFooter {
+            width: 100%;
+            vertical-align: bottom;
+            margin-bottom: 8px;
+
+            Button {
+                align: center center;
+            }
+        }
+    }
+}

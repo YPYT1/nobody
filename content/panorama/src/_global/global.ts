@@ -1,0 +1,85 @@
+// 全局
+import { default as ServerItemList } from "../json/config/server/item/server_item_list.json";
+import { default as PictuerCardData } from "../json/config/server/picture/pictuer_card_data.json";
+import { default as PictuerFetterConfig } from "../json/config/server/picture/pictuer_fetter_config.json";
+import { default as PictuerFetterAbility } from "../json/config/server/picture/pictuer_fetter_ability.json";
+
+declare global {
+
+    interface CustomUIConfig {
+        _PictuerFetterConfig: typeof PictuerFetterConfig
+        _PictuerCardData : typeof PictuerCardData
+        CreateServerItem(item_id: string, item_count: number, parent: Panel): Panel;
+        GetServerItemData(item_id: string): typeof ServerItemList[keyof typeof ServerItemList]
+        GetPictureCardData(item_id: string): typeof PictuerCardData[keyof typeof PictuerCardData]
+        GetTextureSrc(texture: string, func?: string):string
+    }
+}
+
+GameUI.CustomUIConfig()._PictuerFetterConfig = PictuerFetterConfig;
+GameUI.CustomUIConfig()._PictuerCardData = PictuerCardData;
+
+GameUI.CustomUIConfig().CreateServerItem = function (item_id: string, item_count: number, parent: Panel) {
+    let ServerItemPanel = $.CreatePanel("Panel", parent, "");
+    ServerItemPanel.BLoadLayout("file://{resources}/layout/custom_game/components/server_item/server_item.xml", true, false);
+    ServerItemPanel.Data<PanelDataObject>().SetItemValue({ item_id, item_count })
+    return ServerItemPanel
+}
+
+GameUI.CustomUIConfig().GetServerItemData = function (item_id: string) {
+    return ServerItemList[item_id as keyof typeof ServerItemList];
+}
+
+/** 通过 itemid 获得对应卡片信息 */
+GameUI.CustomUIConfig().GetPictureCardData = function (item_id: string) {
+    return PictuerCardData[item_id as keyof typeof PictuerCardData];
+}
+
+const ITEM_PATH_CUSTOM = "raw://resource/flash3/images/items/";
+const ITEM_PATH_ORIGINAL = "file://{images}/items/";
+const ABILITY_PATH_CUSTOM = "raw://resource/flash3/images/spellicons/";
+const ABILITY_PATH_ORIGINAL = "file://{images}/spellicons/";
+
+/**
+ * 根据路径获取图片位置
+ * @param texture 
+ * @returns 
+ */
+GameUI.CustomUIConfig().GetTextureSrc = function(texture: string, func: string = "123") {
+    // $.Msg(["texture",texture])
+    let texture_arr = texture.split("_");
+    let bIsItem = texture_arr[0] == "item";
+    // $.Msg(["GetTextureSrc", func])
+    if (bIsItem) {
+        // 物品
+        let cut_texture = texture.replace("item_", "");
+        let cut_arr = cut_texture.split("/");
+        if (cut_arr[0] == "treasure"
+            || cut_arr[0] == "jewel"
+            || cut_arr[0] == "custom"
+            || cut_arr[0] == "soulbow"
+            || cut_arr[0] == "store"
+            || cut_arr[0] == "rune"
+            || cut_arr[0] == "server"
+            || cut_arr[0] == "prop"
+        ) {
+            return `${ITEM_PATH_CUSTOM}${cut_texture}.png`;
+        } else {
+            return `${ITEM_PATH_ORIGINAL}${cut_texture}.png`;
+        }
+    } else {
+        // 技能
+        let cut_arr = texture.split("/");
+        if (
+            cut_arr[0] == "custom" 
+            || cut_arr[0] == "arms" 
+            || cut_arr[0] == "hero"
+            || cut_arr[0] == "altar"
+        ) {
+            return `${ABILITY_PATH_CUSTOM}${texture}.png`;
+        } else {
+            return `${ABILITY_PATH_ORIGINAL}${texture}.png`;
+        }
+
+    }
+}
