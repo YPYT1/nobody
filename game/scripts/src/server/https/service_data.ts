@@ -63,6 +63,12 @@ export class ServiceData extends UIEventRegisterClass {
         }
         for(let key in PictuerCardData){
             let CardData = PictuerCardData[key as keyof typeof PictuerCardData];
+            if(CardData.rarity == 5){
+                if(!this.server_pictuer_card_rarity.hasOwnProperty(CardData.rarity)){
+                    this.server_pictuer_card_rarity[CardData.rarity] = [];
+                }   
+                this.server_pictuer_card_rarity[CardData.rarity].push(key)
+            }
             if(CardData.compound_type == 1){
                 if(!this.server_pictuer_card_rarity.hasOwnProperty(CardData.rarity)){
                     this.server_pictuer_card_rarity[CardData.rarity] = [];

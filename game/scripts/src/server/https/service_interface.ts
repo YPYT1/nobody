@@ -353,25 +353,73 @@ export class ServiceInterface extends UIEventRegisterClass{
             let new_card : number[] = [];
             let new_card_string : string[] = [];
             for (const list_key in list_obj) {
-                if(list_obj[list_key].hasOwnProperty(0)){
-                    let cid = list_obj[list_key][0];        
-                    let rarity = PictuerCardData[cid as keyof typeof PictuerCardData].rarity;
-                    if(RollPercentage(13)){
-                        rarity = rarity + 2;
-                    }else{
-                        rarity = rarity + 1;
+                //特殊卡处理
+                let cz_ts = false;
+                let is_ts = true;
+                let is_pictuer_id = "";
+                //先查找是否满足
+                for (const spcs_key in GameRules.ServiceData.server_pictuer_card_special) {
+                    let ts_list = GameRules.ServiceData.server_pictuer_card_special[spcs_key];
+                    for (const ts_key in list_obj[list_key]) {
+                        let cid_num = tonumber(list_obj[list_key][ts_key]);
+                        if(ts_list.includes(cid_num)){
+                            is_pictuer_id = spcs_key;
+                            cz_ts = true;
+                            continue; //继续
+                        }
                     }
-                    rarity = math.min( 5 , rarity );
-                    //普通卡片处理
-                    let length = GameRules.ServiceData.server_pictuer_card_rarity[rarity].length;
-                    let RInt = RandomInt(0 , length - 1);
-                    let get_c_id = GameRules.ServiceData.server_pictuer_card_rarity[rarity][RInt];
-                    let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
-                    new_card.push(get_item_id);
-                    new_card_string.push(get_item_id.toString());
-                    
-                    //特殊卡片处理
                 }
+                //是否每个都满足
+                if(cz_ts){
+                    let ts_list = GameRules.ServiceData.server_pictuer_card_special[is_pictuer_id];
+                    for (const ts_key in list_obj[list_key]) {
+                        let cid_num = tonumber(list_obj[list_key][ts_key]);
+                        if(!ts_list.includes(cid_num)){
+                            is_ts = false;
+                            continue; //继续
+                        }
+                    }
+
+                }
+                //判断是否为特殊组合
+                if(is_ts){
+                    if(RollPercentage(13)){
+                        //进阶为特殊卡片
+                        let get_c_id = is_pictuer_id;
+                        let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
+                        new_card.push(get_item_id);
+                        new_card_string.push(get_item_id.toString());
+                    }else{
+                        //不进阶
+                        let length = GameRules.ServiceData.server_pictuer_card_special[is_pictuer_id].length;
+                        let RInt = RandomInt(0 , length - 1);
+                        let get_c_id = tostring(GameRules.ServiceData.server_pictuer_card_special[is_pictuer_id][RInt]);
+                        let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
+                        new_card.push(get_item_id);
+                        new_card_string.push(get_item_id.toString());
+                    }
+                }else{
+                    if(list_obj[list_key].hasOwnProperty("0")){
+                        let cid = list_obj[list_key]["0"];        
+                        let rarity = PictuerCardData[cid as keyof typeof PictuerCardData].rarity;
+                        if(rarity <= 3){
+                            if(RollPercentage(13)){
+                                rarity = rarity + 1;
+                            }else{
+                                rarity = rarity ;
+                            }
+                        }
+                        //普通卡片处理
+                        let length = GameRules.ServiceData.server_pictuer_card_rarity[rarity].length;
+                        let RInt = RandomInt(0 , length - 1);
+                        let get_c_id = GameRules.ServiceData.server_pictuer_card_rarity[rarity][RInt];
+                        let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
+                        new_card.push(get_item_id);
+                        new_card_string.push(get_item_id.toString());
+                        //特殊卡片处理
+                    }
+                }
+                
             }
 
             //扣除物品 保存至服务器
