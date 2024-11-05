@@ -353,8 +353,8 @@ export class ServiceInterface extends UIEventRegisterClass{
             let new_card : number[] = [];
             let new_card_string : string[] = [];
             for (const list_key in list_obj) {
-                for(const d_key in list_obj[list_key]){
-                    let cid = list_obj[list_key][d_key];        
+                if(list_obj[list_key].hasOwnProperty(0)){
+                    let cid = list_obj[list_key][0];        
                     let rarity = PictuerCardData[cid as keyof typeof PictuerCardData].rarity;
                     if(RollPercentage(13)){
                         rarity = rarity + 2;
@@ -369,9 +369,9 @@ export class ServiceInterface extends UIEventRegisterClass{
                     let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
                     new_card.push(get_item_id);
                     new_card_string.push(get_item_id.toString());
+                    
+                    //特殊卡片处理
                 }
-                
-                //特殊卡片处理
             }
 
             //扣除物品 保存至服务器
