@@ -38,30 +38,30 @@ export class ServiceData extends UIEventRegisterClass {
                 [],[],[],[]
             ]);
         }
-        for (let index = 0; index < 10; index++) {
-            //判断是否有
+        let CardDataList = Object.keys(PictuerCardData);
+            
+        for (let index = 1; index <= 600; index++) {
             let is_ok = false;
-            for (let index = 1; index <= 88; index++) {
-                let item_id = 1000 + index;
-                for (let index = 0; index < this.server_monster_package_list[0].length; index++) {
-                    if(this.server_monster_package_list[0][index].item_id == item_id){
-                        this.server_monster_package_list[0][index].number ++;
-                        is_ok = true;
-                        break
-                    }
-                }
-                if(is_ok == false){
-                    this.server_monster_package_list[0].push({
-                        id : tostring(item_id),
-                        "class" : 23 , 
-                        "lv" : 1,
-                        "number" : 1,
-                        "customs" : "",
-                        item_id : item_id,
-                    })
+            let item_id = tonumber(CardDataList[RandomInt(0 , CardDataList.length - 1)]);
+            for (let index = 0; index < this.server_monster_package_list[0].length; index++) {
+                if(this.server_monster_package_list[0][index].item_id == item_id){
+                    this.server_monster_package_list[0][index].number ++;
+                    is_ok = true;
+                    break
                 }
             }
+            if(is_ok == false){
+                this.server_monster_package_list[0].push({
+                    id : tostring(item_id),
+                    "class" : 23 , 
+                    "lv" : 1,
+                    "number" : 1,
+                    "customs" : "",
+                    item_id : item_id,
+                })
+            }
         }
+        DeepPrintTable(this.server_monster_package_list[0]);
 
         for(let key in PictuerCardData){
             let CardData = PictuerCardData[key as keyof typeof PictuerCardData];

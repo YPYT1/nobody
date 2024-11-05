@@ -17,7 +17,7 @@ declare interface CustomGameEventDeclarations {
      * 选择地图初始化数据
      */
     MapChapter_GetDifficultyMax: {
-        data: {
+        data: { 
             map_difficulty: { [key : string ] : UserMapSelectDifficulty}; //通关信息
             level_difficulty: string[]; //玩家所    通关的难度 --弃用
         };
@@ -179,7 +179,15 @@ declare interface CustomGameEventDeclarations {
         };
     }
     /**
-     * 获取图鉴配置
+     * 获取图鉴激活数据
+     */
+    ServiceInterface_GetPictuerFetterList : {
+        data: {
+            card : Server_PICTUER_FETTER_CONFIG,
+        };
+    }
+    /**
+     * 图鉴合成结果
      */
     ServiceInterface_GetCompoundCardList : {
         data: {

@@ -20,7 +20,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     constructor() {
         super("ServiceInterface" , true)
         //初始化总等级
-        for (let index = 0; index < 6; index++) {
+        for (let index = 0; index < 6; index++) {   
             this.PlayerServerSkillLevelCount.push({
                 level : {}
             })
@@ -38,7 +38,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     }
     //玩家对应英雄等级
     player_hero_star : {
-        [hero_id : string] : number
+        [hero_id : string] : number 
     }[] = [];
     //游戏激活状态
     _game_activate = 0;
@@ -206,8 +206,9 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
                 GameRules.ServiceData.server_pictuer_fetter_list[player_id] = 
                     CustomDeepCopy(server_pictuer_fetter_copy) as Server_PICTUER_FETTER_CONFIG;
-                    
+
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:激活成功...");
+                GameRules.ServiceInterface.GetPictuerFetterList(player_id , {})
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片不足...");
             }
@@ -272,6 +273,23 @@ export class ServiceInterface extends UIEventRegisterClass{
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:此图鉴不存在...");    
         }
+    }
+
+    /**
+     * 获取图鉴收集信息
+     * @param player_id 
+     * @param params 
+     */
+    GetPictuerFetterList(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPictuerFetterList"]){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPictuerFetterList",
+            {
+                data: {
+                    card : GameRules.ServiceData.server_pictuer_fetter_list[player_id],
+                }
+            }
+        );
     }
 
     /**
