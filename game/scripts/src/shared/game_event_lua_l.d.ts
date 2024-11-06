@@ -332,11 +332,6 @@ declare interface CGED {
         CompoundCard : {
             list : string[][],  //结构 [ [ "3","4" ,"6"] , [ "5" , "7" , "9" ] ] 为两个合成 最多八个 卡片id
         }
-        //获取图鉴收集信息
-        GetPictuerFetterList : {
-            
-        }
-
         //获取图鉴信息
         GetConfigPictuerFetter : {
 

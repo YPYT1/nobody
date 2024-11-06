@@ -373,7 +373,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             for (const list_key in list_obj) {
                 //特殊卡处理
                 let cz_ts = false;
-                let is_ts = true;
+                let is_ts = false;
                 let is_pictuer_id = "";
                 //先查找是否满足
                 for (const spcs_key in GameRules.ServiceData.server_pictuer_card_special) {
@@ -383,6 +383,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                         if(ts_list.includes(cid_num)){
                             is_pictuer_id = spcs_key;
                             cz_ts = true;
+                            is_ts = true;
                             continue; //继续
                         }
                     }
@@ -453,7 +454,8 @@ export class ServiceInterface extends UIEventRegisterClass{
                 //判断是否有
                 let is_ok = false;
                 let item_id =  new_card[index]; 
-                for (let n = 0; index < GameRules.ServiceData.server_monster_package_list[player_id].length; n++) {
+                let plength = GameRules.ServiceData.server_monster_package_list[player_id].length;
+                for (let n = 0; n < plength; n++) {
                     if(GameRules.ServiceData.server_monster_package_list[player_id][n].item_id == item_id){
                         GameRules.ServiceData.server_monster_package_list[player_id][n].number ++;
                         is_ok = true;
