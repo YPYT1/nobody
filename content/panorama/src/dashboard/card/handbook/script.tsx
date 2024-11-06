@@ -1,4 +1,5 @@
-import { LoadComponent_Card } from "../_components/component_manager";
+import { ToggleDashboardLoading } from "../../components";
+import { LoadComponent_Card } from "../../_components/component_manager";
 
 const MainPanel = $.GetContextPanel();
 const CardRarityDropDown = $("#CardRarityDropDown") as DropDown;
@@ -21,6 +22,7 @@ const RarityOptionList = ["all", "ss", "s", "a", "b", "c"];
 // const GetServerItemData = GameUI.CustomUIConfig().GetServerItemData;
 const GetPictureCardData = GameUI.CustomUIConfig().GetPictureCardData;
 const _PictuerCardData = GameUI.CustomUIConfig()._PictuerCardData;
+const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 
 export const Init = () => {
     MainPanel.SetDialogVariableInt("card_count", 0);
@@ -119,30 +121,27 @@ const InitComposeViews = () => {
 const InitComposeButton = () => {
 
     ButtonComposeMode1.SetPanelEvent("onactivate", () => {
-        // $.Msg(["ButtonComposeMode1 card_compose_list", card_compose_list])
-        // ButtonComposeMode1.enabled = false;
-        SendCompoundCard();
+        SendCompoundCard(0);
     })
 
     ButtonComposeMode2.SetPanelEvent("onactivate", () => {
-        // $.Msg(["ButtonComposeMode2 card_compose_list", card_compose_list])
-
-        SendCompoundCard();
+        SendCompoundCard(1);
     })
 }
 
-const SendCompoundCard = () => {
+const SendCompoundCard = (state: number = 1) => {
+    ToggleDashboardLoading(true);
     let list: string[][] = [];
     for (let row of card_compose_list) {
         if (row.length == ROW_CARD_LIMIT) {
             list.push(row)
         }
     }
-    // $.Msg(["list", list])
     GameEvents.SendCustomGameEventToServer("ServiceInterface", {
         event_name: "CompoundCard",
         params: {
-            list: list
+            list: list,
+            type: state
         }
     })
 }
@@ -165,11 +164,8 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
 
     // 更新已登记的图鉴
     let pictuer_list = data.pictuer_list;
-    $.Msg(["pictuer_list", pictuer_list])
     let picture_card_list: string[] = []
-
     const CardPanel = CardList.FindChildTraverse("3201")
-    $.Msg(CardPanel?.Data())
     for (let pic_id in pictuer_list) {
         let card_list = Object.values(pictuer_list[pic_id]);
         for (let card_id of card_list) {
@@ -249,7 +245,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
         }
     }
 
-    $.Msg(CardPanel?.Data())
+
 
 }
 
@@ -262,18 +258,19 @@ const UpdateComposeInfo = () => {
         let SourceList = row_compose_panel.FindChildTraverse("SourceList")!;
         let row_compose = card_compose_list[i];
         for (let j = 0; j < SourceList.GetChildCount(); j++) {
-            let row_source = SourceList.GetChild(j)!;
+            let row_source = SourceList.GetChild(j) as ImagePanel;
             for (let r = 1; r <= 6; r++) {
                 row_source.RemoveClass("rare_" + r);
                 row_source.SetHasClass("has_item", false)
             }
+            row_source.SetImage("");
         }
         if (row_compose == null) {
             continue
         }
 
         for (let j = 0; j < row_compose.length; j++) {
-            let row_source = SourceList.GetChild(j)!;
+            let row_source = SourceList.GetChild(j) as ImagePanel;
             let card_id = row_compose[j];
             SetComposeItemInfo(row_source, card_id)
         }
@@ -281,7 +278,7 @@ const UpdateComposeInfo = () => {
 
 }
 
-const SetComposeItemInfo = (e: Panel, card_id: string) => {
+const SetComposeItemInfo = (e: ImagePanel, card_id: string) => {
     let data = GetPictureCardData(`${card_id}`);
     for (let r = 1; r <= 6; r++) {
         e.SetHasClass("rare_" + r, data.rarity == r)
@@ -289,6 +286,10 @@ const SetComposeItemInfo = (e: Panel, card_id: string) => {
     e.Data<PanelDataObject>().card_id = card_id
     e.SetDialogVariable("card_id", `${card_id}`)
     e.SetHasClass("has_item", true)
+
+    let card_data = GetPictureCardData(card_id);
+
+    e.SetImage(GetTextureSrc(card_data.AbilityTextureName))
 }
 
 const CustomEventSubscribe = () => {

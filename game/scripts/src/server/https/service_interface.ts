@@ -638,9 +638,10 @@ export class ServiceInterface extends UIEventRegisterClass{
         }
         if(cmd == "!CC"){
             let list = [[ args[0]  ,args[1]  , args[2]]];
-            this.CompoundCard(player_id , {
-                list : list,
-            })
+            // this.CompoundCard(player_id , {
+            //     list : list,
+
+            // })
         }
         if(cmd == "-SendLuaLog"){
             this.SendLuaLog(-1)

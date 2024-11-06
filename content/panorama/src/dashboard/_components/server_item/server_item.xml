@@ -1,0 +1,12 @@
+<root>
+    <styles>
+        <include src="./server_item.less" />
+        <include src="./../../../_styles/styles.less" />
+    </styles>
+    <scripts>
+		<include src="./server_item.tsx" />
+	</scripts>
+    <Panel class="ServerItem">
+
+    </Panel>
+</root>

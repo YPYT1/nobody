@@ -1,5 +1,7 @@
 
 import { DASHBOARD_NAVBAR, ToggleDashboardLoading } from './../components';
+import { LoadComponent_Card } from '../_components/component_manager';
+import { CardPopupsToggle } from './_popups';
 
 const DASHBOARD = "card";
 const SUB_OBJECT = DASHBOARD_NAVBAR[DASHBOARD].Sub;
@@ -28,7 +30,6 @@ export const Init = () => {
                 for (let nav_key of Object.keys(SUB_OBJECT)) {
                     ContentFrame.SetHasClass(nav_key, nav_key == sub_key)
                 }
-
             })
 
             let NavContent = $.CreatePanel("Panel", ContentFrame, radiobtn_id);
@@ -90,8 +91,59 @@ const ClosedPopups = (e: Panel) => {
 }
 
 const GetCompoundCardList = (event: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetCompoundCardList"]>) => {
+    $.Msg(["GetCompoundCardList",event])
     let data = event.data;
-    $.Msg(["GetCompoundCardList", data])
+    let type = data.type
+    ToggleDashboardLoading(false)
+    CardPopupsToggle("CompoundCard", true)
+    CompoundCard.SetHasClass("Gambling",type == 1)
+    const CompoundCardList = CompoundCard.FindChildTraverse("CompoundCardList")!;
+    CompoundCardList.RemoveAndDeleteChildren()
+    let list = Object.values(data.card)
+    for (let card_id of list) {
+        let cardPanel = $.CreatePanel("Panel", CompoundCardList, card_id);
+        cardPanel.BLoadLayoutSnippet("CompoundCardItem");
+        const CardInfo = cardPanel.FindChildTraverse("CardInfo")!;
+        const CardItem = LoadComponent_Card(CardInfo, "card_item");
+        CardItem.SetCardItem(card_id, false, false)
+        CardItem.ShowCardIcon(true);
+        const DragPanel = cardPanel.FindChildTraverse("DragPanel")!;
+        DragPanel.SetDraggable(true);
+        // $.RegisterEventHandler('DragEnter', DragPanel, CompoundCard_DragEnter);
+        // $.RegisterEventHandler('DragDrop', DragPanel, CompoundCard_DragDrop);
+        // $.RegisterEventHandler('DragLeave', DragPanel, CompoundCard_DragLeave);
+        $.RegisterEventHandler('DragStart', DragPanel, CompoundCard_OnDragStart);
+        $.RegisterEventHandler('DragEnd', DragPanel, CompoundCard_DragEnd);
+    }
+}
+
+const CompoundCard_OnDragStart = (panel: Panel, dragCallbacks: Panel) => {
+
+    panel.visible = false;
+    let displayPanel = $.CreatePanel("Panel", $.GetContextPanel(), "drag_CardImage");
+    displayPanel.BLoadLayoutSnippet("CardBackPanel");
+
+    displayPanel.Data<PanelDataObject>().m_DragCompleted = false; // whether the drag was successful
+
+    const offset = panel.GetPositionWithinWindow()
+    const origin_x = offset.x
+    const origin_y = offset.y
+    const cursor_offset = GameUI.GetCursorPosition()
+
+    const offsetX = cursor_offset[0] - offset.x
+    const offsetY = cursor_offset[1] - offset.y
+    // $.Msg(offset,mouse_offset)
+    // hook up the display panel, and specify the panel offset from the cursor
+    dragCallbacks.displayPanel = displayPanel;
+    dragCallbacks.offsetX = offsetX;
+    dragCallbacks.offsetY = offsetY;
+
+    // grey out the source panel while dragging
+    // $.GetContextPanel().AddClass("dragging_from");
+    return true;
+}
+const CompoundCard_DragEnd = (panel: Panel, draggedPanel: Panel) => {
+    draggedPanel.DeleteAsync(0);
 }
 
 const CustomEventSub = () => {
@@ -101,6 +153,25 @@ const CustomEventSub = () => {
     GameEvents.Subscribe("custom_client_popups", event => {
         $.Msg(["custom_client_popups", event])
     })
+
+    // $.Msg(["open"])
+
+    // GetCompoundCardList({
+    //     data: {
+    //         "type": 1,
+    //         "card": {
+    //             "1": "2045",
+    //             "2": "2045",
+    //             "3": "2045",
+    //             "4": "2045",
+    //             "5": "2045",
+    //             // "6": "2046",
+    //             // "7": "2046",
+    //             // "8": "2046"
+    //         }
+    //     }
+    // })
+
 }
 
 (() => {

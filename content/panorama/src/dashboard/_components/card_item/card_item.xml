@@ -1,7 +1,7 @@
 <root>
     <styles>
         <include src="./card_item.less" />
-        <include src="./../../../../_styles/styles.less" />
+        <include src="./../../../_styles/styles.less" />
     </styles>
     <scripts>
 		<include src="./card_item.tsx" />
@@ -10,7 +10,6 @@
         <Panel class="CardImage">
             <Image id="CardImage"/>
         </Panel>
-        
         <Label class="CardCount" text="{d:count}"/>
         <Panel class="CardRarity"/>
         <Panel class="EquipTips" />

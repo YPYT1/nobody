@@ -1,6 +1,6 @@
 import { ToggleDashboardLoading } from "../../components";
-import { LoadComponent_Card } from "../_components/component_manager";
-import { GenericPopupsToggle } from "../_popups";
+import { LoadComponent_Card } from "../../_components/component_manager";
+import { CardPopupsToggle } from "../_popups";
 
 const MainPanel = $.GetContextPanel();
 const AllPictuerList = $("#AllPictuerList");
@@ -16,6 +16,7 @@ let max_star_cost = -1;
 let pictuer_list: { [x: string]: { [key: number]: number; }; } = {}
 
 let pic_fliter_text = ""
+
 export const Init = () => {
     MainPanel.SetDialogVariableInt("card_count", 0);
     MainPanel.SetDialogVariableInt("card_max", 120);
@@ -126,9 +127,11 @@ const InitAllPictuerList = () => {
         params: {}
     })
 
-
 }
 
+// const CompoundCard = ()=>{
+//     let data = 
+// }
 const UpdatePictureFliter = () => {
     for (let i = 0; i < AllPictuerList.GetChildCount(); i++) {
         let PictuerGroupRow = AllPictuerList.GetChild(i)!;
@@ -191,7 +194,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
                     CardPanel.AddClass("UnEquip");
                     CardPanel.SetPanelEvent("onactivate", () => {
                         // $.Msg([suit_id, card_id])
-                        GenericPopupsToggle("PlayerConsumeCard", true, { suit_id, card_id })
+                        CardPopupsToggle("PlayerConsumeCard", true, { suit_id, card_id })
                     })
                 }
 

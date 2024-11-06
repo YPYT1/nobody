@@ -4,7 +4,7 @@
     transition-duration: 0.2s;
     opacity: 0;
     pre-transform-scale2d: 0;
-    
+
     &.Show {
         opacity: 1;
         pre-transform-scale2d: 1;
@@ -99,7 +99,7 @@
     height: 100%;
     background-color: #00000099;
     opacity: 0;
-    
+
     &.Show {
         opacity: 1;
     }
@@ -122,7 +122,11 @@
         background-image: url("file://{images}/custom_game/dashboard/popup_box_1.png");
         align: center center;
         padding: 24px;
+        visibility: collapse;
 
+        &.Show {
+            visibility: visible;
+        }
     }
 
     .PopupsHeader {
@@ -132,11 +136,12 @@
 
         Label {
             font-size: 20px;
-            color:#ffffff;
+            color: #ffffff;
             text-shadow: 0px 0px 2px 2.0 #000000;
         }
     }
-    .PopupsBody {
+
+    .PopupsBody {  
         width: 100%;
         vertical-align: middle;
         // border: 1px solid #ffffff;
@@ -150,20 +155,25 @@
         flow-children: down;
         visibility: collapse;
 
-        &.Open {
+        &.Show {
             visibility: visible;
         }
-        
-        
+
+        .PopupsBody {
+            margin-top: 24px;
+            height: 468px;
+        }
 
         .PopupsFooter {
+            border: 1px solid #ffffff;
             width: 100%;
-            vertical-align: bottom;
+            height: 42px;
+            // vertical-align: bottom;
             margin-bottom: 8px;
 
-            Button {
-                align: center center;
-            }
+            // Button {
+            //     align: center center;
+            // }
         }
     }
 }

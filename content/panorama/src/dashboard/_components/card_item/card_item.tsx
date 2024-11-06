@@ -1,11 +1,14 @@
-interface Component_CardItem extends Panel {
-    SetCardItem: (card_id: string, ShowCount?: boolean, ShowRarity?: boolean) => void;
-    ShowCardIcon: (bShow: true) => void;
+declare global {
+    interface Component_CardItem extends Panel {
+        SetCardItem: (card_id: string, ShowCount?: boolean, ShowRarity?: boolean) => void;
+        ShowCardIcon: (bShow: true) => void;
+    }
 }
 
+export const CardPanel = $.GetContextPanel() as Component_CardItem;
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 const GetPictureCardData = GameUI.CustomUIConfig().GetPictureCardData;
-const CardPanel = $.GetContextPanel() as Component_CardItem;
+
 
 const SetCardItem = (card_id: string, ShowCount: boolean = true, ShowRarity: boolean = true) => {
     let card_data = GetPictureCardData(card_id);

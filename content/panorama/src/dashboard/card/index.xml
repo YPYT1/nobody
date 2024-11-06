@@ -11,6 +11,22 @@
         <snippet name="CardNavRadioButton">
             <RadioButton group="CardNavRadioButton" text="{s:button_txt}"/>
         </snippet>
+
+        <snippet name="CompoundCardItem">
+            <Panel class="CompoundCardItem">
+                <Panel id="CardInfo"/>
+                <Panel id="DragPanel" class="CardBackPanel" draggable="true">
+                    <Panel class="CardBg"/>
+                    <Panel class="CardBorder"/>
+                </Panel>
+            </Panel>
+        </snippet>
+        <snippet name="CardBackPanel">
+            <Panel class="CardBackPanel">
+                <Panel class="CardBg"/>
+                <Panel class="CardBorder"/>
+            </Panel>
+        </snippet>
     </snippets>
 	<Panel class="DashBoardPanel">
 
@@ -38,7 +54,7 @@
                     <Button id="BtnConfirm" class="dashboard_btn ">
                         <Label text="确认" />
                     </Button>
-                    <Button id="ClosedPopupsBtn" class="dashboard_btn yellow">
+                    <Button id="ClosedPopupsBtn" class="dashboard_btn">
                         <Label text="取消" />
                     </Button>
                 </Panel>
@@ -46,12 +62,10 @@
             </Panel>
 
             <Panel id="CompoundCard" class="PopupsBox">
-                <Panel id="CardList" class="PopupsBody">
-                    <Panel class="CardItem" />
-                    <Panel class="CardItem" />
-
+                <Panel class="PopupsBody">
+                    <Panel id="CompoundCardList" />
                 </Panel>
-                <Panel class="PopupsFooter">
+                <Panel class="ButtonGroup">
                     <Button id="ClosedPopupsBtn" class="dashboard_btn">
                         <Label text="焯" />
                     </Button>

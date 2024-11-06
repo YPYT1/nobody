@@ -9,7 +9,7 @@ const GameEndContainer = $("#GameEndContainer");
 
 const CreateServerItem = GameUI.CustomUIConfig().CreateServerItem;
 
-const Init = () => {
+export const Init = () => {
 
     GameEvents.Subscribe("ArchiveService_GetPlayerGameOverData", event => {
         PlayerList.RemoveAndDeleteChildren();

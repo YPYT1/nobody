@@ -8,8 +8,8 @@ import { CreatePanel_Talent } from "./_talent";
 import { OnInitMoveHotkey } from "./_move_controller";
 
 
-export let AbilityList = $("#AbilityList");
-export let MainPanel = $.GetContextPanel();
+let AbilityList = $("#AbilityList");
+let MainPanel = $.GetContextPanel();
 
 export const CreatePanel_ActionAbility = () => {
 
