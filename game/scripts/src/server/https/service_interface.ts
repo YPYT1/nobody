@@ -206,10 +206,9 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
                 GameRules.ServiceData.server_pictuer_fetter_list[player_id] = 
                     CustomDeepCopy(server_pictuer_fetter_copy) as Server_PICTUER_FETTER_CONFIG;
-
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:激活成功...");
                 Timers.CreateTimer(2, () => {
                     GameRules.ServiceInterface.GetPlayerCardList(player_id , {})
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:激活成功...");
                 });
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片不足...");
