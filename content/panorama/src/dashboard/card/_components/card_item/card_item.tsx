@@ -14,7 +14,7 @@ const SetCardItem = (card_id: string, ShowCount: boolean = true, ShowRarity: boo
     CardPanel.SetDialogVariable("card_name", $.Localize(`#custom_server_card_${card_id}`))
     CardPanel.SetHasClass("rare_" + card_r, true)
     CardPanel.Data<PanelDataObject>().card_id = card_id
-    CardPanel.Data<PanelDataObject>().rare = card_r;
+    CardPanel.Data<PanelDataObject>().rarity = card_r;
     CardPanel.Data<PanelDataObject>().has = 0;
     // 卡片图标
     const CardImage = CardPanel.FindChildTraverse("CardImage") as ImagePanel;

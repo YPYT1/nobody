@@ -12,7 +12,8 @@ declare global {
         CreateServerItem(item_id: string, item_count: number, parent: Panel): Panel;
         GetServerItemData(item_id: string): typeof ServerItemList[keyof typeof ServerItemList]
         GetPictureCardData(item_id: string): typeof PictuerCardData[keyof typeof PictuerCardData]
-        GetTextureSrc(texture: string, func?: string):string
+        GetTextureSrc(texture: string, func?: string):string;
+        FindOfficialHUDUI(panel_id: string): Panel | null;
     }
 }
 
@@ -81,5 +82,19 @@ GameUI.CustomUIConfig().GetTextureSrc = function(texture: string, func: string =
             return `${ABILITY_PATH_ORIGINAL}${texture}.png`;
         }
 
+    }
+}
+
+
+GameUI.CustomUIConfig().FindOfficialHUDUI = function (panel_id: string) {
+    let hudRoot: any;
+    for (let panel = $.GetContextPanel(); panel != null; panel = panel.GetParent()!) {
+        hudRoot = panel;
+    }
+    if (hudRoot) {
+        let comp = hudRoot.FindChildTraverse(panel_id);
+        return comp as Panel;
+    } else {
+        return null;
     }
 }

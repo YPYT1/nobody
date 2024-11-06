@@ -1,4 +1,6 @@
 // 菜单列表
+
+const FindOfficialHUDUI = GameUI.CustomUIConfig().FindOfficialHUDUI;
 export const DASHBOARD_NAVBAR = {
 
     // 个人档案
@@ -101,14 +103,9 @@ export function DashboardRoute<
 };
 
 
-
-
-
-
 const DASHBOARD_LIST = Object.keys(DASHBOARD_NAVBAR);
 export const ClosedDashboard = (e: Panel) => {
     const DashboardList = $("#DashboardList");
-    const PlayerCurrency = $("#PlayerCurrency");
     const DashboardButtonList = $("#DashboardButtonList");
     for (let id of DASHBOARD_LIST) {
         let row_board = DashboardList.FindChildTraverse(id);
@@ -120,3 +117,9 @@ export const ClosedDashboard = (e: Panel) => {
     }
     DashboardList.SetHasClass("IsOpen", false);
 };
+
+const DashboardLoadingSpinner = FindOfficialHUDUI("DashboardLoadingSpinner")!;
+export function ToggleDashboardLoading(open: boolean) {
+    DashboardLoadingSpinner.SetHasClass("Show", open)
+
+}

@@ -24,13 +24,13 @@
             <Panel class="CardCompose">
                 <Panel id="SourceList">
                     <Image class="Item" >
-                        <Label text="{s:item_id}"/>
+                        <Label text="{s:card_id}"/>
                     </Image>
                     <Image class="Item" >
-                        <Label text="{s:item_id}"/>
+                        <Label text="{s:card_id}"/>
                     </Image>
                     <Image class="Item" >
-                        <Label text="{s:item_id}"/>
+                        <Label text="{s:card_id}"/>
                     </Image>
                 </Panel>
                 <Panel class="ComposeArrow"/>
@@ -43,14 +43,8 @@
     
 	<Panel class="nav_content handbook">
         <Panel class="TopContent">
-            <DropDown id="CardRarityDropDown" class="CustomDropDown" >
-                <Label id="all" text="ALL" />
-                <Label id="ss" text="SS" />
-                <Label id="s" text="S" />
-                <Label id="a" text="A" />
-                <Label id="b" text="B" />
-                <Label id="c" text="C" />
-            </DropDown>
+            <DropDown id="CardRarityDropDown" class="CustomDropDown" />
+          
             <TextEntry id="CardSearchInput" class="TextSearch" maxchars="32" placeholder="搜索"  />
 
             <Panel class="CardCountPanel">

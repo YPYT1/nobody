@@ -20,6 +20,7 @@ const RarityOptionList = ["all", "ss", "s", "a", "b", "c"];
 // 快捷方法
 // const GetServerItemData = GameUI.CustomUIConfig().GetServerItemData;
 const GetPictureCardData = GameUI.CustomUIConfig().GetPictureCardData;
+const _PictuerCardData = GameUI.CustomUIConfig()._PictuerCardData;
 
 export const Init = () => {
     MainPanel.SetDialogVariableInt("card_count", 0);
@@ -29,8 +30,55 @@ export const Init = () => {
     InitComposeButton();
     InitComposeViews();
     InitCardList();
+    InitCardRarityDropDown()
     CustomEventSubscribe();
 
+}
+
+const card_rarity = {
+    "All": -1,
+    "SS": 6,
+    "S": 5,
+    "A": 4,
+    "B": 3,
+    "C": 2,
+}
+
+let fliter_ratity = -1;
+let fliter_text = "";
+const InitCardRarityDropDown = () => {
+    CardRarityDropDown.RemoveAllOptions();
+    for (let key in card_rarity) {
+        let id = card_rarity[key as keyof typeof card_rarity];
+        let optionLabel = $.CreatePanel("Label", CardRarityDropDown, `${id}`, {
+            text: key,
+            html: true,
+        });
+        CardRarityDropDown.AddOption(optionLabel)
+    }
+    CardRarityDropDown.SetSelectedIndex(0);
+    CardRarityDropDown.SetPanelEvent("oninputsubmit", () => {
+        let id = CardRarityDropDown.GetSelected().id
+        fliter_ratity = parseInt(id);
+        FliterCardList()
+    })
+
+    CardSearchInput.SetPanelEvent("ontextentrychange", () => {
+        fliter_text = CardSearchInput.text
+        FliterCardList()
+    })
+
+}
+
+const FliterCardList = () => {
+    for (let i = 0; i < CardList.GetChildCount(); i++) {
+        const CardPanel = CardList.GetChild(i)!;
+        const loc_rarity = CardPanel.Data<PanelDataObject>().rarity as number;
+        const loc_name = CardPanel.Data<PanelDataObject>().name as string;
+        let text_res = loc_name.search(fliter_text);
+        let Show = (fliter_ratity == -1 || loc_rarity == fliter_ratity) && (fliter_text.length == 0 || text_res != -1)
+        CardPanel.visible = Show
+    }
 }
 
 const InitComposeViews = () => {
@@ -46,15 +94,19 @@ const InitComposeViews = () => {
             let row_source = SourceList.GetChild(j)!;
             row_source.SetHasClass("has_item", false)
             row_source.SetPanelEvent("onactivate", () => {
-                let item_id = row_source.Data<PanelDataObject>().item_id;
-                if (item_id == null) { return }
-                row_source.Data<PanelDataObject>().item_id = null;
+                let card_id = row_source.Data<PanelDataObject>().card_id;
+                if (card_id == null) { return }
+                row_source.Data<PanelDataObject>().card_id = null;
                 let compose_xy = [i, j]
                 // $.Msg(["compose_xy", compose_xy, card_compose_list[i][j]])
                 card_compose_list[i].splice(j, 1)
                 row_source.SetHasClass("has_item", false);
                 for (let r = 1; r <= 6; r++) { row_source.RemoveClass("rare_" + r) }
-                let CardPanel = CardList.FindChildTraverse(`item_${item_id}`)!
+                // $.Msg(["card_id",card_id])
+                let CardPanel = CardList.FindChildTraverse(`${card_id}`)!
+                // $.Msg(["CardPanel",CardPanel])
+                let count = CardPanel.Data<PanelDataObject>().count;
+                // $.Msg(["count",count])
                 CardPanel.Data<PanelDataObject>().count += 1;
                 CardPanel.SetDialogVariableInt("count", CardPanel.Data<PanelDataObject>().count);
                 UpdateComposeInfo()
@@ -96,11 +148,13 @@ const SendCompoundCard = () => {
 }
 
 const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
+    // $.Msg(["ServiceInterface_GetPlayerCardList"])
     let data = params.data;
-    // $.Msg(["data",])
+    // $.Msg(["data",data])
     // 清空合成表
     card_compose_list = [[], [], [], [], [], [], [], []]
     UpdateComposeInfo();
+
 
     let card_list = Object.values(data.card);
     card_list.sort((a, b) => {
@@ -109,11 +163,26 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
         return data_a.rarity - data_b.rarity
     })
 
+    // 更新已登记的图鉴
+    let pictuer_list = data.pictuer_list;
+    $.Msg(["pictuer_list", pictuer_list])
+    let picture_card_list: string[] = []
+
+    const CardPanel = CardList.FindChildTraverse("3201")
+    $.Msg(CardPanel?.Data())
+    for (let pic_id in pictuer_list) {
+        let card_list = Object.values(pictuer_list[pic_id]);
+        for (let card_id of card_list) {
+            let panel1 = CardList.FindChildTraverse(`${card_id}`) as Component_CardItem;
+            panel1.Data<PanelDataObject>().has = 1;
+            panel1.ShowCardIcon(true)
+        }
+    }
 
     for (let card of card_list) {
         let item_id = card.item_id;
         let card_id = `${item_id}`;
-        let panel_id = `card_${card_id}`
+        let panel_id = `${card_id}`
         const CardPanel = CardList.FindChildTraverse(panel_id) as Component_CardItem;
         if (CardPanel == null) { continue }
         CardPanel.ShowCardIcon(true);
@@ -130,7 +199,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
                 // 无多余卡片
                 return
             }
-            const l_rare = CardPanel.Data<PanelDataObject>().rare as number;
+            const l_rare = CardPanel.Data<PanelDataObject>().rarity as number;
             const l_card_id = CardPanel.Data<PanelDataObject>().card_id as string;
             // 同行为同品质
             let index = 0;
@@ -169,8 +238,8 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
 
     // 排序
     let card_list_count = CardList.GetChildCount()
-    for (let i = 0; i < card_list_count - 1; i++) {
-        for (let j = 1; j < card_list_count - 1 - i; j++) {
+    for (let i = 0; i < card_list_count; i++) {
+        for (let j = 0; j < card_list_count - 1 - i; j++) {
             let panel1 = CardList.GetChild(j) as Component_CardItem;
             let panel2 = CardList.GetChild(j + 1) as Component_CardItem;
             if (panel1.Data<PanelDataObject>().has < panel2.Data<PanelDataObject>().has) {
@@ -179,12 +248,15 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
 
         }
     }
+
+    $.Msg(CardPanel?.Data())
+
 }
 
 const UpdateComposeInfo = () => {
     // $.Msg(["card_compose_list", card_compose_list.length])
     // $.Msg(card_compose_list)
-    // let reduc_card_object: { [item_id: number]: number } = {};
+
     for (let i = 0; i < MAX_COMPOSE_LIMIT; i++) {
         let row_compose_panel = ComposeList.GetChild(i)!;
         let SourceList = row_compose_panel.FindChildTraverse("SourceList")!;
@@ -202,20 +274,20 @@ const UpdateComposeInfo = () => {
 
         for (let j = 0; j < row_compose.length; j++) {
             let row_source = SourceList.GetChild(j)!;
-            let item_id = row_compose[j];
-            SetComposeItemInfo(row_source, item_id)
+            let card_id = row_compose[j];
+            SetComposeItemInfo(row_source, card_id)
         }
     }
 
 }
 
-const SetComposeItemInfo = (e: Panel, item_id: string) => {
-    let data = GetPictureCardData(`${item_id}`);
+const SetComposeItemInfo = (e: Panel, card_id: string) => {
+    let data = GetPictureCardData(`${card_id}`);
     for (let r = 1; r <= 6; r++) {
         e.SetHasClass("rare_" + r, data.rarity == r)
     }
-    e.Data<PanelDataObject>().item_id = item_id
-    e.SetDialogVariable("item_id", `${item_id}`)
+    e.Data<PanelDataObject>().card_id = card_id
+    e.SetDialogVariable("card_id", `${card_id}`)
     e.SetHasClass("has_item", true)
 }
 
@@ -226,19 +298,21 @@ const CustomEventSubscribe = () => {
 
 const InitCardList = () => {
 
-    const _PictuerCardData = GameUI.CustomUIConfig()._PictuerCardData
+    // const _PictuerCardData = GameUI.CustomUIConfig()._PictuerCardData
     let CardListData = Object.values(_PictuerCardData);
     CardListData.sort((a, b) => { return b.rarity - a.rarity })
     CardList.RemoveAndDeleteChildren();
 
     for (let card_data of CardListData) {
         let card_id = `${card_data.item_id}`;
-        let _CardPanel = $.CreatePanel("Panel", CardList, `card_${card_id}`);
+        let _CardPanel = $.CreatePanel("Panel", CardList, `${card_id}`);
         let CardPanel = LoadComponent_Card(_CardPanel, "card_item")
         CardPanel.SetCardItem(card_id, true, true);
         CardPanel.SetDialogVariableInt("count", 0);
         CardPanel.Data<PanelDataObject>().count = 0;
+        CardPanel.Data<PanelDataObject>().name = $.Localize("#custom_server_card_" + card_id)
     }
+
     GameEvents.Subscribe("ServiceInterface_GetPlayerCardList", GetPlayerCardList);
     GameEvents.SendCustomGameEventToServer("ServiceInterface", {
         event_name: "GetPlayerCardList",

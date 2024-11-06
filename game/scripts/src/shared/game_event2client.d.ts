@@ -17,6 +17,11 @@ interface MissionDataProps {
 }
 declare interface CustomGameEventDeclarations {
 
+    custom_client_popups: {
+        popup_id: string;
+        state: number;
+    };
+
     CMsg_SendCommonMsgToPlayer: {
         data: {
             message: string;

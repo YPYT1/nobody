@@ -182,3 +182,53 @@
     line-height: 24px;
     padding-left: 4px;
 }
+
+
+.LoadingSpinner {
+    width: 100%;
+    height: 100%;
+    background-color: #000000aa;
+    visibility: collapse;
+
+    &.Show {
+        visibility: visible;
+    }
+
+    .SpinnerIcon {
+        width: 48px;
+        height: 48px;
+        background-size: 100% 100%;
+        background-position: 50%;
+        transition-property: wash-color, pre-transform-scale2d;
+        background-image: url("s2r://panorama/images/control_icons/refresh_psd.vtex");
+
+        align: center center;
+        animation-name: rotate_z;
+        animation-duration: 1.5s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+
+    }
+}
+
+@keyframes rotate_z {
+    0% {
+        transform: rotateZ(0deg);
+    }
+
+    25% {
+        transform: rotateZ(90deg);
+    }
+
+    50% {
+        transform: rotateZ(180deg);
+    }
+
+    75% {
+        transform: rotateZ(270deg);
+    }
+
+    100% {
+        transform: rotateZ(360deg);
+    }
+}

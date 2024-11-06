@@ -1,17 +1,17 @@
 
 import { DASHBOARD_NAVBAR } from './components';
 import { HideCustomTooltip, ShowCustomTextTooltip } from '../utils/custom_tooltip';
-import { FindOfficialHUDUI } from '../common/panel_operaton';
+// import { FindOfficialHUDUI } from '../common/panel_operaton';
 
 const DashboardList = $("#DashboardList");
 const DashboardButtonList = $("#DashboardButtonList");
 const DASHBOARD_LIST = Object.keys(DASHBOARD_NAVBAR);
 const dashboard_path = "file://{resources}/layout/custom_game/dashboard/";
 
-
 let open_board = false;
+
 const Initialize = () => {
-    FindOfficialHUDUI("MenuButtons")!.visible = false;
+    GameUI.CustomUIConfig().FindOfficialHUDUI("MenuButtons")!.visible = false;
     CreateMenuButtons()
 }
 

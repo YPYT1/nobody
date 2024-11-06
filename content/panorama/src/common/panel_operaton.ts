@@ -32,15 +32,3 @@ export const CreateDragPanelImage = (item_name: string, image_type: DragImageTyp
 };
 
 
-export function FindOfficialHUDUI(panel_id: string) {
-    let hudRoot: any;
-    for (let panel = $.GetContextPanel(); panel != null; panel = panel.GetParent()!) {
-        hudRoot = panel;
-    }
-    if (hudRoot) {
-        let comp = hudRoot.FindChildTraverse(panel_id);
-        return comp as Panel;
-    } else {
-        return null;
-    }
-}

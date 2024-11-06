@@ -1,5 +1,5 @@
 
-import { DASHBOARD_NAVBAR } from './../components';
+import { DASHBOARD_NAVBAR, ToggleDashboardLoading } from './../components';
 
 const DASHBOARD = "card";
 const SUB_OBJECT = DASHBOARD_NAVBAR[DASHBOARD].Sub;
@@ -8,6 +8,7 @@ const NavButtonList = $("#NavButtonList");
 const ContentFrame = $("#ContentFrame");
 
 const FRAME_PATH = "file://{resources}/layout/custom_game/dashboard/card/";
+
 
 export const Init = () => {
     $.Msg(["card Layout"])
@@ -21,7 +22,7 @@ export const Init = () => {
             let radiobtn_id = `${DASHBOARD}_${sub_key}`
             let NavRadioBtn = $.CreatePanel("RadioButton", NavButtonList, radiobtn_id);
             NavRadioBtn.BLoadLayoutSnippet("CardNavRadioButton");
-            NavRadioBtn.SetDialogVariable("button_txt", radiobtn_id)
+            NavRadioBtn.SetDialogVariable("button_txt", $.Localize("#custom_dashboard_nav_" + radiobtn_id))
             NavRadioBtn.checked = order == 0;
             NavRadioBtn.SetPanelEvent("onactivate", () => {
                 for (let nav_key of Object.keys(SUB_OBJECT)) {
@@ -43,33 +44,67 @@ export const Init = () => {
 }
 
 // Card Popups
-const PopupsBackground = $("#PopupsBackground");
+const PopupsBackground = $("#Card_PopupsBg");
 const CompoundCard = $("#CompoundCard");
+const PlayerConsumeCard = $("#PlayerConsumeCard")
 
 const InitCardPopups = () => {
-    SetPopupsClosedBtn(CompoundCard)
+    SetPopupsClosedBtn(CompoundCard);
+    SetPopupsClosedBtn(PlayerConsumeCard);
+
+    SetBtn_PlayerConsumeCard(PlayerConsumeCard);
 }
 
+const SetBtn_PlayerConsumeCard = (e: Panel) => {
+    const BtnConfirm = e.FindChildTraverse("BtnConfirm") as Button;
+
+    BtnConfirm.SetPanelEvent("onactivate", () => {
+        ToggleDashboardLoading(true)
+        let suit_id = e.Data<PanelDataObject>().suit_id;
+        let card_id = e.Data<PanelDataObject>().card_id;
+        GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+            event_name: "PlayerConsumeCard",
+            params: {
+                suit_id: suit_id,
+                card_id: card_id,
+            }
+        })
+        ClosedPopups(e)
+    })
+
+
+
+}
 const SetPopupsClosedBtn = (e: Panel) => {
     const ClosedPopupsBtn = e.FindChildTraverse("ClosedPopupsBtn");
     ClosedPopupsBtn?.SetPanelEvent("onactivate", () => {
-        e.AddClass("Closed");
-        e.RemoveClass("Open");
-        PopupsBackground.RemoveClass("Show");
+        ClosedPopups(e)
+
     })
 }
 
-const GetCompoundCardList = (event: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetCompoundCardList"]>) => {
+const ClosedPopups = (e: Panel) => {
+    e.AddClass("Closed");
+    e.RemoveClass("Open");
+    PopupsBackground.RemoveClass("Show");
+}
 
+const GetCompoundCardList = (event: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetCompoundCardList"]>) => {
     let data = event.data;
-    $.Msg(["GetCompoundCardList",data])
+    $.Msg(["GetCompoundCardList", data])
 }
 
 const CustomEventSub = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetCompoundCardList", GetCompoundCardList)
+
+    GameEvents.Subscribe("custom_client_popups", event => {
+        $.Msg(["custom_client_popups", event])
+    })
 }
 
 (() => {
+    // ces
+    ToggleDashboardLoading(false)
     Init();
 })();
