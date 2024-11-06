@@ -314,6 +314,7 @@ export class ServiceInterface extends UIEventRegisterClass{
      */
     CompoundCard(player_id: PlayerID, params: CGED["ServiceInterface"]["CompoundCard"]){
         let list = params.list as any;
+        let type = params.type;
         let list_obj = list as {
             [index : string] : {
                 [index : string] : string
@@ -475,7 +476,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             }
             this.GetPlayerCardList(player_id , {});
 
-            this.GetCompoundCardList(player_id , new_card_string);
+            this.GetCompoundCardList(player_id , new_card_string , type);
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片合成最大不能超过8个...");
         }
@@ -510,7 +511,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             {
                 data: {
                     card : cardlist, //卡片id
-                    type : type , // 0 正常显示 1 背对显示
+                    type : type , //  0 背对显示 1 正常显示 
                 }
             }
         );

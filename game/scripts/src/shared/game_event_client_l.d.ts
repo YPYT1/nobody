@@ -187,7 +187,7 @@ declare interface CustomGameEventDeclarations {
     ServiceInterface_GetCompoundCardList : {
         data: {
             card : string[], //卡片id
-            type : number , // 0 正常显示 1 背对显示
+            type : number , // 0 背对显示 1 正常显示 
         };
     }
 
