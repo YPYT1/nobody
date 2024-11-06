@@ -208,7 +208,9 @@ export class ServiceInterface extends UIEventRegisterClass{
                     CustomDeepCopy(server_pictuer_fetter_copy) as Server_PICTUER_FETTER_CONFIG;
 
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:激活成功...");
-                GameRules.ServiceInterface.GetPlayerCardList(player_id , {})
+                Timers.CreateTimer(2, () => {
+                    GameRules.ServiceInterface.GetPlayerCardList(player_id , {})
+                });
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片不足...");
             }
@@ -236,18 +238,17 @@ export class ServiceInterface extends UIEventRegisterClass{
         let use_consume = 0;    
         let suit_consume = 0;
         let consume_max = 10;
+        if(GameRules.ServiceData.player_pictuer_vip[player_id] == 1){
+            consume_max = 15;
+        }
         suit_consume = PictuerFetterConfig[suit_id as keyof typeof PictuerFetterConfig].consume;
-        let dataconfig = CustomDeepCopy(GameRules.ServiceData.server_player_config_pictuer_fetter[player_id]) as string[][];
-        for (let index = 0; index < dataconfig[i].length; index++) {
-            let u_suit_id = dataconfig[i][index];
+        for (let index = 0; index < GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i].length; index++) {
+            let u_suit_id = GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i][index];
             use_consume += PictuerFetterConfig[u_suit_id as keyof typeof PictuerFetterConfig].consume;
         }   
         if(use_consume + suit_consume <= consume_max){
-            if(!dataconfig[i].includes(suit_id)){
-                dataconfig[i].push(suit_id);
-                //保存数据
-                GameRules.ServiceData.server_player_config_pictuer_fetter[player_id] = CustomDeepCopy(dataconfig) 
-
+            if(!GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i].includes(suit_id)){
+                GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i].push(suit_id);
                 this.GetConfigPictuerFetter(player_id , {})
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:已装备相同羁绊...");    
@@ -263,16 +264,32 @@ export class ServiceInterface extends UIEventRegisterClass{
     UninstallPictuerFetter(player_id: PlayerID, params: CGED["ServiceInterface"]["UninstallPictuerFetter"], callback?){
         let i = params.index;
         let suit_id = params.suit_id;
-        let dataconfig = CustomDeepCopy(GameRules.ServiceData.server_player_config_pictuer_fetter[player_id]) as string[][];
-        if(dataconfig[i].includes(suit_id)){
-            let index = dataconfig[i].indexOf(suit_id);
-            dataconfig[i].splice( index , 1);
-            //保存数据
-            GameRules.ServiceData.server_player_config_pictuer_fetter[player_id] = CustomDeepCopy(dataconfig);
+        if(GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i].includes(suit_id)){
+            let index = GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i].indexOf(suit_id);
+            GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i].splice( index , 1);
             this.GetConfigPictuerFetter(player_id , {})
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:此图鉴不存在...");    
         }
+    }
+
+    //保存图鉴配置
+    SavePictuerFetter(player_id: PlayerID, params: CGED["ServiceInterface"]["SavePictuerFetter"], callback?){
+        let i = params.index;
+        //保存数据
+        GameRules.ServiceData.server_player_config_pictuer_fetter[player_id][i] = CustomDeepCopy(
+            GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i]
+        ) 
+        this.GetConfigPictuerFetter(player_id , {})
+    }
+    //还原图鉴配置
+    RestorePictuerFetter(player_id: PlayerID, params: CGED["ServiceInterface"]["RestorePictuerFetter"], callback?){
+        let i = params.index;
+        //保存数据
+        GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i] = CustomDeepCopy(
+            GameRules.ServiceData.server_player_config_pictuer_fetter[player_id][i]
+        ) 
+        this.GetConfigPictuerFetter(player_id , {})
     }
 
     /**
@@ -286,7 +303,9 @@ export class ServiceInterface extends UIEventRegisterClass{
             "ServiceInterface_GetConfigPictuerFetter",
             {
                 data: {
-                    pictuer : GameRules.ServiceData.server_player_config_pictuer_fetter[player_id],
+                    server : GameRules.ServiceData.server_player_config_pictuer_fetter[player_id],
+                    locality: GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id],
+                    is_vip : GameRules.ServiceData.player_pictuer_vip[player_id],
                 }
             }
         );

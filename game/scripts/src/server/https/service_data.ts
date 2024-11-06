@@ -27,7 +27,10 @@ export class ServiceData extends UIEventRegisterClass {
     server_pictuer_card_special : { [ card_id : string ] : number[] } = {};
     //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 服务器  
     server_player_config_pictuer_fetter : string[][][] = [];
-
+    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 本地 
+    locality_player_config_pictuer_fetter : string[][][] = [];
+    //是否为图鉴vip
+    player_pictuer_vip : number[] = [];
     constructor(){
         super("ServiceData" , true);
         //随机添加100张卡片
@@ -37,6 +40,10 @@ export class ServiceData extends UIEventRegisterClass {
             this.server_player_config_pictuer_fetter.push([
                 [],[],[],[]
             ]);
+            this.locality_player_config_pictuer_fetter.push([
+                [],[],[],[]
+            ]);
+            this.player_pictuer_vip.push(0);
         }
         let CardDataList = Object.keys(PictuerCardData);
             
@@ -140,6 +147,9 @@ export class ServiceData extends UIEventRegisterClass {
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         if(cmd == "!SDI"){
             this.Init();
+        }
+        if(cmd == "-openvip"){
+            this.player_pictuer_vip[player_id] = 1;
         }
     }
 }

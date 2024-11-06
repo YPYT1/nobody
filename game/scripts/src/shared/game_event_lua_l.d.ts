@@ -319,6 +319,15 @@ declare interface CGED {
             index : number , //装备栏位
             suit_id : string , //图鉴id
         }
+        //保存图鉴配置
+        SavePictuerFetter : {
+            index : number , //装备栏位
+        }
+        //还原图鉴配置
+        RestorePictuerFetter : {
+            index : number , //装备栏位
+        }
+
         //卡片合成
         CompoundCard : {
             list : string[][],  //结构 [ [ "3","4" ,"6"] , [ "5" , "7" , "9" ] ] 为两个合成 最多八个 卡片id

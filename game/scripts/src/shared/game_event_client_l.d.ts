@@ -167,7 +167,9 @@ declare interface CustomGameEventDeclarations {
      */
     ServiceInterface_GetConfigPictuerFetter : {
         data: {
-            pictuer : string[][],
+            server : string[][], // 配置栏-羁绊id
+            locality : string[][], // 配置栏-羁绊id
+            is_vip : number , //是否为vip
         };
     }
     /**
