@@ -22,6 +22,8 @@
             </Panel>
             <Panel id="DashboardList" hittest="false"/>
         </Panel>
-        
+        <Button id="DashboardLoadingSpinner" class="LoadingSpinner">
+            <Panel class="SpinnerIcon"/>
+        </Button>
     </Panel>
 </root>

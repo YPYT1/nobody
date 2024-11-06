@@ -5,7 +5,7 @@
 	</styles>
 	<scripts>
 		<include src="./script.tsx" />
-        
+        <include src="./_popups.tsx" />
 	</scripts>
     <snippets>
         <snippet name="CardNavRadioButton">
@@ -29,7 +29,22 @@
             </Panel>
 
         </Panel>
-        <Button id="PopupsBackground" class="PopupsBackground">
+        <Button id="Card_PopupsBg" class="PopupsBackground">
+            <Panel id="PlayerConsumeCard" class="PopupsWindows">
+                <Panel class="PopupsHeader">
+                    <Label text="是否登记卡片"/>
+                </Panel>
+                <Panel class="ButtonGroup">
+                    <Button id="BtnConfirm" class="dashboard_btn ">
+                        <Label text="确认" />
+                    </Button>
+                    <Button id="ClosedPopupsBtn" class="dashboard_btn yellow">
+                        <Label text="取消" />
+                    </Button>
+                </Panel>
+                
+            </Panel>
+
             <Panel id="CompoundCard" class="PopupsBox">
                 <Panel id="CardList" class="PopupsBody">
                     <Panel class="CardItem" />
