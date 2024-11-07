@@ -7,8 +7,8 @@ export const DASHBOARD_NAVBAR = {
     "personal": {
         "Show": true,
         "Sub": { // 子菜单
-            "Equip": true,
-            "Rune": true,
+            "hero": true,
+            "skill": true,
         }
     },
 
@@ -120,6 +120,6 @@ export const ClosedDashboard = (e: Panel) => {
 
 const DashboardLoadingSpinner = FindOfficialHUDUI("DashboardLoadingSpinner")!;
 export function ToggleDashboardLoading(open: boolean) {
-    DashboardLoadingSpinner.SetHasClass("Show", open)
+    // DashboardLoadingSpinner.SetHasClass("Show", open)
 
 }
