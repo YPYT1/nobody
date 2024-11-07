@@ -190,6 +190,14 @@ declare interface CustomGameEventDeclarations {
             type : number , // 0 背对显示 1 正常显示 
         };
     }
+    /**
+     * 强制关闭图鉴加载弹窗
+     */
+    ServiceInterface_PictuerLoadClose : {
+        data: {
+            
+        };
+    }
 
     //玩家生命数
     GameInformation_GetPlayerLifeData : {

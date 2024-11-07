@@ -158,14 +158,15 @@ export class GameEvent {
             hUnit.isSpawned = true;
             GameRules.CustomAttribute.InitHeroAttribute(hUnit)
             //初始化可选技能
-            GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id)
+            GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id);
             //初始化可用符文
-            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id, hUnit)
+            GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id, hUnit);
             //初始化神秘商店
             GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
 
 
-
+            //初始化存档给英雄提供的属性
+            GameRules.ServiceData.LoadPlayerServerAttr(player_id);
             let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
             hUnit.SetOrigin(vect)
             // 刷新完成之后发送至前端

@@ -7,7 +7,6 @@ import { reloadable } from '../../utils/tstl-utils';
 import * as ServerSkillExp from "../../json/config/server/hero/server_skill_exp.json";
 import * as ServerSkillful from "../../json/config/server/hero/server_skillful.json";
 
-
 import * as PictuerCardData from "../../json/config/server/picture/pictuer_card_data.json";
 import * as PictuerFetterConfig from "../../json/config/server/picture/pictuer_fetter_config.json";
 
@@ -200,13 +199,14 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
                 //扣除物品 保存至服务器
                 if(check_data.count == 1){
-                    delete GameRules.ServiceData.server_monster_package_list[player_id][check_data.index];
+                    // delete GameRules.ServiceData.server_monster_package_list[player_id][check_data.index];
+                    GameRules.ServiceData.server_monster_package_list[player_id].splice(check_data.index , 1)
                 }else{
                     GameRules.ServiceData.server_monster_package_list[player_id][check_data.index].number -- ;
                 }
                 GameRules.ServiceData.server_pictuer_fetter_list[player_id] = 
                     CustomDeepCopy(server_pictuer_fetter_copy) as Server_PICTUER_FETTER_CONFIG;
-                Timers.CreateTimer(2, () => {
+                Timers.CreateTimer(1, () => {
                     GameRules.ServiceInterface.GetPlayerCardList(player_id , {})
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:激活成功...");
                 });
@@ -305,6 +305,22 @@ export class ServiceInterface extends UIEventRegisterClass{
                     server : GameRules.ServiceData.server_player_config_pictuer_fetter[player_id],
                     locality: GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id],
                     is_vip : GameRules.ServiceData.player_pictuer_vip[player_id],
+                }
+            }
+        );
+    }
+
+    /**
+     * 获取图鉴配置信息
+     * @param player_id 
+     * @param params 
+     */
+    PictuerLoadClose(player_id: PlayerID){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_PictuerLoadClose",
+            {
+                data: {
                 }
             }
         );
@@ -445,7 +461,8 @@ export class ServiceInterface extends UIEventRegisterClass{
             //扣除物品 保存至服务器
             for (const itemid in consume) {
                 if(consume[itemid].d.count <= consume[itemid].c){
-                    GameRules.ServiceData.server_monster_package_list[player_id][consume[itemid].d.index].number = 0;
+                    // GameRules.ServiceData.server_monster_package_list[player_id][].number = 0;
+                    GameRules.ServiceData.server_monster_package_list[player_id].splice(consume[itemid].d.index , 1)
                 }else{
                     GameRules.ServiceData.server_monster_package_list[player_id][consume[itemid].d.index].number -= consume[itemid].c;
                 }
@@ -487,6 +504,7 @@ export class ServiceInterface extends UIEventRegisterClass{
      * @param params 
      */
     GetPlayerCardList(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerCardList"]){
+        DeepPrintTable(GameRules.ServiceData.server_monster_package_list[player_id])
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerCardList",
