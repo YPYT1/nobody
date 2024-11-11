@@ -504,7 +504,6 @@ export class ServiceInterface extends UIEventRegisterClass{
      * @param params 
      */
     GetPlayerCardList(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerCardList"]){
-        DeepPrintTable(GameRules.ServiceData.server_monster_package_list[player_id])
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerCardList",
