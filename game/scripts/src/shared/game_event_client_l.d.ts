@@ -146,13 +146,20 @@ declare interface CustomGameEventDeclarations {
     ServiceTalent_GetPlayerServerTalent: {
         data: {
             server: {
-                [hero_id: number]: CGEDGetTalentListInfo; //服务器存档数据
+                [hero_id: number]: CGEDGetTalentListInfo[]; //服务器存档数据
             },
             local: {
-                [hero_id: number]: CGEDGetTalentListInfo; //临时数据
+                [hero_id: number]: CGEDGetTalentListInfo[]; //临时数据
             },
         };
     };
+
+    ServiceTalent_GetPlayerServerTalentByHero : {
+        data: {
+            server : CGEDGetTalentListInfo; //服务器存档数据
+            local : CGEDGetTalentListInfo; //临时数据
+        };
+    }
     /**
      * 游戏激活状态
      */

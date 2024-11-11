@@ -280,26 +280,31 @@ declare interface CGED {
         //点天赋
         ClickTalent : {
             key : string , //天赋下标
+            index : number , //配置index
         }
         //获取存档天赋
         GetPlayerServerTalent : {
 
         }
-        //获取存档天赋by英雄 (未实装)
+        //获取存档天赋by英雄
         GetPlayerServerTalentByHero : {
             hero_id : number,
+            index : number , //配置index
         }
         //保存存档天赋
         SaveTalentConfig : {
             hero_id : number,
+            index : number , //配置index
         }
         //还原存档天赋
         RestoreTalentConfig : {
             hero_id : number,
+            index : number , //配置index
         }
         //重置存档天赋
         ResetTalentConfig : {
             hero_id : number,
+            index : number , //配置index
         }
     }
     //存档接口
@@ -349,7 +354,7 @@ declare interface CGED {
 
         //查询激活码
         GetGameActivate : {
-            
+
         }
     }
 }
