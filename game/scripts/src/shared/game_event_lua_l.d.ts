@@ -341,6 +341,16 @@ declare interface CGED {
         GetPlayerCardList : {
 
         }
+
+        //激活码
+        PlyaerGameActivate : {
+            key : string,
+        }
+
+        //查询激活码
+        GetGameActivate : {
+            
+        }
     }
 }
 

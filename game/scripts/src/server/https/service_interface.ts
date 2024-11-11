@@ -42,7 +42,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     //游戏激活状态
     _game_activate = 0;
     //获取游戏是否激活
-    GetGameActivate(player_id: PlayerID, params: any, callback?) {  
+    GetGameActivate(player_id: PlayerID, params: CGED["ServiceInterface"]["GetGameActivate"], callback?) {  
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetGameActivate",
@@ -55,7 +55,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     }
 
     //激活游戏
-    PlyaerGameActivate(player_id: PlayerID, params: any, callback?) {
+    PlyaerGameActivate(player_id: PlayerID, params: CGED["ServiceInterface"]["PlyaerGameActivate"], callback?) {
         let key:string = params.key;
         GameRules.ArchiveService.VerificationCode(player_id, key);
     }
