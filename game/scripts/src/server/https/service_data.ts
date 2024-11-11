@@ -113,10 +113,10 @@ export class ServiceData extends UIEventRegisterClass {
     }
     //统一加载玩家存档属性
     LoadPlayerServerAttr(player_id : PlayerID){
-        let attr_count : { [key: string]: CustomAttributeTableType } = {
-            "server_attr" : {
 
-            }
+        let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
+
+        let attr_count :  CustomAttributeTableType  = {
         };
         //加载天赋属性
         
@@ -130,13 +130,13 @@ export class ServiceData extends UIEventRegisterClass {
                 let attr = ListValues[index.toString()];
                 for (const key1 in attr) {
                     for (const key2 in attr[key1]) {
-                        if(!attr_count["server_attr"].hasOwnProperty(key1)){
-                            attr_count["server_attr"][key1] = {};
+                        if(!attr_count.hasOwnProperty(key1)){
+                            attr_count[key1] = {};
                         }
-                        if(attr_count["server_attr"][key1].hasOwnProperty(key2)){
-                            attr_count["server_attr"][key1][key2] += attr[key1][key2];
+                        if(attr_count[key1].hasOwnProperty(key2)){
+                            attr_count[key1][key2] += attr[key1][key2];
                         }else{
-                            attr_count["server_attr"][key1][key2] = attr[key1][key2];
+                            attr_count[key1][key2] = attr[key1][key2];
                         }
                     }
                 }
@@ -148,6 +148,10 @@ export class ServiceData extends UIEventRegisterClass {
 
         //商城道具属性
 
+
+
+
+        GameRules.CustomAttribute.SetAttributeInKey(selfhHero , "attr_server_" + player_id , attr_count)
     }
     /**
      * 初始化

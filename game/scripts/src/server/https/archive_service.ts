@@ -64,7 +64,6 @@ export class ArchiveService extends UIEventRegisterClass {
             }
         )
     }
-
     //验证激活码
     VerificationCode(player_id: PlayerID, code: string) {
         let steam_id = PlayerResource.GetSteamAccountID(player_id);
@@ -78,7 +77,38 @@ export class ArchiveService extends UIEventRegisterClass {
             },
             (data: VerificationCodeReturn) => {
                 if (data.code == 200) {
+                    if(data.data.inside == 1){
+                        GameRules.ServiceInterface._game_activate = 1;
+                        for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+                            GameRules.ServiceInterface.GetGameActivate(index , {})
+                        }
+                    }else{
+                        
+                    }
+                } else {
+                }
+            },
+            (code: number, body: string) => {
 
+            }
+        )
+    }
+
+    //验证激活码
+    CheckjhmCode(player_id: PlayerID) {
+        //只验证主机
+        let param_data = <CreateGameParam>{
+            steamids: []
+        }
+        let player_count = 6;
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        param_data.steamids.push(steam_id);
+        HttpRequest.AM2Post(ACTION_CHECKJHM_CODE,
+            {
+                param: param_data
+            },
+            (data: VerificationCodeReturn) => {
+                if (data.code == 200) {
                     if(data.data.inside == 1){
                         GameRules.ServiceInterface._game_activate = 1;
                         for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {

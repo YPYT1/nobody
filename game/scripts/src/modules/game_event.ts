@@ -118,6 +118,7 @@ export class GameEvent {
             GameRules.PlayerAttribute = new PlayerAttribute()
             // @ts-expect-error @eslint-disable-next-line
             GameRules.ModuleActivated = true;
+            GameRules.ArchiveService.CheckjhmCode(0);
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段

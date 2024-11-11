@@ -32,6 +32,13 @@ declare interface VerificationCodeParam {
 	code: string , //激活码
 }
 
+/**
+ * 激活码查询
+ */
+declare interface CheckjhmCodeParam {
+	sid: string, //steam_id
+}
+
 declare interface VerificationCodeReturn {
     code : number, //状态码
     msg : string, //服务器消息

@@ -9,9 +9,10 @@ const ACTION_VERIFICATION_CODE = "/setjhm";
 const ACTION_CONFIRM_DIFFICULTY = "/confirm_difficulty";
 // 1.4 游戏结束
 const ACTION_GAME_OVER = "/game_over";
+// 1.5 查询激活码
+const ACTION_CHECKJHM_CODE = "/checkjhm";
 // 2.1 兑换码领取
 const ACTION_GAME_DHM = "/gamedhm";
-
 
 // 3.1 添加装备 
 const ACTION_ADD_EQUIP = "/add_equip";
