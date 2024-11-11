@@ -153,6 +153,9 @@ export class GameEvent {
 
     OnEntityDotaOnHeroFinishSpawn(event: GameEventProvidedProperties & DotaOnHeroFinishSpawnEvent) {
         let hUnit = EntIndexToHScript(event.heroindex as EntityIndex) as CDOTA_BaseNPC_Hero;
+        let unitclass = hUnit.GetUnitName();
+        const _game_select_phase = GameRules.MapChapter._game_select_phase
+        if(_game_select_phase == 0){ return }
         if (hUnit.isSpawned != true) {
             let player_id = hUnit.GetPlayerOwnerID()
             // 英雄重新配置
@@ -164,10 +167,7 @@ export class GameEvent {
             GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id, hUnit);
             //初始化神秘商店
             GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
-
-
-            //初始化存档给英雄提供的属性
-            GameRules.ServiceData.LoadPlayerServerAttr(player_id);
+            
             let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
             hUnit.SetOrigin(vect)
             // 刷新完成之后发送至前端

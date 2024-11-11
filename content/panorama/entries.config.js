@@ -53,6 +53,7 @@ const entries = [
 
     // if filename is not set, it will use the name of the entry
     // { import: './hud/layout.xml', type: 'Hud' },
+    { import: './activation/layout.xml', filename: 'activation/layout.xml' },
     { import: './home/layout.xml', filename: 'home/layout.xml' },
     { import: './dashboard/layout.xml', filename: 'dashboard/layout.xml' },
     { import: './development/layout.xml', filename: 'development/layout.xml' },

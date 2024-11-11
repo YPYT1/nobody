@@ -23,9 +23,9 @@ export const OnDeath = (params: CGDatadrivenProps) => {
 }
 
 export const OnKill = (params: CGDatadrivenProps) => {
-    for (let hAbility of params.caster.OnKillList) {
-        hAbility.OnKill(params.target)
-    }
+    // for (let hAbility of params.caster.OnKillList) {
+    //     hAbility.OnKill(params.target)
+    // }
 }
 
 export const OnAttack = (params: CGDatadrivenProps) => {

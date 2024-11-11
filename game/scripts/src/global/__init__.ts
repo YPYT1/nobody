@@ -4,4 +4,3 @@ import "./global_damage";
 import "./global_ability_extends";
 import "./global_const";
 import "./global_override";
-print("init global",IsServer())

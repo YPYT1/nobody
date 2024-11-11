@@ -83,13 +83,20 @@ export class ArchiveService extends UIEventRegisterClass {
                             GameRules.ServiceInterface.GetGameActivate(index , {})
                         }
                     }else{
-                        
+                        for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+                            GameRules.ServiceInterface.GetGameActivate(index , {})
+                        }
                     }
                 } else {
+                    for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+                        GameRules.ServiceInterface.GetGameActivate(index , {})
+                    }
                 }
             },
             (code: number, body: string) => {
-
+                for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+                    GameRules.ServiceInterface.GetGameActivate(index , {})
+                }
             }
         )
     }

@@ -22,54 +22,18 @@ const HeroTalentConfig = $("#HeroTalentConfig") as DropDown;
 const HeroTalentTree = $("#HeroTalentTree");
 const HeroTalentTreePath = $("#HeroTalentTreePath");
 const HeroPopups_Talent = $("#HeroPopups_Talent");
-
+const TalentClosedBtn = $("#TalentClosedBtn") as Button;
 
 let INIT_TALENT_CONFIG_COUNT = 4;
-
-
 let select_hero_id = -1;
 let hero_talent_tree: ServerTalentTree = {};
 
 
-const InitHeroTalentView = () => {
-    hero_talent_tree = InitTalentData();
-    HeroPopups_Talent.SetDialogVariableInt("talent_point", 0)
-
-    HeroTalentConfig.RemoveAllOptions();
-    for (let i = 0; i < INIT_TALENT_CONFIG_COUNT; i++) {
-        let id = "" + i;
-        let optionLabel = $.CreatePanel("Label", HeroTalentConfig, `${id}`, {
-            text: "天赋页" + (i + 1),
-            html: true,
-        });
-        HeroTalentConfig.AddOption(optionLabel)
-    }
-    HeroTalentConfig.SetSelectedIndex(0);
-    HeroTalentConfig.SetPanelEvent("oninputsubmit", () => {
-        let id = HeroTalentConfig.GetSelected().id
-        $.Msg(["HeroTalentConfig id", id])
-    })
-
-    // HeroTalentTree.SetPanelEvent("onactivate", () => {
-    //     $.Msg(["update"])
-    //     let talent_xy = HeroTalentTree.GetPositionWithinWindow()
-    //     let cursor_xy = GameUI.GetCursorPosition()
-    //     const actualuiscale_x = HeroTalentTree.actualuiscale_x;
-    //     const actualuiscale_y = HeroTalentTree.actualuiscale_y;
-    //     const offx = Math.floor((cursor_xy[0] - talent_xy.x) / actualuiscale_x);
-    //     const offy = Math.floor((cursor_xy[1] - talent_xy.y) / actualuiscale_y);
-    //     MainPanel.SetDialogVariable("content_offset", `${offx},${offy}`)
-    // })
-    // 天赋树
-
-    SetHeroTalentTree(6);
-}
 
 const server_talent_data = GameUI.CustomUIConfig().KvData.server_talent_data;
 
 const InitTalentData = () => {
     let hero_talent_tree: ServerTalentTree = {};
-
     for (let id in server_talent_data) {
         let rowdata = server_talent_data[id as keyof typeof server_talent_data];
         let heroid = "" + rowdata.hero_id;
@@ -96,6 +60,7 @@ const InitTalentData = () => {
 const styleValue = [49, 42, 46]
 
 const SetHeroTalentTree = (heroid: number) => {
+    $.Msg(["SetHeroTalentTree", heroid])
     HeroTalentTree.RemoveAndDeleteChildren();
     HeroTalentTreePath.RemoveAndDeleteChildren();
     let talent_tree = hero_talent_tree[`${heroid}`];
@@ -119,9 +84,9 @@ const SetHeroTalentTree = (heroid: number) => {
 
 
         }
-        // return
-
     }
+
+
 }
 
 const CreateTreeNodePath = (panel1: Panel, devalue1: number, panel2: Panel, devalue2: number, node_id: string) => {
@@ -164,10 +129,52 @@ const CreateTreeNode = (e: Panel, id: string, type: number) => {
     return NodePanel
 }
 
+let serverData: { [hero_id: number]: NetworkedData<CGEDGetTalentListInfo[]> } = {};
+let localData: { [hero_id: number]: NetworkedData<CGEDGetTalentListInfo[]> } = {};
+
+export const InitHeroTalentView = () => {
+
+    TalentClosedBtn.SetPanelEvent("onactivate", () => {
+        HeroPopups_Talent.SetHasClass("Open", false)
+    })
+
+    GameEvents.Subscribe("ServiceTalent_GetPlayerServerTalent", event => {
+        let data = event.data;
+        serverData = data.server;
+        localData = data.local;
 
 
+    })
+
+}
 
 
-export const TalentInit = () => {
+export const OpenHeroTalentView = (heroid: number) => {
+    if (select_hero_id == heroid) {
+        HeroPopups_Talent.SetHasClass("Open", true)
+        return
+    }
+    select_hero_id = heroid;
+    hero_talent_tree = InitTalentData();
+    HeroPopups_Talent.SetDialogVariableInt("talent_point", 0)
 
+    HeroTalentConfig.RemoveAllOptions();
+    for (let i = 0; i < INIT_TALENT_CONFIG_COUNT; i++) {
+        let id = "" + i;
+        let optionLabel = $.CreatePanel("Label", HeroTalentConfig, `${id}`, {
+            text: "天赋页" + (i + 1),
+            html: true,
+        });
+        HeroTalentConfig.AddOption(optionLabel)
+    }
+    HeroTalentConfig.SetSelectedIndex(0);
+    HeroTalentConfig.SetPanelEvent("oninputsubmit", () => {
+        let id = HeroTalentConfig.GetSelected().id
+        $.Msg(["HeroTalentConfig id", id])
+    })
+
+    SetHeroTalentTree(heroid);
+
+    // 显示页面
+    HeroPopups_Talent.SetHasClass("Open", true)
 }

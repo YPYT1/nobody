@@ -1,0 +1,69 @@
+.activation {
+    width: 100%;
+    height: 100%;
+}
+
+.ok .full {
+    visibility: collapse;
+}
+
+.full {
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+}
+
+
+.InputContainer {
+    align: center center;
+    flow-children: right;
+    visibility: collapse;
+}
+
+.NoHostTip {
+    align: center center;
+}
+
+.IsHost {
+    .InputContainer {
+        visibility: visible;
+    }
+
+    .NoHostTip {
+        visibility: collapse;
+    }
+}
+
+#CodeInputBtn {
+    margin-left: 12px;
+    padding: 4px 6px;
+    vertical-align: middle;
+    // height: 30px;
+    background-color: gradient(linear, 0% 0%, 0% 100%, from(#4c5561), to(#6c7d88));
+    border: 1px solid;
+
+    border-top-color: #aaaaaa77;
+    border-left-color: #aaaaaa33;
+    border-bottom-color: #333333;
+    border-right-color: #404040;
+    wash-color: #74EAFE66;
+
+    &:enabled:hover {
+        wash-color: #aaaaaa66;
+    }
+
+    &:disabled {
+        saturation: 0.1;
+        brightness: 0.1;
+        wash-color: #00000099;
+    }
+
+    &:active {
+        pre-transform-scale2d: 0.9;
+    }
+
+    Label {
+        align: center center;
+        color: #ffffff;
+    }
+}

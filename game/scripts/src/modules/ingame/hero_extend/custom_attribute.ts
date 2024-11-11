@@ -135,6 +135,9 @@ export class CustomAttribute {
 
                 //注册英雄天赋
                 GameRules.HeroTalentSystem.RegisterHeroTalent(hUnit);
+
+                //初始化存档给英雄提供的属性
+                GameRules.ServiceData.LoadPlayerServerAttr(player_id);
                 return null
             }, 0.1)
 
@@ -244,7 +247,7 @@ export class CustomAttribute {
                 let mul_value = 1;
                 if (hUnit.custom_mul_attribute[main_key]) {
                     let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
-                    DeepPrintTable(attr_values)
+                    // DeepPrintTable(attr_values)
                     let base_value = 100;
                     for (let value of attr_values) {
                         base_value *= (100 + value) * 0.01;
@@ -462,6 +465,7 @@ export class CustomAttribute {
      * @param timer 持续时间 -1为永久
      */
     SetAttributeInKey(hUnit: CDOTA_BaseNPC, key: string, attr_list: CustomAttributeTableType, timer: number = -1) {
+        print("SetAttributeInKey",key)
         // 对比写入的key 与 当前已存在的key 里面的结果是否想等
         if (!hUnit.IsHero()) { return }
         let exists_attr = hUnit.custom_attribute_key_table[key];

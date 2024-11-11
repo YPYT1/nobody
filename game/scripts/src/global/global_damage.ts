@@ -36,8 +36,6 @@ function ElementSpecialEffect_Fire(hTarget: CDOTA_BaseNPC, hCaster: CDOTA_BaseNP
         // 刷新BUFF时间
         dot_buff.ForceRefresh()
     }
-
-
 }
 
 function PopupDamageNumber(

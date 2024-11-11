@@ -1,5 +1,6 @@
 import { LoadCustomComponent } from "../../_components/component_manager"
-import { TalentInit } from "./_talent"
+import { InitHeroTalentView, OpenHeroTalentView } from "./_talent"
+
 const SelectionHeroList = $("#SelectionHeroList")
 const HeroAttributeList = $("#HeroAttributeList")
 const npc_heroes_custom = GameUI.CustomUIConfig().KvData.npc_heroes_custom
@@ -23,9 +24,9 @@ const HeroDetailsPanel = $("#HeroDetailsPanel");
 const HeroTalentBtn = $("#HeroTalentBtn");
 
 
-
+let select_hero_id = -1;
 export const Init = () => {
-    
+
     SelectionHeroList.RemoveAndDeleteChildren();
     let hero_order = 0;
     for (let hero_name in npc_heroes_custom) {
@@ -59,12 +60,18 @@ export const Init = () => {
 
     HeroTalentBtn.SetPanelEvent("onactivate", OpenHeroTalent)
 
-    TalentInit()
-    
+
+    InitHeroTalentView()
+
+    // 读取所有英雄天赋数据
+    GameEvents.SendCustomGameEventToServer("ServiceTalent", {
+        event_name: "GetPlayerServerTalent",
+        params: {}
+    })
 }
 
 const SetHeroDetails = (hero_id: number) => {
-    // select_hero_id = hero_id;
+    select_hero_id = hero_id;
     // 需要获取对应英雄数据
     HeroDetailsPanel.SetDialogVariable("hero_name", "HeroID:" + hero_id)
 
@@ -74,7 +81,9 @@ const SetHeroDetails = (hero_id: number) => {
 }
 
 const OpenHeroTalent = () => {
-    $.Msg(["OpenHeroTalent"])
+    if (select_hero_id == -1) { return }
+    $.Msg(["OpenHeroTalent", select_hero_id])
+    OpenHeroTalentView(select_hero_id)
 }
 
 

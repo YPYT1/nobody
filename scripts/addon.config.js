@@ -10,6 +10,9 @@ try {
 /** 要加密的项目列表 */
 const encrypt_files = [
     '**/*.lua',
+    '!game/scripts/vscripts/abilities/**/*.lua',
+    '!game/scripts/vscripts/modifier/**/*.lua',
+    '!game/scripts/vscripts/json/**/*.lua',
     '!game/scripts/vscripts/lualib_bundle.lua',
     '!game/scripts/vscripts/addon_init.lua',
     '!game/scripts/vscripts/addon_game_mode.lua',
@@ -18,6 +21,7 @@ const encrypt_files = [
     '!game/scripts/vscripts/utils/decrypt.lua',
     '!game/scripts/vscripts/utils/aeslua.lua',
     '!game/scripts/vscripts/utils/aeslua/**/*.lua',
+    '!game/scripts/vscripts/utils/dota_ts_adapter.lua',
 ];
 
 /** 发布时要排除的文件列表 */
@@ -34,7 +38,7 @@ const exclude_files = [
 const encryptDedicatedServerKeyTest = `Invalid_NotOnDedicatedServer`;
 
 /** 测试发布（测试图）密钥，运行 yarn prod 必须，获取方法请参考 https://github.com/XavierCHN/fetch-keys */
-const encryptDedicatedServerKeyRelease_Test = `这里需要填入测试图的密钥 GetDedicatedServerKeyV3('version') 的结果`;
+const encryptDedicatedServerKeyRelease_Test = `C49CE0DEED5D91EAF9F63DFAA8ADA740FF88C45D`;
 
 /** 正式发布（正式图）密钥，运行 yarn prod 必须，获取方法请参考 https://github.com/XavierCHN/fetch-keys */
 const encryptDedicatedServerKeyRelease = `这里需要填入正式的发布密钥 GetDedicatedServerKeyV3('version') 的结果`;

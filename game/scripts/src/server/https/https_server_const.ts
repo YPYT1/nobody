@@ -18,4 +18,4 @@ const ACTION_NONE = "/";
 
 const SERVER_MAP_CODE = "am2";
 
-const Server_Key = IsInToolsMode() ? "B4B1D4918A098B61CC6C0612A132E844A10DCA05" : GetDedicatedServerKeyV2("stormwyrm");
+const Server_Key = IsInToolsMode() ? "C49CE0DEED5D91EAF9F63DFAA8ADA740FF88C45D" : GetDedicatedServerKeyV3("man100");

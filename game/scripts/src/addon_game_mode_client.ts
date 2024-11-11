@@ -1,3 +1,3 @@
-if (IsClient()){
-    require("./global/__init__")
-}
+// if (IsClient()){
+//     require("./global/__init__")
+// }

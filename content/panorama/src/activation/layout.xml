@@ -1,0 +1,23 @@
+<root>
+    <scripts>
+        <include src="./script.tsx" />
+    </scripts>
+    <styles>
+        <include src="s2r://panorama/styles/dotastyles.vcss_c" />
+        <include src="./styles.less" />
+    </styles>
+    <Panel class="activation" hittest="false">
+        <Button class="full">
+            <Panel class="InputContainer">
+                <TextEntry id="InputCode" class="PanelClass" maxchars="16" placeholder="input" />
+                <Button id="CodeInputBtn">
+                    <Label text="确认" />
+                </Button>
+            </Panel>
+            <Panel class="NoHostTip">
+                <Label text="等待主机激活"/>
+            </Panel>
+        </Button>
+        
+    </Panel>
+</root>

@@ -1,11 +1,12 @@
 // 菜单列表
 
+const IsTestMode = Game.IsInToolsMode()
 const FindOfficialHUDUI = GameUI.CustomUIConfig().FindOfficialHUDUI;
 export const DASHBOARD_NAVBAR = {
 
     // 个人档案
     "personal": {
-        "Show": true,
+        "Show": IsTestMode,
         "Sub": { // 子菜单
             "hero": true,
             "skill": true,
@@ -13,55 +14,15 @@ export const DASHBOARD_NAVBAR = {
     },
 
     "card": {
-        "Show": true,
+        "Show": IsTestMode,
         "Sub": {
             "handbook": true,
             "register": true,
         }
     },
 
-    // "store": {
-    //     "Show": true,
-    // },
 
-    // "achievement": {
-    //     "Show": true,
-    // },
-
-    // "event": {
-    //     "Show": true,
-    // },
 };
-
-
-// export function NavbarButton<
-//     T extends keyof typeof DASHBOARD_NAVBAR,
-//     N1 extends keyof typeof DASHBOARD_NAVBAR[T]
-// >({ dashboard, nav, selected, show }: { dashboard: T; nav: N1; selected: boolean; show: boolean; }) {
-//     const nav_str = nav as string;
-//     return (
-//         <RadioButton
-//             className='NavbarButton'
-//             group={dashboard + "group"}
-//             selected={selected}
-//             visible={show}
-//             onload={(e) => {
-//                 e.Data<PanelDataObject>().route = `${dashboard}_${nav_str}`;
-//                 // if (selected) {
-//                 //     const select_id = dashboard + "_" + nav_str;
-//                 //     const NavDashboard = $("#" + dashboard);
-//                 //     const DashboardContainers = NavDashboard.FindChildTraverse("DashboardContainers")!;
-//                 // }
-//             }}
-//             onactivate={() => {
-//                 DashboardRoute(dashboard, nav);
-//             }}
-//         >
-//             <Panel className='Selected' />
-//             <Label localizedText={`#dashboard_nav_${nav_str}`} />
-//         </RadioButton>
-//     );
-// };
 
 /** 跳转到指定路由 */
 export function DashboardRoute<

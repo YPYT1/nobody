@@ -97,7 +97,9 @@
 				<Panel class="Header">
 					<Panel class="FliterPanel">
 						<Panel class="Icon"/>
-						<DropDown id="HeroTalentConfig" />
+						<DropDown id="HeroTalentConfig">
+							<Label text="config_1"/>
+						</DropDown>
 					</Panel>
 
 					<Button id="TalentSaveBtn" class="dashboard_btn green">
