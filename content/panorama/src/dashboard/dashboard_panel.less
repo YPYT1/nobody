@@ -29,6 +29,22 @@
         }
     }
 
+    .BoardTypeImage {
+        width: 246px;
+        height: 70px;
+        // 
+        transform: translateX(-8px) translateY(-8px);
+        // type_card
+
+        &.card {
+            background-image: url("file://{images}/custom_game/dashboard/card/type_card.png");
+        }
+
+        &.personal {
+            background-image: url("file://{images}/custom_game/dashboard/type_personal.png");
+        }
+    }
+
     .BoardContainer {
         width: 1627px;
         height: 892px;
@@ -36,33 +52,37 @@
         background-repeat: no-repeat;
         overflow: noclip;
 
-        .BoardHeader {
+
+        .BoardContent {
+            width: 1468px;
+            margin-top: 72px;
+            horizontal-align: center;
+            flow-children: down;
             // border: 1px solid #fff;
-            width: 100%;
-            overflow: noclip;
+
+            &.LeftNav {
+                width: 100%;
+                height: 100%;
+                flow-children: right;
+            }
         }
 
-        .BoardTypeImage {
-            width: 246px;
-            height: 70px;
-            background-image: url("file://{images}/custom_game/dashboard/card/type_card.png");
-            transform: translateX(-8px) translateY(-8px);
-            // type_card
-        }
+
 
     }
 
-    .BoardContent {
-        width: 1468px;
-        margin-top: 72px;
-        horizontal-align: center;
-        flow-children: down;
+    .BoardHeader {
         // border: 1px solid #fff;
+        width: 100%;
+        overflow: noclip;
     }
+
 }
 
 .nav_content {
     visibility: collapse;
+    width: 100%;
+    height: 100%;
 }
 
 // 横向版本
@@ -93,6 +113,9 @@
 
 }
 
+.NavButtonGroupVert {
+    flow-children: down;
+}
 
 .PopupsBackground {
     width: 100%;
@@ -141,7 +164,7 @@
         }
     }
 
-    .PopupsBody {  
+    .PopupsBody {
         width: 100%;
         vertical-align: middle;
         // border: 1px solid #ffffff;

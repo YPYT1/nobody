@@ -147,21 +147,25 @@ const SendCompoundCard = (state: number = 1) => {
 }
 
 const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
-    // $.Msg(["ServiceInterface_GetPlayerCardList"])
+    $.Msg(["Card ServiceInterface_GetPlayerCardList"])
     let data = params.data;
     // $.Msg(["data",data])
+    let card = data.card;
+
+
     // 清空合成表
     card_compose_list = [[], [], [], [], [], [], [], []]
     UpdateComposeInfo();
-
-
     let card_list = Object.values(data.card);
     card_list.sort((a, b) => {
         let data_a = GetPictureCardData(`${a.item_id}`);
         let data_b = GetPictureCardData(`${b.item_id}`);
         return data_a.rarity - data_b.rarity
     })
-
+    for (let i = 0; i < CardList.GetChildCount(); i++) {
+        let CardPanel = CardList.GetChild(i)!
+        CardPanel.SetDialogVariableInt("count", 0);
+    }
     // 更新已登记的图鉴
     let pictuer_list = data.pictuer_list;
     let picture_card_list: string[] = []
@@ -178,9 +182,10 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
     for (let card of card_list) {
         let item_id = card.item_id;
         let card_id = `${item_id}`;
-        let panel_id = `${card_id}`
-        const CardPanel = CardList.FindChildTraverse(panel_id) as Component_CardItem;
-        if (CardPanel == null) { continue }
+        const CardPanel = CardList.FindChildTraverse(card_id) as Component_CardItem;
+        if (CardPanel == null) {
+            continue
+        }
         CardPanel.ShowCardIcon(true);
         CardPanel.SetDialogVariableInt("count", card.number);
         CardPanel.Data<PanelDataObject>().count = card.number;

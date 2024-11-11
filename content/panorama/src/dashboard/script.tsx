@@ -1,5 +1,5 @@
 
-import { DASHBOARD_NAVBAR } from './components';
+import { DASHBOARD_NAVBAR, ToggleDashboardLoading } from './components';
 import { HideCustomTooltip, ShowCustomTextTooltip } from '../utils/custom_tooltip';
 // import { FindOfficialHUDUI } from '../common/panel_operaton';
 
@@ -12,9 +12,17 @@ let open_board = false;
 
 const Initialize = () => {
     GameUI.CustomUIConfig().FindOfficialHUDUI("MenuButtons")!.visible = false;
+    const DashboardLoadingSpinner = GameUI.CustomUIConfig().FindOfficialHUDUI("DashboardLoadingSpinner")!;
+    DashboardLoadingSpinner.SetHasClass("Show", false)
     CreateMenuButtons()
 }
 
+const CustomEventSub = ()=>{
+
+    GameEvents.Subscribe("all_popups_closed",event=>{
+        ToggleDashboardLoading(false)
+    })
+}
 const CreateMenuButtons = () => {
     // ReturnButton
     let ReturnButton = $("#ReturnButton");

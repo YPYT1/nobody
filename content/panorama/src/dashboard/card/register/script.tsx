@@ -209,7 +209,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
             EquipPictuerButton.enabled = true;
             if (act_count > 0) {
                 EquipPictuerButton.SetPanelEvent("onactivate", () => {
-
+                    // 登记卡片
                     GameEvents.SendCustomGameEventToServer("ServiceInterface", {
                         event_name: "ConfigPictuerFetter",
                         params: {
@@ -341,7 +341,6 @@ const SetPictureAttributeList = (FooterAttributeList: Panel, row_data: typeof Pi
             FooterAttribute.BLoadLayoutSnippet("FooterAttribute");
 
             FooterAttribute.SetDialogVariableInt("index", order)
-            FooterAttribute.SetDialogVariable("attribute_name", attr_key)
             FooterAttribute.SetDialogVariable("attribute_value", attr_value + "")
             FooterAttribute.SetDialogVariable("attribute_name", $.Localize(`#custom_attribute_${attr}`).replace("%", ""))
             const StatIcon = FooterAttribute.FindChildTraverse("StatIcon")!;

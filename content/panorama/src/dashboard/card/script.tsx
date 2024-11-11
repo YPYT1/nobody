@@ -8,7 +8,6 @@ const SUB_OBJECT = DASHBOARD_NAVBAR[DASHBOARD].Sub;
 
 const NavButtonList = $("#NavButtonList");
 const ContentFrame = $("#ContentFrame");
-
 const FRAME_PATH = "file://{resources}/layout/custom_game/dashboard/card/";
 
 

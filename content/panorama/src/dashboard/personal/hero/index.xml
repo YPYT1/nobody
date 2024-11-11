@@ -1,0 +1,126 @@
+<root>
+	<styles>
+		<include src="./../../../_styles/styles.less" />
+		<include src="./../../styles.less" />
+		<include src="./../styles.less" />
+        <include src="./styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+
+	<snippets>
+		<snippet name="HeroInfoItem">
+			<RadioButton class="HeroInfoItem" group="PersonalHero_1">
+				<Image id="HeroIcon" scaling='stretch-to-fit-y-preserve-aspect'/>
+				<Panel class="HeroStarPanel">
+					<Panel id="HeroStar" class="HeroStar">
+						<Panel class="Star"/>
+						<Panel class="Star "/>
+						<Panel class="Star "/>
+						<Panel class="Star "/>
+						<Panel class="Star "/>
+					</Panel>
+				</Panel>
+				
+			</RadioButton>
+		</snippet>
+
+		<snippet name="TalentBorder">
+			<Panel class="TalentBorder" hittest="false">
+				<Panel id="StatIcon" />
+			</Panel>
+		</snippet>
+		<snippet name="TalentBorderPath">
+			<Panel class="TalentBorderPath">
+				
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="nav_content hero">
+		<Panel id="HeroBackground" />
+		<Panel class="HeroSelection">
+			<Panel id="SelectionHeroList" class="HeroList"/>
+		</Panel>
+		
+		<Panel id="HeroDetailsPanel">
+			<Label class="HeroName" text="{s:hero_name}" />
+			<Panel id="HeroStarPanel">
+				<Panel id="HeroDetailsStar" class="HeroStar">
+					<Panel class="Star "/>
+					<Panel class="Star "/>
+					<Panel class="Star "/>
+					<Panel class="Star "/>
+					<Panel class="Star "/>
+				</Panel>
+			</Panel>
+
+			<Panel id="HeroAbilitiesList">
+
+			</Panel>
+			<Panel class="Separator" />
+			<Panel id="HeroAttributeList">
+		
+			</Panel>
+			<Panel class="Separator" />
+
+			<Panel class="OperationBtnList">
+				<Panel class="OptionRow UpStar">
+					<Panel class="ItemCost">
+						<Image id="ServerItemIcon" class="fragment"/>
+						<Label text="{d:curr_count} / {d:need_count}"/>
+					</Panel>
+					<Button id="UpStarBtn" class="dashboard_btn">
+						<Label text="升星" />
+					</Button>
+				</Panel>
+				<Panel class="OptionRow Talent">
+					<Panel class="ItemCost">
+						
+					</Panel>
+					<Button id="HeroTalentBtn" class="dashboard_btn red">
+						<Label text="天赋" />
+					</Button>
+				</Panel>
+
+			</Panel>
+		</Panel>
+		
+		<Button id="HeroPopups_Talent" class="HeroPopupsBg">
+			<Panel class="HeroTalentContainer">
+				<Panel class="Content">
+					<Panel class="TalentImage" hittest="false"/>
+					<!-- <Label class="Tool" text="{s:content_offset}"/> -->
+					<Panel id="HeroTalentTreePath" />
+					<Panel id="HeroTalentTree" />
+				</Panel>
+				<Panel class="Header">
+					<Panel class="FliterPanel">
+						<Panel class="Icon"/>
+						<DropDown id="HeroTalentConfig" />
+					</Panel>
+
+					<Button id="TalentSaveBtn" class="dashboard_btn green">
+						<Label text="#Save" />
+					</Button>
+
+					<Button id="TalentResetBtn" class="dashboard_btn">
+						<Label text="#Reset" />
+					</Button>
+
+					<Panel class="TalentPoint">
+						<Panel class="IconLabel"/>
+						<Label class="PointValue" text="{d:talent_point}"/>
+					</Panel>
+				</Panel>
+				<Button id="TalentClosedBtn" />
+			</Panel>
+			
+	
+				
+			
+		</Button>
+	
+		
+	</Panel>
+</root>

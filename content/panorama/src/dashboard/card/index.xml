@@ -32,7 +32,7 @@
 
         <Panel class="BoardContainer">
             <Panel class="BoardHeader">
-                <Panel class="BoardTypeImage"/>
+                <Panel class="BoardTypeImage card"/>
                 <Button id="DashboardClosedBtn" class="ClosedBtn" />
             </Panel>
             <Panel class="BoardContent">

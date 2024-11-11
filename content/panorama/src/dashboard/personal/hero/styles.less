@@ -1,0 +1,172 @@
+@import url("./_talent.less");
+
+#HeroBackground {
+    width: 100%;
+    height: 100%;
+    background-image: url("s2r://panorama/images/loadout_backgrounds/loadout_bg_ice_001_jpg.vtex");
+    background-size: 100%;
+
+    opacity-mask: url("s2r://panorama/images/loadout_backgrounds/loadout_background_image_mask_psd.vtex");
+    // wash-color: #00000099;
+    blur: gaussian(6px);
+    saturation: 0.3;
+}
+
+.HeroSelection {
+    border: 1px solid #ffffff;
+    vertical-align: bottom;
+    margin-left: 240px;
+    margin-bottom: 12px;
+
+    .HeroList {
+        flow-children: right;
+
+        .HeroInfoItem {
+            width: 162px;
+            height: 132px;
+            background-image: url("file://{images}/custom_game/dashboard/personal/hero_item_border.png");
+            padding: 12px;
+
+            transition-property: background-image;
+            transition-duration: 0.1s;
+
+            &:selected,
+            &:hover {
+                background-image: url("file://{images}/custom_game/dashboard/personal/hero_item_hover.png");
+            }
+
+            .RadioBox {
+                visibility: collapse;
+            }
+
+            #HeroIcon {
+                align: center center;
+                width: 100%;
+                height: 100%;
+                // background-image: url("file://{images}/custom_game/dashboard/personal/hero_icon_default.png");
+                background-position: 50% 50%;
+            }
+
+
+        }
+    }
+}
+
+.HeroStarPanel {
+    horizontal-align: center;
+    vertical-align: bottom;
+    width: 100%;
+    background-color: #000000cc;
+    padding: 2px;
+}
+
+.HeroStar {
+    // width: 100%;
+    horizontal-align: center;
+    flow-children: right;
+
+    .Star {
+        width: 22px;
+        height: 22px;
+        background-size: 100%;
+        background-image: url("file://{images}/custom_game/dashboard/personal/star_2.png");
+
+        &.On {
+            background-image: url("file://{images}/custom_game/dashboard/personal/star_1.png");
+        }
+    }
+}
+
+#HeroDetailsPanel {
+    margin-top: 64px;
+    margin-right: 12px;
+    border: 1px solid #fff;
+    horizontal-align: right;
+    flow-children: down;
+    padding: 4px;
+
+    // width: 240px;
+    .HeroName {
+        font-size: 22px;
+        color: #ffffff;
+    }
+
+    #HeroStarPanel {
+        margin-top: 4px;
+    }
+
+    #HeroAbilitiesList {
+        width: 100%;
+        border: 1px solid #000;
+        height: 48px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
+
+    .Separator {
+        width: 333px;
+        height: 9px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/separator.png");
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        horizontal-align: center;
+    }
+}
+
+#HeroAttributeList {
+    width: 100%;
+    height: 320px;
+    flow-children: down;
+    padding: 4px;
+    // border: 1px solid #fff;
+    overflow: squish scroll;
+
+    .RowAttribute {
+        margin: 4px;
+        border-bottom: 1px solid #333333;
+        // padding-bottom: 4px;
+        // padding-top: 0px;
+    }
+}
+
+.OperationBtnList {
+    horizontal-align: center;
+    flow-children: right;
+    margin-top: 60px;
+
+    .OptionRow {
+        flow-children: down;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+
+    .ItemCost {
+        horizontal-align: center;
+        flow-children: right;
+        height: 20px;
+
+        #ServerItemIcon {
+            width: 20px;
+            height: 20px;
+            background-image: url("file://{images}/custom_game/dashboard/personal/fragment.png");
+            // 
+        }
+
+        Label {
+            font-size: 16px;
+            color: #afafaf;
+        }
+    }
+
+    Button {
+        margin-top: 4px;
+    }
+}
+
+.HeroPopupsBg {
+    width: 100%;
+    height: 100%;
+    background-color: #00000099;
+    overflow: noclip;
+    // visibility: collapse;
+}

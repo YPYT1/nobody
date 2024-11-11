@@ -1,0 +1,18 @@
+<root>
+    <styles>
+        <include src="./row_attribute.less" />
+        <include src="./../../../_styles/styles.less" />
+    </styles>
+    <scripts>
+		<include src="./row_attribute.tsx" />
+	</scripts>
+    <Panel class="RowAttribute">
+        <Panel id="StatIcon" />
+        <Label class="Name" text="{s:attribute_name}"/>
+        <Panel class="Value">
+            <Label class="Base" text="{s:base_value}"/>
+            <Label class="Extra" text="{s:extra_value}"/>
+        </Panel>
+        
+    </Panel>
+</root>

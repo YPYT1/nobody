@@ -2,6 +2,7 @@
     <scripts>
       <include src="file://{resources}/layout/custom_game/custom_ui_manifest.js"></include>
       <include src="file://{resources}/layout/custom_game/_global/global.js"></include>
+      <include src="file://{resources}/layout/custom_game/_global/kvdata.js"></include>
     </scripts>
 
     <Panel>

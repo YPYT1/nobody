@@ -1,0 +1,11 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+	<Panel class="nav_content skill">
+		<Label text="skill"/>
+	</Panel>
+</root>

@@ -42,6 +42,7 @@ const ImportComponents = GetImportPathFileList("components");
 const entries = [
     // { import: './utils/x-nettable-dispatcher.ts', filename: 'x-nettable-dispatcher.js' },
     { import: './_global/global.ts', filename: '_global/global.js' },
+    { import: './_global/kvdata.ts', filename: '_global/kvdata.js' },
     // if type is not set, it will not be included in the manifest
     // usually used for loading screen, tooltips and popups which loaded
     // by engine or BLoadLayout etc.

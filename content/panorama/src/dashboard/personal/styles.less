@@ -1,1 +1,171 @@
 @import "./../dashboard_panel.less";
+
+
+
+#NavButtonList {
+    margin-left: 2px;
+    margin-top: 64px;
+}
+
+.NavButtonGroupVert {
+
+    >RadioButton {
+        margin-top: 4px;
+        margin-bottom: 4px;
+        width: 106px;
+        height: 87px;
+        overflow: clip;
+        // border: 1px solid #fff;
+
+        .Icon {
+            width: 100%;
+            height: 100%;
+            background-repeat: no-repeat;
+            background-position: 50% 0%;
+            saturation: 0.2;
+            brightness: 0.5;
+        }
+
+
+        .RadioBox {
+            width: 106px;
+            height: 87px;
+            transform: translateX(-100px);
+            background-image: url("file://{images}/custom_game/dashboard/nav_radio_box.png");
+            transition-property: transform, opacity;
+            transition-duration: 0.23s;
+            // opacity: 0;
+        }
+
+        &:selected {
+            .RadioBox {
+                opacity: 1;
+                transform: translateX(0px);
+            }
+
+            Label,
+            .Icon {
+                saturation: 1;
+                brightness: 1;
+            }
+        }
+
+        Label {
+            horizontal-align: center;
+            vertical-align: bottom;
+            font-size: 18px;
+            color: #f7df8c;
+            text-shadow: 0px 0px 3px 3.0 #000;
+            saturation: 0.2;
+            brightness: 0.5;
+        }
+    }
+
+    #personal_hero .Icon {
+        background-image: url("file://{images}/custom_game/dashboard/personal/nav_hero_on.png");
+    }
+
+    #personal_skill .Icon {
+        background-image: url("file://{images}/custom_game/dashboard/personal/nav_skill_on.png");
+    }
+}
+
+.RightBoardContent {
+    margin-left: 16px;
+    width: 1406px;
+    height: 792px;
+    padding: 8px;
+    flow-children: down;
+    // border: 1px solid #b14b4b;
+}
+
+
+
+
+.LocalPlayerProfile {
+    height: 48px;
+    flow-children: right;
+    vertical-align: middle;
+
+
+    #AvatarImage {
+        width: 48px;
+        height: 48px;
+        border: 1px solid #fff;
+    }
+
+    .NameAndLevel {
+        flow-children: down;
+        vertical-align: middle;
+        margin-left: 8px;
+
+        .AboutLabel {
+            width: 100%;
+            flow-children: right;
+
+            #UserName {
+                vertical-align: middle;
+                width: 160px;
+                // border: 1px solid #fff;
+                Label {
+                    color: #ffffff;
+                    font-size: 17px;
+                }
+
+            }
+
+            .Level {
+                vertical-align: middle;
+                horizontal-align: right;
+                color: #ffffff;
+                font-size: 16px;
+            }
+        }
+
+        #PlayerExp {
+            width: 236px;
+            height: 22px;
+            border: 1px solid #000000;
+            background-color: #2b2b2b;
+
+            .ProgressBarLeft {
+                transition-property: width;
+                transition-duration: 0.11s;
+                // ProgressBar
+                background-image: url("file://{images}/custom_game/dashboard/personal/player_expbar_fg.png");
+                background-size: 236px 22px;
+            }
+
+            // .ProgressBarRight {}
+
+            Label {
+                horizontal-align: center;
+                color: #fafafa;
+                text-shadow: 0px 0px 2px 2.0 #000;
+            }
+        }
+    }
+}
+
+.ContentHeader {
+    width: 1405px;
+    height: 66px;
+    border: 2px solid #444444;
+    background-color: #0d0d0eaa;
+    flow-children: right;
+    padding-left: 12px;
+}
+
+.ContentFrame {
+    width: 100%;
+    // width: 1468px;
+    height: 741px;
+    // background-color: #333333;
+    border: 2px solid #444444;
+    border-top-width: 0px;
+
+    &.hero #personal_hero,
+    &.skill #personal_skill {
+        visibility: visible;
+    }
+}
