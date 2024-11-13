@@ -66,7 +66,7 @@ const entries = [
     { import: './tooltip/talent_tree/layout.xml', filename: 'tooltip/talent_tree/layout.xml' },
     { import: './tooltip/rune/layout.xml', filename: 'tooltip/rune/layout.xml' },
     { import: './tooltip/prop/layout.xml', filename: 'tooltip/prop/layout.xml' },
-
+    { import: './tooltip/talent_config/layout.xml', filename: 'tooltip/talent_config/layout.xml' },
     ...ImportHome,
     ...ImportComponents,
     ...ImportDashBoard,

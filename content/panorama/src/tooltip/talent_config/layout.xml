@@ -1,0 +1,34 @@
+<root>
+    <scripts>
+        <include src="./script.tsx" />
+    </scripts>
+    <styles>
+        <include src="./../../_styles/styles.less" />
+        <include src="./styles.less" />
+    </styles>
+    <Panel class="custom_tooltip" hittest="false">
+        <!-- <Panel class="Background">
+            <Panel class="Header">
+                <Panel class="Top"/>
+                <Panel class="Mid"/>
+            </Panel>
+        </Panel>
+        <Panel class="Bot" /> -->
+        <Panel class="TooltipContent">
+            <Panel class="Header">
+                <Label class="Name" text="{s:talent_name}"/>
+                <Label class="Level" text="{s:talent_level}"/>
+            </Panel>
+            <Panel class="Body">
+                <Panel id="LabelTips">
+                    <Label text="{s:talent_desc}" html="true" />
+                </Panel>
+                <Panel id="AbilityTips">
+
+                </Panel>
+                
+            </Panel>
+            
+        </Panel>
+    </Panel>
+</root>

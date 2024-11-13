@@ -1,4 +1,3 @@
-
 #TalentClosedBtn {
     width: 68px;
     height: 60px;
@@ -6,10 +5,11 @@
     background-image: url("file://{images}/custom_game/dashboard/personal/talent/closed_btn.png");
     // transform: translateY(-30px);
     horizontal-align: right;
+
     &:hover {
         brightness: 2;
     }
-    
+
 }
 
 #HeroPopups_Talent {
@@ -34,11 +34,11 @@
         height: 100%;
         // background-color: #ff0;
         // border: 1px solid #fff;
-    
+
         .Tool {
             horizontal-align: right;
             font-size: 22px;
-            color:#ffffff;
+            color: #ffffff;
         }
     }
 
@@ -132,16 +132,52 @@
         width: 84px;
         height: 84px;
         background-image: url("file://{images}/custom_game/dashboard/personal/talent/talent_border_1.png");
-        // background-img-opacity: 0;
         background-size: 100%;
-        // border: 1px solid #fff;
         border-radius: 50%;
-        // border: 1px solid #fff;
-        // visibility: collapse;
-        // wash-color: #aff988;
-        &:hover {
-            brightness: 2;
+
+        &.CanUp {
             background-image: url("file://{images}/custom_game/dashboard/personal/talent/talent_border_2.png");
+
+            &.Final {
+                background-image: url("file://{images}/custom_game/dashboard/personal/talent/final_talent_border_2.png");
+            }
+
+            &.Init {
+                background-image: url("file://{images}/custom_game/dashboard/personal/talent/init_talent_border_2.png");
+            }
+
+            .Used {
+                border-color: #92e872;
+            }
+
+            Label {
+                color: #92e872;
+            }
+        }
+
+        &.Max {
+            background-image: url("file://{images}/custom_game/dashboard/personal/talent/talent_border_3.png");
+
+            &.Final {
+                background-image: url("file://{images}/custom_game/dashboard/personal/talent/final_talent_border_3.png");
+            }
+
+            &.Init {
+                background-image: url("file://{images}/custom_game/dashboard/personal/talent/init_talent_border_3.png");
+            }
+
+            .Used {
+                border-color: #dbc986;
+            }
+
+            Label {
+                color: #dbc986;
+            }
+        }
+
+        &:enabled:hover {
+            brightness: 2;
+            // background-image: url("file://{images}/custom_game/dashboard/personal/talent/talent_border_2.png");
         }
 
         #StatIcon {
@@ -155,12 +191,12 @@
             background-size: 74% 74%;
             // background-color: #f00f0099;
             border-radius: 50%;
-            
+
             &.Init {
                 background-image: url("file://{images}/custom_game/dashboard/personal/talent/icon/Init.png");
             }
 
-            &:hover {
+            &:enabled:hover {
                 brightness: 2;
             }
         }
@@ -169,6 +205,11 @@
             width: 98px;
             height: 98px;
             background-image: url("file://{images}/custom_game/dashboard/personal/talent/init_talent_border_1.png");
+
+            .Used {
+                width: 24px;
+                height: 24px;
+            }
 
             #StatIcon {
                 margin: 10%;
@@ -181,10 +222,25 @@
             width: 92px;
             height: 92px;
             background-image: url("file://{images}/custom_game/dashboard/personal/talent/final_talent_border_1.png");
-            
+
         }
 
-        
+        .Used {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #8b8b8b;
+            background-color: #000000;
+            border-radius: 50%;
+            horizontal-align: center;
+            vertical-align: bottom;
+
+            Label {
+                align: center center;
+                font-size: 16px;
+                text-align: center;
+            }
+        }
+
     }
 }
 
@@ -207,13 +263,16 @@
         background-repeat: no-repeat;
         background-position: 50% 50%;
         background-size: 100%;
+        transition-property: background-image;
+        transition-duration: 0.15s;
         // border: 2px solid #000;
-        
-        &.On {
+
+        &.on {
             height: 10px;
             background-image: url("file://{images}/custom_game/dashboard/personal/talent/path_line_2.png");
             // background-size: 100% 10px;
         }
+
         // background-color: #fff;
         pre-transform-scale2d: 1.1;
         // horizontal-align: center;

@@ -1,0 +1,59 @@
+@width: 353px;
+
+#Contents {
+    padding: 0px;
+    border: 0px solid #00000000;
+    background-color: #00000000;
+    box-shadow: #000000 0px 0px 8px 0px;
+    box-shadow: none;
+
+    &.Tooltip {
+        background-color: #000000;
+        background-repeat: no-repeat;
+        background-position: left top;
+        padding: 0px;
+    }
+}
+
+.TooltipContent {
+    width: @width;
+    flow-children: down;
+    border: 2px solid #333333;
+    background-color: #000000ee;
+
+    .Header {
+        width: 100%;
+        flow-children: right;
+        background-color: #222222;
+        border-bottom: 2px solid #333333;
+        padding: 4px 8px;
+
+        .Name {
+            vertical-align: middle;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .Level {
+            vertical-align: middle;
+            horizontal-align: right;
+            font-size: 18px;
+            color: #787878;
+        }
+    }
+
+    .Body {
+        flow-children: down;
+        padding: 8px;
+
+        #LabelTips {
+            // width: 100%;
+            flow-children: down;
+
+            Label {
+                font-size: 18px;
+                color: #b2b2b2;
+            }
+        }
+    }
+}

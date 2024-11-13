@@ -3,8 +3,9 @@ declare global {
         SetItemID(item_id: string): void;
     }
 }
+export const components_name = "server_item";
 
-export const MainPanel = $.GetContextPanel() as Component_ServerItem;
+const MainPanel = $.GetContextPanel() as Component_ServerItem;
 
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 

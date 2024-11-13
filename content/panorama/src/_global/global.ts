@@ -8,12 +8,13 @@ declare global {
 
     interface CustomUIConfig {
         _PictuerFetterConfig: typeof PictuerFetterConfig
-        _PictuerCardData : typeof PictuerCardData
+        _PictuerCardData: typeof PictuerCardData
         CreateServerItem(item_id: string, item_count: number, parent: Panel): Panel;
         GetServerItemData(item_id: string): typeof ServerItemList[keyof typeof ServerItemList]
         GetPictureCardData(item_id: string): typeof PictuerCardData[keyof typeof PictuerCardData]
-        GetTextureSrc(texture: string, func?: string):string;
+        GetTextureSrc(texture: string, func?: string): string;
         FindOfficialHUDUI(panel_id: string): Panel | null;
+        HideCustomTooltip(): void;
     }
 }
 
@@ -46,7 +47,7 @@ const ABILITY_PATH_ORIGINAL = "file://{images}/spellicons/";
  * @param texture 
  * @returns 
  */
-GameUI.CustomUIConfig().GetTextureSrc = function(texture: string, func: string = "123") {
+GameUI.CustomUIConfig().GetTextureSrc = function (texture: string, func: string = "123") {
     // $.Msg(["texture",texture])
     let texture_arr = texture.split("_");
     let bIsItem = texture_arr[0] == "item";
@@ -72,8 +73,8 @@ GameUI.CustomUIConfig().GetTextureSrc = function(texture: string, func: string =
         // 技能
         let cut_arr = texture.split("/");
         if (
-            cut_arr[0] == "custom" 
-            || cut_arr[0] == "arms" 
+            cut_arr[0] == "custom"
+            || cut_arr[0] == "arms"
             || cut_arr[0] == "hero"
             || cut_arr[0] == "altar"
         ) {
@@ -97,4 +98,15 @@ GameUI.CustomUIConfig().FindOfficialHUDUI = function (panel_id: string) {
     } else {
         return null;
     }
+}
+GameUI.CustomUIConfig().HideCustomTooltip = function () {
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_text");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_ability");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_item");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_element_syenrgy");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_talent_tree");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_prop");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_rune");
+    $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_talentconfig");
+
 }
