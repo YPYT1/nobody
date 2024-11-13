@@ -37,7 +37,6 @@ export class ServiceTalent extends UIEventRegisterClass{
     //最终可点天赋 
     count_input = 30;
 
-
     constructor() {
         super("ServiceTalent" , true)
         this.Init();
@@ -54,7 +53,7 @@ export class ServiceTalent extends UIEventRegisterClass{
             //
             this.player_server_talent_list.push({
                 
-            })
+            });
             for (const key in NpcHeroesCustom) {
                 let hero = NpcHeroesCustom[key as keyof typeof NpcHeroesCustom];
                 this.player_talent_list[index][hero.HeroID] = [];
@@ -140,10 +139,7 @@ export class ServiceTalent extends UIEventRegisterClass{
         );
         
     }
-
-
     //加载服务器配置
-
     LoadPlayerServerTalent(player_id : PlayerID , Data : { [hero_id : number] : string}){
         let player_map_level = GameRules.ServiceInterface.player_map_level[player_id];
         for (const key in Data) {
@@ -232,21 +228,19 @@ export class ServiceTalent extends UIEventRegisterClass{
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前天赋未解锁...");
                 }
             }else {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "错误....");
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前层未解锁...");
             }
-    
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "天赋点不足...");
         }
-        
         this.GetPlayerServerTalent(player_id, {});
-
     }
     //保存天赋
     SaveTalentConfig(player_id: PlayerID, params: CGED["ServiceTalent"]["SaveTalentConfig"], callback?) {
         let hero_id = params.hero_id;
         let ti = params.index;
         this.player_server_talent_list[player_id][hero_id][ti] = CustomDeepCopy(this.player_talent_list[player_id][hero_id][ti]) as CGEDGetTalentListInfo;
+        DeepPrintTable(this.player_server_talent_list[player_id][hero_id][ti]);
         // GameRules.ArchiveService.EquipCfgModify(player_id, this.player_equip_config[player_id]);
         this.GetPlayerServerTalent(player_id, {});
     }
@@ -259,12 +253,13 @@ export class ServiceTalent extends UIEventRegisterClass{
         } else {
             this.player_talent_list[player_id][hero_id][ti] = CustomDeepCopy(this.player_server_talent_list[player_id][hero_id][ti]) as CGEDGetTalentListInfo;
         }
+        this.EmptyTalentOfPlayer(player_id , ti , hero_id);
         this.GetPlayerServerTalent(player_id, {});
     }
     //重置天赋
     ResetTalentConfig(player_id: PlayerID, params: CGED["ServiceTalent"]["ResetTalentConfig"], callback?) {
         let hero_id = params.hero_id; 
-        let ti = params.hero_id; 
+        let ti = params.index;
         if (!this.player_talent_list[player_id][hero_id]) {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "还原天赋:未找到英雄...");
         } else {
@@ -290,7 +285,23 @@ export class ServiceTalent extends UIEventRegisterClass{
                 }
             }
         }
+
+        this.EmptyTalentOfPlayer(player_id , ti , hero_id);
         this.GetPlayerServerTalent(player_id, {});
+    }
+
+    //获取玩家装备配置
+    EmptyTalentOfPlayer(player_id: PlayerID , index : number , hero_id : number) {
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceTalent_EmptyTalentOfPlayer",
+            {
+                data: {
+                    index: index,
+                    hero_id: hero_id,
+                }
+            }
+        );
     }
     
     //存档天赋系统

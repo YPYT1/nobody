@@ -46,30 +46,6 @@ export class ServiceData extends UIEventRegisterClass {
             ]);
             this.player_pictuer_vip.push(0);
         }
-        let CardDataList = Object.keys(PictuerCardData);
-            
-        for (let index = 1; index <= 50; index++) {
-            let is_ok = false;
-            let item_id = tonumber(CardDataList[RandomInt(0 , CardDataList.length - 1)]);
-            //;
-            for (let index = 0; index < this.server_monster_package_list[0].length; index++) {
-                if(this.server_monster_package_list[0][index].item_id == item_id){
-                    this.server_monster_package_list[0][index].number ++;
-                    is_ok = true;
-                    break
-                }
-            }
-            if(is_ok == false){
-                this.server_monster_package_list[0].push({
-                    id : tostring(item_id),
-                    "class" : 23 , 
-                    "lv" : 1,
-                    "number" : 1,
-                    "customs" : "",
-                    item_id : item_id,
-                })
-            }
-        }
         for(let key in PictuerCardData){
             let CardData = PictuerCardData[key as keyof typeof PictuerCardData];
             if(CardData.rarity == 5){
@@ -142,7 +118,6 @@ export class ServiceData extends UIEventRegisterClass {
                 }
             }
         }
-        DeepPrintTable(attr_count);
         
         //加载装备属性
 
@@ -196,10 +171,13 @@ export class ServiceData extends UIEventRegisterClass {
             this.player_pictuer_vip[player_id] = 1;
         }
         if(cmd == "!!dg"){
-            for (let index = 1; index <= 2000; index++) {
+
+            let CardDataList = Object.keys(PictuerCardData);
+            
+            for (let index = 1; index <= 50; index++) {
                 let is_ok = false;
-                let item_id = 2016;
-                //tonumber(CardDataList[RandomInt(0 , CardDataList.length - 1)]);
+                let item_id = tonumber(CardDataList[RandomInt(0 , CardDataList.length - 1)]);
+                //;
                 for (let index = 0; index < this.server_monster_package_list[0].length; index++) {
                     if(this.server_monster_package_list[0][index].item_id == item_id){
                         this.server_monster_package_list[0][index].number ++;

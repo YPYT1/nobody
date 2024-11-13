@@ -160,6 +160,12 @@ declare interface CustomGameEventDeclarations {
             local : CGEDGetTalentListInfo; //临时数据
         };
     }
+    ServiceTalent_EmptyTalentOfPlayer : {
+        data: {
+            index : number; // 第几页天赋
+            hero_id : number; // 英雄id
+        };
+    }
     /**
      * 游戏激活状态
      */
