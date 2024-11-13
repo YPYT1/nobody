@@ -15,7 +15,7 @@ export class skywrath_2b_a extends skywrath_2b {
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/units/heroes/hero_razor/razor_plasmafield.vpcf", context)
         precacheResString("particles/econ/items/razor/razor_ti6/razor_plasmafield_ti6.vpcf", context)
-        precacheResString("particles/custom/hero/skywrath3a/ring_thunder.vpcf",context)
+        precacheResString("particles/custom/hero/skywrath3a/ring_thunder.vpcf", context)
     }
 
     GetIntrinsicModifierName(): string {
@@ -32,6 +32,7 @@ export class modifier_skywrath_2b_a extends modifier_skywrath_2b {
     kl_ring_duration: number;
     kl_timer: number = 0;
 
+    kl_permanent = 0;
     UpdataSpecialValue(): void {
         this.duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "76", "ring_duration");
         this.ring_distance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "76", "ring_distance");
@@ -39,8 +40,10 @@ export class modifier_skywrath_2b_a extends modifier_skywrath_2b {
         this.kl_ring_distance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "78", "ring_distance");
         this.kl_ring_duration = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "78", "ring_duration");
         // rune_67	法爷#16	控雷生成的电圈将永久存在
-        if (this.caster.GetRuneKv("rune_67", "value") > 0 ) {
-            this.kl_ring_duration = this.kl_interval + 1;
+        if (this.caster.GetRuneKv("rune_67", "value") > 0) {
+            this.kl_permanent = 1;
+            this.kl_interval = 1;
+            // this.kl_ring_duration = this.kl_interval + 1;
         }
     }
 
@@ -49,14 +52,16 @@ export class modifier_skywrath_2b_a extends modifier_skywrath_2b {
             this.kl_timer += 0.1;
             if (this.kl_timer >= this.kl_interval) {
                 this.kl_timer = 0;
-                this.caster.RemoveModifierByName("modifier_skywrath_2b_a_ring2");
-                this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_2b_a_ring2", {
-                    duration: this.kl_ring_duration,
-                    manacost_bonus: 0,
-                    ring_distance: this.kl_ring_distance,
-                    ring_dmg_key: 1,
-                    is_clone: 0,
-                })
+                if (!this.caster.HasModifier("modifier_skywrath_2b_a_ring2")) {
+                    this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_2b_a_ring2", {
+                        duration: (this.kl_permanent == 1) ? -1 : this.kl_ring_duration,
+                        manacost_bonus: 0,
+                        ring_distance: this.kl_ring_distance,
+                        ring_dmg_key: 1,
+                        is_clone: 0,
+                    })
+                }
+
                 if (this.CheckClone()) {
                     const clone_unit = this.caster.clone_unit;
                     clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_2b_a_ring2", {
@@ -171,7 +176,7 @@ export class modifier_skywrath_2b_a_ring extends BaseModifier {
                 ApplyCustomDamage({
                     victim: enemy,
                     attacker: this.caster,
-                    damage: this.attack_damage * (1 + bonus_pct * 0.01),
+                    damage: this.caster.GetAverageTrueAttackDamage(null) * (1 + bonus_pct * 0.01),
                     damage_type: this.damage_type,
                     ability: this.GetAbility(),
                     element_type: this.element_type,

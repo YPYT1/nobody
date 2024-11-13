@@ -146,7 +146,7 @@ export const SetLabelDescriptionExtra = (
     text: string,
     index: number,
     AbilityValues: CAPropAbilityValues,
-    ObjectValues: CAPropObjectValues,
+    ObjectValues: CAPropObjectValues | null,
     showAll: boolean = false
 ) => {
     if (AbilityValues) {

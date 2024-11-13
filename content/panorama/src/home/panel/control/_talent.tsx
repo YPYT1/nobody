@@ -195,11 +195,13 @@ const GameEventsSubscribe = () => {
         let data = event.data;
         let player_info = Game.GetPlayerInfo(Players.GetLocalPlayer())
         let heroid = player_info.player_selected_hero_id;
+        GameUI.SetCameraDistance(1700);
         // let hero_name = data.hero_name.replace("npc_dota_hero_", "");
         CreateHeroTalentTree(heroid)
     })
 
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
+        $.Msg("HeroTalentSystem_GetHeroTalentListData")
         let data = event.data;
         let hero_talent_list = data.hero_talent_list;
         talent_points = data.talent_points;
@@ -256,10 +258,10 @@ const GameEventsSubscribe = () => {
                     let talent_desc = $.Localize(`#custom_talent_${id}_desc`)
                     let description_txt = SetLabelDescriptionExtra(
                         talent_desc,
-                        _data.uc,
+                        level,
                         row_hero_data.AbilityValues,
-                        row_hero_data.ObjectValues,
-                        true
+                        null,
+                        false
                     );
                     TalentNode.SetDialogVariable("AbilityDescription", description_txt)
                 }

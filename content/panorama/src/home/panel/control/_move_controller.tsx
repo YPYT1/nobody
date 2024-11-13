@@ -112,6 +112,9 @@ function OnKey_Down_U() {
     lock_camera = !lock_camera
 
 }
+
+const MAX_CAMERA_DISTANCE = 1800;
+let camera_value = 1200;
 export function OnInitMoveHotkey() {
     // GameUI.SetCameraTarget(-1 as EntityIndex);
     // UPARROW
@@ -121,6 +124,7 @@ export function OnInitMoveHotkey() {
     SetHotKey("RIGHTARROW", OnKey_Down_D, OnKey_Up_D);
     SetHotKey("space", Onkey_Backspace_Down, Onkey_Backspace_Up);
 
+    SetHotKey("I", ()=>{}, ()=>{});
     SetHotKey("W", OnKey_Down_W, OnKey_Up_W);
     SetHotKey("A", OnKey_Down_A, OnKey_Up_A);
     SetHotKey("S", OnKey_Down_S, OnKey_Up_S);
@@ -136,20 +140,40 @@ export function OnInitMoveHotkey() {
     // GameUI.SetCameraPitchMax(70);
 
 
-    if (!Game.IsInToolsMode()) {
-        GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-            // $.Msg([event , value])
-            if (value == 1) {
-                return true
-            } else {
-                return false
-            }
-        });
-    }
 
+    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+        // GameUI.SetCameraDistance(value);
+        // GameUI.SetCameraPitchMax(pitchmin);
+        // if (value == 6 && camera_value < MAX_CAMERA_DISTANCE) {
+        //     camera_value += 7;
+        //     ChangeCameraValue(camera_value);
+        //     return true
+        // } else if (value == 5 && camera_value > 800) {
+        //     camera_value -= 7;
+        //     ChangeCameraValue(camera_value);
+        //     return true
+        // }
+
+
+        if (value == 1) {
+            return true
+        } else {
+            return false
+        }
+    });
 
 }
 
+function ChangeCameraValue(value: number) {
+    // setStorage("custom_camera_value", value);
+    GameUI.SetCameraDistance(value);
+    let pitchmin = 60;
+    if (value > 1500) {
+        pitchmin += Math.min(1, (value - 1400) / (2300 - 1400)) * 32;
+    }
+    GameUI.SetCameraDistance(value);
+    GameUI.SetCameraPitchMax(pitchmin);
+}
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
 
     let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
@@ -193,33 +217,6 @@ function OnKey_Up_D() {
     MoveStateEvent({ Direction: "RIGHT", State: 0 })
 }
 
-function ChangeCameraValue(value: number) {
-    GameUI.SetCameraDistance(value);
-    // let pitchmin = 60;
-    // if (value > 1500) {
-    //     pitchmin += Math.min(1, (value - 1400) / (2300 - 1400)) * 32;
-    // }
-    // GameUI.SetCameraPitchMax(pitchmin);
-}
-
-let camera_value = 1200;
-
-// const CameraSetting = () => {
-
-//     GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-//         if (value == 6 && camera_value < 1400) {
-//             camera_value += 10;
-//         } else if (value == 5 && camera_value > 800) {
-//             camera_value -= 10;
-//         }
-//         ChangeCameraValue(camera_value);
-//         return false;
-//     });
-
-//     return (
-//         <Panel id="CameraSetting" visible={false} />
-//     );
-// };
 /**
  * 设置热键
  * @param key 

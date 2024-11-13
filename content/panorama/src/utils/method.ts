@@ -52,8 +52,8 @@ export function FormatDescription(
     curr_level: number = 1,
     show_all: boolean = true,
 ) {
-
     for (let key in AbilityValues) {
+        let _curr_level = curr_level
         let special_key = AbilityValues[key];
         let special_num: number[] = [];
         if (typeof (special_key) == "string") {
@@ -69,8 +69,8 @@ export function FormatDescription(
             let special_value: string[] = [];
 
             for (let i = 1; i <= special_num.length; i++) {
-                let class_name = i == curr_level ? "Current" : "OtherVariable";
-                if (curr_level >= i && i == special_num.length) {
+                let class_name = i == _curr_level ? "Current" : "OtherVariable";
+                if (_curr_level >= i && i == special_num.length) {
                     class_name = "Current"
                 }
                
@@ -89,10 +89,10 @@ export function FormatDescription(
                 `<span class="GameplayVariable">${special_value.join("<span class='Separator'> / </span>")}</span>`
             );
         } else {
-            if (curr_level <= 0) { curr_level = 1; }
-            curr_level = Math.min(curr_level, special_num.length)
-            let is_negative = special_num[curr_level - 1] < 0;
-            let value = Math.abs(special_num[curr_level - 1]) ;
+            if (_curr_level <= 0) { _curr_level = 1; }
+            _curr_level = Math.min(_curr_level, special_num.length)
+            let is_negative = special_num[_curr_level - 1] < 0;
+            let value = Math.abs(special_num[_curr_level - 1]) ;
             let col_value = `<span class="GameplayVariable Current ${is_negative ? "is_negative" : ""}">${value}${is_percent ? "%" : ""}</span>`
             original_description_txt = original_description_txt.replaceAll(
                 `%${key}%%%`,

@@ -56,7 +56,7 @@ const CustomGameEventsSubscribe = () => {
                 let textrue = ItemData.AbilityTextureName;
                 ItemImage.SetImage(GetTextureSrc(textrue));
                 ItemBorder.SetHasClass("rare_" + row.level, true)
-                ItemBorder?.SetDialogVariable("count", `${row.name}`)
+                ItemBorder?.SetDialogVariable("count", ``)
                 ItemBorder.SetPanelEvent("onmouseover", () => {
                     ShowCustomTooltip(ItemBorder, "rune", name, -1, row.level_index)
 
