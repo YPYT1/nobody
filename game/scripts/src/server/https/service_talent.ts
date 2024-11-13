@@ -57,17 +57,21 @@ export class ServiceTalent extends UIEventRegisterClass{
             for (const key in NpcHeroesCustom) {
                 let hero = NpcHeroesCustom[key as keyof typeof NpcHeroesCustom];
                 this.player_talent_list[index][hero.HeroID] = [];
-                this.player_talent_list[index][hero.HeroID].push({
-                    u : 0 , //总投入点 用于反算可以使用的点
-                    y : 100 , //可用天赋点
-                    i : {} ,
-                })
+                for (let index = 0; index < 3; index++) {
+                    this.player_talent_list[index][hero.HeroID].push({
+                        u : 0 , //总投入点 用于反算可以使用的点
+                        y : 100 , //可用天赋点
+                        i : {} ,
+                    })
+                }
                 this.player_server_talent_list[index][hero.HeroID] = [];
-                this.player_server_talent_list[index][hero.HeroID].push({
-                    u : 0 , //总投入点 用于反算可以使用的点
-                    y : 100 , //可用天赋点
-                    i : {} ,
-                })
+                for (let index = 0; index < 3; index++) {
+                    this.player_server_talent_list[index][hero.HeroID].push({
+                        u : 0 , //总投入点 用于反算可以使用的点
+                        y : 100 , //可用天赋点
+                        i : {} ,
+                    })
+                }
                 //初始化可以点的天赋
                 for( const Tkey in ServerTalentData){
                     let TalentData  = ServerTalentData[Tkey as keyof typeof ServerTalentData];
@@ -137,7 +141,6 @@ export class ServiceTalent extends UIEventRegisterClass{
                 }
             }
         );
-        
     }
     //加载服务器配置
     LoadPlayerServerTalent(player_id : PlayerID , Data : { [hero_id : number] : string}){

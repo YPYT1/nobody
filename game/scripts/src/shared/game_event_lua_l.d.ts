@@ -40,6 +40,7 @@ declare interface CGED {
 
     ArmsEvolution : {
         CreatArmssSelectData: {//当有技能点时可刷新选技能列表
+            
         },
         GetArmssSelectData : {//直接获取选技能列表
 
