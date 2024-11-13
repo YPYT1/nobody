@@ -36,6 +36,8 @@ export class ServiceTalent extends UIEventRegisterClass{
     or_input = 3;
     //最终可点天赋 
     count_input = 30;
+    //初始化栏位
+    index_count = 3;
 
     constructor() {
         super("ServiceTalent" , true)
@@ -57,15 +59,13 @@ export class ServiceTalent extends UIEventRegisterClass{
             for (const key in NpcHeroesCustom) {
                 let hero = NpcHeroesCustom[key as keyof typeof NpcHeroesCustom];
                 this.player_talent_list[index][hero.HeroID] = [];
-                for (let x = 0; x < 3; x++) {
+                this.player_server_talent_list[index][hero.HeroID] = [];
+                for (let x = 0; x < this.index_count; x++) {
                     this.player_talent_list[index][hero.HeroID].push({
                         u : 0 , //总投入点 用于反算可以使用的点
                         y : 100 , //可用天赋点
                         i : {} ,
                     })
-                }
-                this.player_server_talent_list[index][hero.HeroID] = [];
-                for (let x = 0; x < 3; x++) {
                     this.player_server_talent_list[index][hero.HeroID].push({
                         u : 0 , //总投入点 用于反算可以使用的点
                         y : 100 , //可用天赋点
@@ -77,19 +77,21 @@ export class ServiceTalent extends UIEventRegisterClass{
                     let TalentData  = ServerTalentData[Tkey as keyof typeof ServerTalentData];
                     if(TalentData.hero_id == hero.HeroID){
                         if(TalentData.tier_number == 0 && TalentData.parent_node == 0){
-                            this.player_talent_list[index][hero.HeroID][0].i[TalentData.tier_number] = {
-                                c : 0,
-                                k : {
-                                    [Tkey] : {
-                                        uc : 0,
+                            for (let y = 0; y < this.index_count; y++) {
+                                this.player_talent_list[index][hero.HeroID][y].i[TalentData.tier_number] = {
+                                    c : 0,
+                                    k : {
+                                        [Tkey] : {
+                                            uc : 0,
+                                        }
                                     }
                                 }
-                            }
-                            this.player_server_talent_list[index][hero.HeroID][0].i[TalentData.tier_number] = {
-                                c : 0,
-                                k : {
-                                    [Tkey] : {
-                                        uc : 0 ,
+                                this.player_server_talent_list[index][hero.HeroID][y].i[TalentData.tier_number] = {
+                                    c : 0,
+                                    k : {
+                                        [Tkey] : {
+                                            uc : 0 ,
+                                        }
                                     }
                                 }
                             }
@@ -306,6 +308,10 @@ export class ServiceTalent extends UIEventRegisterClass{
             }
         );
     }
+    /**
+     * 获取英雄天赋到英雄
+     */
+    select_talent_index : number = 0;
     
     //存档天赋系统
     Debug(cmd: string, args: string[], player_id: PlayerID) {
