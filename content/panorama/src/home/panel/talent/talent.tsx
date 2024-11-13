@@ -208,11 +208,11 @@ export const Init = () => {
         event_name: "ResetHeroTalent",
         params: {}
     })
-
-
 }
 
 
 (function () {
-    // Init()
+    if (Game.IsInToolsMode()) {
+        Init()
+    }
 })();

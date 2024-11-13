@@ -3,24 +3,7 @@ import { HideCustomTooltip, ShowCustomTooltip } from "../../../utils/custom_tool
 let MainPanel = $.GetContextPanel();
 const element_enum_label: CElementType[] = ["fire", "ice", "thunder", "wind", "light", "dark"];
 
-GameEvents.Subscribe("NewArmsEvolution_GetArmssElementBondDateList", event => {
-    let data = event.data;
-    let element_obj = data.Element;
 
-
-    for (let key in element_obj) {
-        if (key == "0") { continue }
-        let key_index = parseInt(key);
-        let index = parseInt(key) - 1;
-        let element_id = element_enum_label[index];
-        let element_count = element_obj[key_index as keyof typeof element_obj];
-        let elementPanel = MainPanel.FindChildTraverse(element_id)!;
-        elementPanel.SetHasClass("Enabled", element_count >= 2);
-        elementPanel.SetHasClass("Show", element_count > 0);
-        elementPanel.SetDialogVariableInt("current_count", element_count);
-        elementPanel.Data<PanelDataObject>().element_count = element_count
-    }
-})
 
 export const Init = () => {
     MainPanel.RemoveAndDeleteChildren();
@@ -40,6 +23,27 @@ export const Init = () => {
             HideCustomTooltip()
         })
     }
+
+    
+
+    GameEvents.Subscribe("NewArmsEvolution_GetArmssElementBondDateList", event => {
+        let data = event.data;
+        let element_obj = data.Element;
+    
+    
+        for (let key in element_obj) {
+            if (key == "0") { continue }
+            let key_index = parseInt(key);
+            let index = parseInt(key) - 1;
+            let element_id = element_enum_label[index];
+            let element_count = element_obj[key_index as keyof typeof element_obj];
+            let elementPanel = MainPanel.FindChildTraverse(element_id)!;
+            elementPanel.SetHasClass("Enabled", element_count >= 2);
+            elementPanel.SetHasClass("Show", element_count > 0);
+            elementPanel.SetDialogVariableInt("current_count", element_count);
+            elementPanel.Data<PanelDataObject>().element_count = element_count
+        }
+    })
 
     GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
         event_name: "GetArmssElementBondDateList",

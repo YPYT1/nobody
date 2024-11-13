@@ -38,11 +38,18 @@ const GetOpenPopupsState = () => {
 /** 显示对应的技能升级按钮 */
 const ShowAbilityUpgradeBtn = (node_index: number, show: boolean) => {
     // 如果已有打开的窗口,则不显示
-    let AbilityPanel = AbilityList.GetChild(node_index)!;
-    if (show) {
-        show = !CheckCurrentNodeAllMax(node_index);
+    // $.Msg(["ShowAbilityUpgradeBtn", node_index, show, AbilityList.GetChildCount()])
+    for (let i = 0; i < AbilityList.GetChildCount(); i++) {
+        let AbilityPanel = AbilityList.GetChild(i)!;
+        // AbilityPanel.SetHasClass("CanUpgrade", show);
+        let index = AbilityPanel.Data<PanelDataObject>().index as number;
+        if (index == node_index) {
+            if (show) { show = !CheckCurrentNodeAllMax(node_index); }
+            AbilityPanel.SetHasClass("CanUpgrade", show);
+            break;
+        }
     }
-    AbilityPanel.SetHasClass("CanUpgrade", show);
+
 
 
 }
@@ -56,7 +63,7 @@ const ShowAllAbilityUpgradeBtn = (show: boolean) => {
 
 /** 显示对应的技能树页面,或者直接关闭当前页面 */
 const ToggleAbilityTreePanel = (node_index: number, show: boolean) => {
-
+    // $.Msg(["ToggleAbilityTreePanel"])
     for (let i = 0; i < PlayerTalentTreeList.GetChildCount(); i++) {
         let AbilityTreePanel = PlayerTalentTreeList.GetChild(i);
         if (AbilityTreePanel) {
@@ -78,7 +85,7 @@ const ToggleAbilityTreePanel = (node_index: number, show: boolean) => {
     ShowAllAbilityUpgradeBtn(!show)
 }
 
-/** 当前节点分支全满 */
+/** 当前节点分支全满 需要优化,根据数据来判断*/
 const CheckCurrentNodeAllMax = (node_index: number) => {
     // $.Msg(["CheckCurrentNodeAllMax", node_index])
     let AbilityTreePanel = PlayerTalentTreeList.GetChild(node_index);
@@ -126,26 +133,25 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
     PlayerTalentTreeList.RemoveAndDeleteChildren();
     const ALPos = AbilityList.GetPositionWithinWindow();
 
-
-    // let hero_data = talent_data[heroname as keyof typeof talent_data];
-    let index = 0;
+    let index = 0
     for (let id in talent_data) {
         let row_data = talent_data[id as keyof typeof talent_data];
+        let node_index = row_data.index - 1;
         let tree_id = `ability_index_${row_data.index}`;
         let talent_id = `talent_${id}`;
         let AbilityTreePanel = PlayerTalentTreeList.FindChildTraverse(tree_id);
         if (AbilityTreePanel == null) {
             AbilityTreePanel = $.CreatePanel("Button", PlayerTalentTreeList, tree_id);
             AbilityTreePanel.BLoadLayoutSnippet("AbilityTreePanel")
-            // AbilityTreePanel.AddClass("Show")
             AbilityTreePanel.SetPanelEvent("onactivate", () => { })
+            AbilityTreePanel.Data<PanelDataObject>().index = row_data.index - 1;
             let AbilityPanel = AbilityList.GetChild(index);
-            // $.Msg(["AbilityPanel", AbilityPanel])
             if (AbilityPanel) {
+                AbilityPanel.Data<PanelDataObject>().index = node_index
                 let LevelUpBtn = AbilityPanel.FindChildTraverse("LevelUpBtn")!;
-                let curr_index = index;
+                let curr_index = row_data.index - 1;
                 LevelUpBtn.SetPanelEvent("onactivate", () => {
-                    // $.Msg(["Try Open", curr_index])
+                    $.Msg(["Try Open", curr_index])
                     ToggleAbilityTreePanel(curr_index, true)
                     // OpenCurrentAbilityTree(LevelUpBtn, curr_index)
                 })
@@ -201,7 +207,7 @@ const GameEventsSubscribe = () => {
     })
 
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
-        $.Msg("HeroTalentSystem_GetHeroTalentListData")
+        // $.Msg("HeroTalentSystem_GetHeroTalentListData")
         let data = event.data;
         let hero_talent_list = data.hero_talent_list;
         talent_points = data.talent_points;
@@ -209,6 +215,7 @@ const GameEventsSubscribe = () => {
         MainPanel.SetDialogVariableInt("point_count", talent_points);
         let hero_name = Entities.GetUnitName(local_hero).replace("npc_dota_hero_", "");
 
+        // $.Msg(["hero_talent_list", hero_talent_list])
 
         if (talent_points > 0) {
             // let hero_data = talent_data[hero_name as keyof typeof talent_data];
@@ -289,9 +296,6 @@ const GameEventsSubscribe = () => {
                     }
                 }
 
-                // $.Schedule(0, () => {
-                //     let open_state = GetOpenPopupsState()
-                // })
             })
         } else {
             // 关闭升级窗
