@@ -33,8 +33,6 @@ const GetImportPathFileList = (path_dir) => {
 
 };
 
-GetImportPathFileList("home");
-
 const ImportDashBoard = GetImportPathFileList("dashboard");
 const ImportHome = GetImportPathFileList("home");
 const ImportComponents = GetImportPathFileList("components");

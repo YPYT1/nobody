@@ -205,11 +205,12 @@ export class modifier_skywrath_2a_a_surround extends modifier_skywrath_2a_surrou
 export class modifier_skywrath_2a_a_surround_collision extends modifier_skywrath_2a_surround_collision {
 
     OnCreated_Extends() {
-        if (this.GetAuraOwner().summoned_damage < GameRules.GetDOTATime(false, false)) {
+        if (this.GetAuraOwner() == null) { return }
+        if ((this.GetAuraOwner().summoned_damage ?? 0) < GameRules.GetDOTATime(false, false)) {
             this.GetAuraOwner().summoned_damage = GameRules.GetDOTATime(false, false) + this.interval
             this.damage_type = DamageTypes.MAGICAL
             this.element_type = ElementTypes.FIRE;
-            this.SelfAbilityMul += this.caster.GetTalentKv("69","base_bonus");
+            this.SelfAbilityMul += this.caster.GetTalentKv("69", "base_bonus");
             const manacost_bonus = this.GetAuraOwner().manacost_bonus;
             const is_clone = this.GetParent().is_clone;
             const vPos = this.GetParent().GetAbsOrigin();

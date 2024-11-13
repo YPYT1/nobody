@@ -28,41 +28,10 @@ const TalentSaveBtn = $("#TalentSaveBtn") as Button;
 let INIT_TALENT_CONFIG_COUNT = 4;
 let select_hero_id = -1;
 let config_index = 0;
-let hero_talent_tree: ServerTalentTree = {};
 
 
 
 const server_talent_data = GameUI.CustomUIConfig().KvData.server_talent_data;
-
-export const OpenHeroTalentView = (heroid: number) => {
-    if (select_hero_id == heroid) {
-        HeroPopups_Talent.SetHasClass("Open", true)
-        return
-    }
-    select_hero_id = heroid;
-    hero_talent_tree = InitTalentData();
-    HeroPopups_Talent.SetDialogVariableInt("talent_point", 0)
-
-    HeroTalentConfig.RemoveAllOptions();
-    for (let i = 0; i < INIT_TALENT_CONFIG_COUNT; i++) {
-        let id = "" + i;
-        let optionLabel = $.CreatePanel("Label", HeroTalentConfig, `${id}`, {
-            text: "天赋页" + (i + 1),
-            html: true,
-        });
-        HeroTalentConfig.AddOption(optionLabel)
-    }
-    HeroTalentConfig.SetSelectedIndex(0);
-    HeroTalentConfig.SetPanelEvent("oninputsubmit", () => {
-        let selectPanel = HeroTalentConfig.GetSelected();
-        // $.Msg(["HeroTalentConfig id", id])
-    })
-
-    SetHeroTalentTree(heroid);
-
-    // 显示页面
-    HeroPopups_Talent.SetHasClass("Open", true)
-}
 
 const InitTalentData = () => {
     let hero_talent_tree: ServerTalentTree = {};
@@ -89,10 +58,58 @@ const InitTalentData = () => {
     return hero_talent_tree
 }
 
+let hero_talent_tree = InitTalentData();
+export const OpenHeroTalentView = (heroid: number) => {
+    $.Msg(["OpenHeroTalentView 1"])
+    if (select_hero_id == heroid) {
+        HeroPopups_Talent.SetHasClass("Open", true)
+        return
+    }
+    select_hero_id = heroid;
+    HeroPopups_Talent.SetDialogVariableInt("talent_point", 0)
+
+    HeroTalentConfig.RemoveAllOptions();
+    const CONFIG_LEN = Object.values(localData[heroid]).length;
+    for (let i = 0; i < CONFIG_LEN; i++) {
+        let id = "" + i;
+        let optionLabel = $.CreatePanel("Label", HeroTalentConfig, `${id}`, {
+            text: "天赋页" + (i + 1),
+            html: true,
+        });
+        optionLabel.Data<PanelDataObject>().index = i;
+        HeroTalentConfig.AddOption(optionLabel)
+    }
+    $.Schedule(0.01, () => {
+        HeroTalentConfig.SetSelectedIndex(0);
+        HeroTalentConfig.SetPanelEvent("oninputsubmit", () => {
+            config_index = parseInt(HeroTalentConfig.GetSelected().id);
+
+            // $.Msg(["HeroTalentConfig id", config_index])
+            // 更换配置
+            EmptyTalentConfig();
+            $.Schedule(0.1, () => {
+                RenderTalentConfig()
+            })
+
+        })
+    })
+
+
+    SetHeroTalentTree(heroid);
+
+    // 显示页面
+    HeroPopups_Talent.SetHasClass("Open", true)
+
+}
+
+const HideDropdownMenu = () => {
+    const HeroTalentConfigDropDownMenu = HeroTalentConfig.AccessDropDownMenu();
+    HeroTalentConfigDropDownMenu.RemoveClass("DropDownMenuVisible")
+}
+
 const styleValue = [49, 42, 46]
 
 const SetHeroTalentTree = (heroid: number) => {
-    // $.Msg(["SetHeroTalentTree", heroid])
     HeroTalentTree.RemoveAndDeleteChildren();
     HeroTalentTreePath.RemoveAndDeleteChildren();
     let talent_tree = hero_talent_tree[`${heroid}`];
@@ -116,11 +133,10 @@ const SetHeroTalentTree = (heroid: number) => {
         }
     }
 
-    // 渲染已点天赋点
-    let config_data = Object.values(localData[heroid])[0];
-    HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
-    RenderTalentConfig(config_data.i)
+
+    RenderTalentConfig()
 }
+
 
 interface talentConfigProps {
     [x: number]: {
@@ -170,6 +186,7 @@ const CreateTreeNode = (e: Panel, id: string, type: number) => {
     StatIcon.AddClass(rowdata.img)
     StatIcon.enabled = false;
     StatIcon.SetPanelEvent("onactivate", () => {
+        HideDropdownMenu();
         GameEvents.SendCustomGameEventToServer("ServiceTalent", {
             event_name: "ClickTalent",
             params: {
@@ -212,6 +229,7 @@ export const InitHeroTalentView = () => {
 
     TalentClosedBtn.SetPanelEvent("onactivate", () => {
         HeroPopups_Talent.SetHasClass("Open", false)
+        HideDropdownMenu();
     })
 
     GameEvents.Subscribe("ServiceTalent_GetPlayerServerTalent", event => {
@@ -219,29 +237,61 @@ export const InitHeroTalentView = () => {
         let data = event.data;
         serverData = data.server;
         localData = data.local;
-        if (select_hero_id == -1) { return }
+        if (select_hero_id == -1) {
+            TalentSaveBtn.enabled = false;
+            HeroTalentConfig.enabled = true;
+            return
+        }
         // $.Msg(["localData", localData])
         // 更新天赋页面
+        // $.Msg(Object.values(serverData[select_hero_id]).length)
+        let server_config = Object.values(serverData[select_hero_id])[config_index];
         let config_data = Object.values(localData[select_hero_id])[config_index];
-        HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
-        RenderTalentConfig(config_data.i)
+        // HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
+        RenderTalentConfig()
+        const bIsSame = JSON.stringify(server_config.i) == JSON.stringify(config_data.i);
+        TalentSaveBtn.enabled = !bIsSame;
+        HeroTalentConfig.enabled = bIsSame;
+    })
+
+
+    GameEvents.Subscribe("ServiceTalent_EmptyTalentOfPlayer", event => {
+        let data = event.data;
+        let hero_id = data.hero_id;
+        let config_index = data.index;
+        // $.Msg(["ServiceTalent_EmptyTalentOfPlayer",data])
+        // let ddd = localData[select_hero_id][config_index]
+        EmptyTalentConfig();
     })
 
     TalentResetBtn.SetPanelEvent("onactivate", () => {
+        HideDropdownMenu();
         GameEvents.SendCustomGameEventToServer("ServiceTalent", {
             event_name: "ResetTalentConfig",
             params: {
                 hero_id: select_hero_id,
-                index: config_index
+                index: config_index,
             }
         })
-        // $.Msg(["heroid", select_hero_id, config_index])
+    })
+
+    TalentSaveBtn.SetPanelEvent("onactivate", () => {
+        HideDropdownMenu();
+        GameEvents.SendCustomGameEventToServer("ServiceTalent", {
+            event_name: "SaveTalentConfig",
+            params: {
+                hero_id: select_hero_id,
+                index: config_index,
+            }
+        })
     })
 }
 
 
-const RenderTalentConfig = (config_tree: talentConfigProps) => {
-    // $.Msg(config_tree)
+const RenderTalentConfig = () => {
+    let config_data = Object.values(localData[select_hero_id])[config_index];
+    HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
+    const config_tree = config_data.i
     for (let tire in config_tree) {
         let row_data = config_tree[tire].k;
         for (let id in row_data) {
@@ -257,14 +307,32 @@ const RenderTalentConfig = (config_tree: talentConfigProps) => {
             StatIcon.enabled = uc < rowdata.max_number
 
             const PathNode = HeroTalentTreePath.FindChildTraverse(id)!;
-            if (PathNode) {PathNode.AddClass("on");}
+            if (PathNode) { PathNode.AddClass("on"); }
 
             const bOnMouse = StatIcon.BHasClass("onmouseover")
-            if(bOnMouse){
+            if (bOnMouse) {
                 SetTooltipsTalentConfig(StatIcon, id, uc)
             }
         }
 
     }
+}
+
+const EmptyTalentConfig = () => {
+    for (let i = 0; i < HeroTalentTree.GetChildCount(); i++) {
+        const NodePanel = HeroTalentTree.GetChild(i)!;
+        const id = NodePanel.id;
+        const StatIcon = NodePanel.FindChildTraverse("StatIcon")!;
+        NodePanel.SetDialogVariableInt("used", 0)
+        NodePanel.RemoveClass("CanUp")
+        NodePanel.RemoveClass("Max")
+        const bIsInit = false;
+        StatIcon.enabled = false
+    }
+    for (let i = 0; i < HeroTalentTreePath.GetChildCount(); i++) {
+        const PathNode = HeroTalentTreePath.GetChild(i)!;
+        if (PathNode) { PathNode.RemoveClass("on"); }
+    }
+
 }
 

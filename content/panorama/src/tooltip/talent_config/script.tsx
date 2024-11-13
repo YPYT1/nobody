@@ -24,7 +24,7 @@ export function Init() {
 
     MainPanel.SetPanelEvent("ontooltiploaded", () => {
         // UpdateTooltip()
-        $.Msg(["talent_config"])
+        // $.Msg(["talent_config"])
         // let ContextPanel = $.GetContextPanel();
         let level = $.GetContextPanel().GetAttributeInt("level", 0);
         let id = $.GetContextPanel().GetAttributeString("id", "");
