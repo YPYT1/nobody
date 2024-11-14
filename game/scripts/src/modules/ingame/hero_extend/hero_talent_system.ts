@@ -398,7 +398,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     //根据总投入点 解锁层
                     if(GameRules.MapChapter.GameDifficultyNumber < 104){  // 133 之前解锁
                         if (Object.values(this.player_talent_config.unlock_count).includes(this.player_talent_data[player_id].use_count)) {
-                            let s_u_index = Object.values(this.player_talent_config.unlock_count).indexOf((this.player_talent_data[player_id].use_count)) + 1;
+                            let s_u_index = Object.values(this.player_talent_config.unlock_count).indexOf((this.player_talent_data[player_id].use_count));
                             this.player_talent_list[player_id][s_u_index].iu = 1;
                             if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
                                 for (const si_key in this.player_talent_list[player_id][s_u_index].t[1].si) {
@@ -649,7 +649,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         if(GameRules.MapChapter.GameDifficultyNumber >= 104){
             let unitname = this.player_hero_name[player_id];
             if (Object.values(this.player_talent_config.unlock_level).includes(level)) {
-                let s_u_index = Object.values(this.player_talent_config.unlock_level).indexOf(level) + 1;
+                let s_u_index = Object.values(this.player_talent_config.unlock_level).indexOf(level);
                 this.player_talent_list[player_id][s_u_index].iu = 1;
                 if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
                     for (const si_key in this.player_talent_list[player_id][s_u_index].t[1].si) {
