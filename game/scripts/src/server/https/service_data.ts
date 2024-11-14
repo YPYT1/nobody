@@ -4,6 +4,7 @@
 import { UIEventRegisterClass } from '../../modules/class_extends/ui_event_register_class';
 import * as PictuerCardData from "../../json/config/server/picture/pictuer_card_data.json";
 import * as PictuerFetterConfig from "../../json/config/server/picture/pictuer_fetter_config.json";
+import * as ServerTalentData from "../../json/config/server/hero/server_talent_data.json";
 import { reloadable } from '../../utils/tstl-utils';
 
 @reloadable
@@ -93,12 +94,35 @@ export class ServiceData extends UIEventRegisterClass {
         let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
         let attr_count :  CustomAttributeTableType  = {
+            
         };
         //加载天赋属性
-        
+        let select_talent_index = GameRules.ServiceTalent.select_talent_index;
+        let hero_id = 6;
+        let talent_data = GameRules.ServiceTalent.player_server_talent_list[player_id][hero_id][select_talent_index].i;
+        for (let index = 0; index < 6; index++) {
+            if(talent_data.hasOwnProperty(index)){
+                for (const key in talent_data[index].k) {
+                    if(talent_data[index].k[key].uc > 0 ){
+                        let attr = ServerTalentData[key as keyof typeof ServerTalentData].ObjectValues as CustomAttributeTableType;
+                        for (const key1 in attr) {
+                            for (const key2 in attr[key1]) {
+                                if(!attr_count.hasOwnProperty(key1)){
+                                    attr_count[key1] = {};
+                                }
+                                if(attr_count[key1].hasOwnProperty(key2)){
+                                    attr_count[key1][key2] += attr[key1][key2];
+                                }else{
+                                    attr_count[key1][key2] = attr[key1][key2];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         //加载图鉴属性
         let pictuer_count =  GameRules.ServiceData.server_player_config_pictuer_fetter[player_id][0];
-
         for (const count_id of pictuer_count) {
             let length = GameRules.ServiceData.server_pictuer_fetter_list[player_id][count_id].length;  
             let ListValues = PictuerFetterConfig[count_id as keyof typeof PictuerFetterConfig].ListValues as { [key: string]: CustomAttributeTableType };

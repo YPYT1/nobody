@@ -6,6 +6,7 @@ import { HttpRequest } from "./http_request";
  */
 import { reloadable } from '../../utils/tstl-utils';
 import { UIEventRegisterClass } from "../../modules/class_extends/ui_event_register_class";
+import  * as ServerItemList  from "../../json/config/server/item/server_item_list.json";
 
 @reloadable 
 export class ArchiveService extends UIEventRegisterClass {
@@ -168,7 +169,6 @@ export class ArchiveService extends UIEventRegisterClass {
         let param_data = <GameOverParam>{
             state: 1,
         }
-        let steam_id = PlayerResource.GetSteamAccountID(0);
 
         HttpRequest.AM2Post(ACTION_GAME_OVER,
             {
@@ -184,62 +184,57 @@ export class ArchiveService extends UIEventRegisterClass {
                     this.general_game_over_data_pass_data.time = 515;
 
                     this.general_game_over_data_pass_data.game_count = GameRules.MapChapter.game_count;
-                    //
-                    for (let index = 0; index < 4; index++) {
+
+                    let player_count = GetPlayerCount();
+                    
+                    for (let index = 0 as PlayerID; index < player_count; index++) {
+                        let steam_id = PlayerResource.GetSteamAccountID(index);
+                        let steam_id_string = tostring(steam_id);
+                        let PlayerPassItem : CGEDPlayerPassItem[] = [];
+                        //获取掉落
+                        if(data.data.list.hasOwnProperty(steam_id_string)){
+                            let add_items = data.data.list[steam_id_string].add_items;
+                            for (const add_item of add_items) {
+                                let item_id = tostring(add_item.item_id);
+                                let rarity = ServerItemList[item_id as keyof typeof ServerItemList].rarity;
+                                PlayerPassItem.push({
+                                    "item_id" : tostring(add_item.item_id),
+                                    "number" : add_item.count,
+                                    "quality" : rarity,
+                                    "type" : 1,
+                                })
+                            }
+                        }
+                        let CGEDPlayerSkillExp : CGEDPlayerSkillExp[] = [
+                            {
+                                "1" : {
+                                    "exp" : 123,
+                                    "old_exp" : 23423,
+                                },
+                                "2" : {
+                                    "exp" : 324,
+                                    "old_exp" : 4234,
+                                },
+                                "3" : {
+                                    "exp" : 20,
+                                    "old_exp" : 53451,
+                                },
+                                "4" : {
+                                    "exp" : 20,
+                                    "old_exp" : 225432,
+                                },
+                            }
+                        ];
                         this.general_game_over_data_pass_data.player_list_data.push({
                             "exp" : 200,
                             "is_mvp" : 1,
                             "old_exp" : 100,
-                            "player_id" : 0,
+                            "player_id" : index,
                             "steam_id" : steam_id,
-                            "pass_item" : [
-                                {
-                                    "item_id" : "1",
-                                    "item_number" : 100,
-                                    "quality" : 3,
-                                    "type" : 1,
-                                },
-                                {
-                                    "item_id" : "2",
-                                    "item_number" : 12,
-                                    "quality" : 1,
-                                    "type" : 1,
-                                },
-                                {
-                                    "item_id" : "3",
-                                    "item_number" : 1,
-                                    "quality" : 2,
-                                    "type" : 1,
-                                },
-                                {
-                                    "item_id" : "4",
-                                    "item_number" : 5,
-                                    "quality" : 4,
-                                    "type" : 1,
-                                }
-                            ],
-                            "skill_exp" : [
-                                {
-                                    "1" : {
-                                        "exp" : 123,
-                                        "old_exp" : 23423,
-                                    },
-                                    "2" : {
-                                        "exp" : 324,
-                                        "old_exp" : 4234,
-                                    },
-                                    "3" : {
-                                        "exp" : 20,
-                                        "old_exp" : 53451,
-                                    },
-                                    "4" : {
-                                        "exp" : 20,
-                                        "old_exp" : 225432,
-                                    },
-                                }
-                            ]
+                            "pass_item" : PlayerPassItem,
+                            "skill_exp" : CGEDPlayerSkillExp,
                         })
-                        
+                        DeepPrintTable(this.general_game_over_data_pass_data.player_list_data);
                     }
                 }
                 let player_count = 6;

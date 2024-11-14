@@ -505,25 +505,32 @@ declare interface CGEDGeneralGameOverDataPassData {
     state : number // 通关状态 1通关  2未通关 
     time : number , //通关所用时间
     game_count : number , //游戏次数
-    player_list_data : {
-        player_id : PlayerID,
-        steam_id : number, //steam_id
+    player_list_data : CGEDPlayerListData[], //玩家存档数据
+}
+
+declare interface CGEDPlayerListData {
+    player_id : PlayerID,
+    steam_id : number, //steam_id
+    exp : number, //通关奖励经验
+    old_exp : number, //当时的经验
+    pass_item : CGEDPlayerPassItem[],
+    skill_exp : CGEDPlayerSkillExp[],
+    is_mvp : number , //是否为mvp
+}
+
+//通关物品 //包含  商城物品（例如抽奖券）
+declare interface CGEDPlayerPassItem { 
+    id ? : string,//物品id
+    item_id : string, // 物品id
+    number : number, //数量
+    quality : number , // 品质 
+    type : number , // 自定义物品
+}
+declare interface CGEDPlayerSkillExp {
+    [key : string] : { //类型
         exp : number, //通关奖励经验
         old_exp : number, //当时的经验
-        pass_item : { //通关物品 //包含  商城物品（例如抽奖券）
-            item_id : string, // 物品id
-            type : number , // 1商城物品 
-            item_number : number, //数量
-            quality : number , // 品质 
-        }[],
-        skill_exp : {
-            [key : string] : { //类型
-                exp : number, //通关奖励经验
-                old_exp : number, //当时的经验
-            }
-        }[],
-        is_mvp : number , //是否为mvp
-    }[],
+    }
 }
 
 

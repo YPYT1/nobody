@@ -79,16 +79,18 @@ declare interface GameOverReturn {
     code : number, //状态码
     msg : string, //服务器消息
     data :  {
-        [steam_id : string] : { // steamid
-            add_items : { //通关获得的物品
-                id : number, //道具唯一id
-                item_id: number, //物品唯一id
-                count: string, //数量
-                class: number, //类型
-                type: number, //类型
-                lv: number , //等级
-                customs :  string , //额外数据
-            }[]
+        list : {
+            [steam_id : string] : { // steamid
+                add_items : { //通关获得的物品
+                    id : number, //道具唯一id
+                    item_id: number, //物品唯一id
+                    count: number, //数量
+                    class: number, //类型
+                    type: number, //类型
+                    lv: number , //等级
+                    customs :  string , //额外数据
+                }[]
+            }
         }
     }
 }

@@ -122,10 +122,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         this.player_talent_data_client[player_id] = {};
         
         
-        for (let index = 1; index <= Object.keys(this.player_talent_config.unlock_count).length; index++) {
+        for (let index = 0; index < Object.keys(this.player_talent_config.unlock_count).length; index++) {
             //是否初始化
             // this.player_talent_list[player_id][index] = {};
-            if (index == 1) {
+            if (index == 0) {
                 this.player_talent_list[player_id][index] = {
                     uc: 1, //当技能投入点数
                     iu: 1, //当技能是否解锁 0 未解锁 1已解锁
@@ -163,7 +163,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
             let skill_index = data.index;
             let tier_number = data.tier_number;
-            if (skill_index == 1 && tier_number == 1) { //第一个技能默认点了
+            if (skill_index == 0 && tier_number == 1) { //第一个技能默认点了
                 unlock_key = HeroTalentObject[key].unlock_key;
                 break
             }
@@ -182,7 +182,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     si: {},
                 }
             }
-            if (skill_index == 1 && tier_number == 1) { //第一个技能默认点了
+            if (skill_index == 0 && tier_number == 1) { //第一个技能默认点了
                 h_max_tf[key] = 1;
                 this.player_talent_list[player_id][skill_index].t[tier_number].si[key] = {
                     iu: 1, //当前技能是否解锁 0 未解锁 1已解锁
@@ -214,11 +214,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             if (this.player_talent_list[player_id][skill_index].tm < tier_number && tier_number != 99) {
                 this.player_talent_list[player_id][skill_index].tm = tier_number;
             }
-            if(data.index == 1 && data.tier_number == 1){
+            if(data.index == 0 && data.tier_number == 1){
                 //增加技能
                 if(data.is_ability == 1){
                     let ablname = data.link_ability;
-                    let ablindex = data.index - 1;
+                    let ablindex = data.index;
                     if(BaseNPC.IsHero()){
                         GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , BaseNPC , 1);
                     }
@@ -233,7 +233,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 points: points,
             };
             //返还技能点
-            if(GameRules.MapChapter.GameDifficultyNumber >= 133){
+            if(GameRules.MapChapter.GameDifficultyNumber >= 104){
                 for (let index = 1; index < points; index++) {
                     this.TalentUnlockLevel(player_id , index)
                 }
@@ -323,6 +323,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             this.GetHeroTalentListData(player_id, {});
             return
         }
+        
 
         let skill_index = HeroTalentCounfg.index;
         let tier_number = HeroTalentCounfg.tier_number;
@@ -346,7 +347,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         }   
                     }
                     let unlock_key = HeroTalentCounfg.unlock_key;
-                    if(GameRules.MapChapter.GameDifficultyNumber > 103){
+                    if(GameRules.MapChapter.GameDifficultyNumber > 101){
                         //上下级解锁
                         for (let index = 0; index < unlock_key.length; index++) {
                             const element = tostring(unlock_key[index]);
@@ -383,7 +384,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                 let tu = HeroTalent.tier_number;
                                 this.player_talent_list[player_id][si].t[tu].si[element].iu = 1;
                                 let hero_star = HeroTalent.hero_star;
-                                print("let hero_star : " , hero_star)
                                 if(hero_star <= this.player_hero_star[player_id]){
                                     if (!this.player_talent_data_client[player_id].hasOwnProperty(element)) {
                                         this.player_talent_data_client[player_id][element] = {
@@ -396,7 +396,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         }
                     }
                     //根据总投入点 解锁层
-                    if(GameRules.MapChapter.GameDifficultyNumber < 133){  // 133 之前解锁
+                    if(GameRules.MapChapter.GameDifficultyNumber < 104){  // 133 之前解锁
                         if (Object.values(this.player_talent_config.unlock_count).includes(this.player_talent_data[player_id].use_count)) {
                             let s_u_index = Object.values(this.player_talent_config.unlock_count).indexOf((this.player_talent_data[player_id].use_count)) + 1;
                             this.player_talent_list[player_id][s_u_index].iu = 1;
@@ -569,11 +569,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             this.player_talent_index_max[player_id][skill_index].max = 1;
                             this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.tier_number;
                             let ablname = HeroTalentCounfg.link_ability;
-                            let ablindex = HeroTalentCounfg.index - 1;
+                            let ablindex = HeroTalentCounfg.index;
                             GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero , 1);
                         }else if(HeroTalentCounfg.tier_number == 1 && hero.hero_talent[key] > 1){
                             this.player_talent_index_max[player_id][skill_index].max = hero.hero_talent[key];
-                            let ablindex = HeroTalentCounfg.index - 1;
+                            let ablindex = HeroTalentCounfg.index;
                             let ablobj = hero.GetAbilityByIndex(ablindex);
                             ablobj.SetLevel(hero.hero_talent[key])
                         }else{
@@ -581,7 +581,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                 this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.tier_number;
                                 let sklevel = this.player_talent_index_max[player_id][skill_index].max;
                                 let ablname = HeroTalentCounfg.link_ability;
-                                let ablindex = HeroTalentCounfg.index - 1;
+                                let ablindex = HeroTalentCounfg.index;
                                 GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero , sklevel);
                             }
                         }
@@ -646,7 +646,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      */
     TalentUnlockLevel(player_id : PlayerID , level : number){
         //根据总投入点 解锁层
-        if(GameRules.MapChapter.GameDifficultyNumber >= 133){
+        if(GameRules.MapChapter.GameDifficultyNumber >= 104){
             let unitname = this.player_hero_name[player_id];
             if (Object.values(this.player_talent_config.unlock_level).includes(level)) {
                 let s_u_index = Object.values(this.player_talent_config.unlock_level).indexOf(level) + 1;

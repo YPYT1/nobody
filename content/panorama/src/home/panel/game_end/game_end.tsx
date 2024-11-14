@@ -51,7 +51,7 @@ export const Init = () => {
             let pass_item_list = Object.values(row_data.pass_item);
 
             for (let ItemData of pass_item_list) {
-                let RewardItem = CreateServerItem(ItemData.item_id, ItemData.item_number, RewardList);
+                let RewardItem = CreateServerItem(ItemData.item_id, ItemData.number, RewardList);
                 RewardItem.AddClass("PassItem");
             }
 

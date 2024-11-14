@@ -1425,7 +1425,6 @@ export class ServiceEquipment extends UIEventRegisterClass {
         let equip_id = params.equip_id;
         if( GameRules.ServiceEquipment.player_equip_list[player_id].hasOwnProperty(equip_id)){
             let equipobj = CustomDeepCopy(GameRules.ServiceEquipment.player_equip_list[player_id][equip_id]) as CGEDGetEquipListInfo;
-            DeepPrintTable(equipobj);
             let level_max = Object.keys(ServerAttrIntensifyConfig).length;
             if(!equipobj.i){
                 equipobj.i = 0;
