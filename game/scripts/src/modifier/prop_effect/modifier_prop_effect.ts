@@ -13,6 +13,7 @@ export class modifier_prop_effect extends BaseModifier {
 
     object: { [rune: string]: AbilityValuesProps };
 
+    timer_prop_41: number;
     timer_prop_42: number;
     timer_prop_43: number;
     timer_prop_45: number;
@@ -34,7 +35,7 @@ export class modifier_prop_effect extends BaseModifier {
         this.timer_prop_42 = 0;
         this.timer_prop_43 = 0;
         this.timer_prop_45 = 0;
-
+        this.timer_prop_41 = 0;
         this.prop_49_kills = 0;
         this.OnRefresh(params);
         this.StartIntervalThink(1)
@@ -139,6 +140,17 @@ export class modifier_prop_effect extends BaseModifier {
                 GameRules.BasicRules.PickAllExp(this.caster)
             }
         }
+
+        // prop_41	【神秘齿轮】	每60秒转动一次，每次获得随机效果，持续10秒
+        if (this.object["prop_41"]) {
+            this.timer_prop_41 += 1
+            if (this.timer_prop_41 >= this.Prop_Object("prop_41", 'interval')) {
+                this.timer_prop_41 = 0;
+                let duration = this.Prop_Object('prop_41', 'duration');
+                this.caster.AddNewModifier(this.caster, null, "modifier_shop_prop_41", { duration: duration })
+            }
+        }
+
 
         // prop_45	【冰霜之心】	每过10秒，冻结自身半径500码敌人1秒
         if (this.object["prop_45"]) {

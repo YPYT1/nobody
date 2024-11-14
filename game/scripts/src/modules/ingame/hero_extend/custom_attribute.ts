@@ -465,7 +465,7 @@ export class CustomAttribute {
      * @param timer 持续时间 -1为永久
      */
     SetAttributeInKey(hUnit: CDOTA_BaseNPC, key: string, attr_list: CustomAttributeTableType, timer: number = -1) {
-        print("SetAttributeInKey",key)
+        // print("SetAttributeInKey",key)
         // 对比写入的key 与 当前已存在的key 里面的结果是否想等
         if (!hUnit.IsHero()) { return }
         let exists_attr = hUnit.custom_attribute_key_table[key];

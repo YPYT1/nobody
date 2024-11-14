@@ -1,4 +1,5 @@
 import { LoadCustomComponent } from "../../_components/component_manager"
+import { InitHeroStarUpView, OpenStarUpPage } from "./_star"
 import { InitHeroTalentView, OpenHeroTalentView } from "./_talent"
 
 const SelectionHeroList = $("#SelectionHeroList")
@@ -22,7 +23,7 @@ const ATTRIBUTE_LIST: AttributeMainKey[] = [
 const MainPanel = $.GetContextPanel();
 const HeroDetailsPanel = $("#HeroDetailsPanel");
 const HeroTalentBtn = $("#HeroTalentBtn");
-
+const UpStarBtn = $("#UpStarBtn");
 
 let select_hero_id = -1;
 export const Init = () => {
@@ -59,10 +60,10 @@ export const Init = () => {
     }
 
     HeroTalentBtn.SetPanelEvent("onactivate", OpenHeroTalent)
-
+    UpStarBtn.SetPanelEvent("onactivate", OpenHeroStarUp)
 
     InitHeroTalentView()
-
+    InitHeroStarUpView()
     // 读取所有英雄天赋数据
     GameEvents.SendCustomGameEventToServer("ServiceTalent", {
         event_name: "GetPlayerServerTalent",
@@ -82,11 +83,13 @@ const SetHeroDetails = (hero_id: number) => {
 
 const OpenHeroTalent = () => {
     if (select_hero_id == -1) { return }
-    $.Msg(["OpenHeroTalent", select_hero_id])
     OpenHeroTalentView(select_hero_id)
 }
 
-
+const OpenHeroStarUp = () => {
+    if (select_hero_id == -1) { return }
+    OpenStarUpPage(select_hero_id)
+}
 (() => {
     Init();
 })();

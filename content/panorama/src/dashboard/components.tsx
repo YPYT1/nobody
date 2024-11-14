@@ -21,6 +21,12 @@ export const DASHBOARD_NAVBAR = {
         }
     },
 
+    "backpack": {
+        "Show": IsTestMode,
+        "Sub": {
+            "list": true,
+        }
+    },
 
 };
 

@@ -25,6 +25,8 @@ const TalentClosedBtn = $("#TalentClosedBtn") as Button;
 
 const TalentResetBtn = $("#TalentResetBtn") as Button;
 const TalentSaveBtn = $("#TalentSaveBtn") as Button;
+const TalentClearBtn = $("#TalentClearBtn") as Button;
+
 let INIT_TALENT_CONFIG_COUNT = 4;
 let select_hero_id = -1;
 let config_index = 0;
@@ -87,8 +89,10 @@ export const OpenHeroTalentView = (heroid: number) => {
             // $.Msg(["HeroTalentConfig id", config_index])
             // 更换配置
             EmptyTalentConfig();
-            $.Schedule(0.1, () => {
-                RenderTalentConfig()
+
+            $.Schedule(0.01, () => {
+                let config_data = Object.values(localData[select_hero_id])[config_index];
+                RenderTalentConfig(config_data)
             })
 
         })
@@ -133,8 +137,8 @@ const SetHeroTalentTree = (heroid: number) => {
         }
     }
 
-
-    RenderTalentConfig()
+    let config_data = Object.values(localData[select_hero_id])[config_index];
+    RenderTalentConfig(config_data)
 }
 
 
@@ -248,7 +252,7 @@ export const InitHeroTalentView = () => {
         let server_config = Object.values(serverData[select_hero_id])[config_index];
         let config_data = Object.values(localData[select_hero_id])[config_index];
         // HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
-        RenderTalentConfig()
+        RenderTalentConfig(config_data)
         const bIsSame = JSON.stringify(server_config.i) == JSON.stringify(config_data.i);
         TalentSaveBtn.enabled = !bIsSame;
         HeroTalentConfig.enabled = bIsSame;
@@ -264,10 +268,21 @@ export const InitHeroTalentView = () => {
         EmptyTalentConfig();
     })
 
-    TalentResetBtn.SetPanelEvent("onactivate", () => {
+    TalentClearBtn.SetPanelEvent("onactivate", () => {
         HideDropdownMenu();
         GameEvents.SendCustomGameEventToServer("ServiceTalent", {
             event_name: "ResetTalentConfig",
+            params: {
+                hero_id: select_hero_id,
+                index: config_index,
+            }
+        })
+    })
+
+    TalentResetBtn.SetPanelEvent("onactivate", () => {
+        HideDropdownMenu();
+        GameEvents.SendCustomGameEventToServer("ServiceTalent", {
+            event_name: "RestoreTalentConfig",
             params: {
                 hero_id: select_hero_id,
                 index: config_index,
@@ -288,8 +303,8 @@ export const InitHeroTalentView = () => {
 }
 
 
-const RenderTalentConfig = () => {
-    let config_data = Object.values(localData[select_hero_id])[config_index];
+const RenderTalentConfig = (config_data: CGEDGetTalentListInfo) => {
+
     HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
     const config_tree = config_data.i
     for (let tire in config_tree) {

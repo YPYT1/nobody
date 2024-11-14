@@ -1,8 +1,9 @@
 
+import { CreateCustomComponent, LoadCustomComponent } from "../../../dashboard/_components/component_manager";
 import { default as ChapterInfo } from "../../../json/config/chapter_info.json"
 import { default as NpcHeroesCustom } from "../../../json/npc_heroes_custom.json"
 
-const CreateServerItem =GameUI.CustomUIConfig().CreateServerItem;
+const CreateServerItem = GameUI.CustomUIConfig().CreateServerItem;
 const localPlayer = Game.GetLocalPlayerID();
 const MainPanel = $.GetContextPanel();
 const ChapterContainer = $("#ChapterContainer")
@@ -256,13 +257,15 @@ export const CreatePanel = () => {
     // DroppedInfoList
     // .ServerItem
     DroppedInfoList.RemoveAndDeleteChildren();
-    for (let i = 0; i < 8; i++) {
-        let item_id = `${i + 1}`
-        CreateServerItem(item_id, 0, DroppedInfoList)
-        // let ServerItem = $.CreatePanel("Panel", DroppedInfoList, "");
-        // ServerItem.BLoadLayout("file://{resources}/layout/custom_game/components/server_item/server_item.xml", true, true);
-        // // ServerItem.SetHasClass("x64", true);
-        // ServerItem.Data<PanelDataObject>().SetItemId("1");
+    const xxxx = [1201, 1202, 1203, 1204, 1205,
+        1206,
+        1279,
+        1280
+    ]
+    for (let item_id of xxxx) {
+        let serverItemPanel = CreateCustomComponent(DroppedInfoList, "server_item", ``);
+        serverItemPanel._SetServerItemInfo({ item_id: item_id })
+
     }
 
 

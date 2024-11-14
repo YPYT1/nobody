@@ -72,7 +72,7 @@ export const Init = () => {
     HeroState.RemoveAndDeleteChildren();
     HeroState.BLoadLayoutSnippet("HeroState");
 
-    StartThinkerLoop();
+    // StartThinkerLoop();
     LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", 99);
     LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", 99);
 

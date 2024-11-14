@@ -1,0 +1,159 @@
+.HeroStarUpContainer {
+    width: 462px;
+    height: 700px;
+    background-image: url("file://{images}/custom_game/dashboard/personal/star/bg.png");
+    horizontal-align: center;
+    // margin-top: 32px;
+    margin-top: 0px;
+    flow-children: down;
+    padding: 0px 12px;
+
+    .Header {
+        width: 100%;
+        // flow-children: right;
+        padding: 8px;
+        // border: 1px solid #fff;
+
+        .Title {
+            vertical-align: middle;
+            horizontal-align: center;
+            font-size: 20px;
+        }
+    }
+
+    .HeroCard {
+        margin-top: 32px;
+        // width: 100%;
+        flow-children: right;
+        horizontal-align: center;
+
+        .HeroBorder {
+            width: 144px;
+            height: 194px;
+            background-image: url("file://{images}/custom_game/dashboard/personal/star/hero_border_1.png");
+            margin-left: 4px;
+            margin-right: 4px;
+            padding: 4px;
+
+            .HeroStarPanel {
+                vertical-align: bottom;
+                width: 100%;
+                background-color: #00000099;
+
+                .HeroStar {
+                    .Star {
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+            }
+        }
+
+        .Arrow {
+            width: 94px;
+            height: 82px;
+            background-image: url("file://{images}/custom_game/dashboard/personal/star/arrow.png");
+            vertical-align: middle;
+        }
+
+
+    }
+
+    .StarUpEffect {
+        margin-top: 24px;
+        width: 392px;
+        height: 45px;
+        horizontal-align: center;
+        // 
+        background-image: url("file://{images}/custom_game/dashboard/personal/star/star_up_effect.png");
+    }
+
+    .Footer {
+        horizontal-align: center;
+        vertical-align: bottom;
+        margin-bottom: 40px;
+    }
+
+
+    #StarClosedBtn {
+        width: 39px;
+        height: 39px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/star/closed_btn.png");
+        horizontal-align: right;
+        margin-right: 8px;
+
+        &:hover {
+            brightness: 2;
+        }
+    }
+
+    #StarUpEffectList {
+        flow-children: down;
+        horizontal-align: center;
+        padding: 4px;
+
+        .EffectRow {
+            width: 392px;
+            height: 40px;
+            border: 2px solid #383636;
+            background-color: #00000099;
+            flow-children: right;
+            overflow: noclip;
+            margin-top: 4px;
+            margin-bottom: 4px;
+
+            Label {
+                margin-left: 8px;
+                vertical-align: middle;
+                font-size: 18px;
+            }
+
+            .UpIcon {
+                width: 42px * 1.6;
+                height: 20px * 1.6;
+                vertical-align: middle;
+                padding: 4px;
+                // border: 1px solid #fff;
+                // blur:  gaussian(6px);
+
+                .Icon {
+                    width: 42px;
+                    height: 20px;
+                    align: center center;
+                }
+
+                .Bg {
+                    width: 42px;
+                    height: 20px;
+                    align: center center;
+                    blur: gaussian(2px);
+                    animation-name: bgglow;
+                    animation-duration: 1.5s;
+                    // animation-timing-function: linear;
+                    animation-iteration-count: infinite;
+                }
+
+                &.Up {
+                    // background-image: url("file://{images}/custom_game/dashboard/personal/star/upeffect_up.png");
+
+                    .Bg,
+                    .Icon {
+                        background-image: url("file://{images}/custom_game/dashboard/personal/star/upeffect_up.png");
+                    }
+
+                }
+
+                &.New {
+                    // background-image: url("file://{images}/custom_game/dashboard/personal/star/upeffect_new.png");
+
+                    .Bg,
+                    .Icon {
+                        background-image: url("file://{images}/custom_game/dashboard/personal/star/upeffect_new.png");
+                    }
+                }
+            }
+        }
+
+    }
+}
+

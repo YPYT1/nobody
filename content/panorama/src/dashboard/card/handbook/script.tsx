@@ -1,5 +1,5 @@
 import { ToggleDashboardLoading } from "../../components";
-import { LoadComponent_Card } from "../../_components/component_manager";
+import { LoadCustomComponent } from "../../_components/component_manager";
 
 const MainPanel = $.GetContextPanel();
 const CardRarityDropDown = $("#CardRarityDropDown") as DropDown;
@@ -312,7 +312,7 @@ const InitCardList = () => {
     for (let card_data of CardListData) {
         let card_id = `${card_data.item_id}`;
         let _CardPanel = $.CreatePanel("Panel", CardList, `${card_id}`);
-        let CardPanel = LoadComponent_Card(_CardPanel, "card_item")
+        let CardPanel = LoadCustomComponent(_CardPanel, "card_item")
         CardPanel.SetCardItem(card_id, true, true);
         CardPanel.SetDialogVariableInt("count", 0);
         CardPanel.Data<PanelDataObject>().count = 0;

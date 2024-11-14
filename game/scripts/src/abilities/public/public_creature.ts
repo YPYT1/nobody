@@ -16,6 +16,8 @@ export class modifier_public_creature extends BaseModifier {
     state: boolean;
     attack_damage: number;
     attack_act: GameActivity;
+    bonus_move:number;
+
     IsHidden(): boolean {
         return true
     }
@@ -23,6 +25,7 @@ export class modifier_public_creature extends BaseModifier {
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
+        this.bonus_move = 0;
         this.state = true;
         this.StartIntervalThink(0.1)
     }
@@ -39,7 +42,6 @@ export class modifier_public_creature extends BaseModifier {
         if (this.state) {
             this.state = false;
             if (this.caster.custom_animation != null && this.caster.custom_animation["attack"]) {
-                print("modifier_public_creature")
                 let attack = this.caster.custom_animation["attack"];
                 this.caster.AddActivityModifier(attack.seq);
                 this.attack_act = attack.act ?? GameActivity.DOTA_ATTACK;
@@ -47,6 +49,7 @@ export class modifier_public_creature extends BaseModifier {
             this.StartIntervalThink(1)
             return
         }
+        this.bonus_move += 0.5
         let enemies = FindUnitsInRadius(
             DotaTeam.BADGUYS,
             this.GetParent().GetAbsOrigin(),
@@ -89,6 +92,7 @@ export class modifier_public_creature extends BaseModifier {
         return [
             ModifierFunction.ATTACKSPEED_BASE_OVERRIDE,
             ModifierFunction.PROCATTACK_FEEDBACK,
+            ModifierFunction.MOVESPEED_BONUS_CONSTANT
         ]
     }
 
@@ -98,6 +102,10 @@ export class modifier_public_creature extends BaseModifier {
 
     GetModifierAttackSpeedBaseOverride(): number {
         return 0.001
+    }
+
+    GetModifierMoveSpeedBonus_Constant(): number {
+        return this.bonus_move
     }
 
     CheckState(): Partial<Record<modifierstate, boolean>> {

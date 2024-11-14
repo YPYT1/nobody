@@ -7,6 +7,9 @@
 		<include src="./server_item.tsx" />
 	</scripts>
     <Panel class="ServerItem">
-
+        <Image id="ServerItemIcon"/>
+        <Panel class="ItemCount">
+            <Label text="{s:count}"/>
+        </Panel>
     </Panel>
 </root>

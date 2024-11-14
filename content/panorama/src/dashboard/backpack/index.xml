@@ -1,0 +1,26 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+		<include src="./../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+    <Panel class="DashBoardPanel">
+        <Panel class="BoardContainer">
+            <Panel class="BoardHeader">
+                <Panel class="BoardTypeImage backpack"/>
+                <Button id="DashboardClosedBtn" class="ClosedBtn" />
+            </Panel>
+            <Panel class="BoardContent">
+                <Panel id="NavButtonList" class="NavButtonGroupHor">
+                
+                </Panel>
+                <Panel id="ContentFrame" class="ContentFrame">
+
+                </Panel>
+            </Panel>
+
+        </Panel>
+    </Panel>
+</root>

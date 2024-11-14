@@ -1,5 +1,5 @@
 import { ToggleDashboardLoading } from "../../components";
-import { LoadComponent_Card } from "../../_components/component_manager";
+import { LoadCustomComponent } from "../../_components/component_manager";
 import { CardPopupsToggle } from "../_popups";
 
 const MainPanel = $.GetContextPanel();
@@ -102,7 +102,7 @@ const InitAllPictuerList = () => {
             const card_data = GetPictureCardData(`${card_id}`);
             let CardPanel = $.CreatePanel("Button", List, "" + card_id);
             // CardPanel.BLoadLayoutSnippet("Card");
-            let _CardPanel = LoadComponent_Card(CardPanel, "card_item")
+            let _CardPanel = LoadCustomComponent(CardPanel, "card_item")
             // CardPanel.BLoadLayout("file://{resources}/layout/custom_game/dashboard/card/_components/card_item/card_item.xml",true,false);
             _CardPanel.SetCardItem(`${card_id}`, false, false);
             CardPanel.AddClass("PictureMode");

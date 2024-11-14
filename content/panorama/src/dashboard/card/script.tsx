@@ -1,6 +1,6 @@
 
 import { DASHBOARD_NAVBAR, ToggleDashboardLoading } from './../components';
-import { LoadComponent_Card } from '../_components/component_manager';
+import { LoadCustomComponent } from '../_components/component_manager';
 import { CardPopupsToggle } from './_popups';
 
 const DASHBOARD = "card";
@@ -103,7 +103,7 @@ const GetCompoundCardList = (event: NetworkedData<CustomGameEventDeclarations["S
         let cardPanel = $.CreatePanel("Panel", CompoundCardList, card_id);
         cardPanel.BLoadLayoutSnippet("CompoundCardItem");
         const CardInfo = cardPanel.FindChildTraverse("CardInfo")!;
-        const CardItem = LoadComponent_Card(CardInfo, "card_item");
+        const CardItem = LoadCustomComponent(CardInfo, "card_item");
         CardItem.SetCardItem(card_id, false, false)
         CardItem.ShowCardIcon(true);
         const DragPanel = cardPanel.FindChildTraverse("DragPanel")!;

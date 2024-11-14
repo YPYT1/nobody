@@ -1,10 +1,13 @@
+export const COMPONENTS_NAME = "row_attribute";
+
 declare global {
     interface Component_RowAttribute extends Panel {
+        _Init(): void;
         SetAttributeMainKey(main_key: AttributeMainKey, base_value?: number, extra_value?: number): void;
         SetAttrValue(base_value: number, extra_value?: number): void;
     }
 }
-export const NavValue:number = 1;
+
 const MainPanel = $.GetContextPanel() as Component_RowAttribute;
 const StatIcon = $("#StatIcon")
 const SetAttributeMainKey = (main_key: AttributeMainKey, base_value: number = 0, extra_value: number = 0) => {

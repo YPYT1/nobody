@@ -1,4 +1,5 @@
 @import url("./_talent.less");
+@import url("./_star.less");
 
 #HeroBackground {
     width: 100%;
@@ -168,5 +169,24 @@
     height: 100%;
     background-color: #00000099;
     overflow: noclip;
-    // visibility: collapse;
+    visibility: collapse;
+
+    &.Open {
+        visibility: visible;
+    }
+
+}
+
+@keyframes bgglow {
+    0% {
+        pre-transform-scale2d: 1;
+    }
+
+    50% {
+        pre-transform-scale2d: 1.1;
+    }
+
+    100% {
+        pre-transform-scale2d: 1;
+    }
 }

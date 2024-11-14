@@ -5,12 +5,18 @@ interface ComponentProps {
     row_attribute: Component_RowAttribute;
 }
 
-export function LoadComponent_Card<K extends keyof ComponentProps>(e: Panel, key: K): ComponentProps[K] {
-    e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false);
-    return e as ComponentProps[K]
-}
+// export function LoadComponent_Card<K extends keyof ComponentProps>(e: Panel, key: K): ComponentProps[K] {
+//     e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false);
+//     return e as ComponentProps[K]
+// }
 
 export function LoadCustomComponent<K extends keyof ComponentProps>(e: Panel, key: K): ComponentProps[K] {
     e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false);
     return e as ComponentProps[K]
+}
+
+export function CreateCustomComponent<K extends keyof ComponentProps>(e: Panel, key: K, id: string) {
+    let compPanel = $.CreatePanel("Panel", e, id) as ComponentProps[K];
+    compPanel.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false)
+    return compPanel
 }

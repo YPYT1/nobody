@@ -113,6 +113,10 @@
 						<Label text="#Reset" />
 					</Button>
 
+					<Button id="TalentClearBtn" class="dashboard_btn red">
+						<Label text="#Clear" />
+					</Button>
+
 					<Panel class="TalentPoint">
 						<Panel class="IconLabel"/>
 						<Label class="PointValue" text="{d:talent_point}"/>
@@ -120,13 +124,78 @@
 				</Panel>
 				<Button id="TalentClosedBtn" />
 			</Panel>
-			
-			
-	
-				
-			
 		</Button>
-	
-		
+		<Button id="HeroPopups_Star" class="HeroPopupsBg">
+			<Panel class="HeroStarUpContainer">
+				<Panel class="Header">
+					<Label class="Title" text="升星 {d:heroid}"/>
+					<Button id="StarClosedBtn" />
+				</Panel>
+				<Panel id="HeroCardPanel" class="HeroCard">
+					<Panel class="HeroBorder OriginCard">
+						<Panel class="HeroCardImage">
+							<Panel class="HeroCardBorder" />
+						</Panel>
+						<Panel class="HeroStarPanel">
+							<Panel class="HeroStar">
+								<Panel class="Star "/>
+								<Panel class="Star "/>
+								<Panel class="Star "/>
+								<Panel class="Star "/>
+								<Panel class="Star "/>
+							</Panel>
+						</Panel>
+						
+					</Panel>
+					<Panel class="Arrow" />
+					<Panel class="HeroBorder AdvaCard">
+						<Panel class="HeroCardImage">
+							<Panel class="HeroCardBorder"/>
+						</Panel>
+						<Panel class="HeroStarPanel">
+							<Panel class="HeroStar">
+								<Panel class="Star "/>
+								<Panel class="Star "/>
+								<Panel class="Star "/>
+								<Panel class="Star "/>
+								<Panel class="Star "/>
+							</Panel>
+						</Panel>
+					</Panel>
+				</Panel>
+				<Panel class="StarUpEffect" />
+				<Panel id="StarUpEffectList">
+					<Panel class="EffectRow">
+						<Label text="解锁家看电视剧底框拉伸"/>
+						<Panel class="UpIcon Up">
+							<Panel class="Bg"/>
+							<Panel class="Icon"/>
+						</Panel>
+					</Panel>
+					<Panel class="EffectRow">
+						<Label text="解锁家看电视伸"/>
+						<Panel class="UpIcon New">
+							<Panel class="Bg"/>
+							<Panel class="Icon"/>
+						</Panel>
+					</Panel>
+				</Panel>
+				<Panel class="Footer">
+					<Panel class="OperationBtnList">
+						<Panel class="OptionRow UpStar">
+							<Panel class="ItemCost">
+								<Image id="ServerItemIcon" class="fragment"/>
+								<Label text="{d:curr_count} / {d:need_count}"/>
+							</Panel>
+							<Button id="UpStarBtn" class="dashboard_btn">
+								<Label text="升星" />
+							</Button>
+						</Panel>
+					</Panel>
+					
+				</Panel>
+				
+			</Panel>
+		</Button>
 	</Panel>
 </root>

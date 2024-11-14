@@ -11,7 +11,7 @@ const MainPanel = $.GetContextPanel();
 const PlayerExp = $("#PlayerExp") as ProgressBar;
 
 export const Init = () => {
-    $.Msg(["personal Layout"])
+    // $.Msg(["personal Layout"])
     // 加载nav button
     const UserName = $("#UserName") as AvatarImage;
 
