@@ -159,7 +159,7 @@ export class RuneSystem extends UIEventRegisterClass {
             hHero.rune_level_index = {};
             hHero.rune_trigger_count = {};
         }
-        // G.PlayerGameData.PulbicRuneData.ComRuneUseMax = 0
+        GameRules.RuneSystem.GetRuneSelectData(player_id, {});
     }
     /**
      * 获取符文 根据类型
@@ -236,7 +236,7 @@ export class RuneSystem extends UIEventRegisterClass {
             player_refresh_count: this.player_refresh_count[player_id],
             time : 0 ,
             type : 0 ,
-        };
+        }; 
         //当有数据才返回
         if (this.player_fate_data[player_id].length > this.player_fate_data_index[player_id]) {
             data.is_new_fate_check = 1;
