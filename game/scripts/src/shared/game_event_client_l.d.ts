@@ -559,6 +559,9 @@ declare interface CGEDPlayerRuneSelectData {
     name: string,  //符文名字
     level: number,  // 符文等级
     level_index: number;  //符文下标
+    attr_list : {
+        [ attr_id : string ] : number , //数值
+    }
 }
 
 

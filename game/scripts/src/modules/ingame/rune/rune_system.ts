@@ -3,6 +3,8 @@ import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_run
 
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
+import * as RuneAttrConfig from "../../../json/config/game/rune/rune_attr_config.json";
+
 //符文系统
 @reloadable
 export class RuneSystem extends UIEventRegisterClass {
@@ -35,6 +37,9 @@ export class RuneSystem extends UIEventRegisterClass {
 
     //选择倒计时
     count_down_time = 45;
+
+    //属性编号与值
+    rune_attr_list : string[] = [];
 
     rune_keyvalue: typeof RuneConfig = RuneConfig;
     /**
@@ -95,6 +100,11 @@ export class RuneSystem extends UIEventRegisterClass {
                 this.rune_ability_values[i_key][A_key] = numlist;
             }
         }
+
+        for (let i_key in RuneAttrConfig) {
+            this.rune_attr_list.push(i_key);
+        }
+        
         this.player_refresh_count_config = GameRules.PUBLIC_CONST.PLAYER_REFRESH_COUNT_CONFIG
     }
     InitPlayerUpgradeStatus( player_id : PlayerID , hHero: CDOTA_BaseNPC = null) {
@@ -272,7 +282,6 @@ export class RuneSystem extends UIEventRegisterClass {
     RefreshShopList(player_id: PlayerID, params: any, callback?) {
         if (this.player_fate_data[player_id][this.player_fate_data_index[player_id]].is_refresh == false) {
             let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
-            DeepPrintTable(fate_data_info);
             //修改已刷新状态
             fate_data_info.is_refresh = true;
             //最多几样物品
@@ -325,7 +334,32 @@ export class RuneSystem extends UIEventRegisterClass {
                     level_index = GetCommonProbability(RuneConfig[item_name as keyof typeof RuneConfig].item_level_pro);
                     level_info = RuneConfig[item_name as keyof typeof RuneConfig].item_level_section[level_index];
                 }
-                ret_data[index] = { name: item_name, level: level_info, level_index: level_index };
+
+                //属性附加 this.rune_attr_list
+                this.rune_attr_list;
+                let attr_count = 1;
+                let ran_number = RandomInt(1 , 100);
+                if(ran_number > 98){ // 99  100
+                    attr_count = 3;
+                }else if(ran_number > 89){
+                    attr_count = 2;
+                }
+                let attr_list : {
+                    [ attr_id : string ] : number , //数值
+                } = {};
+                for (let a_i = 0; a_i < attr_count ; a_i ++) {
+                    let attr_id_index = RandomInt(0 , this.rune_attr_list.length - 1);
+                    let attr_id = this.rune_attr_list[attr_id_index];
+                    if(attr_list.hasOwnProperty(attr_id)){
+                        a_i--;
+                    }else{
+                        let attr_id_data = RuneAttrConfig[attr_id as keyof typeof RuneAttrConfig];
+                        let attr_id_number = this.ZoomNumber(attr_id_data.AttrSection , attr_id_data.Decimal);
+                        attr_list[attr_id] = attr_id_number;
+                    }
+                }
+
+                ret_data[index] = { name: item_name, level: level_info, level_index: level_index , attr_list : attr_list};
                 shop_wp_list.push(item_name);
                 this.player_check_rune_name[player_id].push(item_name);
             }
@@ -345,6 +379,36 @@ export class RuneSystem extends UIEventRegisterClass {
         }
         this.GetRuneSelectData(player_id, params);
     }
+
+    /**
+     * 数字等比放大缩小功能
+     * @param value_scope 
+     * @param float 
+     */
+    ZoomNumber(value_scope : string , float : number) :  number{
+        let attr_value = 0;
+        let value_list = value_scope.split("-");
+        let value_min = tonumber(value_list[0]);
+        let value_max = tonumber(value_list[1]);
+        //等比放大
+        if (float > 0) {
+            for (let index = 0; index < float; index++) {
+                value_min = value_min * 10;
+                value_max = value_max * 10;
+            }
+        }
+        //计算出结果
+        attr_value = value_min + RandomInt(0, (value_max - value_min));
+        //等比缩小
+        if (float > 0) {
+            for (let index = 0; index < float; index++) {
+                attr_value = attr_value / 10;
+            }
+        }
+        return attr_value;
+    }
+
+    
     /**
      * 消耗刷新次数刷新
      * @param player_id 
@@ -359,7 +423,15 @@ export class RuneSystem extends UIEventRegisterClass {
                 //最多几样物品
                 let amount = this.player_select_amount[player_id];
                 let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-                let ret_data: { [key: string]: { name: string, level: number, level_index: number; }; } = {};
+                let ret_data: { [key: string]: {
+                    name: string, 
+                    level: number, 
+                    level_index: number; 
+                    attr_list : {
+                        [ attr_id : string ] : number , //数值
+                    }
+                    };
+                } = {};
                 let shop_wp_list: string[] = [];
                 for (let index = 1; index <= amount; index++) {
                     let rune_sub = this.player_select_rune_max[player_id] - this.check_rune_name[player_id].length;
@@ -392,18 +464,30 @@ export class RuneSystem extends UIEventRegisterClass {
                     if (RuneConfig[item_name as keyof typeof RuneConfig].is_item_level == 1) {
                         level_index = GetCommonProbability(RuneConfig[item_name as keyof typeof RuneConfig].item_level_pro);
                         level_info = RuneConfig[item_name as keyof typeof RuneConfig].item_level_section[level_index];
-                        //品质升级
-                        // if (hHero.rune_passive_type["item_rune_null_93_buff_1"]) {
-                        //     if (RollPercentage(15)) {
-                        //         let item_level_section_length = GameRules.RuneSystem.rune_keyvalue[item_name as keyof typeof GameRules.RuneSystem.rune_keyvalue].item_level_section.length;
-                        //         if ((item_level_section_length - 1) > level_index) {
-                        //             level_info++;
-                        //             level_index++;
-                        //         }
-                        //     }
-                        // }
                     }
-                    ret_data[index] = { name: item_name, level: level_info, level_index: level_index };
+                    //属性附加 this.rune_attr_list
+                    let attr_count = 1;
+                    let ran_number = RandomInt(1 , 100);
+                    if(ran_number > 98){ // 99  100
+                        attr_count = 3;
+                    }else if(ran_number > 89){
+                        attr_count = 2;
+                    }
+                    let attr_list : {
+                        [ attr_id : string ] : number , //数值
+                    } = {};
+                    for (let a_i = 0; a_i < attr_count ; a_i ++) {
+                        let attr_id_index = RandomInt(0 , this.rune_attr_list.length - 1);
+                        let attr_id = this.rune_attr_list[attr_id_index];
+                        if(attr_list.hasOwnProperty(attr_id)){
+                            a_i--;
+                        }else{
+                            let attr_id_data = RuneAttrConfig[attr_id as keyof typeof RuneAttrConfig];
+                            let attr_id_number = this.ZoomNumber(attr_id_data.AttrSection , attr_id_data.Decimal);
+                            attr_list[attr_id] = attr_id_number;
+                        }
+                    }
+                    ret_data[index] = { name: item_name, level: level_info, level_index: level_index , attr_list : attr_list};
                     shop_wp_list.push(item_name);
                 }
                 fate_data_info.item_list = ret_data;
@@ -464,6 +548,9 @@ export class RuneSystem extends UIEventRegisterClass {
             GameRules.RuneSystem.player_fate_data_index[player_id]++;
             fate_data_info.check_index = index;
             fate_data_info.is_check = true;
+
+
+            //需要添加符文属性
 
             GameRules.RuneSystem.GetRuneSelectData(player_id, params);
 
