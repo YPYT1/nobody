@@ -544,13 +544,16 @@ export class RuneSystem extends UIEventRegisterClass {
             }
             let item_name = fate_data_info.item_list[index].name;
             level_index = fate_data_info.item_list[index].level_index;
+
             GameRules.RuneSystem.GetRune(player_id , {"item_name" : item_name , select_type : fate_data_info.type } , level_index);
+            //根据选择的符文加载额外的属性
+            let attr_list = fate_data_info.item_list[index].attr_list;
+            GameRules.RuneSystem.GetSelectRuneAttr(player_id ,item_name ,  attr_list);
+
             GameRules.RuneSystem.player_fate_data_index[player_id]++;
             fate_data_info.check_index = index;
             fate_data_info.is_check = true;
-
-
-            //需要添加符文属性
+            
 
             GameRules.RuneSystem.GetRuneSelectData(player_id, params);
 
@@ -639,6 +642,9 @@ export class RuneSystem extends UIEventRegisterClass {
         GameRules.RuneSystem.GetRuneValues(player_id, item_name, level_index , is_all);
         //增加通过其他符文获取的符文数量
         GameRules.RuneSystem.player_rune_count[player_id] ++;
+        
+
+        //需要添加符文属性
         
 
         //特殊处理符文变化时
@@ -730,8 +736,35 @@ export class RuneSystem extends UIEventRegisterClass {
             }
             GameRules.CustomAttribute.SetAttributeInKey(hHero , "r_s_" + rune_name , attr_count)
         }
-        
     } 
+    /**
+     * 根据选择的符文
+     * @param player_id 
+     * @param attr_list 
+     */
+    GetSelectRuneAttr(player_id: PlayerID , rune_name : string, attr_list : {
+        [attr_id: string]: number;
+    }){
+        if(Object.keys(attr_list).length > 0){
+            let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+            let attr_count : CustomAttributeTableType = {};
+            for (const key in attr_list) {
+                let count = attr_list[key];
+                let RuneData = RuneAttrConfig[key as keyof typeof RuneAttrConfig];
+                let AttrName = RuneData.AttrName;
+                let AttrClass = RuneData.AttrClass;
+                if(!attr_count.hasOwnProperty(AttrName)){
+                    attr_count[AttrName] = {};
+                }
+                if(!attr_count[AttrName].hasOwnProperty(AttrClass)){
+                    attr_count[AttrName][AttrClass] = count;
+                }else{
+                    attr_count[AttrName][AttrClass] += count;
+                }
+            }
+            GameRules.CustomAttribute.SetAttributeInKey(hHero , "r_s_se_" + rune_name , attr_count)
+        }
+    }
 
     //失去符文属性
     LoseRuneValues(player_id: PlayerID, rune_name: string, level_index: number) {
