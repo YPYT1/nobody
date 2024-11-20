@@ -554,7 +554,6 @@ export class RuneSystem extends UIEventRegisterClass {
             fate_data_info.check_index = index;
             fate_data_info.is_check = true;
             
-
             GameRules.RuneSystem.GetRuneSelectData(player_id, params);
 
             //刷新一次

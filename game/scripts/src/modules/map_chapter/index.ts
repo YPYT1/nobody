@@ -4,15 +4,17 @@ import * as MapInfoDifficulty from "../../json/config/map_info_difficulty.json"
 import * as NpcHeroesCustom from "../../json/npc_heroes_custom.json"
 import { UIEventRegisterClass } from "../class_extends/ui_event_register_class";
 import { MissionSystem } from "../ingame/mission/mission_system";
+import * as ChapterInfo from "../../json/config/chapter_info.json"
+
 
 //营地信息
 
 @reloadable
 export class MapChapter extends UIEventRegisterClass {
 
-    CampMapHandle: SpawnGroupHandle;
+    CampMapHandle : SpawnGroupHandle;
 
-    ChapterMapHandle: SpawnGroupHandle;
+    ChapterMapHandle : SpawnGroupHandle;
 
     GameDifficulty: keyof typeof MapInfoDifficulty = "101";
     //难度数字类型
@@ -21,7 +23,6 @@ export class MapChapter extends UIEventRegisterClass {
     MapIndex: keyof typeof MapInfo = "m1";
 
     MAP_CAMP = { name: "camp", x: 0, y: 0 };
-
 
     map_list_config : {
         [ map_key : string] : {
@@ -48,11 +49,11 @@ export class MapChapter extends UIEventRegisterClass {
     //根据等级可用地图
     _map_list : { [key : string ] : UserMapSelectDifficulty }  = {};
     //玩家已通关的难度  
-    level_difficulty: string[] = [];
+    level_difficulty : string[] = [];
     //玩家可用英雄列表  
-    player_hero_available: MapSelectHeroData[][] = [];
+    player_hero_available : MapSelectHeroData[][] = [];
     //玩家选择英雄记录
-    player_select_hero: MapSelectHeroList[] = [];
+    player_select_hero : MapSelectHeroList[] = [];
     //玩家数量
     player_count : number = 1;
     //新玩家标记
@@ -76,71 +77,22 @@ export class MapChapter extends UIEventRegisterClass {
         vote_time : 0 ,
     };
 
-    game_count = 0;
+    game_count = 0; 
 
     constructor() {
         super("MapChapter", true) 
-        print("[MapChapter]:constructor")
+        for (let index = 0; index < 4; index++) {
+            this.level_difficulty.push("");
+        }
     }
 
     InitChapterMap() {
-        print("InitChapterMap")
         let current_map = GetMapName();
+
+        this.DifficultySelectInit("|107|109|121")
         if (current_map != "main") { return }
-        //加载营地
+        //加载营地ma
         GameRules.MapChapter.OnCreatedCampMap();
-
-        this._map_list["c1"] = {
-            user_difficulty: 108, // 玩家最高可选难度
-            difficulty_max: 108, // 地图最高难度
-            map_key: "m1", //地图编号 m1 m2 
-        };
-        this._map_list["c2"] = {
-            user_difficulty: 113, // 玩家最高可选难度
-            difficulty_max: 115, // 地图最高难度    
-            map_key: "m1", //地图编号 m1 m2 
-        }   
-        this._map_list["c3"] = {
-            user_difficulty: 124, // 玩家最高可选难度   
-            difficulty_max: 124, // 地图最高难度
-            map_key: "m1", //地图编号 m1 m2 
-        }
-        this._map_list["c4"] = {
-            user_difficulty: 132, // 玩家最高可选难度   
-            difficulty_max: 132, // 地图最高难度
-            map_key: "m1", //地图编号 m1 m2 
-        }
-        this._map_list["c5"] = {
-            user_difficulty: 140, // 玩家最高可选难度   
-            difficulty_max: 140, // 地图最高难度
-            map_key: "m1", //地图编号 m1 m2 
-        }
-
-        this._map_list["c6"] = {
-            user_difficulty: 208, // 玩家最高可选难度
-            difficulty_max: 208, // 地图最高难度
-            map_key: "m1", //地图编号 m1 m2 
-        };
-        this._map_list["c7"] = {
-            user_difficulty: 213, // 玩家最高可选难度
-            difficulty_max: 215, // 地图最高难度    
-            map_key: "m1", //地图编号 m1 m2 
-        }   
-        this._map_list["c8"] = {
-            user_difficulty: 224, // 玩家最高可选难度   
-            difficulty_max: 224, // 地图最高难度
-            map_key: "m1", //地图编号 m1 m2 
-        }
-        this._map_list["c9"] = {
-            user_difficulty: 232, // 玩家最高可选难度   
-            difficulty_max: 232, // 地图最高难度
-            map_key: "m1", //地图编号 m1 m2 
-        }
-        this._map_list["c10"] = {
-            user_difficulty: 240, // 玩家最高可选难度   
-            difficulty_max: 240, // 地图最高难度
-            map_key: "m1", //地图编号 m1 m2 
-        }
 
         this.player_count = GetPlayerCount();
 
@@ -169,8 +121,6 @@ export class MapChapter extends UIEventRegisterClass {
             });
         }
 
-        //创建游戏
-        GameRules.ArchiveService.CreateGame();
         // GameRules.GetGameModeEntity().SetFogOfWarDisabled(true);
         // for (let hHero of HeroList.GetAllHeroes()) {
         //     let vect = hHero.GetAbsOrigin();
@@ -186,10 +136,133 @@ export class MapChapter extends UIEventRegisterClass {
         if(GameRules.MapChapter.is_new_player == 1){
             GameRules.MapChapter.GetNewPlayerStatus( 0 , {})
         }
-
         //开始游戏确认功能
         GameRules.MapChapter.SelectDifficultyAffirmThink();
-        
+    }
+    //难度初始化
+    DifficultySelectInit( str : string = "|103"){
+        this._map_list = {};
+        this._map_list["c1"] = {
+            user_difficulty: 101, // 玩家最高可选难度
+            difficulty_max: 108, // 地图最高难度
+            map_key: "m1", //地图编号 m1 m2 
+        };
+        if(str != ""){
+            str = str.slice(1);
+            let str_list = str.split("|");
+            for (let index = 0; index < str_list.length; index++) {
+                let mid = str_list[index];
+                let mid_number = tonumber(mid);
+                print("mid_number : " , mid_number);
+                let MidData = MapInfoDifficulty[mid as keyof typeof MapInfoDifficulty];
+                let unlock_difficulty_list = MidData.unlock_difficulty;
+                let chapter_key = MidData.chapter_key;
+                let map_key = MidData.map_key;
+                //当前难度
+                if(!this._map_list.hasOwnProperty(chapter_key)){
+                    let default_difficulty = ChapterInfo[chapter_key as keyof typeof ChapterInfo].default_difficulty;
+                    let default_max = ChapterInfo[chapter_key as keyof typeof ChapterInfo].default_max;
+                    let difficulty_max = default_difficulty + default_max - 1;
+                    this._map_list[chapter_key] = {
+                        user_difficulty : mid_number, // 玩家最高可选难度
+                        difficulty_max : difficulty_max, // 地图最高难度
+                        map_key: map_key, //地图编号 m1 m2 
+                    };
+                }else{  
+                    //如果有则覆盖
+                    if(this._map_list[chapter_key].user_difficulty < mid_number){
+                        this._map_list[chapter_key].user_difficulty = mid_number;
+                    }   
+                }
+                //解锁下个难度
+                for (const unlock_difficulty of unlock_difficulty_list) {
+                    if(unlock_difficulty != "null"){
+                        let unlock_difficulty_str = tostring(unlock_difficulty);
+                        let UnlockMidData = MapInfoDifficulty[unlock_difficulty_str as keyof typeof MapInfoDifficulty];
+                        let UnlockChapterKey = UnlockMidData.chapter_key;
+                        if(!this._map_list.hasOwnProperty(UnlockChapterKey)){
+                            if(this._map_list[UnlockChapterKey].user_difficulty < mid_number){
+                                this._map_list[UnlockChapterKey].user_difficulty = mid_number;
+                            }
+                        }else{
+                            let unlock_default_difficulty = ChapterInfo[UnlockChapterKey as keyof typeof ChapterInfo].default_difficulty;
+                            let unlock_default_max = ChapterInfo[UnlockChapterKey as keyof typeof ChapterInfo].default_max;
+                            let unlock_difficulty_max = unlock_default_difficulty + unlock_default_max - 1;
+                            this._map_list[UnlockChapterKey] = {
+                                user_difficulty : tonumber(unlock_difficulty), // 玩家最高可选难度
+                                difficulty_max : unlock_difficulty_max, // 地图最高难度
+                                map_key: map_key, //地图编号 m1 m2 
+                            };
+                        }
+                    }
+                }
+            }
+        }
+
+        DeepPrintTable(this._map_list);
+
+        // if(str && str != ""){
+        //     let str_list = str.split(",");
+        //     let cache_map_list : number[] = [];
+        //     for (let index = 0; index < this._map_list.length; index++) {
+        //         cache_map_list.push(0)
+        //     }
+        //     for (const map_id of str_list) {
+        //         if(map_id.length >= 3){ //设置默认值
+        //             let di_decade = tonumber(map_id.slice(map_id.length - 2));
+        //             let chapter = tonumber(map_id.slice(0 , -2));
+        //             if(chapter >= 20 && chapter <= 30){
+        //                 continue;
+        //             }
+        //             //章节递归
+        //             if(di_decade > cache_map_list[chapter - 1] ){
+        //                 cache_map_list[chapter - 1] = di_decade
+        //             }
+        //         }
+        //     }
+        //     for (let index = (cache_map_list.length - 1) ; 0 <= index ; index --) {
+        //         if(cache_map_list[index] > 0){
+        //             //优先解锁自己这个难度
+        //             this._map_list[index].is_unlock = 1;
+        //             //前面有 则解锁前面难度    
+        //             if(index != 0){
+        //                 for (let i = 0; i < index; i++) {
+        //                     this._map_list[i].is_unlock = 1;
+        //                 }
+        //             }
+        //             //当前难度设定
+        //             let TwiceMapData = TwiceMapInfo[this._map_list[index].map_index as keyof typeof TwiceMapInfo]; 
+ 
+        //             let default_max = TwiceMapData.default_max;
+        //             let map_di = -1;
+        //             let map_difficulty = 0;
+        //             if((cache_map_list[index] + 1) >= default_max){
+        //                 map_di = (index + 1) * 100 + default_max;
+        //                 map_difficulty = default_max;
+        //             }else{
+        //                 map_di = (index + 1) * 100 + cache_map_list[index] + 1;
+        //                 map_difficulty = cache_map_list[index] + 1;
+        //             }
+        //             this._map_list[index].user_difficulty = map_di;
+        //             //下个难度解锁设定
+        //             for (const key in TwiceMapInfo) {
+        //                 if(TwiceMapInfo[key as keyof typeof TwiceMapInfo].unlock_difficulty == 0){
+        //                     continue;
+        //                 }
+        //                 let chapter_num =  math.floor(TwiceMapInfo[key as keyof typeof TwiceMapInfo].unlock_difficulty / 100); //章节
+        //                 let difficulty_num = TwiceMapInfo[key as keyof typeof TwiceMapInfo].unlock_difficulty % 100; //难度
+        //                 if(chapter_num == (index + 1) && difficulty_num <= cache_map_list[index]){
+        //                     if(TwiceMapInfo[key as keyof typeof TwiceMapInfo].is_open == 1){
+        //                         let key_index = tonumber(key.replace("m","")) - 1;
+        //                         if(this._map_list[key_index]){
+        //                             this._map_list[key_index].is_unlock = 1;
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 
 

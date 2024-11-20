@@ -121,6 +121,8 @@ export class GameEvent {
             GameRules.ArchiveService.CheckjhmCode(0);
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
+            //创建游戏
+            GameRules.ArchiveService.CreateGame();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
 
         } else if (State_Get == GameState.TEAM_SHOWCASE) { //队伍展示阶段

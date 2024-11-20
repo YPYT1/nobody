@@ -71,6 +71,7 @@ declare interface ConfirmDifficultyReturn {
  */
 declare interface GameOverParam {
 	state: number , //结束状态 0 输了 1赢了
+    host_steam_id : number ,//主机steamid
 }
 /**
  * 游戏结束返回
@@ -92,6 +93,7 @@ declare interface GameOverReturn {
                 }[]
             }
         }
+        level_difficulty : string, //当前可用难度
     }
 }
 

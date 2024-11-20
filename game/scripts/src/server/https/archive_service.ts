@@ -35,12 +35,15 @@ export class ArchiveService extends UIEventRegisterClass {
 
     //创建游戏
     CreateGame() {
+        let count = GetPlayerCount();
         let param_data = <CreateGameParam>{
             steamids: []
         }
-        let player_count = 6;
-        let steam_id = PlayerResource.GetSteamAccountID(0);
-        param_data.steamids.push(steam_id);
+        for (let index = 0; index < count; index++) {
+            let steam_id = PlayerResource.GetSteamAccountID(0);
+            param_data.steamids.push(steam_id);
+        }
+        
         HttpRequest.AM2Post(ACTION_CREATE_GAME,
             {
                 param : param_data 
@@ -50,11 +53,9 @@ export class ArchiveService extends UIEventRegisterClass {
                     this._game_id = data.data.game_id;
                     this._game_t = data.data.time;
                     this._game_versions = data.data.v;
-                    for (let index = 0 as PlayerID; index < 1; index++) {
+                    for (let index = 0 as PlayerID; index < count; index++) {
                         let steam_id = PlayerResource.GetSteamAccountID(index as PlayerID);
-                    }
-                    if(data.data.list[steam_id.toString()]){
-                        
+                        GameRules.MapChapter.level_difficulty[index] = data.data.list[steam_id.toString()].level_difficulty;
                     }
                 }else{
 
@@ -166,8 +167,10 @@ export class ArchiveService extends UIEventRegisterClass {
      */
     GameOver( state : number , exp : number[] = [] ,cj : string[] = [], hero : string []  = [], is_endless : number = -1 , is_nianshou : number = -1){
         print("==============游戏结束================");
+        let host_steam_id = PlayerResource.GetSteamAccountID(0);
         let param_data = <GameOverParam>{
             state: 1,
+            host_steam_id : host_steam_id,
         }
 
         HttpRequest.AM2Post(ACTION_GAME_OVER,
@@ -176,7 +179,6 @@ export class ArchiveService extends UIEventRegisterClass {
             },
             (data: GameOverReturn) => {
                 print("==============获得返回数据================")
-                DeepPrintTable(data);
                 if (data.code == 200) {
                     //胜负状态
                     this.general_game_over_data_pass_data.state = state;
@@ -235,6 +237,10 @@ export class ArchiveService extends UIEventRegisterClass {
                             "skill_exp" : CGEDPlayerSkillExp,
                         })
                         DeepPrintTable(this.general_game_over_data_pass_data.player_list_data);
+                    }
+                    if(data.data.level_difficulty != GameRules.MapChapter.level_difficulty[0]){
+                        GameRules.MapChapter.level_difficulty[0] = data.data.level_difficulty;
+                        //触发难度选择重置
                     }
                 }
                 let player_count = 6;
