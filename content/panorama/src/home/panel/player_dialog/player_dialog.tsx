@@ -1,6 +1,7 @@
 import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { SetLabelDescriptionExtra } from "../../../utils/ability_description";
 import { default as RuneConfigJson } from "./../../../json/config/game/rune/rune_config.json"
+import { default as RuneAttrConfig } from "./../../../json/config/game/rune/rune_attr_config.json"
 
 type runeName = keyof typeof RuneConfigJson
 
@@ -11,8 +12,13 @@ const RuneSelectList = $("#RuneSelectList");
 const RefreshBtn = $("#RefreshBtn") as Button;
 const localPlayer = Game.GetLocalPlayerID();
 const BarHeight = 250
-
 const HeroState = $("#HeroState");
+
+const SetHotKey = GameUI.CustomUIConfig().SetHotKey
+const ConverAttrAndValueLabel = GameUI.CustomUIConfig().ConverAttrAndValueLabel
+
+
+var refresh_count = -1;
 const StartThinkerLoop = () => {
     // UpdateLocalPlayerReviveState()
     UpdateHeroStateDialog()
@@ -61,6 +67,7 @@ const UpdateHeroStateDialog = () => {
     HeroState.SetDialogVariableInt("hp_pct", 100 * hp / max_hp)
     HeroState.SetDialogVariableInt("mp_pct", 100 * mp / max_mp)
 }
+
 const UpdateLocalPlayerRuneDialog = () => {
     let game_time = Game.GetDOTATime(false, false);
     let over_time = LocalPlayerRuneDialog.Data<PanelDataObject>().over_time ?? 0;
@@ -68,13 +75,82 @@ const UpdateLocalPlayerRuneDialog = () => {
     LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", select_timer)
 }
 
+const SetHokeyPanel = () => {
+    SetHotKey("R", SetRuneSelectHotkey_R)
+    SetHotKey("1", SetRuneSelectHotkeyOrder_1)
+    SetHotKey("2", SetRuneSelectHotkeyOrder_2)
+    SetHotKey("3", SetRuneSelectHotkeyOrder_3)
+    SetHotKey("4", SetRuneSelectHotkeyOrder_4)
+    // $.RegisterKeyBind(RuneSelectList, "key_R", () => {
+    //     $.Msg(["RuneSelectList","key_R"])
+    //     // $.DispatchEvent("DropInputFocus", e);
+    // });
+}
+
+const SetRuneSelectHotkey_R = () => {
+    let is_show = LocalPlayerRuneDialog.BHasClass("Show");
+    if (is_show && refresh_count > 0) {
+        GameEvents.SendCustomGameEventToServer("RuneSystem", {
+            event_name: "ConsumeRefreshCount",
+            params: {}
+        })
+    }
+}
+
+const SetRuneSelectHotkeyOrder_1 = () => {
+    let is_show = LocalPlayerRuneDialog.BHasClass("Show");
+    if (is_show) {
+        GameEvents.SendCustomGameEventToServer("RuneSystem", {
+            event_name: "PostSelectRune",
+            params: {
+                index: 0
+            }
+        })
+    }
+}
+
+const SetRuneSelectHotkeyOrder_2 = () => {
+    let is_show = LocalPlayerRuneDialog.BHasClass("Show");
+    if (is_show) {
+        GameEvents.SendCustomGameEventToServer("RuneSystem", {
+            event_name: "PostSelectRune",
+            params: {
+                index: 1
+            }
+        })
+    }
+}
+
+const SetRuneSelectHotkeyOrder_3 = () => {
+    let is_show = LocalPlayerRuneDialog.BHasClass("Show");
+    if (is_show) {
+        GameEvents.SendCustomGameEventToServer("RuneSystem", {
+            event_name: "PostSelectRune",
+            params: {
+                index: 2
+            }
+        })
+    }
+}
+
+const SetRuneSelectHotkeyOrder_4 = () => {
+    let is_show = LocalPlayerRuneDialog.BHasClass("Show");
+    if (is_show) {
+        GameEvents.SendCustomGameEventToServer("RuneSystem", {
+            event_name: "PostSelectRune",
+            params: {
+                index: 3
+            }
+        })
+    }
+}
 export const Init = () => {
     HeroState.RemoveAndDeleteChildren();
-    HeroState.BLoadLayoutSnippet("HeroState");
-
+    // HeroState.BLoadLayoutSnippet("HeroState");
     // StartThinkerLoop();
     LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", 99);
     LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", 99);
+    SetHokeyPanel();
 
     RefreshBtn.SetPanelEvent("onactivate", () => {
         GameEvents.SendCustomGameEventToServer("RuneSystem", {
@@ -88,15 +164,15 @@ export const Init = () => {
         let time = data.time;
         LocalPlayerRuneDialog.Data<PanelDataObject>().over_time = time
         LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", data.player_refresh_count);
-        // $.Msg(["RuneSystem_GetRuneSelectData", data])
+        refresh_count = data.player_refresh_count
         let is_new = data.is_new_fate_check == 1;
         let rune_list = Object.values(data.item_list)
         RuneSelectList.RemoveAndDeleteChildren();
         let select_index = 0;
         let reward_type = data.type;
-        LocalPlayerRuneDialog.SetHasClass("type_0",reward_type == 0);
-        LocalPlayerRuneDialog.SetHasClass("type_1",reward_type == 1);
-        LocalPlayerRuneDialog.SetHasClass("type_2",reward_type == 2);
+        LocalPlayerRuneDialog.SetHasClass("type_0", reward_type == 0);
+        LocalPlayerRuneDialog.SetHasClass("type_1", reward_type == 1);
+        LocalPlayerRuneDialog.SetHasClass("type_2", reward_type == 2);
 
         for (let _data of rune_list) {
             let post_index = select_index
@@ -121,15 +197,37 @@ export const Init = () => {
             let RuneIconBtn = RuneInfo.FindChildTraverse("RuneIconBtn") as Panel;
             RuneIconBtn.RemoveAndDeleteChildren()
             let rune_image_id = `RuneImage${post_index}`
-            let RuneImage = $.CreatePanel("Image", RuneIconBtn, rune_image_id, {
-                class: "RuneImage"
-            });
+            let RuneImage = $.CreatePanel("Image", RuneIconBtn, rune_image_id, { class: "RuneImage" });
             RuneImage.SetImage(img_src)
-            let RunImageShwdow = $.CreatePanel("Image", RuneIconBtn, "", {
-                class: "RunImageShwdow",
-            });
-            // let RunImageShwdow = RuneInfo.FindChildTraverse("RunImageShwdow") as ImagePanel;
+            let RunImageShwdow = $.CreatePanel("Image", RuneIconBtn, "", { class: "RunImageShwdow", });
             RunImageShwdow.SetImage(`Panel://${rune_image_id}`);
+
+            // 热键
+            RuneInfo.SetDialogVariable("hotkey", `${post_index + 1}`)
+            // 符文属性
+            // let attr_label = [];
+            const RuneAttr = RuneInfo.FindChildTraverse("RuneAttr")!;
+            let attr_list = _data.attr_list;
+            for (let attr_id in attr_list) {
+                let attr_config = RuneAttrConfig[attr_id as keyof typeof RuneAttrConfig]
+                let attr_name = $.Localize(`#custom_attribute_${attr_config.AttrName}`).replace("%", "")
+                let attr_value = attr_list[attr_id]
+                let attr_value_label = ConverAttrAndValueLabel(attr_config.AttrName, attr_value, attr_config.Decimal)
+                let attr_rare = 0;
+                if (attr_value < attr_config.r_5) {
+                    attr_rare = 4
+                } else if (attr_value < attr_config.r_7) {
+                    attr_rare = 5
+                } else {
+                    attr_rare = 7
+                }
+                let RuneAttrRows = $.CreatePanel("Panel", RuneAttr, "");
+                RuneAttrRows.BLoadLayoutSnippet("RuneAttrRows");
+                RuneAttrRows.SetHasClass("rare_" + attr_rare, true)
+                RuneAttrRows.SetDialogVariable("rune_attr", `${attr_name}+${attr_value_label}`);
+                // attr_label.push(`${attr_name}+${attr_value_label}`)
+            }
+            // RuneInfo.SetDialogVariable("rune_attr", attr_label.join("<br>"));
             RuneInfo.SetPanelEvent("onactivate", () => {
                 // $.Msg(["select_index", post_index])
                 GameEvents.SendCustomGameEventToServer("RuneSystem", {
@@ -142,7 +240,14 @@ export const Init = () => {
 
             select_index++
         }
-        LocalPlayerRuneDialog.SetHasClass("Show", is_new)
+        LocalPlayerRuneDialog.SetHasClass("Show", is_new);
+
+        // if (is_new) {
+        //     $.DispatchEvent("SetInputFocus", RuneSelectList);
+        // } else {
+        //     $.DispatchEvent("DropInputFocus", RuneSelectList);
+        // }
+
     })
 
     GameEvents.SendCustomGameEventToServer("RuneSystem", {

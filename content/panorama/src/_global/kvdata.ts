@@ -7,11 +7,14 @@ import { default as ServerItemList } from "../json/config/server/item/server_ite
 import { default as PictuerCardData } from "../json/config/server/picture/pictuer_card_data.json";
 import { default as PictuerFetterConfig } from "../json/config/server/picture/pictuer_fetter_config.json";
 import { default as PictuerFetterAbility } from "../json/config/server/picture/pictuer_fetter_ability.json";
+import { default as AttributeConst } from "../json/config/game/attribute_const.json";
 
 const KvData = {
+    AttributeConst: AttributeConst,
     ServerItemList: ServerItemList,
     npc_heroes_custom: npc_heroes_custom,
     server_talent_data: server_talent_data,
+
 }
 
 declare global {

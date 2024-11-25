@@ -16,6 +16,10 @@ export class drow_2a extends BaseHeroAbility {
         return "modifier_drow_2a"
     }
 
+    UpdataAbilityValue(): void {
+        this.SetCustomAbilityType("Targeting", true)
+    }
+
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let ability_damage = extraData.a;

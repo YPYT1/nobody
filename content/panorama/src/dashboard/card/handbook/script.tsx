@@ -147,7 +147,7 @@ const SendCompoundCard = (state: number = 1) => {
 }
 
 const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
-    $.Msg(["Card ServiceInterface_GetPlayerCardList"])
+    // $.Msg(["Card ServiceInterface_GetPlayerCardList"])
     let data = params.data;
     // $.Msg(["data",data])
     let card = data.card;
