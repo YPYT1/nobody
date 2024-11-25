@@ -555,6 +555,22 @@ export class ServiceInterface extends UIEventRegisterClass{
     };
 
     /**
+     * 更新背包物品
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    PackageDataUpdate(player_id: PlayerID, ServerBackpackUpdate: AM2_Server_Backpack_Update[]){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_PackageDataUpdate",
+            {
+                data : ServerBackpackUpdate
+            }
+        );
+    };
+
+    /**
      * 日志系统
      * @param msg 
      * @param player_id -1为全部玩家

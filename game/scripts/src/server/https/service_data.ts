@@ -52,15 +52,33 @@ export class ServiceData extends UIEventRegisterClass {
         }
         //假数据
         this.server_package_list[0].push({
-            id : "123456" , //系统内唯一id
+            id : "123451" , //系统内唯一id
             item_id: 1201,	//物品表唯一id
             number: 30,	//物品数量
             customs: "", //自定义字段
         });
         this.server_package_list[0].push({
-            id : "123448",	//系统内唯一id
+            id : "123442",	//系统内唯一id
             item_id: 1202,	//物品表唯一id
             number: 40,	//物品数量
+            customs: "", //自定义字段
+        });
+        this.server_package_list[0].push({
+            id : "123443",	//系统内唯一id
+            item_id: 1203,	//物品表唯一id
+            number: 645,	//物品数量
+            customs: "", //自定义字段
+        });
+        this.server_package_list[0].push({
+            id : "123444",	//系统内唯一id
+            item_id: 1282,	//物品表唯一id
+            number: 231,	//物品数量
+            customs: "", //自定义字段
+        });
+        this.server_package_list[0].push({
+            id : "123445",	//系统内唯一id
+            item_id: 3203,	//物品表唯一id
+            number: 324,	//物品数量
             customs: "", //自定义字段
         });
         for(let key in PictuerCardData){

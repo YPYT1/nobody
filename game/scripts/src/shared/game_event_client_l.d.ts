@@ -219,6 +219,10 @@ declare interface CustomGameEventDeclarations {
         data: AM2_Server_Backpack[];
     };
 
+    ServiceInterface_PackageDataUpdate : {
+        data: AM2_Server_Backpack_Update[]
+    }
+
     //玩家生命数
     GameInformation_GetPlayerLifeData : {
         data: {

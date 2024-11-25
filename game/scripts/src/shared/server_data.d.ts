@@ -42,6 +42,14 @@ declare interface AM2_Server_Backpack {
     customs: string, //自定义字段
 }
 
+declare interface AM2_Server_Backpack_Update {
+    id?: string,	//系统内唯一id
+    item_id: number,	//物品表唯一id
+    number: number,	//物品数量
+    customs: string, //自定义字段
+    type : number , //类型 0更新 1删除
+}
+
 declare interface AM2_Horcrux_Backpack {
     [item_id: number]: AM2_Horcrux_Backpack_Data;
 }
