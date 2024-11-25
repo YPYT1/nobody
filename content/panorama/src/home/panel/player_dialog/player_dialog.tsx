@@ -216,10 +216,10 @@ export const Init = () => {
                 let attr_rare = 0;
                 if (attr_value < attr_config.r_5) {
                     attr_rare = 4
-                } else if (attr_value < attr_config.r_7) {
+                } else if (attr_value < attr_config.r_6) {
                     attr_rare = 5
                 } else {
-                    attr_rare = 7
+                    attr_rare = 6
                 }
                 let RuneAttrRows = $.CreatePanel("Panel", RuneAttr, "");
                 RuneAttrRows.BLoadLayoutSnippet("RuneAttrRows");

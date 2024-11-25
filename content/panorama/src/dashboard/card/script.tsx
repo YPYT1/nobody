@@ -12,7 +12,7 @@ const FRAME_PATH = "file://{resources}/layout/custom_game/dashboard/card/";
 
 
 export const Init = () => {
-    $.Msg(["card Layout"])
+    // $.Msg(["card Layout"])
     // 加载nav button
     NavButtonList.RemoveAndDeleteChildren();
     ContentFrame.RemoveAndDeleteChildren();

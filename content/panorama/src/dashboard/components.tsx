@@ -24,7 +24,9 @@ export const DASHBOARD_NAVBAR = {
     "backpack": {
         "Show": IsTestMode,
         "Sub": {
-            "list": true,
+            "all": true,
+            "type1":true,
+            "type2":true,
         }
     },
 

@@ -16,7 +16,8 @@ declare global {
         FindOfficialHUDUI(panel_id: string): Panel | null;
         HideCustomTooltip(): void;
         ConverAttrAndValueLabel(attr: string, value: number, decimal?: number): string;
-        SetHotKey(key: string, down_func: Function, up_func?: Function): void
+        SetHotKey(key: string, down_func: Function, up_func?: Function): void;
+        SendCustomEvent: <T1 extends keyof CGED, T2 extends keyof CGED[T1], T3 extends CGED[T1][T2]>(pEventName: T1, event_name: T2, params: T3) => void
     }
 }
 
@@ -124,7 +125,7 @@ GameUI.CustomUIConfig().ConverAttrAndValueLabel = (attr: string, value: number, 
     return res_label
 }
 
-GameUI.CustomUIConfig().SetHotKey = function(key: string, down_func: Function, up_func?: Function) {
+GameUI.CustomUIConfig().SetHotKey = function (key: string, down_func: Function, up_func?: Function) {
     let command_string = `On${key}${Date.now()}`;
     Game.CreateCustomKeyBind(key, `+${command_string}`);
     Game.AddCommand(
@@ -139,4 +140,15 @@ GameUI.CustomUIConfig().SetHotKey = function(key: string, down_func: Function, u
         ``,
         1 << 32
     );
+}
+
+GameUI.CustomUIConfig().SendCustomEvent = function <
+    T1 extends keyof CGED,
+    T2 extends keyof CGED[T1],
+    T3 extends CGED[T1][T2],
+>(pEventName: T1, event_name: T2, params: T3) {
+    GameEvents.SendCustomGameEventToServer(pEventName, {
+        event_name: event_name,
+        params: params
+    })
 }

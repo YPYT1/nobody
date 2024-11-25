@@ -6,18 +6,30 @@
 	<scripts>
 		<include src="./script.tsx" />
 	</scripts>
+    <snippets>
+        <snippet name="CardNavRadioButton">
+            <RadioButton group="CardNavRadioButton" text="{s:button_txt}"/>
+        </snippet>
+
+        
+    </snippets>
     <Panel class="DashBoardPanel">
         <Panel class="BoardContainer">
             <Panel class="BoardHeader">
-                <Panel class="BoardTypeImage backpack"/>
+                <Panel class="BoardTypeImage backpack" />
                 <Button id="DashboardClosedBtn" class="ClosedBtn" />
             </Panel>
             <Panel class="BoardContent">
-                <Panel id="NavButtonList" class="NavButtonGroupHor">
-                
-                </Panel>
+                <Panel id="NavButtonList" class="NavButtonGroupHor" />
                 <Panel id="ContentFrame" class="ContentFrame">
+                    <Panel id="BackpackItemList" />
+                    <Panel id="ItemInfo">
+                        <Panel class="Header">
+                            <Label text="道具信息"/>
+                        </Panel>
 
+                    
+                    </Panel>
                 </Panel>
             </Panel>
 
