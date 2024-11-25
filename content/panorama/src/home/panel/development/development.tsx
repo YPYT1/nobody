@@ -13,9 +13,9 @@ const attr_sub_key_list = Object.keys(AttributeSub);
 const MainPanel = $.GetContextPanel();
 
 
-const UpMouseOffset = ()=>{
+const UpMouseOffset = () => {
     let offset = GameUI.GetCursorPosition()
-    MainPanel.SetDialogVariable("mouse_offset",`${offset.join(",")}`)
+    MainPanel.SetDialogVariable("mouse_offset", `${offset.join(",")}`)
     $.Schedule(0.03, UpMouseOffset);
 }
 
@@ -46,6 +46,7 @@ const UpdateTopInfoTime = () => {
     let valueData = netdata.value;
     // $.Msg(valueData)
     let objectData = netdata.table;
+    // $.Msg(JSON.stringify(netdata).length)
     for (let _attr in valueData) {
         let attr_key = _attr as AttributeMainKey
         let RowPanel = DevCustomAttributeList.FindChildTraverse(attr_key);
@@ -119,6 +120,6 @@ function _flattenArrayOfTuples(arrOfTuples: number[][]) {
 }
 
 (function () {
-    Initialize();
+    if (Game.IsInToolsMode()) Initialize();
 })();
 

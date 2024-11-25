@@ -17,9 +17,20 @@
 			</Panel>
 		</snippet>
 		
+		<snippet name="RuneAttrRows">
+			<Panel class="RuneAttrRows">
+				<Label text="{s:rune_attr}" html="true"/>
+			</Panel>
+		</snippet>
 		<snippet name="RuneInfo">
 			<Button class="RuneInfo">
-				<Panel id="RuneIconBtn" />
+				<Panel class="RuneHeader">
+					<Panel class="SelectHotkey" >
+						<Label text="{s:hotkey}" />
+					</Panel>
+					<Panel id="RuneIconBtn" />
+				</Panel>
+				
 	
 				<Panel class="RuneName">
 					<Panel class="NameDecorate Left"/>	
@@ -28,6 +39,11 @@
 				</Panel>
 				<Panel class="RuneDesc">
 					<Label text="{s:rune_desc}" html="true"/>
+				</Panel>
+				<Panel class="RuneAttrSplit">
+				</Panel>
+				<Panel id="RuneAttr">
+					
 				</Panel>
 			</Button>
 		</snippet>
@@ -50,7 +66,10 @@
 					<Panel id="RuneSelectList" />
 					<Panel class="RuneOptionBtn">
 						<Button id="RefreshBtn" />
-						<Label text="{d:refresh_count}" hittest="false"/>
+						<Panel class="RefreshLabel">
+							<Label text="{d:refresh_count}" hittest="false"/>
+						</Panel>
+						
 					</Panel>
 				</Panel>
 			</Panel>

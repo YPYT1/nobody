@@ -15,6 +15,8 @@ declare global {
         GetTextureSrc(texture: string, func?: string): string;
         FindOfficialHUDUI(panel_id: string): Panel | null;
         HideCustomTooltip(): void;
+        ConverAttrAndValueLabel(attr: string, value: number, decimal?: number): string;
+        SetHotKey(key: string, down_func: Function, up_func?: Function): void
     }
 }
 
@@ -108,5 +110,33 @@ GameUI.CustomUIConfig().HideCustomTooltip = function () {
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_prop");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_rune");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_talentconfig");
+}
 
+const AttributeConst = GameUI.CustomUIConfig().KvData.AttributeConst;
+GameUI.CustomUIConfig().ConverAttrAndValueLabel = (attr: string, value: number, decimal: number = 0) => {
+    let is_pct = AttributeConst[attr as keyof typeof AttributeConst].is_pct == 1;
+    let res_label = "0";
+    if (is_pct) {
+        res_label = `${value.toFixed(decimal)}%`
+    } else {
+        res_label = `${Math.floor(value).toFixed(decimal)}`
+    }
+    return res_label
+}
+
+GameUI.CustomUIConfig().SetHotKey = function(key: string, down_func: Function, up_func?: Function) {
+    let command_string = `On${key}${Date.now()}`;
+    Game.CreateCustomKeyBind(key, `+${command_string}`);
+    Game.AddCommand(
+        `+${command_string}`,
+        () => { if (down_func) { down_func(); } },
+        ``,
+        1 << 32
+    );
+    Game.AddCommand(
+        `-${command_string}`,
+        () => { if (up_func) { up_func(); } },
+        ``,
+        1 << 32
+    );
 }

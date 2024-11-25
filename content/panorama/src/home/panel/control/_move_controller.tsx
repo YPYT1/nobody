@@ -131,6 +131,7 @@ export function OnInitMoveHotkey() {
     SetHotKey("D", OnKey_Down_D, OnKey_Up_D);
 
     SetHotKey("U", OnKey_Down_U);
+    SetHotKey("R", ()=>{});
     // SetHotKey("S1_UP", OnKey_Down_W, OnKey_Up_W);
     // SetHotKey("S1_LEFT", OnKey_Down_A, OnKey_Up_A);
     // SetHotKey("S1_DOWN", OnKey_Down_S, OnKey_Up_S);
