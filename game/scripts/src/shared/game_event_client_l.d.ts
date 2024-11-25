@@ -212,6 +212,13 @@ declare interface CustomGameEventDeclarations {
         };
     }
 
+    /**
+     * 背包数据
+     */
+    ServiceInterface_GetPlayerServerPackageData: {
+        data: AM2_Server_Backpack[];
+    };
+
     //玩家生命数
     GameInformation_GetPlayerLifeData : {
         data: {

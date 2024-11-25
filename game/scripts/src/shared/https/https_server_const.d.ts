@@ -83,7 +83,7 @@ declare interface GameOverReturn {
         list : {
             [steam_id : string] : { // steamid
                 add_items : { //通关获得的物品
-                    id : number, //道具唯一id
+                    id : string, //道具唯一id
                     item_id: number, //物品唯一id
                     count: number, //数量
                     class: number, //类型

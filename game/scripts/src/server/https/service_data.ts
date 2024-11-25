@@ -7,6 +7,8 @@ import * as PictuerFetterConfig from "../../json/config/server/picture/pictuer_f
 import * as ServerTalentData from "../../json/config/server/hero/server_talent_data.json";
 import { reloadable } from '../../utils/tstl-utils';
 
+import  * as ServerItemList  from "../../json/config/server/item/server_item_list.json";
+
 @reloadable
 export class ServiceData extends UIEventRegisterClass {
     
@@ -16,12 +18,12 @@ export class ServiceData extends UIEventRegisterClass {
     _game_t : number = 9703764246
 
     //普通背包数据
-    server_package_list : AM2_Server_Backpack[][] = [];
+    server_package_list : AM2_Server_Backpack[][] = [];     
 
     //怪物卡片背包
     server_monster_package_list : AM2_Server_Backpack[][] = [];
 
-    //玩家卡片收集信息
+    //玩家卡片收集信息  
     server_pictuer_fetter_list : Server_PICTUER_FETTER_CONFIG[] = [];
     //卡片分类
     server_pictuer_card_rarity : { [ rarity : number] : string[] } = {};
@@ -30,7 +32,7 @@ export class ServiceData extends UIEventRegisterClass {
     //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 服务器  
     server_player_config_pictuer_fetter : string[][][] = [];
     //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 本地 
-    locality_player_config_pictuer_fetter : string[][][] = [];
+    locality_player_config_pictuer_fetter : string[][][] = [];  
     //是否为图鉴vip
     player_pictuer_vip : number[] = [];
     constructor(){
@@ -39,14 +41,28 @@ export class ServiceData extends UIEventRegisterClass {
         for (let index = 0; index < 6; index++) {
             this.server_monster_package_list.push([])
             this.server_pictuer_fetter_list.push({});
-            this.server_player_config_pictuer_fetter.push([
+            this.server_player_config_pictuer_fetter.push([ 
                 [],[],[],[]
             ]);
             this.locality_player_config_pictuer_fetter.push([
                 [],[],[],[]
             ]);
             this.player_pictuer_vip.push(0);
+            this.server_package_list.push([]);
         }
+        //假数据
+        this.server_package_list[0].push({
+            id : "123456" , //系统内唯一id
+            item_id: 1201,	//物品表唯一id
+            number: 30,	//物品数量
+            customs: "", //自定义字段
+        });
+        this.server_package_list[0].push({
+            id : "123448",	//系统内唯一id
+            item_id: 1202,	//物品表唯一id
+            number: 40,	//物品数量
+            customs: "", //自定义字段
+        });
         for(let key in PictuerCardData){
             let CardData = PictuerCardData[key as keyof typeof PictuerCardData];
             if(CardData.rarity == 5){
@@ -88,11 +104,52 @@ export class ServiceData extends UIEventRegisterClass {
         }
         return ret;
     }
+
+
+    /**
+     * 对本地背包进行数据写入 (不进行数据同步)
+     * @param player_id 
+     * @param item_id 
+     * @returns 
+     */
+    AddPackageItem(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ){
+        //检查卡片是否充足
+        let item_package = GameRules.ServiceData.server_package_list[player_id];
+        let item_id_string = tostring(item_id);
+        let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
+
+        if(merge != 1){
+            let check = false;
+            for (let index = 0; index < item_package.length; index++) {
+                const package_item_id = item_package[index].item_id;
+                if(package_item_id == item_id){
+                    check = true;
+                    GameRules.ServiceData.server_package_list[player_id][index].number += count;
+                    break;
+                }
+            }
+            if(check == false){
+                GameRules.ServiceData.server_package_list[player_id].push({
+                    "id" : id,
+                    "item_id" : item_id,
+                    "number" : count , 
+                    "customs" : ""
+                })
+            }
+        }else{
+            GameRules.ServiceData.server_package_list[player_id].push({
+                "id" : id,
+                "item_id" : item_id,
+                "number" : 1 , 
+                "customs" : customs
+            })
+        }
+    }
+
+
     //统一加载玩家存档属性
     LoadPlayerServerAttr(player_id : PlayerID){
-
         let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
-
         let attr_count :  CustomAttributeTableType  = {
             
         };
@@ -176,8 +233,6 @@ export class ServiceData extends UIEventRegisterClass {
                 if(is_ok == false){
                     this.server_monster_package_list[0].push({
                         id : tostring(item_id),
-                        "class" : 23 , 
-                        "lv" : 1,
                         "number" : 1,
                         "customs" : "",
                         item_id : item_id,
@@ -212,8 +267,6 @@ export class ServiceData extends UIEventRegisterClass {
                 if(is_ok == false){
                     this.server_monster_package_list[0].push({
                         id : tostring(item_id),
-                        "class" : 23 , 
-                        "lv" : 1,
                         "number" : 1,
                         "customs" : "",
                         item_id : item_id,

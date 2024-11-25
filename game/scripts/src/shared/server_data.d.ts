@@ -38,8 +38,6 @@ declare interface AM2_Server_Draw_Data {
 declare interface AM2_Server_Backpack {
     id?: string,	//系统内唯一id
     item_id: number,	//物品表唯一id
-    class: number,	//物品表分类
-    lv: number,	//物品等级
     number: number,	//物品数量
     customs: string, //自定义字段
 }

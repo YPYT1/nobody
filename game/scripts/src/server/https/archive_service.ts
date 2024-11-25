@@ -24,7 +24,7 @@ export class ArchiveService extends UIEventRegisterClass {
     _game_t : number = 9703764246;
     //服务器版本
     _game_versions : string = "";
-    //构造
+    //构造  
     constructor() {
         super("ArchiveService" , true)
     }
@@ -43,7 +43,6 @@ export class ArchiveService extends UIEventRegisterClass {
             let steam_id = PlayerResource.GetSteamAccountID(0);
             param_data.steamids.push(steam_id);
         }
-        
         HttpRequest.AM2Post(ACTION_CREATE_GAME,
             {
                 param : param_data 
@@ -198,13 +197,23 @@ export class ArchiveService extends UIEventRegisterClass {
                             let add_items = data.data.list[steam_id_string].add_items;
                             for (const add_item of add_items) {
                                 let item_id = tostring(add_item.item_id);
-                                let rarity = ServerItemList[item_id as keyof typeof ServerItemList].rarity;
+                                let quality = ServerItemList[item_id as keyof typeof ServerItemList].rarity;
+                                let affiliation_class = ServerItemList[item_id as keyof typeof ServerItemList].affiliation_class;
                                 PlayerPassItem.push({
                                     "item_id" : tostring(add_item.item_id),
                                     "number" : add_item.count,
-                                    "quality" : rarity,
+                                    "quality" : quality,
                                     "type" : 1,
-                                })
+                                });
+                                if(affiliation_class >= 10){
+                                    GameRules.ServiceData.AddPackageItem(
+                                        index , 
+                                        add_item.id,
+                                        add_item.item_id,
+                                        add_item.customs,
+                                        add_item.count
+                                    );
+                                }
                             }
                         }
                         let CGEDPlayerSkillExp : CGEDPlayerSkillExp[] = [
@@ -236,7 +245,8 @@ export class ArchiveService extends UIEventRegisterClass {
                             "pass_item" : PlayerPassItem,
                             "skill_exp" : CGEDPlayerSkillExp,
                         })
-                        DeepPrintTable(this.general_game_over_data_pass_data.player_list_data);
+                        //重新发送背包数据
+                        GameRules.ServiceInterface.GetPlayerServerPackageData( index , {})
                     }
                     if(data.data.level_difficulty != GameRules.MapChapter.level_difficulty[0]){
                         GameRules.MapChapter.level_difficulty[0] = data.data.level_difficulty;

@@ -10,6 +10,8 @@ import * as ServerSkillful from "../../json/config/server/hero/server_skillful.j
 import * as PictuerCardData from "../../json/config/server/picture/pictuer_card_data.json";
 import * as PictuerFetterConfig from "../../json/config/server/picture/pictuer_fetter_config.json";
 
+import  * as ServerItemList  from "../../json/config/server/item/server_item_list.json";
+
 @reloadable
 export class ServiceInterface extends UIEventRegisterClass{
     
@@ -483,8 +485,6 @@ export class ServiceInterface extends UIEventRegisterClass{
                 if(is_ok == false){
                     GameRules.ServiceData.server_monster_package_list[player_id].push({
                         id : tostring(item_id),
-                        "class" : 11 , 
-                        "lv" : 1,
                         "number" : 1,
                         "customs" : "",
                         item_id : item_id,
@@ -537,6 +537,23 @@ export class ServiceInterface extends UIEventRegisterClass{
      * 玩家日志log
      */
     player_log_data : string[] = [];
+
+    /**
+     * 获取背包数据
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetPlayerServerPackageData(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerServerPackageData"], callback?){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerServerPackageData",
+            {
+                data: GameRules.ServiceData.server_package_list[player_id]
+            }
+        );
+    };
+
     /**
      * 日志系统
      * @param msg 

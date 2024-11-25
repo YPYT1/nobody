@@ -357,6 +357,11 @@ declare interface CGED {
         GetGameActivate : {
 
         }
+
+        //获取背包数据
+        GetPlayerServerPackageData : {
+            
+        }
     }
 }
 
