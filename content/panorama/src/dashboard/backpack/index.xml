@@ -11,6 +11,12 @@
             <RadioButton group="CardNavRadioButton" text="{s:button_txt}"/>
         </snippet>
 
+        <snippet name="BackpackItem">
+            <Panel class="BackpackItem">
+                <Panel class="Selected" hittest="false" />
+                <Panel id="ServerItem" />
+            </Panel>
+        </snippet>
         
     </snippets>
     <Panel class="DashBoardPanel">
@@ -23,12 +29,30 @@
                 <Panel id="NavButtonList" class="NavButtonGroupHor" />
                 <Panel id="ContentFrame" class="ContentFrame">
                     <Panel id="BackpackItemList" />
-                    <Panel id="ItemInfo">
+                    <Panel id="ItemDetails">
                         <Panel class="Header">
                             <Label text="道具信息"/>
                         </Panel>
+                       
+                        <Panel class="ItemContainer">
+                            <Panel class="NameAndAmount">
+                                <Panel id="Component_ItemName" />
+                                <Label class="Title" text="数量" />
+                                <Label class="Amount" text="{d:item_amount}"/>
+                            </Panel>
+                            <Panel id="ItemComponent"/>
+                        </Panel>
+                       
+                        <Panel class="SplitLine"/>
+                        <Panel class="Desc">
+                            <Label text="{s:item_desc}" html="true"/>
+                        </Panel>
 
-                    
+                        <Panel class="Footer">
+                            <Button id="UseBackpackItemBtn" class="dashboard_btn green">
+                                <Label text="使用"/>
+                            </Button>
+                        </Panel>
                     </Panel>
                 </Panel>
             </Panel>

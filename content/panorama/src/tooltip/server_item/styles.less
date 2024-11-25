@@ -1,0 +1,202 @@
+@import url("./../../_styles/variables/_variables.less");
+@width: 422px;
+
+#Contents {
+    padding: 2px;
+    border: 0px solid #00000000;
+    background-color: #00000000;
+    box-shadow: #000000 0px 0px 8px 0px;
+    // box-shadow: none;
+
+
+    &.Tooltip {
+        background-color: #000000;
+        background-repeat: no-repeat;
+        background-position: left top;
+        padding: 0px;
+    }
+}
+
+.TooltipContent {
+    width: @width;
+    flow-children: down;
+    // border: 2px solid #2c2e2f;
+    background-color: #111314fe;
+    box-shadow: hollow #000000 0px 0px 1px 0px;
+
+    .Header {
+        width: 100%;
+        flow-children: right;
+        // background-color: #222222;
+        // border-bottom: 2px solid #333333;
+        padding: 4px 8px;
+        // border: 1px solid #ffffff;
+
+        background-size: 411px 57px;
+        background-repeat: no-repeat;
+        background-position: 0% 0%;
+
+        .ItemIcon {
+            padding: 18px;
+
+            #ItemBorder {
+                width: 68px;
+                height: 68px;
+                // border: 1px solid #fff;
+            }
+        }
+
+        .Name {
+            vertical-align: middle;
+            font-size: 20px;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+            // color: #fff;
+        }
+
+        .ItemInfo {
+            width: 100%;
+            // border: 1px solid #fff;
+            flow-children: down;
+
+            .NameAndRare {
+                width: 100%;
+            }
+
+            .RarityIcon {
+                horizontal-align: right;
+                width: 50px;
+                height: 50px;
+
+                background-size: 100%;
+            }
+
+            .ItemAmount {
+                margin-top: 16px;
+                flow-children: right;
+
+                .Label {
+                    font-size: 16px;
+                    color: #b7b7b7;
+                    vertical-align: bottom;
+                }
+
+                .Amount {
+                    font-size: 20px;
+                    color: #ffffff;
+                    vertical-align: bottom;
+                }
+            }
+        }
+    }
+
+    .SplitLine {
+        horizontal-align: center;
+        width: 85%;
+        height: 2px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        background-color: #2c2c2c;
+    }
+
+    .ItemDesc {
+        width: 100%;
+        padding: 16px 24px;
+
+        // border: 1px solid #fff;
+        Label {
+
+            font-size: 18px;
+            color: #cdcdcd;
+        }
+
+    }
+}
+
+.rare_1 {
+    .Name {
+        color: @rarity_color_1;
+    }
+
+    .Header {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/header_bg_r1.png");
+    }
+
+    .RarityIcon {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/rare_1.png");
+    }
+}
+
+.rare_2 {
+
+    .Name {
+        color: @rarity_color_2;
+    }
+
+    .Header {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/header_bg_r2.png");
+    }
+
+    .RarityIcon {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/rare_2.png");
+    }
+}
+
+.rare_3 {
+
+    .Name {
+        color: @rarity_color_3;
+    }
+
+    .Header {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/header_bg_r3.png");
+    }
+
+    .RarityIcon {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/rare_3.png");
+    }
+}
+
+.rare_4 {
+
+    .Name {
+        color: @rarity_color_4;
+    }
+
+    .Header {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/header_bg_r4.png");
+    }
+
+    .RarityIcon {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/rare_4.png");
+    }
+}
+
+.rare_5 {
+
+    .Name {
+        color: @rarity_color_5;
+    }
+
+    .Header {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/header_bg_r5.png");
+    }
+
+    .RarityIcon {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/rare_5.png");
+    }
+}
+
+.rare_6 {
+
+    .Name {
+        color: @rarity_color_6;
+    }
+
+    .Header {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/header_bg_r6.png");
+    }
+
+    .RarityIcon {
+        background-image: url("file://{images}/custom_game/tooltip/server_item/rare_6.png");
+    }
+}

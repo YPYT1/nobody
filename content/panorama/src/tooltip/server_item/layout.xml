@@ -1,0 +1,33 @@
+<root>
+    <scripts>
+        <include src="./script.tsx" />
+    </scripts>
+    <styles>
+        <include src="./../../_styles/styles.less" />
+        <include src="./styles.less" />
+    </styles>
+    <Panel class="custom_tooltip" hittest="false">
+        <Panel class="TooltipContent">
+            <Panel class="Header">
+                <Panel class="ItemIcon">
+                    <Panel id="ItemBorder" />
+                </Panel>
+                <Panel class="ItemInfo">
+                    <Panel class="NameAndRare">
+                        <Label class="Name" text="{s:item_name}"/>
+                        <Panel class="RarityIcon" />
+                    </Panel>
+                    <Panel class="ItemAmount">
+                        <Label class="Label" text="数量" />
+                        <Label class="Amount" text="{d:item_amount}"/>
+                    </Panel>
+                </Panel>
+            </Panel>
+            <Panel class="SplitLine"/>
+            <Panel class="ItemDesc">
+               <Label text="{s:item_desc}"/>
+            </Panel>
+            
+        </Panel>
+    </Panel>
+</root>

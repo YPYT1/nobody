@@ -36,6 +36,7 @@ const GetImportPathFileList = (path_dir) => {
 const ImportDashBoard = GetImportPathFileList("dashboard");
 const ImportHome = GetImportPathFileList("home");
 const ImportComponents = GetImportPathFileList("components");
+const ImportTooltip = GetImportPathFileList("tooltip");
 
 const entries = [
     // { import: './utils/x-nettable-dispatcher.ts', filename: 'x-nettable-dispatcher.js' },
@@ -57,14 +58,7 @@ const entries = [
     { import: './development/layout.xml', filename: 'development/layout.xml' },
 
     // tooltips
-    { import: './tooltip/text/layout.xml', filename: 'tooltip/text/layout.xml' },
-    { import: './tooltip/item/layout.xml', filename: 'tooltip/item/layout.xml' },
-    { import: './tooltip/ability/layout.xml', filename: 'tooltip/ability/layout.xml' },
-    { import: './tooltip/element_syenrgy/layout.xml', filename: 'tooltip/element_syenrgy/layout.xml' },
-    { import: './tooltip/talent_tree/layout.xml', filename: 'tooltip/talent_tree/layout.xml' },
-    { import: './tooltip/rune/layout.xml', filename: 'tooltip/rune/layout.xml' },
-    { import: './tooltip/prop/layout.xml', filename: 'tooltip/prop/layout.xml' },
-    { import: './tooltip/talent_config/layout.xml', filename: 'tooltip/talent_config/layout.xml' },
+    ...ImportTooltip,
     ...ImportHome,
     ...ImportComponents,
     ...ImportDashBoard,

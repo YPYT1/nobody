@@ -1,0 +1,12 @@
+<root>
+    <styles>
+        <include src="./server_item_name.less" />
+        <include src="./../../../_styles/styles.less" />
+    </styles>
+    <scripts>
+		<include src="./server_item_name.tsx" />
+	</scripts>
+    <Panel class="ServerItemName">
+        <Label id="Name" text="{s:item_name}" />
+    </Panel>
+</root>

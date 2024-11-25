@@ -9,9 +9,20 @@ const NavButtonList = $("#NavButtonList");
 const ContentFrame = $("#ContentFrame");
 const FRAME_PATH = "file://{resources}/layout/custom_game/dashboard/backpack/";
 
-const BackpackItemList = $("#BackpackItemList")
-const SendCustomEvent = GameUI.CustomUIConfig().SendCustomEvent
+const BackpackItemList = $("#BackpackItemList");
+const ItemDetails = $("#ItemDetails");
+const UseBackpackItemBtn = $("#UseBackpackItemBtn") as Button;
+// const ItemComponent = $("#ItemComponent");
+const ItemComponent = LoadCustomComponent($("#ItemComponent"), "server_item");
+ItemComponent._SetServerItemInfo({ show_count: false });
 
+const Component_ItemName = LoadCustomComponent($("#Component_ItemName"), "server_item_name");
+Component_ItemName._SetSize(22);
+
+const SendCustomEvent = GameUI.CustomUIConfig().SendCustomEvent;
+const GetServerItemData = GameUI.CustomUIConfig().GetServerItemData;
+
+let view_item_id = -1;
 const CGE_Subscribe = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
@@ -20,21 +31,61 @@ const CGE_Subscribe = () => {
         let data = event.data;
         let ItemList = Object.values(data)
         BackpackItemList.RemoveAndDeleteChildren();
+
         for (let ItemData of ItemList) {
             let item_id = ItemData.item_id;
             let ItemRadio = $.CreatePanel("RadioButton", BackpackItemList, "", { group: "backpack_group" })
-            let ItemInfo = $.CreatePanel("Panel", ItemRadio, "")
-            let ItemPanel = LoadCustomComponent(ItemInfo, "server_item");
+            ItemRadio.BLoadLayoutSnippet("BackpackItem");
+            let ServerItem = ItemRadio.FindChildTraverse("ServerItem")!;
+            let ItemPanel = LoadCustomComponent(ServerItem, "server_item");
             ItemPanel._SetServerItemInfo({
                 item_id: item_id,
                 item_count: ItemData.number,
                 show_count: true,
+                show_tips: true,
+            })
+
+            ItemRadio.Data<PanelDataObject>().amount = ItemData.number
+            ItemRadio.SetPanelEvent("onactivate", () => {
+                let amount = ItemRadio.Data<PanelDataObject>().amount as number;
+                ViewItem("" + item_id, amount)
             })
         }
     })
+
     SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
 }
 
+
+const InitItemDetails = () => {
+    ItemDetails.SetHasClass("Show", false)
+    ItemDetails.SetDialogVariable("item_name", "")
+    ItemDetails.SetDialogVariable("item_desc", "")
+    ItemDetails.SetDialogVariableInt("item_amount", 0)
+
+    UseBackpackItemBtn.SetPanelEvent("onactivate", () => {
+        $.Msg(["UseItemid", view_item_id])
+    })
+}
+
+const ViewItem = (item_id: string, count: number) => {
+    view_item_id = parseInt(item_id);
+    let item_data = GetServerItemData(item_id)
+    let item_rare = item_data.rarity
+    // let item_name = $.Localize("#custom_serveritem_" + item_id)
+    let item_desc = $.Localize("#custom_serveritem_" + item_id + "_desc")
+    // ItemDetails.SetDialogVariable("item_name", item_name)
+
+    ItemDetails.SetDialogVariable("item_desc", item_desc)
+    ItemDetails.SetDialogVariableInt("item_amount", count)
+
+    for (let r = 1; r <= 6; r++) {
+        ItemDetails.SetHasClass("rare_" + r, r == item_rare)
+    }
+    Component_ItemName._SetItemId(item_id)
+    ItemComponent._SetItemId(item_id)
+    ItemDetails.SetHasClass("Show", true)
+}
 export const Init = () => {
     // 加载nav button
     NavButtonList.RemoveAndDeleteChildren();
@@ -57,6 +108,8 @@ export const Init = () => {
     }
 
     CGE_Subscribe();
+
+    InitItemDetails();
 }
 
 (() => {

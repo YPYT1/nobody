@@ -3,6 +3,7 @@ interface ComponentProps {
     card_item: Component_CardItem;
     server_item: Component_ServerItem;
     row_attribute: Component_RowAttribute;
+    server_item_name: Component_ServerItemName;
 }
 
 // export function LoadComponent_Card<K extends keyof ComponentProps>(e: Panel, key: K): ComponentProps[K] {
