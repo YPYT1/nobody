@@ -362,6 +362,10 @@ declare interface CGED {
         GetPlayerServerPackageData : {
             
         }
+        //获取
+        GetPlayerServerSkillData : {
+            
+        }
     }
 }
 

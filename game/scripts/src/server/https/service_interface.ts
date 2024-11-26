@@ -159,7 +159,29 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
             }
         }
+        GameRules.ServiceInterface.GetPlayerServerSkillData( 0 , {});
     }
+
+    /**
+     * 
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetPlayerServerSkillData(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerServerSkillData"], callback?) {  
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerServerSkillData",
+            {   
+                data: {
+                    SkillLevel : GameRules.ServiceInterface.PlayerServerSkillLevelCount[player_id],
+                    SkillTypeLevel : GameRules.ServiceInterface.PlayerServerSkillTypeLevel[player_id],
+                }
+            }
+        );
+    }
+
+    
 
     //存档天赋系统
 
@@ -270,7 +292,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i].splice( index , 1);
             this.GetConfigPictuerFetter(player_id , {})
         }else{
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:此图鉴不存在...");    
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:此图鉴不存在...");
         }
     }
 

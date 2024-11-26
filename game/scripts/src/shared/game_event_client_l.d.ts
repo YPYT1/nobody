@@ -218,11 +218,22 @@ declare interface CustomGameEventDeclarations {
     ServiceInterface_GetPlayerServerPackageData: {
         data: AM2_Server_Backpack[];
     };
-
+    /**
+     * 背包更新数据返回
+     */
     ServiceInterface_PackageDataUpdate : {
         data: AM2_Server_Backpack_Update[]
     }
 
+    /**
+     * 技能数据
+     */
+    ServiceInterface_GetPlayerServerSkillData : {
+        data: {
+            SkillLevel : PlayerServerSkillLevelCount,
+            SkillTypeLevel : CGEDServerSkillTypeLevel,
+        }
+    }
     //玩家生命数
     GameInformation_GetPlayerLifeData : {
         data: {
@@ -495,7 +506,9 @@ declare interface CGEDPlayerTalentConfig {
 }
 
 
-
+/**
+ * 总技能
+ */
 declare interface PlayerServerSkillLevelCount {
     level : { [ key : string] : {
         lv : number, //等级
@@ -504,7 +517,9 @@ declare interface PlayerServerSkillLevelCount {
         cur_exp : number , //当前经验   
     }};
 }
-
+/**
+ * 分支
+ */
 declare interface CGEDServerSkillTypeLevel {
     [ key : string ] : {
         lv : number, //等级
