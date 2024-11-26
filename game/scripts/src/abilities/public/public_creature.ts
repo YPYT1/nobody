@@ -16,7 +16,9 @@ export class modifier_public_creature extends BaseModifier {
     state: boolean;
     attack_damage: number;
     attack_act: GameActivity;
-    bonus_move:number;
+    isboss: boolean;
+    bonus_move: number;
+    bonus_value: number;
 
     IsHidden(): boolean {
         return true
@@ -25,6 +27,12 @@ export class modifier_public_creature extends BaseModifier {
     OnCreated(params: object): void {
         if (!IsServer()) { return }
         this.caster = this.GetCaster();
+        let gameDifficulty = GameRules.MapChapter.GameDifficultyNumber;
+        if (gameDifficulty > 103) {
+            this.bonus_value = this.GetParent().IsBossCreature() ? 5 : 2;
+        } else {
+            this.bonus_value = 0;
+        }
         this.bonus_move = 0;
         this.state = true;
         this.StartIntervalThink(0.1)
@@ -49,7 +57,7 @@ export class modifier_public_creature extends BaseModifier {
             this.StartIntervalThink(1)
             return
         }
-        this.bonus_move += 0.5
+        this.bonus_move += this.bonus_value;
         let enemies = FindUnitsInRadius(
             DotaTeam.BADGUYS,
             this.GetParent().GetAbsOrigin(),
@@ -63,6 +71,7 @@ export class modifier_public_creature extends BaseModifier {
         );
         this.SetStackCount(enemies.length)
         if (enemies.length > 0) {
+            this.caster.PerformAttack(this.caster, false, true, true, false, false, true, false);
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
             for (let enemy of enemies) {
                 ApplyCustomDamage({
@@ -92,8 +101,14 @@ export class modifier_public_creature extends BaseModifier {
         return [
             ModifierFunction.ATTACKSPEED_BASE_OVERRIDE,
             ModifierFunction.PROCATTACK_FEEDBACK,
-            ModifierFunction.MOVESPEED_BONUS_CONSTANT
+            // ModifierFunction.MOVESPEED_BONUS_CONSTANT,
+            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
+            ModifierFunction.IGNORE_MOVESPEED_LIMIT
         ]
+    }
+
+    GetModifierIgnoreMovespeedLimit(): 0 | 1 {
+        return 1
     }
 
     GetModifierProcAttack_Feedback(event: ModifierAttackEvent): number {
@@ -104,7 +119,7 @@ export class modifier_public_creature extends BaseModifier {
         return 0.001
     }
 
-    GetModifierMoveSpeedBonus_Constant(): number {
+    GetModifierMoveSpeedBonus_Percentage(): number {
         return this.bonus_move
     }
 
@@ -113,7 +128,7 @@ export class modifier_public_creature extends BaseModifier {
             [ModifierState.NO_HEALTH_BAR]: true,
             [ModifierState.ALLOW_PATHING_THROUGH_CLIFFS]: true,
             // [ModifierState.FORCED_FLYING_VISION]: true,
-            [ModifierState.DISARMED]: this.GetStackCount() > 0,
+            // [ModifierState.DISARMED]: this.GetStackCount() > 0,
         }
     }
 

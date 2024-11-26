@@ -29,5 +29,6 @@
         <Panel id="game_end" hittest="false" />
         <Panel id="game_logo" hittest="false" />
         <Panel id="development" hittest="false"/>
+        <Panel id="game_loading" hittest="false" />
     </Panel>
 </root>

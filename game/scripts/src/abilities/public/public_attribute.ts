@@ -167,7 +167,12 @@ export class modifier_public_attribute extends BaseModifier {
             ModifierFunction.FIXED_NIGHT_VISION,
             ModifierFunction.BONUS_DAY_VISION,
             ModifierFunction.BONUS_NIGHT_VISION,
+            ModifierFunction.IGNORE_MOVESPEED_LIMIT,
         ]
+    }
+
+    GetModifierIgnoreMovespeedLimit(): 0 | 1 {
+        return 1
     }
 
     GetBonusDayVision(): number {

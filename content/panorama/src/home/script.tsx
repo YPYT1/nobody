@@ -107,7 +107,7 @@ export const Initialize = () => {
     $("#right_items").BLoadLayout(layout_path + "/right_items/right_items.xml", true, false);
     $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", true, false);
     $("#mission").BLoadLayout(layout_path + "/mission/mission.xml", true, false);
-
+    $("#game_loading").BLoadLayout(layout_path + "/game_loading/game_loading.xml", true, false);
     
     if (Game.IsInToolsMode()) {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
@@ -120,7 +120,7 @@ export const Initialize = () => {
         $("#top_info").Data<PanelDataObject>().GameSelectPhase = game_select_phase
         let HudPanel = $.GetContextPanel();
         if (HudPanel) {
-            for (let phase = 0; phase < 10; phase++) {
+            for (let phase = -1; phase < 10; phase++) {
                 HudPanel.SetHasClass("GameSelectPhase_" + phase, game_select_phase == phase);
             }
             HudPanel.SetHasClass("GameSelectPhase_999", game_select_phase == 999);

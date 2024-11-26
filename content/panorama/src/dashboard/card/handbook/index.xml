@@ -43,13 +43,16 @@
     
 	<Panel class="nav_content handbook">
         <Panel class="TopContent">
-            <DropDown id="CardRarityDropDown" class="CustomDropDown" />
+            <DropDown id="CardRarityDropDown" class="CustomDropDown" >
+                <Label id="99" text="All"/>
+            </DropDown>
           
-            <TextEntry id="CardSearchInput" class="TextSearch" maxchars="32" placeholder="搜索"  />
+            <TextEntry id="CardSearchInput" class="TextSearch" maxchars="32" placeholder="search" />
+
 
             <Panel class="CardCountPanel">
-                <Panel class="CardIcon"/>
-                <Label class="CardCount" text="{d:card_count}/{d:card_max}"/>
+                <Panel class="CardIcon" />
+                <Label class="CardCount" text="{d:card_count}/{d:card_max}" />
             </Panel>
 
             <Button id="OncClickAdd" class="dashboard_btn green">

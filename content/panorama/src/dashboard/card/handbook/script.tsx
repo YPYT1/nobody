@@ -24,9 +24,11 @@ const GetPictureCardData = GameUI.CustomUIConfig().GetPictureCardData;
 const _PictuerCardData = GameUI.CustomUIConfig()._PictuerCardData;
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 
+
 export const Init = () => {
+    let max_cards = Object.keys(_PictuerCardData).length
     MainPanel.SetDialogVariableInt("card_count", 0);
-    MainPanel.SetDialogVariableInt("card_max", 0);
+    MainPanel.SetDialogVariableInt("card_max", max_cards);
     MainPanel.SetDialogVariableInt("compose_cost", 0)
 
     InitComposeButton();
@@ -38,7 +40,7 @@ export const Init = () => {
 }
 
 const card_rarity = {
-    "All": -1,
+    "All": 99,
     "SS": 6,
     "S": 5,
     "A": 4,
@@ -46,24 +48,33 @@ const card_rarity = {
     "C": 2,
 }
 
-let fliter_ratity = -1;
+let fliter_ratity = 99;
 let fliter_text = "";
+
 const InitCardRarityDropDown = () => {
-    CardRarityDropDown.RemoveAllOptions();
+    // CardRarityDropDown.RemoveAllOptions();
+
     for (let key in card_rarity) {
-        let id = card_rarity[key as keyof typeof card_rarity];
-        let optionLabel = $.CreatePanel("Label", CardRarityDropDown, `${id}`, {
-            text: key,
-            html: true,
-        });
-        CardRarityDropDown.AddOption(optionLabel)
+        let rarity = card_rarity[key as keyof typeof card_rarity];
+        if (!CardRarityDropDown.HasOption(`${rarity}`)) {
+            let optionLabel = $.CreatePanel("Label", CardRarityDropDown, `${rarity}`, {
+                text: key,
+                html: true,
+            });
+            CardRarityDropDown.AddOption(optionLabel)
+        }
     }
-    CardRarityDropDown.SetSelectedIndex(0);
-    CardRarityDropDown.SetPanelEvent("oninputsubmit", () => {
-        let id = CardRarityDropDown.GetSelected().id
-        fliter_ratity = parseInt(id);
-        FliterCardList()
+
+    $.Schedule(0.01, () => {
+        CardRarityDropDown.SetSelectedIndex(0);
+        CardRarityDropDown.SetPanelEvent("oninputsubmit", () => {
+            let id = CardRarityDropDown.GetSelected().id;
+            // $.Msg(SelectedPanel.Data())
+            fliter_ratity = parseInt(id);
+            FliterCardList()
+        })
     })
+
 
     CardSearchInput.SetPanelEvent("ontextentrychange", () => {
         fliter_text = CardSearchInput.text
@@ -78,7 +89,7 @@ const FliterCardList = () => {
         const loc_rarity = CardPanel.Data<PanelDataObject>().rarity as number;
         const loc_name = CardPanel.Data<PanelDataObject>().name as string;
         let text_res = loc_name.search(fliter_text);
-        let Show = (fliter_ratity == -1 || loc_rarity == fliter_ratity) && (fliter_text.length == 0 || text_res != -1)
+        let Show = (fliter_ratity == 99 || loc_rarity == fliter_ratity) && (fliter_text.length == 0 || text_res != -1)
         CardPanel.visible = Show
     }
 }
@@ -157,6 +168,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
     card_compose_list = [[], [], [], [], [], [], [], []]
     UpdateComposeInfo();
     let card_list = Object.values(data.card);
+    MainPanel.SetDialogVariableInt("card_count", card_list.length);
     card_list.sort((a, b) => {
         let data_a = GetPictureCardData(`${a.item_id}`);
         let data_b = GetPictureCardData(`${b.item_id}`);

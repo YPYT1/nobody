@@ -90,6 +90,9 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
                 $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_serveritem");
             })
 
+        } else {
+            MainPanel.SetHasClass("zero", false)
+            MainPanel.SetDialogVariable("count", `${item_id}`)
         }
     }
 }

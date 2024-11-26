@@ -1,0 +1,17 @@
+<root>
+	<styles>
+        <include src="./../../../_styles/styles.less" />
+        <include src="./../../../_styles/keyframes.less" />
+        <include src="./game_loading.less" />
+	</styles>
+	<scripts>
+		<include src="./game_loading.tsx" />
+	</scripts>
+    <Panel class="GameLoading" hittest="false">
+        <Panel class="ScreenBackground" />
+        <Panel class="LoadingContainer">
+            <Panel class="SpinnerIcon"/>
+            <Label class="WaitLabel" text="游戏加载中,请稍等..."/>
+        </Panel>
+    </Panel>
+</root>

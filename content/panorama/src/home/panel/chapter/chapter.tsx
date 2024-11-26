@@ -178,6 +178,25 @@ export const ShowChapterInfoTips = (e: Panel, chapter_key: string) => {
             DifficultyButton.SetPanelEvent("onactivate", () => { })
         }
     }
+
+    // 掉落
+    let st_drop = chapter_data.st_drop_preinstall;
+    let pt_drop = chapter_data.drop_preinstall;
+    DroppedInfoList.RemoveAndDeleteChildren();
+    for (let item_id of st_drop) {
+        if (typeof (item_id) == "string") { continue }
+        let StItemPanel = $.CreatePanel("Panel", DroppedInfoList, "");
+        StItemPanel.BLoadLayoutSnippet("StDropItem");
+        let ServerItem = StItemPanel.FindChildTraverse("ServerItem")!
+        let serverItemPanel = CreateCustomComponent(ServerItem, "server_item", ``);
+        serverItemPanel._SetServerItemInfo({ item_id: item_id, show_tips: true, show_count: false })
+    }
+
+    for (let item_id of pt_drop) {
+        if (typeof (item_id) == "string") { continue }
+        let serverItemPanel = CreateCustomComponent(DroppedInfoList, "server_item", ``);
+        serverItemPanel._SetServerItemInfo({ item_id: item_id, show_tips: true, show_count: false })
+    }
 }
 
 export const HideChapterInfoTips = () => {
@@ -247,14 +266,7 @@ export const CreatePanel = () => {
         // DifficultyButton.enabled = Math.floor(Math.random() * 2) == 1;
     }
 
-    // DroppedInfoList
-    // .ServerItem
-    DroppedInfoList.RemoveAndDeleteChildren();
-    const xxxx = [1201, 1202, 1203, 1204, 1205, 1206, 1279, 1281]
-    for (let item_id of xxxx) {
-        let serverItemPanel = CreateCustomComponent(DroppedInfoList, "server_item", ``);
-        serverItemPanel._SetServerItemInfo({ item_id: item_id, show_tips: true, show_count: false })
-    }
+
 
 
     let ChapterCancelBtn = $("#ChapterCancelBtn") as Button;

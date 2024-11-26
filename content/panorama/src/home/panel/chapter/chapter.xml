@@ -27,6 +27,15 @@
 				<Panel class="DiffNum" />
 			</RadioButton>
 		</snippet>
+
+		<snippet name="StDropItem">
+			<Panel class="StDropItem">
+				<Panel id="ServerItem"/>
+				<Panel class="StTag" hittest="false">
+					<Label text="首通" hittest="false"/>
+				</Panel>	
+			</Panel>
+		</snippet>
 	</snippets>
 	<Panel class="Chapter">
 		<Panel id="ChapterContainer" class="Show">

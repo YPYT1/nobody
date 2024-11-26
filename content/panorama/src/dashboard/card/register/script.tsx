@@ -18,8 +18,9 @@ let pictuer_list: { [x: string]: { [key: number]: number; }; } = {}
 let pic_fliter_text = ""
 
 export const Init = () => {
+    let picture_count = Object.keys(PictuerFetterConfig).length
     MainPanel.SetDialogVariableInt("card_count", 0);
-    MainPanel.SetDialogVariableInt("card_max", 120);
+    MainPanel.SetDialogVariableInt("card_max", picture_count);
 
     InitAllPictuerList()
     InitPictureCostInfo()
@@ -154,6 +155,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
         }
 
         // 卡片与未注册图鉴对比
+        let activate_card_count = 0;
         for (let i = 0; i < AllPictuerList.GetChildCount(); i++) {
             const PicturePanel = AllPictuerList.GetChild(i)!;
 
@@ -177,6 +179,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
                 if (pictuer_card_list.length > 0) {
                     let in_index = pictuer_card_list.indexOf(iCardId);
                     if (in_index != -1) {
+                        CardPanel.ShowCardIcon(true);
                         CardPanel.SetHasClass("Equip", true)
                         act_count += 1;
                         CardPanel.RemoveClass("Null")
@@ -202,11 +205,13 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
             // 更新属性词条
             const FooterAttributeList = PicturePanel.FindChildTraverse("FooterAttributeList")!;
             UpdatePictureAttributeList(FooterAttributeList, act_count, max_count);
-
+            if (act_count >= max_count) activate_card_count += 1;
             // 装备
             const EquipPictuerButton = PicturePanel.FindChildTraverse("EquipPictuerButton") as Button
             EquipPictuerButton.visible = act_count > 0;
             EquipPictuerButton.enabled = true;
+            // PictuerGroupRow
+            PicturePanel.SetHasClass("ShowExtends", act_count > 0)
             if (act_count > 0) {
                 EquipPictuerButton.SetPanelEvent("onactivate", () => {
                     // 登记卡片
@@ -218,11 +223,13 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
                         }
                     })
                 })
+
+
             }
 
         }
 
-
+        MainPanel.SetDialogVariableInt("card_count", activate_card_count);
         GameEvents.SendCustomGameEventToServer("ServiceInterface", {
             event_name: "GetConfigPictuerFetter",
             params: {}
