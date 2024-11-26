@@ -58,7 +58,6 @@ export class ArchiveService extends UIEventRegisterClass {
                     print("通关难度:" , GameRules.MapChapter.level_difficulty[0])
                     //0号玩家 的难度作为默认难度
                     GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0])
-                    GameRules.Timers
 
                     Timers.CreateTimer(5, () => {
                         //初始化完成
