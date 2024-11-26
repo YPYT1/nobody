@@ -28,7 +28,7 @@ const rare_list = [1, 2, 3, 4, 5, 6, 7];
 const _SetItemId = (item_id: string) => {
     let data = ServerItemList[item_id as keyof typeof ServerItemList];
     if (data) {
-        let rarity = data.rarity;
+        let rarity = data.quality;
         for (let rare of rare_list) {
             MainPanel.SetHasClass(`rare_${rare}`, rarity == rare);
         }
@@ -54,7 +54,7 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
     if (params.item_id != null) {
         let data = ServerItemList[item_id as keyof typeof ServerItemList];
         if (data) {
-            let rarity = data.rarity;
+            let rarity = data.quality;
             for (let rare of rare_list) {
                 MainPanel.SetHasClass(`rare_${rare}`, rarity == rare);
             }

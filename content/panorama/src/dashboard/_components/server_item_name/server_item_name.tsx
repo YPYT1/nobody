@@ -13,7 +13,7 @@ const Name = $("#Name") as LabelPanel;
 const _SetItemId = (item_id: string) => {
     let data = ServerItemList[item_id as keyof typeof ServerItemList];
     if (data) {
-        let rarity = data.rarity;
+        let rarity = data.quality;
         for (let r = 1; r <= 6; r++) {
             MainPanel.SetHasClass(`rare_${r}`, rarity == r);
         }

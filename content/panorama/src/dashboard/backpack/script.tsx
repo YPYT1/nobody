@@ -71,7 +71,7 @@ const InitItemDetails = () => {
 const ViewItem = (item_id: string, count: number) => {
     view_item_id = parseInt(item_id);
     let item_data = GetServerItemData(item_id)
-    let item_rare = item_data.rarity
+    let item_rare = item_data.quality
     // let item_name = $.Localize("#custom_serveritem_" + item_id)
     let item_desc = $.Localize("#custom_serveritem_" + item_id + "_desc")
     // ItemDetails.SetDialogVariable("item_name", item_name)

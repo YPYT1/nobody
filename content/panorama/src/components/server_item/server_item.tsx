@@ -12,7 +12,7 @@ const SetItemValue = (params: { item_id: string, item_count: number }) => {
     // $.Msg(["SetItemValue",item_id,item_count])
     let data = ServerItemList[item_id as keyof typeof ServerItemList];
     if (data) {
-        let rarity = data.rarity;
+        let rarity = data.quality;
         for (let rare of rare_list) {
             ServerItemPanel.SetHasClass(`rare_${rare}`, rarity == rare);
         }

@@ -197,7 +197,7 @@ export class ArchiveService extends UIEventRegisterClass {
                             let add_items = data.data.list[steam_id_string].add_items;
                             for (const add_item of add_items) {
                                 let item_id = tostring(add_item.item_id);
-                                let quality = ServerItemList[item_id as keyof typeof ServerItemList].rarity;
+                                let quality = ServerItemList[item_id as keyof typeof ServerItemList].quality;
                                 let affiliation_class = ServerItemList[item_id as keyof typeof ServerItemList].affiliation_class;
                                 PlayerPassItem.push({
                                     "item_id" : tostring(add_item.item_id),
