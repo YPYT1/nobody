@@ -70,22 +70,7 @@
                 background-size: 100%;
             }
 
-            .ItemAmount {
-                margin-top: 16px;
-                flow-children: right;
-
-                .Label {
-                    font-size: 16px;
-                    color: #b7b7b7;
-                    vertical-align: bottom;
-                }
-
-                .Amount {
-                    font-size: 20px;
-                    color: #ffffff;
-                    vertical-align: bottom;
-                }
-            }
+            
         }
     }
 
@@ -110,6 +95,27 @@
         }
 
     }
+}
+
+.ItemAmount {
+    margin-top: 16px;
+    flow-children: right;
+    visibility: collapse;
+    .Label {
+        font-size: 16px;
+        color: #b7b7b7;
+        vertical-align: bottom;
+    }
+
+    .Amount {
+        font-size: 20px;
+        color: #ffffff;
+        vertical-align: bottom;
+    }
+}
+
+.show_count .ItemAmount {
+    visibility: visible;
 }
 
 .rare_1 {

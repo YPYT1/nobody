@@ -144,40 +144,33 @@ export const ShowChapterInfoTips = (e: Panel, chapter_key: string) => {
     let chapter_data = ChapterInfo[chapter_key as keyof typeof ChapterInfo];
     ChapterTooltip.SetHasClass("is_boss", chapter_data.is_boss == 1);
     ChapterTooltip.AddClass("Show")
-
     let parentPos = e.GetPositionWithinWindow();
     let offsetX = Math.floor((parentPos["x"] + e.actuallayoutwidth) / e.actualuiscale_x - 160);
     let offsetY = Math.floor((parentPos["y"] + (e.actuallayoutheight / 2) - 100) / e.actualuiscale_y / 2);
-
     if (offsetX >= 1400) { offsetX -= 540; }
     ChapterTooltip.style.transform = `translatex( ${offsetX}px ) translatey( ${offsetY}px  )`
-    // ChapterTooltip.SetPositionInPixels(offsetX, offsetY, 0)
-    // ChapterTooltip.SetPositionInPixels(0, 0, 0)
-    // ChapterTooltip.style.marginLeft =  "0px";
-    // ChapterTooltip.style.marginBottom = "0px";
     ChapterConfirmBtn.enabled = false;
-
     // 这里需要读取关卡数据
     let local_chapter = ChapterInfo[chapter_key as keyof typeof ChapterInfo];
     // $.Msg(local_chapter)
     let default_max = local_chapter.default_max;
+    let default_difficulty = local_chapter.default_difficulty;
     let curr_chapter_data = DifficultyMaxData[chapter_key];
-    // $.Msg("curr_chapter_data", curr_chapter_data);
-    let player_max_difficulty = curr_chapter_data.user_difficulty % 100;
+    let user_difficulty = curr_chapter_data.user_difficulty;
 
-    for (let i = 0; i < ChapterDiffList.GetChildCount(); i++) {
+    for (let i = 0; i < default_max; i++) {
         const DifficultyButton = ChapterDiffList.GetChild(i) as RadioButton;
-        DifficultyButton.visible = i < default_max;
-        DifficultyButton.enabled = i < player_max_difficulty;
+        const diff_value = i + default_difficulty;
+        // DifficultyButton.visible = i < default_max;
+        DifficultyButton.enabled = diff_value <= user_difficulty;
         DifficultyButton.checked = false;
-        if (i < player_max_difficulty) {
-            let diff = local_chapter.chapter_index * 100 + i + 1;
+        if (diff_value <= user_difficulty) {
             DifficultyButton.SetPanelEvent("onactivate", () => {
                 // 选择关卡
                 GameEvents.SendCustomGameEventToServer("MapChapter", {
                     event_name: "SelectDifficulty",
                     params: {
-                        difficulty: `${diff}`
+                        difficulty: `${diff_value}`
                     }
                 })
             })
@@ -257,15 +250,10 @@ export const CreatePanel = () => {
     // DroppedInfoList
     // .ServerItem
     DroppedInfoList.RemoveAndDeleteChildren();
-    const xxxx = [1201, 1202, 1203, 1204, 1205,
-        1206,
-        1279,
-        1280
-    ]
+    const xxxx = [1201, 1202, 1203, 1204, 1205, 1206, 1279, 1281]
     for (let item_id of xxxx) {
         let serverItemPanel = CreateCustomComponent(DroppedInfoList, "server_item", ``);
-        serverItemPanel._SetServerItemInfo({ item_id: item_id })
-
+        serverItemPanel._SetServerItemInfo({ item_id: item_id, show_tips: true, show_count: false })
     }
 
 
@@ -285,78 +273,6 @@ export const CreatePanel = () => {
     })
 
     HideChapterInfoTips();
-    // // 页面开关按钮
-    // let ChapterClosedButton = $("#ChapterClosedButton");
-    // ChapterClosedButton.SetPanelEvent("onactivate", () => {
-    //     let state = MainPanel.BHasClass("Open");
-    //     MainPanel.SetHasClass("Open", !state)
-    // })
-
-    // // 章节列表
-    // let ChapterList = $("#ChapterList");
-    // ChapterList.RemoveAndDeleteChildren();
-    // Object.values(ChapterInfo).map((v, k) => {
-    //     let SelectChapter = $.CreatePanel("Panel", ChapterList, "");
-    //     SelectChapter.BLoadLayoutSnippet("SelectChapter");
-    //     SelectChapter.SetDialogVariable("chapter", `${v.name}`);
-    //     SelectChapter.Data<PanelDataObject>().chapter = v.name;
-    //     SelectChapter.SetPanelEvent("onactivate", () => {
-    //         for (let i = 1; i <= 5; i++) {
-    //             MainPanel.SetHasClass(`Stage_${i}`, v.name == i);
-    //         }
-    //     })
-
-    // })
-    // // 每个章节的页面
-    // let ChapterForDiff = $("#ChapterForDiff")
-    // ChapterForDiff.RemoveAndDeleteChildren();
-    // Object.values(ChapterInfo).map((v, k) => {
-    //     let chapter = v.name;
-    //     let StageDifficulty = $.CreatePanel("Panel", ChapterForDiff, "StageDifficulty_" + v.name, {
-    //         class: "StageDifficulty row wrap"
-    //     });
-
-    //     for (let i = 0; i < v.default_max; i++) {
-    //         let StageDifficultyRows = $.CreatePanel("Panel", StageDifficulty, "")
-    //         let difficulty = i + 1;
-    //         StageDifficultyRows.BLoadLayoutSnippet("StageDifficultyRows");
-    //         StageDifficultyRows.SetDialogVariable("chapter", `${v.name}`)
-    //         StageDifficultyRows.SetDialogVariable("difficulty", `${difficulty}`)
-    //         StageDifficultyRows.SetPanelEvent("onactivate", () => {
-    //             let diff = `${chapter * 100 + difficulty}`
-    //             $.Msg(["diff", diff])
-    //             GameEvents.SendCustomGameEventToServer("MapChapter", {
-    //                 event_name: "SelectDifficulty",
-    //                 params: {
-    //                     difficulty: `${diff}`
-    //                 }
-    //             })
-    //         })
-    //     }
-    // })
-
-    // let StartGameButton = $("#StartGameButton");
-    // StartGameButton.SetPanelEvent("onactivate", () => {
-    //     GameEvents.SendCustomGameEventToServer("MapChapter", {
-    //         event_name: "SelectDifficultyAffirm",
-    //         params: {}
-    //     })
-    // })
-
-    // let HeroConfirmButton = $("#HeroConfirmButton");
-    // HeroConfirmButton.SetPanelEvent("onactivate", () => {
-    //     GameEvents.SendCustomGameEventToServer("MapChapter", {
-    //         event_name: "SelectHeroAffirm",
-    //         params: {}
-    //     })
-    // })
-    // 玩家列表
-    // Create_PlayerList();
-    // 英雄列表
-    // Create_HeroList()
-    // MainPanel.SetHasClass("Stage_2", true);
-
-
     ChapterConfirmBtn.visible = localPlayer == 0;
 }
 
@@ -384,7 +300,7 @@ export const Init = () => {
     GameEvents.Subscribe("MapChapter_SelectDifficulty", event => {
         let data = event.data;
         let difficulty = data.select_difficulty;
-        $.Msg(["MapChapter_SelectDifficulty", data])
+        // $.Msg(["MapChapter_SelectDifficulty", data])
 
         ChapterConfirmBtn.enabled = true;
         ChapterConfirmBtn.SetPanelEvent("onactivate", () => {

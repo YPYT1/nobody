@@ -17,6 +17,8 @@ const SetTooltipView = (item_id: string, count: number, rarity: number, show_cou
         MainPanel.SetHasClass("rare_" + r, r == rarity)
     }
 
+    // $.Msg(["show_count",show_count])
+    MainPanel.SetHasClass("show_count", show_count == 1)
     ServerItemPanel._SetItemId(item_id)
 }
 
