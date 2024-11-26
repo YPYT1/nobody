@@ -121,8 +121,6 @@ export class GameEvent {
             GameRules.ArchiveService.CheckjhmCode(0);
         } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
-            //创建游戏
-            GameRules.ArchiveService.CreateGame();
         } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
 
         } else if (State_Get == GameState.TEAM_SHOWCASE) { //队伍展示阶段
@@ -130,6 +128,8 @@ export class GameEvent {
         } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段
             new Filter(); // 加载过滤器
             GameRules.MapChapter.InitChapterMap();
+            //创建游戏
+            GameRules.ArchiveService.CreateGame();
             GameRules.Altar = new Altar();
             // SendToConsole("dota_hud_healthbars 1"); // 血条设置
         } else if (State_Get == GameState.PRE_GAME) { //赛前阶段

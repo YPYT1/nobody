@@ -42,8 +42,8 @@ export class MapChapter extends UIEventRegisterClass {
 
     hero_list: { [key: number]: string } = {}
 
-    // 1 选择地图难度 2选择英雄 3游戏开始了
-    _game_select_phase: number = 0;
+    // -1 等待游戏初始化 1 选择地图难度 2选择英雄 3游戏开始了
+    _game_select_phase: number = -1;
     //地图数据
     ChapterData : typeof MapInfo["m1"] = null;
     //根据等级可用地图
@@ -73,7 +73,7 @@ export class MapChapter extends UIEventRegisterClass {
     //玩家投票信息
     vote_data: MapVote = {
         playervote : [],
-        state : 0,
+        state : 0 ,
         vote_time : 0 ,
     };
 
@@ -88,10 +88,9 @@ export class MapChapter extends UIEventRegisterClass {
 
     InitChapterMap() {
         let current_map = GetMapName();
-
-        this.DifficultySelectInit("|107|109|121")
+        // this.DifficultySelectInit("|107|109|121")
         if (current_map != "main") { return }
-        //加载营地ma
+        //加载营地
         GameRules.MapChapter.OnCreatedCampMap();
 
         this.player_count = GetPlayerCount();
@@ -140,7 +139,7 @@ export class MapChapter extends UIEventRegisterClass {
         GameRules.MapChapter.SelectDifficultyAffirmThink();
     }
     //难度初始化
-    DifficultySelectInit( str : string = "|103"){
+    DifficultySelectInit( str : string = ""){
         this._map_list = {};
         this._map_list["c1"] = {
             user_difficulty: 101, // 玩家最高可选难度

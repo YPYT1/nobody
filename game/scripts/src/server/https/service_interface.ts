@@ -48,7 +48,7 @@ export class ServiceInterface extends UIEventRegisterClass{
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetGameActivate",
-            {   
+            {
                 data: {
                     Activate: GameRules.ServiceInterface._game_activate
                 }
@@ -67,7 +67,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     PlayerServerSkillTypeLevel : CGEDServerSkillTypeLevel[] = [];
     
     /**
-     * 经验值转等级
+     * 技能经验值转等级
      * @param key 
      */
     GetServerSkillfulLevel(key : string , exp : number) : { level : number , cur_exp : number}{
@@ -106,7 +106,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             level_obj[index.toString()] = RandomInt(10000 , 920000);
         }
         for (const key in level_obj) {
-            let lvdata = this.GetServerSkillfulLevel( key , level_obj[key]);    
+            let lvdata = this.GetServerSkillfulLevel( key , level_obj[key]);
             this.PlayerServerSkillLevelCount[player_id].level[key] = {
                 "lv" : lvdata.level,
                 "exp" : level_obj[key],
@@ -143,7 +143,6 @@ export class ServiceInterface extends UIEventRegisterClass{
                                 lv : ServerSkillfulData.max_level - ServerSkillfulData.min_level + 1,
                             }
                         }else{
-                            
                             let skill_level = PlayerServerSkillLevelCount.lv - (ServerSkillfulData.min_level - 1)
                             if(skill_level > 0){
                                 this.PlayerServerSkillTypeLevel[player_id][key] = {
@@ -180,14 +179,6 @@ export class ServiceInterface extends UIEventRegisterClass{
             }
         );
     }
-
-    
-
-    //存档天赋系统
-
-
-    //存档图鉴系统
-
     //玩家星数
     player_tj_star_max : number[] = [ 10 , 10 , 10 , 10 , 10 , 10];
 

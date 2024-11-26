@@ -32,7 +32,6 @@ export class ArchiveService extends UIEventRegisterClass {
     Init() {
        
     }
-
     //创建游戏
     CreateGame() {
         let count = GetPlayerCount();
@@ -56,6 +55,20 @@ export class ArchiveService extends UIEventRegisterClass {
                         let steam_id = PlayerResource.GetSteamAccountID(index as PlayerID);
                         GameRules.MapChapter.level_difficulty[index] = data.data.list[steam_id.toString()].level_difficulty;
                     }
+                    print("通关难度:" , GameRules.MapChapter.level_difficulty[0])
+                    //0号玩家 的难度作为默认难度
+                    GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0])
+                    GameRules.Timers
+
+                    Timers.CreateTimer(5, () => {
+                        //初始化完成
+                        GameRules.MapChapter._game_select_phase = 0;
+
+                        GameRules.MapChapter.GetGameSelectPhase(-1, {})
+                        return null;
+                    });
+                    
+
                 }else{
 
                 }
@@ -101,7 +114,6 @@ export class ArchiveService extends UIEventRegisterClass {
             }
         )
     }
-
     //验证激活码
     CheckjhmCode(player_id: PlayerID) {
         //只验证主机
@@ -126,6 +138,7 @@ export class ArchiveService extends UIEventRegisterClass {
                         
                     }
                 } else {
+
                 }
             },
             (code: number, body: string) => {
@@ -171,7 +184,6 @@ export class ArchiveService extends UIEventRegisterClass {
             state: 1,
             host_steam_id : host_steam_id,
         }
-
         HttpRequest.AM2Post(ACTION_GAME_OVER,
             {
                 param: param_data

@@ -17,7 +17,7 @@ declare interface CreateGameReturn {
 				tb_gold: number, //钻石
 				tq_gold: number , //元素精华
             }
-        }  
+        }
         time : number , // 服务器时间
         game_id : string , // 游戏唯一id
         v : string, //游戏版本
