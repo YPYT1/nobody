@@ -6,6 +6,15 @@ import { UIEventRegisterClass } from "../../class_extends/ui_event_register_clas
 type PlayerResourceInput = {
     [key in PlayerResourceTyps]?: number
 }
+
+
+/** 资源对应属性加成表 */
+const ResourceConverObject: { [key in PlayerResourceTyps]?: AttributeMainKey } = {
+    SingleExp: "SingleExpeIncrease",
+    TeamExp: "SingleExpeIncrease",
+    Soul: "SoulGetRate",
+    Kills: "KillsGetRate",
+}
 /**
  * 资源系统
  */
@@ -15,46 +24,40 @@ export class ResourceSystem extends UIEventRegisterClass {
     /** 玩家资源 */
     player_resource: { [key in PlayerResourceTyps]: number }[] = [];
     /** 资源获取率 */
-    player_acquisition_rate: { [key in PlayerResourceTyps]: number }[] = [];
+    // player_acquisition_rate: { [key in PlayerResourceTyps]: number }[] = [];
     /** 资源消耗率 */
-    player_cost_rate: { [key in PlayerResourceTyps]: number }[] = [];
+    // player_cost_rate: { [key in PlayerResourceTyps]: number }[] = [];
     /** 上次更新 */
     last_updatetime: number[] = [];
 
     exp_type_count = [2, 5, 10];
+
     constructor() {
         super("ResourceSystem", true)
         this.InitAllPlayer()
+        // GameRules.Debug.RegisterDebug(this.constructor.name)
     }
 
     /** 初始化资源 */
     InitAllPlayer(player_counts: number = 4) {
         this.player_resource = [];
-        this.player_acquisition_rate = [];
-        this.player_cost_rate = [];
+        // this.player_acquisition_rate = [];
+        // this.player_cost_rate = [];
         this.last_updatetime = [];
         for (let i = 0 as PlayerID; i < player_counts; i++) {
-            this.player_resource.push({
-                Gold: 0,
-                Soul: 0,
-                Kills: 0,
-                TeamExp: 0,
-                SingleExp: 0,
-            });
-            this.player_acquisition_rate.push({
-                Gold: 100,
-                Soul: 100,
-                Kills: 100,
-                TeamExp: 100,
-                SingleExp: 100,
-            })
-            this.player_cost_rate.push({
-                Gold: 100,
-                Soul: 100,
-                Kills: 100,
-                TeamExp: 100,
-                SingleExp: 100,
-            })
+            let temp_object = {}
+            for (let resource_key in ResourceConverObject) {
+                temp_object[resource_key] = 0
+            }
+            this.player_resource.push(temp_object as any);
+
+            // this.player_cost_rate.push({
+            //     Gold: 100,
+            //     Soul: 100,
+            //     Kills: 100,
+            //     TeamExp: 100,
+            //     SingleExp: 100,
+            // })
             this.last_updatetime.push(0);
             this.SendPlayerResource(i)
         }
@@ -81,6 +84,7 @@ export class ResourceSystem extends UIEventRegisterClass {
         // bIsSell: boolean = false, // 是否为出售
     ) {
         if (player_id == -1) { return { status: false, msg: "player = -1", } }
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         let ret: { status: boolean, msg: string } = { status: true, msg: "", };
         for (let [resource, amount] of pairs(resource_input)) {
             amount = math.ceil(amount);
@@ -89,7 +93,7 @@ export class ResourceSystem extends UIEventRegisterClass {
                 if (bIgnoring == false) {
                     // 扣除 
                     if (bFixed == false) {
-                        amount = amount * this.player_cost_rate[player_id][resource] * 0.01
+                        // amount = amount * this.player_cost_rate[player_id][resource] * 0.01
                     }
                     const res_check = math.abs(amount) <= this.player_resource[player_id][resource];
                     if (res_check == false) {
@@ -107,9 +111,11 @@ export class ResourceSystem extends UIEventRegisterClass {
         for (let [resource, amount] of pairs(resource_input)) {
             if (bFixed == false) {
                 if (amount > 0) {
-                    amount = amount * this.player_acquisition_rate[player_id][resource] * 0.01
+                    let resource_to_attr_key = ResourceConverObject[resource]
+                    amount = amount * (1 + hHero.custom_attribute_value[resource_to_attr_key] * 0.01)
+                    // amount = amount * this.player_acquisition_rate[player_id][resource] * 0.01
                 } else {
-                    amount = amount * this.player_cost_rate[player_id][resource] * 0.01
+                    // amount = amount * this.player_cost_rate[player_id][resource] * 0.01
                 }
             }
             this.player_resource[player_id][resource] += math.floor(amount);
@@ -163,7 +169,7 @@ export class ResourceSystem extends UIEventRegisterClass {
         for (let [resource, amount] of pairs(resource_input)) {
             amount = math.ceil(amount);
             if (bCostRate) {
-                amount = amount * this.player_cost_rate[player_id][resource] * 0.01
+                // amount = amount * this.player_cost_rate[player_id][resource] * 0.01
             }
             if (math.abs(amount) <= this.player_resource[player_id][resource] == false) {
                 return false
@@ -195,7 +201,7 @@ export class ResourceSystem extends UIEventRegisterClass {
      * @param value 
      */
     ModifyAcquisitionRate(player_id: PlayerID, resource: PlayerResourceTyps, value: number) {
-        this.player_acquisition_rate[player_id][resource] += value
+        // this.player_acquisition_rate[player_id][resource] += value
     }
 
     /**
@@ -205,7 +211,7 @@ export class ResourceSystem extends UIEventRegisterClass {
      * @param value 
      */
     ModifyCostRate(player_id: PlayerID, resource: PlayerResourceTyps, value: number) {
-        this.player_cost_rate[player_id][resource] += value
+        // this.player_cost_rate[player_id][resource] += value
     }
 
     DropResourceItem(resource: PlayerResourceTyps, vPos: Vector, exp_type: number = 0, killer?: CDOTA_BaseNPC) {

@@ -179,13 +179,19 @@
         height: 568px;
         align: center center;
         background-image: url("file://{images}/custom_game/dashboard/popups_box.png");
-        flow-children: down;
+        // flow-children: down;
         visibility: collapse;
 
         &.Show {
             visibility: visible;
         }
 
+        .PopupsContainer {
+            width: 100%;
+            height: 100%;
+            flow-children: down;
+        }
+        
         .PopupsBody {
             margin-top: 24px;
             height: 468px;

@@ -22,6 +22,17 @@ PlayerTalentTreeList.SetPanelEvent('oncontextmenu', () => {
     TogglePlayerTalentTreeList(false)
 })
 
+
+
+// const InitTalentNodeTree = () => {
+//     let object_list = Object.entries(HeroTreeObject)
+//     for (let row of object_list) {
+//         const key = row[0];
+//         const row_data = row[1]
+
+//     }
+// }
+
 /** 是否有存在升级页面的窗口 */
 const GetOpenPopupsState = () => {
     let state = PlayerTalentTreeList.BHasClass("Show");
@@ -118,18 +129,19 @@ const TogglePlayerTalentTreeList = (bShow: boolean) => {
 
 export const CreatePanel_Talent = () => {
     let local_hero = Players.GetPlayerHeroEntityIndex(local_player);
-    // let hero_name = Entities.GetUnitName(local_hero).replace("npc_dota_hero_", "");
     MainPanel.SetDialogVariableInt("point_count", 0)
-    CreateHeroTalentTree(6 as HeroID)
+    // CreateHeroTalentTree(6 as HeroID)
     GameEventsSubscribe()
 }
 
+let HeroSubNodeObject: { [id: string]: number[] } = {};
 let hero_talent_tree_object: { [node: number]: { [key: string]: boolean } } = {}
+
 const CreateHeroTalentTree = (heroId: HeroID) => {
-    // $.Msg(["CreateHeroTalentTree", heroId])
     PlayerTalentTreeList.RemoveAndDeleteChildren();
     const ALPos = AbilityList.GetPositionWithinWindow();
     hero_talent_tree_object = {};
+    HeroSubNodeObject = {};
     // let index = 0
     for (let id in talent_data) {
         let row_data = talent_data[id as keyof typeof talent_data];
@@ -147,7 +159,7 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
             if (AbilityPanel) {
                 AbilityPanel.Data<PanelDataObject>().index = node_index
                 let LevelUpBtn = AbilityPanel.FindChildTraverse("LevelUpBtn")!;
-                let curr_index = row_data.index ;
+                let curr_index = row_data.index;
                 LevelUpBtn.SetPanelEvent("onactivate", () => {
                     ToggleAbilityTreePanel(curr_index, true)
                 })
@@ -173,11 +185,12 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
                 }
             })
         })
+
+        HeroSubNodeObject[id] = row_data.unlock_key
     }
-    // $.Msg(hero_talent_tree_object)
+
 
     SetLoaclPlayerHeroPortrait();
-
 }
 
 
@@ -255,6 +268,43 @@ const GameEventsSubscribe = () => {
                         false
                     );
                     TalentNode.SetDialogVariable("AbilityDescription", description_txt)
+
+                    // 找到子分支
+                    const ChildNodeList = TalentNode.FindChildTraverse("ChildNodeList")!;
+                    let subNode = HeroSubNodeObject[id];
+                    ChildNodeList.RemoveAndDeleteChildren();
+                    let sub_node_ids = []
+                    for (let _id of subNode) {
+                        if (_id == 0) { continue };
+                        sub_node_ids.push(`${_id}`)
+                    }
+
+                    for (let i = 0; i < sub_node_ids.length; i++) {
+                        let _id = sub_node_ids[i];
+                        let is_only = sub_node_ids.length == 1;
+                        let is_first = !is_only && i == 0;
+                        let is_last = !is_only && i == sub_node_ids.length - 1;
+
+                        let TalentNode = $.CreatePanel("Panel", ChildNodeList, "");
+                        TalentNode.BLoadLayoutSnippet("ChildTalentNode");
+                        TalentNode.SetHasClass("is_first", is_first);
+                        TalentNode.SetHasClass("is_last", is_last);
+                        TalentNode.SetHasClass("is_only", is_only);
+
+                        const ChildTalentIcon = TalentNode.FindChildTraverse("ChildTalentIcon") as ImagePanel;
+                        let _data = talent_data[_id as keyof typeof talent_data];
+                        let img_src = GetTextureSrc(_data.img)
+                        ChildTalentIcon.SetImage(img_src);
+
+                        ChildTalentIcon.SetPanelEvent("onmouseover", () => {
+                            ShowCustomTooltip(ChildTalentIcon, "talent_tree", hero_name, _id, 0)
+                        })
+
+                        ChildTalentIcon.SetPanelEvent("onmouseout", () => {
+                            HideCustomTooltip()
+                        })
+                    }
+
                 }
             }
 

@@ -43,6 +43,7 @@ export class CustomAttribute {
         //     }
         //     return 1
         // }, 1)
+        GameRules.Debug.RegisterDebug(this.constructor.name)
     }
 
 

@@ -30,15 +30,70 @@
 #ChapterBackground {
     width: 1456px;
     height: 816px;
-    background-image: url("file://{images}/custom_game/hud/chapter/chapter_1.png");
+    // background-image: url("file://{images}/custom_game/hud/chapter/chapter_1.png");
     align: center center;
+}
+
+.ChapterBorder {
+    width: 1627px;
+    height: 892px;
+    background-image: url("file://{images}/custom_game/hud/chapter/base_frame.png");
+
+    .Body {
+        width: 100%;
+        height: 100%;
+        flow-children: none;
+        // background-color: #00000099;
+
+        .PageBtn {
+            vertical-align: middle;
+            width: 80px;
+            height: 96px;
+            background-image: url("file://{images}/custom_game/hud/chapter/arrow_btn_n.png");
+
+            // border: 1px solid #000000;
+            &:enabled {
+                &:hover {
+                    brightness: 2;
+                }
+
+                &:active {
+                    pre-transform-scale2d: 0.85;
+                }
+            }
+
+            &:disabled {
+                // saturation: 0.2;
+                // brightness: 0.2;
+                // 
+                background-image: url("file://{images}/custom_game/hud/chapter/arrow_btn_d.png");
+            }
+        }
+
+        #LeftBtn {
+            transform: rotateY(180deg);
+            margin-left: 20px;
+        }
+
+        #RightBtn {
+            horizontal-align: right;
+            margin-right: 20px;
+        }
+
+        .Info {
+            width: 1406px;
+            height: 768px;
+            // border: 1px solid #fff;
+            horizontal-align: center;
+        }
+    }
 }
 
 #ChapterSelect {
     width: 1627px;
     height: 892px;
     flow-children: down;
-    background-image: url("file://{images}/custom_game/hud/chapter/base_frame.png");
+    // background-image: url("file://{images}/custom_game/hud/chapter/base_frame.png");
 
     .Header {
         width: 100%;
@@ -146,8 +201,17 @@
     #ChapterLogo {
         width: 456px;
         height: 244px;
-        background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo.png");
+        // border: 1px solid #fff;
+        // background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo.png");
     }
+}
+
+#ChapterPageBg {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    // visibility: collapse;
 }
 
 #ChapterList {
@@ -446,4 +510,20 @@
     horizontal-align: right;
     margin-right: 196px;
     visibility: collapse;
+}
+
+
+#OffsetTest {
+    width: 100%;
+    height: 100%;
+    // visibility: collapse;
+
+    Label {
+        // horizontal-align: right;
+        font-size: 24px;
+        color:#ffffff;
+        text-shadow: 0px 0px 2px 2.0 #000000;
+        margin-top: 12px;
+        margin-left: 40px;
+    }
 }

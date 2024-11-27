@@ -1,9 +1,11 @@
 
 import { CreateCustomComponent, LoadCustomComponent } from "../../../dashboard/_components/component_manager";
 import { default as ChapterInfo } from "../../../json/config/chapter_info.json"
+import { default as PageBackground } from "../../../json/config/page_background.json"
 import { default as NpcHeroesCustom } from "../../../json/npc_heroes_custom.json"
 
 const CreateServerItem = GameUI.CustomUIConfig().CreateServerItem;
+const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 const localPlayer = Game.GetLocalPlayerID();
 const MainPanel = $.GetContextPanel();
 const ChapterContainer = $("#ChapterContainer")
@@ -244,8 +246,32 @@ export const CreatePanel = () => {
             ChapterSelectBtn.SetPanelEvent("onactivate", () => {
                 ShowChapterInfoTips(ChapterSelectBtn, chapter_key)
             })
-            ChapterSelectBtn.style.transform = `translateX(${chapter_data.x}px) translateY(${chapter_data.y}px)`
+            let diff_value = data.is_boss == 1 ? 193 / 2 : 161 / 2;
+            ChapterSelectBtn.style.transform = `translateX(${chapter_data.x - diff_value}px) translateY(${chapter_data.y - diff_value}px)`
         }
+
+        // 章节背景
+        const ChapterPageBg = ChapterPageInfo.FindChildTraverse("ChapterPageBg") as ImagePanel;
+        $.Msg(["GetChapterInfoTable", page])
+
+        let page_data = PageBackground[page as keyof typeof PageBackground];
+        let page_bg = page_data.src;
+        let bg_src = GetTextureSrc(page_bg);
+        ChapterPageBg.SetImage(bg_src)
+        // $.Msg(bg_src)
+
+        let OffsetTest = ChapterPageInfo.FindChildTraverse("OffsetTest") as Button;
+        if (OffsetTest) {
+            let actualuiscale_x = OffsetTest.actualuiscale_x;
+            let actualuiscale_y = OffsetTest.actualuiscale_y;
+            OffsetTest.SetPanelEvent("onactivate", () => {
+                let offset = GameUI.GetCursorPosition()
+                OffsetTest.SetDialogVariable("offset",
+                    `${Math.floor((offset[0] - 215) / actualuiscale_x)} , ${Math.floor((offset[1] - 138) / actualuiscale_y)}`
+                )
+            })
+        }
+
     }
     total_page = PageList.GetChildCount();
     LeftBtn.enabled = true
@@ -265,9 +291,6 @@ export const CreatePanel = () => {
         DifficultyButton.enabled = false;
         // DifficultyButton.enabled = Math.floor(Math.random() * 2) == 1;
     }
-
-
-
 
     let ChapterCancelBtn = $("#ChapterCancelBtn") as Button;
     ChapterCancelBtn.SetPanelEvent("onactivate", () => {

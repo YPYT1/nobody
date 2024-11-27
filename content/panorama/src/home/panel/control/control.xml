@@ -58,14 +58,18 @@
 							<Panel id="ExtraElement">
 								<Panel class="NewIcon" />
 							</Panel>
-							
 								<Label id="TypesLabel" class="TypeLabel" text="{s:type_label}"/>
-								<!-- <Panel class="NewIcon" /> -->
-							
 						</Panel>
-						<Panel class="SplitLine" />
 						<Panel class="AbilityDescription">
 							<Label text="{s:AbilityDescription}" html="true"/>
+						</Panel>
+						<Panel class="SplitLine" />
+						<Panel class="ChildNodeHeader">
+							<Label text="下级分支"/>
+							<Panel class="BranchLineAndPoint">
+								<Panel class="Point"/>
+							</Panel>
+							<Panel id="ChildNodeList" />
 						</Panel>
 					</Button>
 					<Panel class="TalentStateLabel" hittest="false" />
@@ -96,6 +100,13 @@
 					<Panel class="ChargePoint No2"/>
 					<Panel class="ChargePoint No3"/>
 				</Panel>
+			</Panel>
+		</snippet>
+		<snippet name="ChildTalentNode">
+			<Panel class="ChildTalentNode">
+				<Panel class="HorLine"/>
+				<Panel class="Line"/>
+				<Image id="ChildTalentIcon"/>
 			</Panel>
 		</snippet>
 	</snippets>

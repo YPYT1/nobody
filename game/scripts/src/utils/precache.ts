@@ -66,6 +66,8 @@ export default function Precache(context: CScriptPrecacheContext) {
             'particles/diy/elite_state.vpcf',
             ...drow_precache,
             ...skywrath_precache,
+
+            'soundevents/custom_sounds.vsndevts'
         ],
         context
     );

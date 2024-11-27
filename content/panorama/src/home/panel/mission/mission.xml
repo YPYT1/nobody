@@ -58,7 +58,7 @@
             </Panel>
         </Panel>
 
-        <Panel id="MissionCompleteContainer">
+        <Panel id="MissionCompleteContainer" hittest="false">
             <Panel id="RadiantComplete" class="Radiant"/>
             <Panel id="DireComplete" class="Dire"/>
         </Panel>

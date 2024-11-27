@@ -56,6 +56,9 @@ declare type AttributeMainKey = "AttackDamage"
     | "CreatureDmgLeader"
     | "CreatureDmgNormal"
     | "VisionRange"
+    | "SoulGetRate"
+    | "KillsGetRate"
+
 
     ;
 declare type EnemyAttributeKey = "AllElementResist"
@@ -233,7 +236,7 @@ interface MinorAbilityUpgradesProps {
 }
 
 /** 资源类型 */
-type PlayerResourceTyps = "Gold" | "Soul" | "Kills" | "TeamExp" | "SingleExp";
+type PlayerResourceTyps = "Soul" | "Kills" | "SingleExp" | "TeamExp";
 
 interface PlayEffectProps {
     /** 目标 */

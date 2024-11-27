@@ -47,7 +47,7 @@ export const Init = () => {
 const PopupsBackground = $("#Card_PopupsBg");
 const CompoundCard = $("#CompoundCard");
 const PlayerConsumeCard = $("#PlayerConsumeCard")
-
+const DuguaiMoviePanel = $("#DuguaiMoviePanel") as MoviePanel;
 const InitCardPopups = () => {
     SetPopupsClosedBtn(CompoundCard);
     SetPopupsClosedBtn(PlayerConsumeCard);
@@ -71,31 +71,46 @@ const SetBtn_PlayerConsumeCard = (e: Panel) => {
         })
         ClosedPopups(e)
     })
-
-
-
 }
+
+let music_loop = -1;
+let stop_loop_play = false;
+let sound_handle = 0;
+
 const SetPopupsClosedBtn = (e: Panel) => {
     const ClosedPopupsBtn = e.FindChildTraverse("ClosedPopupsBtn");
     ClosedPopupsBtn?.SetPanelEvent("onactivate", () => {
+        // 关闭音乐
+        $.CancelScheduled(music_loop as ScheduleID);
+        stop_loop_play = true;
+        Game.StopSound(sound_handle)
         ClosedPopups(e)
-
     })
 }
 
 const ClosedPopups = (e: Panel) => {
     e.AddClass("Closed");
     e.RemoveClass("Open");
+    e.RemoveClass("Show");
     PopupsBackground.RemoveClass("Show");
 }
 
 const GetCompoundCardList = (event: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetCompoundCardList"]>) => {
-    $.Msg(["GetCompoundCardList",event])
+    // $.Msg(["GetCompoundCardList", event])
     let data = event.data;
     let type = data.type
     ToggleDashboardLoading(false)
     CardPopupsToggle("CompoundCard", true)
-    CompoundCard.SetHasClass("Gambling",type == 1)
+    CompoundCard.SetHasClass("Gambling", type == 1)
+    if (type == 1) {
+        stop_loop_play = false;
+        LoopPlayDdzBgm();
+        DuguaiMoviePanel.Play()
+        DuguaiMoviePanel.AddClass("Show")
+        $.Schedule(3, () => {
+            DuguaiMoviePanel.RemoveClass("Show")
+        })
+    }
     const CompoundCardList = CompoundCard.FindChildTraverse("CompoundCardList")!;
     CompoundCardList.RemoveAndDeleteChildren()
     let list = Object.values(data.card)
@@ -108,14 +123,17 @@ const GetCompoundCardList = (event: NetworkedData<CustomGameEventDeclarations["S
         CardItem.ShowCardIcon(true);
         const DragPanel = cardPanel.FindChildTraverse("DragPanel")!;
         DragPanel.SetDraggable(true);
-        // $.RegisterEventHandler('DragEnter', DragPanel, CompoundCard_DragEnter);
-        // $.RegisterEventHandler('DragDrop', DragPanel, CompoundCard_DragDrop);
-        // $.RegisterEventHandler('DragLeave', DragPanel, CompoundCard_DragLeave);
         $.RegisterEventHandler('DragStart', DragPanel, CompoundCard_OnDragStart);
         $.RegisterEventHandler('DragEnd', DragPanel, CompoundCard_DragEnd);
     }
 }
 
+const LoopPlayDdzBgm = () => {
+    $.Msg(["LoopPlayDdzBgm", stop_loop_play])
+    if (stop_loop_play) { return }
+    sound_handle = Game.EmitSound("Custom.Doudizhu");
+    music_loop = $.Schedule(15, LoopPlayDdzBgm)
+}
 const CompoundCard_OnDragStart = (panel: Panel, dragCallbacks: Panel) => {
 
     panel.visible = false;
@@ -152,25 +170,6 @@ const CustomEventSub = () => {
     GameEvents.Subscribe("custom_client_popups", event => {
         $.Msg(["custom_client_popups", event])
     })
-
-    // $.Msg(["open"])
-
-    // GetCompoundCardList({
-    //     data: {
-    //         "type": 1,
-    //         "card": {
-    //             "1": "2045",
-    //             "2": "2045",
-    //             "3": "2045",
-    //             "4": "2045",
-    //             "5": "2045",
-    //             // "6": "2046",
-    //             // "7": "2046",
-    //             // "8": "2046"
-    //         }
-    //     }
-    // })
-
 }
 
 (() => {

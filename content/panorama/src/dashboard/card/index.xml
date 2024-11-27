@@ -62,14 +62,17 @@
             </Panel>
 
             <Panel id="CompoundCard" class="PopupsBox">
-                <Panel class="PopupsBody">
-                    <Panel id="CompoundCardList" />
+                <Panel class="PopupsContainer">
+                    <Panel class="PopupsBody">
+                        <Panel id="CompoundCardList" />
+                    </Panel>
+                    <Panel class="ButtonGroup">
+                        <Button id="ClosedPopupsBtn" class="dashboard_btn">
+                            <Label text="焯" />
+                        </Button>
+                    </Panel>
                 </Panel>
-                <Panel class="ButtonGroup">
-                    <Button id="ClosedPopupsBtn" class="dashboard_btn">
-                        <Label text="焯" />
-                    </Button>
-                </Panel>
+                <Movie id="DuguaiMoviePanel" src="file://{resources}/videos/custom_game/duguai.webm" />
             </Panel>
         </Button>
 	</Panel>

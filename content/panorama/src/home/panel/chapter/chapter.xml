@@ -9,8 +9,14 @@
 	<snippets>
 		<snippet name="ChapterPageInfo">
 			<Panel class="ChapterPageInfo" hittest="false">
+				<Image id="ChapterPageBg" />
+				<Button id="OffsetTest">
+					<Label text="{s:offset}"/>
+				</Button>
 				<Panel id="ChapterLogo" hittest="false"/>
 				<Panel id="ChapterList" hittest="false"/>
+
+				
 			</Panel>
 		</snippet>
 
@@ -39,28 +45,28 @@
 	</snippets>
 	<Panel class="Chapter">
 		<Panel id="ChapterContainer" class="Show">
-			<Panel id="ChapterBackground" />
 			<Panel id="ChapterSelect">
 				<Panel class="Header">
 					<Panel  class="Title">
 						<Label text="#请选择关卡"/>
 					</Panel>
-					<!-- <Button id="ClosedBtn" class="ClosedBtn" /> -->
 				</Panel>
 				<Panel class="Body">
 					<Button id="LeftBtn" class="PageBtn" />
 					<Panel class="Info">
 						<Panel id="PageList" />
-
-						
-
 					</Panel>
 					<Button id="RightBtn" class="PageBtn" />
 				</Panel>
-				<Panel class="Footer">
-				
+				<Panel class="Footer"></Panel>
+			</Panel>
+			<Panel class="ChapterBorder">
+				<Panel class="Body">
+					<Button id="LeftBtn" class="PageBtn" />
+					<Button id="RightBtn" class="PageBtn" />
 				</Panel>
 			</Panel>
+
 			<Panel id="ChapterTooltip">
 				<Panel class="FloorTexture"/>
 				<Panel class="TooltipContent">
