@@ -23,24 +23,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * player_count : number,
      */
     /**
-     * 玩家限购
-     */
-    item_player_count: {
-        [item_key: string]: {
-            player_count: number,
-            player_max: number,
-        },
-    }[] = [];
-    /**
-     * 全局限购记录
-     */
-    item_global_count: {
-        [item_key: string]: {
-            buy_count: number,
-            buy_max: number,
-        },
-    } = {};
-    /**
      * 玩家商店等级
      */
     player_shop_level: number[] = [];
@@ -53,7 +35,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     player_shop_field_count: number[] = [];
     //玩家数
-    player_count: number = 6;
+    player_count: number = 4;
     //物品栏锁定栏位
     player_shop_field_count_lock: number[] = [];
     //锁定栏位
@@ -64,8 +46,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     shop_field_max: number = 5;
     //VIP栏位
     shop_field_max_vip: number = 1;
-    //刷新信息
-    player_refresh_data: PlayerRefreshData[] = [];
     //商店准备信息
     shop_state_data: ShopStateData[] = [];
     //售卖状态
@@ -102,12 +82,14 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * 玩家成长性物品
      */
     player_shop_buy_ts_data : { [item_key: string]: number }[] = []; //购买的成长性物品
-
     /**
-     * 玩家成长性物品
+     * 玩家成长性物品 客服端显示
      */
-    player_shop_buy_ts_client : { item_key: string , count : number }[][] = [];//购买的成长性物品
-
+    player_shop_buy_ts_client : PlayerShopBuyTsClient[][] = [];//购买的成长性物品
+    /**
+     * 是否第一次达到 满配
+     */
+    player_shop_buy_ts_max : number[] = [];
     /**
      * 初始灵魂刷新价格
      */
@@ -125,10 +107,20 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     refresh_limit: number = 10;
     //玩家灵魂消耗率
-
-
     /**
-     * 格子上线
+     * 当局游戏上线
+     */
+    cell_max : number = 3;
+    /**
+     * 可用格子上线
+     */
+    pt_cell_max : number = 5;
+    /**
+     * vip可用额外栏位
+     */
+    player_vip_cell_count : number = 1;
+    /**
+     * 满配上线
      */
 
     prop_ability_values: {
@@ -153,13 +145,13 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             }
         }
         //数据
-        for (const key in MysteriousShopConfig) {
+        for (const key in MysteriousShopConfig) { //72
             const Info = MysteriousShopConfig[key as keyof typeof MysteriousShopConfig];
             this.item_level_group.push(key);
-            for (let i_p = 0; i_p < this.player_count; i_p++) {
+            for (let i_p = 0; i_p < this.player_count; i_p++) { //36
+                //循环玩家增加
                 for (let i_r = 0; i_r < 6; i_r++) {
                     //品质
-                    this.item_level_probability_group[i_p].push([]);
                     this.item_level_probability_group[i_p][i_r].push(
                         Info.probability[i_r]
                     );
@@ -175,7 +167,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             this.shop_field_list.push([]);
             this.player_shop_field_count.push(this.shop_field_max + this.shop_field_max_vip);
             this.player_shop_field_count_lock.push(this.shop_field_lock);
-            this.item_player_count.push({});
             this.shop_state_data.push({
                 is_ready: 0,
             });
@@ -235,32 +226,70 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             true , true , true , true , true 
         ];
 
+
         this.player_shop_buy_ts_data[player_id] = {};
         this.player_shop_buy_ts_client[player_id] = [];
+        //玩家栏位重构数据
+        if(GameRules.MapChapter.GameDifficultyNumber >= 133){
+            this.cell_max = 5;
+        }else if((GameRules.MapChapter.GameDifficultyNumber >= 104)){
+            this.cell_max = 4;
+        }else{
+            this.cell_max = 3;
+        }
+        let cell_count = this.player_vip_cell_count + this.pt_cell_max;
+        for (let cell_max_i = 1; cell_max_i <= cell_count; cell_max_i++) {
+            if(cell_max_i <= this.cell_max){
+                this.player_shop_buy_ts_client[player_id].push({
+                    "item_key" : "",
+                    "type" : 2,
+                    "is_vip" : 0,
+                    "count" : 0,
+                })
+            }else if(cell_max_i > this.cell_max ) { //vip锁
+                this.player_shop_buy_ts_client[player_id].push({
+                    "item_key" : "",
+                    "type" : 0,
+                    "is_vip" : 1,
+                    "count" : 0,
+                })
+            }else{
+                this.player_shop_buy_ts_client[player_id].push({
+                    "item_key" : "",
+                    "type" : 0,
+                    "is_vip" : 0,
+                    "count" : 0,
+                })
+            }
+        }
+        DeepPrintTable(this.player_shop_buy_ts_client);
         this.player_shop_level[player_id] = 0;
 
         this.player_shop_discount[player_id] = 100;
         this.player_get_soul_double_pro[player_id] = 0;
         this.player_shop_field_count[player_id] = this.shop_field_max + this.shop_field_max_vip;
         this.player_shop_field_count_lock[player_id] = this.shop_field_lock;
-        this.item_player_count[player_id] = {};
         let eval_param = {
             count: 0,
         };
         let refresh_soul = GameRules.MysticalShopSystem.initial_refresh_price;
         this.player_count =  GetPlayerCount();
         //重置物品概率
-        this.item_level_probability_group = [];
-        for (let index = 0; index < this.player_count; index++) {
-            this.item_level_probability_group.push([]);
-        }
+        this.item_level_probability_group[player_id] = [];
         this.item_level_group = [];
+        for (let index = 0; index < 6; index++) {
+            //品质
+            this.item_level_probability_group[player_id].push([]);
+        }
+        //数据
         for (const key in MysteriousShopConfig) {
             const Info = MysteriousShopConfig[key as keyof typeof MysteriousShopConfig];
             this.item_level_group.push(key);
-            for (let index = 0; index < this.player_count; index++) {
-                this.item_level_probability_group[index].push(
-                    Info.probability
+            //循环玩家增加
+            for (let i_r = 0; i_r < 6; i_r++) {
+                //品质
+                this.item_level_probability_group[player_id][i_r].push(
+                    Info.probability[i_r]
                 );
             }
         }
@@ -336,7 +365,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             let player_gold_start = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - refresh_soul });
 
             if (player_gold_start.status) {
-                GameRules.MysticalShopSystem.OneItemRefresh(player_id, index)
+                GameRules.MysticalShopSystem.PlayerShopItem(player_id, index)
             } else {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : !" + player_gold_start.msg);
             }
@@ -414,26 +443,13 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         }
         let shop_wp_list: string[] = [];
 
-        if(is_one_refresh){
-            //回归池子
+        if(is_one_refresh){ //是否单个刷新
+            //回归池子 单刷新
             for (let it = 0; it < this.player_shop_field_count[player_id]; it++) {
                 if(it == i_index){
                     if (this.shop_field_list[player_id][i_index]) {
                         let item_data = this.shop_field_list[player_id][i_index];
                         shop_wp_list.push(item_data.key);
-                        //卖了不会回归池子
-                        if (item_data.is_buy == 1) {
-                            
-                        } else {
-                            //回归全局池子
-                            if (this.item_global_count.hasOwnProperty(item_data.key)) {
-                                this.item_global_count[item_data.key].buy_count--;
-                            }
-                            //回归玩家池子
-                            if (this.item_player_count[player_id].hasOwnProperty(item_data.key)) {
-                                this.item_player_count[player_id][item_data.key].player_count--;
-                            }
-                        }
                     }
                 }else{
                     let item_data = this.shop_field_list[player_id][it];
@@ -441,7 +457,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 }
             }
         }else{
-            //回归池子
+            //回归池子 全刷新
             for (const item_data of this.shop_field_list[player_id]) {
                 //锁定和卖了不会回归池子
                 if (item_data.is_lock == 1) {
@@ -450,14 +466,14 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 if (item_data.is_buy == 1) {
                     continue;
                 }
-                //回归全局池子
-                if (this.item_global_count.hasOwnProperty(item_data.key)) {
-                    this.item_global_count[item_data.key].buy_count--;
-                }
-                //回归玩家池子
-                if (this.item_player_count[player_id].hasOwnProperty(item_data.key)) {
-                    this.item_player_count[player_id][item_data.key].player_count--;
-                }
+                // //回归全局池子
+                // if (this.item_global_count.hasOwnProperty(item_data.key)) {
+                //     this.item_global_count[item_data.key].buy_count--;
+                // }
+                // //回归玩家池子
+                // if (this.item_player_count[player_id].hasOwnProperty(item_data.key)) {
+                //     this.item_player_count[player_id][item_data.key].player_count--;
+                // }
             }
         }
         
@@ -467,128 +483,32 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         let amount_count = 0;
         let amount_max = 50;
 
+        if(is_one_refresh){
+            for_max = 1; //单个刷新只有一次
+        }
+
         for (let index = 0; index < for_max; index++) {
             amount_count++;
             if (amount_count > amount_max) {
                 break;
             }
-
-            //获取具体物品
-            let item_index = GetCommonProbability(this.item_level_probability_group[player_id][this.player_shop_level[player_id]]);
-            let item_name = this.item_level_group[item_index];
-
-            if (this.shop_field_list[player_id][index].is_lock == 1) {
-                //保存
-                shop_wp_list.push(this.shop_field_list[player_id][index].key);
-                continue;
-            }
-            if (shop_wp_list.includes(item_name)) {
-                //跳过本次 
-                index--;
-                continue;
-            }
-            if (this.item_player_count[player_id].hasOwnProperty(item_name)) {
-                if (this.item_player_count[player_id][item_name].player_count >= this.item_player_count[player_id][item_name].player_max) {
-                    //跳过本次 
-                    index--;
-                    continue;
-                }
-            }
-            if (item_name && item_name != "") {
-                //是否全局唯一
-                let ItemsCustomInfo = MysteriousShopConfig[item_name as "prop_1"];
-                if(ItemsCustomInfo.buy_count_max >= 1){//大于0的特殊购买
-                    if (this.player_shop_buy_data[player_id].hasOwnProperty(item_name)) {
-                        if(this.player_shop_buy_data[player_id][item_name] >= ItemsCustomInfo.buy_count_max){
-                            index--;
-                            continue;
-                        }
-                    }
-                    if (this.player_shop_buy_ts_data[player_id].hasOwnProperty(item_name)) {
-                        if(this.player_shop_buy_ts_data[player_id][item_name] >= ItemsCustomInfo.buy_count_max){
-                            index--;
-                            continue;
-                        }
-                    }
-                }
-                let buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id]) / 100);
-                this.shop_field_list[player_id][index].type = ItemsCustomInfo.type;
-                this.shop_field_list[player_id][index].key = item_name;
-                this.shop_field_list[player_id][index].soul = buysoul;
-                this.shop_field_list[player_id][index].rarity = ItemsCustomInfo.rarity;
-                this.shop_field_list[player_id][index].is_buy = 0;
-                this.shop_field_list[player_id][index].is_lock = 0;
-            } else {
-                index--;
-                continue;
-            }
-            //保存
-            shop_wp_list.push(item_name);
-        }
-        this.GetShopData(player_id, {});
-    }
-
-
-    /**
-     * 单个位置道具刷新
-     * @param player_id 
-     * @param index     
-     */
-    private OneItemRefresh(player_id: PlayerID, index: number) {
-        let shop_wp_list: string[] = [];
-        //回归池子
-        for (let it = 0; it < this.player_shop_field_count[player_id]; it++) {
-            if(it == index){
-                if (this.shop_field_list[player_id][index]) {
-                    let item_data = this.shop_field_list[player_id][index];
-                    shop_wp_list.push(item_data.key);
-                    //卖了不会回归池子
-                    if (item_data.is_buy == 1) {
-                        
-                    } else {
-                        //回归全局池子
-                        if (this.item_global_count.hasOwnProperty(item_data.key)) {
-                            this.item_global_count[item_data.key].buy_count--;
-                        }
-                        //回归玩家池子
-                        if (this.item_player_count[player_id].hasOwnProperty(item_data.key)) {
-                            this.item_player_count[player_id][item_data.key].player_count--;
-                        }
-                    }
-                }
-            }else{
-                let item_data = this.shop_field_list[player_id][it];
-                shop_wp_list.push(item_data.key);
-            }
-        }
-        
-        //循环计数器
-        let amount_count = 0;
-        let amount_max = 50;
-
-        for (let i = 0; i < 1; i++) {
-            amount_count++;
-            if (amount_count > amount_max) {
-                break;
-            }
             print("amount_count :" , amount_count);
-
             //获取具体物品
             let item_index = GetCommonProbability(this.item_level_probability_group[player_id][this.player_shop_level[player_id]]);
             let item_name = this.item_level_group[item_index];
-
-
-            if (shop_wp_list.includes(item_name)) {
-                //跳过本次 
-                i--;
-                continue;
-            }
-            if (this.item_player_count[player_id].hasOwnProperty(item_name)) {
-                if (this.item_player_count[player_id][item_name].player_count >= this.item_player_count[player_id][item_name].player_max) {
-                    //跳过本次 
-                    i--;
+            if(!is_one_refresh){
+                //保存锁定记录
+                if (this.shop_field_list[player_id][index].is_lock == 1) {
+                    //保存
+                    shop_wp_list.push(this.shop_field_list[player_id][index].key);
                     continue;
                 }
+            }
+            
+            if (shop_wp_list.includes(item_name)) {
+                //跳过本次 
+                index--;
+                continue;
             }
             if (item_name && item_name != "") {
                 //是否全局唯一
@@ -596,7 +516,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 if(ItemsCustomInfo.buy_count_max >= 1){//大于0的特殊购买
                     if (this.player_shop_buy_data[player_id].hasOwnProperty(item_name)) {
                         if(this.player_shop_buy_data[player_id][item_name] >= ItemsCustomInfo.buy_count_max){
-                            i--;
+                            index--;
                             continue;
                         }
                     }
@@ -607,18 +527,44 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         }
                     }
                 }
+                let field_index = index;
+                if(is_one_refresh){ 
+                    field_index = i_index;
+                }
+                
                 let buysoul = math.ceil(ItemsCustomInfo.soul * (this.player_shop_discount[player_id]) / 100);
-                this.shop_field_list[player_id][index].key = item_name;
-                this.shop_field_list[player_id][index].soul = buysoul;
-                this.shop_field_list[player_id][index].rarity = ItemsCustomInfo.rarity;
-                this.shop_field_list[player_id][index].is_buy = 0;
-                this.shop_field_list[player_id][index].is_lock = 0;
-                this.shop_field_list[player_id][index].refresh_count = this.shop_field_list[player_id][index].refresh_count + 1;
-                //刷新价格增加
-                let refresh_soul = GameRules.MysticalShopSystem.GetSXPrice(this.shop_field_list[player_id][index].refresh_count);
-                this.shop_field_list[player_id][index].refresh_soul = refresh_soul;
+                this.shop_field_list[player_id][field_index].type = ItemsCustomInfo.type;
+                this.shop_field_list[player_id][field_index].key = item_name;
+                this.shop_field_list[player_id][field_index].soul = buysoul;
+                this.shop_field_list[player_id][field_index].rarity = ItemsCustomInfo.rarity;
+                this.shop_field_list[player_id][field_index].is_buy = 0;
+                this.shop_field_list[player_id][field_index].is_lock = 0;
+                if(ItemsCustomInfo.type == 2){
+                    //如果玩家没有购买过 且是成长装备
+                    if(!this.player_shop_buy_ts_data[player_id].hasOwnProperty(item_name)){
+                        let ssp_index = GetCommonProbability(ItemsCustomInfo.star_start_pro);
+                        let new_rarity = ssp_index + 1;
+                        this.shop_field_list[player_id][field_index].rarity = new_rarity;
+                        let count_soul = 0;
+                        for (let ssp_i = 0; ssp_i <= ssp_index; ssp_i++) {
+                            count_soul += ItemsCustomInfo.star_soul[ssp_i];
+                        }
+                        this.shop_field_list[player_id][field_index].soul = count_soul;
+                    }else{
+                        let item_count = this.player_shop_buy_ts_data[player_id][item_name];
+                        this.shop_field_list[player_id][field_index].rarity = item_count + 1;
+                        this.shop_field_list[player_id][field_index].soul = ItemsCustomInfo.star_soul[item_count];
+                    }
+                }
+                if(is_one_refresh){
+                    this.shop_field_list[player_id][field_index].refresh_count = this.shop_field_list[player_id][field_index].refresh_count + 1;
+                    //刷新价格增加
+                    let refresh_soul = GameRules.MysticalShopSystem.GetSXPrice(this.shop_field_list[player_id][field_index].refresh_count);
+                    this.shop_field_list[player_id][field_index].refresh_soul = refresh_soul;
+                }
+                
             } else {
-                i--;
+                index--;
                 continue;
             }
             //保存
@@ -649,13 +595,13 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     GetShopData(player_id: PlayerID, params: CGED["MysticalShopSystem"]["GetShopData"], callback?: string) {
+        DeepPrintTable(this.shop_field_list[player_id]);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "MysticalShopSystem_GetShopData",
             {
                 data: {
                     shop_field_list: this.shop_field_list[player_id],
-                    player_refresh_data: this.player_refresh_data[player_id],
                     player_vip_status: this.player_vip_status[player_id]
                 }
             }
@@ -734,39 +680,82 @@ export class MysticalShopSystem extends UIEventRegisterClass {
 
     /** 添加商店物品数据 */
     AddPropAttribute(player_id: PlayerID, prop_name: string ,  rarity : number) {
-        const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let ItemData = MysteriousShopConfig[prop_name as keyof typeof MysteriousShopConfig];
+        //先判断类型再判断进入哪个背包
+        if(ItemData.type == 2){
+            if(this.player_shop_buy_ts_data[player_id].hasOwnProperty(prop_name)) {
+                this.player_shop_buy_ts_data[player_id][prop_name]++;
+            } else {
+                this.player_shop_buy_ts_data[player_id][prop_name] = rarity;
+            }
+            let item_is_add = false; 
+            for (let it = 0; it < this.player_shop_buy_ts_client[player_id].length; it++) {
+                if(this.player_shop_buy_ts_client[player_id][it].item_key == prop_name){
+                    item_is_add = true;
+                    this.player_shop_buy_ts_client[player_id][it].count ++;
+                }
+            }
+            if(item_is_add == false){
+                for (let it = 0; it < this.player_shop_buy_ts_client[player_id].length; it++) {
+                    if(this.player_shop_buy_ts_client[player_id][it].type == 2){
+                        this.player_shop_buy_ts_client[player_id][it].count = rarity;
+                        this.player_shop_buy_ts_client[player_id][it].type = 1;
+                        this.player_shop_buy_ts_client[player_id][it].item_key = prop_name;
+                        break;
+                    }
+                }
+            }
+            //成长性道具需修改概率
+            let item_con_index = this.item_level_group.indexOf(prop_name);
+            let item_pro_number = 0;
+            //品质
+            if(rarity < 5){
+                let r = rarity - 1;
+                item_pro_number = ItemData.start_rarity_pro[r];
+            }
+            for (let i_p = 0; i_p < this.player_count; i_p++) { //36
+                //循环玩家增加
+                for (let i_r = 0; i_r < 6; i_r++) {
+                    this.item_level_probability_group[i_p][i_r][item_con_index] = item_pro_number;
+                }
+                
+            }
 
-        if (this.player_shop_buy_data[player_id].hasOwnProperty(prop_name)) {
-            this.player_shop_buy_data[player_id][prop_name]++;
-        } else {
-            this.player_shop_buy_data[player_id][prop_name] = 1;
+        }else{
+            if(this.player_shop_buy_data[player_id].hasOwnProperty(prop_name)) {
+                this.player_shop_buy_data[player_id][prop_name]++;
+            } else {
+                this.player_shop_buy_data[player_id][prop_name] = 1;
+            }
+            let item_is_add = false; 
+            for (let it = 0; it < this.player_shop_buy_client[player_id].length; it++) {
+                if(this.player_shop_buy_client[player_id][it].item_key == prop_name){
+                    item_is_add = true;
+                    this.player_shop_buy_client[player_id][it].count ++;
+                }
+            }
+            if(item_is_add == false){
+                this.player_shop_buy_client[player_id].push({
+                    "count" : 1,
+                    "item_key" : prop_name,
+                })
+            }
         }
+        //添加到玩家英雄属性中
+        const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         //增加玩家身上的计数器
         if (hHero.prop_count.hasOwnProperty(prop_name)) {
             hHero.prop_count[prop_name] ++;
         } else {
-            hHero.prop_count[prop_name] = 1;
-        }
-
-        //循环查找有没有相同名字
-        let item_is_add = false
-        for (let it = 0; it < this.player_shop_buy_client[player_id].length; it++) {
-            if(this.player_shop_buy_client[player_id][it].item_key == prop_name){
-                item_is_add = true;
-                this.player_shop_buy_client[player_id][it].count ++;
+            if(ItemData.type == 2){
+                hHero.prop_count[prop_name] = rarity;
+            }else{
+                hHero.prop_count[prop_name] = 1;
             }
-        }
-
-        if(item_is_add == false){
-            this.player_shop_buy_client[player_id].push({
-                "count" : 1,
-                "item_key" : prop_name,
-            })
         }
         
         
         let prop_buff = hHero.FindModifierByName("modifier_prop_effect") as modifier_prop_effect
-        let ItemData = MysteriousShopConfig[prop_name as keyof typeof MysteriousShopConfig];
         if (prop_buff) {
             let av : AbilityValuesProps = {};
             let AbilityValues = ItemData.AbilityValues;
@@ -780,11 +769,10 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                     if(rarity >= av_list.length){
                         av_number = tonumber(av_list[av_list.length - 1]);
                     }else{
-                        av_number = tonumber(av_list[0]) 
+                        av_number = tonumber(av_list[rarity - 1]) 
                     }
                     av[key] = av_number;
                 }
-                
             }
             prop_buff.Prop_InputAbilityValues(prop_name, av)
         }
@@ -830,6 +818,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             {
                 data: {
                     player_shop_buy_data: this.player_shop_buy_client[player_id],
+                    player_shop_buy_ts_data : this.player_shop_buy_ts_client[player_id],
                 }
             }
         );

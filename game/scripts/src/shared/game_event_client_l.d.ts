@@ -101,7 +101,6 @@ declare interface CustomGameEventDeclarations {
      MysticalShopSystem_GetShopData: {
         data: {
             shop_field_list: ShopFieldList[], //玩家商店信息
-            player_refresh_data: PlayerRefreshData; //玩家刷新信息
             player_vip_status : number ; //玩家vip状态 0 不是 1是
         };
     };
@@ -121,7 +120,8 @@ declare interface CustomGameEventDeclarations {
      */
     MysticalShopSystem_GetPlayerShopBuyData : {
         data : {
-            player_shop_buy_data : { item_key: string , count : number }[]
+            player_shop_buy_data : { item_key: string , count : number }[],
+            player_shop_buy_ts_data : PlayerShopBuyTsClient[],
         }
     }
 
@@ -402,6 +402,14 @@ declare interface ShopStateData {
     is_ready : number, // 是否准备好了 0 未准备好 1准备好了
 }
 
+
+//成长类道具特殊栏位
+declare interface PlayerShopBuyTsClient { 
+    item_key: string ,  // 物品id
+    count : number ,  // 数量 = 品质 = 星级
+    is_vip: number ,  // 是否vip栏位 0 不是  1是
+    type : number  , // 类型 0未解锁 1已使用 2未使用 
+}
     
 declare interface CGEDGetTalentListInfo {
     u : number , //总投入点 用于反算可以使用的点
