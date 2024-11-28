@@ -15,8 +15,6 @@
 				</Button>
 				<Panel id="ChapterLogo" hittest="false"/>
 				<Panel id="ChapterList" hittest="false"/>
-
-				
 			</Panel>
 		</snippet>
 
@@ -52,11 +50,9 @@
 					</Panel>
 				</Panel>
 				<Panel class="Body">
-					<Button id="LeftBtn" class="PageBtn" />
 					<Panel class="Info">
 						<Panel id="PageList" />
 					</Panel>
-					<Button id="RightBtn" class="PageBtn" />
 				</Panel>
 				<Panel class="Footer"></Panel>
 			</Panel>

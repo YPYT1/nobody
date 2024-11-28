@@ -21,10 +21,10 @@ const RightBtn = $("#RightBtn") as Button;
 
 
 let DifficultyMaxData: { [key: string]: UserMapSelectDifficulty } = {};
-let chapter_page = 1;
+let current_page = 1;
 let total_page = 0;
 
-export function GetChapterInfoTable() {
+function GetChapterInfoTable() {
     let chapter_table: {
         [in_page: number]: {
             [chapter_key: string]: {
@@ -51,9 +51,9 @@ export function GetChapterInfoTable() {
     return chapter_table
 }
 
-export const ChapterInfoTable = GetChapterInfoTable();
+const ChapterInfoTable = GetChapterInfoTable();
 
-export function InitHeroes() {
+function InitHeroes() {
     let hero_table: { [heroid: string]: string } = {};
     for (let heroname in NpcHeroesCustom) {
         let row_data = NpcHeroesCustom[heroname as keyof typeof NpcHeroesCustom];
@@ -71,9 +71,9 @@ export function InitHeroes() {
     return hero_table;
 }
 
-export const heroes_key = InitHeroes();
+const heroes_key = InitHeroes();
 
-export const Create_HeroList = () => {
+const Create_HeroList = () => {
     const PickHeroList = $("#PickHeroList");
     PickHeroList.RemoveAndDeleteChildren();
     Object.values(NpcHeroesCustom).map((v, k) => {
@@ -100,7 +100,7 @@ export const Create_HeroList = () => {
     })
 }
 
-export const Create_PlayerList = () => {
+const Create_PlayerList = () => {
     const PlayerList = $("#PlayerList");
     PlayerList.RemoveAndDeleteChildren();
     Game.GetAllPlayerIDs().map((Player, k) => {
@@ -142,7 +142,7 @@ export const Create_PlayerList = () => {
     })
 }
 
-export const ShowChapterInfoTips = (e: Panel, chapter_key: string) => {
+const ShowChapterInfoTips = (e: Panel, chapter_key: string) => {
     let chapter_data = ChapterInfo[chapter_key as keyof typeof ChapterInfo];
     ChapterTooltip.SetHasClass("is_boss", chapter_data.is_boss == 1);
     ChapterTooltip.AddClass("Show")
@@ -201,7 +201,7 @@ export const ShowChapterInfoTips = (e: Panel, chapter_key: string) => {
     }
 }
 
-export const HideChapterInfoTips = () => {
+const HideChapterInfoTips = () => {
     ChapterTooltip.RemoveClass("Show")
 }
 
@@ -209,25 +209,30 @@ export const HideChapterInfoTips = () => {
 
 // 章节页面下一页
 type FlippingPagesType = 1 | -1;
-export const ChapterPageTurning = (page_num: FlippingPagesType) => {
-    let to_page = chapter_page + page_num;
+const ChapterPageTurning = (page_num: FlippingPagesType) => {
+    let to_page = current_page + page_num;
+    // $.Msg(["page_num", page_num, "to_page", to_page, "total_page", total_page])
     if (to_page > total_page || to_page <= 0) { return }
+
     for (let i = 0; i < PageList.GetChildCount(); i++) {
         let curr_page = i + 1;
         let ChapterPageInfo = PageList.GetChild(i)!;
         ChapterPageInfo.SetHasClass("Show", curr_page == to_page);
     }
+
     HideChapterInfoTips();
-    chapter_page = to_page;
-    LeftBtn.enabled = chapter_page > 1;
-    RightBtn.enabled = chapter_page < total_page;
+    current_page = to_page;
+    // $.Msg(["curr_page",current_page])
+    LeftBtn.enabled = current_page > 1;
+    RightBtn.enabled = current_page < total_page;
 }
 
 
 
-export const CreatePanel = () => {
-
+const CreateChapterSelectPanel = () => {
+    $.Msg(["CreateChapterSelectPanel"])
     // 生成章节分页
+    total_page = Object.keys(ChapterInfoTable).length;
     PageList.RemoveAndDeleteChildren();
     for (let page in ChapterInfoTable) {
         let PageData = ChapterInfoTable[page];
@@ -252,8 +257,7 @@ export const CreatePanel = () => {
 
         // 章节背景
         const ChapterPageBg = ChapterPageInfo.FindChildTraverse("ChapterPageBg") as ImagePanel;
-        $.Msg(["GetChapterInfoTable", page])
-
+        // $.Msg(["GetChapterInfoTable", page])
         let page_data = PageBackground[page as keyof typeof PageBackground];
         let page_bg = page_data.src;
         let bg_src = GetTextureSrc(page_bg);
@@ -273,15 +277,21 @@ export const CreatePanel = () => {
         }
 
     }
-    total_page = PageList.GetChildCount();
+
+
+    // $.Msg(["LeftBtn", "set"])
     LeftBtn.enabled = true
     LeftBtn.SetPanelEvent("onactivate", () => {
+        // $.Msg(["LeftBtn onactivate"])
         ChapterPageTurning(-1)
     })
+    
     RightBtn.enabled = true
     RightBtn.SetPanelEvent("onactivate", () => {
+        // $.Msg(["RightBtn onactivate"])
         ChapterPageTurning(1)
     })
+    // $.Msg(RightBtn)
 
     // Tooltip
     ChapterDiffList.RemoveAndDeleteChildren()
@@ -297,7 +307,7 @@ export const CreatePanel = () => {
         HideChapterInfoTips();
     })
 
-    const ClosedBtn = $("#ClosedBtn") as Button;
+    // const ClosedBtn = $("#ClosedBtn") as Button;
     // ClosedBtn.SetPanelEvent("onactivate", () => {
     //     ChapterContainer.RemoveClass("Show")
     // })
@@ -311,32 +321,28 @@ export const CreatePanel = () => {
     ChapterConfirmBtn.visible = localPlayer == 0;
 }
 
-export const UpdateChapterPage = (data: { [key: string]: UserMapSelectDifficulty }) => {
+const UpdateChapterPage = (data: { [key: string]: UserMapSelectDifficulty }) => {
 
     for (let chapter_key in data) {
         let chapter_id = `Chapter_${chapter_key}`
         let ChapterSelectBtn = PageList.FindChildTraverse(chapter_id)!;
-        // $.Msg(["ChapterSelectBtn",ChapterSelectBtn])
         ChapterSelectBtn.enabled = true;
     }
 }
 
 export const Init = () => {
 
-    CreatePanel()
+    CreateChapterSelectPanel()
 
     GameEvents.Subscribe("MapChapter_GetDifficultyMax", event => {
         let data = event.data;
         DifficultyMaxData = data.map_difficulty;
         UpdateChapterPage(data.map_difficulty);
-
     })
 
     GameEvents.Subscribe("MapChapter_SelectDifficulty", event => {
         let data = event.data;
         let difficulty = data.select_difficulty;
-        // $.Msg(["MapChapter_SelectDifficulty", data])
-
         ChapterConfirmBtn.enabled = true;
         ChapterConfirmBtn.SetPanelEvent("onactivate", () => {
             // $.Msg("difficulty",difficulty)
@@ -345,8 +351,7 @@ export const Init = () => {
                 params: {}
             })
         })
-        // MainPanel.Data<PanelDataObject>()["difficulty"] = difficulty;
-        // MainPanel.SetDialogVariable("difficulty", difficulty)
+
     })
 
     GameEvents.SendCustomGameEventToServer("MapChapter", {
