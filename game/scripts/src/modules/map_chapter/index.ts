@@ -152,7 +152,6 @@ export class MapChapter extends UIEventRegisterClass {
             for (let index = 0; index < str_list.length; index++) {
                 let mid = str_list[index];
                 let mid_number = tonumber(mid);
-                print("mid_number : " , mid_number);
                 let MidData = MapInfoDifficulty[mid as keyof typeof MapInfoDifficulty];
                 let unlock_difficulty_list = MidData.unlock_difficulty;
                 let chapter_key = MidData.chapter_key;

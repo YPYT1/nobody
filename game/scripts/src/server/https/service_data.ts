@@ -29,10 +29,10 @@ export class ServiceData extends UIEventRegisterClass {
     server_pictuer_card_rarity : { [ rarity : number] : string[] } = {};
     //特殊合成分类
     server_pictuer_card_special : { [ card_id : string ] : number[] } = {};
-    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 服务器  
+    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 服务器
     server_player_config_pictuer_fetter : string[][][] = [];
-    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 本地 
-    locality_player_config_pictuer_fetter : string[][][] = [];  
+    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 本地
+    locality_player_config_pictuer_fetter : string[][][] = [];
     //是否为图鉴vip
     player_pictuer_vip : number[] = [];
     constructor(){
@@ -217,14 +217,9 @@ export class ServiceData extends UIEventRegisterClass {
                 }
             }
         }
-        
         //加载装备属性
 
         //商城道具属性
-
-
-
-
         GameRules.CustomAttribute.SetAttributeInKey(selfhHero , "attr_server_" + player_id , attr_count)
     }
     /**
@@ -272,8 +267,9 @@ export class ServiceData extends UIEventRegisterClass {
             let CardDataList = Object.keys(PictuerCardData);
             
             for (let index = 1; index <= 50; index++) {
+                let tos = tonumber(args[0]);
                 let is_ok = false;
-                let item_id = tonumber(CardDataList[RandomInt(0 , CardDataList.length - 1)]);
+                let item_id = tos;
                 //;
                 for (let index = 0; index < this.server_monster_package_list[0].length; index++) {
                     if(this.server_monster_package_list[0][index].item_id == item_id){

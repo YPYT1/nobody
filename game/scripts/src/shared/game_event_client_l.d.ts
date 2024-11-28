@@ -372,17 +372,19 @@ declare interface ElementBondDateList { //羁绊信息
 }
 
 declare interface ShopFieldList {
-    key : string, //物品key
+    key : string, // 物品key
     soul : number, // 需要灵魂
+    type : number , // 类型 1 为普通 2为成长装备
     is_discount: number, //折扣 1为折扣 0为没打折
-    discount_rate: number, // 80%  20% 10 % 1% ----不低于1%
-    rarity: number, // 稀有度 1 2 3 4 5
+    discount_rate: number, // 80% 20% 10 % 1% ----不低于1%
+    rarity: number, // 稀有度 1 2 3 4 5 6
     is_buy: number, // 0 未购买 1 已购买
     is_lock : number , //是否锁定
     is_vip : number , //是否为vip栏位
     refresh_count : number , //刷新次数
     refresh_soul : number , //刷新价格
     refresh_max : number , //刷新上限
+    star : number , // 星级
 }   
 //商店刷新信息
 declare interface PlayerRefreshData {
