@@ -144,12 +144,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         super("MysticalShopSystem" , true);
         this.player_count = GameRules.PUBLIC_CONST.PLAYER_COUNT;
         //
-        for (let index = 0; index < this.player_count; index++) {
+        for (let i_p = 0; i_p < this.player_count; i_p++) {
             //玩家
             this.item_level_probability_group.push([]);
             for (let index = 0; index < 6; index++) {
                 //品质
-                this.item_level_probability_group[index].push([]);
+                this.item_level_probability_group[i_p].push([]);
             }
         }
         //数据
