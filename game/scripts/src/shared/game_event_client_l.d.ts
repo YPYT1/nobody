@@ -527,9 +527,10 @@ declare interface PlayerServerSkillLevelCount {
         cur_exp : number , //当前经验   / 或技能点
         level_exp : number , //升级经验 / 或技能点
         is_max : number , //是否满级
+        is_adv : number , // 0 普通 1高级
         need_item : { //所需道具
             [item_id : number] : number
-        } , 
+        }, 
     }};
 }
 /**

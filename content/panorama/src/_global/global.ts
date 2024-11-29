@@ -152,3 +152,9 @@ GameUI.CustomUIConfig().SendCustomEvent = function <
         params: params
     })
 }
+
+/** 公式转为数字 */
+const CustomConvertFormulas = function (formula: string, kv: { [key: string]: number }) {
+    // 335*333^2
+}
+

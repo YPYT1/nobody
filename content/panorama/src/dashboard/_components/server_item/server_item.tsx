@@ -3,7 +3,7 @@ export const COMPONENTS_NAME = "server_item";
 declare global {
     interface Component_ServerItem extends Panel {
         _Init(): void;
-        _SetItemId(item_id: string): void;
+        _SetItemId(item_id: string | number): void;
         _SetServerItemInfo(params: ServerInfoConfig): void;
         _SetCount(count: number): void;
     }
@@ -25,8 +25,9 @@ const MainPanel = $.GetContextPanel() as Component_ServerItem;
 const ServerItemIcon = $("#ServerItemIcon") as ImagePanel;
 const rare_list = [1, 2, 3, 4, 5, 6, 7];
 
-const _SetItemId = (item_id: string) => {
-    let data = ServerItemList[item_id as keyof typeof ServerItemList];
+const _SetItemId = (item_id: string | number) => {
+    let data = ServerItemList["" + item_id as keyof typeof ServerItemList];
+    MainPanel.Data<PanelDataObject>().item_id = item_id
     if (data) {
         let rarity = data.quality;
         for (let rare of rare_list) {
@@ -51,6 +52,7 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
 
     MainPanel.SetHasClass("zero", !show_count)
     MainPanel.SetHasClass("hide_bg", hide_bg)
+    MainPanel.Data<PanelDataObject>().item_id = item_id
     if (params.item_id != null) {
         let data = ServerItemList[item_id as keyof typeof ServerItemList];
         if (data) {
@@ -63,6 +65,7 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
             } else {
                 //@ts-ignore
                 let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
+                // $.Msg(["image_src", image_src])
                 ServerItemIcon.SetImage(image_src);
             }
 
@@ -75,6 +78,7 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
             if (show_tips) {
                 MainPanel.SetPanelEvent("onmouseover", () => {
                     let count = MainPanel.Data<PanelDataObject>().count as number;
+                    let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
                     $.DispatchEvent(
                         "UIShowCustomLayoutParametersTooltip",
                         MainPanel,

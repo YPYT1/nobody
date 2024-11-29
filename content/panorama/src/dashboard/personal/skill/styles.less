@@ -1,8 +1,547 @@
-
-
 .Container {
     width: 1406px;
     height: 768px;
-    
     background-image: url("file://{images}/custom_game/dashboard/personal/skill/bg.png");
+}
+
+.ContentLeft {
+    // border: 1px solid #fff;
+    width: 1054px;
+    height: 100%;
+
+
+}
+
+#OffsetTest {
+    width: 100%;
+    height: 100%;
+    visibility: collapse;
+
+    Label {
+        color: #ffffff;
+        font-size: 24px;
+    }
+}
+
+#SkillList {
+    width: 100%;
+    height: 100%;
+    // flow-children: right;
+}
+
+.ColorMask {
+    width: 100%;
+    height: 100%;
+    align: center center;
+    background-color: gradient(linear, 0% 0%, 0% 100%, from(#feeb86), to(#e6b445));
+}
+
+.SkillRows {
+    flow-children: down;
+    overflow: noclip;
+    // horizontal-align: center;
+    // vertical-align: middle;
+
+    &:hover {
+        brightness: 2;
+    }
+
+    .Selected {
+        width: 100%;
+        height: 100%;
+        background-image: url("file://{images}/custom_game/dashboard/personal/skill/select_hover.png");
+        background-size: 103%;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        // border: 1px solid #8b8b8b;
+        align: center center;
+        opacity: 0;
+    }
+
+    &:selected {
+        .Selected {
+            opacity: 1;
+        }
+    }
+
+    &.Small {
+        .Border {
+            width: 88px;
+            height: 88px;
+            // skill_border_small
+        }
+
+        .IconPanel {
+            background-image: url("file://{images}/custom_game/dashboard/personal/skill/skill_border_small.png");
+        }
+    }
+
+    .Border {
+        width: 122px;
+        height: 122px;
+        align: center center;
+        overflow: noclip;
+    }
+
+    .IconPanel {
+        width: 100%;
+        height: 100%;
+        background-image: url("file://{images}/custom_game/dashboard/personal/skill/skill_border.png");
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        border-radius: 50%;
+        padding: 2px;
+
+        .SkillIcon {
+            width: 65%;
+            height: 65%;
+            border-radius: 50%;
+            align: center center;
+
+            .ColorMask {
+                width: 100%;
+                height: 100%;
+                align: center center;
+                background-color: gradient(linear, 0% 0%, 0% 100%, from(#feeb86), to(#e6b445));
+
+            }
+
+            #SkillIcon {
+                width: 100%;
+                height: 100%;
+                align: center center;
+                // wash-color: #feeb86;
+                // wash-color:
+                -s2-mix-blend-mode: multiply;
+                // background-image: url("file://{images}/custom_game/dashboard/personal/skill/skill_icon.png");
+            }
+        }
+
+
+
+        #ExpProgress {
+            width: 75%;
+            height: 75%;
+
+            border-radius: 50%;
+            align: center center;
+
+            .CircularProgressBarBG {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                border: 2px solid #000000;
+                // background-color: #202020;
+            }
+
+            .CircularProgressBarFG {
+                width: 100%;
+                height: 100%;
+                border: 4px solid #F3D341;
+                border-radius: 50%;
+                // border-color: #df892e;
+                // box-shadow: #000000ec 0px 0px 6px 3px;
+            }
+        }
+    }
+
+
+    .LevelLabel {
+        width: 78px;
+        height: 23px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/skill/skill_level.png");
+        horizontal-align: center;
+
+        Label {
+            vertical-align: middle;
+            horizontal-align: center;
+            font-size: 18px;
+            color: #ececec;
+        }
+    }
+}
+
+.ContentRight {
+    width: 360px;
+    height: 100%;
+    horizontal-align: right;
+    // border: 1px solid #fff;
+    flow-children: down;
+
+    .Header {
+        margin-top: 6px;
+        horizontal-align: center;
+        flow-children: right;
+        // border: 1px solid #ffffff;
+
+        .SkillPointPanel {
+            margin-left: 12px;
+            margin-right: 12px;
+            flow-children: right;
+            height: 44px;
+
+            .CostIcon {
+                vertical-align: middle;
+                z-index: 2;
+            }
+
+            .CostIcon.Point {
+                width: 40px;
+                height: 44px;
+                background-image: url("file://{images}/custom_game/dashboard/personal/skill/icon_skill_point.png");
+
+            }
+
+            .CostIcon.Exp {
+                width: 36px;
+                height: 32px;
+                background-image: url("file://{images}/custom_game/dashboard/personal/skill/icon_skill_exp.png");
+
+            }
+
+            .Border {
+                z-index: 1;
+                width: 112px;
+                height: 22px;
+                vertical-align: middle;
+                background-image: url("file://{images}/custom_game/dashboard/personal/skill/skill_exp_border.png");
+                margin-left: -16px;
+
+                Label {
+                    margin-left: 20px;
+                    font-size: 16px;
+                    color: #e9e7e7;
+                    vertical-align: middle;
+                }
+            }
+
+        }
+    }
+
+    .UpperSkillContainer {
+        horizontal-align: center;
+        flow-children: down;
+
+        margin-top: 24px;
+        // border: 1px solid #fff;
+        width: 262px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/skill/upper_border.png");
+        background-size: 212px 154px;
+        background-repeat: no-repeat;
+        background-position: 50% 0%;
+
+        .UppderIcon {
+            margin-top: 32px;
+            width: 88px;
+            height: 88px;
+            // border: 1px solid #fff;
+            align: center center;
+            border-radius: 50%;
+
+
+            #UppderIcon {
+                width: 100%;
+                height: 100%;
+                -s2-mix-blend-mode: multiply;
+            }
+        }
+
+
+        #UpperSubList {
+            width: 100%;
+            height: 96px;
+            flow-children: right;
+            // border: 1px solid #ffffff;
+
+            .SubSkill {
+                // border: 1px solid #fff;
+                height: 100%;
+                width: fill-parent-flow(1);
+
+                // saturation: 0.5;
+                // brightness: 0.5;
+
+                .ColorMask {
+                    saturation: 0.5;
+                    brightness: 0.5;
+                    wash-color: #00000099;
+                }
+
+                &.On {
+                    .ColorMask {
+                        saturation: 1;
+                        brightness: 1;
+                        wash-color: #ffffff;
+                    }
+                }
+
+                &.is_only .SubUppderIcon {
+                    vertical-align: bottom;
+                }
+
+                &.is_last,
+                &.is_first {
+                    .SubUppderIcon {
+                        vertical-align: top;
+                    }
+
+                }
+
+                .SubUppderIcon {
+                    width: 64px;
+                    height: 64px;
+                    // border: 1px solid gradient(linear, 0% 0%, 0% 100%, from(#feeb86), to(#e6b445));
+
+                    // background-image: url("file://{images}/custom_game/dashboard/personal/skill/skill_border_small.png");
+                    background-size: 100%;
+                    vertical-align: bottom;
+                    horizontal-align: center;
+                    border-radius: 50%;
+                    padding: 4px;
+
+
+                    .ColorMask {
+                        border-radius: 50%;
+                    }
+
+                    #SubUppderIcon {
+                        width: 100%;
+                        height: 100%;
+                        border-radius: 50%;
+                        -s2-mix-blend-mode: multiply;
+                        border: 1.5px solid #fff;
+                        border-brush: gradient(linear, 0% 0%, 0% 100%, from(#feeb86), to(#e6b445));
+                    }
+
+                }
+            }
+
+        }
+
+
+    }
+
+    .SkillTitle {
+        margin-top: 16px;
+        horizontal-align: center;
+        flow-children: right;
+        // width: 200px;
+
+        .SplitTitle {
+            width: 75px;
+            height: 5px;
+            background-image: url("file://{images}/custom_game/dashboard/personal/skill/split_title.png");
+            vertical-align: middle;
+
+            &.Right {
+                transform: rotateY(180deg);
+            }
+        }
+
+        .LabelPanel {
+            margin-left: 8px;
+            margin-right: 8px;
+            flow-children: right;
+
+            .Title {
+                font-size: 20px;
+                color: #e6b445;
+            }
+
+            .Level {
+                margin-left: 4px;
+                font-size: 16px;
+                color: #00ff00;
+                vertical-align: bottom;
+            }
+        }
+    }
+
+    .UpperSkillDesc {
+        horizontal-align: center;
+        width: 240px;
+        margin-top: 4px;
+        font-size: 16px;
+        color: #a8a8a8;
+        // border: 1px solid #ffffff;
+        text-align: center;
+    }
+
+    .SplitLine {
+        margin-top: 6px;
+        margin-bottom: 6px;
+        width: 382px;
+        height: 1px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/skill/split_line.png");
+        horizontal-align: center;
+
+    }
+
+    #UpperSkillSub {
+        flow-children: down;
+        horizontal-align: center;
+
+        .UpperSubSkill {
+            // border: 1px solid #fff;
+            width: 320px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            flow-children: down;
+
+            &.On {
+                .Header .Level {
+                    color: #64d944;
+                }
+
+                .Desc Label {
+                    color: #e1e1e1;
+                }
+            }
+
+            .Header {
+                width: 100%;
+                flow-children: right;
+
+                .Name {
+                    color: #af8f4b;
+                    font-size: 18px;
+                }
+
+                .Level {
+                    horizontal-align: right;
+                    font-size: 16px;
+
+                    color: #848484;
+                }
+            }
+
+            .Desc {
+                width: 100%;
+
+                Label {
+
+                    color: #717171;
+                    font-size: 16px;
+                }
+            }
+
+            // .SplitLine {
+            //     margin-top: 8px;
+            //     margin-bottom: 8px;
+            //     width: 382px;
+            //     height: 1px;
+            //     background-image: url("file://{images}/custom_game/dashboard/personal/skill/split_line.png");
+            //     horizontal-align: center;
+
+            // }
+        }
+    }
+
+    .AboutExpAndProgress {
+        vertical-align: bottom;
+        flow-children: down;
+        horizontal-align: center;
+
+        #UpperExpProgress {
+            width: 330px;
+            height: 16px;
+
+
+            .ProgressBarLeft {
+
+                background-image: url("file://{images}/custom_game/dashboard/personal/skill/uppder_exp_bar.png");
+                background-repeat: no-repeat;
+            }
+
+            .ProgressBarRight {
+                background-color: #000;
+            }
+
+            Label {
+                font-size: 12px;
+                horizontal-align: center;
+                color: #d8d8d8;
+                text-shadow: 0px 0px 2px 2.0 #000000;
+            }
+        }
+
+        .UpperCostInfo {
+            margin-top: 4px;
+
+            flow-children: right;
+            horizontal-align: center;
+            // border: 1px solid #ffffff;
+
+            #UpperItem {
+                width: 32px;
+                height: 32px;
+            }
+
+            Label {
+                font-size: 16px;
+                margin-left: 4px;
+                vertical-align: middle;
+                color:#00ff00;
+            }
+
+        }
+
+        #UppderSkillBtn {
+            margin-top: 4px;
+            horizontal-align: center;
+        }
+    }
+}
+
+
+.PopupsContainer {
+    width: 100%;
+    height: 100%;
+    background-color: #00000099;
+    visibility: collapse;
+
+    &.Show {
+        visibility: visible;
+    }
+    .Popups{
+        width: 422px;
+        height: 291px;
+        align: center center;
+        background-image: url("file://{images}/custom_game/dashboard/personal/skill/popups.png");
+
+        .Title {
+            font-size: 18px;
+            color:#ffffff;
+        }
+
+        .PopupsBdoy {
+            // border: 1px solid #ffffff;
+            horizontal-align: center;
+            vertical-align: middle;
+            flow-children: down;
+            margin-bottom: 32px;
+
+            #PopupsServerItem {
+                margin-top: 24px;
+                width: 64px;
+                height: 64px;
+                horizontal-align: center;
+            }
+
+        }
+
+        .PopupsFooter {
+            vertical-align: bottom;
+            horizontal-align: center;
+            flow-children: right;
+            margin-bottom: 12px;
+
+            Button {
+                margin-left: 12px;
+                margin-right: 12px;
+            }
+
+        }
+    }
 }

@@ -52,6 +52,10 @@
                             <Button id="UseBackpackItemBtn" class="dashboard_btn green">
                                 <Label text="使用"/>
                             </Button>
+
+                            <Button id="UpdateBackpackBtn" class="dashboard_btn red">
+                                <Label text="更新背包"/>
+                            </Button>
                         </Panel>
                     </Panel>
                 </Panel>

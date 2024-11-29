@@ -51,15 +51,15 @@
 				</Panel>
 				<Panel class="Body">
 					<Panel class="Info">
-						<Panel id="PageList" />
+						<Panel id="ChapterPageList" />
 					</Panel>
 				</Panel>
 				<Panel class="Footer"></Panel>
 			</Panel>
 			<Panel class="ChapterBorder">
 				<Panel class="Body">
-					<Button id="LeftBtn" class="PageBtn" />
-					<Button id="RightBtn" class="PageBtn" />
+					<Button id="LeftBtn" class="TurningPageBtn" />
+					<Button id="RightBtn" class="TurningPageBtn" />
 				</Panel>
 			</Panel>
 

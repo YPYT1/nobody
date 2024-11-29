@@ -1,15 +1,146 @@
 <root>
 	<styles>
+		<include src="./../../../_styles/styles.less" />
+		<include src="./../../styles.less" />
+		<include src="./../styles.less" />
 		<include src="./styles.less" />
 	</styles>
 	<scripts>
 		<include src="./script.tsx" />
 	</scripts>
+
+	<snippets>
+		<snippet name="SkillRows">
+			<RadioButton class="SkillRows">
+				<Panel class="Border">
+					<Panel class="IconPanel">
+						<Panel class="SkillIcon">
+							<Panel class="ColorMask"/>
+							<Image id="SkillIcon" />
+						</Panel>
+						<CircularProgressBar id="ExpProgress" value="75" max="100" min="0" hittest="false"/>
+					</Panel>
+					<Panel class="Selected"/>
+				</Panel>
+				
+				<Panel class="LevelLabel">
+					<Label text="Lv.{d:level}"/>
+				</Panel>
+			</RadioButton>
+		</snippet>
+
+		<snippet name="UpperSubSkill">
+			<Panel class="UpperSubSkill">
+				<Panel class="Header">
+					<Label class="Name" text="{s:skill_name}"/>
+					<Label class="Level" text="Lv.{d:skill_level}"/>
+				</Panel>
+				<Panel class="Desc">
+					<Label text="{s:skill_desc}"/>
+				</Panel>
+				<Panel class="SplitLine" />
+			</Panel>
+		</snippet>
+
+		<snippet name="SubSkill">
+			<Panel class="SubSkill">
+				<Panel class="SkillLine"/>
+				<Panel class="SubUppderIcon">
+					<Panel class="ColorMask"/>
+					<Image id="SubUppderIcon" />
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
 	<Panel class="nav_content skill">
-		<Label text="skill"/>
 
 		<Panel class="Container">
-			
+			<Panel class="ContentLeft">
+				<Panel id="SkillList" />
+				<Button id="OffsetTest">
+					<Label text="{s:offset}"/>
+				</Button>
+				
+			</Panel>
+
+			<Panel id="SkillInfo" class="ContentRight">
+				<Panel class="Header">
+					<Panel class="SkillPointPanel">
+						<Panel class="CostIcon Point"/>
+						<Panel class="Border">
+							<Label text="{d:skill_point}"/>
+						</Panel>
+					</Panel>
+
+					<Panel class="SkillPointPanel">
+						<Panel class="CostIcon Exp"/>
+						<Panel class="Border">
+							<Label text="{d:skill_exp}"/>
+						</Panel>
+					</Panel>
+				</Panel>
+
+				<Panel class="UpperSkillContainer">
+				
+					<Panel class="UppderIcon">
+						<Panel class="ColorMask"/>
+						<Image id="UppderIcon" />
+					</Panel>
+				
+					<Panel id="UpperSubList">
+						
+					</Panel>
+
+					
+				</Panel>
+
+				<Panel class="SkillTitle">
+					<Panel class="SplitTitle Left"/>
+					<Panel class="LabelPanel">
+						<Label class="Title" text="{s:upper_skill_name}" />
+						<Label class="Level" text="Lv.{d:upper_skill_lv}" />
+					</Panel>
+					<Panel class="SplitTitle Right"/>
+				</Panel>
+				<Label class="UpperSkillDesc" text="{s:upper_skill_desc}"/>
+				<Panel class="SplitLine"/>
+
+				<Panel id="UpperSkillSub" />
+
+				<Panel class="AboutExpAndProgress">
+					<ProgressBar id="UpperExpProgress" value="75" max="100" min="0" hittest="false">
+						<Label text="{d:curr_exp} / {d:upper_exp}"/>
+					</ProgressBar>
+					<Panel class="UpperCostInfo">
+						<Panel id="UpperItem"/>
+						<Label text="{d:upper_cost}"/>
+					</Panel>
+					<Button id="UppderSkillBtn" class="dashboard_btn green">
+						<Label text="升级"/>
+					</Button>
+				</Panel>
+			</Panel>
 		</Panel>
+
+		<Button id="SkillPopups" class="PopupsContainer">
+			<Panel id="UpperSkillPopups" class="Popups">
+				<Panel class="PopupsBdoy">
+					<Label class="Title" text="确认消耗以下材料升级?"/>
+
+					<Panel id="PopupsServerItem" hittest="false"/>
+
+					
+				</Panel>
+
+				<Panel class="PopupsFooter">
+					<Button id="PopupsButtonConfirm" class="dashboard_btn">
+						<Label text="确认"/>
+					</Button>
+					<Button id="PopupsButtonCancel" class="dashboard_btn red">
+						<Label text="取消"/>
+					</Button>
+				</Panel>
+			</Panel>
+		</Button>
 	</Panel>
 </root>

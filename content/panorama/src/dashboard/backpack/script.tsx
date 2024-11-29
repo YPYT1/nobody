@@ -12,6 +12,7 @@ const FRAME_PATH = "file://{resources}/layout/custom_game/dashboard/backpack/";
 const BackpackItemList = $("#BackpackItemList");
 const ItemDetails = $("#ItemDetails");
 const UseBackpackItemBtn = $("#UseBackpackItemBtn") as Button;
+const UpdateBackpackBtn = $("#UpdateBackpackBtn") as Button;
 // const ItemComponent = $("#ItemComponent");
 const ItemComponent = LoadCustomComponent($("#ItemComponent"), "server_item");
 ItemComponent._SetServerItemInfo({ show_count: false });
@@ -21,19 +22,23 @@ Component_ItemName._SetSize(22);
 
 const SendCustomEvent = GameUI.CustomUIConfig().SendCustomEvent;
 const GetServerItemData = GameUI.CustomUIConfig().GetServerItemData;
+const EventBus = GameUI.CustomUIConfig().EventBus;
 
 let view_item_id = -1;
+
 const CGE_Subscribe = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
         // 这个是渲染所有物品
         // $.Msg(["ServiceInterface_GetPlayerServerPackageData"])
         let data = event.data;
-        let ItemList = Object.values(data)
+        let ItemList = Object.values(data);
+        let ids_backpack: { [id: string]: AM2_Server_Backpack } = {}
         BackpackItemList.RemoveAndDeleteChildren();
 
         for (let ItemData of ItemList) {
             let item_id = ItemData.item_id;
+            ids_backpack[item_id] = ItemData
             let ItemRadio = $.CreatePanel("RadioButton", BackpackItemList, "", { group: "backpack_group" })
             ItemRadio.BLoadLayoutSnippet("BackpackItem");
             let ServerItem = ItemRadio.FindChildTraverse("ServerItem")!;
@@ -51,9 +56,14 @@ const CGE_Subscribe = () => {
                 ViewItem("" + item_id, amount)
             })
         }
+
+
+        EventBus.publish("backpack_update", ids_backpack)
     })
 
     SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
+
+
 }
 
 
@@ -64,7 +74,11 @@ const InitItemDetails = () => {
     ItemDetails.SetDialogVariableInt("item_amount", 0)
 
     UseBackpackItemBtn.SetPanelEvent("onactivate", () => {
-        $.Msg(["UseItemid", view_item_id])
+        $.Msg(["111", view_item_id])
+    })
+
+    UpdateBackpackBtn.SetPanelEvent("onactivate", () => {
+        SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
     })
 }
 

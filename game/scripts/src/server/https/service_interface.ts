@@ -147,7 +147,8 @@ export class ServiceInterface extends UIEventRegisterClass{
                 "cur_exp" : lvdata.cur_exp,
                 "level_exp" : lvdata.level_exp,
                 "is_max" : lvdata.is_max,
-                "need_item" : need_number_list
+                "need_item" : need_number_list,
+                "is_adv" : 0,
             }
         }else{
             let max_level =  ServerSkillExp[key as keyof typeof ServerSkillExp].max_level;
@@ -165,7 +166,8 @@ export class ServiceInterface extends UIEventRegisterClass{
                 "cur_exp" : 0,
                 "level_exp" : 1,
                 "is_max" : is_max,
-                "need_item" : need_number_list
+                "need_item" : need_number_list,
+                "is_adv" : 1,
             }
         }
     }
@@ -220,6 +222,7 @@ export class ServiceInterface extends UIEventRegisterClass{
         if(this.PlayerServerSkillLevelCount[player_id].level.hasOwnProperty(skill_key)){
             let data = this.PlayerServerSkillLevelCount[player_id].level[skill_key];    
             let max_level =  ServerSkillExp[skill_key as keyof typeof ServerSkillExp].max_level
+            let is_advanced =  ServerSkillExp[skill_key as keyof typeof ServerSkillExp].is_advanced
             if(data.lv < max_level){
                 let up_exp = 0;
                 for (const key in data.need_item) {
@@ -229,11 +232,17 @@ export class ServiceInterface extends UIEventRegisterClass{
                     if(item_ret.is_verify == false){
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能升级:材料不足");
                     }
+                    if(is_advanced == 1){
+                        up_exp = number;
+                    }else{
+                        up_exp = number * 1000;
+                    }
                     GameRules.ServiceData.DeletePackageItem(player_id , item_ret.index , number);
                 }
                 let zz_exp = this.PlayerServerSkillLevelCount[player_id].level[skill_key].exp + up_exp; 
                 GameRules.ServiceInterface.GenerateSkillLevel(player_id, skill_key , zz_exp);
                 GameRules.ServiceInterface.GenerateSkillTypeLevel(player_id , skill_key );
+                print("fasong...")
                 this.GetPlayerServerSkillData(player_id , {});
                 this.GetPlayerServerPackageData(player_id , {});
             }else{
