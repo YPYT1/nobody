@@ -26,16 +26,13 @@ export class ServiceInterface extends UIEventRegisterClass{
                 level : {}
             })
             this.player_log_data.push("");
-        }
-        //初始化分支等级
-        for (let index = 0; index < 6; index++) {
             this.PlayerServerSkillTypeLevel.push({})
-            //英雄星级
             //需要删除
             this.player_hero_star.push({
                 6 : 3
             })
         }
+        
     }
     //玩家对应英雄等级
     player_hero_star : {
@@ -70,12 +67,12 @@ export class ServiceInterface extends UIEventRegisterClass{
      * 技能经验值转等级
      * @param key 
      */
-    GetServerSkillfulLevel(key : string , exp : number) : { level : number , cur_exp : number}{
+    GetServerSkillfulLevel(key : string , exp : number) : { level : number , cur_exp : number , level_exp : number , is_max : number}{
         let exp_equation = ServerSkillExp[key as keyof typeof ServerSkillExp].exp;
+        let max_level =  ServerSkillExp[key as keyof typeof ServerSkillExp].max_level;
         let yyexp = exp;
         let level = 0;
-        
-        for (let index = 1; index < 30; index++) { 
+        for (let index = 1; index < max_level; index++) { 
             let param = {
                 lv : index,
             } 
@@ -87,80 +84,165 @@ export class ServiceInterface extends UIEventRegisterClass{
                 return {
                     level : level,
                     cur_exp : yyexp,
+                    level_exp : use_exp,
+                    is_max : 0,
                 };
             }
         }
+        return {
+            level : max_level,
+            cur_exp : -1,
+            level_exp : -1,
+            is_max : 1,
+        };
     }
     /**
      * 加载存档技能等级
      * @param player_id 
      */
     LoadSkillfulLevel(player_id : PlayerID){
-
         this.PlayerServerSkillLevelCount[player_id] = {
             level : {}
         }
         this.PlayerServerSkillTypeLevel[player_id] = {};
         let level_obj : { [ key : string] : number } =  {};
-        for (let index = 1; index <= 15; index++) {
-            level_obj[index.toString()] = RandomInt(10000 , 920000);
-        }
-        for (const key in level_obj) {
-            let lvdata = this.GetServerSkillfulLevel( key , level_obj[key]);
-            this.PlayerServerSkillLevelCount[player_id].level[key] = {
-                "lv" : lvdata.level,
-                "exp" : level_obj[key],
-                "type" : tonumber(key),
-                "cur_exp" : lvdata.cur_exp,
+        let sse_length = Object.keys(ServerSkillExp).length;
+        for (let index = 1; index <= sse_length; index++) {
+            let key = index.toString();
+            let is_advanced =  ServerSkillExp[key as keyof typeof ServerSkillExp].is_advanced
+            if(is_advanced == 1){
+                level_obj[index.toString()] = RandomInt(1 , 30);
+            }else{
+                if(index == 1){
+                    level_obj[index.toString()] = 99999999;
+                }else{
+                    level_obj[index.toString()] = RandomInt(10000 , 920000);
+                }
             }
         }
+        for (const key in level_obj) {
+            this.GenerateSkillLevel(player_id,key , level_obj[key])
+        }
         //加载分支信息
-        GameRules.ServiceInterface.LoadSkillTypeLevel(player_id)
+        for (const key in this.PlayerServerSkillLevelCount[player_id].level) {
+            GameRules.ServiceInterface.GenerateSkillTypeLevel(player_id , key);
+        }
+        this.GetPlayerServerSkillData(player_id , {});
+    }
+    /**
+     * 
+     */
+    GenerateSkillLevel(player_id : PlayerID , key : string  , skill_exp : number){
+        let is_advanced =  ServerSkillExp[key as keyof typeof ServerSkillExp].is_advanced
+        if(is_advanced == 0){ //不是高级
+            let lvdata = this.GetServerSkillfulLevel( key , skill_exp);
+            let need_number = math.ceil((lvdata.level_exp - lvdata.cur_exp) / 1000);
+            let need_number_list : { [item_id : number] : number} = {
+                1293 : need_number,
+            };
+            this.PlayerServerSkillLevelCount[player_id].level[key] = {
+                "lv" : lvdata.level,
+                "exp" : skill_exp,
+                "type" : tonumber(key),
+                "cur_exp" : lvdata.cur_exp,
+                "level_exp" : lvdata.level_exp,
+                "is_max" : lvdata.is_max,
+                "need_item" : need_number_list
+            }
+        }else{
+            let max_level =  ServerSkillExp[key as keyof typeof ServerSkillExp].max_level;
+            let is_max = 0;
+            if(skill_exp >= max_level){
+                is_max = 1;
+            }
+            let need_number_list : { [item_id : number] : number} = {
+                1292 : 1,
+            };
+            this.PlayerServerSkillLevelCount[player_id].level[key] = {
+                "lv" : skill_exp,
+                "exp" : skill_exp,
+                "type" : tonumber(key),
+                "cur_exp" : 0,
+                "level_exp" : 1,
+                "is_max" : is_max,
+                "need_item" : need_number_list
+            }
+        }
     }
 
-    //分支生效等级
-    LoadSkillTypeLevel(player_id : PlayerID){
-        for (let index = 1; index <= Object.keys(this.PlayerServerSkillLevelCount[player_id].level).length; index++) {
-            const PlayerServerSkillLevelCount = this.PlayerServerSkillLevelCount[player_id].level[index.toString()];
-            for (const key in ServerSkillful) {
-                let ServerSkillfulData = ServerSkillful[key as keyof typeof ServerSkillful];
-                //初始化
-                if(ServerSkillfulData.type == PlayerServerSkillLevelCount.type){
-                    //计算等级
-                    if(ServerSkillfulData.is_lock == 1){ //处理特殊解锁
-                        if(PlayerServerSkillLevelCount.lv >= ServerSkillfulData.min_level){
+    //分支生效等级 下标
+    GenerateSkillTypeLevel(player_id : PlayerID , key : string ){
+        const PlayerServerSkillLevelCount = this.PlayerServerSkillLevelCount[player_id].level[key];
+        for (const key in ServerSkillful) {
+            let ServerSkillfulData = ServerSkillful[key as keyof typeof ServerSkillful];
+            //初始化
+            if(ServerSkillfulData.type == PlayerServerSkillLevelCount.type){
+                //计算等级
+                if(ServerSkillfulData.is_lock == 1){ //处理特殊解锁
+                    if(PlayerServerSkillLevelCount.lv >= ServerSkillfulData.min_level){
+                        this.PlayerServerSkillTypeLevel[player_id][key] = {
+                            lv : 1,
+                        }
+                    }else{
+                        this.PlayerServerSkillTypeLevel[player_id][key] = {
+                            lv : 0,
+                        }
+                    }
+                }else{
+                    if(PlayerServerSkillLevelCount.lv >= ServerSkillfulData.max_level ){
+                        this.PlayerServerSkillTypeLevel[player_id][key] = {
+                            lv : ServerSkillfulData.max_level - ServerSkillfulData.min_level + 1,
+                        }
+                    }else{
+                        let skill_level = PlayerServerSkillLevelCount.lv - (ServerSkillfulData.min_level - 1)
+                        if(skill_level > 0){
                             this.PlayerServerSkillTypeLevel[player_id][key] = {
-                                lv : 1,
+                                lv : skill_level,
                             }
                         }else{
                             this.PlayerServerSkillTypeLevel[player_id][key] = {
                                 lv : 0,
                             }
                         }
-                    }else{
-                        if(PlayerServerSkillLevelCount.lv >= ServerSkillfulData.max_level ){
-                            this.PlayerServerSkillTypeLevel[player_id][key] = {
-                                lv : ServerSkillfulData.max_level - ServerSkillfulData.min_level + 1,
-                            }
-                        }else{
-                            let skill_level = PlayerServerSkillLevelCount.lv - (ServerSkillfulData.min_level - 1)
-                            if(skill_level > 0){
-                                this.PlayerServerSkillTypeLevel[player_id][key] = {
-                                    lv : skill_level,
-                                }
-                            }else{
-                                this.PlayerServerSkillTypeLevel[player_id][key] = {
-                                    lv : 0,
-                                }
-                            }
-                        }
                     }
                 }
             }
         }
-        GameRules.ServiceInterface.GetPlayerServerSkillData( 0 , {});
     }
-
+    /**
+     * 技能升级功能
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    ServerSkillUp(player_id: PlayerID, params: CGED["ServiceInterface"]["ServerSkillUp"]) {
+        let skill_key = params.key;
+        if(this.PlayerServerSkillLevelCount[player_id].level.hasOwnProperty(skill_key)){
+            let data = this.PlayerServerSkillLevelCount[player_id].level[skill_key];    
+            let max_level =  ServerSkillExp[skill_key as keyof typeof ServerSkillExp].max_level
+            if(data.lv < max_level){
+                let up_exp = 0;
+                for (const key in data.need_item) {
+                    let item_id_number = tonumber(key);
+                    let number = data.need_item[key];
+                    let item_ret = GameRules.ServiceData.VerifyPackageItem(player_id , item_id_number , number);
+                    if(item_ret.is_verify == false){
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能升级:材料不足");
+                    }
+                    GameRules.ServiceData.DeletePackageItem(player_id , item_ret.index , number);
+                }
+                let zz_exp = this.PlayerServerSkillLevelCount[player_id].level[skill_key].exp + up_exp; 
+                GameRules.ServiceInterface.GenerateSkillLevel(player_id, skill_key , zz_exp);
+                GameRules.ServiceInterface.GenerateSkillTypeLevel(player_id , skill_key );
+                this.GetPlayerServerSkillData(player_id , {});
+                this.GetPlayerServerPackageData(player_id , {});
+            }else{
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能升级:技能已满级..");
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能升级:未找到该技能");
+        }
+    }
     /**
      * 
      * @param player_id 

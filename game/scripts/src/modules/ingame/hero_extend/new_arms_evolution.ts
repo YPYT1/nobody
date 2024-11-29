@@ -1,7 +1,7 @@
 
 import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
-import * as ArmsJson from "../../../json/abilities/arms.json";
+// import * as ArmsJson from "../../../json/abilities/arms.json";
 import * as ElementBondJson from "../../../json/config/game/element_bond.json";
 
 const element_label: CElementType[] = ["null", "fire", "ice", "thunder", "wind", "light", "dark"];
@@ -127,15 +127,15 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * 重新初始化全局限购
      */
     ArmsGlobalInit(){
-        let playercount = GetPlayerCount();
-        for (const [key, val] of pairs(ArmsJson)) {
-            if (val.Rarity > 0 && val.Disable) {
-                this.arms_global_count[key] = {
-                    count : 0,
-                    max : playercount,
-                };
-            }
-        }
+        // let playercount = GetPlayerCount();
+        // for (const [key, val] of pairs(ArmsJson)) {
+        //     if (val.Rarity > 0 && val.Disable) {
+        //         this.arms_global_count[key] = {
+        //             count : 0,
+        //             max : playercount,
+        //         };
+        //     }
+        // }
     }
     /**
      * 初始化玩家可选物品概率(可重复调用)
@@ -194,25 +194,25 @@ export class NewArmsEvolution extends UIEventRegisterClass {
 
         this.PlayerUpgradePoolFirstData[player_id] = [];
 
-        for (const [key, val] of pairs(ArmsJson)) {
-            if (val.Rarity > 0 && val.Disable) {
-                if (!this.PlayerUpgradePool[player_id].hasOwnProperty(val.Rarity)) {
-                    this.PlayerUpgradePool[player_id][val.Rarity] = {
-                        key: [],
-                        pro: [],
-                    }
-                }
-                this.PlayerUpgradePool[player_id][val.Rarity].key.push(key);
-                this.PlayerUpgradePool[player_id][val.Rarity].pro.push(val.Probability);
-                if (this.ItemQmax < val.Rarity) {
-                    this.ItemQmax = val.Rarity;
-                }
-            }
-            //第一次必出技能
-            if (val.Rarity > 0 && val.Disable && val.is_first == 1) {
-                this.PlayerUpgradePoolFirstData[player_id].push(key)
-            }
-        }
+        // for (const [key, val] of pairs(ArmsJson)) {
+        //     if (val.Rarity > 0 && val.Disable) {
+        //         if (!this.PlayerUpgradePool[player_id].hasOwnProperty(val.Rarity)) {
+        //             this.PlayerUpgradePool[player_id][val.Rarity] = {
+        //                 key: [],
+        //                 pro: [],
+        //             }
+        //         }
+        //         this.PlayerUpgradePool[player_id][val.Rarity].key.push(key);
+        //         this.PlayerUpgradePool[player_id][val.Rarity].pro.push(val.Probability);
+        //         if (this.ItemQmax < val.Rarity) {
+        //             this.ItemQmax = val.Rarity;
+        //         }
+        //     }
+        //     //第一次必出技能
+        //     if (val.Rarity > 0 && val.Disable && val.is_first == 1) {
+        //         this.PlayerUpgradePoolFirstData[player_id].push(key)
+        //     }
+        // }
     }
 
     /**
@@ -221,120 +221,120 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * 2.符合条件后会出现特殊升级
      */
     CreatArmssSelectData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssSelectData"]) {
-        //阶段2之前不可用
-        if (GameRules.MapChapter._game_select_phase <= 2) { 
-            return
-        } 
+        // //阶段2之前不可用
+        // if (GameRules.MapChapter._game_select_phase <= 2) { 
+        //     return
+        // } 
 
-        if (this.PlayerSelectData[player_id].is_select == 0) {
-            //验证是否满足条件
-            if (this.EvolutionPoint[player_id] <= 0) {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
-                return
-            }
-            let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
-            let Index = param.index;
-            let Ability = MyHero.GetAbilityByIndex(Index);
-            let Key = Ability.GetAbilityName();
-            let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
-            if (this.ItemQmax == Quality) {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
-                return
-            }
-            let killcount = this.kill_list[Quality+1] ;
-            let skillcount = 1;//109.3   105.6
-            //最多几样物品
-            let amount = this.PlayerSelectAmount[player_id];
-            //循环计数器
-            let amount_count = 0;
-            let amount_max = 50;
-            //返回数据
-            let ret_data: { [key: string]: PlayerUpgradeSelectServer; } = {};
-            let shop_wp_list: string[] = [];
-            //如果为第一次刷新则改为特定刷新
-            if (this.PlayerFirstState[player_id]) {
-                if(skillcount > 0){
-                    //技能点减少
-                    this.AddEvolutionPoint(player_id, - skillcount)
-                }
+        // if (this.PlayerSelectData[player_id].is_select == 0) {
+        //     //验证是否满足条件
+        //     if (this.EvolutionPoint[player_id] <= 0) {
+        //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
+        //         return
+        //     }
+        //     let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        //     let Index = param.index;
+        //     let Ability = MyHero.GetAbilityByIndex(Index);
+        //     let Key = Ability.GetAbilityName();
+        //     let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
+        //     if (this.ItemQmax == Quality) {
+        //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
+        //         return
+        //     }
+        //     let killcount = this.kill_list[Quality+1] ;
+        //     let skillcount = 1;//109.3   105.6
+        //     //最多几样物品
+        //     let amount = this.PlayerSelectAmount[player_id];
+        //     //循环计数器
+        //     let amount_count = 0;
+        //     let amount_max = 50;
+        //     //返回数据
+        //     let ret_data: { [key: string]: PlayerUpgradeSelectServer; } = {};
+        //     let shop_wp_list: string[] = [];
+        //     //如果为第一次刷新则改为特定刷新
+        //     if (this.PlayerFirstState[player_id]) {
+        //         if(skillcount > 0){
+        //             //技能点减少
+        //             this.AddEvolutionPoint(player_id, - skillcount)
+        //         }
 
-                this.PlayerFirstState[player_id] = false;
-                for (let i = 0; i < amount; i++) {
-                    amount_count++;
-                    if (amount_count > amount_max) {
-                        break;
-                    }
-                    // let key_list = this.PlayerUpgradePool[player_id][Quality].key;
-                    // let pro_list = this.PlayerUpgradePool[player_id][Quality].pro;
-                    // let arms_key = key_list[GetCommonProbability(pro_list)];
-                    let index = RandomInt(0, this.PlayerUpgradePoolFirstData[player_id].length - 1)
-                    let arms_key = this.PlayerUpgradePoolFirstData[player_id][index]
-                    //重复物品跳过
-                    if (shop_wp_list.includes(arms_key)) {
-                        //跳过本次 
-                        i--;
-                        continue;
-                    }
-                    ret_data[i] = {
-                        key: arms_key,
-                    };
-                    this.arms_global_count[arms_key].count +=1;
-                    shop_wp_list.push(arms_key);
-                }
-            } else {
-                if(killcount > 0){
-                    let Validation = GameRules.ResourceSystem.ResourceValidation(player_id , {
-                        "Kills" : killcount
-                    })
-                    if(Validation == false){
-                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "杀敌数不足！！！");
-                        return;
-                    }
-                }
-                if(killcount > 0){
-                    GameRules.ResourceSystem.ModifyResource(player_id , {
-                        "Kills" : - killcount
-                    })
-                }
-                if(skillcount > 0){
-                    //技能点减少
-                    this.AddEvolutionPoint(player_id, - skillcount)
-                }
-                for (let i = 0; i < amount; i++) {
-                    amount_count++;
-                    if (amount_count > amount_max) {
-                        break;
-                    }
-                    let key_list = this.PlayerUpgradePool[player_id][Quality + 1].key;
-                    let pro_list = this.PlayerUpgradePool[player_id][Quality + 1].pro;
-                    let arms_key = key_list[GetCommonProbability(pro_list)];
-                    //重复物品跳过
-                    if (shop_wp_list.includes(arms_key)) {
-                        //跳过本次 
-                        i--;
-                        continue;
-                    }
-                    //全局唯一数量验证
-                    if(this.arms_global_count.hasOwnProperty(arms_key)){
-                        if(this.arms_global_count[arms_key].count >= this.arms_global_count[arms_key].max){
-                            //跳过本次 
-                            i--;
-                            continue;
-                        }
-                    }
-                    ret_data[i] = {
-                        key: arms_key,
-                    };
-                    this.arms_global_count[arms_key].count +=1;
-                    shop_wp_list.push(arms_key);
-                }
-            }
-            //修改为已刷新
-            this.PlayerSelectData[player_id].is_select = 1;
-            this.PlayerSelectData[player_id].arms_list = ret_data;
-            this.PlayerSelectData[player_id].index = Index;
-        }
-        this.GetArmssSelectData(player_id, {});
+        //         this.PlayerFirstState[player_id] = false;
+        //         for (let i = 0; i < amount; i++) {
+        //             amount_count++;
+        //             if (amount_count > amount_max) {
+        //                 break;
+        //             }
+        //             // let key_list = this.PlayerUpgradePool[player_id][Quality].key;
+        //             // let pro_list = this.PlayerUpgradePool[player_id][Quality].pro;
+        //             // let arms_key = key_list[GetCommonProbability(pro_list)];
+        //             let index = RandomInt(0, this.PlayerUpgradePoolFirstData[player_id].length - 1)
+        //             let arms_key = this.PlayerUpgradePoolFirstData[player_id][index]
+        //             //重复物品跳过
+        //             if (shop_wp_list.includes(arms_key)) {
+        //                 //跳过本次 
+        //                 i--;
+        //                 continue;
+        //             }
+        //             ret_data[i] = {
+        //                 key: arms_key,
+        //             };
+        //             this.arms_global_count[arms_key].count +=1;
+        //             shop_wp_list.push(arms_key);
+        //         }
+        //     } else {
+        //         if(killcount > 0){
+        //             let Validation = GameRules.ResourceSystem.ResourceValidation(player_id , {
+        //                 "Kills" : killcount
+        //             })
+        //             if(Validation == false){
+        //                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "杀敌数不足！！！");
+        //                 return;
+        //             }
+        //         }
+        //         if(killcount > 0){
+        //             GameRules.ResourceSystem.ModifyResource(player_id , {
+        //                 "Kills" : - killcount
+        //             })
+        //         }
+        //         if(skillcount > 0){
+        //             //技能点减少
+        //             this.AddEvolutionPoint(player_id, - skillcount)
+        //         }
+        //         for (let i = 0; i < amount; i++) {
+        //             amount_count++;
+        //             if (amount_count > amount_max) {
+        //                 break;
+        //             }
+        //             let key_list = this.PlayerUpgradePool[player_id][Quality + 1].key;
+        //             let pro_list = this.PlayerUpgradePool[player_id][Quality + 1].pro;
+        //             let arms_key = key_list[GetCommonProbability(pro_list)];
+        //             //重复物品跳过
+        //             if (shop_wp_list.includes(arms_key)) {
+        //                 //跳过本次 
+        //                 i--;
+        //                 continue;
+        //             }
+        //             //全局唯一数量验证
+        //             if(this.arms_global_count.hasOwnProperty(arms_key)){
+        //                 if(this.arms_global_count[arms_key].count >= this.arms_global_count[arms_key].max){
+        //                     //跳过本次 
+        //                     i--;
+        //                     continue;
+        //                 }
+        //             }
+        //             ret_data[i] = {
+        //                 key: arms_key,
+        //             };
+        //             this.arms_global_count[arms_key].count +=1;
+        //             shop_wp_list.push(arms_key);
+        //         }
+        //     }
+        //     //修改为已刷新
+        //     this.PlayerSelectData[player_id].is_select = 1;
+        //     this.PlayerSelectData[player_id].arms_list = ret_data;
+        //     this.PlayerSelectData[player_id].index = Index;
+        // }
+        // this.GetArmssSelectData(player_id, {});
     }
 
     /**
@@ -342,98 +342,98 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * 1.默认是三选一
      */
     CreatArmssWeightData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssWeightData"]) {
-        //阶段2之前不可用
-        if (GameRules.MapChapter._game_select_phase <= 2) {
-            return
-        }
-        if (this.PlayerSelectData[player_id].is_select == 0) {
-            //验证是否满足条件
-            if (this.EvolutionPoint[player_id] <= 0) {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
-                return
-            }
-            let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
-            let Index = param.index;
-            let Ability = MyHero.GetAbilityByIndex(Index);
-            let Key = Ability.GetAbilityName();
-            let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
-            if (this.ItemQmax == Quality) {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
-                return
-            }
-            //技能点减少
-            let skillcount = 1;
-            if(skillcount > 0){
-                //技能点减少
-                this.AddEvolutionPoint(player_id, - skillcount)
-            }
-            //最多几样物品
-            let amount = this.PlayerSelectAmount[player_id];
-            //循环计数器
-            let amount_count = 0;
-            let amount_max = 50;
-            //返回数据
-            let ret_data: { [key: string]: PlayerUpgradeSelectServer; } = {};
-            let shop_wp_list: string[] = [];
-            //如果为第一次刷新则改为特定刷新
-            for (let i = 0; i < amount; i++) {
-                amount_count++;
-                if (amount_count > amount_max) {
-                    break;
-                }
-                let key_list = this.PlayerUpgradePool[player_id][Quality].key;
-                let pro_list = this.PlayerUpgradePool[player_id][Quality].pro;
-                let arms_key = key_list[GetCommonProbability(pro_list)];
-                //重复物品跳过
-                if (shop_wp_list.includes(arms_key)) {
-                    //跳过本次 
-                    i--;
-                    continue;
-                }
-                //全局唯一数量验证
-                if(this.arms_global_count.hasOwnProperty(arms_key)){
-                    if(this.arms_global_count[arms_key].count >= this.arms_global_count[arms_key].max){
-                        //跳过本次 
-                        i--;
-                        continue;
-                    }
-                }
-                ret_data[i] = {
-                    key: arms_key,
-                };
-                this.arms_global_count[arms_key].count +=1;
-                shop_wp_list.push(arms_key);
-            }
-            //修改为已刷新
-            this.PlayerSelectData[player_id].is_select = 1;
-            this.PlayerSelectData[player_id].arms_list = ret_data;
-            this.PlayerSelectData[player_id].index = Index;
-        }
-        this.GetArmssSelectData(player_id, {});
+        // //阶段2之前不可用
+        // if (GameRules.MapChapter._game_select_phase <= 2) {
+        //     return
+        // }
+        // if (this.PlayerSelectData[player_id].is_select == 0) {
+        //     //验证是否满足条件
+        //     if (this.EvolutionPoint[player_id] <= 0) {
+        //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
+        //         return
+        //     }
+        //     let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        //     let Index = param.index;
+        //     let Ability = MyHero.GetAbilityByIndex(Index);
+        //     let Key = Ability.GetAbilityName();
+        //     let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
+        //     if (this.ItemQmax == Quality) {
+        //         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
+        //         return
+        //     }
+        //     //技能点减少
+        //     let skillcount = 1;
+        //     if(skillcount > 0){
+        //         //技能点减少
+        //         this.AddEvolutionPoint(player_id, - skillcount)
+        //     }
+        //     //最多几样物品
+        //     let amount = this.PlayerSelectAmount[player_id];
+        //     //循环计数器
+        //     let amount_count = 0;
+        //     let amount_max = 50;
+        //     //返回数据
+        //     let ret_data: { [key: string]: PlayerUpgradeSelectServer; } = {};
+        //     let shop_wp_list: string[] = [];
+        //     //如果为第一次刷新则改为特定刷新
+        //     for (let i = 0; i < amount; i++) {
+        //         amount_count++;
+        //         if (amount_count > amount_max) {
+        //             break;
+        //         }
+        //         let key_list = this.PlayerUpgradePool[player_id][Quality].key;
+        //         let pro_list = this.PlayerUpgradePool[player_id][Quality].pro;
+        //         let arms_key = key_list[GetCommonProbability(pro_list)];
+        //         //重复物品跳过
+        //         if (shop_wp_list.includes(arms_key)) {
+        //             //跳过本次 
+        //             i--;
+        //             continue;
+        //         }
+        //         //全局唯一数量验证
+        //         if(this.arms_global_count.hasOwnProperty(arms_key)){
+        //             if(this.arms_global_count[arms_key].count >= this.arms_global_count[arms_key].max){
+        //                 //跳过本次 
+        //                 i--;
+        //                 continue;
+        //             }
+        //         }
+        //         ret_data[i] = {
+        //             key: arms_key,
+        //         };
+        //         this.arms_global_count[arms_key].count +=1;
+        //         shop_wp_list.push(arms_key);
+        //     }
+        //     //修改为已刷新
+        //     this.PlayerSelectData[player_id].is_select = 1;
+        //     this.PlayerSelectData[player_id].arms_list = ret_data;
+        //     this.PlayerSelectData[player_id].index = Index;
+        // }
+        // this.GetArmssSelectData(player_id, {});
     }
 
     /**
      * 升级
      */
     ArmsUpgrade(player_id: PlayerID, param: CGED["NewArmsEvolution"]["ArmsUpgrade"]) {
-        let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
-        let Index = param.index;
-        let Ability = MyHero.GetAbilityByIndex(Index);
-        let Key = Ability.GetAbilityName();
-        if (this.EvolutionPoint[player_id] <= 0) {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
-            return
-        }
-        let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
-        if (this.ItemQmax == Quality) {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
-            return
-        }
-        let key_list = this.PlayerUpgradePool[player_id][Quality + 1].key;
-        let pro_list = this.PlayerUpgradePool[player_id][Quality + 1].pro;
-        let ability_name = key_list[GetCommonProbability(pro_list)];
-        //替换
-        GameRules.NewArmsEvolution.ReplaceAbility(ability_name, Index, MyHero)
+        // let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        // let Index = param.index;
+        // let Ability = MyHero.GetAbilityByIndex(Index);
+        // let Key = Ability.GetAbilityName();
+        // if (this.EvolutionPoint[player_id] <= 0) {
+        //     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！");
+        //     return
+        // }
+        // let Quality = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
+        // if (this.ItemQmax == Quality) {
+        //     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已经是最高品质了！");
+        //     return
+        // }
+        // let key_list = this.PlayerUpgradePool[player_id][Quality + 1].key;
+        // let pro_list = this.PlayerUpgradePool[player_id][Quality + 1].pro;
+        // let ability_name = key_list[GetCommonProbability(pro_list)];
+        // //替换
+        // GameRules.NewArmsEvolution.ReplaceAbility(ability_name, Index, MyHero)
     }
 
     /**
@@ -475,11 +475,11 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         //减少原来的元素羁绊
         let Ability = MyHero.GetAbilityByIndex(Index);
         let Key = Ability.GetAbilityName();
-        let Rarity = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
-        //被替换的技能回归池子
-        if(Rarity != 0){
-            this.arms_global_count[Key].count --;
-        }
+        // // let Rarity = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
+        // //被替换的技能回归池子
+        // if(Rarity != 0){
+        //     this.arms_global_count[Key].count --;
+        // }
         
         this.GetArmssElementBondDateList(player_id, {})
 

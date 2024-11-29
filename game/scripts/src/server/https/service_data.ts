@@ -81,6 +81,18 @@ export class ServiceData extends UIEventRegisterClass {
             number: 324,	//物品数量
             customs: "", //自定义字段
         });
+        this.server_package_list[0].push({
+            id : "12344526",	//系统内唯一id
+            item_id: 1292,	//物品表唯一id
+            number: 324,	//物品数量
+            customs: "", //自定义字段
+        });
+        this.server_package_list[0].push({
+            id : "123445154",	//系统内唯一id
+            item_id: 1293,	//物品表唯一id
+            number: 15226,	//物品数量
+            customs: "", //自定义字段
+        });
         for(let key in PictuerCardData){
             let CardData = PictuerCardData[key as keyof typeof PictuerCardData];
             if(CardData.rarity == 5){
@@ -131,22 +143,13 @@ export class ServiceData extends UIEventRegisterClass {
      * @returns 
      */
     AddPackageItem(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ){
-        //检查卡片是否充足
-        let item_package = GameRules.ServiceData.server_package_list[player_id];
         let item_id_string = tostring(item_id);
         let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
-
         if(merge != 1){
-            let check = false;
-            for (let index = 0; index < item_package.length; index++) {
-                const package_item_id = item_package[index].item_id;
-                if(package_item_id == item_id){
-                    check = true;
-                    GameRules.ServiceData.server_package_list[player_id][index].number += count;
-                    break;
-                }
-            }
-            if(check == false){
+            let check = this.VerifyPackageItem(player_id , item_id);
+            if(check.is_verify == true){
+                GameRules.ServiceData.server_package_list[player_id][check.index].number += count;
+            }else{
                 GameRules.ServiceData.server_package_list[player_id].push({
                     "id" : id,
                     "item_id" : item_id,
@@ -161,6 +164,65 @@ export class ServiceData extends UIEventRegisterClass {
                 "number" : 1 , 
                 "customs" : customs
             })
+        }
+    }
+    /**
+     * 验证本地背包数量 /或是否拥有
+     * @param player_id 
+     */
+    VerifyPackageItem(player_id : PlayerID  , item_id : number  , count ? : number , id ?: string) : { is_verify : boolean , index : number} {
+        //检查卡片是否充足
+        let ret : { is_verify : boolean , index : number} = {
+            is_verify : false, 
+            index : -1,
+        }
+        let item_package = GameRules.ServiceData.server_package_list[player_id];
+        let item_id_string = tostring(item_id);
+        let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
+        if(merge != 1){
+            for (let index = 0; index < item_package.length; index++) {
+                const package_item_id = item_package[index].item_id;
+                if(package_item_id == item_id){
+                    if(count){
+                        if(item_package[index].number >= count){
+                            ret.is_verify = true;
+                            ret.index = index;
+                        }
+                    }else{
+                        ret.is_verify = true;
+                        ret.index = index;
+                    }
+                    return ret;
+                }
+            }
+        }else{
+            for (let index = 0; index < item_package.length; index++) {
+                const package_id = item_package[index].id;
+                if(package_id == id){
+                    ret.is_verify = true;
+                    ret.index = index;
+                    return ret;
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * 对本地背包进行数据扣除 (不进行数据同步)
+     * @param player_id 
+     * @param item_id 
+     * @returns 
+     */
+    DeletePackageItem(player_id : PlayerID , index : number , count : number ) :  boolean {
+        if(GameRules.ServiceData.server_package_list[player_id][index].number > count){
+            GameRules.ServiceData.server_package_list[player_id][index].number -= count;
+            return true;
+        }else if(GameRules.ServiceData.server_package_list[player_id][index].number = count){
+            GameRules.ServiceData.server_package_list[player_id].splice(index , 1);
+            return true;
+        }else{
+            return false;
         }
     }
 

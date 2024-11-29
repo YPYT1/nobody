@@ -362,9 +362,13 @@ declare interface CGED {
         GetPlayerServerPackageData : {
             
         }
-        //获取
+        //获取技能相关信息
         GetPlayerServerSkillData : {
             
+        }
+        //存档技能升级
+        ServerSkillUp : {
+            key : string , // 技能key
         }
     }
 }
