@@ -325,9 +325,7 @@ export class ServiceData extends UIEventRegisterClass {
             this.player_pictuer_vip[player_id] = 1;
         }
         if(cmd == "!!dg"){
-
             let CardDataList = Object.keys(PictuerCardData);
-            
             for (let index = 1; index <= 50; index++) {
                 let tos = tonumber(args[0]);
                 let is_ok = false;
@@ -350,6 +348,12 @@ export class ServiceData extends UIEventRegisterClass {
                 }
             }
             GameRules.ServiceInterface.GetPlayerCardList(player_id , {});
+        }
+        if(cmd == "!AddPackageItem"){
+            let msg = args[0];
+            let count = args[1];
+            this.AddPackageItem(player_id , "2232"+msg+count, tonumber(msg) , "" , tonumber(count));
+            GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
         }
     }
 }
