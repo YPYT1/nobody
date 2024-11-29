@@ -336,6 +336,10 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         GameRules.MysticalShopSystem.GetShopState(-1, {});
         //给每个玩家刷新一次商店
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
+            //所有玩家商店等级+1
+            if(this.player_shop_level[index] < 6){
+                this.player_shop_level[index] ++;
+            }
             GameRules.MysticalShopSystem.PlayerShopItem(index);
         }   
 
@@ -795,9 +799,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
         let ret_action_string = ItemData.ret_action;
         let param = ItemData.AbilityValues;
-        if (ret_action_string != "Null" && ret_action_string != 1) {
+        if (ret_action_string != "Null") {
             //执行后续处理....
-            GameRules.MysticalShopSystem[ret_action_string](player_id, param, prop_name);
+            GameRules.MysticalShopSystem[ret_action_string](player_id, param, prop_name , rarity);
         }
         //发送信息
         GameRules.ServiceInterface.PostLuaLog(player_id , "购买物品:" + prop_name + "(" + this.player_shop_buy_data[player_id][prop_name]+ "/" + ItemData.buy_count_max + ")");
@@ -842,14 +846,17 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         this.GetShopData(player_id, {});
     }
     /**
-     * 【常客优惠I】 【常客优惠II】
-     * @param player_id  //玩家名字
-     * @param buffname  //buff名字
-     * @param player_id  //参数
+     * 【常客优惠】
+     * @param player_id  玩家id
+     * @param param 额外参数
+     * @param name 物品名
+     * @param rarity 稀有度
      */
-    LowerConsume(player_id: PlayerID, param: { value: number }, key: string) {
+    LowerConsume(player_id: PlayerID, param: { value: string }, name: string , rarity : number ) {
         //更新数值
-        GameRules.MysticalShopSystem.player_shop_discount[player_id] -= param.value;
+        let value_list = param.value.split(" ");
+        let value_number = 100 - tonumber(value_list[rarity - 1]);
+        GameRules.MysticalShopSystem.player_shop_discount[player_id] = value_number;
         //更新商店正在售卖物品的价格
         let length = this.shop_field_list[player_id].length;
         for (let index = 0; index < length; index++) {
@@ -865,27 +872,84 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     }
     /**
      * 【双倍灵魂】
-     * @param player_id  //玩家名字
-     * @param buffname  //buff名字
-     * @param player_id  //参数
+     * @param player_id  玩家id
+     * @param param 额外参数
+     * @param name 物品名
+     * @param rarity 稀有度
      */
-    GetDoubleSoulPro(player_id: PlayerID, param: { value: number, max: number }, key: string) {
+    GetDoubleSoulPro(player_id: PlayerID, param: { value: number, max: number }, name: string , rarity : number) {
         //更新数值
         if (GameRules.MysticalShopSystem.player_get_soul_double_pro[player_id] < param.max) {
             GameRules.MysticalShopSystem.player_get_soul_double_pro[player_id] += param.value;
         }
     }
-
     /**
      * 【火元素·I】 【雷元素·I】 【冰元素·I】 【风元素·I】
-     * @param player_id  //玩家名字
-     * @param buffname  //buff名字
-     * @param player_id  //参数
+     * @param player_id  玩家id
+     * @param param 额外参数
+     * @param name 物品名
+     * @param rarity 稀有度
      */
-    AddElement(player_id: PlayerID, param: { element_number: ElementTypeEnum, count: number }, key: string) {
+    AddElement(player_id: PlayerID, param: { element_number: ElementTypeEnum, count: number }, name: string , rarity : number) {
         //更新数值
         GameRules.NewArmsEvolution.SetElementBondDate(player_id, param.element_number, param.count, 2)
     }
+
+    /**
+     * 【开摆】 下一波刷怪开始时：不可学习任意技能，灵魂收益提高%soulpro%%%，持续5波
+     * @param player_id  玩家id
+     * @param param 额外参数
+     * @param name 物品名
+     * @param rarity 稀有度
+     */
+    prop_65(player_id: PlayerID, param: { }, name: string , rarity : number) {
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let attr_key = "shop_prop_65";
+        let ObjectValues = {
+            "SoulGetRate": {
+                "MulRegion": 1.5
+            }
+        }   
+        GameRules.CustomAttribute.DelAttributeInKey(hHero, "shop_prop_65");
+        GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
+    }
+    /**
+     * 【肾上腺素】 下一波刷怪开始时：造成伤害提高%fidamage%%%（最终伤害），灵魂收益降低%soulpro%%%，持续5波
+     * @param player_id  玩家id
+     * @param param 额外参数
+     * @param name 物品名
+     * @param rarity 稀有度
+     */
+    prop_66(player_id: PlayerID, param: { fidamage : number , soulpro : number }, name: string , rarity : number) {
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let fidamage = param.fidamage;
+        let attr_key = "shop_prop_66";
+        let ObjectValues = {
+            "SoulGetRate": {
+                "MulRegion": 0.5
+            },
+            "FinalDamageMul": {
+                "MulRegion": fidamage
+            }
+        }
+        GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
+    }
+    /**
+     * 【以小博大】 %succeed%%%概率灵魂翻倍，%fail%%%概率灵魂减半
+     * @param player_id  玩家id
+     * @param param 额外参数
+     * @param name 物品名
+     * @param rarity 稀有度
+     */
+    prop_71(player_id: PlayerID, param: { succeed: number , win : number , lose : number }, name: string , rarity : number) {
+        let Soul = GameRules.ResourceSystem.player_resource[player_id]["Soul"];
+        if(RollPercentage(param.succeed)){
+            GameRules.ResourceSystem.ModifyResource(player_id, { "Soul": Soul * param.win / 100 })
+        }else{
+            GameRules.ResourceSystem.ModifyResource(player_id, { "Soul": Soul * param.lose / 100 })
+        }
+    }
+
     /**
      * 增加具体buff
      * @param player_id 

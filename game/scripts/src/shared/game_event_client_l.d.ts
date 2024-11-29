@@ -525,6 +525,9 @@ declare interface PlayerServerSkillLevelCount {
         exp : number, //经验
         type : number, //类型
         cur_exp : number , //当前经验   
+        is_max : number , //是否满级
+        need_type : number , // 升星需求类型 1 高级技能点  2 通用经验
+        need_number : number , //所需数量
     }};
 }
 /**
