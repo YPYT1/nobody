@@ -24,6 +24,12 @@ const GetPictureCardData = GameUI.CustomUIConfig().GetPictureCardData;
 const _PictuerCardData = GameUI.CustomUIConfig()._PictuerCardData;
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 
+// pictuer_card_data
+
+const OncClickAdd = $("#OncClickAdd") as Button;
+
+/** 特殊卡片ID列表 */
+let special_card_list: string[] = [];
 
 export const Init = () => {
     let max_cards = Object.keys(_PictuerCardData).length
@@ -38,6 +44,7 @@ export const Init = () => {
     CustomEventSubscribe();
 
 }
+
 
 const card_rarity = {
     "All": 99,
@@ -157,12 +164,15 @@ const SendCompoundCard = (state: number = 1) => {
     })
 }
 
+let rarity_card_list: { [card_id: string]: number }[] = [];
+
 const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
     // $.Msg(["Card ServiceInterface_GetPlayerCardList"])
     let data = params.data;
     // $.Msg(["data",data])
     let card = data.card;
 
+   
 
     // 清空合成表
     card_compose_list = [[], [], [], [], [], [], [], []]
@@ -183,17 +193,26 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
     let picture_card_list: string[] = []
     const CardPanel = CardList.FindChildTraverse("3201")
     for (let pic_id in pictuer_list) {
-        let card_list = Object.values(pictuer_list[pic_id]);
-        for (let card_id of card_list) {
+        let sub_card_list = Object.values(pictuer_list[pic_id]);
+        for (let card_id of sub_card_list) {
             let panel1 = CardList.FindChildTraverse(`${card_id}`) as Component_CardItem;
             panel1.Data<PanelDataObject>().has = 1;
             panel1.ShowCardIcon(true)
         }
     }
 
+    // 卡片按质量分配
+    rarity_card_list = [{}, {}, {}, {}, {}, {}, {}]
     for (let card of card_list) {
         let item_id = card.item_id;
         let card_id = `${item_id}`;
+        let card_data = _PictuerCardData[card_id as keyof typeof _PictuerCardData];
+
+
+        let card_rare = card_data.rarity;
+        let card_count = card.number;
+
+        rarity_card_list[card_rare - 1][card_id] = card_count
         const CardPanel = CardList.FindChildTraverse(card_id) as Component_CardItem;
         if (CardPanel == null) {
             continue
@@ -316,11 +335,13 @@ const CustomEventSubscribe = () => {
 
 const InitCardList = () => {
 
-    // const _PictuerCardData = GameUI.CustomUIConfig()._PictuerCardData
+    special_card_list = [];
+
     let CardListData = Object.values(_PictuerCardData);
     CardListData.sort((a, b) => { return b.rarity - a.rarity })
     CardList.RemoveAndDeleteChildren();
 
+    let temp_special_cards: { [speid: string]: any } = {}
     for (let card_data of CardListData) {
         let card_id = `${card_data.item_id}`;
         let _CardPanel = $.CreatePanel("Panel", CardList, `${card_id}`);
@@ -329,13 +350,38 @@ const InitCardList = () => {
         CardPanel.SetDialogVariableInt("count", 0);
         CardPanel.Data<PanelDataObject>().count = 0;
         CardPanel.Data<PanelDataObject>().name = $.Localize("#custom_server_card_" + card_id)
+
+        let special_compound = card_data.special_compound;
+        for (let spe_id of special_compound) {
+            if (spe_id == 0) { continue }
+            if (temp_special_cards[`${spe_id}`] == null) {
+                temp_special_cards[`${spe_id}`] = {}
+            }
+        }
     }
+    special_card_list = Object.keys(temp_special_cards);
+
+    /**
+     * 添加逻辑：添加顺序为C->B->A->S，即优先添加进去C级绿色的，
+     * 添加完之后，再添加B级蓝色的，添加完之后，再添加A级紫色的依次类推。
+     * 如果C级的卡片数量不能被3整除，就只添加能被3整除的部分，不被3整除的部分保留在左侧展示栏
+     */
+    OncClickAdd.SetPanelEvent("onactivate", () => {
+        $.Msg(["OncClickAdd"])
+        $.Msg(special_card_list)
+        $.Msg(card_compose_list) 
+        for(let rare_list of rarity_card_list){
+            $.Msg(rare_list)
+        }
+    })
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerCardList", GetPlayerCardList);
     GameEvents.SendCustomGameEventToServer("ServiceInterface", {
         event_name: "GetPlayerCardList",
         params: {}
     })
+
+
 }
 const SetCardAttribute = (card: Panel, rarity: number,) => {
 

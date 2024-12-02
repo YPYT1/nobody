@@ -1,0 +1,11 @@
+<root>
+    <styles>
+        <include src="./prop_item.less" />
+    </styles>
+    <scripts>
+		<include src="./prop_item.tsx" />
+	</scripts>
+    <Panel class="PropItem">
+        <Image id="ItemIcon"/>
+    </Panel>
+</root>

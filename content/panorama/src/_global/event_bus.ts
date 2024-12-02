@@ -23,16 +23,16 @@ interface ISubscribe {
     unSubscribe: () => void;
 }
 
-interface IEventBus {
-    publish<K extends keyof CustomEventBusList>(eventName: K, object: CustomEventBusList[K], ...args: any): void;
-    subscribe<K extends keyof CustomEventBusList>(eventName: K, callback: (event: CustomEventBusList[K]) => void): ISubscribe;
-    subscribeOnce<K extends keyof CustomEventBusList>(eventName: K, callback: (event: CustomEventBusList[K]) => void): ISubscribe;
-    clear(eventName: string): void;
-}
+// interface IEventBus {
+//     publish<K extends keyof CustomEventBusList>(eventName: K, object: CustomEventBusList[K], ...args: any): void;
+//     subscribe<K extends keyof CustomEventBusList>(eventName: K, callback: (event: CustomEventBusList[K]) => void): ISubscribe;
+//     subscribeOnce<K extends keyof CustomEventBusList>(eventName: K, callback: (event: CustomEventBusList[K]) => void): ISubscribe;
+//     clear(eventName: string): void;
+// }
 
 
 
-class EventBus implements IEventBus {
+class EventBus  {
 
     private _eventObject: IEventObject;
     private _callbackId: number;

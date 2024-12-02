@@ -46,16 +46,43 @@
 				
 			</Panel>
 		</snippet>
+		<snippet name="ExtremePropsRows">
+			<Panel class="ExtremePropsRows">
+				<Panel class="ItemIcon">
+					<Panel id="ShopItemComponent"/>
+				</Panel>
+				<Panel class="ItemInfo">
+					<Panel id="ItemStar"/>
+					<Label text="{s:item_desc}"/>
+				</Panel>
+			</Panel>
+		</snippet>
 	</snippets>
 	<Panel class="mystical_shop" hittest="false">
-		
+		<Panel class="ExtremePropsRightContent">
+			<Label text="极限道具"/>
+			<Panel id="LocalExtremePropsList">
+
+			</Panel>
+		</Panel>
 		<Panel id="MysticalShop" class="" >
 			<Panel class="ShopContainer">
 				<Panel class="CountdownTimer">
 					<Label class="Title" text="#购买倒计时: "/>
 					<Label class="Timer" text="{s:countdown_timer}"/>
 				</Panel>
-				<Panel id="ShopItemList" />
+				<Panel class="ShopBody">
+					<Panel class="ExtremePropsContainer">
+						<Label class="H1" text="已获得极限道具"/>
+						<Label class="H2" text="极限道具至高5星,至多可购买5个"/>
+						<Label text="当前{s:curr_extreme} / {s:max_extreme}"/>
+						<Panel id="ExtremePropsList">
+							
+						</Panel>
+					</Panel>
+					<Panel id="ShopItemList" />
+				</Panel>
+				
 			</Panel>
 			<Panel class="TitleImg"/>
 			<Button id="ReadyBtn"></Button>

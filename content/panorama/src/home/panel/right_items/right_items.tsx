@@ -100,26 +100,10 @@ const CustomGameEventsSubscribe = () => {
                 prop_count[item_key] += count
             }
 
-            ItemBorder.SetDialogVariable("count", ""+prop_count[item_key]);
+            ItemBorder.SetDialogVariable("count", "" + prop_count[item_key]);
 
-
-            // ItemBorder.SetDialogVariableInt("count", row.);
         }
 
-        // for (let i = 1; i <= 10; i++) {
-        //     let ItemBorder = $.CreatePanel("Panel", ItemList_Rune, "");
-        //     ItemBorder.BLoadLayoutSnippet("ItemBorder")
-        //    
-        //     let item_key = `prop_` + i;
-        //     let ItemData = MysteriousShopConfig[item_key as keyof typeof MysteriousShopConfig];
-        //     
-        //    
-        //     
-
-        //     
-
-
-        // }
     })
 
 

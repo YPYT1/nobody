@@ -2,6 +2,7 @@ import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { default as MysteriousShopConfig } from "../../../json/config/game/shop/mysterious_shop_config.json";
 import { SetLabelDescriptionExtra } from "../../../utils/ability_description";
 import { HideCustomTooltip, ShowCustomTextTooltip } from "../../../utils/custom_tooltip";
+import { CreateGameComponent, LoadGameComponent } from "../../component/component_manager";
 
 const localPlayer = Game.GetLocalPlayerID();
 const SHOP_ITEM_COUNT = 6;
@@ -14,7 +15,8 @@ let PopupModal = $("#PopupModal");
 let PurchaseConfirm = $("#PurchaseConfirm")
 let BtnConfirm = $("#BtnConfirm") as Button;
 
-
+const ExtremePropsList = $("#ExtremePropsList")
+const LocalExtremePropsList = $("#LocalExtremePropsList");
 
 const GameEventsSubscribeInit = () => {
 
@@ -148,6 +150,27 @@ export const UpdataCountdownTimer = () => {
 
 export const CreatePanel = () => {
 
+    ExtremePropsList.RemoveAndDeleteChildren()
+    for (let i = 0; i < 5; i++) {
+        let extremePropsRows = $.CreatePanel("Panel", ExtremePropsList, "");
+        extremePropsRows.BLoadLayoutSnippet("ExtremePropsRows")
+        let ShopItemComponent = extremePropsRows.FindChildTraverse("ShopItemComponent")!
+        let PropItem = LoadGameComponent(ShopItemComponent, "prop_item");
+        PropItem._SetConfig({ item_id: "prop_2" })
+
+        let ItemStar = extremePropsRows.FindChildTraverse("ItemStar")!;
+        let PropItemStar = LoadGameComponent(ItemStar, "prop_item_star");
+        PropItemStar._Init(5, 1)
+    }
+
+    // 右侧极限道具列表
+    LocalExtremePropsList.RemoveAndDeleteChildren()
+    for (let i = 0; i < 6; i++) {
+        let ExtremeProps = $.CreatePanel("Panel", LocalExtremePropsList, "");
+        let PropItem = LoadGameComponent(ExtremeProps, "prop_item");
+        PropItem._SetConfig({ item_id: "prop_3", state: 0 })
+    }
+
     // let ToggleButton = $("#ToggleButton") as Button;
     // ToggleButton.SetPanelEvent("onactivate", () => {
     //     MysticalShop.ToggleClass("Open")
@@ -230,6 +253,7 @@ export const CreatePanel = () => {
 export const Init = () => {
     GameEventsSubscribeInit()
     CreatePanel();
+
     MysticalShop.Data<PanelDataObject>().countdown_timer = 0;
     GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
         event_name: "GetShopState",

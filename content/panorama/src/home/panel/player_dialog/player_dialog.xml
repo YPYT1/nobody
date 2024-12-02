@@ -42,9 +42,15 @@
 				</Panel>
 				<Panel class="RuneAttrSplit">
 				</Panel>
-				<Panel id="RuneAttr">
-					
+				<Panel class="RuneTitle">
+					<Panel class="SplitIcon" />
+					<Label text="符文属性"/>
+					<Panel class="SplitIcon Right" />
 				</Panel>
+				<Panel class="RuneAttrPanel">
+					<Panel id="RuneAttr" />
+				</Panel>
+				
 			</Button>
 		</snippet>
 
@@ -63,7 +69,10 @@
 					<Label class="SelectCountdownTimer" text="{d:select_timer}s"/>
 				</Panel>
 				<Panel class="Content">
-					<Panel id="RuneSelectList" />
+					<Panel class="RuneSelectBg">
+						<Panel id="RuneSelectList" />
+					</Panel>
+					
 					<Panel class="RuneOptionBtn">
 						<Button id="RefreshBtn" />
 						<Panel class="RefreshLabel">

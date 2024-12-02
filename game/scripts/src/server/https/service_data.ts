@@ -326,8 +326,15 @@ export class ServiceData extends UIEventRegisterClass {
         }
         if(cmd == "!!dg"){
             let CardDataList = Object.keys(PictuerCardData);
-            for (let index = 1; index <= 50; index++) {
-                let tos = tonumber(args[0]);
+            let count = tonumber(args[0] ?? "50")
+            for (let index = 1; index <= count; index++) {
+                let i = RandomInt( 0 , CardDataList.length - 1);
+                let tos = 0 ;
+                if(args[1]){
+                    tos = tonumber(args[1]);
+                }else{
+                    tos = tonumber(CardDataList[i]);
+                }
                 let is_ok = false;
                 let item_id = tos;
                 //;

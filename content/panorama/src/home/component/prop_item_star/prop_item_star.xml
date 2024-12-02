@@ -1,0 +1,20 @@
+<root>
+    <styles>
+        <include src="./prop_item_star.less" />
+    </styles>
+    <scripts>
+		<include src="./prop_item_star.tsx" />
+	</scripts>
+    <Panel class="PropItemStar">
+        <Panel class="Star" />
+        <Panel class="Star" />
+        <Panel class="Star" />
+        <Panel class="Star" />
+        <Panel class="Star" />
+        <Panel class="Star" />
+        <Panel class="Star" />
+        <Panel class="Star" />
+        <Panel class="Star" />
+        <Panel class="Star" />
+    </Panel>
+</root>

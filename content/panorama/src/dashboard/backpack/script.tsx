@@ -74,7 +74,7 @@ const InitItemDetails = () => {
     ItemDetails.SetDialogVariableInt("item_amount", 0)
 
     UseBackpackItemBtn.SetPanelEvent("onactivate", () => {
-        $.Msg(["111", view_item_id])
+        $.Msg(["UseBackpackItem:", view_item_id])
     })
 
     UpdateBackpackBtn.SetPanelEvent("onactivate", () => {

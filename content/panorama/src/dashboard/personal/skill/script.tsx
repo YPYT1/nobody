@@ -209,6 +209,7 @@ const ViewSkillMainOfID = (id: string) => {
     }
 
     let main_data = main_skill_level.level[id];
+    if(main_data == null){ return }
     let is_adv = main_data.is_adv == 1;
 
 

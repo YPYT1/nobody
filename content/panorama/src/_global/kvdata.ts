@@ -9,11 +9,16 @@ import { default as PictuerFetterConfig } from "../json/config/server/picture/pi
 import { default as PictuerFetterAbility } from "../json/config/server/picture/pictuer_fetter_ability.json";
 import { default as AttributeConst } from "../json/config/game/attribute_const.json";
 
+
+import { default as MysteriousShopConfig } from "../json/config/game/mysterious_shop_config.json";
+
+
 const KvData = {
     AttributeConst: AttributeConst,
     ServerItemList: ServerItemList,
     npc_heroes_custom: npc_heroes_custom,
     server_talent_data: server_talent_data,
+    MysteriousShopConfig: MysteriousShopConfig,
 
 }
 

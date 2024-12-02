@@ -72,7 +72,6 @@
 							<Panel id="ChildNodeList" />
 						</Panel>
 					</Button>
-					<Panel class="TalentStateLabel" hittest="false" />
 				</Panel>
 		
 			

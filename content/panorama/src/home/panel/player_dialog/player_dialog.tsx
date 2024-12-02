@@ -21,7 +21,7 @@ const ConverAttrAndValueLabel = GameUI.CustomUIConfig().ConverAttrAndValueLabel
 var refresh_count = -1;
 const StartThinkerLoop = () => {
     // UpdateLocalPlayerReviveState()
-    UpdateHeroStateDialog()
+    // UpdateHeroStateDialog()
     UpdateLocalPlayerRuneDialog();
     $.Schedule(Game.GetGameFrameTime(), StartThinkerLoop)
 }
@@ -147,7 +147,7 @@ const SetRuneSelectHotkeyOrder_4 = () => {
 export const Init = () => {
     HeroState.RemoveAndDeleteChildren();
     // HeroState.BLoadLayoutSnippet("HeroState");
-    // StartThinkerLoop();
+    StartThinkerLoop();
     LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", 99);
     LocalPlayerRuneDialog.SetDialogVariableInt("select_timer", 99);
     SetHokeyPanel();
@@ -162,6 +162,7 @@ export const Init = () => {
     GameEvents.Subscribe("RuneSystem_GetRuneSelectData", event => {
         let data = event.data;
         let time = data.time;
+        $.Msg(["data",data])
         LocalPlayerRuneDialog.Data<PanelDataObject>().over_time = time
         LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", data.player_refresh_count);
         refresh_count = data.player_refresh_count
