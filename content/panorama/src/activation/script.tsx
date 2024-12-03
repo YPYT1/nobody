@@ -23,7 +23,6 @@ export const Init = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetGameActivate", event => {
         let data = event.data;
-        // $.Msg(["Data", data])
         let Activate = data.Activate;
         if (Activate == 0) {
             $.Schedule(1, () => { CodeInputBtn.enabled = true })

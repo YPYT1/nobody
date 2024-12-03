@@ -56,7 +56,11 @@ export class modifier_prop_effect extends BaseModifier {
         // let unit_type = hTarget.GetUnitLabel() == ""
         // prop_49	【石中剑】	每击杀100个敌军增加1%攻击力（精英怪算5个敌军，boss算15个）
         if (this.object["prop_49"]) {
-            this.prop_49_kills += 1;
+            let base_count = 1;
+            if (hTarget.IsBossCreature()) {
+                base_count = 15;
+            }
+            this.prop_49_kills += base_count;
             if (this.prop_49_kills >= 100) {
                 this.prop_49_kills -= 100;
                 GameRules.CustomAttribute.ModifyAttribute(this.caster, {
@@ -64,6 +68,15 @@ export class modifier_prop_effect extends BaseModifier {
                         "BasePercent": 1
                     }
                 })
+            }
+        }
+
+        // prop_51	【圣坛遗物】	击杀敌军有1%概率获得随机圣坛效果，持续5秒
+        if (this.object["prop_51"]) {
+            let chance = this.Prop_Object("prop_51", 'chance');
+            if (RollPercentage(chance)) {
+                let iIndex = RandomInt(1, 8)
+                this.caster.AddNewModifier(this.caster, null, "modifier_altar_effect_" + iIndex, { duration: 5 })
             }
         }
     }
@@ -242,7 +255,7 @@ export class modifier_prop_effect extends BaseModifier {
                 let buff = this.caster.AddNewModifier(this.caster, null, "modifier_shop_prop_47", {
                     duration: duration
                 })
-                print("prop_47 add ", duration, buff)
+                // print("prop_47 add ", duration, buff)
                 params.damage = 1;
             }
         }

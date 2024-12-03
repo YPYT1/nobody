@@ -114,33 +114,43 @@ const InitComposeViews = () => {
             let row_source = SourceList.GetChild(j)!;
             row_source.SetHasClass("has_item", false)
             row_source.SetPanelEvent("onactivate", () => {
-                let card_id = row_source.Data<PanelDataObject>().card_id;
-                if (card_id == null) { return }
-                row_source.Data<PanelDataObject>().card_id = null;
-                let compose_xy = [i, j]
-                // $.Msg(["compose_xy", compose_xy, card_compose_list[i][j]])
-                card_compose_list[i].splice(j, 1)
-                row_source.SetHasClass("has_item", false);
-                for (let r = 1; r <= 6; r++) { row_source.RemoveClass("rare_" + r) }
-                // $.Msg(["card_id",card_id])
-                let CardPanel = CardList.FindChildTraverse(`${card_id}`)!
-                // $.Msg(["CardPanel",CardPanel])
-                let count = CardPanel.Data<PanelDataObject>().count;
-                // $.Msg(["count",count])
-                CardPanel.Data<PanelDataObject>().count += 1;
-                CardPanel.SetDialogVariableInt("count", CardPanel.Data<PanelDataObject>().count);
-                UpdateComposeInfo()
+                RemoveComposeCard(row_source, i, j)
             })
         }
 
     }
 }
 
+const RemoveComposeCard = (row_source: Panel, i: number, j: number) => {
+    let card_id = row_source.Data<PanelDataObject>().card_id as string;
+    if (card_id == null) { return }
+    row_source.Data<PanelDataObject>().card_id = null;
+    let compose_xy = [i, j]
+    card_compose_list[i].splice(j, 1)
+    row_source.SetHasClass("has_item", false);
+    for (let r = 1; r <= 6; r++) { row_source.RemoveClass("rare_" + r) }
+    // $.Msg(["card_id",card_id])
+    let CardPanel = CardList.FindChildTraverse(`${card_id}`)!
+    let card_data = _PictuerCardData[card_id as keyof typeof _PictuerCardData];
+    let rarity = card_data.rarity;
+    rarity_card_list[rarity - 1][card_id] += 1;
+    // CardPanel.Data<PanelDataObject>().count -= 1;
+    CardPanel.SetDialogVariableInt("count", rarity_card_list[rarity - 1][card_id]);
+
+    // let count = CardPanel.Data<PanelDataObject>().count;
+
+    // CardPanel.Data<PanelDataObject>().count += 1;
+    // CardPanel.SetDialogVariableInt("count", CardPanel.Data<PanelDataObject>().count);
+    UpdateComposeInfo()
+}
 const InitComposeButton = () => {
 
+    ButtonComposeMode1.enabled = false;
+    ButtonComposeMode2.enabled = false;
     ButtonComposeMode1.SetPanelEvent("onactivate", () => {
         SendCompoundCard(0);
     })
+
 
     ButtonComposeMode2.SetPanelEvent("onactivate", () => {
         SendCompoundCard(1);
@@ -167,13 +177,9 @@ const SendCompoundCard = (state: number = 1) => {
 let rarity_card_list: { [card_id: string]: number }[] = [];
 
 const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
-    // $.Msg(["Card ServiceInterface_GetPlayerCardList"])
+    $.Msg(["Card ServiceInterface_GetPlayerCardList"])
     let data = params.data;
-    // $.Msg(["data",data])
     let card = data.card;
-
-   
-
     // 清空合成表
     card_compose_list = [[], [], [], [], [], [], [], []]
     UpdateComposeInfo();
@@ -191,7 +197,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
     // 更新已登记的图鉴
     let pictuer_list = data.pictuer_list;
     let picture_card_list: string[] = []
-    const CardPanel = CardList.FindChildTraverse("3201")
+    // const CardPanel = CardList.FindChildTraverse("3201")
     for (let pic_id in pictuer_list) {
         let sub_card_list = Object.values(pictuer_list[pic_id]);
         for (let card_id of sub_card_list) {
@@ -222,47 +228,9 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
         CardPanel.Data<PanelDataObject>().count = card.number;
         CardPanel.Data<PanelDataObject>().has = 1;
 
-        // tooltips
-
-        // onact
         CardPanel.SetPanelEvent("onactivate", () => {
             // 当前卡片数量
-            if (CardPanel.Data<PanelDataObject>().count <= 0) {
-                // 无多余卡片
-                return
-            }
-            const l_rare = CardPanel.Data<PanelDataObject>().rarity as number;
-            const l_card_id = CardPanel.Data<PanelDataObject>().card_id as string;
-            // 同行为同品质
-            let index = 0;
-            for (let i = 0; i < MAX_COMPOSE_LIMIT; i++) {
-                let row_compose = card_compose_list[i];
-                // $.Msg(["I", i, row_compose])
-                if (row_compose.length < ROW_CARD_LIMIT) {
-                    // 当前卡片品质
-                    if (row_compose.length == 0) {
-                        CardPanel.Data<PanelDataObject>().count -= 1;
-                        CardPanel.SetDialogVariableInt("count", CardPanel.Data<PanelDataObject>().count);
-                        card_compose_list[i] = [l_card_id]
-                        break;
-                    } else {
-                        // 
-                        let f_id = row_compose[0];
-                        let f_data = GetPictureCardData(`${f_id}`);
-                        let f_rare = f_data.rarity;
-                        if (f_rare == l_rare) {
-                            CardPanel.Data<PanelDataObject>().count -= 1;
-                            CardPanel.SetDialogVariableInt("count", CardPanel.Data<PanelDataObject>().count);
-                            row_compose.push(l_card_id)
-                            break
-                        } else {
-                            continue
-                        }
-                    }
-                }
-
-            }
-            // $.Msg(["card_compose_list",card_compose_list])
+            AddCompositeCard(card_id)
             // 更新
             UpdateComposeInfo()
         })
@@ -274,17 +242,83 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
         for (let j = 0; j < card_list_count - 1 - i; j++) {
             let panel1 = CardList.GetChild(j) as Component_CardItem;
             let panel2 = CardList.GetChild(j + 1) as Component_CardItem;
+            // if (panel1.Data<PanelDataObject>().has < panel2.Data<PanelDataObject>().has) {
+            //     CardList.MoveChildBefore(panel2, panel1);
+            // }
+
+            if (panel1.Data<PanelDataObject>().rare < panel2.Data<PanelDataObject>().rare) {
+                CardList.MoveChildBefore(panel2, panel1);
+            }
+        }
+    }
+
+    for (let i = 0; i < card_list_count; i++) {
+        for (let j = 0; j < card_list_count - 1 - i; j++) {
+            let panel1 = CardList.GetChild(j) as Component_CardItem;
+            let panel2 = CardList.GetChild(j + 1) as Component_CardItem;
             if (panel1.Data<PanelDataObject>().has < panel2.Data<PanelDataObject>().has) {
                 CardList.MoveChildBefore(panel2, panel1);
             }
 
+            // if (panel1.Data<PanelDataObject>().rare < panel2.Data<PanelDataObject>().rare) {
+            //     CardList.MoveChildBefore(panel2, panel1);
+            // }
         }
     }
 
 
 
+
+
 }
 
+const AddCompositeCard = (card_id: string) => {
+    let card_data = _PictuerCardData[card_id as keyof typeof _PictuerCardData];
+    if (card_data == null) { return }
+    let rarity = card_data.rarity;
+    let count = rarity_card_list[rarity - 1][card_id] ?? 0;
+    if (count <= 0) { return }
+    // $.Msg(["count", count])
+    const CardPanel = CardList.FindChildTraverse(card_id) as Component_CardItem;
+    // if (CardPanel.Data<PanelDataObject>().count <= 0) {
+    //     // 无多余卡片
+    //     return
+    // }
+    // const l_rare = CardPanel.Data<PanelDataObject>().rarity as number;
+    // const l_card_id = CardPanel.Data<PanelDataObject>().card_id as string;
+    // 同行为同品质
+    let index = 0;
+    for (let i = 0; i < MAX_COMPOSE_LIMIT; i++) {
+        let row_compose = card_compose_list[i];
+        // $.Msg(["I", i, row_compose])
+        if (row_compose.length < ROW_CARD_LIMIT) {
+            // 当前卡片品质
+            if (row_compose.length == 0) {
+                rarity_card_list[rarity - 1][card_id] -= 1;
+                // CardPanel.Data<PanelDataObject>().count -= 1;
+                CardPanel.SetDialogVariableInt("count", rarity_card_list[rarity - 1][card_id]);
+                card_compose_list[i] = [card_id]
+                break;
+            } else {
+                // 
+                let f_id = row_compose[0];
+                let f_data = GetPictureCardData(`${f_id}`);
+                let f_rare = f_data.rarity;
+                if (f_rare == rarity) {
+                    rarity_card_list[rarity - 1][card_id] -= 1;
+                    // CardPanel.Data<PanelDataObject>().count -= 1;
+                    CardPanel.SetDialogVariableInt("count", rarity_card_list[rarity - 1][card_id]);
+                    // CardPanel.SetDialogVariableInt("count", CardPanel.Data<PanelDataObject>().count);
+                    row_compose.push(card_id)
+                    break
+                } else {
+                    continue
+                }
+            }
+        }
+    }
+
+}
 const UpdateComposeInfo = () => {
     // $.Msg(["card_compose_list", card_compose_list.length])
     // $.Msg(card_compose_list)
@@ -309,6 +343,16 @@ const UpdateComposeInfo = () => {
             let row_source = SourceList.GetChild(j) as ImagePanel;
             let card_id = row_compose[j];
             SetComposeItemInfo(row_source, card_id)
+        }
+    }
+
+    ButtonComposeMode1.enabled = false;
+    ButtonComposeMode2.enabled = false
+    for (let row_list of card_compose_list) {
+        if (row_list.length >= ROW_CARD_LIMIT) {
+            ButtonComposeMode1.enabled = true;
+            ButtonComposeMode2.enabled = true
+            break;
         }
     }
 
@@ -349,6 +393,7 @@ const InitCardList = () => {
         CardPanel.SetCardItem(card_id, true, true);
         CardPanel.SetDialogVariableInt("count", 0);
         CardPanel.Data<PanelDataObject>().count = 0;
+        CardPanel.Data<PanelDataObject>().rare = card_data.rarity;
         CardPanel.Data<PanelDataObject>().name = $.Localize("#custom_server_card_" + card_id)
 
         let special_compound = card_data.special_compound;
@@ -368,11 +413,73 @@ const InitCardList = () => {
      */
     OncClickAdd.SetPanelEvent("onactivate", () => {
         $.Msg(["OncClickAdd"])
-        $.Msg(special_card_list)
-        $.Msg(card_compose_list) 
-        for(let rare_list of rarity_card_list){
-            $.Msg(rare_list)
+        // $.Msg(special_card_list)
+        // $.Msg(card_compose_list)
+        for (let row_data of card_compose_list) {
+            $.Msg([" ========== RowAction ================"])
+            $.Msg(row_data)
+            let row_len = row_data.length
+            if (row_len >= ROW_CARD_LIMIT) {
+                $.Msg(["IsMax"])
+                continue
+            } else if (row_len == 0) {
+                $.Msg(["NewAdd"])
+                let add_state = false;
+                let rare = 0;
+                for (let rare_list of rarity_card_list) {
+                    // 当前品质非特殊且包含3张以上
+                    let valid_count = 0;
+                    for (let _id in rare_list) {
+                        let count = rare_list[_id];
+                        if (count > 0 && special_card_list.indexOf(_id) == -1) {
+                            valid_count += count;
+                        }
+                    }
+
+
+                    // $.Msg(["rare", rare, "valid_count", valid_count])
+                    rare += 1;
+                    if (valid_count >= 3) {
+                        for (let i = 0; i < ROW_CARD_LIMIT; i++) {
+                            for (let _id in rare_list) {
+                                let count = rare_list[_id];
+                                if (count > 0 && special_card_list.indexOf(_id) == -1) {
+                                    AddCompositeCard(_id);
+                                    break
+                                }
+                            }
+                        }
+
+                        add_state = true
+                        break
+                    }
+                }
+
+                $.Msg(["add_state", add_state])
+                // AddCompositeCard(card_id)
+                // 如果为0的情况则直接按照规则填充
+            } else {
+                $.Msg(["Buchong"])
+                let f_id = row_data[0];
+                let f_data = _PictuerCardData[f_id as keyof typeof _PictuerCardData]
+                let f_rare = f_data.rarity;
+                // 如果有则按照当前品质填充;
+                let rare_list = rarity_card_list[f_rare - 1];
+                for (let i = row_len; i < ROW_CARD_LIMIT; i++) {
+                    for (let _id in rare_list) {
+                        let count = rare_list[_id];
+                        if (count > 0 && special_card_list.indexOf(_id) == -1) {
+                            AddCompositeCard(_id)
+                        }
+                    }
+                }
+            }
+
         }
+        // for (let rare_list of rarity_card_list) {
+        //     $.Msg(rare_list)
+        // }
+        UpdateComposeInfo()
     })
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerCardList", GetPlayerCardList);
@@ -381,11 +488,9 @@ const InitCardList = () => {
         params: {}
     })
 
-
 }
-const SetCardAttribute = (card: Panel, rarity: number,) => {
 
-}
+
 
 (() => {
     Init();

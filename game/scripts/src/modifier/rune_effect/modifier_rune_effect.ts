@@ -317,14 +317,17 @@ export class modifier_rune_effect extends BaseModifier {
         // rune_114	无人之境	每过15秒，获得伤害加成在-50%~125%波动，持续15秒
         if (this._rune_object["rune_114"]) {
             this.timer_114 += 1;
-            if (this.timer_114 >= 15) {
+            let interval = this.Rune_Object("rune_114", "interval")
+            if (this.timer_114 >= interval) {
                 this.timer_114 = 0
-                let damage_bonus = RandomInt(-50, 125);
+                let min = this.Rune_Object("rune_114","min")
+                let max = this.Rune_Object("rune_114","max")
+                let damage_bonus = RandomInt(min, max);
                 GameRules.CustomAttribute.SetAttributeInKey(this.caster, "rune_114", {
                     "DamageBonusMul": {
                         "Base": damage_bonus
                     }
-                }, 15.1);
+                }, interval);
             }
         }
 

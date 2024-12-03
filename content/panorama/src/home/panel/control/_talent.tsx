@@ -264,13 +264,14 @@ const GameEventsSubscribe = () => {
                         talent_desc,
                         level,
                         row_hero_data.AbilityValues,
-                        null,
+                        row_hero_data.ObjectValues,
                         false
                     );
                     TalentNode.SetDialogVariable("AbilityDescription", description_txt)
 
                     // 找到子分支
                     const ChildNodeList = TalentNode.FindChildTraverse("ChildNodeList")!;
+
                     let subNode = HeroSubNodeObject[id];
                     ChildNodeList.RemoveAndDeleteChildren();
                     let sub_node_ids = []
@@ -304,6 +305,11 @@ const GameEventsSubscribe = () => {
                             HideCustomTooltip()
                         })
                     }
+
+                    let sub_count = ChildNodeList.GetChildCount();
+                    const ChildNodeHeader = TalentNode.FindChildTraverse("ChildNodeHeader")!;
+                    ChildNodeHeader.visible = sub_count > 0;
+
 
                 }
             }

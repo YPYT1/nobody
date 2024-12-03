@@ -63,8 +63,9 @@
 						<Panel class="AbilityDescription">
 							<Label text="{s:AbilityDescription}" html="true"/>
 						</Panel>
-						<Panel class="SplitLine" />
-						<Panel class="ChildNodeHeader">
+						
+						<Panel id="ChildNodeHeader">
+							<Panel class="SplitLine" />
 							<Label text="下级分支"/>
 							<Panel class="BranchLineAndPoint">
 								<Panel class="Point"/>

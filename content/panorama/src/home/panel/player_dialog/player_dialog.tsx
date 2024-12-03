@@ -162,7 +162,6 @@ export const Init = () => {
     GameEvents.Subscribe("RuneSystem_GetRuneSelectData", event => {
         let data = event.data;
         let time = data.time;
-        $.Msg(["data",data])
         LocalPlayerRuneDialog.Data<PanelDataObject>().over_time = time
         LocalPlayerRuneDialog.SetDialogVariableInt("refresh_count", data.player_refresh_count);
         refresh_count = data.player_refresh_count

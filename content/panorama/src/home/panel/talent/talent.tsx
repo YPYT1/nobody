@@ -90,11 +90,6 @@ export const GameEventsSubscribe = () => {
         // $.Msg(["HeroTalentSystem_ResetHeroTalent"])
         // @ts-ignore 
         const HeroID = Players.GetSelectedHeroID(Players.GetLocalPlayer()) as number
-        // let data = event.data;
-        $.Msg(["data", HeroID])
-        // let heroname = data.hero_name.replace("npc_dota_hero_", "");
-        // TalentContainer.AddClass("Show")
-
         $.Schedule(0.1, () => {
             CreateHeroTalent(HeroID);
         })
