@@ -194,7 +194,7 @@ export class RuneSystem extends UIEventRegisterClass {
         this.player_fate_data[player_id].push(fate_dota);
         this.player_challenge_number[player_id]++;
         //推送选择信息
-        this.RefreshShopList(player_id, {});
+        this.RefreshShopList(player_id);
         // SendCustomMessageToPlayer(
         //     PlayerResource.GetPlayer(player_id),
         //     "DOTA_UI_TEXT_fate_challenge_success"
@@ -225,7 +225,7 @@ export class RuneSystem extends UIEventRegisterClass {
             this.player_fate_data[index].push(fate_dota);
             this.player_challenge_number[index]++;
             //推送选择信息
-            this.RefreshShopList(index, {});
+            this.RefreshShopList(index);
         }
         // GameRules.CMsg.SendCommonMsgToPlayer(
         //     -1 as PlayerID,
@@ -279,9 +279,12 @@ export class RuneSystem extends UIEventRegisterClass {
     /**
      * 刷新符文物品
      */
-    RefreshShopList(player_id: PlayerID, params: any, callback?) {
-        if (this.player_fate_data[player_id][this.player_fate_data_index[player_id]].is_refresh == false) {
-            let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
+    RefreshShopList(player_id: PlayerID, is_sx = false) {
+        let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
+        if(is_sx == true && fate_data_info.is_refresh == true){
+            this.player_fate_data[player_id][this.player_fate_data_index[player_id]].is_refresh = false;
+        }
+        if (fate_data_info.is_refresh == false) {
             //修改已刷新状态
             fate_data_info.is_refresh = true;
             //最多几样物品
@@ -367,17 +370,19 @@ export class RuneSystem extends UIEventRegisterClass {
             fate_data_info.item_list = ret_data;
 
             //玩家倒计时
-
-            let count_down_time = GameRules.GetDOTATime(false,false) + this.count_down_time;
-            fate_data_info.time = count_down_time;
-            let hero = PlayerResource.GetSelectedHeroEntity(player_id);
-            hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + (this.player_fate_data_index[player_id] - 1) );
-            hero.SetContextThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + this.player_fate_data_index[player_id], () => {
-                GameRules.RuneSystem.TimeSelectRune( player_id );
-                return null;
-            }, this.count_down_time);
+            if(is_sx == false){
+                let hero = PlayerResource.GetSelectedHeroEntity(player_id);
+                let count_down_time = GameRules.GetDOTATime(false,false) + this.count_down_time;
+                fate_data_info.time = count_down_time;
+                hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + (this.player_fate_data_index[player_id] - 1) );
+                hero.SetContextThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + this.player_fate_data_index[player_id], () => {
+                    GameRules.RuneSystem.TimeSelectRune( player_id );
+                    return null;
+                }, this.count_down_time);
+            }
+            
         }
-        this.GetRuneSelectData(player_id, params);
+        this.GetRuneSelectData(player_id, {});
     }
 
     /**
@@ -418,79 +423,8 @@ export class RuneSystem extends UIEventRegisterClass {
     ConsumeRefreshCount(player_id: PlayerID, params: CGED["RuneSystem"]["ConsumeRefreshCount"]) {
         if (this.player_refresh_count[player_id] > 0) {
             let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
-            if (fate_data_info.is_refresh == true) { //
-                let fate_level = math.min(6, fate_data_info.level);
-                //最多几样物品
-                let amount = this.player_select_amount[player_id];
-                let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
-                let ret_data: { [key: string]: {
-                    name: string, 
-                    level: number, 
-                    level_index: number; 
-                    attr_list : {
-                        [ attr_id : string ] : number , //数值
-                    }
-                    };
-                } = {};
-                let shop_wp_list: string[] = [];
-                for (let index = 1; index <= amount; index++) {
-                    let rune_sub = this.player_select_rune_max[player_id] - this.check_rune_name[player_id].length;
-                    if (index > rune_sub) {
-                        //补全  
-                        // for (let adv_i = index + 1; adv_i <= amount; adv_i++) {
-                        // ret_data[adv_i] = { name : null , level : 1};
-                        // shop_wp_list.push(item_name);
-                        // }
-                        break;
-                    }
-                    let item_level = 1;
-                    let key_list = this.drop_list[player_id].key;
-                    let pro_list = this.drop_list[player_id].pro;
-                    let item_name = key_list[GetCommonProbability(pro_list)];
-                    //重复物品跳过
-                    if (shop_wp_list.includes(item_name)) {
-                        //跳过本次 
-                        index--;
-                        continue;
-                    }
-                    // 出现和已获取的道具 跳过
-                    if (this.check_rune_name[player_id].includes(item_name)) {
-                        //跳过本次 
-                        index--;
-                        continue;
-                    }
-                    let level_info = 1;
-                    let level_index = 0;
-                    if (RuneConfig[item_name as keyof typeof RuneConfig].is_item_level == 1) {
-                        level_index = GetCommonProbability(RuneConfig[item_name as keyof typeof RuneConfig].item_level_pro);
-                        level_info = RuneConfig[item_name as keyof typeof RuneConfig].item_level_section[level_index];
-                    }
-                    //属性附加 this.rune_attr_list
-                    let attr_count = 1;
-                    let ran_number = RandomInt(1 , 100);
-                    if(ran_number > 98){ // 99  100
-                        attr_count = 3;
-                    }else if(ran_number > 89){
-                        attr_count = 2;
-                    }
-                    let attr_list : {
-                        [ attr_id : string ] : number , //数值
-                    } = {};
-                    for (let a_i = 0; a_i < attr_count ; a_i ++) {
-                        let attr_id_index = RandomInt(0 , this.rune_attr_list.length - 1);
-                        let attr_id = this.rune_attr_list[attr_id_index];
-                        if(attr_list.hasOwnProperty(attr_id)){
-                            a_i--;
-                        }else{
-                            let attr_id_data = RuneAttrConfig[attr_id as keyof typeof RuneAttrConfig];
-                            let attr_id_number = this.ZoomNumber(attr_id_data.AttrSection , attr_id_data.Decimal);
-                            attr_list[attr_id] = attr_id_number;
-                        }
-                    }
-                    ret_data[index] = { name: item_name, level: level_info, level_index: level_index , attr_list : attr_list};
-                    shop_wp_list.push(item_name);
-                }
-                fate_data_info.item_list = ret_data;
+            if (fate_data_info.is_refresh == true) { 
+                this.RefreshShopList(player_id , true);
                 this.player_refresh_count[player_id]--;
                 this.GetRuneSelectData(player_id, params);
             } else {
@@ -544,10 +478,10 @@ export class RuneSystem extends UIEventRegisterClass {
             }
             let item_name = fate_data_info.item_list[index].name;
             level_index = fate_data_info.item_list[index].level_index;
-
-            GameRules.RuneSystem.GetRune(player_id , {"item_name" : item_name , select_type : fate_data_info.type } , level_index);
-            //根据选择的符文加载额外的属性
             let attr_list = fate_data_info.item_list[index].attr_list;
+            GameRules.RuneSystem.GetRune(player_id , {"item_name" : item_name , select_type : fate_data_info.type } , level_index ,attr_list);
+            //根据选择的符文加载额外的属性
+            
             GameRules.RuneSystem.GetSelectRuneAttr(player_id ,item_name ,  attr_list);
 
             GameRules.RuneSystem.player_fate_data_index[player_id]++;
@@ -558,7 +492,7 @@ export class RuneSystem extends UIEventRegisterClass {
 
             //刷新一次
             if (GameRules.RuneSystem.player_fate_data[player_id].length > GameRules.RuneSystem.player_fate_data_index[player_id]) {
-                GameRules.RuneSystem.RefreshShopList(player_id, {});
+                GameRules.RuneSystem.RefreshShopList(player_id);
             }
         } else {
             print("没有选择的天命");
@@ -586,7 +520,13 @@ export class RuneSystem extends UIEventRegisterClass {
     /**
      * 获取符文
      */
-    GetRune(player_id: PlayerID, params: { item_name: string; level?: number; charges?: number; item_index?: number; select_type? : number }, level_index: number = 0) {
+    GetRune(player_id: PlayerID , 
+        params: { item_name: string; level?: number; charges?: number; item_index?: number; select_type? : number }, 
+        level_index: number = 0 ,
+        attr_list : {
+            [attr_id: string]: number,
+        } = {}
+    ) {
         let item_name = params.item_name as keyof typeof RuneConfig;
         let rune_index = 0;
         for (let index = 1; index <= 99; index++) {
@@ -618,7 +558,9 @@ export class RuneSystem extends UIEventRegisterClass {
             is_delete: false,
             is_more_level: is_more_level,
             is_level_up: is_level_up,
-            is_level_max: is_level_max
+            is_level_max: is_level_max,
+            attr_list : attr_list,
+            
         };
         //符文等级信息
         hHero.rune_level_index[item_name] = level_index;
@@ -1112,7 +1054,7 @@ export class RuneSystem extends UIEventRegisterClass {
             let playerid = tonumber(args[2]) as PlayerID ?? -1;
             GameRules.RuneSystem.GetRune(playerid != -1 ? playerid : player_id, {
                 item_name: "rune_" + select
-            }, level_index);
+            }, level_index , {});
             
         } else if (cmd == "-fwxz") { //获取一个符文选择机会
             let count = tonumber(args[0]) ?? 1;

@@ -1,4 +1,3 @@
-
 declare interface CustomGameEventDeclarations {
     //技能选择功能
     NewArmsEvolution_GetArmssSelectData : {
@@ -464,6 +463,29 @@ declare interface CGEDGetEquipListInfo {
     lk? : number , //装备锁
 }
 
+/**
+ * 魂石服务器数据
+ */
+declare interface CGEDGetPuzzleList {
+    id ? : string, //唯一id 用于服务器修改数据
+    i : { [ index : string ] : //部位下标
+        {
+            d : CGEDGetPuzzleListData[]
+            c : { //总消耗 //用于删除返回
+                [ item_id : number] : number , //物品数量key
+            }
+        }
+    }
+}
+/**
+ * 魂石数据
+ */
+declare interface CGEDGetPuzzleListData {
+    k: string, //属性键
+    v: number, //属性数值
+    l:number ,//拼图等级
+}
+
 declare interface CGEDEquipConfigInfo {
     hero: {
         [heroid: string]: string[][],
@@ -617,5 +639,8 @@ declare interface CGEDPlayerRuneData {
     is_more_level: boolean, //是否有多个等级
     is_level_up: boolean, //是否可以升级
     is_level_max: boolean, //是否满级
+    attr_list :  {
+        [ attr_id : string ] : number , //数值
+    }
 }
 
