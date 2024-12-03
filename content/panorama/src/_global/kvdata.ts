@@ -10,7 +10,7 @@ import { default as PictuerFetterAbility } from "../json/config/server/picture/p
 import { default as AttributeConst } from "../json/config/game/attribute_const.json";
 
 
-import { default as MysteriousShopConfig } from "../json/config/game/mysterious_shop_config.json";
+import { default as MysteriousShopConfig } from "../json/config/game/shop/mysterious_shop_config.json";
 
 
 const KvData = {
