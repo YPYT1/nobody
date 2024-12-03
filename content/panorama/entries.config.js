@@ -35,7 +35,7 @@ const GetImportPathFileList = (path_dir) => {
 
 const ImportDashBoard = GetImportPathFileList("dashboard");
 const ImportHome = GetImportPathFileList("home");
-const ImportComponents = GetImportPathFileList("components");
+// const ImportComponents = GetImportPathFileList("components");
 const ImportTooltip = GetImportPathFileList("tooltip");
 
 const entries = [
@@ -62,7 +62,7 @@ const entries = [
     // tooltips
     ...ImportTooltip,
     ...ImportHome,
-    ...ImportComponents,
+    // ...ImportComponents,
     ...ImportDashBoard,
 ];
 
