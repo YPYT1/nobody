@@ -76,6 +76,12 @@ interface CDOTA_BaseNPC {
     prop_count: { [key in PropName]?: number } // 这个修改成数量
 
     rune_trigger_count: { [key in RuneName]?: number }; //值是触发子次数
+    /**
+     * 数据记录
+     */
+    pictuer_ability_name: { [key in PictuerFetterAbilityName]?: number }; // 图鉴技能
+
+    
 
     /** 饰品原始模型 */
     wrarable_model: string;

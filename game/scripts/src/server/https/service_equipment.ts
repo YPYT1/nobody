@@ -312,7 +312,7 @@ export class ServiceEquipment extends UIEventRegisterClass {
             let wp_list: string[] = [];
 
             let NEW_Main_Attr_SEAEP: number[] = []; //概率
-            let NEW_Main_Attr_SEAEKEY: string[] = [];   
+            let NEW_Main_Attr_SEAEKEY: string[] = [];
             //主词条融合 追加数据
             if (main_attr_random_key.includes(",")) {
                 let main_attr_random_key_list = main_attr_random_key.split(",");

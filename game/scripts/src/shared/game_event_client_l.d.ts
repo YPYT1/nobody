@@ -239,6 +239,12 @@ declare interface CustomGameEventDeclarations {
             player_life : number
         }
     }
+    /**
+     * 玩家魂石装备
+     */
+    ServiceSoul_GetPlayerServerSoulData : {
+        data: CGEDGetSoulList
+    }
 
     GameInformation_GetPlayerDieData : {
         data: {
@@ -466,11 +472,11 @@ declare interface CGEDGetEquipListInfo {
 /**
  * 魂石服务器数据
  */
-declare interface CGEDGetPuzzleList {
+declare interface CGEDGetSoulList {
     id ? : string, //唯一id 用于服务器修改数据
     i : { [ index : string ] : //部位下标
         {
-            d : CGEDGetPuzzleListData[]
+            d : CGEDGetSoulListData[]
             c : { //总消耗 //用于删除返回
                 [ item_id : number] : number , //物品数量key
             }
@@ -480,10 +486,19 @@ declare interface CGEDGetPuzzleList {
 /**
  * 魂石数据
  */
-declare interface CGEDGetPuzzleListData {
+declare interface CGEDGetSoulListData {
     k: string, //属性键
     v: number, //属性数值
     l:number ,//拼图等级
+}
+
+/**
+ * 魂石升级模板
+ */
+declare interface CGEDGetSoulUpDropUse {
+    consume : string, //主要消耗
+    items : string[], //额外物品列表
+    pro :number ,//概率
 }
 
 declare interface CGEDEquipConfigInfo {

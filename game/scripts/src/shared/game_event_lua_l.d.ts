@@ -270,9 +270,31 @@ declare interface CGED {
             equip_type: number, // 装备位置 
             hero_id : string;// 英雄
         };
-
         //获取玩家所有装备
         GetEquipList : {
+
+        }
+    }
+
+    ServiceSoul : {
+        //对具体部位创建
+        SoulAddOfField : {
+            box_type : number ,//部位  1 武器
+            key : string , //魂石key
+        }
+        //升级/降级
+        SoulIntensify : {
+            box_type : number ,//部位  1 武器
+            index : number ,// 位置
+            type : number , // 1升级 2降级
+        }
+        //魂石删除
+        SoulDelete: {
+            box_type : number ,//部位  1 武器
+            index : number ,// 位置
+        }
+        //获取魂石数据
+        GetPlayerServerSoulData : {
 
         }
     }

@@ -28,6 +28,7 @@ import { MissionSystem } from './ingame/mission/mission_system';
 import { Altar } from './additional/altar';
 import { PlayerAttribute } from './ingame/hero_extend/player_attribute';
 import { ServiceTalent } from '../server/https/service_talent';
+import { ServiceSoul } from '../server/https/service_soul';
 
 declare global {
 
@@ -62,6 +63,7 @@ declare global {
         ServiceInterface: ServiceInterface;
         ServiceEquipment: ServiceEquipment;
         ServiceTalent : ServiceTalent;
+        ServiceSoul : ServiceSoul;
 
         WarningMarker: WarningMarker;
 
@@ -111,6 +113,7 @@ export class GameEvent {
             GameRules.ServiceInterface = new ServiceInterface();
             GameRules.ServiceEquipment = new ServiceEquipment();
             GameRules.ServiceTalent = new ServiceTalent();
+            GameRules.ServiceSoul = new ServiceSoul();
             GameRules.GameInformation = new GameInformation();
             GameRules.WarningMarker = new WarningMarker();
             GameRules.HeroTalentSystem = new HeroTalentSystem();
@@ -169,6 +172,10 @@ export class GameEvent {
             GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id, hUnit);
             //初始化神秘商店
             GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
+
+
+            //初始化数据存储相关
+            hUnit.pictuer_ability_name = {};
             
             let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
             hUnit.SetOrigin(vect)

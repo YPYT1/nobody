@@ -240,7 +240,7 @@ export class ServiceData extends UIEventRegisterClass {
         for (let index = 0; index < 6; index++) {
             if(talent_data.hasOwnProperty(index)){
                 for (const key in talent_data[index].k) {
-                    if(talent_data[index].k[key].uc > 0 ){
+                    if(talent_data[index].k[key].uc > 0){
                         let attr = ServerTalentData[key as keyof typeof ServerTalentData].ObjectValues as CustomAttributeTableType;
                         for (const key1 in attr) {
                             for (const key2 in attr[key1]) {
@@ -261,8 +261,28 @@ export class ServiceData extends UIEventRegisterClass {
         //加载图鉴属性
         let pictuer_count =  GameRules.ServiceData.server_player_config_pictuer_fetter[player_id][0];
         for (const count_id of pictuer_count) {
-            let length = GameRules.ServiceData.server_pictuer_fetter_list[player_id][count_id].length;  
+            let length = GameRules.ServiceData.server_pictuer_fetter_list[player_id][count_id].length;
+            //属性值
             let ListValues = PictuerFetterConfig[count_id as keyof typeof PictuerFetterConfig].ListValues as { [key: string]: CustomAttributeTableType };
+            //消耗
+            let consume = PictuerFetterConfig[count_id as keyof typeof PictuerFetterConfig].consume;
+            if(length == consume){
+                let ability_id_list = PictuerFetterConfig[count_id as keyof typeof PictuerFetterConfig].ability_id;
+                for (const element of ability_id_list) {
+                    if(element != "null"){
+                        let le = element.split("_");
+                        let ab_key = tonumber(le[0]);
+                        let ab_level = tonumber(le[1]);
+                        if(selfhHero.pictuer_ability_name.hasOwnProperty(ab_key)){
+                            if(selfhHero.pictuer_ability_name[ab_key] < ab_level){
+                                selfhHero.pictuer_ability_name[ab_key] = ab_level;
+                            }
+                        }else{
+                            selfhHero.pictuer_ability_name[ab_key] = ab_level;
+                        }
+                    }
+                }
+            }
             for (let index = 1; index <= length; index++) {
                 let attr = ListValues[index.toString()];
                 for (const key1 in attr) {
@@ -280,6 +300,8 @@ export class ServiceData extends UIEventRegisterClass {
             }
         }
         //加载装备属性
+
+        //加载魂石属性
 
         //商城道具属性
         GameRules.CustomAttribute.SetAttributeInKey(selfhHero , "attr_server_" + player_id , attr_count)
@@ -316,7 +338,6 @@ export class ServiceData extends UIEventRegisterClass {
             }
         }
     }
-
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         if(cmd == "!SDI"){
             this.Init();
@@ -329,7 +350,7 @@ export class ServiceData extends UIEventRegisterClass {
             let count = tonumber(args[0] ?? "50")
             for (let index = 1; index <= count; index++) {
                 let i = RandomInt( 0 , CardDataList.length - 1);
-                let tos = 0 ;
+                let tos = 0;
                 if(args[1]){
                     tos = tonumber(args[1]);
                 }else{
@@ -361,6 +382,39 @@ export class ServiceData extends UIEventRegisterClass {
             let count = args[1];
             this.AddPackageItem(player_id , "2232"+msg+count, tonumber(msg) , "" , tonumber(count));
             GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+        }
+        if(cmd == "!PDA"){
+            let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
+            let count_id = args[0] ?? "1"; 
+            let ability_id_list = PictuerFetterConfig[count_id as keyof typeof PictuerFetterConfig].ability_id;
+            for (const element of ability_id_list) {
+                if(element != "null"){
+                    let le = element.split("_");
+                    let ab_key = tonumber(le[0]);
+                    let ab_level = tonumber(le[1]);
+                    if(selfhHero.pictuer_ability_name.hasOwnProperty(ab_key)){
+                        if(selfhHero.pictuer_ability_name[ab_key] < ab_level){
+                            selfhHero.pictuer_ability_name[ab_key] = ab_level;
+                        }
+                    }else{
+                        selfhHero.pictuer_ability_name[ab_key] = ab_level;
+                    }
+                }
+            }
+        }
+        if(cmd == "!PFDA"){
+            let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
+            let aid = args[0] ?? "1"; 
+            let level = args[0] ?? "1"; 
+            let ab_key = tonumber(aid);
+            let ab_level = tonumber(level);
+            if(selfhHero.pictuer_ability_name.hasOwnProperty(ab_key)){
+                if(selfhHero.pictuer_ability_name[ab_key] < ab_level){
+                    selfhHero.pictuer_ability_name[ab_key] = ab_level;
+                }
+            }else{
+                selfhHero.pictuer_ability_name[ab_key] = ab_level;
+            }
         }
     }
 }

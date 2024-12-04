@@ -1,0 +1,391 @@
+/**
+ *  存档装备服务接口
+ */
+import { reloadable } from '../../utils/tstl-utils';
+
+import { UIEventRegisterClass } from '../../modules/class_extends/ui_event_register_class';
+
+import * as ServerSoulAttr from "../../json/config/server/soul/server_soul_attr.json";
+
+import * as ServerSoulLevelConfig from "../../json/config/server/soul/server_soul_level_config.json";
+
+import * as ServerSoulConfig from "../../json/config/server/soul/server_soul_config.json";
+
+@reloadable
+export class ServiceSoul extends UIEventRegisterClass {
+    
+    //玩家魂石配置
+    soul_list : CGEDGetSoulList[] = [];
+    
+    player_count : number = 4;
+    //部位数量
+    player_box_type_count : number = 6;
+    //魂石最大镶嵌数量
+    player_xq_count : number = 6;
+    //降级消耗
+    
+    //魂石数据模板 type对应key
+    box_type_data : {
+        [box_type : number ] : string[]; //类型 - 表id
+    }  = {};
+
+    level_u_d_config : {
+        up : { [level : number] : string } ,
+        drop : { [level : number] : string } ,
+    } = {
+        up : {},
+        drop : {},
+    }
+    constructor() {
+        //初始化
+        super("ServiceSoul" , true);
+
+        for (let index = 0; index < this.player_count; index++) {
+            this.soul_list.push({
+                i : {}
+            })
+            for (let c_i = 1; c_i <= this.player_box_type_count; c_i++) {
+                this.soul_list[index].i[c_i] = {
+                    "c" : {},
+                    "d" : [],
+                }
+            }
+        }
+        for (const key in ServerSoulAttr) {
+            let spa_data = ServerSoulAttr[key as keyof typeof ServerSoulAttr];
+            if(!this.box_type_data.hasOwnProperty(spa_data.box_type)){
+                this.box_type_data[spa_data.box_type] = [];
+            }
+            this.box_type_data[spa_data.box_type].push(key);
+        }
+
+        for (const key in ServerSoulConfig) {
+            let data = ServerSoulConfig[key as keyof typeof ServerSoulConfig];
+            if(data.type == 1){
+                this.level_u_d_config.up[data.level] = key;
+            }else{
+                this.level_u_d_config.drop[data.level] = key;
+            }
+        }
+    }
+
+    //加密
+    EquipTDecode(t_object: object): string {
+        let ret_string = "";
+        ret_string = JSON.encode(t_object);
+        return ret_string;
+    }
+
+    //解密
+    EquipTEncode(EquipString: ServerEquip): CGEDGetEquipListInfo {
+        let object: CGEDGetEquipListInfo = {
+            id: EquipString.id , //唯一id
+            n: EquipString.n , //装备key
+            r: EquipString.r , //稀有度 0 1 2 3 4 => C B A S SS
+            zl: EquipString.zl , //装备等级
+            t : EquipString.t , //装备部位
+            i : EquipString.i , //强化等级
+            ma: [],//主attr属性,
+            pa: [],//拼图属性,
+            s: [] ,//套装
+            is_new : 0, //没有就是老的  有就是新装备
+            lk  : 0 , //装备锁
+        };
+        return object;
+    }
+    /**
+     * 魂石添加方法
+     * @param p_count 
+     * @param puzzle_attr_random_key 
+     * @returns 
+     */
+    SoulAddOfField(player_id: PlayerID, params: CGED["ServiceSoul"]["SoulAddOfField"]){
+        let box_type = params.box_type;
+        let key = params.key;
+        if(box_type > 0 && box_type <= this.player_box_type_count){
+            if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
+                let r_data = CustomDeepCopy(this.soul_list[player_id].i[box_type].d) as CGEDGetSoulListData[];
+                let r_data_key_list = Object.keys(r_data);
+                if(r_data_key_list.length < this.player_xq_count){
+                    if(!r_data_key_list.includes(key)){
+                        //获取数据...
+                        let ret = this.SoulDataUp(key , 0 , 0);
+                        if(ret.code == true){
+                            let Sj_config_key = this.level_u_d_config.up[0];
+                            let need_item = this.GetUpItem(Sj_config_key , 1);
+                            for (const need_item_key in need_item) {
+                                let need_item_id = tonumber(need_item_key);
+                                let need_item_count = need_item[need_item_id];
+                                let ret_ver = GameRules.ServiceData.VerifyPackageItem(player_id , need_item_id , need_item_count);
+                                if(ret_ver.is_verify){
+                                    GameRules.ServiceData.DeletePackageItem(player_id , ret_ver.index , need_item_count);
+                                }else{
+                                    GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:材料不足...")
+                                    return ;
+                                }
+                            }
+                            this.soul_list[player_id].i[box_type].d.push(ret.data);
+                                //更新魂石数据
+                            this.GetPlayerServerSoulData( player_id , {})
+                            //更新背包数据
+                            GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {} );
+                        }else{
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败...")
+                        }
+                    }else{
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:已添加相同属性,请进行升级...")
+                    }
+                }else{
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:当前部位超过最大镶嵌数量...")
+                }
+            }else{
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:配置错误...")    
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:部位错误...")
+        }
+    }
+
+    /**
+     * 魂石升级/降级方法
+     * @param p_count 
+     * @param puzzle_attr_random_key 
+     * @returns 
+     */
+    SoulIntensify(player_id: PlayerID, params: CGED["ServiceSoul"]["SoulIntensify"]){
+        let box_type = params.box_type;
+        let index = params.index;
+        let type  = params.type;
+        if(box_type > 0 && box_type <= this.player_box_type_count){
+            if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
+                if(this.soul_list[player_id].i[box_type].d.hasOwnProperty(index)){
+                    let r_data = CustomDeepCopy(this.soul_list[player_id].i[box_type].d[index]) as CGEDGetSoulListData;
+                    let level = r_data.l;
+                    let value = r_data.v;
+                    let key = r_data.k;
+                    let ret : { code : boolean , data : CGEDGetSoulListData} = {
+                        code : false , 
+                        data : {
+                            k : key, //属性键
+                            v : value, //属性数值
+                            l : level ,//拼图等级
+                        },
+                    };
+                    if(type = 1){
+                        if(level < 20){
+                           //获取数据...
+                            ret = this.SoulDataUp(key , level , value); 
+                        }else{
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:超过最大等级")
+                            return
+                        }
+                    }else{
+                        if(level > 0){
+                            //获取数据...
+                            ret = this.SoulDataUp(key , level , value);
+                        }else{
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:不能低于1级")
+                            return
+                        }
+                    }
+                    if(ret.code == true){
+                        let Sj_config_key = this.level_u_d_config.up[0];
+                        let need_item = this.GetUpItem(Sj_config_key , 1);
+                        for (const need_item_key in need_item) {
+                            let need_item_id = tonumber(need_item_key);
+                            let need_item_count = need_item[need_item_id];
+                            let ret_ver = GameRules.ServiceData.VerifyPackageItem(player_id , need_item_id , need_item_count);
+                            if(ret_ver.is_verify){
+                                GameRules.ServiceData.DeletePackageItem(player_id , ret_ver.index , need_item_count);
+                            }else{
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:材料不足...")
+                                return ;
+                            }
+                        }
+                        this.soul_list[player_id].i[box_type].d[index] = ret.data;
+                        //更新魂石数据
+                        this.GetPlayerServerSoulData( player_id , {})
+                        //更新背包数据
+                        GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {} );
+                    }else{
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败...")
+                    }
+                }else{
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:参数错误...")
+                }
+            }else{
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:配置错误...")    
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:部位错误...")
+        }
+    }
+    /**
+     * 魂石属性创建/升级
+     */
+    /**
+     * 魂石属性创建/升级
+     * @param key 魂石属性key
+     * @param level 魂石等级
+     * @param num 魂石属性值
+     */
+    SoulDataUp( key : string , level : number = 0 , value : number = 0) : { code : boolean , data : CGEDGetSoulListData}{
+        let ret  : { code : boolean , data : CGEDGetSoulListData} = {
+            code : true,
+            data : {
+                "k" : key,
+                "l" : 0 ,
+                "v" : 0 ,
+            }
+        }
+        let SoulAttr_data = ServerSoulAttr[key as keyof typeof ServerSoulAttr];
+        let float = SoulAttr_data.float;
+        let up_value = SoulAttr_data.up_value;
+        let value_per = 0;
+        let value_max = 0;
+        let level_max = SoulAttr_data.level_max;
+        if((level + 1) >= level_max){
+            return ret;
+        }
+        if(level >= 15){
+            value_per = SoulAttr_data.value_per_16_20;
+            value_max = SoulAttr_data.value_max_20;
+        }else if(level >= 10){
+            value_per = SoulAttr_data.value_per_11_15;
+            value_max = SoulAttr_data.value_max_15;
+        }else if(level >= 5){
+            value_per = SoulAttr_data.value_per_6_10;
+            value_max = SoulAttr_data.value_max_10;
+        }else{
+            value_per = SoulAttr_data.value_per_1_5;
+            value_max = SoulAttr_data.value_max_5;
+        }
+        let per = 1 + (value_per * level / 100);
+        
+        let newSection = this.SectionPer(up_value , float , per);
+        let add_value = this.ZoomNumber(newSection , float)
+        if((value + add_value ) >= value_max){
+
+            ret.data.v = value_max;
+        }else{
+            ret.data.v += add_value;
+        }
+        ret.data.l++;
+
+        return ret;
+    }
+
+    /**
+     * 区间值百分比提升方法
+     */
+    SectionPer(value_scope : string , float : number , double : number) : string{
+        let ret_scope = value_scope;
+        let value_list = value_scope.split("-");
+
+        let value_min = tonumber(value_list[0]);
+        let value_max = tonumber(value_list[1]);
+        //等比放大
+        if (float > 0) {
+            for (let index = 0; index < float; index++) {
+                value_min = value_min * 10;
+                value_max = value_max * 10;
+            }
+        }
+        value_min = math.floor(value_min * double / 100);
+        value_max = math.floor(value_max * double / 100);
+        //等比缩小
+        if (float > 0) {
+            for (let index = 0; index < float; index++) {
+                value_min = value_min / 10;
+                value_max = value_max / 10;
+            }
+        }
+        ret_scope = tostring(value_min) + "-" + tostring(value_max);
+        return ret_scope ;
+    }
+
+    /**
+     * 数字等比放大缩小功能
+     * @param value_scope 
+     * @param float 
+     */
+    ZoomNumber(value_scope : string , float : number) :  number{
+        let attr_value = 0;
+        let value_list = value_scope.split("-");
+        let value_min = tonumber(value_list[0]);
+        let value_max = tonumber(value_list[1]);
+        //等比放大
+        if (float > 0) {
+            for (let index = 0; index < float; index++) {
+                value_min = value_min * 10;
+                value_max = value_max * 10;
+            }
+        }
+        //计算出结果
+        attr_value = value_min + RandomInt(0, (value_max - value_min));
+        //等比缩小
+        if (float > 0) {
+            for (let index = 0; index < float; index++) {
+                attr_value = attr_value / 10;
+            }
+        }
+        return attr_value;
+    }
+    /**
+     * 获取物品升降级物品
+     * @param key  //使用的key
+     * @param consume  //主要消耗
+     * @param items  //额外物品列表
+     * @param type  //升级还是降级 1 升级 2降级
+     */
+    GetUpItem( key : string ,  type : number ): {
+        [item_id : number ]  : number,
+    }{
+        let ret : {
+            [item_id : number ]  : number,
+        } = {};
+        let SoulUpData = ServerSoulConfig[key as keyof typeof ServerSoulConfig];
+        let consume = SoulUpData.consume;
+        let items = SoulUpData.items;
+        
+        if(consume != "null"){
+            let con_data = consume.split("_");
+            if(type == 1){
+                let item_id_list = ServerSoulAttr[key as keyof typeof ServerSoulAttr].item_id;
+                let section = tonumber(con_data[1]) - 1;
+                let get_item_id = item_id_list[section];
+                ret[get_item_id] = tonumber(con_data[1]);    
+            }else{
+                ret[tonumber(con_data[0])] = tonumber(con_data[1]);
+            }
+        }
+        for (const element of items) {
+            if(element != "null"){
+                let item_data = element.split("_");
+                let item_id = tonumber(item_data[0]);
+                let item_count = tonumber(item_data[1]);
+                if(ret.hasOwnProperty(item_id)){
+                    ret[item_id] += item_count;
+                }else{
+                    ret[item_id] = item_count;
+                }
+            }
+        }
+        return ret;
+    } 
+    /**
+     * 获取魂石配置
+     * @param player_id 
+     * @param params 
+     */
+    GetPlayerServerSoulData(player_id: PlayerID, params:  CGED["ServiceSoul"]["GetPlayerServerSoulData"]){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceSoul_GetPlayerServerSoulData",
+            {
+                data: this.soul_list[player_id]
+            }
+        );
+    }
+
+}
