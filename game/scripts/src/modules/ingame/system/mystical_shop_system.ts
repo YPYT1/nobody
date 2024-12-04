@@ -496,7 +496,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (amount_count > amount_max) {
                 break;
             }
-            print("amount_count :" , amount_count);
             //获取具体物品
             let item_index = GetCommonProbability(this.item_level_probability_group[player_id][this.player_shop_level[player_id]]);
             let item_name = this.item_level_group[item_index];
@@ -747,6 +746,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         }
         //添加到玩家英雄属性中
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        
         //增加玩家身上的计数器
         if (hHero.prop_count.hasOwnProperty(prop_name)) {
             hHero.prop_count[prop_name] ++;
@@ -785,14 +785,19 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         let attr_key = "";
         //根据类型来设置key
         if(ItemData.type == 1){
-            attr_key = "item_attr_" + prop_name + GameRules.GetDOTATime(false , false);
+            attr_key = "item_attr_" + prop_name + "_" + GameRules.GetDOTATime(false , false);
         }else{
-            attr_key = "item_attr_" + prop_name;
+            attr_key = "item_attr_" + prop_name + "_";
         }
         for (const key in ObjectValues) {
             for (const key_base in ObjectValues[key]) {
-                let beilv = ItemData.star_attr_pro[rarity - 1];
-                ObjectValues[key][key_base] = ObjectValues[key][key_base] * beilv / 100;
+                if(ItemData.type == 2){
+                    let beilv = ItemData.star_attr_pro[rarity - 1];
+                    ObjectValues[key][key_base] = ObjectValues[key][key_base] * beilv / 100;
+                }else{
+                    ObjectValues[key][key_base] = ObjectValues[key][key_base];
+                }
+                
             }
         }
         // print("SetAttributeInKey",attr_key)
@@ -1174,11 +1179,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         T2 extends typeof MysteriousShopConfig[Key],
     >(prop_name: Key, key: keyof T2["AbilityValues"], level_index: number = 0) {
         let value_key = key as string;
-
         //因为只有 1级 所以全部返回 0 的下标
-        return this.prop_ability_values[prop_name][value_key][0];
-
-
+        // return this.prop_ability_values[prop_name][value_key][0];
         let length = this.prop_ability_values[prop_name][value_key].length;
         if (length > 0) {
             if (level_index < 0) {
@@ -1190,7 +1192,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             }
         } else {
             return this.prop_ability_values[prop_name][value_key][level_index];
-
         }
     }
     /**
@@ -1209,7 +1210,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (prop_count == null) {
                 return 0
             } else {
-                return this.GetTKV(prop_name, ability_key, 0) 
+                return this.GetTKV(prop_name, ability_key, prop_count) 
             }
         } else {
             // let player_id = hUnit.GetPlayerOwnerID();
@@ -1257,7 +1258,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         T2 extends typeof MysteriousShopConfig[Key],
     >(hUnit: CDOTA_BaseNPC, prop_name: Key, ability_key: keyof T2["AbilityValues"]) {
         let prop_count = hUnit.prop_count[prop_name] ?? 0
-        return this.GetTKV(prop_name, ability_key, 0);
+        return this.GetTKV(prop_name, ability_key, prop_count);
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
