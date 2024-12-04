@@ -9,6 +9,7 @@ import * as ServerSkillful from "../../json/config/server/hero/server_skillful.j
 
 import * as PictuerCardData from "../../json/config/server/picture/pictuer_card_data.json";
 import * as PictuerFetterConfig from "../../json/config/server/picture/pictuer_fetter_config.json";
+import * as PictuerFetterAbility from "../../json/config/server/picture/pictuer_fetter_ability.json";
 
 import  * as ServerItemList  from "../../json/config/server/item/server_item_list.json";
 
@@ -17,6 +18,13 @@ export class ServiceInterface extends UIEventRegisterClass{
     
     //玩家地图等级
     player_map_level : number[] = [ 100 , 100 , 100 , 100 , 100 , 100 ];
+
+
+    fetter_ability_values: {
+        [name: string]: {
+            [key: string]: number[];
+        };
+    } = {};
 
     constructor() {
         super("ServiceInterface" , true)
@@ -32,7 +40,21 @@ export class ServiceInterface extends UIEventRegisterClass{
                 6 : 3
             })
         }
-        
+        //初始化技能数据
+        for (let i_key in PictuerFetterAbility) {
+            let data = PictuerFetterAbility[i_key as keyof typeof PictuerFetterAbility];
+            this.fetter_ability_values[i_key] = {};
+            //技能数组
+            for (const A_key in data.AbilityValues) {
+                let str = tostring(data.AbilityValues[A_key]);
+                let strlist = str.split(" ");
+                let numlist: number[] = [];
+                for (let value of strlist) {
+                    numlist.push(tonumber(value));
+                }
+                this.fetter_ability_values[i_key][A_key] = numlist;
+            }
+        }
     }
     //玩家对应英雄等级
     player_hero_star : {
@@ -759,6 +781,67 @@ export class ServiceInterface extends UIEventRegisterClass{
         
         if(Object.keys(send_obj).length > 0){
             GameRules.ArchiveService.PostLuaLog(player_id , send_obj);
+        }
+        
+    }
+
+    /**
+     * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)
+     * @param name 符文名
+     * @param key 技能键
+     * @param level_index 等级下标
+     */
+    GetTKVOfFa<
+        Key extends keyof typeof PictuerFetterAbility,
+        T2 extends typeof PictuerFetterAbility[Key],
+    >(prop_name: Key, key: keyof T2["AbilityValues"], level_index: number = 0) {
+        let value_key = key as string;
+        //因为只有 1级 所以全部返回 0 的下标
+        // return this.prop_ability_values[prop_name][value_key][0];
+        let length = this.fetter_ability_values[prop_name][value_key].length;
+        if (length > 0) {
+            if (level_index < 0) {
+                return this.fetter_ability_values[prop_name][value_key][0];
+            } else if ((level_index + 1) > length) {
+                return this.fetter_ability_values[prop_name][value_key][length - 1];
+            } else {
+                return this.fetter_ability_values[prop_name][value_key][level_index];
+            }
+        } else {
+            return this.fetter_ability_values[prop_name][value_key][level_index];
+        }
+    }
+    /**
+     * 图鉴Ability数据获取 ----> GameRules.ServiceInterface.GetKvOfUnit
+     * @param hUnit // 英雄实体
+     * @param prop_name // 图鉴
+     * @param ability_key //道具ability key
+     * @returns 
+     */
+    GetKvOfUnit<
+        Key extends keyof typeof PictuerFetterAbility,
+        T2 extends typeof PictuerFetterAbility[Key],
+    >(hUnit: CDOTA_BaseNPC, prop_name: Key, ability_key: keyof T2["AbilityValues"]) {
+        if (IsServer()) {
+            let prop_count = hUnit.pictuer_ability_name[prop_name];
+            if (prop_count == null) {
+                return 0
+            } else {
+                return this.GetTKVOfFa(prop_name, ability_key, prop_count) 
+            }
+        } else {
+            // let player_id = hUnit.GetPlayerOwnerID();
+            // let netdata = CustomNetTables.GetTableValue("hero_rune",`${player_id}`);
+            // if(netdata && netdata[index_key]){
+            //     let level_index  = netdata[index_key].uc;
+            //     if(level_index > 0){
+            //         return this.GetTKV(rune_name, ability_key, level_index - 1)
+            //     } else {
+            //         return 0
+            //     }
+            // } else {
+            //     return 0
+            // }
         }
     }
 
