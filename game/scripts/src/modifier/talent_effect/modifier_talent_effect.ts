@@ -61,10 +61,13 @@ export class modifier_talent_effect extends BaseModifier {
 
     }
 
-    OnBeInjured(params: ApplyCustomDamageOptions) {
+    OnBeInjured(params: ApplyCustomDamageOptions):boolean {
         if (this.link_mdf) {
-            this.link_mdf.OnBeInjured(params)
+            if(this.link_mdf.OnBeInjured(params)) {
+                return true
+            }
         }
+        return false
     }
 
     /** 触发暴击 */

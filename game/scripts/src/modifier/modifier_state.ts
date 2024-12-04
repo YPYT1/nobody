@@ -329,3 +329,7 @@ export class modifier_state_multi_cast_of_aoe extends BaseModifier {
 
 
 }
+
+/** 致命 必定暴击 */
+@registerModifier()
+export class modifier_state_fatal extends BaseModifier { }

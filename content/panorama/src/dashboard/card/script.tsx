@@ -48,6 +48,8 @@ const PopupsBackground = $("#Card_PopupsBg");
 const CompoundCard = $("#CompoundCard");
 const PlayerConsumeCard = $("#PlayerConsumeCard")
 const DuguaiMoviePanel = $("#DuguaiMoviePanel") as MoviePanel;
+DuguaiMoviePanel.SetPanelEvent("onactivate",()=>{});
+
 const InitCardPopups = () => {
     SetPopupsClosedBtn(CompoundCard);
     SetPopupsClosedBtn(PlayerConsumeCard);

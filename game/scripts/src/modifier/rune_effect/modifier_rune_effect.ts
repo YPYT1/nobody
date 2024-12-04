@@ -149,6 +149,8 @@ export class modifier_rune_effect extends BaseModifier {
                 }
             }, 8)
         }
+
+        return false
     }
 
     OnLevelUprade() {

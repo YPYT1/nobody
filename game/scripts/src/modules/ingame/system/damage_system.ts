@@ -1,5 +1,6 @@
 
 import { modifier_skywrath_2b_shield } from "../../../abilities/hero/skywrath/skywrath_2/skywrath_2b";
+import { modifier_picture_abilities } from "../../../modifier/picture/modifier_picture_abilities";
 import { modifier_prop_effect } from "../../../modifier/prop_effect/modifier_prop_effect";
 import { modifier_rune_effect } from "../../../modifier/rune_effect/modifier_rune_effect";
 import { modifier_talent_effect } from "../../../modifier/talent_effect/modifier_talent_effect";
@@ -258,8 +259,6 @@ export class DamageSystem {
             let CreatureDmgNormal = (params.attacker.custom_attribute_value.CreatureDmgNormal ?? 0) * 0.01;
             increased_injury *= (1 + CreatureDmgNormal)
         }
-        // print("increased_injury", increased_injury)
-        // print("ElementResist", ElementResist)
         params.damage = math.floor(params.damage * increased_injury);
         // 暴击
         if ((critical_flag != -1 && RollPercentage(CriticalChance)) || critical_flag == 1) {
@@ -270,17 +269,25 @@ export class DamageSystem {
         if (talent_mdf) {
             talent_mdf.OnCriticalStrike(params.victim)
         }
+        // 背刺
+        // let target_direction = params.victim.GetAnglesAsVector().y;
+        // let attacker_vector = (params.attacker.GetOrigin() - params.victim.GetOrigin() as Vector).Normalized();
+        // let attacker_direction = VectorToAngles(attacker_vector).y;
+        // let angle_diff = math.abs(AngleDiff(target_direction, attacker_direction));
+        // print("degree", angle_diff, angle_diff > 100)
         // 特殊机制
         let bonus_dmg_pct = this.AboutSpecialMechanism(params)
         params.damage *= bonus_dmg_pct;
         PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type);
         // 伤害系统
-        let actual_damage = math.min(params.damage, params.victim.GetHealth());
-        GameRules.CMsg.AddDamageRecord(iPlayerID, actual_damage);
-        // 击飞
-        // if (params.damage < params.victim.GetHealth()) {
-        //     this.OnKnockback(params.victim, params.attacker)
-        // }
+        params.damage = math.min(params.damage, params.victim.GetHealth());
+        GameRules.CMsg.AddDamageRecord(iPlayerID, params.damage);
+        // 后续
+        let picture_mdf = hAttacker.FindModifierByName("modifier_picture_abilities") as modifier_picture_abilities;
+        if (picture_mdf) {
+            picture_mdf._OnTakeDamage(params)
+            if (is_crit == 1) { picture_mdf._CritEvent(params) }
+        }
 
         return ApplyDamage(params);
     }
@@ -330,11 +337,26 @@ export class DamageSystem {
 
         params.damage = params.damage * (100 - custom_attribute_value.DmgReductionPct) * 0.01;
 
+        let picture_buff = params.victim.FindModifierByName("modifier_picture_abilities") as modifier_picture_abilities;
+        if (picture_buff) {
+            if (picture_buff.OnBeInjured(params)) {
+                return 0
+            }
+        }
         let rune_buff = params.victim.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
-        if (rune_buff) { rune_buff.OnBeInjured(params) }
+        if (rune_buff) {
+            if (rune_buff.OnBeInjured(params)) {
+                return 0
+            }
+        }
 
         let prop_buff = params.victim.FindModifierByName("modifier_prop_effect") as modifier_prop_effect;
-        if (prop_buff) { prop_buff.OnBeInjured(params) }
+        if (prop_buff) {
+            if (prop_buff.OnBeInjured(params)) {
+                return 0
+            }
+
+        }
 
         if (params.damage <= 0) {
             GameRules.CMsg.Popups(params.victim, 'Miss', 0, params.victim.GetPlayerOwner())

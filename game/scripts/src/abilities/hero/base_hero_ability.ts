@@ -1,5 +1,6 @@
 
 import { HeroTalentObject } from "../../kv_data/hero_talent_object";
+import { modifier_picture_abilities } from "../../modifier/picture/modifier_picture_abilities";
 import { modifier_rune_effect } from "../../modifier/rune_effect/modifier_rune_effect";
 import { BaseAbility, BaseModifier } from "../../utils/dota_ts_adapter";
 
@@ -219,6 +220,9 @@ export class BaseHeroAbility extends BaseAbility {
 
             // rune_79	法爷#28	聪慧每消耗1点蓝量该次技能提高2%的技能增强
             bonus_value += cost_mana * this.caster.GetRuneKv("rune_79", "value")
+
+            // 14	双重LV%lv%:释放技能时有10%概率消耗双倍蓝量提高30% 伤害加成
+            // TODO...
             return bonus_value
         }
 
@@ -336,6 +340,14 @@ export class BaseHeroModifier extends BaseModifier {
         let buff = this.caster.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
         if (buff) {
             buff.Rune_ExecutedAbility({})
+        }
+    }
+
+    DoExecutedBaseAbility(){
+        let buff = this.caster.FindModifierByName("modifier_picture_abilities") as modifier_picture_abilities;
+        if (buff) {
+            // print("buff",buff,buff.GetName())
+            buff._ExecutedBaseAbility()
         }
     }
 

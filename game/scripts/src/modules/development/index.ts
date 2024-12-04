@@ -281,7 +281,7 @@ export class Development extends UIEventRegisterClass {
             GameRules.MysticalShopSystem.RefreshMysticalShopItem();
             if (args[0]) {
                 print("add prop_id arg", ...args)
-                GameRules.MysticalShopSystem.AddPropAttribute(player_id, "prop_" + args[0] , 1)
+                GameRules.MysticalShopSystem.AddPropAttribute(player_id, "prop_" + args[0] , 5)
             } else {
                 print("add prop all")
                 let hAbility = hHero.FindAbilityByName("public_attribute");

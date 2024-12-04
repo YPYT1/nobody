@@ -11,9 +11,11 @@ import "./modifier_knockback_lua";
 import "./modifier_element";
 import "./modifier_state";
 import "./modifier_custom_appearance_underground";
-import "./talent_effect/__init__";
 
+
+import "./talent_effect/__init__";
 import "./rune_effect/__init__";
 import "./prop_effect/__init__";
 import "./mission/__init__";
 import "./altar/__init__";
+import "./picture/__init__";

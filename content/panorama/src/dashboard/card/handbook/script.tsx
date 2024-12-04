@@ -21,7 +21,7 @@ const RarityOptionList = ["all", "ss", "s", "a", "b", "c"];
 // 快捷方法
 // const GetServerItemData = GameUI.CustomUIConfig().GetServerItemData;
 const GetPictureCardData = GameUI.CustomUIConfig().GetPictureCardData;
-const _PictuerCardData = GameUI.CustomUIConfig()._PictuerCardData;
+const _PictuerCardData = GameUI.CustomUIConfig().KvData.PictuerCardData;
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 
 // pictuer_card_data
@@ -177,7 +177,7 @@ const SendCompoundCard = (state: number = 1) => {
 let rarity_card_list: { [card_id: string]: number }[] = [];
 
 const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
-    $.Msg(["Card ServiceInterface_GetPlayerCardList"])
+    // $.Msg(["Card ServiceInterface_GetPlayerCardList"])
     let data = params.data;
     let card = data.card;
     // 清空合成表

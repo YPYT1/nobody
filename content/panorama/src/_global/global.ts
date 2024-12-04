@@ -7,8 +7,9 @@ import { default as PictuerFetterAbility } from "../json/config/server/picture/p
 declare global {
 
     interface CustomUIConfig {
-        _PictuerFetterConfig: typeof PictuerFetterConfig
-        _PictuerCardData: typeof PictuerCardData
+        // _PictuerFetterConfig: typeof PictuerFetterConfig;
+        // _PictuerFetterAbility: typeof PictuerFetterAbility;
+        // _PictuerCardData: typeof PictuerCardData;
         CreateServerItem(item_id: string, item_count: number, parent: Panel): Panel;
         GetServerItemData(item_id: string): typeof ServerItemList[keyof typeof ServerItemList]
         GetPictureCardData(item_id: string): typeof PictuerCardData[keyof typeof PictuerCardData]
@@ -21,8 +22,8 @@ declare global {
     }
 }
 
-GameUI.CustomUIConfig()._PictuerFetterConfig = PictuerFetterConfig;
-GameUI.CustomUIConfig()._PictuerCardData = PictuerCardData;
+// GameUI.CustomUIConfig()._PictuerFetterConfig = PictuerFetterConfig;
+// GameUI.CustomUIConfig()._PictuerCardData = PictuerCardData;
 
 GameUI.CustomUIConfig().CreateServerItem = function (item_id: string, item_count: number, parent: Panel) {
     let ServerItemPanel = $.CreatePanel("Panel", parent, "");

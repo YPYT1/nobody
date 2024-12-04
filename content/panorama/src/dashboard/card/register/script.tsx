@@ -1,13 +1,15 @@
 import { ToggleDashboardLoading } from "../../components";
 import { LoadCustomComponent } from "../../_components/component_manager";
 import { CardPopupsToggle } from "../_popups";
+import { SetLabelDescriptionExtra } from "../../../utils/ability_description";
 
 const MainPanel = $.GetContextPanel();
 const AllPictuerList = $("#AllPictuerList");
 const SavePictureBtn = $("#SavePictureBtn") as Button;
 const RestorePictureBtn = $("#RestorePictureBtn") as Button;
 const CardSearchInput = $("#CardSearchInput") as TextEntry;
-const PictuerFetterConfig = GameUI.CustomUIConfig()._PictuerFetterConfig;
+const PictuerFetterConfig = GameUI.CustomUIConfig().KvData.PictuerFetterConfig;
+const PictuerFetterAbility = GameUI.CustomUIConfig().KvData.PictuerFetterAbility;
 const GetPictureCardData = GameUI.CustomUIConfig().GetPictureCardData;
 
 let config_index = 0;
@@ -18,10 +20,10 @@ let pictuer_list: { [x: string]: { [key: number]: number; }; } = {}
 let pic_fliter_text = ""
 
 export const Init = () => {
+    $.Msg(["Init"])
     let picture_count = Object.keys(PictuerFetterConfig).length
     MainPanel.SetDialogVariableInt("card_count", 0);
     MainPanel.SetDialogVariableInt("card_max", picture_count);
-
     InitAllPictuerList()
     InitPictureCostInfo()
     CustomEventSubscribe();
@@ -29,7 +31,6 @@ export const Init = () => {
 
 
 const CustomEventSubscribe = () => {
-
     // 图鉴配置
     GameEvents.Subscribe("ServiceInterface_GetConfigPictuerFetter", GetConfigPictuerFetter)
     GameEvents.Subscribe("ServiceInterface_GetPlayerCardList", GetPlayerCardList);
@@ -158,9 +159,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
         let activate_card_count = 0;
         for (let i = 0; i < AllPictuerList.GetChildCount(); i++) {
             const PicturePanel = AllPictuerList.GetChild(i)!;
-
             const List = PicturePanel.FindChildTraverse("List")!;
-
             const suit_id = PicturePanel.id;
             const row_data = PictuerFetterConfig[suit_id as keyof typeof PictuerFetterConfig];
             // $.Msg(["picture_id", picture_id])
@@ -175,6 +174,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
                 const CardPanel = List.GetChild(order) as Component_CardItem;
                 const card_id = CardPanel.id;
                 const iCardId = parseInt(card_id)
+                CardPanel.ShowCardIcon(false);
                 // 是否有登记
                 if (pictuer_card_list.length > 0) {
                     let in_index = pictuer_card_list.indexOf(iCardId);
@@ -186,20 +186,28 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
                         CardPanel.RemoveClass("UnEquip")
                     }
                 }
-
                 const card_data = card_object[card_id];
                 if (card_data == null) {
+                    CardPanel.RemoveClass("UnEquip");
                     CardPanel.SetHasClass("Null", true)
+                    CardPanel.SetPanelEvent("onactivate", () => { })
                     continue
                 }
-                CardPanel.ShowCardIcon(true);
+                let count = card_data.number;
                 if (!CardPanel.BHasClass("Equip")) {
-                    CardPanel.AddClass("UnEquip");
-                    CardPanel.SetPanelEvent("onactivate", () => {
-                        // $.Msg([suit_id, card_id])
-                        CardPopupsToggle("PlayerConsumeCard", true, { suit_id, card_id })
-                    })
+                    if (count > 0) {
+                        CardPanel.ShowCardIcon(true);
+                        CardPanel.AddClass("UnEquip");
+                        CardPanel.SetPanelEvent("onactivate", () => {
+                            CardPopupsToggle("PlayerConsumeCard", true, { suit_id, card_id })
+                        })
+                    } else {
+                        CardPanel.RemoveClass("UnEquip");
+                        CardPanel.RemoveClass("Null")
+                        CardPanel.SetPanelEvent("onactivate", () => { })
+                    }
                 }
+
 
             }
             // 更新属性词条
@@ -240,7 +248,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
 const GetConfigPictuerFetter = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetConfigPictuerFetter"]>) => {
     // $.Msg(["ServiceInterface_GetConfigPictuerFetter"])
     // $.Msg(["pictuer_list",pictuer_list])
-    ToggleDashboardLoading(false)
+    // ToggleDashboardLoading(false)
     let config_loc = params.data.locality["1"];
     let config_serve = params.data.server["1"];
     EquipPictureList.RemoveAndDeleteChildren();
@@ -357,15 +365,33 @@ const SetPictureAttributeList = (FooterAttributeList: Panel, row_data: typeof Pi
     }
 
 
-    let ability_id = row_data.ability_id;
-    let SpecialFooterAttribute = $.CreatePanel("Panel", FooterAttributeList, "");
-    SpecialFooterAttribute.BLoadLayoutSnippet("FooterAttribute")
-    SpecialFooterAttribute.AddClass("Special");
-    SpecialFooterAttribute.SetDialogVariableInt("index", order - 1)
-    SpecialFooterAttribute.SetDialogVariable("special_text", "特殊属性: " + " 大家肯定姜傲打打卡机达克拉大家都 射手")
+    let id_list = row_data.ability_id;
+    for (let aid of id_list) {
+        if (aid == "null") { continue }
+        let id_arr = aid.split("_");
+        let ability_id = id_arr[0];
+        let ability_level = parseInt(id_arr[1]);
+
+        let SpecialFooterAttribute = $.CreatePanel("Panel", FooterAttributeList, "");
+        SpecialFooterAttribute.BLoadLayoutSnippet("FooterAttribute")
+        SpecialFooterAttribute.AddClass("Special");
+        SpecialFooterAttribute.SetDialogVariableInt("index", order - 1)
+
+        let picture_data = PictuerFetterAbility[ability_id as keyof typeof PictuerFetterAbility];
+
+        let desc = $.Localize(`#custom_server_picture_ability_${ability_id}_desc`)
+        desc = SetLabelDescriptionExtra(
+            $.Localize(`#custom_server_picture_ability_${ability_id}_desc`),
+            ability_level,
+            picture_data.AbilityValues,
+            null,
+            false
+        )
+        SpecialFooterAttribute.SetDialogVariable("special_text", "" + desc)
+    }
+
 }
 
 (() => {
-
     Init();
 })();

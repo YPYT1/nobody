@@ -93,6 +93,7 @@ export class modifier_skywrath_3b_b_field extends BaseModifier {
         if (!IsServer()) { return }
         this.GetAbility().SetFrozenCooldown(true)
         this.caster = this.GetCaster();
+        this.parent = this.GetParent();
         this.GetParent().is_clone = params.is_clone;
         this.is_clone = params.is_clone;
         this.radius = this.caster.GetTalentKv("97", "radius");
@@ -101,7 +102,7 @@ export class modifier_skywrath_3b_b_field extends BaseModifier {
         let effect_fx = ParticleManager.CreateParticle(
             "particles/ability/skywrath/skywrath_fazhen.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
-            this.caster
+            this.parent
         )
         ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.radius, this.radius, this.radius))
         this.AddParticle(effect_fx, false, false, -1, false, false)

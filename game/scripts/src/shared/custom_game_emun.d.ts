@@ -75,7 +75,9 @@ declare const enum DebuffTypes {
     /** 不可操作 WASD失效*/
     un_controll = 12,
     /** 冻结 */
-    frozen = 13
+    frozen = 13,
+    /** 致命 */
+    fatal = 14,
 
 }
 

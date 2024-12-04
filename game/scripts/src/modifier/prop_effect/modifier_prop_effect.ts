@@ -256,10 +256,13 @@ export class modifier_prop_effect extends BaseModifier {
                     duration: duration
                 })
                 // print("prop_47 add ", duration, buff)
-                params.damage = 1;
+                params.damage = 0;
+
+                return true
             }
         }
 
+        return false
     }
 
     /** 神罚效果 */

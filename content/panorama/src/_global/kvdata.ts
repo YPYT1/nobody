@@ -14,12 +14,14 @@ import { default as MysteriousShopConfig } from "../json/config/game/shop/myster
 
 
 const KvData = {
-    AttributeConst: AttributeConst,
-    ServerItemList: ServerItemList,
-    npc_heroes_custom: npc_heroes_custom,
-    server_talent_data: server_talent_data,
-    MysteriousShopConfig: MysteriousShopConfig,
-
+    AttributeConst,
+    ServerItemList,
+    npc_heroes_custom,
+    server_talent_data,
+    MysteriousShopConfig,
+    PictuerCardData,
+    PictuerFetterConfig,
+    PictuerFetterAbility,
 }
 
 declare global {

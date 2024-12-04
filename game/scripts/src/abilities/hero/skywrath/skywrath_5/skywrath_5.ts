@@ -160,6 +160,7 @@ export class modifier_skywrath_5_clone_show extends BaseModifier {
 
     OnDestroy(): void {
         if (!IsServer()) { return }
+        if (this.GetParent() == null) { return }
         GameRules.CustomAttribute.DelAttributeInKey(this.GetCaster(), this.buff_key)
         let killed_fx = ParticleManager.CreateParticle(
             "particles/generic_gameplay/illusion_killed.vpcf",
@@ -168,7 +169,8 @@ export class modifier_skywrath_5_clone_show extends BaseModifier {
         )
         ParticleManager.SetParticleControl(killed_fx, 0, this.GetParent().GetAbsOrigin())
         ParticleManager.ReleaseParticleIndex(killed_fx);
-        this.parent.SetOrigin(Vector(0, 0, 0))
+        // if (IsValid(this.parent)) { return }
+        this.GetParent().SetOrigin(Vector(0, 0, 0))
         this.GetParent().AddNoDraw();
     }
 

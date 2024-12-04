@@ -124,14 +124,14 @@ export function OnInitMoveHotkey() {
     SetHotKey("RIGHTARROW", OnKey_Down_D, OnKey_Up_D);
     SetHotKey("space", Onkey_Backspace_Down, Onkey_Backspace_Up);
 
-    SetHotKey("I", ()=>{}, ()=>{});
+    SetHotKey("I", () => { }, () => { });
     SetHotKey("W", OnKey_Down_W, OnKey_Up_W);
     SetHotKey("A", OnKey_Down_A, OnKey_Up_A);
     SetHotKey("S", OnKey_Down_S, OnKey_Up_S);
     SetHotKey("D", OnKey_Down_D, OnKey_Up_D);
 
     SetHotKey("U", OnKey_Down_U);
-    SetHotKey("R", ()=>{});
+    SetHotKey("R", () => { });
     // SetHotKey("S1_UP", OnKey_Down_W, OnKey_Up_W);
     // SetHotKey("S1_LEFT", OnKey_Down_A, OnKey_Up_A);
     // SetHotKey("S1_DOWN", OnKey_Down_S, OnKey_Up_S);
@@ -155,12 +155,15 @@ export function OnInitMoveHotkey() {
         //     return true
         // }
 
+        if (Game.IsInToolsMode()) { return false }
 
         if (value == 1) {
             return true
         } else {
             return false
         }
+
+
     });
 
 }

@@ -1,4 +1,6 @@
 /** @noSelfInFile  */
+
+import { modifier_picture_abilities } from "../../modifier/picture/modifier_picture_abilities";
 Object.assign(getfenv(), {
     OnCreated: (params: any) => { OnCreated(params); },
     OnDeath: (params: any) => { OnDeath(params); },
@@ -15,6 +17,12 @@ export const OnCreated = (params: CGDatadrivenProps) => {
 
 export const OnDeath = (params: CGDatadrivenProps) => {
     print("OnDeath")
+    const hUnit = params.caster;
+    let picture_buff = hUnit.FindModifierByName("modifier_picture_abilities") as modifier_picture_abilities;
+    print("picture_buff", picture_buff)
+    if (picture_buff) {
+        picture_buff._OnDeath()
+    }
     // for (let i = 0; i < 6; i++) {
     //     let hAbility = params.caster.GetAbilityByIndex(i);
 

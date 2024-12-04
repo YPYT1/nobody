@@ -58,7 +58,7 @@
 					<Label class="Value" text="{s:attribute_value}"/>
 				</Panel>
 				<Panel class="AttributeSpecial" >
-					<Label text="{s:special_text}"/>
+					<Label text="{s:special_text}" html="true" />
 				</Panel>
 				
 			</Panel>

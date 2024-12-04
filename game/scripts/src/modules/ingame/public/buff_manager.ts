@@ -51,6 +51,8 @@ export class BuffManager {
             hUnit.AddNewModifier(hCaster, null, "modifier_debuff_uncontroll", { duration: duration, });
         } else if (state == DebuffTypes.frozen) {
             hUnit.AddNewModifier(hCaster, null, "modifier_element_effect_ice_frozen", { duration: duration })
+        } else if (state == DebuffTypes.fatal) {
+            hUnit.AddNewModifier(hCaster, null, "modifier_state_fatal", { duration: duration })
         }
     }
 

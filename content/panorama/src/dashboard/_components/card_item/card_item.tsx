@@ -4,7 +4,7 @@ declare global {
     interface Component_CardItem extends Panel {
         _Init(): void;
         SetCardItem: (card_id: string, ShowCount?: boolean, ShowRarity?: boolean) => void;
-        ShowCardIcon: (bShow: true) => void;
+        ShowCardIcon: (bShow: boolean) => void;
     }
 }
 
@@ -33,7 +33,7 @@ const SetCardItem = (card_id: string, ShowCount: boolean = true, ShowRarity: boo
     // CardPanel.Data<PanelDataObject>().name = $.Localize(`#custom_serveritem_${item_id}`)
 }
 
-const ShowCardIcon = (bShow: true) => {
+const ShowCardIcon = (bShow: boolean) => {
     CardPanel.SetHasClass("ShowIcon", bShow)
 }
 

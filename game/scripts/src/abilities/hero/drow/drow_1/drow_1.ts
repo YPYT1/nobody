@@ -101,6 +101,7 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
                 return
             }
+            this.DoExecutedBaseAbility();
             let hTarget = enemies[0];
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
             this.ability.ManaCostAndConverDmgBonus();

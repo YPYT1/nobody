@@ -29,4 +29,6 @@ declare interface CDOTA_Buff {
     // is_devour:boolean;
 
     surround_d_final:number;
+    
+    OnBeInjured(params: ApplyCustomDamageOptions):boolean
 }
