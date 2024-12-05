@@ -9,14 +9,13 @@
         <include src="./styles.less" />
     </styles>
     <Panel class="tooltip_rune tooltip_rare" hittest="false">
-        <Panel class="Background">
+        <!-- <Panel class="Background">
             <Panel class="Header">
                 <Panel class="Top"/>
                 <Panel class="Mid"/>
             </Panel>
-            
         </Panel>
-        <Panel class="Bot" />
+        <Panel class="Bot" /> -->
         <Panel class="TooltipContent">
             <Panel class="Image RarityBorder">
                 <Image id="Image" class="RarityImage" />

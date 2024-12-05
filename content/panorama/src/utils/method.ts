@@ -141,6 +141,7 @@ export function FormatDescriptionExtra(
     ObjectValues: CAPropObjectValues,
     curr_level: number = 1,
     show_all: boolean = true,
+    ObjectPercent:number = 100,
 ) {
 
     for (let key in ObjectValues) {
@@ -181,7 +182,7 @@ export function FormatDescriptionExtra(
             } else {
                 if (curr_level <= 0) { curr_level = 1; }
                 curr_level = Math.min(curr_level, special_num.length)
-                let value = special_num[curr_level - 1];
+                let value = special_num[curr_level - 1] * ObjectPercent * 0.01;
                 // $.Msg(["value",value])
                 let is_negative = value < 0;
                 let col_value = `<span class="GameplayVariable Current ${is_negative ? "is_negative" : ""}">${Math.abs(value)}${is_percent ? "%" : ""}</span>`

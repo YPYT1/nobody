@@ -262,7 +262,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 })
             }
         }
-        DeepPrintTable(this.player_shop_buy_ts_client);
         this.player_shop_level[player_id] = 0;
 
         this.player_shop_discount[player_id] = 100;
@@ -605,7 +604,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             {
                 data: {
                     shop_field_list: this.shop_field_list[player_id],
-                    player_vip_status: this.player_vip_status[player_id]
+                    player_vip_status: this.player_vip_status[player_id],
+                    player_shop_buy_ts_data : this.player_shop_buy_ts_client[player_id],
+
                 }
             }
         );

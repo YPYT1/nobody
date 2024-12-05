@@ -34,6 +34,7 @@ export function Init() {
             propData.ObjectValues
         );
         // $.Msg(["prop_desc",prop_desc])
+        // let text = prop_desc+prop_desc+prop_desc+prop_desc+prop_desc+prop_desc+prop_desc+prop_desc
         MainPanel.SetDialogVariable("prop_desc", prop_desc)
         // SetAbilityBaseInfo(name, entityIndex)
     });

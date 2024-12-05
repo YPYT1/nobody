@@ -45,6 +45,7 @@ const CustomGameEventsSubscribe = () => {
         let list_data = Object.values(event.data);
         for (let row of list_data) {
             let name = row.name;
+            
             let ItemBorder = ItemList_Rune.FindChildTraverse(name);
             if (ItemBorder == null) {
                 let ItemBorder = $.CreatePanel("Panel", ItemList_Rune, name);
@@ -58,12 +59,16 @@ const CustomGameEventsSubscribe = () => {
                 ItemBorder.SetHasClass("rare_" + row.level, true)
                 ItemBorder?.SetDialogVariable("count", ``)
                 ItemBorder.SetPanelEvent("onmouseover", () => {
+                    $.Msg("attr_list:",row.attr_list)
                     ShowCustomTooltip(ItemBorder, "rune", name, -1, row.level_index)
-
                 })
+
                 ItemBorder.SetPanelEvent("onmouseout", () => {
                     HideCustomTooltip()
                 })
+
+                
+                
             }
         }
 

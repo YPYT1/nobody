@@ -21,11 +21,13 @@ export function Init() {
         let Image = $("#Image") as ImagePanel;
         let textrue = Data.AbilityTextureName;
         Image.SetImage(GetTextureSrc(textrue));
+        
         for (let r = 1; r <= 7; r++) {
             MainPanel.SetHasClass("rare_" + r, rarity == r);
         }
         MainPanel.SetDialogVariable("title", $.Localize(`#custom_${name}`))
 
+        $.Msg(["rarity",rarity])
         let ObjectValues = Data.ObjectValues;
         let AbilityValues = Data.AbilityValues;
 

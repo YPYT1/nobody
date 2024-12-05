@@ -1,13 +1,13 @@
 @import url("./../../_styles/variables/_variables.less");
 
-@width: 182px;
+@width: 215px;
 
 #Contents {
     // padding: 0px;
     border: 0px solid #00000000;
     background-color: #00000000;
     box-shadow: none;
-    padding: 0px 0px 0px 0px;
+    // padding: 0px 0px 0px 0px;
 
     &.Tooltip {
         background-color: #00000000;
@@ -18,56 +18,38 @@
 }
 
 .tooltip_rune {
-
-    // padding-bottom: 32px;
-    // border: 1px solid #ff1919;
-    // 
-    .Background {
-        // margin-top: 18px;
-        width: 100%;
-        height: 100%;
-        flow-children: down;
-        // padding-bottom: 130px;
-    }
-
     .Header {
         width: 100%;
         height: 100%;
         flow-children: down;
-
-
-
-
-    }
-
-    .Top {
-        width: @width;
-        height: 52px;
-        background-image: url("file://{images}/custom_game/tooltip/rune/rune_tips_1.png");
-        // border: 1px solid #bcffaf;
-    }
-
-    .Mid {
-        width: @width;
-        height: 100%;
-        background-image: url("file://{images}/custom_game/tooltip/rune/rune_tips_2.png");
-        // border: 1px solid #7c94ff;
-        // margin-bottom: 12px;
-    }
-
-    .Bot {
-        width: @width;
-        height: 76px;
-        background-image: url("file://{images}/custom_game/tooltip/rune/rune_tips_3.png");
-        vertical-align: bottom;
     }
 }
 
+.rare_4 .TooltipContent{
+    background-image: url("file://{images}/custom_game/tooltip/rune/r4.png");
+}
+
+.rare_5 .TooltipContent{
+    background-image: url("file://{images}/custom_game/tooltip/rune/r5.png");
+}
+
+.rare_6 .TooltipContent{
+    background-image: url("file://{images}/custom_game/tooltip/rune/r6.png");
+}
 .TooltipContent {
     width: @width;
-    min-height: 222px;
+    height: 324px;
     flow-children: down;
+    background-image: url("file://{images}/custom_game/tooltip/rune/r2.png");
 
+    
+    // border: 1px solid #6f319e;
+    // background-color: #00000099;
+    // box-shadow: hollow #6f319e 0px 0px 4px 0px;
+    // box-shadow: #6f319e 0px 0px 8px 0px; // outer, filled
+    // box-shadow: inset #6f319e99 0px 0px 1px 10px; // inner
+
+    
     .Image {
         margin-top: 12px;
         horizontal-align: center;
@@ -98,7 +80,7 @@
         padding: 12px;
 
         Label {
-            font-size: 18px;
+            font-size: 14px;
         }
     }
 }

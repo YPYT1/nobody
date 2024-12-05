@@ -1,0 +1,66 @@
+@import url("./../../_styles/variables/_variables.less");
+@width: 200px;
+
+#Contents {
+    padding: 2px;
+    border: 0px solid #00000000;
+    background-color: #00000000;
+    // box-shadow: #000000 0px 0px 8px 0px;
+    // box-shadow: none;
+    box-shadow: hollow #000000 0px 0px 11px 0px;
+
+
+    // &.Tooltip {
+    //     background-color: #00000000;
+    //     background-repeat: no-repeat;
+    //     background-position: left top;
+    //     padding: 0px;
+    // }
+}
+
+.TooltipContent {
+    width: @width;
+    flow-children: down;
+    border: 1px solid #222222;
+    background-color: #080808;
+    box-shadow: hollow #000000 0px 0px 1px 0px;
+
+
+    .Header {
+        width: 100%;
+        height: 47px;
+        // background-color: #666666;
+        background-size: 100%;
+        background-image: url("file://{images}/custom_game/tooltip/all_public/limit_header.png");
+
+        Label {
+            font-size: 18px;
+            horizontal-align: center;
+            vertical-align: middle;
+        }
+    }
+
+    .Content {
+        width: 100%;
+        flow-children: down;
+
+        #LimitStar {
+            margin-top: 8px;
+            margin-bottom: 4px;
+            horizontal-align: center;
+        }
+
+        .Desc {
+            padding: 6px 11px;
+            Label {
+                font-size: 16px;
+                color: #C0C0C0;
+
+            }
+
+            .GameplayVariable {
+                color: #3AB94F;
+            }
+        }
+    }
+}

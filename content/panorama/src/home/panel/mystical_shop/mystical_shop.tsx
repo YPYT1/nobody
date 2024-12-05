@@ -39,8 +39,6 @@ const GameEventsSubscribeInit = () => {
         MysticalShop.SetHasClass("Open", true)
         // @TODO 准备之后无法购买、无法刷新。但可以锁定\取消锁定。
 
-
-
     })
 
     GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
@@ -48,14 +46,70 @@ const GameEventsSubscribeInit = () => {
         // $.Msg(["MysticalShopSystem_GetShopData", data])
         const local_vip = 0;// data.player_vip_status;
 
+        let has_limit_item: string[] = []
         let shop_field_list = data.shop_field_list;
+        let list_data = Object.values(event.data.player_shop_buy_ts_data);
+        for (let i = 0; i < list_data.length; i++) {
+
+            // $.Msg(ItemPanel)
+            let data = list_data[i];
+            let item_key = data.item_key;
+            let type = data.type;
+            let is_vip = data.is_vip == 1
+            let ItemPanel = ExtremePropsList.GetChild(i);
+            let star = data.count;
+            if (ItemPanel) {
+                ItemPanel.SetHasClass("IsLock", type == 0);
+                ItemPanel.SetHasClass("Null", type != 1);
+                ItemPanel.SetHasClass("IsVip", is_vip);
+                // let is_vip = data.is_vip;
+                let ShopItemComponent = ItemPanel.FindChildTraverse("ShopItemComponent") as GameComponent_PropItem;
+
+                for (let r = 1; r <= 6; r++) {
+                    ItemPanel.SetHasClass("rare_" + r, r == (star + 1))
+                }
+                if (type == 1) {
+                    has_limit_item.push(data.item_key)
+                    ItemPanel.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${data.item_key}`));
+                    ShopItemComponent._SetConfig({ item_id: data.item_key, rare: star + 1, show_tips: true });
+                    // Star
+                    let ItemStar = ItemPanel.FindChildTraverse("ItemStar") as GameComponent_PropItemStar;
+                    ItemStar._SetStar(star);
+                } else {
+                    ShopItemComponent._SetConfig({ show_tips: false })
+                }
+            }
+
+
+            let NavItemPanel = LocalExtremePropsList.GetChild(i);
+            if (NavItemPanel) {
+                NavItemPanel.SetHasClass("IsLock", type == 0);
+                NavItemPanel.SetHasClass("Null", type != 1);
+                NavItemPanel.SetHasClass("IsVip", is_vip);
+                // 
+                let LimitItem = NavItemPanel.FindChildTraverse("LimitItem") as GameComponent_PropItem;
+                if (type == 1) {
+                    // ItemPanel.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${data.item_key}`));
+                    LimitItem._SetConfig({ item_id: item_key, rare: star + 1, show_tips: true, state: 1 });
+                } else {
+                    LimitItem._SetConfig({ show_tips: false })
+                }
+            }
+
+        }
+
         for (let k in shop_field_list) {
             let index = parseInt(k) - 1;
             let row_data = shop_field_list[k];
             let shop_key = row_data.key
+            // shop_sell_item_list.push(shop_key)
+            let item_label = $.Localize(`#custom_shopitem_${row_data.key}`)
             let ShopItem = ShopItemList.GetChild(index)!;
             let is_vip = (local_vip < row_data.is_vip);
+
+            // $.Msg(["Item", row_data.type, row_data.rarity, item_label])
             ShopItem.Data<PanelDataObject>().is_vip = is_vip
+            ShopItem.SetHasClass("IsLimit", row_data.type == 2);
             ShopItem.SetHasClass("IsVip", is_vip);
             ShopItem.SetHasClass("IsBuy", row_data.is_buy == 1);
             ShopItem.SetHasClass("IsLock", row_data.is_lock == 1);
@@ -92,12 +146,32 @@ const GameEventsSubscribeInit = () => {
             RefreshBtn.Data<PanelDataObject>().refresh_soul = row_data.refresh_soul;
             if (RefreshBtn.BHasClass("onmouse")) { ShowCustomTextTooltip(RefreshBtn, "#custom_text_mystical_shop_refresh") }
             // 设置品质
-            const Rarity = ShopItemJson.rarity;
+            const data_r = row_data.rarity
+            const rarity = row_data.type == 2 ? data_r + 1 : data_r
             for (let r = 1; r <= 7; r++) {
-                ShopItem.SetHasClass("rare_" + r, Rarity == r)
+                ShopItem.SetHasClass("rare_" + r, rarity == r)
             }
+
+            // 设置极限道具星级
+            if (row_data.type == 2) {
+                const LimitStar = ShopItem.FindChildTraverse("LimitStar") as GameComponent_PropItemStar;
+                LimitStar._SetStar(data_r)
+            }
+
+            // 如果有相同的极限道具
+            let same_index = has_limit_item.indexOf(row_data.key);
+            ShopItem.SetHasClass("limit_up", same_index != -1)
         }
 
+    })
+
+    GameEvents.Subscribe("MysticalShopSystem_GetPlayerShopBuyData", event => {
+
+    })
+
+    GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+        event_name: "GetPlayerShopBuyData",
+        params: {}
     })
 }
 /**
@@ -151,24 +225,27 @@ export const UpdataCountdownTimer = () => {
 export const CreatePanel = () => {
 
     ExtremePropsList.RemoveAndDeleteChildren()
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
         let extremePropsRows = $.CreatePanel("Panel", ExtremePropsList, "");
         extremePropsRows.BLoadLayoutSnippet("ExtremePropsRows")
         let ShopItemComponent = extremePropsRows.FindChildTraverse("ShopItemComponent")!
         let PropItem = LoadGameComponent(ShopItemComponent, "prop_item");
-        PropItem._SetConfig({ item_id: "prop_2" })
-
+        PropItem._SetConfig({})
         let ItemStar = extremePropsRows.FindChildTraverse("ItemStar")!;
         let PropItemStar = LoadGameComponent(ItemStar, "prop_item_star");
-        PropItemStar._Init(5, 1)
+        PropItemStar._Init(5, 1, 33)
+        extremePropsRows.SetDialogVariable("item_name", "")
+        extremePropsRows.SetHasClass("Null", true)
     }
 
     // 右侧极限道具列表
     LocalExtremePropsList.RemoveAndDeleteChildren()
     for (let i = 0; i < 6; i++) {
         let ExtremeProps = $.CreatePanel("Panel", LocalExtremePropsList, "");
-        let PropItem = LoadGameComponent(ExtremeProps, "prop_item");
-        PropItem._SetConfig({ item_id: "prop_3", state: 0 })
+        ExtremeProps.BLoadLayoutSnippet("NavLimitItem");
+        const LimitItem = ExtremeProps.FindChildTraverse("LimitItem")!
+        let PropItem = LoadGameComponent(LimitItem, "prop_item");
+        PropItem._SetConfig({ state: 0 })
     }
 
     // let ToggleButton = $("#ToggleButton") as Button;
@@ -188,8 +265,6 @@ export const CreatePanel = () => {
         ShopItem.BLoadLayoutSnippet("ShopItem")
         ShopItem.SetDialogVariableInt("cost", 0);
         ShopItem.SetDialogVariableInt("refresh_cost", 0);
-        // ShopItem.SetDialogVariable("item_name", "");
-        // ShopItem.SetDialogVariable("item_desc", "");
         const LockBtn = ShopItem.FindChildTraverse("LockBtn")!;
         LockBtn.SetPanelEvent("onactivate", () => {
             GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
@@ -232,6 +307,11 @@ export const CreatePanel = () => {
             let item_key = ShopItemCard.Data<PanelDataObject>().item_key
             OpenPopupsPurchaseItem(i, item_key);
         })
+
+        const LimitStar = ShopItem.FindChildTraverse("LimitStar")!
+        const ItemStar = LoadGameComponent(LimitStar, "prop_item_star")
+        ItemStar._Init(5, 0, 31);
+
     }
 
     // 弹窗按钮
@@ -255,17 +335,19 @@ export const Init = () => {
     CreatePanel();
 
     MysticalShop.Data<PanelDataObject>().countdown_timer = 0;
-    GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
-        event_name: "GetShopState",
-        params: {}
-    });
-
-    GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
-        event_name: "GetShopData",
-        params: {}
-    });
-
     StartCountdownTimer();
+
+    $.Schedule(0.1, () => {
+        GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+            event_name: "GetShopState",
+            params: {}
+        });
+
+        GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+            event_name: "GetShopData",
+            params: {}
+        });
+    })
 }
 
 (function () {

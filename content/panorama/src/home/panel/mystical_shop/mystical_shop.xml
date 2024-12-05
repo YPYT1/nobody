@@ -15,13 +15,17 @@
 					<Panel id="ShopItemInfo" >
 						<Panel id="PurchaseBtn" hittest="false">
 							<Image id="ItemIcon" />
+							<Panel id="LimitStar" />
 							<Label class="ItemName" text="{s:item_name}" />
 							<Label class="ItemDesc" text="{s:item_desc}" html="true"/>
 							<Panel class="ItemPrice">
 								<Label text="{d:cost}"/>
 							</Panel>
 						</Panel>
+						
 						<Panel class="CardHover" hittest="false" />
+						<Panel class="LimitUp"/>
+						<Panel class="LimitTag"/>
 					</Panel>
 					<Panel class="ItemLockState">
 						<Label text="#已锁定"/>
@@ -48,22 +52,32 @@
 		</snippet>
 		<snippet name="ExtremePropsRows">
 			<Panel class="ExtremePropsRows">
-				<Panel class="ItemIcon">
-					<Panel id="ShopItemComponent"/>
+				<Panel class="Content">
+					<Panel class="ItemIcon">
+						<Panel id="ShopItemComponent"/>
+					</Panel>
+					<Panel class="LimitItemInfo">
+						<Label class="RareLabel" text="{s:item_name}"/>
+						<Panel id="ItemStar"/>
+					</Panel>
 				</Panel>
-				<Panel class="ItemInfo">
-					<Panel id="ItemStar"/>
-					<Label text="{s:item_desc}"/>
-				</Panel>
+				<Panel class="Lock"/>
+			</Panel>
+		</snippet>
+		<snippet name="NavLimitItem">
+			<Panel class="NavLimitItem">
+				<Panel id="LimitItem" />
+				<Panel class="NavLock" />
 			</Panel>
 		</snippet>
 	</snippets>
 	<Panel class="mystical_shop" hittest="false">
 		<Panel class="ExtremePropsRightContent">
-			<Label text="极限道具"/>
-			<Panel id="LocalExtremePropsList">
-
+			<Panel class="Title" />
+			<Panel class="ItemList">
+				<Panel id="LocalExtremePropsList"/>
 			</Panel>
+			
 		</Panel>
 		<Panel id="MysticalShop" class="" >
 			<Panel class="ShopContainer">
@@ -73,9 +87,7 @@
 				</Panel>
 				<Panel class="ShopBody">
 					<Panel class="ExtremePropsContainer">
-						<Label class="H1" text="已获得极限道具"/>
-						<Label class="H2" text="极限道具至高5星,至多可购买5个"/>
-						<Label text="当前{s:curr_extreme} / {s:max_extreme}"/>
+						<Panel class="LimitTitle" />
 						<Panel id="ExtremePropsList">
 							
 						</Panel>

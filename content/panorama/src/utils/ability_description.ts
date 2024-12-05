@@ -147,13 +147,14 @@ export const SetLabelDescriptionExtra = (
     index: number,
     AbilityValues: CAPropAbilityValues,
     ObjectValues: CAPropObjectValues | null,
-    showAll: boolean = false
+    showAll: boolean = false,
+    ObjectPercent: number = 100,
 ) => {
     if (AbilityValues) {
         text = FormatDescription(text, AbilityValues, index + 1, showAll)
     }
     if (ObjectValues) {
-        text = FormatDescriptionExtra(text, ObjectValues, index + 1, showAll)
+        text = FormatDescriptionExtra(text, ObjectValues, index + 1, showAll , ObjectPercent)
     }
     return text
 }

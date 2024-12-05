@@ -1,0 +1,25 @@
+<root>
+    <scripts>
+        <include src="./script.tsx" />
+    </scripts>
+    <styles>
+        <include src="./../../_styles/styles.less" />
+        <include src="./styles.less" />
+    </styles>
+    <Panel class="custom_tooltip" hittest="false">
+        <Panel class="TooltipContent">
+            <Panel class="Header">
+                <Label class="RareLabel" text="{s:item_name}"/>
+            </Panel>
+ 
+            <Panel class="Content">
+                <Panel id="LimitStar"/>
+
+                <Panel class="Desc">
+                    <Label text="{s:item_desc}" html="true" />
+                </Panel>
+            </Panel>
+            
+        </Panel>
+    </Panel>
+</root>
