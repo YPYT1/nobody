@@ -178,7 +178,7 @@ export class MapChapter extends UIEventRegisterClass {
                         let unlock_difficulty_str = tostring(unlock_difficulty);
                         let UnlockMidData = MapInfoDifficulty[unlock_difficulty_str as keyof typeof MapInfoDifficulty];
                         let UnlockChapterKey = UnlockMidData.chapter_key;
-                        if(!this._map_list.hasOwnProperty(UnlockChapterKey)){
+                        if(this._map_list.hasOwnProperty(UnlockChapterKey)){
                             if(this._map_list[UnlockChapterKey].user_difficulty < mid_number){
                                 this._map_list[UnlockChapterKey].user_difficulty = mid_number;
                             }
