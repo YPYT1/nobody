@@ -27,6 +27,10 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     player_shop_level: number[] = [];
     /**
+     * 玩家商店最大等级
+     */
+    player_shop_level_max: number = 6;
+    /**
      * 玩家商店栏
      */
     shop_field_list: ShopFieldList[][] = [];
@@ -51,10 +55,10 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     //售卖状态
     start_buy_state: number = 0;
     //玩家vip状态
-    player_vip_status: number[] = [];
+    player_vip_status : number[] = [];
 
     //购买结束时间
-    countdown_timer: number = 0;
+    countdown_timer : number = 0;
     //玩家购买时间
     MYSTICAL_SHOP_BUY_ITEM: number = 90;
     //最终等待时间
@@ -93,19 +97,19 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     /**
      * 初始灵魂刷新价格
      */
-    initial_refresh_price: number = 100;
+    initial_refresh_price : number = 100;
     /**
      * 1-5次增加价格 
      */
-    refresh_price_1_5: number = 50;
+    refresh_price_1_5 : number = 50;
     /**
      * 5次后增加价格
      */
-    refresh_price_6: number = 100;
+    refresh_price_6 : number = 100;
     /**
      * 刷新次数上限
      */
-    refresh_limit: number = 10;
+    refresh_limit : number = 10;
     //玩家灵魂消耗率
     /**
      * 当局游戏上线
@@ -122,7 +126,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     /**
      * 满配上线
      */
-
     prop_ability_values: {
         [name: string]: {
             [key: string]: number[];
@@ -137,6 +140,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         this.player_count = GameRules.PUBLIC_CONST.PLAYER_COUNT;
         //
         for (let i_p = 0; i_p < this.player_count; i_p++) {
+            this.player_shop_buy_ts_max.push(0);
             //玩家
             this.item_level_probability_group.push([]);
             for (let index = 0; index < 6; index++) {
@@ -217,7 +221,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * 初始化神秘商店
      */
     InitPlayerUpgradeStatus(player_id: PlayerID) {
-        print("MysticalShopSystem InitPlayerUpgradeStatus")
+        print("MysticalShopSystem InitPlayerUpgradeStatus");
         this.shop_field_list[player_id] = [];
         this.player_shop_buy_data[player_id] = {};
         this.player_shop_buy_client[player_id] = [];
@@ -225,8 +229,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         this.player_skill_activated[player_id] = [
             true , true , true , true , true 
         ];
-
-
+        this.player_shop_buy_ts_max[player_id] = 0;
         this.player_shop_buy_ts_data[player_id] = {};
         this.player_shop_buy_ts_client[player_id] = [];
         //玩家栏位重构数据
@@ -362,11 +365,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : 刷新超过上限!");
                 return
             }
-
             let refresh_soul = this.shop_field_list[player_id][index].refresh_soul;
-
             let player_gold_start = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - refresh_soul });
-
             if (player_gold_start.status) {
                 GameRules.MysticalShopSystem.PlayerShopItem(player_id, index)
             } else {
@@ -382,7 +382,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     StopShopSystem() {
         // GameRules.BuffManager.AddGeneralDebuff("")
         GameRules.GetGameModeEntity().StopThink("MYSTICAL_SHOP_BUY_ITEM");
-
         let refresh_soul = GameRules.MysticalShopSystem.initial_refresh_price;
         for (let index = 0 as PlayerID; index < this.player_count; index++) {
             //重新更新商店
@@ -656,18 +655,24 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (this.shop_field_list[player_id][item_index]) {
                 let item_info = this.shop_field_list[player_id][item_index];
                 if (item_info.is_buy == 0) {
-                    //扣除资源
-                    let ModifyResource = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - item_info.soul });
+                    let length =  Object.keys(this.player_shop_buy_ts_data[player_id]).length;
+                    if(length >= this.cell_max){
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "极限道具已满..无法购买");
+                        return 
+                    }else{
+                        //扣除资源
+                        let ModifyResource = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - item_info.soul });
 
-                    if (ModifyResource.status) {
-                        let name = item_info.key;
-                        let rarity = item_info.rarity;
-                        //标记为出售
-                        this.shop_field_list[player_id][item_index].is_buy = 1;
-                        this.shop_field_list[player_id][item_index].is_lock = 0;
-                        this.AddPropAttribute(player_id, name , rarity);
-                    } else {
-                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
+                        if (ModifyResource.status) {
+                            let name = item_info.key;
+                            let rarity = item_info.rarity;
+                            //标记为出售
+                            this.shop_field_list[player_id][item_index].is_buy = 1;
+                            this.shop_field_list[player_id][item_index].is_lock = 0;
+                            this.AddPropAttribute(player_id, name , rarity);
+                        } else {
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
+                        }
                     }
                 } else {
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "此物已经被购买");
@@ -759,7 +764,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             }
         }
         
-        
         let prop_buff = hHero.FindModifierByName("modifier_prop_effect") as modifier_prop_effect
         if (prop_buff) {
             let av : AbilityValuesProps = {};
@@ -769,7 +773,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 if(typeof AbilityValues[key]  == "number"){
                     av[key] = AbilityValues[key];
                 }else if(typeof AbilityValues[key]  == "string"){
-                    let av_list = AbilityValues[key].split(" ");
+                    let str = tostring(AbilityValues[key]);
+                    let av_list = str.split(" ");
                     let av_number = 0;
                     if(rarity >= av_list.length){
                         av_number = tonumber(av_list[av_list.length - 1]);
@@ -798,7 +803,25 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 }else{
                     ObjectValues[key][key_base] = ObjectValues[key][key_base];
                 }
-                
+            }
+        }
+        //判断类型是否清空池子
+        if(ItemData.type == 2 && this.player_shop_buy_ts_max[player_id] == 0){
+            let length =  Object.keys(this.player_shop_buy_ts_data[player_id]).length;
+            if(length >= this.cell_max ){
+                for (let l_i = 0; l_i < this.item_level_group.length; l_i++) {
+                    let p_name = this.item_level_group[l_i];
+                    let l_type= MysteriousShopConfig[p_name as keyof typeof MysteriousShopConfig].type;
+                    if(l_type == 2){
+                        if(!this.player_shop_buy_ts_data[player_id].hasOwnProperty(p_name)){
+                            //移除池子所有极限道具
+                            for (let i_d = 0; i_d < 6; i_d++) {
+                                this.item_level_probability_group[player_id][i_d][l_i] = 0;
+                            }
+                        }
+                    }
+                }
+                this.player_shop_buy_ts_max[player_id] = 1;
             }
         }
         // print("SetAttributeInKey",attr_key)
