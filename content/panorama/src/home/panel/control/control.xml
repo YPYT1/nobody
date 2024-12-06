@@ -2,6 +2,7 @@
 	<styles>
 		<include src="./control.less" />
 		<include src="./../../../_styles/styles.less" />
+		<include src="./../../../_styles/keyframes.less" />
 	</styles>
 	<scripts>
 		<include src="./control.tsx" />
@@ -144,9 +145,9 @@
 					</Panel>
 				</Panel>
 				<Panel class="HeroAbilityContainer">
-					<Panel id="AbilityPoint">
+					<Button id="AbilityPoint">
 						<Label text="{d:point_count}"/>
-					</Panel>
+					</Button>
 					<Panel id='AbilityList' hittest="false" />
 					<Panel id="JumpPanel" class="SpaceJump">
 						<Panel id="AbilityPanel">

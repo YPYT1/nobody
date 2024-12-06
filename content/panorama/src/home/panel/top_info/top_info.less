@@ -1,101 +1,113 @@
-.root{
-    width: 100%;
-    height: 100%;
-}
-.tophud{
+#top_info {
     horizontal-align: center;
-    Panel,Label{
-        font-family: titleFont;
-        font-family: Radiance, FZLanTingHei-R-GBK, TH Sarabun New, Gulim, MingLiU;
+    width: 666px;
+    height: 146px;
+    background-image: url("file://{images}/custom_game/hud/top_info/top_border2.png");
+
+
+    &.Boss {
+        background-image: url("file://{images}/custom_game/hud/top_info/top_border_boss.png");
+
+        #GameTimeInfo {
+            .TypeBoss {
+                visibility: visible;
+            }
+        }
+
     }
-}
-.tophudt{
-    width: 304px;
-    height: 42px;
-    background-image: url('file://{images}/custom_game/hud/top_info/top_bg.png');
-   
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    horizontal-align: center;
-}
-.tophudttitle{
-    horizontal-align: center;
-    font-size: 20px;
-    y: 2px;
-    color: #f4f4f4;
 
-}
-.tophudc{
-    margin-top: 40px;
-    flow-children: right;
-}
-.tophudcltime{
-    font-size: 26px;
-    color: #fff;
-    vertical-align: center;
-    margin-right: 10px;
-}
 
-.tophudccprogressbg{
-    width: 517px;
-    height: 6px;
-    background-image: url('file://{images}/custom_game/hud/top_info/progress_bg.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    vertical-align: center;
-}
+    &.Normal {
 
-.tophudccprogress{
-    width: 50%;
-    height: 4px;
-    background-image: url('file://{images}/custom_game/hud/top_info/progress.png');
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-}
-
-.tophudccx{
-    flow-children: right;
-}
-.tophudccxli{
-    margin-left: 50px;
-    vertical-align: center;
-    brightness: 0.6;
-    saturation: 0.1;
-    transition: saturation 0.2s linear 0s, brightness 0.2s linear 0s, transform 0.2s linear 0s;
-    flow-children: right;
-    &.active{
-        brightness: 1;
-        saturation: 1;
+        #GameTimeInfo {
+            .TypeNormal {
+                visibility: visible;
+            }
+        }
     }
-}
-.tophudccxliimg{
-    width: 40px;
-    height: 40px;
-    vertical-align: center;
-    background-image: url('file://{images}/custom_game/hud/top_info/boss_1.png');
-}
-.tophudccxlinum{
-    vertical-align: center;
-    font-size: 26px;
-    color: #f4f4f4;
-    margin-left: 4px;
-}
-.tophudb{
-    margin-top: 84px;
-    margin-left: 234px;
-    flow-children: down;
-}
-.tophudbarrows{
-    horizontal-align: center;
-    margin-bottom: -10px;
-}
-.tophudbfont{
-    font-size: 20px;
-    color: #f5de8c;
-    text-shadow: 0px 0px 4px 1.6 #9b3d35;
-    .time{
-        font-size: 26px;
-        color: #f00;
-        text-shadow: 0px 0px 1px 1 #9b3d35;
+
+    #GameTimeInfo {
+        // width: 120px;
+        horizontal-align: center;
+        margin-top: 4px;
+
+        .TypeNormal {
+            visibility: collapse;
+            horizontal-align: center;
+
+            .TimeLabel {
+                color: gradient(linear, 0% 0%, 0% 100%, from(#e8fffc), to(#ffffff));
+                text-shadow: 0px 0px 2px 2.0 #000000;
+            }
+        }
+
+        .TypeBoss {
+            horizontal-align: center;
+            flow-children: right;
+            visibility: collapse;
+
+            .Label {
+                vertical-align: middle;
+                font-size: 18px;
+                color: #ffec92;
+                text-shadow: 0px 0px 6px 2.0 #ff3d2e;
+            }
+
+            .TimeLabel {
+                color: #ffec92;
+                text-shadow: 0px 0px 6px 2.0 #ff3d2e;
+            }
+        }
+    }
+
+    .TimeLabel {
+        // horizontal-align: center;
+        font-weight: bold;
+        font-size: 32px;
+
+        // font-family: "思源黑体";
+    }
+
+    .TopRows {
+        // border: 1px solid #ffffff;
+        flow-children: right;
+        margin-top: 12px;
+
+        Label {
+            vertical-align: middle;
+            font-size: 18px;
+            color: #c5c7c6;
+            text-shadow: 0px 0px 1px 2 #000000;
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        .Icon {
+            vertical-align: middle;
+        }
+    }
+
+    #StageInfo {
+        // width: 100px;
+        margin-left: 150px;
+
+        .Icon {
+            width: 28px;
+            height: 27px;
+            background-image: url("file://{images}/custom_game/hud/top_info/icon_map.png");
+        }
+    }
+
+    #LifeInfo {
+        margin-right: 150px;
+        horizontal-align: right;
+
+        .Icon {
+            width: 20px;
+            height: 25px;
+            background-image: url("file://{images}/custom_game/hud/top_info/icon_round.png");
+            background-repeat: no-repeat;
+            background-position: 50%;
+        }
     }
 }

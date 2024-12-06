@@ -5,6 +5,7 @@ const { WatchIgnorePlugin } = require('webpack');
 
 const entries = require('./entries.config');
 const entry = Object.assign({}, entries);
+
 /** @type {import('webpack').Configuration} */
 module.exports = {
     mode: 'development',

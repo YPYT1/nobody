@@ -6,44 +6,23 @@
 	<scripts>
 		<include src="./top_info.tsx" />
 	</scripts>
-	<Panel class="root">
-		<Panel class="tophud">
-            <Panel class="tophudt">
-                <Label html="true" class="tophudttitle" text="元素大陆1-1" />
-            </Panel>
-            <Panel class="tophudc">
-                <Label html="true" class="tophudcltime" text="3:33" />
-                <Panel class="tophudcc">
-                    <Panel class="tophudccprogressbg">
-                        <Panel class="tophudccprogress"></Panel>
-                    </Panel>
-                    <Panel class="tophudccx">
-                        <Panel class="tophudccxli active"> 
-                            <Panel class="tophudccxliimg" />
-                        </Panel>
-                        <Panel class="tophudccxli active">
-                            <Panel class="tophudccxliimg" />
-                        </Panel>
-                        <Panel class="tophudccxli">
-                            <Panel class="tophudccxliimg" />
-                        </Panel>
-                        <Panel class="tophudccxli">
-                            <Panel class="tophudccxliimg" />
-                        </Panel>
-                        <Panel class="tophudccxli">
-                            <Panel class="tophudccxliimg" />
-                        </Panel>
-                        <Panel class="tophudccxli">
-                            <Image class="tophudccxliimg" src="file://{images}/custom_game/hud/top_info/boss_2.png" scaling="stretch-to-fit-preserve-aspect" />
-                            <Label html="true" class="tophudccxlinum" text="x2" />
-                        </Panel>
-                    </Panel>
-                </Panel>
-            </Panel>
-            <Panel class="tophudb">   
-                <Image class="tophudbarrows" src="file://{images}/custom_game/hud/top_info/rrows.png" scaling="stretch-to-fit-preserve-aspect" />
-                <Label html="true" class="tophudbfont" text="挑战倒计时<font class='time'>110s</font>" />
-            </Panel>
-        </Panel>
+	<Panel>
+		<Panel id="StageInfo" class="TopRows" >
+			<Panel class="Icon" />
+			<Label text="{s:stage}" />
+		</Panel>
+		<Panel id="LifeInfo" class="TopRows" >
+			<Panel class="Icon" />
+			<Label text="{d:round} / {d:max_round}" />
+		</Panel>
+		<Panel id="GameTimeInfo">
+			<Panel class="TypeNormal">
+				<Label class="TimeLabel" text="{s:time_label}" />
+			</Panel>
+			<Panel class="TypeBoss">
+				<Label class="Label" text="挑战倒计时"/>
+				<Label class="TimeLabel" text="{s:boss_timer}" />
+			</Panel>
+		</Panel>
 	</Panel>
 </root>

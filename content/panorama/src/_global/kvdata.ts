@@ -1,6 +1,7 @@
 
 // GameUI.CustomUIConfig().kvdata = kv
 import { default as npc_heroes_custom } from "../json/npc_heroes_custom.json";
+import { default as npc_abilities_custom } from "../json/npc_abilities_custom.json";
 import { default as server_talent_data } from "../json/config/server/hero/server_talent_data.json";
 
 import { default as ServerItemList } from "../json/config/server/item/server_item_list.json";
@@ -20,6 +21,7 @@ const KvData = {
     AttributeConst,
     ServerItemList,
     npc_heroes_custom,
+    npc_abilities_custom,
     server_talent_data,
     MysteriousShopConfig,
     PictuerCardData,

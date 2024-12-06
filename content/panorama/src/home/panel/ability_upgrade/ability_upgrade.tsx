@@ -5,6 +5,7 @@ import { default as AbilityTypesJson } from "./../../../json/config/game/const/a
 
 const SelectList = $("#SelectList");
 
+const npc_abilities_custom = GameUI.CustomUIConfig().KvData.npc_abilities_custom;
 const TalentTreeConfig = GameUI.CustomUIConfig().KvData.TalentTreeConfig
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 
@@ -28,9 +29,12 @@ const CustomEventSubscribe = () => {
 
     GameEvents.Subscribe("HeroTalentSystem_GetSelectTalentData", event => {
         let data = event.data;
-        $.Msg("HeroTalentSystem_GetSelectTalentData")
+        let show = data.is_show == 1;
+        SelectList.visible = show;
+        // $.Msg(data)
         let list = Object.values(data.data);
-        // SelectList.RemoveAndDeleteChildren();
+        // $.Msg(["111 HeroTalentSystem_GetSelectTalentData",list.length])
+        SelectList.RemoveAndDeleteChildren();
         let order = 0;
         for (let _data of list) {
             order += 1;
@@ -55,7 +59,7 @@ const CustomEventSubscribe = () => {
             TalentNode.SetPanelEvent("onactivate", () => {
                 let index = TalentNode.Data<PanelDataObject>().index
                 // $.Msg(["HeroSelectTalentOfIndex",index])
-                
+
                 GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
                     event_name: "HeroSelectTalentOfIndex",
                     params: {
@@ -66,6 +70,15 @@ const CustomEventSubscribe = () => {
 
             TalentNode.SetDialogVariableInt("uc", level)
             TalentNode.SetHasClass("IsAbility", row_hero_data.is_ability == 1)
+            if(row_hero_data.is_ability == 1){
+                let ability = row_hero_data.link_ability;
+                let ability_data = npc_abilities_custom[ability as "drow_1"];
+                let manacost = ability_data.AbilityManaCost;
+                let cooldown =  ability_data.AbilityCooldown;
+
+                TalentNode.SetDialogVariableInt("cooldown",cooldown)
+                TalentNode.SetDialogVariableInt("manacost",manacost)
+            }
             TalentNode.SetHasClass("IsAttribute", row_hero_data.tier_number == 99)
             TalentNode.SetDialogVariable("talent_name", $.Localize(`#custom_talent_${id}`))
             TalentNode.SetDialogVariableInt("max", row_hero_data.max_number)
@@ -145,66 +158,7 @@ const CustomEventSubscribe = () => {
             let sub_count = ChildNodeList.GetChildCount();
             const ChildNodeHeader = TalentNode.FindChildTraverse("ChildNodeHeader")!;
             ChildNodeHeader.visible = sub_count > 0;
-
         }
-
-
-        // if (talent_points > 0) {
-        //     // let hero_data = talent_data[hero_name as keyof typeof talent_data];
-        //     for (let id in hero_talent_list) {
-        //         let talent_id = `talent_${id}`;
-        //         let TalentNode = PlayerTalentTreeList.FindChildTraverse(talent_id);
-        //         let loc_row_data = talent_data[id as keyof typeof talent_data];
-        //         let node_index = loc_row_data.index;
-
-        //         if (TalentNode) {
-        //             let _data = hero_talent_list[id];
-        //             let is_unlock = false;// _data.iu == 1;
-        //             let row_hero_data = talent_data[id as "1"];
-        //             let is_max = _data.uc >= talent_data[id as keyof typeof talent_data].max_number
-        //             let is_show = is_unlock && !is_max;
-        //             let level = _data.uc
-        //             // $.Msg(["ddd",hero_talent_tree_object[node_index][id]])
-        //             hero_talent_tree_object[node_index][id] = is_show
-        //             TalentNode.Data<PanelDataObject>().used = _data.uc
-        //             TalentNode.SetHasClass("Show", is_show)
-        //             TalentNode.SetHasClass("IsNew", _data.uc == 0)
-        //             TalentNode.SetHasClass("IsUp", _data.uc > 0)
-        //             TalentNode.SetHasClass("IsAbility", row_hero_data.is_ability == 1)
-        //             TalentNode.SetHasClass("IsAttribute", row_hero_data.tier_number == 99)
-
-        //             TalentNode.SetDialogVariable("talent_name", $.Localize(`#custom_talent_${id}`))
-        //             TalentNode.SetDialogVariableInt("uc", level)
-        //             TalentNode.SetDialogVariableInt("max", row_hero_data.max_number)
-        //             // 类型标签
-        //             let TypesLabel = TalentNode.FindChildTraverse("TypesLabel")!;
-        //             let types_value_list = row_hero_data.mark_types.split(",");
-        //             let has_newTypes = row_hero_data.mark_types != "Null";
-        //             TypesLabel.SetHasClass("Show", has_newTypes && level == 0)
-        //             for (let type_key in AbilityTypesJson) {
-        //                 for (let types_value of types_value_list) {
-        //                     TypesLabel.SetHasClass(type_key, types_value == type_key);
-        //                     if (types_value == type_key) {
-        //                         TypesLabel.SetDialogVariable("type_label", $.Localize("#custom_ability_type_" + type_key))
-        //                     }
-        //                 }
-
-        //             }
-        //             
-
-        //             
-
-
-        //         }
-        //     }
-
-
-        // } else {
-        //     // 关闭升级窗
-        //     // TogglePlayerTalentTreeList(false);
-
-        // }
-
     })
 
     GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
@@ -214,6 +168,6 @@ const CustomEventSubscribe = () => {
 }
 
 (function () {
-    $.Msg(["ability_upgrade"])
+    // $.Msg("ability_upgrade")
     Init()
 })();

@@ -8,7 +8,6 @@
 	</scripts>
     <snippets>
         <snippet name="TalentInfo">
-			
             <Panel class="TalentInfo" antialias="true">
                 <Panel class="BtnHover"/>
                 <Button id="TalentNodeButton">
@@ -36,9 +35,19 @@
                         <Panel id="ChildNodeList" />
                     </Panel>
                 </Button>
+                <Panel class="CooldownAndManacost">
+                    
+                    <Panel class="CooldownPanel">
+                        <Panel class="Icon Cooldown"/>
+                        <Label text="{d:cooldown}"/>
+                    </Panel>
+
+                    <Panel class="ManacostPanel">
+                        <Panel class="Icon Mana"/>
+                        <Label text="{d:manacost}"/>
+                    </Panel>
+                </Panel>
             </Panel>
-		
-			
 		</snippet>
         <snippet name="ChildTalentNode">
 			<Panel class="ChildTalentNode">

@@ -10,7 +10,8 @@
     flow-children: right;
 
     // border: 1px solid #fff;
-    margin-bottom: 120px;
+    margin-bottom: 100px;
+    padding: 40px;
 
     .TalentInfo {
         width: 316px;
@@ -53,6 +54,10 @@
 
             .Name {
                 color: #fbb93a;
+            }
+
+            .CooldownAndManacost {
+                visibility: visible;
             }
 
             .BtnHover {
@@ -331,14 +336,14 @@
                         }
                     }
 
-                    &.is_first .HorLine{
+                    &.is_first .HorLine {
                         // margin-left: 4px;
                         // margin-right: -12px;
                         width: 51%;
                         horizontal-align: right;
                     }
 
-                    &.is_last .HorLine{
+                    &.is_last .HorLine {
                         // margin-left: -2px;
                         width: 51%;
                         horizontal-align: left;
@@ -389,6 +394,53 @@
         }
 
 
+        .CooldownAndManacost {
+            horizontal-align: center;
+            margin-top: 110px;
+            width: 60%;
+            height: 30px;
+            visibility: collapse;
 
+
+            .CooldownPanel {
+                horizontal-align: right;
+            }
+
+            .ManacostPanel {
+                horizontal-align: left;
+            }
+
+            .CooldownPanel,
+            .ManacostPanel {
+                flow-children: right;
+
+                Label {
+                    margin-left: 4px;
+                    font-size: 16px;
+                }
+            }
+
+            // background-color: #0f0;
+        }
+
+    }
+}
+
+.Icon {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+
+    &.Cooldown {
+        background-image: url("file://{images}/custom_game/tooltip/ability/cooldown.png");
+    }
+
+    &.Mana {
+        background-image: url("file://{images}/custom_game/tooltip/ability/mana_cost.png");
+    }
+
+    &.Health {
+        wash-color: #ff0000;
+        background-image: url("file://{images}/custom_game/tooltip/ability/mana_cost.png");
     }
 }
