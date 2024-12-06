@@ -40,7 +40,7 @@ export function Init() {
 
         MainPanel.SetDialogVariable("item_desc", item_desc)
 
-        LimitStar._SetStar(rare)
+        LimitStar._SetStar(rare - 1)
     })
 }
 

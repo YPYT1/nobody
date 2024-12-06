@@ -10,6 +10,7 @@ type PropItemId = keyof typeof MysteriousShopConfig
 interface PropItemConfig {
     item_id?: string;
     rare?: number;
+    /** 0空 1正常 2锁定 */
     state?: number;
     show_tips?: boolean;
 

@@ -1,15 +1,13 @@
 // 全局
-import { default as ServerItemList } from "../json/config/server/item/server_item_list.json";
-import { default as PictuerCardData } from "../json/config/server/picture/pictuer_card_data.json";
-import { default as PictuerFetterConfig } from "../json/config/server/picture/pictuer_fetter_config.json";
-import { default as PictuerFetterAbility } from "../json/config/server/picture/pictuer_fetter_ability.json";
+// import { default as ServerItemList } from "../json/config/server/item/server_item_list.json";
+// import { default as PictuerCardData } from "../json/config/server/picture/pictuer_card_data.json";
+// import { default as PictuerFetterConfig } from "../json/config/server/picture/pictuer_fetter_config.json";
+// import { default as PictuerFetterAbility } from "../json/config/server/picture/pictuer_fetter_ability.json";
+export const GLOBAL_FILE = "global";
 
 declare global {
 
     interface CustomUIConfig {
-        // _PictuerFetterConfig: typeof PictuerFetterConfig;
-        // _PictuerFetterAbility: typeof PictuerFetterAbility;
-        // _PictuerCardData: typeof PictuerCardData;
         CreateServerItem(item_id: string, item_count: number, parent: Panel): Panel;
         GetServerItemData(item_id: string): typeof ServerItemList[keyof typeof ServerItemList]
         GetPictureCardData(item_id: string): typeof PictuerCardData[keyof typeof PictuerCardData]
@@ -19,6 +17,10 @@ declare global {
         ConverAttrAndValueLabel(attr: string, value: number, decimal?: number): string;
         SetHotKey(key: string, down_func: Function, up_func?: Function): void;
         SendCustomEvent: <T1 extends keyof CGED, T2 extends keyof CGED[T1], T3 extends CGED[T1][T2]>(pEventName: T1, event_name: T2, params: T3) => void
+
+        __storage: { [key: string]: any; };
+        setStorage(key: string, value: any): void
+        getStorage(key: string): any
     }
 }
 
@@ -32,10 +34,12 @@ GameUI.CustomUIConfig().CreateServerItem = function (item_id: string, item_count
     return ServerItemPanel
 }
 
+const ServerItemList = GameUI.CustomUIConfig().KvData.ServerItemList;
 GameUI.CustomUIConfig().GetServerItemData = function (item_id: string) {
     return ServerItemList[item_id as keyof typeof ServerItemList];
 }
 
+const PictuerCardData = GameUI.CustomUIConfig().KvData.PictuerCardData;
 /** 通过 itemid 获得对应卡片信息 */
 GameUI.CustomUIConfig().GetPictureCardData = function (item_id: string) {
     return PictuerCardData[item_id as keyof typeof PictuerCardData];
@@ -103,6 +107,7 @@ GameUI.CustomUIConfig().FindOfficialHUDUI = function (panel_id: string) {
         return null;
     }
 }
+
 GameUI.CustomUIConfig().HideCustomTooltip = function () {
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_text");
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_ability");
@@ -154,8 +159,20 @@ GameUI.CustomUIConfig().SendCustomEvent = function <
     })
 }
 
-/** 公式转为数字 */
-const CustomConvertFormulas = function (formula: string, kv: { [key: string]: number }) {
-    // 335*333^2
+
+function setStorage(key: string, value: any) {
+    if (GameUI.CustomUIConfig().__storage == null) {
+        GameUI.CustomUIConfig().__storage = {};
+    }
+    GameUI.CustomUIConfig().__storage[key] = value;
+};
+GameUI.CustomUIConfig().setStorage = setStorage;
+
+function getStorage(key: string) {
+    if (GameUI.CustomUIConfig().__storage == null || GameUI.CustomUIConfig().__storage[key] == null) {
+        return null;
+    }
+    return GameUI.CustomUIConfig().__storage[key];
 }
+GameUI.CustomUIConfig().getStorage = getStorage;
 

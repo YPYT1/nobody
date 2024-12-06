@@ -8,6 +8,13 @@
         <include src="./../../_styles/components/tooltip.less" />
         <include src="./styles.less" />
     </styles>
+    <snippets>
+        <snippet name="RuneAttrRows">
+			<Panel class="RuneAttrRows">
+				<Label text="{s:rune_attr}" html="true"/>
+			</Panel>
+		</snippet>
+    </snippets>
     <Panel class="tooltip_rune tooltip_rare" hittest="false">
         <!-- <Panel class="Background">
             <Panel class="Header">
@@ -25,6 +32,14 @@
             </Panel>
             <Panel class="Description">
                 <Label text="{s:desc}" html="true" />
+            </Panel>
+            <Panel class="RuneTitle">
+                <Panel class="SplitIcon" />
+                <Label text="符文属性"/>
+                <Panel class="SplitIcon Right" />
+            </Panel>
+            <Panel class="RuneAttrPanel">
+                <Panel id="RuneAttrList" />
             </Panel>
         </Panel>
     </Panel>

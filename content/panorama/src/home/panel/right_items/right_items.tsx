@@ -12,6 +12,7 @@ const RightItemsContainer = $("#RightItemsContainer");
 const BtnAboutShop = $("#BtnAboutShop") as Button;
 const BtnAboutRune = $("#BtnAboutRune") as Button;
 
+const setStorage = GameUI.CustomUIConfig().setStorage
 
 const OpenAboutList = (list_type: PanleListType) => {
     for (let i = 0; i < AboutPanleList.GetChildCount(); i++) {
@@ -45,7 +46,7 @@ const CustomGameEventsSubscribe = () => {
         let list_data = Object.values(event.data);
         for (let row of list_data) {
             let name = row.name;
-            
+            setStorage(name + "_attr", row.attr_list)
             let ItemBorder = ItemList_Rune.FindChildTraverse(name);
             if (ItemBorder == null) {
                 let ItemBorder = $.CreatePanel("Panel", ItemList_Rune, name);
@@ -58,8 +59,9 @@ const CustomGameEventsSubscribe = () => {
                 ItemImage.SetImage(GetTextureSrc(textrue));
                 ItemBorder.SetHasClass("rare_" + row.level, true)
                 ItemBorder?.SetDialogVariable("count", ``)
+
+
                 ItemBorder.SetPanelEvent("onmouseover", () => {
-                    $.Msg("attr_list:",row.attr_list)
                     ShowCustomTooltip(ItemBorder, "rune", name, -1, row.level_index)
                 })
 
@@ -67,8 +69,8 @@ const CustomGameEventsSubscribe = () => {
                     HideCustomTooltip()
                 })
 
-                
-                
+
+
             }
         }
 

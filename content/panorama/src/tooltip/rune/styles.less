@@ -25,31 +25,32 @@
     }
 }
 
-.rare_4 .TooltipContent{
+.rare_4 .TooltipContent {
     background-image: url("file://{images}/custom_game/tooltip/rune/r4.png");
 }
 
-.rare_5 .TooltipContent{
+.rare_5 .TooltipContent {
     background-image: url("file://{images}/custom_game/tooltip/rune/r5.png");
 }
 
-.rare_6 .TooltipContent{
+.rare_6 .TooltipContent {
     background-image: url("file://{images}/custom_game/tooltip/rune/r6.png");
 }
+
 .TooltipContent {
     width: @width;
     height: 324px;
     flow-children: down;
     background-image: url("file://{images}/custom_game/tooltip/rune/r2.png");
 
-    
+
     // border: 1px solid #6f319e;
     // background-color: #00000099;
     // box-shadow: hollow #6f319e 0px 0px 4px 0px;
     // box-shadow: #6f319e 0px 0px 8px 0px; // outer, filled
     // box-shadow: inset #6f319e99 0px 0px 1px 10px; // inner
 
-    
+
     .Image {
         margin-top: 12px;
         horizontal-align: center;
@@ -77,21 +78,94 @@
     .Description {
         margin-top: 8px;
         horizontal-align: center;
-        padding: 12px;
+        padding: 10px;
+        height: 80px;
 
         Label {
+            text-align: center;
+            horizontal-align: center;
             font-size: 14px;
         }
     }
+
+    .RuneTitle {
+        // border: 1px solid #fff;
+        margin-top: 8px;
+        horizontal-align: center;
+        flow-children: right;
+
+        Label {
+            color: #ffffff;
+            font-size: 14px;
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        .SplitIcon {
+            width: 28px;
+            height: 7px;
+            background-image: url("file://{images}/custom_game/hud/player_dialog/name_decorate.png");
+            vertical-align: middle;
+
+            &.Right {
+                transform: rotateY(180deg);
+            }
+        }
+    }
+
+    .RuneAttrPanel {
+        // border: 1px solid #ffffff;
+        // width: 100%;
+        horizontal-align: center;
+        height: 100px;
+    }
+
+    #RuneAttrList {
+        // width: 100%;
+        // border: 1px solid #f00;
+        // horizontal-align: center;
+        flow-children: down;
+        vertical-align: middle;
+    }
+
+    .RuneAttrRows {
+        width: 158px;
+        height: 20px;
+        background-image: url("file://{images}/custom_game/hud/player_dialog/rune_attr_rows.png");
+        background-size: 100%;
+        // padding: 4px 0px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+
+        Label {
+            font-size: 14px;
+            vertical-align: middle;
+            horizontal-align: center;
+        }
+
+        &.rare_4 Label {
+            color: @rarity_color_4;
+        }
+
+        &.rare_5 Label {
+            color: @rarity_color_5;
+        }
+
+        &.rare_6 Label {
+            color: @rarity_color_6;
+        }
+
+    }
 }
 
-.GameplayVariable{
+.GameplayVariable {
     font-weight: bold;
-    
+
     &.Current {
-        color:rgb(53,162,72);
+        color: rgb(53, 162, 72);
     }
+
     &.is_negative {
-        color:#ff0000;
+        color: #ff0000;
     }
 }

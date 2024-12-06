@@ -43,14 +43,14 @@ const GameEventsSubscribeInit = () => {
 
     GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
         let data = event.data;
-        // $.Msg(["MysticalShopSystem_GetShopData", data])
+        $.Msg(["MysticalShopSystem_GetShopData"])
         const local_vip = 0;// data.player_vip_status;
 
         let has_limit_item: string[] = []
         let shop_field_list = data.shop_field_list;
         let list_data = Object.values(event.data.player_shop_buy_ts_data);
-        for (let i = 0; i < list_data.length; i++) {
 
+        for (let i = 0; i < list_data.length; i++) {
             // $.Msg(ItemPanel)
             let data = list_data[i];
             let item_key = data.item_key;
@@ -92,7 +92,7 @@ const GameEventsSubscribeInit = () => {
                     // ItemPanel.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${data.item_key}`));
                     LimitItem._SetConfig({ item_id: item_key, rare: star + 1, show_tips: true, state: 1 });
                 } else {
-                    LimitItem._SetConfig({ show_tips: false })
+                    LimitItem._SetConfig({ show_tips: false, state: 0 })
                 }
             }
 
