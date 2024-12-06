@@ -463,8 +463,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         let skill_index = HeroTalentCounfg.index;
         let tier_number = HeroTalentCounfg.tier_number;
         let is_ability = HeroTalentCounfg.is_ability;
-        print("=============")
-        DeepPrintTable(this.player_talent_list[player_id][skill_index].t[tier_number]);
         if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key]) { 
             if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc
                 >= this.player_talent_list[player_id][skill_index].t[tier_number].si[key].ml
@@ -519,7 +517,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             this.player_talent_dt_jn[player_id].splice(d_index , 1);
                         }
                 }
-                if(this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc == 1 && tier_number != 99){
+                if(tier_number != 99){
                     //优先处理 解锁问题
                     let unlock_key = HeroTalentCounfg.unlock_key;
                     for (const element of unlock_key) {
@@ -546,6 +544,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         }
                     }
                 }
+                DeepPrintTable(this.player_talent_dt_jn);
                 //添加属性
                 let ObjectValues  = HeroTalentCounfg.ObjectValues;
                 if(Object.keys(ObjectValues).length > 0){
