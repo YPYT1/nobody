@@ -45,37 +45,34 @@
 			</Button>
 		</snippet>
 		<snippet name="TalentInfo">
-			
-				<Panel class="TalentInfo" antialias="true">
-					<Panel class="BtnHover"/>
-					<Button id="TalentNodeButton">
-						<Image id="TalentIcon" hittest="false"/>
-						<Panel class="AbilityNamePanel">
-							<Label class="Name" text="{s:talent_name}"/>
-							<Label class="Level" text="({d:uc}/{d:max})"/>
+			<Panel class="TalentInfo" antialias="true">
+				<Panel class="BtnHover"/>
+				<Button id="TalentNodeButton">
+					<Image id="TalentIcon" hittest="false"/>
+					<Panel class="AbilityNamePanel">
+						<Label class="Name" text="{s:talent_name}"/>
+						<Label class="Level" text="({d:uc}/{d:max})"/>
+					</Panel>
+					<Panel id="TalentExtra" class="TalentExtraInfo">
+						<Panel id="ExtraElement">
+							<Panel class="NewIcon" />
 						</Panel>
-						<Panel id="TalentExtra" class="TalentExtraInfo">
-							<Panel id="ExtraElement">
-								<Panel class="NewIcon" />
-							</Panel>
-								<Label id="TypesLabel" class="TypeLabel" text="{s:type_label}"/>
+							<Label id="TypesLabel" class="TypeLabel" text="{s:type_label}"/>
+					</Panel>
+					<Panel class="AbilityDescription">
+						<Label text="{s:AbilityDescription}" html="true"/>
+					</Panel>
+					
+					<Panel id="ChildNodeHeader">
+						<Panel class="SplitLine" />
+						<Label text="下级分支"/>
+						<Panel class="BranchLineAndPoint">
+							<Panel class="Point"/>
 						</Panel>
-						<Panel class="AbilityDescription">
-							<Label text="{s:AbilityDescription}" html="true"/>
-						</Panel>
-						
-						<Panel id="ChildNodeHeader">
-							<Panel class="SplitLine" />
-							<Label text="下级分支"/>
-							<Panel class="BranchLineAndPoint">
-								<Panel class="Point"/>
-							</Panel>
-							<Panel id="ChildNodeList" />
-						</Panel>
-					</Button>
-				</Panel>
-		
-			
+						<Panel id="ChildNodeList" />
+					</Panel>
+				</Button>
+			</Panel>
 		</snippet>
 		<snippet name="PanelAttributeRow">
 			<Panel class="PanelAttributeRow">

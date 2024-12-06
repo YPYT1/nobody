@@ -546,6 +546,7 @@ declare interface CGEDPlayerTalentSkillClientList {
 
 declare interface CGEDPlayerTalentDataSkillClient {
     uc : number , //当前技能投入点数
+    ui?:number;
 }
 declare interface CGEDPlayerTalentSkillPoints {
     use_count : number , //使用的技能点

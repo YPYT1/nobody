@@ -106,7 +106,7 @@ export const GameEventsSubscribe = () => {
             TalentNode.Data<PanelDataObject>().used = data.uc;
             TalentNode.SetDialogVariableInt("used", data.uc)
             let TalentNodeButton = TalentNode.FindChildTraverse("TalentNodeButton") as Button;
-            TalentNodeButton.enabled = data.iu == 1;
+            // TalentNodeButton.enabled = data.iu == 1;
         }
     })
 

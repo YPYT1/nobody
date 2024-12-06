@@ -12,6 +12,8 @@ import { default as AttributeConst } from "../json/config/game/attribute_const.j
 
 import { default as MysteriousShopConfig } from "../json/config/game/shop/mysterious_shop_config.json";
 import { default as RuneAttrConfig } from "../json/config/game/rune/rune_attr_config.json";
+import { default as TalentTreeConfig } from "../json/config/game/hero/talent_tree/talent_tree_config.json";
+
 
 
 const KvData = {
@@ -24,6 +26,7 @@ const KvData = {
     PictuerFetterConfig,
     PictuerFetterAbility,
     RuneAttrConfig,
+    TalentTreeConfig,
 }
 
 declare global {

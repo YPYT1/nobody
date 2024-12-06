@@ -108,6 +108,7 @@ export const Initialize = () => {
     $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", true, false);
     $("#mission").BLoadLayout(layout_path + "/mission/mission.xml", true, false);
     $("#game_loading").BLoadLayout(layout_path + "/game_loading/game_loading.xml", true, false);
+    $("#ability_upgrade").BLoadLayout(layout_path + "/ability_upgrade/ability_upgrade.xml", true, false);
     
     if (Game.IsInToolsMode()) {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
