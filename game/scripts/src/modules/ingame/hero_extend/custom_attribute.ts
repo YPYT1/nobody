@@ -51,11 +51,12 @@ export class CustomAttribute {
     OnEntityDotaPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
         // print("OnEntityDotaPlayerGainedLevel")
         const hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
-        //增加天赋点
-        GameRules.HeroTalentSystem.AddHeroTalent(event.player_id, 1);
         //增加符文点
         if (event.level % 5 == 0) {
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
+        }else{
+            //增加天赋点
+            GameRules.HeroTalentSystem.AddHeroTalent(event.player_id, 1);
         }
 
         const rune_mdf = hHero.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;

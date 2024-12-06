@@ -242,7 +242,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         }
 
         DeepPrintTable(this.player_talent_list[player_id]);
-        
+
         //设置英雄个人池 // hero_id
         for (const key in HeroTalentObject) {
             let data = HeroTalentObject[key as keyof typeof HeroTalentObject];
@@ -292,7 +292,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         this.ResetHeroTalent(player_id , {})
     }
     /**
-     * 获取数据列表
+     * su
      * @param player_id 
      * @param params 
      * @param callback 
@@ -413,13 +413,14 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     AddHeroTalent(player_id: PlayerID, count: number = 1) {
         this.player_talent_data[player_id].points += count;
         //监听技能技能变化
+        this.SelectTalentData(player_id);
         this.PointsChange(player_id);
         this.GetHeroTalentListData(player_id, {});
     }
     /**
      * 点天赋->通过index
      */
-    SelectTalentOfIndex(player_id: PlayerID, params: CGED["HeroTalentSystem"]["HeroSelectTalentOfIndex"]) {
+    HeroSelectTalentOfIndex(player_id: PlayerID, params: CGED["HeroTalentSystem"]["HeroSelectTalentOfIndex"]) {
         let index = params.index;
         if (this.player_talent_data[player_id].points <= 0) {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！！");
@@ -440,7 +441,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         }
     }
-
 
     /**
      * 点天赋 内部调用 
@@ -471,8 +471,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             ) {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能已满级");
             } else {
-                print("--------------------")
-
                 //处理技能
                 this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc++;
                 //减少技能点
@@ -485,7 +483,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         uc: 0,
                     }
                 }
-                DeepPrintTable(this.player_talent_data_client[player_id]);
                 this.player_talent_data_client[player_id][key].uc++;
                 this.get_select_talent_data[player_id].is_show = 0;
                 //添加到英雄天赋去
@@ -688,6 +685,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         + HeroTalentCounfg.max_number + ")");
                 }
                 this.GetHeroTalentListData(player_id, {});
+                this.GetSelectTalentData(player_id , {})
+                //天赋点> 0
+                if(this.player_talent_data[player_id].points > 0){
+                    this.SelectTalentData(player_id)
+                }
             }
         } else {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "未找到此技能");
@@ -882,7 +884,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         }
         if(cmd == "!dtf"){
-            this.SelectTalentOfIndex(player_id , { "index" : 0 });
+            this.HeroSelectTalentOfIndex(player_id , { "index" : 0 });
         }
         if(cmd == "!sx"){
             this.SelectTalentData(player_id);
