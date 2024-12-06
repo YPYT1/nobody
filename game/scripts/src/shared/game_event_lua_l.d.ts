@@ -125,6 +125,14 @@ declare interface CGED {
         ResetHeroTalent : {
 
         }
+        //获取可选天赋
+        GetSelectTalentData : {
+
+        }
+        //点天赋->index
+        HeroSelectTalentOfIndex : {
+            index : number ; //选择下标
+        }
     }
     //地图选择
     MapChapter : {

@@ -941,6 +941,37 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
     }
     /**
+     * 工具人
+     * @param player_id 
+     * @param param 
+     * @param name 
+     * @param rarity 
+     */
+    prop_69(player_id: PlayerID, param: { soulpro: number , qt_soulpro : number}, name: string , rarity : number){
+        let player_count = GetPlayerCount();
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let soulpro_num = param.soulpro / 100;
+        let qt_soulpro_num = param.qt_soulpro / 100;
+        let attr_key = "shop_prop_69_" + player_id;
+        for (let index = 0; index < player_count; index++) {
+            if(player_id == index){
+                let ObjectValues = {
+                    "SoulGetRate": {
+                        "MulRegion": soulpro_num
+                    }
+                }
+                GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
+            }else{
+                let ObjectValues = {
+                    "SoulGetRate": {
+                        "MulRegion": qt_soulpro_num
+                    }
+                }
+                GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
+            }
+        }
+    }
+    /**
      * 【以小博大】 %succeed%%%概率灵魂翻倍，%fail%%%概率灵魂减半
      * @param player_id  玩家id
      * @param param 额外参数

@@ -40,6 +40,14 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     //玩家数量
     player_count = 6;
 
+    //玩家动态技能随机库
+    player_talent_dt_jn : string[][] = [];
+    //获取可选技能列表
+    get_select_talent_data : CGEDPlayerSelectTalentData[] = [];
+
+    //玩家最大可选栏位
+    player_field_count : number[] = [ 3 , 3 , 3 , 3]
+
     talent_tree_values: {
         [key: string]: {
             [ability_key: string]: number[];
@@ -50,8 +58,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         max : number,
         abikey : string,
         tier : number,
-    }}[] = []
-
+    }}[] = [];
+    
     constructor() {
         super("HeroTalentSystem" , true);
         for (const key in TalentConfig) {
@@ -73,6 +81,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             this.player_hero_id.push(6);
             this.player_talent_index_max.push({});  
             this.player_hero_star.push(0);
+            this.player_talent_dt_jn.push([]);
+            this.get_select_talent_data.push({
+                is_show : 0, 
+                data : []
+            });
         }
         for (const key in TalentTreeObject) {
             let hero_talent = TalentTreeObject[key as keyof typeof TalentTreeObject];
@@ -112,6 +125,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         if(BaseNPC.IsHero()){
             hero_id = BaseNPC.GetHeroID();
         }
+        this.player_talent_dt_jn[player_id] = [];
+        this.get_select_talent_data[player_id] = {
+            is_show : 0, 
+            data : []
+        };
         //初始化星级
         if(GameRules.ServiceInterface.player_hero_star[player_id][hero_id]){
             this.player_hero_star[player_id] = GameRules.ServiceInterface.player_hero_star[player_id][hero_id];
@@ -121,9 +139,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         this.player_talent_list[player_id] = {};
         this.player_talent_data_client[player_id] = {};
         
-        
         for (let index = 0; index < Object.keys(this.player_talent_config.unlock_count).length; index++) {
-            //是否初始化
+            // 是否初始化
             // this.player_talent_list[player_id][index] = {};
             if (index == 0) {
                 this.player_talent_list[player_id][index] = {
@@ -190,7 +207,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     uc: 1, //当前技能投入点数
                 }
                 this.player_talent_data_client[player_id][key] = {
-                    iu: 1,
                     uc: 1,
                 }
             } else if (unlock_key.includes(parseInt(key))) { //默认可以解锁
@@ -200,7 +216,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     uc: 0, //当前技能投入点数
                 }
                 this.player_talent_data_client[player_id][key] = {
-                    iu: 1,
                     uc: 0,
                 }
             } else {
@@ -226,6 +241,26 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         }
 
+        DeepPrintTable(this.player_talent_list[player_id]);
+        
+        //设置英雄个人池 // hero_id
+        for (const key in HeroTalentObject) {
+            let data = HeroTalentObject[key as keyof typeof HeroTalentObject];
+            if(data.hero_id != hero_id){
+                continue;
+            }
+            let skill_index = data.index;
+            let tier_number = data.tier_number;
+            if (skill_index == 0 && tier_number == 1){ //第一个技能默认点了 不写入 但是要解锁池
+                for (const element of data.unlock_key) {
+                    if(element != 0){
+                        this.player_talent_dt_jn[player_id].push(tostring(element));
+                    }
+                }
+            }else if(tier_number == 1){
+                this.player_talent_dt_jn[player_id].push(tostring(key));
+            }
+        }
         if(IsReset){
             let points = this.player_talent_data[player_id].points + this.player_talent_data[player_id].use_count - 1;
             this.player_talent_data[player_id] = {
@@ -233,11 +268,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 points: points,
             };
             //返还技能点
-            if(GameRules.MapChapter.GameDifficultyNumber >= 104){
-                for (let index = 1; index < points; index++) {
-                    this.TalentUnlockLevel(player_id , index)
-                }
-            }
+            // if(GameRules.MapChapter.GameDifficultyNumber >= 104){
+            //     for (let index = 1; index < points; index++) {
+            //         this.TalentUnlockLevel(player_id , index)
+            //     }
+            // }
         }else{
             this.player_talent_data[player_id] = {
                 use_count: 1,
@@ -257,6 +292,69 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         this.ResetHeroTalent(player_id , {})
     }
     /**
+     * 获取数据列表
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    SelectTalentData(player_id: PlayerID){
+        let shop_wp_list: string[] = [];
+        let Cdata : {
+            key : string , //技能key  -1 // 为投资
+            lv : number , //技能等级
+            r : number , //品质
+            type : number , // 1技能 2其他
+        }[] = [];
+        let for_max = this.player_field_count[player_id];
+        if(this.get_select_talent_data[player_id].is_show == 0){
+            //循环计数器
+            let amount_count = 0;
+            let amount_max = 50;
+            for (let index = 0; index < for_max; index++) {
+                amount_count++;
+                if (amount_count > amount_max) {
+                    break;
+                }
+                let i_length = this.player_talent_dt_jn[player_id].length;
+                if(i_length < 1){
+                    break;
+                }
+                let index_length = RandomInt(0 , i_length - 1);
+                let _name = this.player_talent_dt_jn[player_id][index_length];
+                
+                if (shop_wp_list.includes(_name)) {
+                    //跳过本次 
+                    index--;
+                    continue;
+                }
+                if (_name && _name != "") {
+                    
+                } else {
+                    index--;
+                    continue;
+                }
+                //保存
+                shop_wp_list.push(_name);
+                Cdata.push({
+                    "key" :  _name,
+                    "lv" : 1,
+                    "r" : 1,
+                    "type" : 1 , // 1技能 2其他
+                })
+            }
+            Cdata.push({
+                "key" :  "-1",
+                "lv" : 1,
+                "r" : 1,
+                "type" : 2 , // 1技能 2其他
+            });
+            this.get_select_talent_data[player_id].is_show = 1;
+            this.get_select_talent_data[player_id].data = Cdata;
+        }
+        //发送数据
+        this.GetSelectTalentData(player_id , {})
+    }
+    /**
      * 获取天赋选择列表
      */
     GetHeroTalentListData(player_id: PlayerID, params: CGED["HeroTalentSystem"]["GetHeroTalentListData"], callback?) {
@@ -269,6 +367,20 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     talent_points: this.player_talent_data[player_id].points,
                     talent_use_count: this.player_talent_data[player_id].use_count,
                 }
+            }
+        );
+    }
+
+     /**
+     * 获取天赋选择列表
+     */
+     GetSelectTalentData(player_id: PlayerID, params: CGED["HeroTalentSystem"]["GetSelectTalentData"], callback?) {
+        DeepPrintTable(this.get_select_talent_data);
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "HeroTalentSystem_GetSelectTalentData",
+            {
+                data: this.get_select_talent_data[player_id],
             }
         );
     }
@@ -305,11 +417,36 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         this.GetHeroTalentListData(player_id, {});
     }
     /**
-     * 点天赋
+     * 点天赋->通过index
+     */
+    SelectTalentOfIndex(player_id: PlayerID, params: CGED["HeroTalentSystem"]["HeroSelectTalentOfIndex"]) {
+        let index = params.index;
+        if (this.player_talent_data[player_id].points <= 0) {
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能点不足！！");
+            this.GetHeroTalentListData(player_id, {});
+            return
+        }else{
+            if(this.get_select_talent_data[player_id].is_show == 1){
+                if(this.get_select_talent_data[player_id].data[index].type == 1){
+                    this.HeroSelectTalent(player_id, { key : 
+                        this.get_select_talent_data[player_id].data[index].key,
+                    });
+                }else{
+                    //处理投资系统
+                }
+            }else{
+                //系统问题
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "系统出错....");
+            }
+        }
+    }
+
+
+    /**
+     * 点天赋 内部调用 
      */
     HeroSelectTalent(player_id: PlayerID, params: CGED["HeroTalentSystem"]["HeroSelectTalent"]) {
         let key = params.key;
-        let unitname = this.player_hero_name[player_id];
         let HeroTalentCounfg: typeof HeroTalentObject["1"];
         let hero = PlayerResource.GetSelectedHeroEntity(player_id);
         if (this.player_talent_data[player_id].points <= 0) {
@@ -323,304 +460,237 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             this.GetHeroTalentListData(player_id, {});
             return
         }
-        
-
         let skill_index = HeroTalentCounfg.index;
         let tier_number = HeroTalentCounfg.tier_number;
         let is_ability = HeroTalentCounfg.is_ability;
-        if (this.player_talent_list[player_id][skill_index].iu == 1) {
-            if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key]) { 
-                if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc
-                    >= this.player_talent_list[player_id][skill_index].t[tier_number].si[key].ml
-                ) {
-                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能已满级");
-                } else if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key].iu == 0) {
-                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能未解锁");
-                } else {
-                    if (tier_number != 99) {
-                        if (this.player_talent_list[player_id][skill_index].t[tier_number].sk != "") {
-                            if (this.player_talent_list[player_id][skill_index].t[tier_number].sk != key) {
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "不能选取同层其他技能");
-                                this.GetHeroTalentListData(player_id, {});
-                                return
-                            }       
-                        }   
+        print("=============")
+        DeepPrintTable(this.player_talent_list[player_id][skill_index].t[tier_number]);
+        if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key]) { 
+            if (this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc
+                >= this.player_talent_list[player_id][skill_index].t[tier_number].si[key].ml
+            ) {
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能已满级");
+            } else {
+                print("--------------------")
+
+                //处理技能
+                this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc++;
+                //减少技能点
+                this.AddHeroTalent(player_id , -1)
+                //增加使用记录
+                this.player_talent_data[player_id].use_count++;
+
+                if (!this.player_talent_data_client[player_id].hasOwnProperty(key)) {
+                    this.player_talent_data_client[player_id][key] = {
+                        uc: 0,
                     }
-                    let unlock_key = HeroTalentCounfg.unlock_key;
-                    if(GameRules.MapChapter.GameDifficultyNumber > 101){
-                        //上下级解锁
-                        for (let index = 0; index < unlock_key.length; index++) {
-                            const element = tostring(unlock_key[index]);
-                            if (element == "0") {
-                                continue;
-                            }
-                            let HeroTalent: typeof HeroTalentObject["1"];
-                            HeroTalent = HeroTalentObject[element];
-                            let si = HeroTalent.index;
-                            let tu = HeroTalent.tier_number;
-                            let hero_star = HeroTalent.hero_star;
-                            if(hero_star <= this.player_hero_star[player_id]){
-                                this.player_talent_list[player_id][si].t[tu].si[element].iu = 1;
-                                if (!this.player_talent_data_client[player_id].hasOwnProperty(element)) {
-                                    this.player_talent_data_client[player_id][element] = {
-                                        iu: 1,
-                                        uc: 0,
-                                    }
-                                }
-                            }
+                }
+                DeepPrintTable(this.player_talent_data_client[player_id]);
+                this.player_talent_data_client[player_id][key].uc++;
+                this.get_select_talent_data[player_id].is_show = 0;
+                //添加到英雄天赋去
+                hero.hero_talent[key] = this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc;
+                // 添加mdf效果
+                let AbilityValues  = HeroTalentCounfg.AbilityValues;
+                if(Object.keys(AbilityValues).length > 0){
+                    // let tire_level = hero.hero_talent[key]
+                    let attr_count : CustomAttributeTableType = {};
+                    // 这里需要获取到对应的KV值
+                    let InputAbilityValues: AbilityValuesProps = {};
+                    for(let k in AbilityValues){
+                        let value = this.GetTalentKvOfUnit(hero,key as "1",k as 'base_value')
+                        InputAbilityValues[k] = value
+                    }
+                    let talent_mdf = hero.FindModifierByName("modifier_talent_effect") as modifier_talent_effect;
+                    if(talent_mdf){
+                        talent_mdf.InputAbilityValues(key,InputAbilityValues)
+                    } else {
+                        print("no talent_mdf!!!")
+                    }
+                }
+                //当前层主                    
+                if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
+                    this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
+                }
+                //处理池子数据
+                //最先处理是 满级移除
+                if(this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc
+                    >= this.player_talent_list[player_id][skill_index].t[tier_number].si[key].ml){
+                        if(this.player_talent_dt_jn[player_id].includes(key)){
+                            let d_index = this.player_talent_dt_jn[player_id].indexOf(key);
+                            //移除对应
+                            this.player_talent_dt_jn[player_id].splice(d_index , 1);
                         }
-                    }else{
-                        if((this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc + 1)
-                            >= this.player_talent_list[player_id][skill_index].t[tier_number].si[key].ml){
-                            for (let index = 0; index < unlock_key.length; index++) {
-                                const element = tostring(unlock_key[index]);
-                                if (element == "0") {
-                                    continue;
-                                }
-                                let HeroTalent: typeof HeroTalentObject["1"];
-        
-                                HeroTalent = HeroTalentObject[element];
-                                let si = HeroTalent.index;
-                                let tu = HeroTalent.tier_number;
-                                this.player_talent_list[player_id][si].t[tu].si[element].iu = 1;
-                                let hero_star = HeroTalent.hero_star;
-                                if(hero_star <= this.player_hero_star[player_id]){
-                                    if (!this.player_talent_data_client[player_id].hasOwnProperty(element)) {
-                                        this.player_talent_data_client[player_id][element] = {
-                                            iu: 1,
-                                            uc: 0,
+                }
+                if(this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc == 1 && tier_number != 99){
+                    //优先处理 解锁问题
+                    let unlock_key = HeroTalentCounfg.unlock_key;
+                    for (const element of unlock_key) {
+                        let element_str = tostring(element);
+                        if(!this.player_talent_dt_jn[player_id].includes(element_str)){
+                            this.player_talent_dt_jn[player_id].push(element_str);
+                        }
+                    }
+                    //同层排除功能
+                    if(this.player_talent_list[player_id][skill_index].t[tier_number]){
+                        for (const t_key in this.player_talent_list[player_id][skill_index].t[tier_number].si) {
+                            if(this.player_talent_list[player_id][skill_index].t[tier_number].sk != ""){
+                                if(t_key != this.player_talent_list[player_id][skill_index].t[tier_number].sk){
+                                    if(this.player_talent_data_client[player_id][t_key]){
+                                        if(this.player_talent_dt_jn[player_id].includes(t_key)){
+                                            let d_index = this.player_talent_dt_jn[player_id].indexOf(t_key);
+                                            //移除对应
+                                            this.player_talent_dt_jn[player_id].splice(d_index , 1);
                                         }
                                     }
                                 }
                             }
+                            
                         }
                     }
-                    //根据总投入点 解锁层
-                    if(GameRules.MapChapter.GameDifficultyNumber < 104){  // 133 之前解锁
-                        if (Object.values(this.player_talent_config.unlock_count).includes(this.player_talent_data[player_id].use_count)) {
-                            let s_u_index = Object.values(this.player_talent_config.unlock_count).indexOf((this.player_talent_data[player_id].use_count));
-                            this.player_talent_list[player_id][s_u_index].iu = 1;
-                            if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
-                                for (const si_key in this.player_talent_list[player_id][s_u_index].t[1].si) {
-                                    let HeroTalent: typeof HeroTalentObject["1"];
-                                    HeroTalent = HeroTalentObject[si_key];    
-                                    if(HeroTalent.hero_star <= this.player_hero_star[player_id]){
-                                        this.player_talent_list[player_id][s_u_index].t[1].si[si_key].iu = 1;
-                                        if (!this.player_talent_data_client[player_id].hasOwnProperty(si_key)) {
-                                            this.player_talent_data_client[player_id][si_key] = {
-                                                iu: 1,
+                }
+                //添加属性
+                let ObjectValues  = HeroTalentCounfg.ObjectValues;
+                if(Object.keys(ObjectValues).length > 0){
+                    let tire_level = hero.hero_talent[key]
+                    let attr_count : CustomAttributeTableType = {};
+                    for (let Attr in ObjectValues) {
+                        // let attr_values = this.GetKVAttr(rune_name, key, level_index);
+                        if(!attr_count.hasOwnProperty(Attr)){
+                            attr_count[Attr] = {};
+                        }
+                        for (const AttrType in ObjectValues[Attr]) {
+                            if(typeof ObjectValues[Attr][AttrType] == "number"){
+                                attr_count[Attr][AttrType] = ObjectValues[Attr][AttrType];
+                            }else{
+                                let Str = ObjectValues[Attr][AttrType] as string;
+                                let Str_List = Str.split(" ");
+                                let value = 0;
+                                if(Str_List.length <= (tire_level)){ // 2  2
+                                    value = tonumber(Str_List[Str_List.length - 1])
+                                }else{
+                                    value = tonumber(Str_List[tire_level - 1])
+                                }
+                                attr_count[Attr][AttrType] = value;
+                            }
+                        }
+                    }
+                    GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_"+key,attr_count)
+                }
+
+                if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
+                    this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
+                }
+                
+                //检查此层是否可以开启 被动 
+                if (this.player_talent_list[player_id][skill_index].pu == 0) {
+                    for (let index = 1; index <= this.player_talent_list[player_id][skill_index].tm; index++) {
+                        let sk = this.player_talent_list[player_id][skill_index].t[index].sk;
+                        if (sk == "") {
+                            break;
+                        }
+                        let HeroTalentT: typeof HeroTalentObject["1"];
+                        HeroTalentT = HeroTalentObject[sk];
+                        if (this.player_talent_list[player_id][skill_index].t[index].si[sk].uc
+                            < this.player_talent_list[player_id][skill_index].t[index].si[sk].ml
+                        ) {
+                            break;
+                        }
+                        if (HeroTalentT.unlock_key[0] == 0) {
+                            this.player_talent_list[player_id][skill_index].pu = 1;
+                            if (this.player_talent_list[player_id][skill_index].t.hasOwnProperty(99)) {
+                                let pass_list : string[] = [];
+                                for (const skp in this.player_talent_list[player_id][skill_index].t[99].si) {
+                                    let HeroTalentP: typeof HeroTalentObject["1"];
+                                    HeroTalentP = HeroTalentObject[skp];
+                                    let pass_key = HeroTalentP.unlock_key[0];
+                                    if(pass_key != 0){
+                                        pass_list.push(tostring(pass_key));
+                                    }
+                                }
+                                for (const skp in this.player_talent_list[player_id][skill_index].t[99].si) {
+                                    if(pass_list.includes(skp)){
+                                        continue;
+                                    }
+                                    let HeroTalentP: typeof HeroTalentObject["1"];
+                                    HeroTalentP = HeroTalentObject[skp];
+                                    
+                                    if(HeroTalentP.hero_star <= this.player_hero_star[player_id]){
+                                        //tudo 需要特定处理
+                                        this.player_talent_list[player_id][skill_index].t[99].si[skp].iu = 1;
+                                        if (!this.player_talent_data_client[player_id].hasOwnProperty(skp)) {
+                                            this.player_talent_data_client[player_id][skp] = {
                                                 uc: 0,
                                             }
                                         }
                                     }
                                 }
                             }
+                            break;
                         }
                     }
-                    //处理技能
-                    this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc++;
-                    //减少技能点
-                    this.AddHeroTalent(player_id , -1)
-                    //增加使用记录
-                    this.player_talent_data[player_id].use_count++;
-                    this.player_talent_data_client[player_id][key].uc++;
-                    //添加到英雄天赋去
-                    hero.hero_talent[key] = this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc;
-                    
-                    // 添加mdf效果
-                    let AbilityValues  = HeroTalentCounfg.AbilityValues;
-                    if(Object.keys(AbilityValues).length > 0){
-                        // let tire_level = hero.hero_talent[key]
-                        let attr_count : CustomAttributeTableType = {};
-                        // 这里需要获取到对应的KV值
-                        let InputAbilityValues: AbilityValuesProps = {};
-                        for(let k in AbilityValues){
-                            let value = this.GetTalentKvOfUnit(hero,key as "1",k as 'base_value')
-                            InputAbilityValues[k] = value
-                        }
-                        let talent_mdf = hero.FindModifierByName("modifier_talent_effect") as modifier_talent_effect;
-                        if(talent_mdf){
-                            talent_mdf.InputAbilityValues(key,InputAbilityValues)
-                        } else {
-                            print("no talent_mdf!!!")
-                        }
-                    }
-
-                    //添加属性
-                    let ObjectValues  = HeroTalentCounfg.ObjectValues;
-                    if(Object.keys(ObjectValues).length > 0){
-                        let tire_level = hero.hero_talent[key]
-                        let attr_count : CustomAttributeTableType = {};
-                        for (let Attr in ObjectValues) {
-                            // let attr_values = this.GetKVAttr(rune_name, key, level_index);
-                            if(!attr_count.hasOwnProperty(Attr)){
-                                attr_count[Attr] = {};
-                            }
-                            for (const AttrType in ObjectValues[Attr]) {
-                                if(typeof ObjectValues[Attr][AttrType] == "number"){
-                                    attr_count[Attr][AttrType] = ObjectValues[Attr][AttrType];
-                                }else{
-                                    let Str = ObjectValues[Attr][AttrType] as string;
-                                    let Str_List = Str.split(" ");
-                                    let value = 0;
-                                    if(Str_List.length <= (tire_level)){ // 2  2
-                                        value = tonumber(Str_List[Str_List.length - 1])
-                                    }else{
-                                        value = tonumber(Str_List[tire_level - 1])
-                                    }
-                                    attr_count[Attr][AttrType] = value;
-                                }
-                            }
-                        }
-                        GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_"+key,attr_count)
-                    }
-
-                    if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
-                        this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
-                    }
-                    
-                    //检查此层是否可以开启 被动 
-                    if (this.player_talent_list[player_id][skill_index].pu == 0) {
-                        for (let index = 1; index <= this.player_talent_list[player_id][skill_index].tm; index++) {
-                            let sk = this.player_talent_list[player_id][skill_index].t[index].sk;
-                            if (sk == "") {
-                                break;
-                            }
-                            let HeroTalentT: typeof HeroTalentObject["1"];
-                            HeroTalentT = HeroTalentObject[sk];
-                            if (this.player_talent_list[player_id][skill_index].t[index].si[sk].uc
-                                < this.player_talent_list[player_id][skill_index].t[index].si[sk].ml
-                            ) {
-                                break;
-                            }
-                            if (HeroTalentT.unlock_key[0] == 0) {
-                                this.player_talent_list[player_id][skill_index].pu = 1;
-                                if (this.player_talent_list[player_id][skill_index].t.hasOwnProperty(99)) {
-                                    let pass_list : string[] = [];
-                                    for (const skp in this.player_talent_list[player_id][skill_index].t[99].si) {
-                                        let HeroTalentP: typeof HeroTalentObject["1"];
-                                        HeroTalentP = HeroTalentObject[skp];
-                                        let pass_key = HeroTalentP.unlock_key[0];
-                                        if(pass_key != 0){
-                                            pass_list.push(tostring(pass_key));
-                                        }
-                                    }
-                                    for (const skp in this.player_talent_list[player_id][skill_index].t[99].si) {
-                                        if(pass_list.includes(skp)){
-                                            continue;
-                                        }
-                                        let HeroTalentP: typeof HeroTalentObject["1"];
-                                        HeroTalentP = HeroTalentObject[skp];
-                                        
-                                        if(HeroTalentP.hero_star <= this.player_hero_star[player_id]){
-                                            //tudo 需要特定处理
-                                            this.player_talent_list[player_id][skill_index].t[99].si[skp].iu = 1;
-                                            if (!this.player_talent_data_client[player_id].hasOwnProperty(skp)) {
-                                                this.player_talent_data_client[player_id][skp] = {
-                                                    iu: 1,
-                                                    uc: 0,
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-
-                    if(tier_number != 99){
-                        //同层排除功能
-                        if(this.player_talent_list[player_id][skill_index].t[tier_number]){
-                            for (const t_key in this.player_talent_list[player_id][skill_index].t[tier_number].si) {
-                                if(this.player_talent_list[player_id][skill_index].t[tier_number].sk != ""){
-                                    if(t_key != this.player_talent_list[player_id][skill_index].t[tier_number].sk){
-                                        if(this.player_talent_data_client[player_id][t_key]){
-                                            this.player_talent_data_client[player_id][t_key].iu = 0;
-                                        }
-                                    }
-                                }
-                                
-                            }
-                        }
-                        //上下级排除
-                        if(this.player_talent_list[player_id][skill_index].t[tier_number + 1]){
-                            for (const t_key in this.player_talent_list[player_id][skill_index].t[tier_number + 1].si) {
-                                if(this.player_talent_list[player_id][skill_index].t[tier_number + 1].sk != ""){
-                                    if(t_key != this.player_talent_list[player_id][skill_index].t[tier_number + 1].sk){
-                                        if(this.player_talent_data_client[player_id][t_key]){
-                                            this.player_talent_data_client[player_id][t_key].iu = 0;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //数据写入到网表
-                    CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
-                    
-                    /**
-                     * 替换技能 / 更新等级
-                     */
-                    if(is_ability == 1){
-                        if(HeroTalentCounfg.tier_number == 1 && hero.hero_talent[key] == 1){
-                            //基础技能记录
-                            this.player_talent_index_max[player_id][skill_index].abikey = key;
-                            this.player_talent_index_max[player_id][skill_index].max = 1;
+                }
+                //数据写入到网表
+                CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
+                /**
+                 * 替换技能 / 更新等级
+                 */
+                if(is_ability == 1){
+                    if(HeroTalentCounfg.tier_number == 1 && hero.hero_talent[key] == 1){
+                        //基础技能记录
+                        this.player_talent_index_max[player_id][skill_index].abikey = key;
+                        this.player_talent_index_max[player_id][skill_index].max = 1;
+                        this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.tier_number;
+                        let ablname = HeroTalentCounfg.link_ability;
+                        let ablindex = HeroTalentCounfg.index;
+                        GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero , 1);
+                    }else if(HeroTalentCounfg.tier_number == 1 && hero.hero_talent[key] > 1){
+                        this.player_talent_index_max[player_id][skill_index].max = hero.hero_talent[key];
+                        let ablindex = HeroTalentCounfg.index;
+                        let ablobj = hero.GetAbilityByIndex(ablindex);
+                        ablobj.SetLevel(hero.hero_talent[key])
+                    }else{
+                        if(this.player_talent_index_max[player_id][skill_index].tier < HeroTalentCounfg.tier_number){
                             this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.tier_number;
+                            let sklevel = this.player_talent_index_max[player_id][skill_index].max;
                             let ablname = HeroTalentCounfg.link_ability;
                             let ablindex = HeroTalentCounfg.index;
-                            GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero , 1);
-                        }else if(HeroTalentCounfg.tier_number == 1 && hero.hero_talent[key] > 1){
-                            this.player_talent_index_max[player_id][skill_index].max = hero.hero_talent[key];
-                            let ablindex = HeroTalentCounfg.index;
-                            let ablobj = hero.GetAbilityByIndex(ablindex);
-                            ablobj.SetLevel(hero.hero_talent[key])
-                        }else{
-                            if(this.player_talent_index_max[player_id][skill_index].tier < HeroTalentCounfg.tier_number){
-                                this.player_talent_index_max[player_id][skill_index].tier = HeroTalentCounfg.tier_number;
-                                let sklevel = this.player_talent_index_max[player_id][skill_index].max;
-                                let ablname = HeroTalentCounfg.link_ability;
-                                let ablindex = HeroTalentCounfg.index;
-                                GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero , sklevel);
-                            }
+                            GameRules.HeroTalentSystem.ReplaceAbility(ablname , ablindex , hero , sklevel);
                         }
                     }
-                    // 首次解锁天赋时
-                    let ablname = HeroTalentCounfg.link_ability;
-                    if(hero.hero_talent[key] == 1 && ablname != "null"){
-                        let ablname = HeroTalentCounfg.link_ability;
-                        let hHeroAbility = hero.FindAbilityByName(ablname) as BaseHeroAbility
-                        let mark_element = HeroTalentCounfg.mark_element;
-                        let mark_types = HeroTalentCounfg.mark_types as CustomHeroAbilityTypes;
-                        if (mark_element > 0){
-                            hHeroAbility.AddCustomAbilityElement(mark_element)
-                        }
-                        if (mark_types != "Null"){
-                            hHeroAbility.SetCustomAbilityType(mark_types,true)
-                        }
-                        // print("mark_element",mark_element,"mark_types",mark_types)
-                    }
-                    // 更新点了天赋之后相关变动数值
-                    GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
-
-                    //记录天赋点击情况
-                    if(tier_number == 1){
-                        GameRules.ServiceInterface.PostLuaLog(player_id , "技能位置#"+ skill_index +"学习基础技能:"+ key  + "(" 
-                            + this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc+ "/" 
-                            + HeroTalentCounfg.max_number + ")");
-                    }else{
-                        GameRules.ServiceInterface.PostLuaLog(player_id , "技能位置#"+ skill_index +"学习分支技能:"+ key+ "(" 
-                            + this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc+ "/" 
-                            + HeroTalentCounfg.max_number + ")");
-                    }
-                    this.GetHeroTalentListData(player_id, {});
                 }
-            } else {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "未找到此技能");
+                // 首次解锁天赋时
+                let ablname = HeroTalentCounfg.link_ability;
+                if(hero.hero_talent[key] == 1 && ablname != "null"){
+                    let ablname = HeroTalentCounfg.link_ability;
+                    let hHeroAbility = hero.FindAbilityByName(ablname) as BaseHeroAbility
+                    let mark_element = HeroTalentCounfg.mark_element;
+                    let mark_types = HeroTalentCounfg.mark_types as CustomHeroAbilityTypes;
+                    if (mark_element > 0){
+                        hHeroAbility.AddCustomAbilityElement(mark_element)
+                    }
+                    if (mark_types != "Null"){
+                        hHeroAbility.SetCustomAbilityType(mark_types,true)
+                    }
+                    // print("mark_element",mark_element,"mark_types",mark_types)
+                }
+                // 更新点了天赋之后相关变动数值
+                GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
+
+                //记录天赋点击情况
+                if(tier_number == 1){
+                    GameRules.ServiceInterface.PostLuaLog(player_id , "技能位置#"+ skill_index +"学习基础技能:"+ key  + "(" 
+                        + this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc+ "/" 
+                        + HeroTalentCounfg.max_number + ")");
+                }else{
+                    GameRules.ServiceInterface.PostLuaLog(player_id , "技能位置#"+ skill_index +"学习分支技能:"+ key+ "(" 
+                        + this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc+ "/" 
+                        + HeroTalentCounfg.max_number + ")");
+                }
+                this.GetHeroTalentListData(player_id, {});
             }
         } else {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "当前技能未解锁");
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "未找到此技能");
         }
     }
     /**
@@ -638,38 +708,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 }
             })
         }
-    }
-    /**
-     * 等级解锁功能
-     * @param player_id 
-     * @param level 
-     */
-    TalentUnlockLevel(player_id : PlayerID , level : number){
-        //根据总投入点 解锁层
-        if(GameRules.MapChapter.GameDifficultyNumber >= 104){
-            let unitname = this.player_hero_name[player_id];
-            if (Object.values(this.player_talent_config.unlock_level).includes(level)) {
-                let s_u_index = Object.values(this.player_talent_config.unlock_level).indexOf(level);
-                this.player_talent_list[player_id][s_u_index].iu = 1;
-                if (this.player_talent_list[player_id][s_u_index].t.hasOwnProperty(1)) {
-                    for (const si_key in this.player_talent_list[player_id][s_u_index].t[1].si) {
-                        let HeroTalent: typeof HeroTalentObject["1"];
-                        HeroTalent = HeroTalentObject[si_key];
-                        if(HeroTalent.hero_star <= this.player_hero_star[player_id]){
-                            this.player_talent_list[player_id][s_u_index].t[1].si[si_key].iu = 1;
-                            if (!this.player_talent_data_client[player_id].hasOwnProperty(si_key)) {
-                                this.player_talent_data_client[player_id][si_key] = {
-                                    iu: 1,
-                                    uc: 0,
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            this.GetHeroTalentListData(player_id, {});
-        }
-        
     }
     /**
      * 替换技能
@@ -843,17 +881,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 }
             }
         }
+        if(cmd == "!dtf"){
+            this.SelectTalentOfIndex(player_id , { "index" : 0 });
+        }
+        if(cmd == "!sx"){
+            this.SelectTalentData(player_id);
+        }
     }
-
-
-
-    // OnKillUnit(killer: CDOTA_BaseNPC, target: CDOTA_BaseNPC) {
-    //     // 小松鼠大招标记
-    //     if (target.HasModifier("modifier_hoodwink_ultimate_marker_debuff")) {
-    //         let hBuff = target.FindModifierByName("modifier_hoodwink_ultimate_marker_debuff");
-    //         let hCaster = hBuff.GetCaster();
-    //         let nGold = 1 + math.floor(hCaster.attribute_count["TotalInvestLevel"] / 10);
-    //         LaunchGoldBag(nGold, target.GetAbsOrigin(), null, 30, false);
-    //     }
-    // }
 }

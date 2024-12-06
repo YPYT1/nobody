@@ -62,7 +62,6 @@ export class CustomAttribute {
         if (rune_mdf) {
             rune_mdf.OnLevelUprade()
         }
-        GameRules.HeroTalentSystem.TalentUnlockLevel(event.player_id, event.level);
         this.AttributeInLevelUp(hHero)
     }
 
@@ -533,7 +532,6 @@ export class CustomAttribute {
                         // 否则直接添加要扣除的值
                         new_object[k][k2] = -1 * origin_object[k][k2]
                     }
-
                 }
             }
             // DeepPrintTable(new_object)

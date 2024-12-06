@@ -274,6 +274,12 @@ declare interface CustomGameEventDeclarations {
             talent_use_count: number,
         };
     };
+    /**
+     * 选择天赋数据
+     */
+    HeroTalentSystem_GetSelectTalentData : {
+        data : CGEDPlayerSelectTalentData
+    }
 
     /**
      * 天赋数据 重置后的英雄
@@ -539,7 +545,6 @@ declare interface CGEDPlayerTalentSkillClientList {
 }
 
 declare interface CGEDPlayerTalentDataSkillClient {
-    iu: number, //当前技能是否解锁 0 未解锁 1已解锁
     uc : number , //当前技能投入点数
 }
 declare interface CGEDPlayerTalentSkillPoints {
@@ -658,5 +663,20 @@ declare interface CGEDPlayerRuneData {
     attr_list :  {
         [ attr_id : string ] : number , //数值
     }
+}
+
+declare interface CGEDPlayerTalentSkillPoints {
+    use_count : number , //使用的技能点
+    points : number , //还剩的技能点
+}
+
+declare interface CGEDPlayerSelectTalentData {
+    is_show : number, // 0显示 1不显示
+    data : {
+        key : string , //技能key  -1 // 为投资
+        lv : number , //技能等级
+        r : number , //品质
+        type : number , // 1技能 2其他
+    }[],
 }
 
