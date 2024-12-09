@@ -241,8 +241,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         }
 
-        DeepPrintTable(this.player_talent_list[player_id]);
-
         //设置英雄个人池 // hero_id
         for (const key in HeroTalentObject) {
             let data = HeroTalentObject[key as keyof typeof HeroTalentObject];
@@ -335,9 +333,16 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                 }
                 //保存
                 shop_wp_list.push(_name);
+                let lv = 1;
+                let hero_talent_object = HeroTalentObject[_name as keyof typeof HeroTalentObject];
+                let skill_index = hero_talent_object.index;
+                let tier_number = hero_talent_object.tier_number;
+                if(this.player_talent_list[player_id][skill_index].t[tier_number].si[_name].uc > 0){
+                    lv = lv + this.player_talent_list[player_id][skill_index].t[tier_number].si[_name].uc;
+                }
                 Cdata.push({
                     "key" :  _name,
-                    "lv" : 1,
+                    "lv" : lv,
                     "r" : 1,
                     "type" : 1 , // 1技能 2其他
                 })
@@ -375,7 +380,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * 获取天赋选择列表
      */
      GetSelectTalentData(player_id: PlayerID, params: CGED["HeroTalentSystem"]["GetSelectTalentData"], callback?) {
-        DeepPrintTable(this.get_select_talent_data);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "HeroTalentSystem_GetSelectTalentData",
@@ -436,6 +440,9 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     //处理投资系统
                 }
             }else{
+                if(this.player_talent_data[player_id].points > 0){
+                    this.SelectTalentData(player_id)
+                }
                 //系统问题
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "系统出错....");
             }
@@ -517,13 +524,16 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                             this.player_talent_dt_jn[player_id].splice(d_index , 1);
                         }
                 }
-                if(tier_number != 99){
+                //不是 99的继续移除同层
+                if(tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].si[key].uc == 1){
                     //优先处理 解锁问题
                     let unlock_key = HeroTalentCounfg.unlock_key;
                     for (const element of unlock_key) {
-                        let element_str = tostring(element);
-                        if(!this.player_talent_dt_jn[player_id].includes(element_str)){
-                            this.player_talent_dt_jn[player_id].push(element_str);
+                        if(element != 0){
+                            let element_str = tostring(element);
+                            if(!this.player_talent_dt_jn[player_id].includes(element_str)){
+                                this.player_talent_dt_jn[player_id].push(element_str);
+                            }
                         }
                     }
                     //同层排除功能
@@ -531,12 +541,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         for (const t_key in this.player_talent_list[player_id][skill_index].t[tier_number].si) {
                             if(this.player_talent_list[player_id][skill_index].t[tier_number].sk != ""){
                                 if(t_key != this.player_talent_list[player_id][skill_index].t[tier_number].sk){
-                                    if(this.player_talent_data_client[player_id][t_key]){
-                                        if(this.player_talent_dt_jn[player_id].includes(t_key)){
-                                            let d_index = this.player_talent_dt_jn[player_id].indexOf(t_key);
-                                            //移除对应
-                                            this.player_talent_dt_jn[player_id].splice(d_index , 1);
-                                        }
+                                    if(this.player_talent_dt_jn[player_id].includes(t_key)){
+                                        let d_index = this.player_talent_dt_jn[player_id].indexOf(t_key);
+                                        //移除对应
+                                        this.player_talent_dt_jn[player_id].splice(d_index , 1);
                                     }
                                 }
                             }
@@ -544,7 +552,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         }
                     }
                 }
-                DeepPrintTable(this.player_talent_dt_jn);
                 //添加属性
                 let ObjectValues  = HeroTalentCounfg.ObjectValues;
                 if(Object.keys(ObjectValues).length > 0){
@@ -574,10 +581,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_"+key,attr_count)
                 }
 
-                if (tier_number != 99 && this.player_talent_list[player_id][skill_index].t[tier_number].sk == "") {
-                    this.player_talent_list[player_id][skill_index].t[tier_number].sk = key;
-                }
-                
                 //检查此层是否可以开启 被动 
                 if (this.player_talent_list[player_id][skill_index].pu == 0) {
                     for (let index = 1; index <= this.player_talent_list[player_id][skill_index].tm; index++) {
@@ -612,12 +615,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                                     HeroTalentP = HeroTalentObject[skp];
                                     
                                     if(HeroTalentP.hero_star <= this.player_hero_star[player_id]){
-                                        //tudo 需要特定处理
-                                        this.player_talent_list[player_id][skill_index].t[99].si[skp].iu = 1;
-                                        if (!this.player_talent_data_client[player_id].hasOwnProperty(skp)) {
-                                            this.player_talent_data_client[player_id][skp] = {
-                                                uc: 0,
-                                            }
+                                        if(!this.player_talent_dt_jn[player_id].includes(skp)){
+                                            this.player_talent_dt_jn[player_id].push(skp);
                                         }
                                     }
                                 }
