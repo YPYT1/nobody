@@ -111,7 +111,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * @param IsReset //是否为重置
      */
     RegisterHeroTalent(BaseNPC: CDOTA_BaseNPC , IsReset : boolean = false ) {
-
         //游戏中初始化技能
         if(IsReset){
             GameRules.CustomAttribute.InitAbility(BaseNPC);
@@ -287,7 +286,8 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         //数据写入到网表
         CustomNetTables.SetTableValue("hero_talent", `${player_id}`, this.player_talent_data_client[player_id]);
 
-        this.ResetHeroTalent(player_id , {})
+        this.ResetHeroTalent(player_id , {});
+        this.GetSelectTalentData(player_id , {});
     }
     /**
      * 随机天赋信息
@@ -297,12 +297,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      */
     SelectTalentData(player_id: PlayerID){
         let shop_wp_list: string[] = [];
-        let Cdata : {
-            key : string , //技能key  -1 // 为投资
-            lv : number , //技能等级
-            r : number , //品质
-            type : number , // 1技能 2其他
-        }[] = [];
+        let Cdata : CGEDPlayerSelectTalentOne[] = [];
         let for_max = this.player_field_count[player_id];
         if(this.get_select_talent_data[player_id].is_show == 0){
             //循环计数器
@@ -364,11 +359,19 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }else if(r_int > 700){ //70%=1级，20%=2级，5%=3级=金色边框
                 t2_lv = 2;
             }
+            //获取当前等级
+            let invest_level = GameRules.InvestSystem.PlayerInvestLevelList[player_id] 
+                             + GameRules.InvestSystem.PlayerExtraInvestLevelList[player_id] ;
+            let dq = GameRules.InvestSystem.EqK(player_id , invest_level);
+            let uph = GameRules.InvestSystem.EqK(player_id , (invest_level + t2_lv));
+
             Cdata.push({
                 "key" :  "-1",
                 "lv" : t2_lv,
                 "r" : t2_r,
                 "type" : 2 , // 1技能 2其他
+                "dq" : dq,
+                "uph" : uph,
             });
             this.get_select_talent_data[player_id].is_show = 1;
             this.get_select_talent_data[player_id].data = Cdata;
@@ -437,10 +440,12 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      */
     AddHeroTalent(player_id: PlayerID, count: number = 1) {
         this.player_talent_data[player_id].points += count;
-        //监听技能技能变化
-        this.SelectTalentData(player_id);
+        if(count > 0){
+            //监听技能技能变化
+            this.SelectTalentData(player_id);
+            this.GetHeroTalentListData(player_id, {});
+        }
         this.PointsChange(player_id);
-        this.GetHeroTalentListData(player_id, {});
     }
     /**
      * 点天赋->通过index
@@ -457,8 +462,9 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     this.HeroSelectTalent(player_id, { key : 
                         this.get_select_talent_data[player_id].data[index].key,
                     });
-                }else if(this.get_select_talent_data[player_id].data[index].type == 1){
+                }else if(this.get_select_talent_data[player_id].data[index].type == 2){
                     let level = this.get_select_talent_data[player_id].data[index].lv;
+                    print("level :" , level)
                     //处理投资系统 增加等级
                     GameRules.InvestSystem.PostInvestUp(player_id, level);
                     this.get_select_talent_data[player_id].is_show = 0;
@@ -928,7 +934,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
         }
         if(cmd == "!dtf"){
-            this.HeroSelectTalentOfIndex(player_id , { "index" : 0 });
+            this.HeroSelectTalentOfIndex(player_id , { "index" : 3 });
         }
         if(cmd == "!sx"){
             this.SelectTalentData(player_id);

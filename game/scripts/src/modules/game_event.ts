@@ -175,7 +175,8 @@ export class GameEvent {
             GameRules.RuneSystem.InitPlayerUpgradeStatus(player_id, hUnit);
             //初始化神秘商店
             GameRules.MysticalShopSystem.InitPlayerUpgradeStatus(player_id);
-
+            //初始化投资系统功能
+            GameRules.InvestSystem.Init(player_id);
 
             //初始化数据存储相关
             hUnit.pictuer_ability_name = {};

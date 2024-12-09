@@ -596,7 +596,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     GetShopData(player_id: PlayerID, params: CGED["MysticalShopSystem"]["GetShopData"], callback?: string) {
-        DeepPrintTable(this.shop_field_list[player_id]);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "MysticalShopSystem_GetShopData",

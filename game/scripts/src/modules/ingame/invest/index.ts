@@ -25,7 +25,7 @@ export class InvestSystem extends UIEventRegisterClass {
     /**
      * 默认资源公式 
      */
-    InvestGetResourceEq = "2+LEVEL";
+    InvestGetResourceEq = "LEVEL";
     /**
      * 投资效率 受资源加成影响
      */
@@ -57,16 +57,14 @@ export class InvestSystem extends UIEventRegisterClass {
         /**
          * 基础信息 玩家收益间隔在此实现
          */
-        for (let player_id = 0; player_id < this.player_count; player_id++) {
+        for (let player_id = 0 as PlayerID; player_id < this.player_count; player_id++) {
             this.PlayerInvestStop.push(false);
             this.PlayerInvestLevelList.push(this.PlayerInvestInitLevel)
             this.PlayerExtraInvestLevelList.push(0);     
             this.InvestGetResourceEfficiencyList.push(100);
 
-            let param = {
-                LEVEL : this.PlayerInvestLevelList[player_id] + this.PlayerExtraInvestLevelList[player_id],
-            }
-            let InvestGetResource = LFUN.eval(this.InvestGetResourceEq,param)
+            let level = this.PlayerInvestLevelList[player_id] + this.PlayerExtraInvestLevelList[player_id];
+            let InvestGetResource = this.EqK(player_id , level);
 
             this.PlayerTimerData.push({
                 Interval : 1, //
@@ -83,10 +81,9 @@ export class InvestSystem extends UIEventRegisterClass {
         this.PlayerInvestLevelList[player_id] = this.PlayerInvestInitLevel;
         this.PlayerExtraInvestLevelList[player_id] = 0;
         this.InvestGetResourceEfficiencyList[player_id] = 100;
-        let param = {
-            LEVEL : this.PlayerInvestLevelList[player_id] + this.PlayerExtraInvestLevelList[player_id],
-        }
-        let InvestGetResource = LFUN.eval(this.InvestGetResourceEq,param)
+
+        let level = this.PlayerInvestLevelList[player_id] + this.PlayerExtraInvestLevelList[player_id];
+        let InvestGetResource = this.EqK(player_id , level);
 
         this.PlayerTimerData[player_id] = {
             Interval : 1, //间隔时间
@@ -184,20 +181,28 @@ export class InvestSystem extends UIEventRegisterClass {
             this.EqInvestResource(player_id)
         }
     }
+
+    /**
+     * 效率计算公式
+     */
+    EqK(player_id : PlayerID , level : number ) : number{
+        let param_resource = {
+            LEVEL : level
+        }
+        let Efficiency = this.InvestGetResourceEfficiencyList[player_id];
+        //重新获取资源计算规则
+        let EarningsResource = math.floor(LFUN.eval(this.InvestGetResourceEq,param_resource) * Efficiency / 100) 
+        EarningsResource = math.max(0 , EarningsResource);
+        return EarningsResource;
+    }
     /**
      * 重算投资资源效率
      * @param player_id 
      */
     EqInvestResource(player_id : PlayerID){
         //计算此等级可用获取的资源 
-        let param_resource = {
-            LEVEL : this.PlayerInvestLevelList[player_id] + this.PlayerExtraInvestLevelList[player_id]
-        }
-        let Efficiency = this.InvestGetResourceEfficiencyList[player_id];
-        //重新获取资源计算规则
-        let EarningsResource = math.floor(LFUN.eval(this.InvestGetResourceEq,param_resource) * Efficiency / 100) 
-        EarningsResource = math.max(0 , EarningsResource);
-        this.PlayerTimerData[player_id].ResourceCount = EarningsResource;
+        let level = this.PlayerInvestLevelList[player_id] + this.PlayerExtraInvestLevelList[player_id];
+        this.PlayerTimerData[player_id].ResourceCount = this.EqK(player_id , level);
         //重算后发送下消息
         this.GetPlayerInvestData(player_id,{})
     }

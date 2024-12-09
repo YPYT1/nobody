@@ -687,13 +687,18 @@ declare interface CGEDPlayerTalentSkillPoints {
 
 declare interface CGEDPlayerSelectTalentData {
     is_show : number, // 0显示 1不显示
-    data : {
-        key : string , //技能key  -1 // 为投资
-        lv : number , //技能等级
-        r : number , //品质
-        type : number , // 1技能 2其他
-    }[],
+    data : CGEDPlayerSelectTalentOne[],
 }
+
+declare interface CGEDPlayerSelectTalentOne {
+    key : string , //技能key  -1 // 为投资
+    lv : number , //技能等级
+    r : number , //品质
+    type : number , // 1技能 2其他
+    dq ? : number , // type 2 扩展 当前增加灵魂/s
+    uph ? : number , // type 2 扩展 升级后增加灵魂/s
+}
+
 
 
 
