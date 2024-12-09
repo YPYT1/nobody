@@ -51,7 +51,7 @@ export class CustomAttribute {
     OnEntityDotaPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
         // print("OnEntityDotaPlayerGainedLevel")
         const hHero = EntIndexToHScript(event.hero_entindex) as CDOTA_BaseNPC_Hero;
-        const up_level = event.level - 1;
+        const up_level = event.level;
         //增加符文点
         if (up_level % 5 == 0) {
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)

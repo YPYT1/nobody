@@ -93,6 +93,23 @@ export class ServiceData extends UIEventRegisterClass {
             number: 15226,	//物品数量
             customs: "", //自定义字段
         });
+
+        //魂石
+        for (let index = 0; index < 18; index++) {
+            let item_id = 10000 + index;
+            this.server_package_list[0].push({
+                id : tostring(item_id),	//系统内唯一id
+                item_id: item_id,	//物品表唯一id
+                number: 1000,	//物品数量
+                customs: "", //自定义字段
+            });
+        }
+        this.server_package_list[0].push({
+            id : tostring(1003),	//系统内唯一id
+            item_id: 1003,	//物品表唯一id
+            number: 100000,	//物品数量
+            customs: "", //自定义字段
+        });
         for(let key in PictuerCardData){
             let CardData = PictuerCardData[key as keyof typeof PictuerCardData];
             if(CardData.rarity == 5){

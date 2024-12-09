@@ -14,6 +14,8 @@ export class RuneSystem extends UIEventRegisterClass {
     tianhui_task_drop_list: { key: string[], pro: number[]; }[] = [];
     //每个玩家夜魇可用符文列表
     nightmare_task_drop_list: { key: string[], pro: number[]; }[] = [];
+    //低配符文列表
+    low_drop_list: { key: string[], pro: number[]; }[] = [];
     //debug模式
     de_bug = true;
     //记录天命次数与数据
@@ -77,6 +79,10 @@ export class RuneSystem extends UIEventRegisterClass {
                 key : [],
                 pro : [],
             })
+            this.low_drop_list.push({
+                key : [],
+                pro : [],
+            })
             this.player_fate_data.push([]);
             this.check_rune_name.push([]);
             this.player_check_rune_name.push([]);
@@ -107,6 +113,11 @@ export class RuneSystem extends UIEventRegisterClass {
         
         this.player_refresh_count_config = GameRules.PUBLIC_CONST.PLAYER_REFRESH_COUNT_CONFIG
     }
+    /**
+     * 初始化
+     * @param player_id 
+     * @param hHero 
+     */
     InitPlayerUpgradeStatus( player_id : PlayerID , hHero: CDOTA_BaseNPC = null) {
         let hero_id = -1;
         //掉落列表初始化
@@ -127,6 +138,11 @@ export class RuneSystem extends UIEventRegisterClass {
             pro : [],
         };
 
+        let low_drop_list : { key: string[], pro: number[]; } = {
+            key : [],
+            pro : [],
+        };
+
         for (let key in RuneConfig) {
             const element = RuneConfig[key as keyof typeof RuneConfig];
             if(element.hero_id != 0){
@@ -137,6 +153,8 @@ export class RuneSystem extends UIEventRegisterClass {
             }else if(element.task_type == 0 || element.task_type == 3){
                 drop_info.key.push(key);
                 drop_info.pro.push(element.probability);
+                low_drop_list.key.push(key);
+                low_drop_list.pro.push(element.probability);
             }
             if(element.task_type == 3 || element.task_type == 1){
                 tianhui_task_drop_list.key.push(key);
@@ -151,6 +169,7 @@ export class RuneSystem extends UIEventRegisterClass {
         this.drop_list[player_id] = drop_info;
         this.tianhui_task_drop_list[player_id] = tianhui_task_drop_list;
         this.nightmare_task_drop_list[player_id] = nightmare_task_drop_list;
+        this.low_drop_list[player_id] = low_drop_list;
         
         //初始化刷新次数
         this.player_refresh_count[player_id] = this.player_refresh_count_config;
@@ -286,6 +305,7 @@ export class RuneSystem extends UIEventRegisterClass {
         }
         if (fate_data_info.is_refresh == false) {
             let _hero = PlayerResource.GetSelectedHeroEntity(player_id);
+            let hero_level = _hero.GetLevel();
             //修改已刷新状态
             fate_data_info.is_refresh = true;
             //最多几样物品
@@ -312,9 +332,15 @@ export class RuneSystem extends UIEventRegisterClass {
                     let pro_list = this.nightmare_task_drop_list[player_id].pro;
                     item_name = key_list[GetCommonProbability(pro_list)];
                 }else{
-                    let key_list = this.drop_list[player_id].key;
-                    let pro_list = this.drop_list[player_id].pro;
-                    item_name = key_list[GetCommonProbability(pro_list)];
+                    if(hero_level <= GameRules.MapChapter.LowRuneDropLevel){
+                        let key_list = this.low_drop_list[player_id].key;
+                        let pro_list = this.low_drop_list[player_id].pro;
+                        item_name = key_list[GetCommonProbability(pro_list)];
+                    }else{
+                        let key_list = this.drop_list[player_id].key;
+                        let pro_list = this.drop_list[player_id].pro;
+                        item_name = key_list[GetCommonProbability(pro_list)];
+                    }
                 }
                 if(item_name == "null"){
                     index--;

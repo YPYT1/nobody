@@ -654,24 +654,26 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (this.shop_field_list[player_id][item_index]) {
                 let item_info = this.shop_field_list[player_id][item_index];
                 if (item_info.is_buy == 0) {
-                    let length =  Object.keys(this.player_shop_buy_ts_data[player_id]).length;
-                    if(length >= this.cell_max){
-                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "极限道具已满..无法购买");
-                        return 
-                    }else{
-                        //扣除资源
-                        let ModifyResource = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - item_info.soul });
-
-                        if (ModifyResource.status) {
-                            let name = item_info.key;
-                            let rarity = item_info.rarity;
-                            //标记为出售
-                            this.shop_field_list[player_id][item_index].is_buy = 1;
-                            this.shop_field_list[player_id][item_index].is_lock = 0;
-                            this.AddPropAttribute(player_id, name , rarity);
-                        } else {
-                            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
+                    if(item_info.type == 2){
+                        if(!this.player_shop_buy_ts_data[player_id].hasOwnProperty(item_info.key)){
+                            let length =  Object.keys(this.player_shop_buy_ts_data[player_id]).length;    
+                            if(length >= this.cell_max){
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "极限道具已满..无法购买");
+                                return 
+                            }
                         }
+                    }
+                    //扣除资源
+                    let ModifyResource = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - item_info.soul });
+                    if (ModifyResource.status) {
+                        let name = item_info.key;
+                        let rarity = item_info.rarity;
+                        //标记为出售
+                        this.shop_field_list[player_id][item_index].is_buy = 1;
+                        this.shop_field_list[player_id][item_index].is_lock = 0;
+                        this.AddPropAttribute(player_id, name , rarity);
+                    } else {
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
                     }
                 } else {
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "此物已经被购买");

@@ -20,7 +20,13 @@ export class MapChapter extends UIEventRegisterClass {
     //难度数字类型
     GameDifficultyNumber : number = 101;
 
+    //解锁技能相关符文等级
+    // 低于只出现通用
+    // 高于则解锁专属
+    LowRuneDropLevel : number = 15;
+
     MapIndex: keyof typeof MapInfo = "m1";
+    
 
     MAP_CAMP = { name: "camp", x: 0, y: 0 };
 
@@ -339,6 +345,7 @@ export class MapChapter extends UIEventRegisterClass {
             this.GameDifficulty = params.difficulty as keyof typeof MapInfoDifficulty;
             this.GameDifficultyNumber = tonumber(this.GameDifficulty);
             let MapIndex = MapInfoDifficulty[this.GameDifficulty].map_key as keyof typeof MapInfo;
+            this.LowRuneDropLevel = MapInfoDifficulty[this.GameDifficulty as keyof typeof MapInfoDifficulty].low_rune_drop_level;
             if(!this.map_list_config.hasOwnProperty(MapIndex)){
                 let ky_count = Object.keys(this.map_list_config).length;
                 if(ky_count >= this.map_list_init.length){
