@@ -323,6 +323,22 @@ export class Spawn extends UIEventRegisterClass {
             let playercount = GetPlayerCount();
             for (let index = 0 as PlayerID; index < playercount; index++) {
                 let hHero = PlayerResource.GetSelectedHeroEntity(index);
+                //开摆
+                if(hHero.prop_count["prop_65"] && hHero.prop_count["prop_65"] > 0){
+                    hHero.prop_count["prop_65"]--;
+                    if(hHero.prop_count["prop_65"] == 0){
+                        GameRules.HeroTalentSystem.player_open_add[index] = false;
+                        GameRules.HeroTalentSystem.GetSelectTalentData(index , {});
+                        GameRules.CustomAttribute.DelAttributeInKey(hHero, "shop_prop_65");
+                    }
+                }
+                //肾上腺素
+                if(hHero.prop_count["prop_66"] && hHero.prop_count["prop_66"] > 0){
+                    hHero.prop_count["prop_66"]--;
+                    if(hHero.prop_count["prop_66"] == 0){
+                        GameRules.CustomAttribute.DelAttributeInKey(hHero, "shop_prop_66");
+                    }
+                }
                 //累积生存
                 if(hHero.rune_level_index["rune_112"]){
                     let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_112","hp_pct");

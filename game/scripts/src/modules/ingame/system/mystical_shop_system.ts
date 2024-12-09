@@ -933,12 +933,14 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     prop_65(player_id: PlayerID, param: { }, name: string , rarity : number) {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         let attr_key = "shop_prop_65";
+        hHero.prop_count["prop_65"] = 6;
         let ObjectValues = {
             "SoulGetRate": {
                 "MulRegion": 1.5
             }
         }   
-        GameRules.CustomAttribute.DelAttributeInKey(hHero, "shop_prop_65");
+        GameRules.HeroTalentSystem.player_open_add[player_id] = true;
+        GameRules.HeroTalentSystem.GetSelectTalentData(player_id , {})
         GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
     }
     /**
@@ -951,6 +953,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     prop_66(player_id: PlayerID, param: { fidamage : number , soulpro : number }, name: string , rarity : number) {
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         let fidamage = param.fidamage;
+        hHero.prop_count["prop_66"] = 6;
         let attr_key = "shop_prop_66";
         let ObjectValues = {
             "SoulGetRate": {
@@ -1007,6 +1010,29 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         }else{
             GameRules.ResourceSystem.ModifyResource(player_id, { "Soul": Soul * param.lose / 100 })
         }
+    }
+
+    /**
+     * 【肾上腺素】 下一波刷怪开始时：造成伤害提高%fidamage%%%（最终伤害），灵魂收益降低%soulpro%%%，持续5波
+     * @param player_id  玩家id
+     * @param param 额外参数
+     * @param name 物品名
+     * @param rarity 稀有度
+     */
+    prop_72(player_id: PlayerID, param: { fidamage : number , soulpro : number }, name: string , rarity : number) {
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        let fidamage = param.fidamage;
+        hHero.prop_count["prop_66"] = 5;
+        let attr_key = "shop_prop_66";
+        let ObjectValues = {
+            "SoulGetRate": {
+                "MulRegion": 0.5
+            },
+            "FinalDamageMul": {
+                "MulRegion": fidamage
+            }
+        }
+        GameRules.CustomAttribute.SetAttributeInKey(hHero, attr_key, ObjectValues);
     }
 
     /**
@@ -1343,6 +1369,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
         //直接停止神秘商店  
         if (cmd == "-StopShopSystem") {
             this.StopShopSystem()
+        }
+        if(cmd == "-AddPropAttribute"){
+            GameRules.MysticalShopSystem.AddPropAttribute(player_id, "prop_" + args[0] , 1)
         }
         // if(cmd == "--CreatArmssSelectData"){
         //     let index = args[0] ? parseInt(args[0]) : 0;

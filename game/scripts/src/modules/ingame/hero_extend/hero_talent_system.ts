@@ -59,7 +59,10 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         abikey : string,
         tier : number,
     }}[] = [];
-    
+    //强制关闭天赋加点
+
+    player_open_add : boolean[] = [];
+
     constructor() {
         super("HeroTalentSystem" , true);
         for (const key in TalentConfig) {
@@ -67,6 +70,9 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             this.player_talent_config.unlock_level[parseInt(key)] = TalentConfig[key as keyof typeof TalentConfig].level;
         }
         for (let index = 0; index < this.player_count; index++) {
+
+            this.player_open_add.push(false);
+
             this.player_talent_data.push({
                 use_count: 0,
                 points: 0,
@@ -119,6 +125,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         //获取注册英雄星级
         let player_id = BaseNPC.GetPlayerOwnerID(); 
         //默认设置
+        this.player_open_add[player_id] = false;
         this.player_hero_star[player_id] = 1;
         let hero_id = -1;
         if(BaseNPC.IsHero()){
@@ -400,12 +407,16 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * 获取天赋选择列表
      */
      GetSelectTalentData(player_id: PlayerID, params: CGED["HeroTalentSystem"]["GetSelectTalentData"], callback?) {
+        let send_data = CustomDeepCopy(this.get_select_talent_data[player_id]) as CGEDPlayerSelectTalentData;
+        if(this.player_open_add[player_id] == true){
+            send_data.is_show = 0;
+        }
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "HeroTalentSystem_GetSelectTalentData",
             {
                 data: {
-                    select : this.get_select_talent_data[player_id],
+                    select : send_data,
                     talent_points: this.player_talent_data[player_id].points,
                     talent_use_count: this.player_talent_data[player_id].use_count,
                 }

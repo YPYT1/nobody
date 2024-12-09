@@ -285,6 +285,7 @@ export class RuneSystem extends UIEventRegisterClass {
             this.player_fate_data[player_id][this.player_fate_data_index[player_id]].is_refresh = false;
         }
         if (fate_data_info.is_refresh == false) {
+            let _hero = PlayerResource.GetSelectedHeroEntity(player_id);
             //修改已刷新状态
             fate_data_info.is_refresh = true;
             //最多几样物品
@@ -339,7 +340,6 @@ export class RuneSystem extends UIEventRegisterClass {
                 }
 
                 //属性附加 this.rune_attr_list
-                this.rune_attr_list;
                 let attr_count = 1;
                 let ran_number = RandomInt(1 , 100);
                 if(ran_number > 98){ // 99  100
@@ -350,18 +350,20 @@ export class RuneSystem extends UIEventRegisterClass {
                 let attr_list : {
                     [ attr_id : string ] : number , //数值
                 } = {};
-                for (let a_i = 0; a_i < attr_count ; a_i ++) {
-                    let attr_id_index = RandomInt(0 , this.rune_attr_list.length - 1);
-                    let attr_id = this.rune_attr_list[attr_id_index];
-                    if(attr_list.hasOwnProperty(attr_id)){
-                        a_i--;
-                    }else{
-                        let attr_id_data = RuneAttrConfig[attr_id as keyof typeof RuneAttrConfig];
-                        let attr_id_number = this.ZoomNumber(attr_id_data.AttrSection , attr_id_data.Decimal);
-                        attr_list[attr_id] = attr_id_number;
+
+                if(!_hero.prop_count["prop_72"]){
+                    for (let a_i = 0; a_i < attr_count ; a_i ++) {
+                        let attr_id_index = RandomInt(0 , this.rune_attr_list.length - 1);
+                        let attr_id = this.rune_attr_list[attr_id_index];
+                        if(attr_list.hasOwnProperty(attr_id)){
+                            a_i--;
+                        }else{
+                            let attr_id_data = RuneAttrConfig[attr_id as keyof typeof RuneAttrConfig];
+                            let attr_id_number = this.ZoomNumber(attr_id_data.AttrSection , attr_id_data.Decimal);
+                            attr_list[attr_id] = attr_id_number;
+                        }
                     }
                 }
-
                 ret_data[index] = { name: item_name, level: level_info, level_index: level_index , attr_list : attr_list};
                 shop_wp_list.push(item_name);
                 this.player_check_rune_name[player_id].push(item_name);
@@ -371,14 +373,21 @@ export class RuneSystem extends UIEventRegisterClass {
 
             //玩家倒计时
             if(is_sx == false){
+
+                
                 let hero = PlayerResource.GetSelectedHeroEntity(player_id);
-                let count_down_time = GameRules.GetDOTATime(false,false) + this.count_down_time;
-                fate_data_info.time = count_down_time;
-                hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + (this.player_fate_data_index[player_id] - 1) );
-                hero.SetContextThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + this.player_fate_data_index[player_id], () => {
+
+                if(_hero.prop_count["prop_67"]){
                     GameRules.RuneSystem.TimeSelectRune( player_id );
-                    return null;
-                }, this.count_down_time);
+                }else{
+                    let count_down_time = GameRules.GetDOTATime(false,false) + this.count_down_time;
+                    fate_data_info.time = count_down_time;
+                    hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + (this.player_fate_data_index[player_id] - 1) );
+                    hero.SetContextThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + this.player_fate_data_index[player_id], () => {
+                        GameRules.RuneSystem.TimeSelectRune( player_id );
+                        return null;
+                    }, this.count_down_time);
+                }
             }
             
         }
@@ -442,9 +451,7 @@ export class RuneSystem extends UIEventRegisterClass {
         let hero = PlayerResource.GetSelectedHeroEntity(player_id);
         //暂停定时器
         hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id + "_" + this.player_fate_data_index[player_id]);
-
         let fate_data_info = this.player_fate_data[player_id][this.player_fate_data_index[player_id]];
-        
         let max_level = -1;
         let select_index = -1;
         for (let index = 1; index <= Object.keys(fate_data_info.item_list).length; index++) {
@@ -462,7 +469,6 @@ export class RuneSystem extends UIEventRegisterClass {
     PostSelectRune(player_id: PlayerID, params: CGED["RuneSystem"]["PostSelectRune"]) {
         let index = params.index + 1;
         let level_index = 0;
-
         let hero = PlayerResource.GetSelectedHeroEntity(player_id);
         hero.StopThink("REFRESH_SHOP_LIST" + "_" + player_id+ "_" + this.player_fate_data_index[player_id]);
         GameRules.RuneSystem.player_check_rune_name[player_id] = [];
