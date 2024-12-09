@@ -10,7 +10,8 @@ const TalentTreeConfig = GameUI.CustomUIConfig().KvData.TalentTreeConfig
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 
 let HeroSubNodeObject: { [id: string]: number[] } = {};
-
+let ParentNodeObject: { [id: string]: string } = {};
+let AbilityTalentId: { [ability: string]: string } = {}
 export const Init = () => {
     InitTalentData()
     CustomEventSubscribe();
@@ -18,17 +19,35 @@ export const Init = () => {
 
 const InitTalentData = () => {
     HeroSubNodeObject = {};
+    ParentNodeObject = {};
+    AbilityTalentId = {};
     for (let id in TalentTreeConfig) {
         let row_data = TalentTreeConfig[id as keyof typeof TalentTreeConfig];
-        HeroSubNodeObject[id] = row_data.unlock_key
+        HeroSubNodeObject[id] = row_data.unlock_key;
+        if (row_data.is_ability == 1) {
+            let ability_name = row_data.link_ability
+            AbilityTalentId[ability_name] = id
+        }
+        for (let sub_id of row_data.unlock_key) {
+            if (sub_id != 0) {
+                ParentNodeObject[`${sub_id}`] = id;
+            }
+        }
     }
 
+    $.Msg(AbilityTalentId)
 }
 // GetSelectTalentData(player_id: PlayerID, params: CGED["HeroTalentSystem"]["GetSelectTalentData"], callback?)
+let hero_talent_list: CGEDPlayerTalentSkillClientList = {}
 const CustomEventSubscribe = () => {
 
-    GameEvents.Subscribe("HeroTalentSystem_GetSelectTalentData", event => {
+    GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
         let data = event.data;
+        hero_talent_list = data.hero_talent_list;
+    })
+
+    GameEvents.Subscribe("HeroTalentSystem_GetSelectTalentData", event => {
+        let data = event.data.select;
         let show = data.is_show == 1;
         SelectList.visible = show;
         // $.Msg(data)
@@ -50,11 +69,11 @@ const CustomEventSubscribe = () => {
             }
             TalentNode.Data<PanelDataObject>().index = order - 1;
             if (type == 2) {
-                TalentNode.visible = false
+                // TalentNode.visible = false
                 TalentNode.SetDialogVariableInt("max", -1)
                 continue
             } else {
-                TalentNode.visible = true
+                // TalentNode.visible = true
             }
             TalentNode.SetPanelEvent("onactivate", () => {
                 let index = TalentNode.Data<PanelDataObject>().index
@@ -70,14 +89,51 @@ const CustomEventSubscribe = () => {
 
             TalentNode.SetDialogVariableInt("uc", level)
             TalentNode.SetHasClass("IsAbility", row_hero_data.is_ability == 1)
-            if(row_hero_data.is_ability == 1){
-                let ability = row_hero_data.link_ability;
-                let ability_data = npc_abilities_custom[ability as "drow_1"];
-                let manacost = ability_data.AbilityManaCost;
-                let cooldown =  ability_data.AbilityCooldown;
 
-                TalentNode.SetDialogVariableInt("cooldown",cooldown)
-                TalentNode.SetDialogVariableInt("manacost",manacost)
+            // 显示父级分支
+            // 技能类显示父技能,天赋类显示对应技能
+            // 如果为技能显示父级ID,否则显示对应技能名的ID
+            const ParentAbilityPanel = TalentNode.FindChildTraverse("ParentAbilityPanel") as ImagePanel;
+            ParentAbilityPanel.SetPanelEvent("onmouseout", () => {
+                HideCustomTooltip()
+            })
+            const link_ability = row_hero_data.link_ability;
+            if (row_hero_data.is_ability == 1) {
+                let ability_data = npc_abilities_custom[link_ability as "drow_4a"];
+                let manacost = ability_data.AbilityManaCost ?? 0;
+                let cooldown = ability_data.AbilityCooldown ?? 0;
+                if (typeof (cooldown) == "string") {
+                    cooldown = cooldown.split(" ")[0]
+                }
+                // $.Msg(["manacost", manacost, "cooldown", cooldown])
+                TalentNode.SetDialogVariableInt("cooldown", parseInt(cooldown))
+                TalentNode.SetDialogVariableInt("manacost", manacost)
+
+                let parent_id = ParentNodeObject[id];
+                // $.Msg(["parent_id", parent_id, parent_id != null])
+                ParentAbilityPanel.visible = parent_id != null
+                if (parent_id == null) {
+                    ParentAbilityPanel.SetPanelEvent("onmouseover", () => { })
+                } else {
+                    let parent_talent = TalentTreeConfig[parent_id as "1"];
+                    ParentAbilityPanel.SetImage(GetTextureSrc(parent_talent.img))
+                    ParentAbilityPanel.SetPanelEvent("onmouseover", () => {
+                        let _data = hero_talent_list[parent_id]
+                        ShowCustomTooltip(ParentAbilityPanel, "talent_tree", "", parent_id, _data.uc)
+                    })
+                }
+
+                // let parent_id = AbilityTalentId[ability];
+
+
+            } else {
+                let parent_id = AbilityTalentId[link_ability];
+                let parent_talent = TalentTreeConfig[parent_id as "1"];
+                ParentAbilityPanel.SetImage(GetTextureSrc(parent_talent.img))
+                ParentAbilityPanel.SetPanelEvent("onmouseover", () => {
+                    let _data = hero_talent_list[parent_id]
+                    ShowCustomTooltip(ParentAbilityPanel, "talent_tree", "", parent_id, _data.uc)
+                })
             }
             TalentNode.SetHasClass("IsAttribute", row_hero_data.tier_number == 99)
             TalentNode.SetDialogVariable("talent_name", $.Localize(`#custom_talent_${id}`))
@@ -147,7 +203,9 @@ const CustomEventSubscribe = () => {
                 ChildTalentIcon.SetImage(img_src);
 
                 ChildTalentIcon.SetPanelEvent("onmouseover", () => {
-                    ShowCustomTooltip(ChildTalentIcon, "talent_tree", "", _id, 0)
+                    let _data = hero_talent_list[_id]
+                    let level = _data ? _data.uc : 0
+                    ShowCustomTooltip(ChildTalentIcon, "talent_tree", "", _id, level)
                 })
 
                 ChildTalentIcon.SetPanelEvent("onmouseout", () => {
@@ -158,11 +216,18 @@ const CustomEventSubscribe = () => {
             let sub_count = ChildNodeList.GetChildCount();
             const ChildNodeHeader = TalentNode.FindChildTraverse("ChildNodeHeader")!;
             ChildNodeHeader.visible = sub_count > 0;
+
+
         }
     })
 
     GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
         event_name: "GetSelectTalentData",
+        params: {}
+    })
+
+    GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
+        event_name: "GetHeroTalentListData",
         params: {}
     })
 }

@@ -121,10 +121,9 @@ const TogglePlayerTalentTreeList = (bShow: boolean) => {
 }
 
 export const CreatePanel_Talent = () => {
-    let local_hero = Players.GetPlayerHeroEntityIndex(local_player);
-    MainPanel.SetDialogVariableInt("point_count", 0)
-    // CreateHeroTalentTree(6 as HeroID)
-    GameEventsSubscribe()
+    // let local_hero = Players.GetPlayerHeroEntityIndex(local_player);
+    // MainPanel.SetDialogVariableInt("point_count", 0)
+    // GameEventsSubscribe()
 }
 
 let HeroSubNodeObject: { [id: string]: number[] } = {};

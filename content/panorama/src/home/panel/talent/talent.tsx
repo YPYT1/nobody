@@ -207,5 +207,5 @@ export const Init = () => {
 
 
 (function () {
-    // if (Game.IsInToolsMode()) { Init() }
+    if (Game.IsInToolsMode()) { Init() }
 })();

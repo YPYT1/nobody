@@ -88,6 +88,7 @@ const SetHokeyPanel = () => {
 }
 
 const SetRuneSelectHotkey_R = () => {
+    // $.Msg(["SetRuneSelectHotkey_R"])
     let is_show = LocalPlayerRuneDialog.BHasClass("Show");
     if (is_show && refresh_count > 0) {
         GameEvents.SendCustomGameEventToServer("RuneSystem", {

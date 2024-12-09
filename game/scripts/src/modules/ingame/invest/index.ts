@@ -129,27 +129,24 @@ export class InvestSystem extends UIEventRegisterClass {
         // GameRules.PlayerHeroAttributeData.UpdateHeroAttribute(PlayerResource.GetSelectedHeroEntity(player_id) , false , "Update_15")
 }
     //开始收益
-    StartEarnings(){
-        let player_count = GetPlayerCount()
-        for (let index = 0 as PlayerID; index < player_count; index++) {
-            if(this.PlayerTimerData[index].State == false){
-                this.PlayerTimerData[index].State = true;
-                let player_id = index;
-                let unit = PlayerResource.GetSelectedHeroEntity(player_id);
-                unit.SetContextThink("player_earnings",()=>{
-                    //增加资源 -> 灵魂
-                    GameRules.ResourceSystem.ModifyResource( player_id, 
-                        { 
-                            "Soul": GameRules.InvestSystem.PlayerTimerData[player_id].ResourceCount
-                        }
-                    )
-                    //处理收益其他问题
+    StartEarnings(player_id : PlayerID){
+        if(this.PlayerTimerData[player_id].State == false){
+            this.PlayerTimerData[player_id].State = true;
+            let unit = PlayerResource.GetSelectedHeroEntity(player_id);
+            unit.SetContextThink("player_earnings",()=>{
+                //增加资源 -> 灵魂
+                GameRules.ResourceSystem.ModifyResource( player_id, 
+                    { 
+                        "Soul": GameRules.InvestSystem.PlayerTimerData[player_id].ResourceCount
+                    }
+                )
+                //处理收益其他问题
 
-                    //返回修改时间
-                    return GameRules.InvestSystem.PlayerTimerData[player_id].Interval;
-                },0)
-            }
+                //返回修改时间
+                return GameRules.InvestSystem.PlayerTimerData[player_id].Interval;
+            },0)
         }
+        
     }
     //停止收益
     StopEarnings(){
@@ -209,7 +206,7 @@ export class InvestSystem extends UIEventRegisterClass {
     */
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         if (cmd == "-syks") {  //开始投资收益
-            this.StartEarnings();
+            // this.StartEarnings();
         } else if (cmd == "-sytz") { //停止投资收益
             this.StopEarnings();
         }else if (cmd == "-syup") { //投资等级升级

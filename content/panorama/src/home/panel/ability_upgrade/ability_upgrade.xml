@@ -35,13 +35,15 @@
                         <Panel id="ChildNodeList" />
                     </Panel>
                 </Button>
+                <Panel class="TalentParentAbility" hittest="false" >
+                    <!-- <Panel class="TalentStateLabel" /> -->
+                    <Image id="ParentAbilityPanel" />
+                </Panel>
                 <Panel class="CooldownAndManacost">
-                    
                     <Panel class="CooldownPanel">
                         <Panel class="Icon Cooldown"/>
                         <Label text="{d:cooldown}"/>
                     </Panel>
-
                     <Panel class="ManacostPanel">
                         <Panel class="Icon Mana"/>
                         <Label text="{d:manacost}"/>
