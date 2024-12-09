@@ -297,7 +297,7 @@ declare interface CGED {
             box_type : number ,//部位  1 武器
             key : string , //魂石key
         }
-        //升级/降级
+        //升级
         SoulIntensify : {
             box_type : number ,//部位  1 武器
             index : number ,// 位置

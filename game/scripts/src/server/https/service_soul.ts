@@ -112,7 +112,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                         let ret = this.SoulDataUp(key , 0 , 0);
                         if(ret.code == true){
                             let Sj_config_key = this.level_u_d_config.up[0];
-                            let need_item = this.GetUpItem(Sj_config_key , 1);
+                            let need_item = this.GetUpItem(Sj_config_key , key , 1);
                             for (const need_item_key in need_item) {
                                 let need_item_id = tonumber(need_item_key);
                                 let need_item_count = need_item[need_item_id];
@@ -158,7 +158,7 @@ export class ServiceSoul extends UIEventRegisterClass {
         let type  = params.type;
         if(box_type > 0 && box_type <= this.player_box_type_count){
             if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
-                if(this.soul_list[player_id].i[box_type].d.hasOwnProperty(index)){
+                if(this.soul_list[player_id].i[box_type].d[index]){
                     let r_data = CustomDeepCopy(this.soul_list[player_id].i[box_type].d[index]) as CGEDGetSoulListData;
                     let level = r_data.l;
                     let value = r_data.v;
@@ -171,7 +171,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                             l : level ,//拼图等级
                         },
                     };
-                    if(type = 1){
+                    if(type == 1){
                         if(level < 20){
                            //获取数据...
                             ret = this.SoulDataUp(key , level , value); 
@@ -182,15 +182,20 @@ export class ServiceSoul extends UIEventRegisterClass {
                     }else{
                         if(level > 0){
                             //获取数据...
-                            ret = this.SoulDataUp(key , level , value);
+                            ret = this.SoulDataDrop(key , level , value);
                         }else{
                             GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:不能低于1级")
                             return
                         }
                     }
                     if(ret.code == true){
-                        let Sj_config_key = this.level_u_d_config.up[0];
-                        let need_item = this.GetUpItem(Sj_config_key , 1);
+                        let Sj_config_key = "";
+                        if(type == 1){
+                            Sj_config_key = this.level_u_d_config.up[level];
+                        }else{
+                            Sj_config_key = this.level_u_d_config.drop[level];
+                        }
+                        let need_item = this.GetUpItem(Sj_config_key , key , type);
                         for (const need_item_key in need_item) {
                             let need_item_id = tonumber(need_item_key);
                             let need_item_count = need_item[need_item_id];
@@ -222,9 +227,6 @@ export class ServiceSoul extends UIEventRegisterClass {
     }
     /**
      * 魂石属性创建/升级
-     */
-    /**
-     * 魂石属性创建/升级
      * @param key 魂石属性key
      * @param level 魂石等级
      * @param num 魂石属性值
@@ -237,6 +239,12 @@ export class ServiceSoul extends UIEventRegisterClass {
                 "l" : 0 ,
                 "v" : 0 ,
             }
+        }
+        if(level != 0){
+            ret.data.l = level;
+        }
+        if(value != 0){
+            ret.data.v = value;
         }
         let SoulAttr_data = ServerSoulAttr[key as keyof typeof ServerSoulAttr];
         let float = SoulAttr_data.float;
@@ -260,7 +268,7 @@ export class ServiceSoul extends UIEventRegisterClass {
             value_per = SoulAttr_data.value_per_1_5;
             value_max = SoulAttr_data.value_max_5;
         }
-        let per = 1 + (value_per * level / 100);
+        let per = 100 + value_per * level;
         
         let newSection = this.SectionPer(up_value , float , per);
         let add_value = this.ZoomNumber(newSection , float)
@@ -270,7 +278,55 @@ export class ServiceSoul extends UIEventRegisterClass {
         }else{
             ret.data.v += add_value;
         }
-        ret.data.l++;
+        ret.data.l = level + 1;
+
+        return ret;
+    }
+
+
+    /**
+     * 魂石属性创建/升级
+     * @param key 魂石属性key
+     * @param level 魂石等级
+     * @param num 魂石属性值
+     */
+    SoulDataDrop( key : string , level : number = 0 , value : number = 0) : { code : boolean , data : CGEDGetSoulListData}{
+        let ret  : { code : boolean , data : CGEDGetSoulListData} = {
+            code : true,
+            data : {
+                "k" : key,
+                "l" : level ,
+                "v" : value ,
+            }
+        }
+        let SoulAttr_data = ServerSoulAttr[key as keyof typeof ServerSoulAttr];
+        let float = SoulAttr_data.float;
+        let up_value = SoulAttr_data.up_value;
+        let value_per = 0;
+        let value_min = 0;
+        if((level - 1) < 0){
+            return ret;
+        }
+        if(level > 15){
+            value_per = SoulAttr_data.value_per_16_20;
+        }else if(level > 10){
+            value_per = SoulAttr_data.value_per_11_15;
+        }else if(level > 5){
+            value_per = SoulAttr_data.value_per_6_10;
+        }else{
+            value_per = SoulAttr_data.value_per_1_5;
+        }
+        let per = 100 + value_per * level;
+        
+        let newSection = this.SectionPer(up_value , float , per);
+        let sub_value = this.ZoomNumber(newSection , float)
+        if((value - sub_value ) <= value_min){
+
+            ret.data.v = value_min;
+        }else{
+            ret.data.v -= sub_value;
+        }
+        ret.data.l--;
 
         return ret;
     }
@@ -301,6 +357,7 @@ export class ServiceSoul extends UIEventRegisterClass {
             }
         }
         ret_scope = tostring(value_min) + "-" + tostring(value_max);
+        print("ret_scope : " , ret_scope);
         return ret_scope ;
     }
 
@@ -329,16 +386,18 @@ export class ServiceSoul extends UIEventRegisterClass {
                 attr_value = attr_value / 10;
             }
         }
+        print("attr_value :" ,  attr_value);
         return attr_value;
     }
     /**
      * 获取物品升降级物品
-     * @param key  //使用的key
+     * @param key  //强化key
+     * @param attr_key //属性key
      * @param consume  //主要消耗
      * @param items  //额外物品列表
      * @param type  //升级还是降级 1 升级 2降级
      */
-    GetUpItem( key : string ,  type : number ): {
+    GetUpItem( key : string , attr_key : string , type : number ): {
         [item_id : number ]  : number,
     }{
         let ret : {
@@ -351,9 +410,10 @@ export class ServiceSoul extends UIEventRegisterClass {
         if(consume != "null"){
             let con_data = consume.split("_");
             if(type == 1){
-                let item_id_list = ServerSoulAttr[key as keyof typeof ServerSoulAttr].item_id;
-                let section = tonumber(con_data[1]) - 1;
+                let item_id_list = ServerSoulAttr[attr_key as keyof typeof ServerSoulAttr].item_id;
+                let section = tonumber(con_data[0]) - 1;
                 let get_item_id = item_id_list[section];
+                print("get_item_id : " , get_item_id);
                 ret[get_item_id] = tonumber(con_data[1]);    
             }else{
                 ret[tonumber(con_data[0])] = tonumber(con_data[1]);
@@ -379,6 +439,7 @@ export class ServiceSoul extends UIEventRegisterClass {
      * @param params 
      */
     GetPlayerServerSoulData(player_id: PlayerID, params:  CGED["ServiceSoul"]["GetPlayerServerSoulData"]){
+        DeepPrintTable(this.soul_list[player_id].i);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceSoul_GetPlayerServerSoulData",
@@ -388,4 +449,12 @@ export class ServiceSoul extends UIEventRegisterClass {
         );
     }
 
+    Debug(cmd: string, args: string[], player_id: PlayerID): void {
+        if(cmd == "!HSadd"){
+            this.SoulAddOfField( player_id , { "box_type" : 1 , "key" : "1" })
+        }
+        if(cmd == "!HSUP"){
+            this.SoulIntensify( player_id , { "box_type" : 1 , "index" : 0 , "type" : 1})
+        }
+    }
 }
