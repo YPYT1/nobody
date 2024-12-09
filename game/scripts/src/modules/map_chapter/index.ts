@@ -196,9 +196,6 @@ export class MapChapter extends UIEventRegisterClass {
                 }
             }
         }
-
-        DeepPrintTable(this._map_list);
-
         // if(str && str != ""){
         //     let str_list = str.split(",");
         //     let cache_map_list : number[] = [];
@@ -322,8 +319,6 @@ export class MapChapter extends UIEventRegisterClass {
             }
         );
     }
-
-
     //获取游戏最高难度
     GetDifficultyMax(player_id: PlayerID, params: CGED["MapChapter"]["GetDifficultyMax"]) {
         CustomGameEventManager.Send_ServerToPlayer(

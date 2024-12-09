@@ -191,7 +191,6 @@ export class Spawn extends UIEventRegisterClass {
                 this._player_sum_kill.push(0);
                 this._player_round_sum_kill.push(0);
             }
-            
         }
 
         //加载怪物血量公式 加载怪物攻击公式
@@ -1087,6 +1086,8 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.GetGameModeEntity().SetContextThink("StopAllSpawnAndMonster", () => {
             GameRules.Spawn._game_start = false;
             GameRules.MapChapter._game_select_phase = 999;
+            //停止收益
+            GameRules.InvestSystem.StopEarnings();
             //禁用英雄技能
             if(!IsInToolsMode()){ //测试模式下不禁用
                 for (const hero of HeroList.GetAllHeroes()) {
@@ -1270,20 +1271,20 @@ export class Spawn extends UIEventRegisterClass {
             }
             return 
         }
-        let player_id = killer.GetPlayerOwnerID();
+        // let player_id = killer.GetPlayerOwnerID();
         let unit_label = target.GetUnitLabel();
         //普通怪处理
         if (unit_label == "creatur_normal") {
             //判断是否掉落全体宝物箱 排除任务怪
             let vect = target.GetAbsOrigin();
             let KillExpDrop = GameRules.Spawn.map_info_round[round_index].monster_KillExpDrop;
-            let KillSoul = GameRules.Spawn.map_info_round[round_index].monster_KillSoul;
+            // let KillSoul = GameRules.Spawn.map_info_round[round_index].monster_KillSoul;
             let ExpType = GetCommonProbability(KillExpDrop);
             GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
-            GameRules.ResourceSystem.ModifyResource(player_id, {
-                "Soul": KillSoul,
-                "Kills": 1,
-            })
+            // GameRules.ResourceSystem.ModifyResource(player_id, {
+            //     "Soul": KillSoul,
+            //     "Kills": 1,
+            // })
             //掉落物品
             let RIntNumber  = RandomInt(1 , 1000);
             if(RIntNumber <= GameRules.PUBLIC_CONST.CREATUR_NORMAL_DROP_HP){
@@ -1298,13 +1299,13 @@ export class Spawn extends UIEventRegisterClass {
             //判断是否掉落全体宝物箱 排除任务怪
             let vect = target.GetAbsOrigin();
             let KillExpDrop = GameRules.Spawn.map_info_round[round_index].elite_KillExpDrop;
-            let KillSoul = GameRules.Spawn.map_info_round[round_index].elite_KillSoul;
+            // let KillSoul = GameRules.Spawn.map_info_round[round_index].elite_KillSoul;
             let ExpType = GetCommonProbability(KillExpDrop);
             GameRules.ResourceSystem.DropResourceItem("TeamExp", vect, ExpType, killer);
-            GameRules.ResourceSystem.ModifyResource(player_id, {
-                "Soul": KillSoul,
-                "Kills": 1,
-            })
+            // GameRules.ResourceSystem.ModifyResource(player_id, {
+            //     "Soul": KillSoul,
+            //     "Kills": 1,
+            // })
             GameRules.CustomItem.Drop("hp", vect , 120);
             GameRules.CustomItem.Drop("mp", vect , 120);
         } else if (unit_label == "creature_boss") {//boss

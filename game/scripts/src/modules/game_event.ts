@@ -29,6 +29,7 @@ import { Altar } from './additional/altar';
 import { PlayerAttribute } from './ingame/hero_extend/player_attribute';
 import { ServiceTalent } from '../server/https/service_talent';
 import { ServiceSoul } from '../server/https/service_soul';
+import { InvestSystem } from './ingame/invest';
 
 declare global {
 
@@ -50,6 +51,7 @@ declare global {
         CMsg: CMsg;
         GameInformation: GameInformation;
         NpcSystem: NpcSystem;
+        InvestSystem : InvestSystem;
 
         SummonedSystem: SummonedSystem;
         CustomMechanics: CustomMechanics;
@@ -104,6 +106,7 @@ export class GameEvent {
             GameRules.ItemArmsSystem = new ItemArmsSystem();
             GameRules.Spawn = new Spawn();
             GameRules.ResourceSystem = new ResourceSystem();
+            GameRules.InvestSystem = new InvestSystem();
             // GameRules.ArmsCombo = new ArmsCombo();
             GameRules.SummonedSystem = new SummonedSystem();
             GameRules.CMsg = new CMsg();

@@ -6,6 +6,13 @@ declare interface CGED {
 
         }
     }
+
+    //投资系统
+    InvestSystem : {
+        GetPlayerInvestData : {
+            
+        }
+    }
     //神秘商店
     MysticalShopSystem : {
         //购买物品

@@ -290,7 +290,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
         this.ResetHeroTalent(player_id , {})
     }
     /**
-     * su
+     * 随机天赋信息
      * @param player_id 
      * @param params 
      * @param callback 
@@ -347,10 +347,27 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     "type" : 1 , // 1技能 2其他
                 })
             }
+            let t2_lv = 1;
+            let t2_r = 5;
+            let r_int = RandomInt(1 , 1000);
+            if(r_int > 995){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
+                t2_lv = 6;
+                t2_r = 6;
+            }else if(r_int > 980){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
+                t2_lv = 5;
+                t2_r = 6;
+            }else if(r_int > 950){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
+                t2_lv = 4;
+                t2_r = 6;
+            }else if(r_int > 900){ // 70%=1级，20%=2级，5%=3级=金色边框
+                t2_lv = 3;
+            }else if(r_int > 700){ //70%=1级，20%=2级，5%=3级=金色边框
+                t2_lv = 2;
+            }
             Cdata.push({
                 "key" :  "-1",
-                "lv" : 1,
-                "r" : 1,
+                "lv" : t2_lv,
+                "r" : t2_r,
                 "type" : 2 , // 1技能 2其他
             });
             this.get_select_talent_data[player_id].is_show = 1;
@@ -384,7 +401,11 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             PlayerResource.GetPlayer(player_id),
             "HeroTalentSystem_GetSelectTalentData",
             {
-                data: this.get_select_talent_data[player_id],
+                data: {
+                    select : this.get_select_talent_data[player_id],
+                    talent_points: this.player_talent_data[player_id].points,
+                    talent_use_count: this.player_talent_data[player_id].use_count,
+                }
             }
         );
     }
@@ -436,12 +457,35 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     this.HeroSelectTalent(player_id, { key : 
                         this.get_select_talent_data[player_id].data[index].key,
                     });
+                }else if(this.get_select_talent_data[player_id].data[index].type == 1){
+                    let level = this.get_select_talent_data[player_id].data[index].lv;
+                    //处理投资系统 增加等级
+                    GameRules.InvestSystem.PostInvestUp(player_id, level);
+                    this.get_select_talent_data[player_id].is_show = 0;
+                    //减少技能点
+                    this.AddHeroTalent(player_id , -1);
+                    if(this.player_talent_data[player_id].points > 0){
+                        this.SelectTalentData(player_id);
+                    }else{
+                        //发送数据
+                        this.GetSelectTalentData(player_id , {})
+                    }
                 }else{
-                    //处理投资系统
+                    if(this.player_talent_data[player_id].points > 0){
+                        this.SelectTalentData(player_id);
+                    }else{
+                        //发送数据
+                        this.GetSelectTalentData(player_id , {})
+                    }
+                    //系统问题
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "系统出错....");    
                 }
             }else{
                 if(this.player_talent_data[player_id].points > 0){
                     this.SelectTalentData(player_id)
+                }else{
+                    //发送数据
+                    this.GetSelectTalentData(player_id , {})
                 }
                 //系统问题
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "系统出错....");
@@ -683,10 +727,12 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                         + HeroTalentCounfg.max_number + ")");
                 }
                 this.GetHeroTalentListData(player_id, {});
-                this.GetSelectTalentData(player_id , {})
+                
                 //天赋点> 0
                 if(this.player_talent_data[player_id].points > 0){
                     this.SelectTalentData(player_id)
+                }else{
+                    this.GetSelectTalentData(player_id , {})
                 }
             }
         } else {

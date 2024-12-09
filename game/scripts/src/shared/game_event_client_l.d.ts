@@ -1,4 +1,14 @@
 declare interface CustomGameEventDeclarations {
+    //投资信息
+    InvestSystem_GetPlayerInvestData: {
+        data: {
+            PlayerInvestLevel: number, // 投资等级
+            PlayerExtraInvestLevel: number, //额外投资等级
+            ResourceCount : number , //获得资源总数 （计算结果）
+            InvestGetResourceEfficiency: number, //获取资源效率 默认100
+            Interval : number , //回报间隔
+        };
+    };
     //技能选择功能
     NewArmsEvolution_GetArmssSelectData : {
         data: PlayerUpgradeSelectRetData;
@@ -278,7 +288,11 @@ declare interface CustomGameEventDeclarations {
      * 选择天赋数据
      */
     HeroTalentSystem_GetSelectTalentData : {
-        data : CGEDPlayerSelectTalentData
+        data : {
+            select: CGEDPlayerSelectTalentData,
+            talent_points: number,
+            talent_use_count: number,
+        };
     }
 
     /**
@@ -680,4 +694,6 @@ declare interface CGEDPlayerSelectTalentData {
         type : number , // 1技能 2其他
     }[],
 }
+
+
 
