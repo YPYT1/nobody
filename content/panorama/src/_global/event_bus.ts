@@ -70,10 +70,7 @@ class EventBus  {
             // 使用对象存储，注销回调函数的时候提高删除的效率
             this._eventObject[eventName] = {};
         }
-
         const id = this._callbackId++;
-
-        $.Msg(["id", id])
         // 存储订阅者的回调函数
         // callbackId使用后需要自增，供下一个回调函数使用
         this._eventObject[eventName][id] = callback;

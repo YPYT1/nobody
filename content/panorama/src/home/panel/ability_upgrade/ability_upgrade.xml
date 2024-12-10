@@ -25,7 +25,12 @@
                     <Panel class="AbilityDescription">
                         <Label text="{s:AbilityDescription}" html="true"/>
                     </Panel>
-                    
+                    <Panel class="SoulInvestDescription">
+                        <Label class="Title" text="#custom_text_soul_invest_Description" html="true"/>
+                        <Label class="DescEx1" text="#custom_text_soul_invest_ex1" html="true"/>
+                        <Panel class="Arrow"/>
+                        <Label class="DescEx2" text="#custom_text_soul_invest_ex2" html="true"/>
+                    </Panel>
                     <Panel id="ChildNodeHeader">
                         <Panel class="SplitLine" />
                         <Label text="下级分支"/>

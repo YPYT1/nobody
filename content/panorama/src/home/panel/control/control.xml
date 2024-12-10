@@ -145,8 +145,8 @@
 					</Panel>
 				</Panel>
 				<Panel class="HeroAbilityContainer">
-					<Button id="AbilityPoint">
-						<Label text="{d:point_count}"/>
+					<Button id="InvestLevel" class="PointPanel">
+						<Label text="{d:invest_level}"/>
 					</Button>
 					<Panel id='AbilityList' hittest="false" />
 					<Panel id="JumpPanel" class="SpaceJump">
@@ -163,6 +163,23 @@
 							<Panel class="ChargePoint No2"/>
 							<Panel class="ChargePoint No3"/>
 						</Panel>
+					</Panel>
+				</Panel>
+				<Panel id="InvestTooltips" hittest="false">
+					<Panel class="Header">
+						<Panel class="H_Left">
+							<Panel class="InvestIcon" />
+						</Panel>
+						<Panel class="H_Right">
+							<Panel class="InvestLabel">
+								<Label class="Name" text="#custom_text_soul_invest" />
+								<Label class="Level" text="Lv.{d:level}" />
+							</Panel>
+							<Panel class="InvestType" />
+						</Panel>
+					</Panel>
+					<Panel class="Body">
+						<Label class="Desc" text="#custom_text_invest_about" html="true" />
 					</Panel>
 				</Panel>
             </Panel>
@@ -205,14 +222,8 @@
 				<Label text="{s:attr_tips}" html="true"/>
 			</Panel>
 		</Panel>
-		<!-- <Panel id="ArmsSelector" class="container">
-			<Panel id="ArmsList"></Panel>
-            <Panel id="ArmsOption">
-                <Button id="ArmsToggleButton" class="btn">
-                    <Label text="#切换" />
-                </Button>
-            </Panel>
-		</Panel> -->
+		
+		
 	</Panel>
 </root>
 

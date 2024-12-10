@@ -1,0 +1,173 @@
+@import url("./../../dashboard_panel.less");
+@import url("./_stone_popups.less");
+.Container {
+    width: 1406px;
+    height: 768px;
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/bg.png");
+    background-position: 50% 50%;
+    background-size: 100%;
+}
+
+.HeroBg {
+    width: 677px;
+    height: 677px;
+    align: center center;
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/hero.png");
+    margin-right: 100px;
+}
+
+
+
+
+.StoneAttribute {
+    width: 360px;
+    height: 100%;
+    horizontal-align: right;
+    // border: 1px solid #0f0;
+
+    flow-children: down;
+
+    .Title {
+        margin-top: 80px;
+        horizontal-align: center;
+        font-size: 22px;
+        color: #fff;
+    }
+
+    .SplitLine {
+        width: 339px;
+        height: 9px;
+        horizontal-align: center;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/split_line.png");
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+
+    .Footer {
+        vertical-align: bottom;
+        horizontal-align: center;
+        flow-children: down;
+        margin-bottom: 18px;
+
+        Button {
+            horizontal-align: center;
+        }
+
+        .InlayTips {
+            margin-top: 4px;
+            font-size: 14px;
+            color: #B1B1B1;
+        }
+    }
+
+
+}
+
+#1.EquipStoneRows {
+    // transform: translateX(0px) translateY(260px);
+    vertical-align: middle;
+
+    .EquipIcon {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_1.png");
+    }
+}
+
+#2.EquipStoneRows {
+    vertical-align: middle;
+    horizontal-align: right;
+
+    .EquipIcon {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_2.png");
+    }
+}
+
+#3.EquipStoneRows {
+    // transform: translateX(260px) translateY(40px);
+    margin-left: 120px;
+    margin-top: 40px;
+
+    .EquipIcon {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_3.png");
+    }
+}
+
+#4.EquipStoneRows {
+    vertical-align: bottom;
+    margin-left: 120px;
+    margin-bottom: 40px;
+
+    .EquipIcon {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_4.png");
+    }
+}
+
+#5.EquipStoneRows {
+    // transform: translateX(740px) translateY(520px);
+    horizontal-align: right;
+    vertical-align: bottom;
+    margin-right: 120px;
+    margin-bottom: 40px;
+    .EquipIcon {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_5.png");
+    }
+}
+
+#6.EquipStoneRows {
+    horizontal-align: right;
+    margin-right: 120px;
+    margin-top: 40px;
+
+    .EquipIcon {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_6.png");
+    }
+}
+
+#EquipStoneList {
+    width: 840px;
+    height: 100%;
+    margin-left: 160px;
+    // border: 1px solid #fff;
+}
+
+.EquipStoneRows {
+    flow-children: down;
+    // border: 1px solid #f0f;
+    
+    &:hover {
+        brightness: 2;
+    }
+
+    .EquipBorder {
+        width: 150px;
+        height: 150px;
+        // border: 1px solid #fff;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip_border.png");
+        // 
+        .EquipIcon {
+            width: 96px;
+            height: 96px;
+            background-size: 100%;
+            horizontal-align: center;
+            vertical-align: middle;
+            // border: 1px solid #fff;
+        }
+    }
+
+    .LevelLabel {
+        horizontal-align: center;
+        font-size: 18px;
+        color: #cfcfcf;
+        margin-top: -12px;
+    }
+
+}
+
+#AttributeList {
+    width: 330px;
+    height: 300px;
+    horizontal-align: center;
+    border: 1px solid #fff;
+}
+
+
+

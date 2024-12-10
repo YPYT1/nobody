@@ -24,7 +24,7 @@
             <Panel class="BoardContent LeftNav">
                 <Panel id="NavButtonList" class="NavButtonGroupVert" />
 				<Panel class="RightBoardContent">
-					<Panel class="ContentHeader">
+					<!-- <Panel class="ContentHeader">
 						<Panel class="LocalPlayerProfile">
 							<DOTAAvatarImage id="AvatarImage" steamid="local" showtooltip="false"/>
 							<Panel class="NameAndLevel">
@@ -37,7 +37,7 @@
 								</ProgressBar>
 							</Panel>
 						</Panel>
-					</Panel>
+					</Panel> -->
 					<Panel id="ContentFrame" class="ContentFrame">
 
 					</Panel>

@@ -34,8 +34,6 @@ const InitTalentData = () => {
             }
         }
     }
-
-    $.Msg(AbilityTalentId)
 }
 // GetSelectTalentData(player_id: PlayerID, params: CGED["HeroTalentSystem"]["GetSelectTalentData"], callback?)
 let hero_talent_list: CGEDPlayerTalentSkillClientList = {}
@@ -68,9 +66,39 @@ const CustomEventSubscribe = () => {
                 TalentNode.BLoadLayoutSnippet("TalentInfo");
             }
             TalentNode.Data<PanelDataObject>().index = order - 1;
+            TalentNode.SetHasClass("is_invest", type == 2);
+            let TypesLabel = TalentNode.FindChildTraverse("TypesLabel")!;
             if (type == 2) {
+                let curr = _data.dq!;
+                let next = _data.uph!;
+                let lv = _data.lv;
+                TalentNode.SetHasClass("adv_invest",lv > 3);
+                TalentNode.SetDialogVariable("talent_name","灵魂投资")
+                TalentNode.SetHasClass("IsAbility", false)
+                TypesLabel.SetHasClass("Resource", true);
+                TypesLabel.SetHasClass("Show", true)
+                TypesLabel.SetDialogVariable("type_label","理财型")
                 // TalentNode.visible = false
-                TalentNode.SetDialogVariableInt("max", -1)
+
+                TalentNode.SetDialogVariableInt("up_value",lv)
+                TalentNode.SetDialogVariableInt("curr",curr)
+                TalentNode.SetDialogVariableInt("next",next)
+                let label = $.Localize("#custom_text_soul_invest_Description",TalentNode)
+
+                TalentNode.SetDialogVariable("soul_invest_title",label)
+
+                // TalentNode.SetDialogVariableInt("max", -1)
+
+                // $.Msg(_data)
+                TalentNode.SetPanelEvent("onactivate",()=>{
+                    let index = TalentNode.Data<PanelDataObject>().index
+                    GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
+                        event_name: "HeroSelectTalentOfIndex",
+                        params: {
+                            index: index
+                        }
+                    })
+                })
                 continue
             } else {
                 // TalentNode.visible = true
@@ -143,7 +171,7 @@ const CustomEventSubscribe = () => {
             let img_src = GetTextureSrc(row_hero_data.img)
             TalentIcon.SetImage(img_src);
 
-            let TypesLabel = TalentNode.FindChildTraverse("TypesLabel")!;
+            
             let types_value_list = row_hero_data.mark_types.split(",");
             let has_newTypes = row_hero_data.mark_types != "Null";
             TypesLabel.SetHasClass("Show", has_newTypes && level == 1)

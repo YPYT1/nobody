@@ -1,10 +1,24 @@
 @import "./../dashboard_panel.less";
 
 
-
 #NavButtonList {
     margin-left: 2px;
     margin-top: 64px;
+}
+
+.ContentFrame {
+    width: 100%;
+    // width: 1468px;
+    height: 741px;
+    // background-color: #333333;
+    border: 2px solid #444444;
+    border-top-width: 0px;
+
+    &.stone #personal_stone,
+    &.hero #personal_hero,
+    &.skill #personal_skill {
+        visibility: visible;
+    }
 }
 
 .NavButtonGroupVert {
@@ -156,16 +170,3 @@
     padding-left: 12px;
 }
 
-.ContentFrame {
-    width: 100%;
-    // width: 1468px;
-    height: 741px;
-    // background-color: #333333;
-    border: 2px solid #444444;
-    border-top-width: 0px;
-
-    &.hero #personal_hero,
-    &.skill #personal_skill {
-        visibility: visible;
-    }
-}

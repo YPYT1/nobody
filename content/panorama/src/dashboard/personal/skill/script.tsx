@@ -2,6 +2,7 @@ import { CreateCustomComponent } from "../../_components/component_manager"
 import { default as ServerSkillExp } from "./../../../json/config/server/hero/server_skill_exp.json"
 import { default as ServerSkillful } from "./../../../json/config/server/hero/server_skillful.json"
 
+const PlayerExp = $("#PlayerExp") as ProgressBar;
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc
 const SendCustomEvent = GameUI.CustomUIConfig().SendCustomEvent
 const MainPanel = $.GetContextPanel()
@@ -115,13 +116,10 @@ let ServerItemCount = {
 const CGED_Init = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerSkillData", event => {
-        $.Msg(["ServiceInterface_GetPlayerServerSkillData"])
+        // $.Msg(["ServiceInterface_GetPlayerServerSkillData"])
         let data = event.data;
-        // $.Msg(data)
         sub_skill_level = data.SkillTypeLevel
         main_skill_level = data.SkillLevel
-
-        $.Msg(main_skill_level.level["13"])
         for (let i = 0; i < SkillList.GetChildCount(); i++) {
             let SkillRows = SkillList.GetChild(i)!;
             let id = SkillRows.id;

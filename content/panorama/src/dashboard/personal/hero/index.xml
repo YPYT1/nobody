@@ -41,146 +41,51 @@
 		</snippet>
 	</snippets>
 	<Panel class="nav_content hero">
-		<Panel id="HeroBackground" />
-		<Panel class="HeroSelection">
-			<Panel id="SelectionHeroList" class="HeroList"/>
-		</Panel>
+		<Panel class="Container">
+			<Panel class="ContentHeader">
+				<Panel class="LocalPlayerProfile">
+					<DOTAAvatarImage id="AvatarImage" steamid="local" showtooltip="false"/>
+					<Panel class="NameAndLevel">
+						<Panel class="AboutLabel">
+							<DOTAUserName id="UserName" steamid="local" showtooltip="false"/>
+							<Label class="Level" text="Lv.{d:level}"/>
+						</Panel>
+						<ProgressBar id='PlayerExp' value="50" min="0" max="100">
+							<Label text="{d:exp} / {d:up_exp}"/>
+						</ProgressBar>
+					</Panel>
+				</Panel>
+			</Panel>
 		
-		<Panel id="HeroDetailsPanel">
-			<Label class="HeroName" text="{s:hero_name}" />
-			<Panel id="HeroStarPanel">
-				<Panel id="HeroDetailsStar" class="HeroStar">
-					<Panel class="Star "/>
-					<Panel class="Star "/>
-					<Panel class="Star "/>
-					<Panel class="Star "/>
-					<Panel class="Star "/>
-				</Panel>
-			</Panel>
-
-			<Panel id="HeroAbilitiesList">
-
-			</Panel>
-			<Panel class="Separator" />
-			<Panel id="HeroAttributeList">
 		
-			</Panel>
-			<Panel class="Separator" />
 
-			<Panel class="OperationBtnList">
-				<Panel class="OptionRow UpStar">
-					<Panel class="ItemCost">
-						<Image id="ServerItemIcon" class="fragment"/>
-						<Label text="{d:curr_count} / {d:need_count}"/>
-					</Panel>
-					<Button id="UpStarBtn" class="dashboard_btn">
-						<Label text="升星" />
-					</Button>
+			<Panel class="ContentBody">
+				<Panel id="HeroBackground" />
+				<Panel class="HeroSelection">
+					<Panel id="SelectionHeroList" class="HeroList"/>
 				</Panel>
-				<Panel class="OptionRow Talent">
-					<Panel class="ItemCost">
-						
-					</Panel>
-					<Button id="HeroTalentBtn" class="dashboard_btn red">
-						<Label text="天赋" />
-					</Button>
-				</Panel>
-
-			</Panel>
-		</Panel>
-		
-		<Button id="HeroPopups_Talent" class="HeroPopupsBg">
-			<Panel class="HeroTalentContainer">
-				<Panel class="Content">
-					<Panel class="TalentImage" hittest="false"/>
-					<!-- <Label class="Tool" text="{s:content_offset}"/> -->
-					<Panel id="HeroTalentTreePath" />
-					<Panel id="HeroTalentTree" />
-				</Panel>
-				<Panel class="Header">
-					<Panel class="FliterPanel">
-						<Panel class="Icon"/>
-						<DropDown id="HeroTalentConfig">
-							<Label text="config_1"/>
-						</DropDown>
-					</Panel>
-
-					<Button id="TalentSaveBtn" class="dashboard_btn green">
-						<Label text="#Save" />
-					</Button>
-
-					<Button id="TalentResetBtn" class="dashboard_btn">
-						<Label text="#Reset" />
-					</Button>
-
-					<Button id="TalentClearBtn" class="dashboard_btn red">
-						<Label text="#Clear" />
-					</Button>
-
-					<Panel class="TalentPoint">
-						<Panel class="IconLabel"/>
-						<Label class="PointValue" text="{d:talent_point}"/>
-					</Panel>
-				</Panel>
-				<Button id="TalentClosedBtn" />
-			</Panel>
-		</Button>
-		<Button id="HeroPopups_Star" class="HeroPopupsBg">
-			<Panel class="HeroStarUpContainer">
-				<Panel class="Header">
-					<Label class="Title" text="升星 {d:heroid}"/>
-					<Button id="StarClosedBtn" />
-				</Panel>
-				<Panel id="HeroCardPanel" class="HeroCard">
-					<Panel class="HeroBorder OriginCard">
-						<Panel class="HeroCardImage">
-							<Panel class="HeroCardBorder" />
-						</Panel>
-						<Panel class="HeroStarPanel">
-							<Panel class="HeroStar">
-								<Panel class="Star "/>
-								<Panel class="Star "/>
-								<Panel class="Star "/>
-								<Panel class="Star "/>
-								<Panel class="Star "/>
-							</Panel>
-						</Panel>
-						
-					</Panel>
-					<Panel class="Arrow" />
-					<Panel class="HeroBorder AdvaCard">
-						<Panel class="HeroCardImage">
-							<Panel class="HeroCardBorder"/>
-						</Panel>
-						<Panel class="HeroStarPanel">
-							<Panel class="HeroStar">
-								<Panel class="Star "/>
-								<Panel class="Star "/>
-								<Panel class="Star "/>
-								<Panel class="Star "/>
-								<Panel class="Star "/>
-							</Panel>
+				
+				<Panel id="HeroDetailsPanel">
+					<Label class="HeroName" text="{s:hero_name}" />
+					<Panel id="HeroStarPanel">
+						<Panel id="HeroDetailsStar" class="HeroStar">
+							<Panel class="Star "/>
+							<Panel class="Star "/>
+							<Panel class="Star "/>
+							<Panel class="Star "/>
+							<Panel class="Star "/>
 						</Panel>
 					</Panel>
-				</Panel>
-				<Panel class="StarUpEffect" />
-				<Panel id="StarUpEffectList">
-					<Panel class="EffectRow">
-						<Label text="解锁家看电视剧底框拉伸"/>
-						<Panel class="UpIcon Up">
-							<Panel class="Bg"/>
-							<Panel class="Icon"/>
-						</Panel>
+
+					<Panel id="HeroAbilitiesList">
+
 					</Panel>
-					<Panel class="EffectRow">
-						<Label text="解锁家看电视伸"/>
-						<Panel class="UpIcon New">
-							<Panel class="Bg"/>
-							<Panel class="Icon"/>
-						</Panel>
+					<Panel class="Separator" />
+					<Panel id="HeroAttributeList">
+				
 					</Panel>
-				</Panel>
-				<Panel class="Footer">
+					<Panel class="Separator" />
+
 					<Panel class="OperationBtnList">
 						<Panel class="OptionRow UpStar">
 							<Panel class="ItemCost">
@@ -191,11 +96,129 @@
 								<Label text="升星" />
 							</Button>
 						</Panel>
+						<Panel class="OptionRow Talent">
+							<Panel class="ItemCost">
+								
+							</Panel>
+							<Button id="HeroTalentBtn" class="dashboard_btn red">
+								<Label text="天赋" />
+							</Button>
+						</Panel>
+
 					</Panel>
-					
 				</Panel>
 				
+				<Button id="HeroPopups_Talent" class="HeroPopupsBg">
+					<Panel class="HeroTalentContainer">
+						<Panel class="Content">
+							<Panel class="TalentImage" hittest="false"/>
+							<!-- <Label class="Tool" text="{s:content_offset}"/> -->
+							<Panel id="HeroTalentTreePath" />
+							<Panel id="HeroTalentTree" />
+						</Panel>
+						<Panel class="Header">
+							<Panel class="FliterPanel">
+								<Panel class="Icon"/>
+								<DropDown id="HeroTalentConfig">
+									<Label text="config_1"/>
+								</DropDown>
+							</Panel>
+
+							<Button id="TalentSaveBtn" class="dashboard_btn green">
+								<Label text="#Save" />
+							</Button>
+
+							<Button id="TalentResetBtn" class="dashboard_btn">
+								<Label text="#Reset" />
+							</Button>
+
+							<Button id="TalentClearBtn" class="dashboard_btn red">
+								<Label text="#Clear" />
+							</Button>
+
+							<Panel class="TalentPoint">
+								<Panel class="IconLabel"/>
+								<Label class="PointValue" text="{d:talent_point}"/>
+							</Panel>
+						</Panel>
+						<Button id="TalentClosedBtn" />
+					</Panel>
+				</Button>
+				<Button id="HeroPopups_Star" class="HeroPopupsBg">
+					<Panel class="HeroStarUpContainer">
+						<Panel class="Header">
+							<Label class="Title" text="升星 {d:heroid}"/>
+							<Button id="StarClosedBtn" />
+						</Panel>
+						<Panel id="HeroCardPanel" class="HeroCard">
+							<Panel class="HeroBorder OriginCard">
+								<Panel class="HeroCardImage">
+									<Panel class="HeroCardBorder" />
+								</Panel>
+								<Panel class="HeroStarPanel">
+									<Panel class="HeroStar">
+										<Panel class="Star "/>
+										<Panel class="Star "/>
+										<Panel class="Star "/>
+										<Panel class="Star "/>
+										<Panel class="Star "/>
+									</Panel>
+								</Panel>
+								
+							</Panel>
+							<Panel class="Arrow" />
+							<Panel class="HeroBorder AdvaCard">
+								<Panel class="HeroCardImage">
+									<Panel class="HeroCardBorder"/>
+								</Panel>
+								<Panel class="HeroStarPanel">
+									<Panel class="HeroStar">
+										<Panel class="Star "/>
+										<Panel class="Star "/>
+										<Panel class="Star "/>
+										<Panel class="Star "/>
+										<Panel class="Star "/>
+									</Panel>
+								</Panel>
+							</Panel>
+						</Panel>
+						<Panel class="StarUpEffect" />
+						<Panel id="StarUpEffectList">
+							<Panel class="EffectRow">
+								<Label text="解锁家看电视剧底框拉伸"/>
+								<Panel class="UpIcon Up">
+									<Panel class="Bg"/>
+									<Panel class="Icon"/>
+								</Panel>
+							</Panel>
+							<Panel class="EffectRow">
+								<Label text="解锁家看电视伸"/>
+								<Panel class="UpIcon New">
+									<Panel class="Bg"/>
+									<Panel class="Icon"/>
+								</Panel>
+							</Panel>
+						</Panel>
+						<Panel class="Footer">
+							<Panel class="OperationBtnList">
+								<Panel class="OptionRow UpStar">
+									<Panel class="ItemCost">
+										<Image id="ServerItemIcon" class="fragment"/>
+										<Label text="{d:curr_count} / {d:need_count}"/>
+									</Panel>
+									<Button id="UpStarBtn" class="dashboard_btn">
+										<Label text="升星" />
+									</Button>
+								</Panel>
+							</Panel>
+							
+						</Panel>
+						
+					</Panel>
+				</Button>
+
 			</Panel>
-		</Button>
+
+		</Panel>
 	</Panel>
 </root>

@@ -33,7 +33,7 @@ export class modifier_prop_effect extends BaseModifier {
 
         // 部分定时器
         this.timer_prop_42 = 0;
-        this.timer_prop_43 = 0;
+        this.timer_prop_43 = 99;
         this.timer_prop_45 = 0;
         this.timer_prop_41 = 0;
         this.prop_49_kills = 0;

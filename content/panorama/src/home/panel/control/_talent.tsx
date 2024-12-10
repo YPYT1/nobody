@@ -121,65 +121,65 @@ const TogglePlayerTalentTreeList = (bShow: boolean) => {
 }
 
 export const CreatePanel_Talent = () => {
-    // let local_hero = Players.GetPlayerHeroEntityIndex(local_player);
+    let local_hero = Players.GetPlayerHeroEntityIndex(local_player);
     // MainPanel.SetDialogVariableInt("point_count", 0)
-    // GameEventsSubscribe()
+    GameEventsSubscribe()
 }
 
 let HeroSubNodeObject: { [id: string]: number[] } = {};
 let hero_talent_tree_object: { [node: number]: { [key: string]: boolean } } = {}
 
 const CreateHeroTalentTree = (heroId: HeroID) => {
-    PlayerTalentTreeList.RemoveAndDeleteChildren();
-    const ALPos = AbilityList.GetPositionWithinWindow();
-    hero_talent_tree_object = {};
-    HeroSubNodeObject = {};
-    // let index = 0
-    for (let id in talent_data) {
-        let row_data = talent_data[id as keyof typeof talent_data];
-        let node_index = row_data.index;
-        let tree_id = `ability_index_${row_data.index}`;
-        let talent_id = `talent_${id}`;
-        let AbilityTreePanel = PlayerTalentTreeList.FindChildTraverse(tree_id);
-        if (AbilityTreePanel == null) {
-            hero_talent_tree_object[row_data.index] = {}
-            AbilityTreePanel = $.CreatePanel("Button", PlayerTalentTreeList, tree_id);
-            AbilityTreePanel.BLoadLayoutSnippet("AbilityTreePanel")
-            AbilityTreePanel.SetPanelEvent("onactivate", () => { })
-            AbilityTreePanel.Data<PanelDataObject>().index = row_data.index;
-            let AbilityPanel = AbilityList.GetChild(node_index);
-            if (AbilityPanel) {
-                AbilityPanel.Data<PanelDataObject>().index = node_index
-                let LevelUpBtn = AbilityPanel.FindChildTraverse("LevelUpBtn")!;
-                let curr_index = row_data.index;
-                LevelUpBtn.SetPanelEvent("onactivate", () => {
-                    ToggleAbilityTreePanel(curr_index, true)
-                })
-            }
-        }
+    // PlayerTalentTreeList.RemoveAndDeleteChildren();
+    // const ALPos = AbilityList.GetPositionWithinWindow();
+    // hero_talent_tree_object = {};
+    // HeroSubNodeObject = {};
+    // // let index = 0
+    // for (let id in talent_data) {
+    //     let row_data = talent_data[id as keyof typeof talent_data];
+    //     let node_index = row_data.index;
+    //     let tree_id = `ability_index_${row_data.index}`;
+    //     let talent_id = `talent_${id}`;
+    //     let AbilityTreePanel = PlayerTalentTreeList.FindChildTraverse(tree_id);
+    //     if (AbilityTreePanel == null) {
+    //         hero_talent_tree_object[row_data.index] = {}
+    //         AbilityTreePanel = $.CreatePanel("Button", PlayerTalentTreeList, tree_id);
+    //         AbilityTreePanel.BLoadLayoutSnippet("AbilityTreePanel")
+    //         AbilityTreePanel.SetPanelEvent("onactivate", () => { })
+    //         AbilityTreePanel.Data<PanelDataObject>().index = row_data.index;
+    //         let AbilityPanel = AbilityList.GetChild(node_index);
+    //         if (AbilityPanel) {
+    //             AbilityPanel.Data<PanelDataObject>().index = node_index
+    //             let LevelUpBtn = AbilityPanel.FindChildTraverse("LevelUpBtn")!;
+    //             let curr_index = row_data.index;
+    //             LevelUpBtn.SetPanelEvent("onactivate", () => {
+    //                 ToggleAbilityTreePanel(curr_index, true)
+    //             })
+    //         }
+    //     }
 
-        let TalentListPanel = AbilityTreePanel.FindChildTraverse("TalentList")!
-        let TalentNode = $.CreatePanel("Panel", TalentListPanel, talent_id);
-        hero_talent_tree_object[node_index][id] = false
-        TalentNode.BLoadLayoutSnippet("TalentInfo");
-        let TalentIcon = TalentNode.FindChildTraverse("TalentIcon") as ImagePanel;
-        let img_src = GetTextureSrc(row_data.img)
-        TalentIcon.SetImage(img_src);
+    //     let TalentListPanel = AbilityTreePanel.FindChildTraverse("TalentList")!
+    //     let TalentNode = $.CreatePanel("Panel", TalentListPanel, talent_id);
+    //     hero_talent_tree_object[node_index][id] = false
+    //     TalentNode.BLoadLayoutSnippet("TalentInfo");
+    //     let TalentIcon = TalentNode.FindChildTraverse("TalentIcon") as ImagePanel;
+    //     let img_src = GetTextureSrc(row_data.img)
+    //     TalentIcon.SetImage(img_src);
 
-        let TalentNodeButton = TalentNode.FindChildTraverse("TalentNodeButton") as Button;
-        TalentNodeButton.SetPanelEvent("onactivate", () => {
-            // 点击后关闭所有页面
-            TogglePlayerTalentTreeList(false);
-            GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
-                event_name: "HeroSelectTalent",
-                params: {
-                    key: id,
-                }
-            })
-        })
+    //     let TalentNodeButton = TalentNode.FindChildTraverse("TalentNodeButton") as Button;
+    //     TalentNodeButton.SetPanelEvent("onactivate", () => {
+    //         // 点击后关闭所有页面
+    //         TogglePlayerTalentTreeList(false);
+    //         GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
+    //             event_name: "HeroSelectTalent",
+    //             params: {
+    //                 key: id,
+    //             }
+    //         })
+    //     })
 
-        HeroSubNodeObject[id] = row_data.unlock_key
-    }
+    //     HeroSubNodeObject[id] = row_data.unlock_key
+    // }
 
 
     SetLoaclPlayerHeroPortrait();
@@ -192,7 +192,7 @@ const GameEventsSubscribe = () => {
         let data = event.data;
         let player_info = Game.GetPlayerInfo(Players.GetLocalPlayer())
         let heroid = player_info.player_selected_hero_id;
-        // CreateHeroTalentTree(heroid)
+        CreateHeroTalentTree(heroid)
     })
 
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {

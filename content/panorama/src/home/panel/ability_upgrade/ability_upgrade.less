@@ -49,6 +49,80 @@
             color: #954cff;
         }
 
+        &.is_invest {
+            .Name {
+                color: #fbb93a;
+            }
+
+            &.adv_invest {
+                .Name {
+                    color: #FF0000;
+                }
+
+                background-image: url("file://{images}/custom_game/hud/control/upgrade/soul_invest_t2.png");
+
+                .BtnHover {
+                    background-image: url("file://{images}/custom_game/hud/control/upgrade/soul_invest_t2_hover.png");
+                }
+            }
+
+            background-image: url("file://{images}/custom_game/hud/control/upgrade/soul_invest_t1.png");
+
+            .BtnHover {
+                background-image: url("file://{images}/custom_game/hud/control/upgrade/soul_invest_t1_hover.png");
+            }
+
+            #TalentIcon {
+                border-width: 0px;
+            }
+
+            .Name {
+                color: #fbb93a;
+            }
+
+            .AbilityDescription,
+            #ChildNodeHeader,
+            .Level,
+            .TalentParentAbility {
+                visibility: collapse;
+            }
+
+            .SoulInvestDescription {
+                visibility: visible;
+            }
+
+        }
+
+        .SoulInvestDescription {
+            visibility: collapse;
+            width: 189px;
+            horizontal-align: center;
+            flow-children: down;
+
+            // border: 1px solid #fff;
+            .Arrow {
+                width: 23px;
+                height: 29px;
+                horizontal-align: center;
+                background-image: url("file://{images}/custom_game/hud/control/upgrade/down_arrow.png");
+
+            }
+
+            Label {
+                horizontal-align: center;
+                font-size: 20px;
+                text-align: center;
+            }
+
+            .DescEx1 {
+                margin-top: 16px;
+            }
+
+            .DescEx2 {
+                color: #32FF40
+            }
+        }
+
         &.IsAbility {
             background-image: url("file://{images}/custom_game/hud/control/upgrade/talent_info_t3.png");
 
@@ -393,6 +467,8 @@
                 }
             }
 
+
+
             .Variable,
             .GameplayVariable {
                 font-size: 20px;
@@ -459,4 +535,8 @@
         wash-color: #ff0000;
         background-image: url("file://{images}/custom_game/tooltip/ability/mana_cost.png");
     }
+}
+
+.green {
+    color: #32FF40;
 }

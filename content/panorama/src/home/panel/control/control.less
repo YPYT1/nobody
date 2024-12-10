@@ -67,29 +67,33 @@
 
 }
 
-#AbilityPoint {
+.PointPanel {
     // margin-left: -108px;
-    width: 67px;
-    height: 70px;
-    background-image: url("file://{images}/custom_game/hud/control/ability_point_bg.png");
+    width: 76px;
+    height: 79px;
+    background-image: url("file://{images}/custom_game/hud/control/invest_bg.png");
+
     vertical-align: bottom;
+    // margin-bottom: 8px;
     // border: 1px solid #ffffff;
     // padding: 8px;
+    margin-left: 20px;
 
     Label {
-        margin-left: 8px;
+        // margin-left: 8px;
         font-size: 22px;
+        font-weight: bold;
         color: #ffe8aa;
-        text-shadow: 0px 0px 2px 2.0 #000000;
+        text-shadow: 0px 0px 3px 4.0 #000000;
         horizontal-align: center;
         vertical-align: middle;
-        margin-bottom: 12px;
+        // margin-bottom: 12px;
     }
 
 
-    animation-name: flash;
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
+    // animation-name: flash;
+    // animation-duration: 1s;
+    // animation-iteration-count: infinite;
 
 }
 
@@ -756,4 +760,99 @@
             text-overflow: shrink;
         }
     }
+}
+
+#InvestTooltips {
+    width: 360px;
+    height: 170px;
+    // border: 1px solid #fff;
+    vertical-align: bottom;
+    background-image: url("file://{images}/custom_game/hud/control/invest_tips.png");
+    margin-left: 180px;
+    margin-bottom: 80px;
+
+    opacity: 0;
+
+    transition-property: opacity;
+    transition-duration: 0.13s;
+    flow-children: down;
+
+    &.Show {
+        opacity: 1;
+    }
+
+    .Header {
+        width: 100%;
+        flow-children: right;
+        margin-top: 28px;
+        // border: 1px solid #fff;
+
+        .InvestIcon {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #FFD700;
+            background-color: #000000;
+            margin-left: 30px;
+            // padding: 4px;
+            // 
+            background-image: url("file://{images}/custom_game/hud/control/invest_icon.png");
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+        }
+
+        .H_Right {
+            margin-left: 12px;
+            vertical-align: middle;
+            flow-children: down;
+
+            .InvestLabel {
+                flow-children: right;
+
+                .Name {
+                    font-size: 22px;
+                    color: #fff;
+                    text-shadow: 0px 0px 2px 2.0 #000;
+                }
+
+                .Level {
+                    font-size: 20px;
+                    color: #0f0;
+                }
+            }
+        }
+
+
+
+        .InvestType {
+            width: 50px;
+            height: 22px;
+            background-image: url("file://{images}/custom_game/hud/control/invest_type.png");
+            margin-top: 8px;
+        }
+
+    }
+
+    .Body {
+        // border: 1px solid #fff;
+        // width: 80%;
+        // horizontal-align: center;
+        margin-top: 28px;
+        margin-left: 28px;
+
+        .Desc {
+            font-size: 18px;
+            color: #fff;
+
+
+        }
+
+
+        
+        .green {
+            font-weight: bold;
+            color: #0f0;
+        }
+    }
+
+
 }

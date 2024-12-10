@@ -4,6 +4,7 @@ import "./_attribute_state";
 import "./_portrait";
 import "./_arms_selector";
 import "./_buff_list";
+import "./_invest";
 import { CreatePanel_Talent } from "./_talent";
 import { OnInitMoveHotkey } from "./_move_controller";
 

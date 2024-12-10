@@ -28,8 +28,13 @@ interface TalentTreeProps {
 }
 
 
-export const CreateTalentTreeNode = (HeroID: number, row: talent_row_data, id: string, NodePanel: Panel, parent_panel: UICanvas) => {
-    // $.Msg(["id", id, "stack", stack])
+export const CreateTalentTreeNode = (
+    HeroID: number, 
+    row: talent_row_data, 
+    id: string, NodePanel: 
+    Panel, 
+    parent_panel: UICanvas
+) => {
     const heroname = HeroNameOfID[HeroID]
     let TalentNode = $.CreatePanel("Panel", NodePanel, id);
     // TalentNode.enabled = false;

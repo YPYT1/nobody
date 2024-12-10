@@ -143,6 +143,5 @@ const CustomSubscribe = () => {
 }
 
 (function () {
-    $.Msg("scoreboard Init")
     Init()
 })();

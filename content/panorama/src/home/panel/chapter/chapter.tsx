@@ -230,7 +230,6 @@ const ChapterPageTurning = (page_num: FlippingPagesType) => {
 
 
 const CreateChapterSelectPanel = () => {
-    $.Msg(["CreateChapterSelectPanel"])
     // 生成章节分页
     total_page = Object.keys(ChapterInfoTable).length;
     PageList.RemoveAndDeleteChildren();

@@ -13,8 +13,19 @@
     saturation: 0.3;
 }
 
+.Container {
+    width: 100%;
+    height: 100%;
+    flow-children: down;
+
+    .ContentBody {
+        width: 100%;
+        height: 100%;
+        // border: 1px solid #fff;
+    }
+}
 .HeroSelection {
-    border: 1px solid #ffffff;
+    // border: 1px solid #ffffff;
     vertical-align: bottom;
     margin-left: 240px;
     margin-bottom: 12px;
@@ -79,9 +90,9 @@
 }
 
 #HeroDetailsPanel {
-    margin-top: 64px;
+    margin-top: 32px;
     margin-right: 12px;
-    border: 1px solid #fff;
+    // border: 1px solid #fff;
     horizontal-align: right;
     flow-children: down;
     padding: 4px;
@@ -168,7 +179,7 @@
     width: 100%;
     height: 100%;
     background-color: #00000099;
-    overflow: noclip;
+    // overflow: noclip;
     visibility: collapse;
 
     &.Open {

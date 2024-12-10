@@ -8,13 +8,12 @@ const FRAME_PATH = `file://{resources}/layout/custom_game/dashboard/${DASHBOARD}
 
 
 const MainPanel = $.GetContextPanel();
-const PlayerExp = $("#PlayerExp") as ProgressBar;
+
 
 export const Init = () => {
     // $.Msg(["personal Layout"])
     // 加载nav button
     const UserName = $("#UserName") as AvatarImage;
-
     NavButtonList.RemoveAndDeleteChildren();
     ContentFrame.RemoveAndDeleteChildren();
     let order = 0;

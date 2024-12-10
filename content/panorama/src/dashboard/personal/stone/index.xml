@@ -1,0 +1,49 @@
+<root>
+	<styles>
+		<include src="./../../../_styles/styles.less" />
+		<include src="./../../styles.less" />
+		<include src="./../styles.less" />
+        <include src="./styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+
+    <snippets>
+        <snippet name="EquipStoneRows">
+            <Panel class="EquipStoneRows">
+                <Panel class="EquipBorder">
+                    <Panel class="EquipIcon" />
+                </Panel>
+                <Label class="LevelLabel" text="Lv.{d:level}"/>
+            </Panel>
+        </snippet>
+    </snippets>
+    <Panel class="nav_content stone">
+        <Panel class="Container">
+            <Panel class="HeroBg"/>
+            <Panel id="EquipStoneList" />
+            <Panel class="StoneAttribute">
+                <Label class="Title" text="当前魂石属性" />
+
+                <Panel class="SplitLine" />
+                <Panel id="AttributeList" />
+                <Panel class="SplitLine" />
+
+                <Panel class="Footer">
+                    <Button id="StoneInlayBtn" class="dashboard_btn">
+                        <Label text="魂石镶嵌"/>
+                    </Button>
+
+                    <Label class="InlayTips" text="点击魂石镶嵌按钮，进入魂石镶嵌界面"/>
+                </Panel>
+            </Panel>
+        </Panel>
+        <Panel id="StonePopups" class="PopupsBackground">
+            <Panel class="SoulStonePopups">
+
+            </Panel>
+        </Panel>
+    </Panel>
+
+</root>
