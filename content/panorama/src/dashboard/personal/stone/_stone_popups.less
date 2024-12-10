@@ -1,12 +1,339 @@
 #StonePopups {
 
-    .SoulStonePopups {
-        width: 1238px;
-        height: 748px;
-        horizontal-align: center;
-        vertical-align: middle;
-        // border: 1px solid #fff;
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/bg.png");
-        background-color: #000000;
+    &.Show {
+        visibility: visible;
     }
+}
+
+.SoulStonePopups {
+    width: 1238px;
+    height: 748px;
+    horizontal-align: center;
+    vertical-align: middle;
+    // border: 1px solid #fff;
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/bg.png");
+    background-color: #000000;
+    flow-children: down;
+
+    >.Header {
+        width: 100%;
+
+        // border: 1px solid #fff;
+        >.Title {
+            margin-top: 2px;
+            width: 231px;
+            height: 52px;
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/title.png");
+            horizontal-align: center;
+        }
+
+        #ClosedBtn {
+            width: 47px;
+            height: 47px;
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/closed_btn.png");
+            horizontal-align: right;
+            margin-top: 6px;
+
+            &:hover {
+                brightness: 2;
+            }
+        }
+    }
+
+    .SoulStoneContent {
+        width: 100%;
+        height: 100%;
+        // border: 1px solid #fff;
+    }
+
+    .StrengthenSlot {
+        width: 154px;
+        height: 155px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/strengthen_slot.png");
+        horizontal-align: center;
+        margin-top: 168px;
+    }
+}
+
+.SSAttributeBorder {
+    width: 452px;
+    height: 176px;
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/ss_attr_bg.png");
+    horizontal-align: center;
+    vertical-align: bottom;
+    margin-bottom: 180px;
+    flow-children: down;
+
+    .Header {
+        width: 100%;
+        height: 40px;
+        // border: 1px solid #fff;
+        padding-top: 4px;
+
+        .Title {
+            font-size: 16px;
+            horizontal-align: center;
+            color: #FFE57D;
+            text-shadow: 0px 0px 4px 2.0 #c98820;
+            vertical-align: middle;
+        }
+    }
+
+    #SSAttributeList {
+        horizontal-align: center;
+        // width: 300px;
+
+        // height: 200px;
+        flow-children: down;
+
+        .SSAttributeRows {
+            width: 320px;
+            // height: 24px;
+            // border: 1px solid #fff;
+            margin-top: 2px;
+            margin-bottom: 2px;
+
+            .AttrAndLevel {
+                flow-children: right;
+                vertical-align: middle;
+
+                Label {
+                    font-size: 16px;
+                    color: #838383;
+                }
+            }
+
+
+            .AttributeValue {
+                margin-left: 200px;
+                flow-children: right;
+                height: 24px;
+                overflow: noclip;
+
+                Label {
+                    vertical-align: middle;
+                    font-size: 16px;
+                    color: #0f0;
+                }
+
+                .Upper {
+                    width: 23px;
+                    height: 29px;
+                    vertical-align: middle;
+                    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/tip_upper.png");
+                }
+
+                .Max {
+                    width: 39px;
+                    height: 23px;
+                    vertical-align: middle;
+                    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/tip_max.png");
+                }
+            }
+
+        }
+    }
+}
+
+#SoulEquipList {
+    flow-children: down;
+    // border: 1px solid #fff;
+    // vertical-align: middle;
+    margin-left: 20px;
+    margin-top: 60px;
+
+    .SoulEquipBorder {
+        width: 310px;
+        height: 94px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/soul_equip_border.png");
+        margin-top: -8px;
+
+        flow-children: right;
+
+        &:hover {
+            brightness: 2;
+        }
+
+        &:selected {
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/soul_equip_border_hover.png");
+
+            &:hover {
+                brightness: 1;
+            }
+        }
+
+        .Left {
+            margin-left: 40px;
+            vertical-align: middle;
+
+            .Border {
+                width: 54px;
+                height: 54px;
+                background-image: url("file://{images}/custom_game/icon/server_item/rare_3.png");
+                background-size: 100%;
+
+                .EquipIcon {
+                    width: 90%;
+                    height: 90%;
+                    align: center center;
+                    background-size: 100%;
+                }
+            }
+        }
+
+        .Right {
+            margin-left: 10px;
+            vertical-align: middle;
+            flow-children: down;
+
+            .Name {
+                font-size: 18px;
+                color: #FFFFFF;
+            }
+        }
+    }
+
+
+}
+
+
+#SelectEquipIcon {
+    width: 72px;
+    height: 72px;
+    align: center center;
+    // border: 1px solid #fff;
+
+    background-size: 100%;
+
+    &.1 {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_1.png");
+    }
+
+    &.2 {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_2.png");
+    }
+
+    &.3 {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_3.png");
+    }
+
+    &.4 {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_4.png");
+    }
+
+    &.5 {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_5.png");
+    }
+
+    &.6 {
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_6.png");
+    }
+}
+
+.SelectSSContent {
+    // border: 1px solid #fff;
+    flow-children: down;
+    horizontal-align: right;
+    margin-top: 40px;
+    margin-right: 40px;
+
+    .Header {
+        width: 282px;
+        height: 33px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/select_header.png");
+
+        // 
+        Label {
+            font-size: 18px;
+            horizontal-align: center;
+            vertical-align: middle;
+            color: gradient(linear, 0% 0%, 0% 100%, from(#FFE57D; ), to(#FFE57D));
+            font-weight: bold;
+            text-shadow: 0px 0px 4px 2.0 #c98820;
+        }
+    }
+
+    #SelectSSAttributeList {
+        flow-children: down;
+        margin-top: 8px;
+
+
+    }
+
+    #AddSSBtn {
+        width: 282px;
+        height: 36px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/select_attr_row.png");
+
+        .LabelAndIcon {
+            width: 77px;
+            height: 16px;
+            align: center center;
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/select_attr_add_label.png");
+        }
+
+    }
+}
+
+.SelectAttrRows {
+    width: 282px;
+    height: 36px;
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/select_attr_row.png");
+    flow-children: right;
+    margin-top: 4px;
+    margin-bottom: 4px;
+
+    padding: 0px 8px;
+
+    Label {
+        font-size: 16px;
+        vertical-align: middle;
+    }
+
+    .Name {
+
+        color: #838383;
+    }
+
+    .Value {
+        color: #0f0;
+        horizontal-align: right;
+    }
+}
+
+.SSOptionContainer {
+    horizontal-align: right;
+    margin-right: 40px;
+    margin-top: 330px;
+    flow-children: down;
+}
+
+.OptionRadioBtnList {
+    flow-children: right;
+
+    .SSAttrRadioBtn {
+        width: 141px;
+        height: 33px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/option_header_hover.png");
+
+        Label {
+            align: center center;
+            font-size: 18px;
+            color: gradient(linear, 0% 0%, 0% 100%, from(#A9A9A9; ), to(#E7E7E7));
+        }
+    }
+}
+
+#OptionAttributreContainer {
+
+    &.Add .Add,
+    &.Down .Down {
+        visibility: visible;
+    }
+
+    .OptionAttributre {
+        visibility: collapse;
+        flow-children: down;
+    }
+
 }

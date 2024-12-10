@@ -24,20 +24,7 @@
             <Panel class="BoardContent LeftNav">
                 <Panel id="NavButtonList" class="NavButtonGroupVert" />
 				<Panel class="RightBoardContent">
-					<!-- <Panel class="ContentHeader">
-						<Panel class="LocalPlayerProfile">
-							<DOTAAvatarImage id="AvatarImage" steamid="local" showtooltip="false"/>
-							<Panel class="NameAndLevel">
-								<Panel class="AboutLabel">
-									<DOTAUserName id="UserName" steamid="local" showtooltip="false"/>
-									<Label class="Level" text="Lv.{d:level}"/>
-								</Panel>
-								<ProgressBar id='PlayerExp' value="50" min="0" max="100">
-									<Label text="{d:exp} / {d:up_exp}"/>
-								</ProgressBar>
-							</Panel>
-						</Panel>
-					</Panel> -->
+					
 					<Panel id="ContentFrame" class="ContentFrame">
 
 					</Panel>

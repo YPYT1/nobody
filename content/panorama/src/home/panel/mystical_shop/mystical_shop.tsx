@@ -43,9 +43,8 @@ const GameEventsSubscribeInit = () => {
 
     GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
         let data = event.data;
-        $.Msg(["MysticalShopSystem_GetShopData"])
-        const local_vip = 0;// data.player_vip_status;
-
+        // $.Msg(["MysticalShopSystem_GetShopData"])
+        let local_vip = data.player_vip_status;
         let has_limit_item: string[] = []
         let shop_field_list = data.shop_field_list;
         let list_data = Object.values(event.data.player_shop_buy_ts_data);
@@ -101,15 +100,16 @@ const GameEventsSubscribeInit = () => {
         for (let k in shop_field_list) {
             let index = parseInt(k) - 1;
             let row_data = shop_field_list[k];
-            let shop_key = row_data.key
+            let shop_key = row_data.key;
+            if (shop_key == "null") { continue }
             // shop_sell_item_list.push(shop_key)
             let item_label = $.Localize(`#custom_shopitem_${row_data.key}`)
             let ShopItem = ShopItemList.GetChild(index)!;
             let is_vip = (local_vip < row_data.is_vip);
-
+            let IsLimit = row_data.type == 2
             // $.Msg(["Item", row_data.type, row_data.rarity, item_label])
             ShopItem.Data<PanelDataObject>().is_vip = is_vip
-            ShopItem.SetHasClass("IsLimit", row_data.type == 2);
+            ShopItem.SetHasClass("IsLimit", IsLimit);
             ShopItem.SetHasClass("IsVip", is_vip);
             ShopItem.SetHasClass("IsBuy", row_data.is_buy == 1);
             ShopItem.SetHasClass("IsLock", row_data.is_lock == 1);
@@ -122,12 +122,21 @@ const GameEventsSubscribeInit = () => {
             const ShopItemJson = MysteriousShopConfig[shop_key as keyof typeof MysteriousShopConfig];
             const ItemSrc = ShopItemJson ? GetTextureSrc(ShopItemJson.AbilityTextureName) : "";
             ItemIcon.SetImage(ItemSrc)
+            const data_r = row_data.rarity
+            let show_level = IsLimit ? data_r : 1
+            let object_percent = 100;
+            if (IsLimit) {
+                object_percent = ShopItemJson.star_attr_pro[data_r - 1];
+            }
+
+
             let item_desc = SetLabelDescriptionExtra(
                 $.Localize(`#custom_shopitem_${row_data.key}_Description`),
-                0,
+                show_level,
                 ShopItemJson.AbilityValues,
                 ShopItemJson.ObjectValues,
-                false
+                false,
+                object_percent,
             )
             // $.Msg(["item_desc",item_desc])
             ShopItem.SetDialogVariable("item_desc", item_desc);
@@ -146,7 +155,7 @@ const GameEventsSubscribeInit = () => {
             RefreshBtn.Data<PanelDataObject>().refresh_soul = row_data.refresh_soul;
             if (RefreshBtn.BHasClass("onmouse")) { ShowCustomTextTooltip(RefreshBtn, "#custom_text_mystical_shop_refresh") }
             // 设置品质
-            const data_r = row_data.rarity
+
             const rarity = row_data.type == 2 ? data_r + 1 : data_r
             for (let r = 1; r <= 7; r++) {
                 ShopItem.SetHasClass("rare_" + r, rarity == r)

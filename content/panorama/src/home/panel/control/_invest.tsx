@@ -30,6 +30,12 @@ export function Init() {
     })
 
 
+    GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", event => {
+        InvestLevel.SetDialogVariableInt("invest_level", 0);
+        InvestTooltips.SetDialogVariableInt("level", 0);
+        InvestTooltips.SetDialogVariableInt("count", 0);
+    })
+
     GameEvents.SendCustomGameEventToServer("InvestSystem", {
         event_name: "GetPlayerInvestData",
         params: {}

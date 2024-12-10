@@ -26,7 +26,7 @@ export class CustomAttribute {
         this.update_delay = 0.25;
         this.hero_wearable["npc_dota_hero_drow_ranger"] = drow_range_wearable
         this.hero_wearable["npc_dota_hero_skywrath_mage"] = skywrath_mage_wearable
-
+        GameRules.Debug.RegisterDebug(this.constructor.name)
         ListenToGameEvent("dota_player_gained_level", event => this.OnEntityDotaPlayerGainedLevel(event), this);
     }
 
@@ -43,7 +43,7 @@ export class CustomAttribute {
         //     }
         //     return 1
         // }, 1)
-        GameRules.Debug.RegisterDebug(this.constructor.name)
+        
     }
 
 
@@ -84,11 +84,7 @@ export class CustomAttribute {
         hUnit.prop_count = {};
         hUnit.hero_talent = {};
         hUnit.rune_level_index = {};
-
-
         GameRules.CustomOverrideAbility.InitOverrideSpecialTable(player_id, hUnit);
-        //PrecacheUnitByNameAsync(heroname, () => {
-        print("InitHeroAttribute", hHeroKvData)
         if (hHeroKvData) {
             // print("has herodata")
             // 延迟1帧之后加载
@@ -107,9 +103,13 @@ export class CustomAttribute {
                     hUnit.custom_attribute_value[attr_key] = 0;
                     hUnit.custom_attribute_show[attr_key] = [0, 0]
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
-                    let AttributeRows = hHeroKvData.AttributeValues[key as keyof typeof hHeroKvData.AttributeValues];
+                    
+                    let AttributeValues = hHeroKvData.AttributeValues
+                    let AttributeRows = AttributeValues[key as keyof typeof AttributeValues];
+                    hUnit.custom_attribute_value[attr_key] = AttributeRows ? AttributeRows.Base : 0;
                     for (let key2 in AttributeSub) {
-                        let sub_key = key2 as AttributeSubKey
+                        let sub_key = key2 as AttributeSubKey;
+
                         if (attribute_table[attr_key][sub_key] == null) {
                             let value: number;
                             if (AttributeRows) {
@@ -119,7 +119,11 @@ export class CustomAttribute {
                             }
                             attribute_table[attr_key][key2] = value
                         }
+                        
                     }
+
+                    
+   
                     // 属性转换表加载
                     // if (attribute_conversion[attr_key] == null) { attribute_conversion[attr_key] = {} }
                     // const ConversionValue = AttributeConst[attr_key]["ConversionValue"];
@@ -349,7 +353,6 @@ export class CustomAttribute {
         // 第二次计算转换
         let extra_attribute_table: CustomAttributeTableType = {};//临时的数据
         for (let OriginAttr in hUnit.custom_attribute_conversion) {
-            // print("OriginAttr", OriginAttr)
             let ConversionData = hUnit.custom_attribute_conversion[OriginAttr as keyof typeof hUnit.custom_attribute_conversion];
             // DeepPrintTable(ConversionData)
             for (let TargetAttr in ConversionData) {
@@ -789,6 +792,10 @@ export class CustomAttribute {
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+
+        if (cmd == "-attrv") {
+            DeepPrintTable(hHero.custom_attribute_value)
+        }
 
         if (cmd == "-attr") {
             DeepPrintTable(hHero.custom_attribute_key_table)

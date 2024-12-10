@@ -1,5 +1,6 @@
 @import url("./../../dashboard_panel.less");
 @import url("./_stone_popups.less");
+
 .Container {
     width: 1406px;
     height: 768px;
@@ -66,39 +67,25 @@
 #1.EquipStoneRows {
     // transform: translateX(0px) translateY(260px);
     vertical-align: middle;
-
-    .EquipIcon {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_1.png");
-    }
 }
+
 
 #2.EquipStoneRows {
     vertical-align: middle;
     horizontal-align: right;
-
-    .EquipIcon {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_2.png");
-    }
 }
 
 #3.EquipStoneRows {
     // transform: translateX(260px) translateY(40px);
     margin-left: 120px;
     margin-top: 40px;
-
-    .EquipIcon {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_3.png");
-    }
 }
+
 
 #4.EquipStoneRows {
     vertical-align: bottom;
     margin-left: 120px;
     margin-bottom: 40px;
-
-    .EquipIcon {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_4.png");
-    }
 }
 
 #5.EquipStoneRows {
@@ -107,19 +94,13 @@
     vertical-align: bottom;
     margin-right: 120px;
     margin-bottom: 40px;
-    .EquipIcon {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_5.png");
-    }
 }
+
 
 #6.EquipStoneRows {
     horizontal-align: right;
     margin-right: 120px;
     margin-top: 40px;
-
-    .EquipIcon {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_6.png");
-    }
 }
 
 #EquipStoneList {
@@ -132,7 +113,7 @@
 .EquipStoneRows {
     flow-children: down;
     // border: 1px solid #f0f;
-    
+
     &:hover {
         brightness: 2;
     }
@@ -142,6 +123,7 @@
         height: 150px;
         // border: 1px solid #fff;
         background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip_border.png");
+
         // 
         .EquipIcon {
             width: 96px;
@@ -169,5 +151,21 @@
     border: 1px solid #fff;
 }
 
-
-
+#1 .EquipIcon {
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_1.png");
+}
+#2 .EquipIcon {
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_2.png");
+}
+#3 .EquipIcon {
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_3.png");
+}
+#4 .EquipIcon {
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_4.png");
+}
+#5 .EquipIcon {
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_5.png");
+}
+#6 .EquipIcon {
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_6.png");
+}

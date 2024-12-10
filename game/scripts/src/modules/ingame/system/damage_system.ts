@@ -299,7 +299,9 @@ export class DamageSystem {
      */
     ApplyDamageForBadTeam(params: ApplyCustomDamageOptions) {
         // 无敌
-        if (params.victim.HasModifier("modifier_altar_effect_6")) {
+        if (params.victim.HasModifier("modifier_altar_effect_6")
+            || params.victim.HasModifier("modifier_public_blink")
+        ) {
             return 0
         }
         // 雷电屏障

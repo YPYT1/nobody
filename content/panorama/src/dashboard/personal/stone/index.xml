@@ -18,6 +18,35 @@
                 <Label class="LevelLabel" text="Lv.{d:level}"/>
             </Panel>
         </snippet>
+
+        <snippet name="SoulEquipBorder">
+            <RadioButton class="SoulEquipBorder">
+                <Panel class="Left">
+                    <Panel class="Border">
+                        <Panel class="EquipIcon"/>
+                    </Panel>
+                </Panel>
+                <Panel class="Right">
+                    <Label class="Name" text="{s:slot_name}"/>
+                    <Label class="Desc" text="魂石总等级：{d:ss_level}"/>
+                </Panel>
+            </RadioButton>
+        </snippet>
+
+        <snippet name="SSAttributeRows">
+            <Panel class="SSAttributeRows">
+                <Panel class="AttrAndLevel">
+                    <Label class="Level" text="Lv.{d:attr_level}" />
+                    <Label class="Name" text="{s:attr_name}" />
+                </Panel>
+                
+                <Panel class="AttributeValue">
+                    <Label text="+{d:add_value}" />
+                    <Panel class="Upper" />
+                    <Panel class="Max" />
+                </Panel>
+            </Panel>
+        </snippet>
     </snippets>
     <Panel class="nav_content stone">
         <Panel class="Container">
@@ -41,8 +70,97 @@
         </Panel>
         <Panel id="StonePopups" class="PopupsBackground">
             <Panel class="SoulStonePopups">
+                <Panel class="Header">
+                    <Panel class="Title"/>
+                    <Button id="ClosedBtn" />
+                </Panel>
+                <Panel class="SoulStoneContent">
+                    <Panel id="SoulEquipList" />
 
+                    <Panel class="StrengthenSlot">
+                        <Panel id="SelectEquipIcon" />
+                    </Panel>
+
+                    <Panel class="SSAttributeBorder">
+                        <Panel class="Header">
+                            <Label class="Title" text="魂石属性"/>
+                        </Panel>
+                        <Panel id="SSAttributeList" />
+                    </Panel>
+
+                    <Panel class="SelectSSContent">
+                        <Panel class="Header">
+                            <Label text="属性升级"/>
+                        </Panel>
+                        <Panel id="SelectSSAttributeList">
+                            <Panel class="SelectAttrRows">
+                                <Label class="Name" text="Lv.1 攻击力" />
+                                <Label class="Value" text="+255" />
+                            </Panel>
+                            <Panel class="SelectAttrRows">
+                                <Label class="Name" text="Lv.1 攻击力" />
+                                <Label class="Value" text="+255" />
+                            </Panel>
+                            <Panel class="SelectAttrRows">
+                                <Label class="Name" text="Lv.1 攻击力" />
+                                <Label class="Value" text="+255" />
+                            </Panel>
+                            <Panel class="SelectAttrRows">
+                                <Label class="Name" text="Lv.1 攻击力" />
+                                <Label class="Value" text="+255" />
+                            </Panel>
+                        </Panel>
+                        <Button id="AddSSBtn">
+                            <Panel class="LabelAndIcon" />
+                        
+                           
+                        </Button>
+                    </Panel>
+
+                    <Panel class="SSOptionContainer">
+
+                        <Panel class="OptionRadioBtnList">
+                            <RadioButton id="SSAttrRadioDown" class="SSAttrRadioBtn" group="SSAttrRadioGroup">
+                                <Label text="属性降级"/>
+                            </RadioButton>
+                            <RadioButton id="SSAttrRadioUpper" class="SSAttrRadioBtn" group="SSAttrRadioGroup">
+                                <Label text="属性附加"/>
+                            </RadioButton>
+                        </Panel>
+                        <Panel id="OptionAttributreContainer" class="Down">
+                            <Panel id="OptionAttributreDown" class="OptionAttributre Down">
+                                <Panel class="SelectAttrRows">
+                                    <Label class="Name" text="Lv.1 攻击力" />
+                                    <Label class="Value" text="-255" />
+                                </Panel>
+                                <Panel class="SelectAttrRows">
+                                    <Label class="Name" text="Lv.1 攻击力" />
+                                    <Label class="Value" text="-255" />
+                                </Panel>
+                                <Panel class="SelectAttrRows">
+                                    <Label class="Name" text="Lv.1 攻击力" />
+                                    <Label class="Value" text="-255" />
+                                </Panel>
+                            </Panel>
+                            <Panel id="OptionAttributreAdd" class="OptionAttributre Add">
+                                <Panel class="SelectAttrRows">
+                                    <Label class="Name" text="Lv.1 攻击力" />
+                                    <Label class="Value" text="+255" />
+                                </Panel>
+                                <Panel class="SelectAttrRows">
+                                    <Label class="Name" text="Lv.1 攻击力" />
+                                    <Label class="Value" text="+255" />
+                                </Panel>
+                                <Panel class="SelectAttrRows">
+                                    <Label class="Name" text="Lv.1 攻击力" />
+                                    <Label class="Value" text="+255" />
+                                </Panel>
+                            </Panel>
+                        </Panel>
+                    </Panel>
+                </Panel>
             </Panel>
+            
         </Panel>
     </Panel>
 
