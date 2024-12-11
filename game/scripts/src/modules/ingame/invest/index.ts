@@ -25,7 +25,7 @@ export class InvestSystem extends UIEventRegisterClass {
     /**
      * 默认资源公式 
      */
-    InvestGetResourceEq = "LEVEL";
+    InvestGetResourceEq = "2+LEVEL";
     /**
      * 投资效率 受资源加成影响
      */
