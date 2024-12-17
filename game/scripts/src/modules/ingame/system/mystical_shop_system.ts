@@ -511,9 +511,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             let item_name = this.item_level_group[item_index];
             if(!is_one_refresh){
                 //保存锁定记录
-                if (this.shop_field_list[player_id][index].is_lock == 1) {
+                if (this.shop_field_list[player_id].list[index].is_lock == 1) {
                     //保存
-                    shop_wp_list.push(this.shop_field_list[player_id][index].key);
+                    shop_wp_list.push(this.shop_field_list[player_id].list[index].key);
                     continue;
                 }
             }
@@ -580,6 +580,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 index--;
                 continue;
             }
+            DeepPrintTable(this.shop_field_list[player_id]);
             //保存
             shop_wp_list.push(item_name);
         }
@@ -663,8 +664,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     BuyItem(player_id: PlayerID, params: CGED["MysticalShopSystem"]["BuyItem"], callback?: string) {
         if (this.shop_state_data[player_id].is_ready == 0) {
             let item_index = params.index;
-            if (this.shop_field_list[player_id][item_index]) {
-                let item_info = this.shop_field_list[player_id][item_index];
+            if (this.shop_field_list[player_id].list[item_index]) {
+                let item_info = this.shop_field_list[player_id].list[item_index];
                 if (item_info.is_buy == 0) {
                     if(item_info.type == 2){
                         if(!this.player_shop_buy_ts_data[player_id].hasOwnProperty(item_info.key)){
@@ -681,8 +682,8 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         let name = item_info.key;
                         let rarity = item_info.rarity;
                         //标记为出售
-                        this.shop_field_list[player_id][item_index].is_buy = 1;
-                        this.shop_field_list[player_id][item_index].is_lock = 0;
+                        this.shop_field_list[player_id].list[item_index].is_buy = 1;
+                        this.shop_field_list[player_id].list[item_index].is_lock = 0;
                         this.AddPropAttribute(player_id, name , rarity);
                     } else {
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "mystical shop : " + ModifyResource.msg);
@@ -877,13 +878,13 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      */
     ShopLock(player_id: PlayerID, params: CGED["MysticalShopSystem"]["ShopLock"], callback?: string) {
         let item_index = params.index;
-        if (this.shop_field_list[player_id][item_index].is_buy == 1) {
+        if (this.shop_field_list[player_id].list[item_index].is_buy == 1) {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "已购买的物品无法锁定!!!!");
         }
-        if (this.shop_field_list[player_id][item_index].is_lock == 0) {
-            this.shop_field_list[player_id][item_index].is_lock = 1;
+        if (this.shop_field_list[player_id].list[item_index].is_lock == 0) {
+            this.shop_field_list[player_id].list[item_index].is_lock = 1;
         } else {
-            this.shop_field_list[player_id][item_index].is_lock = 0;
+            this.shop_field_list[player_id].list[item_index].is_lock = 0;
         }
         this.GetShopData(player_id, {});
     }
