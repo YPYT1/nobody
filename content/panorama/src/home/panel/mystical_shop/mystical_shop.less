@@ -164,13 +164,13 @@
 }
 
 #ShopItemList {
-    margin-left: 80px;
+    margin-left: 40px;
     // border: 1px solid #f00;
-    margin-top: 20px;
-    width: (232px + 42px) * 3;
+    margin-top: 40px;
+    width: (272px + 40px) * 3;
     // horizontal-align: center;
     // border: 1px solid #f00;
-    flow-children: right-wrap;
+    flow-children: right;
 
     // pre-transform-scale2d: 2;
 
@@ -178,11 +178,17 @@
 
 .ShopItem {
     // flow-children: none;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
     margin-top: 8px;
     margin-bottom: 8px;
     // overflow: noclip;
+    // border: 1px solid #fff;
+    // 
+
+
+    // background-size: 100%;
+    // padding: 12px;
 
     &.IsLimit {
 
@@ -192,30 +198,27 @@
         }
 
         .ItemCardBorder {
-            background-image: url("file://{images}/custom_game/hud/mystical_shop/limit_card_1.png");
+            background-image: url("file://{images}/custom_game/hud/mystical_shop/limit_card_border.png");
         }
 
         .CardHover {
             background-image: url("file://{images}/custom_game/hud/mystical_shop/limit_card_hover.png");
         }
 
-        .ItemName {
-            margin-top: 4px;
-        }
     }
 
     .ItemCardBorder {
         horizontal-align: center;
-        width: 212px;
-        height: 260px;
-        // border: 1px solid #fff;
-        background-image: url("file://{images}/custom_game/hud/mystical_shop/item_card_border.png");
+        width: 272px;
+        height: 583px;
+        // border: 1px solid #f00;
         background-repeat: no-repeat;
         z-index: -2;
         transition-property: pre-transform-scale2d;
         transition-duration: 0.1s;
         pre-transform-scale2d: 1;
-        transform: translateY(20px);
+        // transform: translateY(20px);
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/item_card_border.png");
     }
 
     &.IsBuy {
@@ -238,9 +241,11 @@
 
     #ShopItemCard {
         z-index: -1;
-        width: 232px;
-        height: 295px;
+        width: 272px;
+        height: 583px;
         pre-transform-scale2d: 1;
+
+
     }
 
 
@@ -311,9 +316,9 @@
     }
 
     .ItemName {
-        margin-top: 14px;
+        margin-top: 20px;
         horizontal-align: center;
-        font-size: 18px;
+        font-size: 20px;
         // color: #dbe4e8;
         text-shadow: 0px 0px 2px 2.0 #000000;
         vertical-align: bottom;
@@ -323,23 +328,18 @@
 
     #ShopItemInfo {
         horizontal-align: center;
-        width: 232px;
-        height: 295px;
+        width: 100%;
+        height: 100%;
+        // border: 1px solid #0f0;
 
-        // flow-children: down;
-        // overflow: noclip;
-        // border: 1px solid #ffffff;
-        // pre-transform-scale2d: 0.5;
         #ItemIcon {
-            margin-top: 1px;
-            width: 54px;
-            height: 54px;
-            // border: 2px solid #ffffff;
+            margin-top: 2px;
+            width: 58px;
+            height: 58px;
+            // border: 1px solid #ffffff;
             // background-color: #000000;
             // box-shadow: #000000 0px 0px 4px 0px;
             horizontal-align: center;
-            // transform: translateY(-12px);
-            // visibility: collapse;
         }
 
 
@@ -348,10 +348,10 @@
 
         .ItemDesc {
             margin-top: 8px;
-            width: 180px;
+            width: 200px;
             // height: 100px;
             // color: #c0c0c0;
-            font-size: 16px;
+            font-size: 18px;
             horizontal-align: center;
             padding: 4px;
 
@@ -365,11 +365,21 @@
 
         .ItemPrice {
             // margin-top: 8px;
-            margin-bottom: 40px;
+            margin-bottom: 90px;
             vertical-align: bottom;
             horizontal-align: center;
+            flow-children: right;
+
+            .PriceIcon {
+                width: 32px;
+                height: 34px;
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/price_icon.png");
+
+            }
 
             Label {
+                margin-left: 4px;
+                vertical-align: middle;
                 color: #ffffff;
                 font-size: 19px;
             }
@@ -377,9 +387,9 @@
     }
 
     .CardHover {
-        width: 232px;
-        height: 296px;
-        background-image: url("file://{images}/custom_game/hud/mystical_shop/card_hover.png");
+        width: 272px;
+        height: 583px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/item_card_border_hover.png");
         opacity: 0;
         // border: 1px solid #ffffff;
     }
@@ -393,17 +403,18 @@
         height: 66px;
         background-image: url("file://{images}/custom_game/hud/mystical_shop/limit_up.png");
         horizontal-align: right;
-        margin-top: 16px;
+        margin-top: 16px + 16px;
         margin-right: 16px;
         visibility: collapse;
     }
 
     .LimitTag {
-        width: 72px;
-        height: 66px;
+        width: 90px;
+        height: 83px;
         background-image: url("file://{images}/custom_game/hud/mystical_shop/limit_tag.png");
-        margin-top: 30px;
-        margin-left: 16px;
+        // background-size: 100%;
+        margin-top: 32px;
+        margin-left: 20px;
         visibility: collapse;
     }
 
@@ -423,37 +434,15 @@
 
     }
 
-    .PrivilegeLock {
-        width: 204px;
-        height: 233px;
-        horizontal-align: center;
-        vertical-align: bottom;
-        background-image: url("file://{images}/custom_game/hud/mystical_shop/vip_lock.png");
-        visibility: collapse;
-        z-index: 99;
-    }
-
-    .ButtonGroup {
-        z-index: 1;
-        transform: translateY(6px);
-        width: 100%;
-        overflow: noclip;
-        padding-left: 9px;
-        // background-color: #000000;
-        // padding-right: 8px;
-        // margin-left: 10px;
-        // margin-right: 11px;
-        flow-children: right;
-        horizontal-align: center;
-        vertical-align: bottom;
-        // horizontal-align: cneter;
-    }
 
     #LockBtn {
-        width: 113px;
-        height: 59px;
-        background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_d.png");
+        width: 86px;
+        height: 86px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_s1.png");
         // border: 1px solid #ffffff;
+        // margin-top: 20px;
+        horizontal-align: center;
+        vertical-align: bottom;
 
         &:disabled {
             saturation: 0.25;
@@ -461,37 +450,14 @@
         }
 
         &:enabled {
+
             &:hover {
-                background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_hover.png");
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_s2.png");
             }
 
             &:active {
-                background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_hit.png");
+                background-image: url("file://{images}/custom_game/hud/mystical_shop/lock_s3.png");
             }
-        }
-
-    }
-
-    #RefreshBtn {
-        // border: 1px solid #ffffff;
-        width: 113px;
-        height: 59px;
-        background-image: url("file://{images}/custom_game/hud/mystical_shop/refresh_n.png");
-        transform: translateX(-13px);
-
-        &:enabled {
-            &:hover {
-                background-image: url("file://{images}/custom_game/hud/mystical_shop/refresh_h.png");
-            }
-
-            &:active {
-                background-image: url("file://{images}/custom_game/hud/mystical_shop/refresh_a.png");
-            }
-        }
-
-        &:disabled {
-            saturation: 0.25;
-            brightness: 0.25;
         }
 
     }
@@ -683,7 +649,7 @@
             flow-children: right;
         }
 
-    
+
         &.Null {
 
             .Lock,
@@ -783,7 +749,7 @@
                 background-image: url("file://{images}/custom_game/hud/mystical_shop/nav/item_border2.png");
             }
 
-            &.IsLock .NavLock{
+            &.IsLock .NavLock {
                 visibility: visible;
             }
 
@@ -800,6 +766,59 @@
         .PropItem {
             width: 64px;
             height: 64px;
+        }
+    }
+}
+
+.RefreshPanel {
+    flow-children: down;
+    horizontal-align: right;
+    vertical-align: middle;
+    margin-top: 60px;
+    // transform: translateX(30px);
+
+    .RefreshCostLabel {
+        flow-children: right;
+        horizontal-align: center;
+
+        .CostIcon {
+            width: 24px;
+            height: 24px;
+            background-image: url("file://{images}/custom_game/hud/mystical_shop/price_icon.png");
+            background-size: 100%;
+            vertical-align: middle;
+        }
+
+        Label {
+            font-size: 18px;
+            vertical-align: middle;
+        }
+    }
+
+    #RefreshShopBtn {
+        width: 125px;
+        height: 120px;
+        background-image: url("file://{images}/custom_game/hud/mystical_shop/refresh_on.png");
+
+        &:enabled {
+            &:hover {
+                brightness: 2;
+            }
+
+            &:active {
+                pre-transform-scale2d: 0.9;
+            }
+        }
+
+        &:disabled {
+            background-image: url("file://{images}/custom_game/hud/mystical_shop/refresh_off.png");
+        }
+
+        .ResreshCountLabel {
+            font-size: 16px;
+            vertical-align: bottom;
+            horizontal-align: center;
+            margin-bottom: 4px;
         }
     }
 }

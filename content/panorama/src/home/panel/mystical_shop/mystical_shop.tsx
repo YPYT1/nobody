@@ -5,7 +5,7 @@ import { HideCustomTooltip, ShowCustomTextTooltip } from "../../../utils/custom_
 import { CreateGameComponent, LoadGameComponent } from "../../component/component_manager";
 
 const localPlayer = Game.GetLocalPlayerID();
-const SHOP_ITEM_COUNT = 6;
+const SHOP_ITEM_COUNT = 3;
 let MainPanel = $.GetContextPanel();
 let MysticalShop = $("#MysticalShop");
 let ShopItemList = $("#ShopItemList");
@@ -18,6 +18,7 @@ let BtnConfirm = $("#BtnConfirm") as Button;
 const ExtremePropsList = $("#ExtremePropsList")
 const LocalExtremePropsList = $("#LocalExtremePropsList");
 
+const RefreshShopBtn = $("#RefreshShopBtn") as Button;
 const GameEventsSubscribeInit = () => {
 
     GameEvents.Subscribe("MysticalShopSystem_GetShopState", event => {
@@ -42,13 +43,18 @@ const GameEventsSubscribeInit = () => {
     })
 
     GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
+        $.Msg("MysticalShopSystem_GetShopData")
         let data = event.data;
-        // $.Msg(["MysticalShopSystem_GetShopData"])
-        let local_vip = data.player_vip_status;
-        let has_limit_item: string[] = []
-        let shop_field_list = data.shop_field_list;
-        let list_data = Object.values(event.data.player_shop_buy_ts_data);
+        // 刷新次数和刷新价格
+        let shop_info = data.shop_field_list;
+        MysticalShop.SetDialogVariableInt("refresh_cost", shop_info.refresh_soul);
+        MysticalShop.SetDialogVariableInt("refresh_count", shop_info.refresh_count);
+        MysticalShop.SetDialogVariableInt("refresh_max", shop_info.refresh_max);
 
+        let local_vip = data.player_vip_status;
+        let has_limit_item: string[] = [];
+        // 成长道具
+        let list_data = Object.values(event.data.player_shop_buy_ts_data);
         for (let i = 0; i < list_data.length; i++) {
             // $.Msg(ItemPanel)
             let data = list_data[i];
@@ -96,11 +102,13 @@ const GameEventsSubscribeInit = () => {
             }
 
         }
-
-        for (let k in shop_field_list) {
+        
+        let shop_list = data.shop_field_list.list;
+        for (let k in shop_list) {
             let index = parseInt(k) - 1;
-            let row_data = shop_field_list[k];
+            let row_data = shop_list[k];
             let shop_key = row_data.key;
+            // $.Msg(["shop_key",shop_key])
             if (shop_key == "null") { continue }
             // shop_sell_item_list.push(shop_key)
             let item_label = $.Localize(`#custom_shopitem_${row_data.key}`)
@@ -108,7 +116,7 @@ const GameEventsSubscribeInit = () => {
             let is_vip = (local_vip < row_data.is_vip);
             let IsLimit = row_data.type == 2
             // $.Msg(["Item", row_data.type, row_data.rarity, item_label])
-            ShopItem.Data<PanelDataObject>().is_vip = is_vip
+            // ShopItem.Data<PanelDataObject>().is_vip = is_vip
             ShopItem.SetHasClass("IsLimit", IsLimit);
             ShopItem.SetHasClass("IsVip", is_vip);
             ShopItem.SetHasClass("IsBuy", row_data.is_buy == 1);
@@ -116,7 +124,7 @@ const GameEventsSubscribeInit = () => {
             const is_enabled = row_data.is_lock == 0 && local_vip >= row_data.is_vip && row_data.is_buy == 0;
             ShopItem.SetHasClass("Enabled", is_enabled)
             ShopItem.SetDialogVariableInt("cost", row_data.soul);
-            ShopItem.SetDialogVariableInt("refresh_cost", row_data.refresh_soul);
+            // ShopItem.SetDialogVariableInt("refresh_cost", row_data.refresh_soul);
             ShopItem.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${row_data.key}`));
             const ItemIcon = ShopItem.FindChildTraverse("ItemIcon") as ImagePanel;
             const ShopItemJson = MysteriousShopConfig[shop_key as keyof typeof MysteriousShopConfig];
@@ -149,13 +157,7 @@ const GameEventsSubscribeInit = () => {
             const LockBtn = ShopItem.FindChildTraverse("LockBtn")!;
             LockBtn.enabled = row_data.is_buy == 0 && !is_vip;
 
-            const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
-            RefreshBtn.enabled = row_data.is_lock == 0 && !is_vip;
-            RefreshBtn.Data<PanelDataObject>().refresh_count = row_data.refresh_count;
-            RefreshBtn.Data<PanelDataObject>().refresh_soul = row_data.refresh_soul;
-            if (RefreshBtn.BHasClass("onmouse")) { ShowCustomTextTooltip(RefreshBtn, "#custom_text_mystical_shop_refresh") }
             // 设置品质
-
             const rarity = row_data.type == 2 ? data_r + 1 : data_r
             for (let r = 1; r <= 7; r++) {
                 ShopItem.SetHasClass("rare_" + r, rarity == r)
@@ -172,6 +174,8 @@ const GameEventsSubscribeInit = () => {
             ShopItem.SetHasClass("limit_up", same_index != -1)
         }
 
+        //
+        
     })
 
     GameEvents.Subscribe("MysticalShopSystem_GetPlayerShopBuyData", event => {
@@ -183,6 +187,8 @@ const GameEventsSubscribeInit = () => {
         params: {}
     })
 }
+
+
 /**
  * 弹窗购物
  * @param item_order 
@@ -291,25 +297,25 @@ export const CreatePanel = () => {
             HideCustomTooltip()
         })
 
-        const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
-        RefreshBtn.SetPanelEvent("onactivate", () => {
-            GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
-                event_name: "RefreshOneItemBySoul",
-                params: {
-                    index: i,
-                }
-            })
-        })
+        // const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
+        // RefreshBtn.SetPanelEvent("onactivate", () => {
+        //     GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+        //         event_name: "RefreshOneItemBySoul",
+        //         params: {
+        //             index: i,
+        //         }
+        //     })
+        // })
 
-        RefreshBtn.SetPanelEvent("onmouseover", () => {
-            RefreshBtn.SetHasClass("onmouse", true)
-            ShowCustomTextTooltip(RefreshBtn, "#custom_text_mystical_shop_refresh")
-        })
+        // RefreshBtn.SetPanelEvent("onmouseover", () => {
+        //     RefreshBtn.SetHasClass("onmouse", true)
+        //     ShowCustomTextTooltip(RefreshBtn, "#custom_text_mystical_shop_refresh")
+        // })
 
-        RefreshBtn.SetPanelEvent("onmouseout", () => {
-            RefreshBtn.SetHasClass("onmouse", false)
-            HideCustomTooltip()
-        })
+        // RefreshBtn.SetPanelEvent("onmouseout", () => {
+        //     RefreshBtn.SetHasClass("onmouse", false)
+        //     HideCustomTooltip()
+        // })
 
         const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
         ShopItemCard.SetPanelEvent("onactivate", () => {
@@ -335,6 +341,16 @@ export const CreatePanel = () => {
         GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
             event_name: "PlayerReady",
             params: {}
+        })
+    })
+
+    // 刷新次数
+    RefreshShopBtn.SetPanelEvent("onactivate", () => {
+        GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+            event_name: "RefreshOneItemBySoul",
+            params: {
+                // index:1
+            }
         })
     })
 }

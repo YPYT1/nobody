@@ -31,6 +31,17 @@ export const DASHBOARD_NAVBAR = {
         }
     },
 
+    "store": {
+        "Show": IsTestMode,
+        "Sub": {
+            "list": true,
+            "tag1": true,
+            "tag2": true,
+            "tag3": true,
+            "tag4": true,
+        }
+    }
+
 };
 
 /** 跳转到指定路由 */

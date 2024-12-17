@@ -15,10 +15,11 @@
 					<Panel id="ShopItemInfo" >
 						<Panel id="PurchaseBtn" hittest="false">
 							<Image id="ItemIcon" />
-							<Panel id="LimitStar" />
 							<Label class="ItemName" text="{s:item_name}" />
+							<Panel id="LimitStar" />
 							<Label class="ItemDesc" text="{s:item_desc}" html="true"/>
 							<Panel class="ItemPrice">
+								<Panel class="PriceIcon"/>
 								<Label text="{d:cost}"/>
 							</Panel>
 						</Panel>
@@ -30,19 +31,12 @@
 					<Panel class="ItemLockState">
 						<Label text="#已锁定"/>
 					</Panel>
-					<Panel class="PrivilegeLock" />
 				</Button>
-				
-				<Panel class="ButtonGroup" hittest="false">
-					<Button id="LockBtn">
-						<Panel class="BtnImg"/>
-					</Button>
-					<Button id="RefreshBtn"  >
-						<Panel class="BtnImg"/>
-					</Button>
-				</Panel>
-				
-			
+
+				<Button id="LockBtn">
+					<Panel class="BtnImg"/>
+				</Button>
+
 			</Panel>
 		</snippet>
 		<snippet name="PlayerShopState">
@@ -82,7 +76,7 @@
 		<Panel id="MysticalShop" class="" >
 			<Panel class="ShopContainer">
 				<Panel class="CountdownTimer">
-					<Label class="Title" text="#购买倒计时: "/>
+					<Label class="Title" text="购买倒计时: "/>
 					<Label class="Timer" text="{s:countdown_timer}"/>
 				</Panel>
 				<Panel class="ShopBody">
@@ -97,6 +91,16 @@
 				
 			</Panel>
 			<Panel class="TitleImg"/>
+			<Panel class="RefreshPanel">
+				
+				<Button id="RefreshShopBtn">
+					<Panel class="RefreshCostLabel">
+						<Panel class="CostIcon"/>
+						<Label text="{d:refresh_cost}"/>
+					</Panel>
+					<Label class="ResreshCountLabel" text="{d:refresh_count} / {d:refresh_max}"/>
+				</Button>
+			</Panel>
 			<Button id="ReadyBtn"></Button>
 		</Panel>
 		<Button id="OpenButton">

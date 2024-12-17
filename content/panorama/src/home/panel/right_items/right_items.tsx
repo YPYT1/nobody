@@ -46,7 +46,8 @@ const CustomGameEventsSubscribe = () => {
         let list_data = Object.values(event.data);
         for (let row of list_data) {
             let name = row.name;
-            setStorage(name + "_attr", row.attr_list)
+            let rune_key = name + "_attr" as "__rune_attr"
+            setStorage(rune_key, row.attr_list)
             let ItemBorder = ItemList_Rune.FindChildTraverse(name);
             if (ItemBorder == null) {
                 let ItemBorder = $.CreatePanel("Panel", ItemList_Rune, name);
@@ -68,9 +69,6 @@ const CustomGameEventsSubscribe = () => {
                 ItemBorder.SetPanelEvent("onmouseout", () => {
                     HideCustomTooltip()
                 })
-
-
-
             }
         }
 

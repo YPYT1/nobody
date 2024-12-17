@@ -40,6 +40,21 @@ const _SetItemId = (item_id: string | number) => {
             let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
             ServerItemIcon.SetImage(image_src);
         }
+
+        // let show_tips = MainPanel.Data<PanelDataObject>().show_tips as boolean;
+        // if (show_tips){
+        //     MainPanel.SetPanelEvent("onmouseover", () => {
+        //         let count = MainPanel.Data<PanelDataObject>().count as number;
+        //         let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
+        //         $.DispatchEvent(
+        //             "UIShowCustomLayoutParametersTooltip",
+        //             MainPanel,
+        //             "custom_tooltip_serveritem",
+        //             "file://{resources}/layout/custom_game/tooltip/server_item/layout.xml",
+        //             `item_id=${item_id}&count=${count}&show_count=${show_count ? 1 : 0}&r=${rarity}`
+        //         );
+        //     })
+        // }
     }
 }
 const _SetServerItemInfo = (params: ServerInfoConfig) => {
@@ -53,10 +68,14 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
     MainPanel.SetHasClass("zero", !show_count)
     MainPanel.SetHasClass("hide_bg", hide_bg)
     MainPanel.Data<PanelDataObject>().item_id = item_id
+    MainPanel.Data<PanelDataObject>().show_tips = show_tips ?? false;
+    MainPanel.Data<PanelDataObject>().show_count = show_count ?? false;
+
     if (params.item_id != null) {
         let data = ServerItemList[item_id as keyof typeof ServerItemList];
         if (data) {
             let rarity = data.quality;
+            MainPanel.Data<PanelDataObject>().rarity = rarity
             for (let rare of rare_list) {
                 MainPanel.SetHasClass(`rare_${rare}`, rarity == rare);
             }
@@ -75,24 +94,9 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
 
 
 
-            if (show_tips) {
-                MainPanel.SetPanelEvent("onmouseover", () => {
-                    let count = MainPanel.Data<PanelDataObject>().count as number;
-                    let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
-                    $.DispatchEvent(
-                        "UIShowCustomLayoutParametersTooltip",
-                        MainPanel,
-                        "custom_tooltip_serveritem",
-                        "file://{resources}/layout/custom_game/tooltip/server_item/layout.xml",
-                        `item_id=${item_id}&count=${item_count}&show_count=${show_count ? 1 : 0}&r=${rarity}`
-                    );
-                })
-            }
 
 
-            MainPanel.SetPanelEvent("onmouseout", () => {
-                $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_serveritem");
-            })
+
 
         } else {
             MainPanel.SetHasClass("zero", false)
@@ -110,4 +114,25 @@ const _SetCount = (count: number) => {
     MainPanel._SetServerItemInfo = _SetServerItemInfo;
     MainPanel._SetCount = _SetCount;
     MainPanel._SetItemId = _SetItemId;
+
+    MainPanel.SetPanelEvent("onmouseover", () => {
+        let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
+        let show_tips = MainPanel.Data<PanelDataObject>().show_tips as boolean;
+        if (show_tips && item_id != null) {
+            let count = MainPanel.Data<PanelDataObject>().count as number;
+            let show_count = MainPanel.Data<PanelDataObject>().show_count as boolean;
+            let rarity = MainPanel.Data<PanelDataObject>().rarity as number
+            $.DispatchEvent(
+                "UIShowCustomLayoutParametersTooltip",
+                MainPanel,
+                "custom_tooltip_serveritem",
+                "file://{resources}/layout/custom_game/tooltip/server_item/layout.xml",
+                `item_id=${item_id}&count=${count}&show_count=${show_count ? 1 : 0}&r=${rarity}`
+            );
+        }
+    })
+
+    MainPanel.SetPanelEvent("onmouseout", () => {
+        $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_serveritem");
+    })
 })();

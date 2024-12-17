@@ -3,8 +3,6 @@
         <include src="./script.tsx" />
     </scripts>
     <styles>
-        <include src="./../_styles/keyframes.less" />
-        <include src="./../_styles/styles.less" />
         <include src="./styles.less" />
     </styles>
     <Panel class="public" hittest="false">

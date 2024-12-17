@@ -19,21 +19,19 @@ ItemComponent._SetServerItemInfo({ show_count: false });
 
 const Component_ItemName = LoadCustomComponent($("#Component_ItemName"), "server_item_name");
 Component_ItemName._SetSize(22);
-
 const SendCustomEvent = GameUI.CustomUIConfig().SendCustomEvent;
 const GetServerItemData = GameUI.CustomUIConfig().GetServerItemData;
 const EventBus = GameUI.CustomUIConfig().EventBus;
 
 let view_item_id = -1;
-
 const CGE_Subscribe = () => {
-
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
         // 这个是渲染所有物品
         // $.Msg(["ServiceInterface_GetPlayerServerPackageData"])
         let data = event.data;
         let ItemList = Object.values(data);
-        let ids_backpack: { [id: string]: AM2_Server_Backpack } = {}
+        let ids_backpack: { [id: string]: AM2_Server_Backpack } = {};
+        let backpack_count_table: { [item_id: string]: number } = {}
         BackpackItemList.RemoveAndDeleteChildren();
 
         for (let ItemData of ItemList) {
@@ -55,10 +53,15 @@ const CGE_Subscribe = () => {
                 let amount = ItemRadio.Data<PanelDataObject>().amount as number;
                 ViewItem("" + item_id, amount)
             })
+
+            backpack_count_table[`${item_id}`] = ItemData.number;
         }
 
 
         EventBus.publish("backpack_update", ids_backpack)
+
+        // 储存当前背包物品的数量
+        GameUI.CustomUIConfig().setStorage("backpack_count_table",backpack_count_table)
     })
 
     SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
@@ -120,13 +123,10 @@ export const Init = () => {
             order++;
         }
     }
-
     CGE_Subscribe();
-
     InitItemDetails();
 }
 
 (() => {
-
     Init();
 })();

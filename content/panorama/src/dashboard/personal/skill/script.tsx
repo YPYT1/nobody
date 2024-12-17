@@ -143,6 +143,7 @@ const CGED_Init = () => {
     EventBus.subscribe("backpack_update", data => {
         //1292	高阶精通点
         $.Msg(["backpack_update111"])
+        $.Msg(data)
         let item1292 = data['1292']
         let item1292_count = item1292 == null ? 0 : item1292.number
         ServerItemCount[1292] = item1292_count

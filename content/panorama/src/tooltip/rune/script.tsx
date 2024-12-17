@@ -41,7 +41,8 @@ export function Init() {
         // SetAbilityBaseInfo(name, entityIndex)
 
         RuneAttrList.RemoveAndDeleteChildren()
-        let attr_list = getStorage(name + "_attr") as { [attr_id: string]: number };
+        let rune_key = name + "_attr" as "__rune_attr"
+        let attr_list = getStorage(rune_key)
         for (let attr_id in attr_list) {
             let attr_config = RuneAttrConfig[attr_id as keyof typeof RuneAttrConfig]
             let attr_name = $.Localize(`#custom_attribute_${attr_config.AttrName}`).replace("%", "")
@@ -61,7 +62,7 @@ export function Init() {
             RuneAttrRows.SetDialogVariable("rune_attr", `${attr_name}+${attr_value_label}`);
             // attr_label.push(`${attr_name}+${attr_value_label}`)
         }
-      
+
     });
 }
 

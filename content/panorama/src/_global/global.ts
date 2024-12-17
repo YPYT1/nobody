@@ -17,10 +17,6 @@ declare global {
         ConverAttrAndValueLabel(attr: string, value: number, decimal?: number): string;
         SetHotKey(key: string, down_func: Function, up_func?: Function): void;
         SendCustomEvent: <T1 extends keyof CGED, T2 extends keyof CGED[T1], T3 extends CGED[T1][T2]>(pEventName: T1, event_name: T2, params: T3) => void
-
-        __storage: { [key: string]: any; };
-        setStorage(key: string, value: any): void
-        getStorage(key: string): any
     }
 }
 
@@ -159,20 +155,4 @@ GameUI.CustomUIConfig().SendCustomEvent = function <
     })
 }
 
-
-function setStorage(key: string, value: any) {
-    if (GameUI.CustomUIConfig().__storage == null) {
-        GameUI.CustomUIConfig().__storage = {};
-    }
-    GameUI.CustomUIConfig().__storage[key] = value;
-};
-GameUI.CustomUIConfig().setStorage = setStorage;
-
-function getStorage(key: string) {
-    if (GameUI.CustomUIConfig().__storage == null || GameUI.CustomUIConfig().__storage[key] == null) {
-        return null;
-    }
-    return GameUI.CustomUIConfig().__storage[key];
-}
-GameUI.CustomUIConfig().getStorage = getStorage;
 

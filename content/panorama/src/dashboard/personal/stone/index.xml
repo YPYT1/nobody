@@ -36,15 +36,27 @@
         <snippet name="SSAttributeRows">
             <Panel class="SSAttributeRows">
                 <Panel class="AttrAndLevel">
-                    <Label class="Level" text="Lv.{d:attr_level}" />
                     <Label class="Name" text="{s:attr_name}" />
                 </Panel>
                 
                 <Panel class="AttributeValue">
-                    <Label text="+{d:add_value}" />
+                    <Label text="{s:attr_value}" />
                     <Panel class="Upper" />
                     <Panel class="Max" />
                 </Panel>
+            </Panel>
+        </snippet>
+
+        <snippet name="SelectAttrRows">
+            <Panel class="SelectAttrRows">
+                <Label class="Name" text="{s:attr_name}"/>
+                <Label class="Value" text="{s:attr_value}" />
+            </Panel>
+        </snippet>
+        <snippet name="BaseStoneBtn">
+            <Panel class="BaseStoneBtn">
+                <Label class="Name" text="{s:item_name}"/>
+                <Label class="Attr" text="{s:attr}"/>
             </Panel>
         </snippet>
     </snippets>
@@ -74,7 +86,7 @@
                     <Panel class="Title"/>
                     <Button id="ClosedBtn" />
                 </Panel>
-                <Panel class="SoulStoneContent">
+                <Panel  class="SoulStoneContent">
                     <Panel id="SoulEquipList" />
 
                     <Panel class="StrengthenSlot">
@@ -86,82 +98,110 @@
                             <Label class="Title" text="魂石属性"/>
                         </Panel>
                         <Panel id="SSAttributeList" />
+                        <Panel id="TempAddSSAttr"/>
                     </Panel>
 
-                    <Panel class="SelectSSContent">
-                        <Panel class="Header">
-                            <Label text="属性升级"/>
+                    
+                    <Panel id="EquipAboutAttribute">
+                        <Panel class="SelectSSContent">
+                            <Panel class="Header">
+                                <Label text="属性升级"/>
+                            </Panel>
+                            <Panel id="SelectSSAttributeList" />
+                            <Button id="AddSSBtn">
+                                <Panel class="LabelAndIcon" text="添加属性" />
+                            </Button>
                         </Panel>
-                        <Panel id="SelectSSAttributeList">
-                            <Panel class="SelectAttrRows">
-                                <Label class="Name" text="Lv.1 攻击力" />
-                                <Label class="Value" text="+255" />
+                        <Panel class="SSOptionContainer">
+                            <Panel class="OptionRadioBtnList">
+                                <RadioButton id="SSAttrRadioDown" class="SSAttrRadioBtn" group="SSAttrRadioGroup" check="true">
+                                    <Label text="属性降级"/>
+                                </RadioButton>
+                                <RadioButton id="SSAttrRadioUpper" class="SSAttrRadioBtn" group="SSAttrRadioGroup">
+                                    <Label text="属性附加"/>
+                                </RadioButton>
                             </Panel>
-                            <Panel class="SelectAttrRows">
-                                <Label class="Name" text="Lv.1 攻击力" />
-                                <Label class="Value" text="+255" />
-                            </Panel>
-                            <Panel class="SelectAttrRows">
-                                <Label class="Name" text="Lv.1 攻击力" />
-                                <Label class="Value" text="+255" />
-                            </Panel>
-                            <Panel class="SelectAttrRows">
-                                <Label class="Name" text="Lv.1 攻击力" />
-                                <Label class="Value" text="+255" />
+                            <Panel id="OptionAttributreContainer" class="Down">
+                                <Panel id="OptionAttributreDown" class="OptionAttributre Down">
+                                    <Panel id="AttributreDownList" class="AttributeList" />
+                                    <Panel class="ButtonGroup">
+                                        <Button id="SSDownBtn" class="dashboard_btn">
+                                            <Label text="确定降级"/>
+                                        </Button>
+                                        <Button id="SSDelBtn" class="dashboard_btn red">
+                                            <Label text="删除魂石"/>
+                                        </Button>
+                                    </Panel>
+                                </Panel>
+                                <Panel id="OptionAttributreUpper" class="OptionAttributre Upper">
+                                    <Panel id="AttributreUpperList" class="AttributeList" />
+                                    <Panel class="ButtonGroup">
+                                        <Button id="SSUpperBtn" class="dashboard_btn">
+                                            <Label text="升级"/>
+                                        </Button>
+                                    </Panel>
+                                </Panel>
                             </Panel>
                         </Panel>
-                        <Button id="AddSSBtn">
-                            <Panel class="LabelAndIcon" />
-                        
-                           
-                        </Button>
-                    </Panel>
-
-                    <Panel class="SSOptionContainer">
-
-                        <Panel class="OptionRadioBtnList">
-                            <RadioButton id="SSAttrRadioDown" class="SSAttrRadioBtn" group="SSAttrRadioGroup">
-                                <Label text="属性降级"/>
-                            </RadioButton>
-                            <RadioButton id="SSAttrRadioUpper" class="SSAttrRadioBtn" group="SSAttrRadioGroup">
-                                <Label text="属性附加"/>
-                            </RadioButton>
-                        </Panel>
-                        <Panel id="OptionAttributreContainer" class="Down">
-                            <Panel id="OptionAttributreDown" class="OptionAttributre Down">
-                                <Panel class="SelectAttrRows">
-                                    <Label class="Name" text="Lv.1 攻击力" />
-                                    <Label class="Value" text="-255" />
-                                </Panel>
-                                <Panel class="SelectAttrRows">
-                                    <Label class="Name" text="Lv.1 攻击力" />
-                                    <Label class="Value" text="-255" />
-                                </Panel>
-                                <Panel class="SelectAttrRows">
-                                    <Label class="Name" text="Lv.1 攻击力" />
-                                    <Label class="Value" text="-255" />
-                                </Panel>
+                        <Panel id="SoulStoneOptionList">
+                            <Panel class="OptionRow AddStone">
+                                <Button id="AddStone_BtnConfirm" class="dashboard_btn">
+                                    <Label text="确认"/>
+                                </Button>
                             </Panel>
-                            <Panel id="OptionAttributreAdd" class="OptionAttributre Add">
-                                <Panel class="SelectAttrRows">
-                                    <Label class="Name" text="Lv.1 攻击力" />
-                                    <Label class="Value" text="+255" />
-                                </Panel>
-                                <Panel class="SelectAttrRows">
-                                    <Label class="Name" text="Lv.1 攻击力" />
-                                    <Label class="Value" text="+255" />
-                                </Panel>
-                                <Panel class="SelectAttrRows">
-                                    <Label class="Name" text="Lv.1 攻击力" />
-                                    <Label class="Value" text="+255" />
-                                </Panel>
-                            </Panel>
+                            
                         </Panel>
                     </Panel>
+                    
                 </Panel>
             </Panel>
-            
+            <Panel id="AddStoneMenu" >
+                <Panel class="Header">
+                    <Label text="可镶嵌魂石属性"/>
+                </Panel>
+                <Panel id="AddStoneList"/>
+            </Panel>
+            <Button id="AddStone_ConfirmPopups" class="ConfirmPopupContainer">
+                <Panel class="ConfirmPopup">
+                    <Panel class="ServerItemContanier">
+                        <Panel class="ServerItemBorder">
+                            <Panel id="AddStone_CostItemList" class="ServerItem" />
+                            <Panel class="CostItemNum">
+                                <Panel class="CostLabel">
+                                    <Label class="Owned" text="{d:owned_count}  "/>
+                                    <Label class="Need" text="/ {d:need_count}"/>
+                                </Panel>
+                                
+                            </Panel>
+                        </Panel>
+                        <Label class="SuccessLabel"  text="成功率: {d:success}%"/>
+                        <Panel class="ServerItemBorder ExtendItem">
+                            <Panel id="AddStone_ExtendCostItem" class="ServerItem"/>
+                            <Panel class="CostItemNum">
+                                <Label text="{d:ex_owned_count} / {d:ex_need_count}"/>
+                            </Panel>
+                        </Panel>
+                    </Panel>
+                    
+                    <Panel class="UpperPriceCost">
+                        <Panel class="CostPanel">
+                            <Panel class="PriceIcon" />
+                            <Label class="PriceCount" text="{d:cost_count}"/>
+                        </Panel>
+                    </Panel>
+                    
+
+                
+                    <!-- <Panel class="ButtonGroup">
+                        
+                        <Button id="AddStone_BtnCancel" class="dashboard_btn red">
+                            <Label text="取消"/>
+                        </Button>
+                    </Panel> -->
+                </Panel>
+            </Button>
         </Panel>
+        
     </Panel>
 
 </root>

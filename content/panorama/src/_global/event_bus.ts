@@ -3,7 +3,8 @@ export const Global = "event_bus";
 declare global {
 
     interface CustomUIConfig {
-        EventBus: EventBus
+        EventBus: EventBus;
+        EventBusClass: typeof EventBus;
     }
 }
 
@@ -32,7 +33,7 @@ interface ISubscribe {
 
 
 
-class EventBus  {
+class EventBus {
 
     private _eventObject: IEventObject;
     private _callbackId: number;
@@ -130,6 +131,6 @@ class EventBus  {
         delete this._eventObject[eventName];
     }
 }
-
+GameUI.CustomUIConfig().EventBusClass = EventBus;
 GameUI.CustomUIConfig().EventBus = new EventBus();
 

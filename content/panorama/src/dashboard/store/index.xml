@@ -1,0 +1,23 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+		<include src="./../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+	<snippets>
+       <snippet name="NavRadioButton">
+            <RadioButton group="StoreNavRadioButton" text="{s:button_txt}">
+                <Panel class="Icon"/>
+            </RadioButton>
+        </snippet>
+	</snippets>
+	<Panel class="DashBoardPanel">
+		<Panel class="Container">
+            <Panel id="NavButtonList" class="TestBorder">
+
+            </Panel>
+        </Panel>
+	</Panel>
+</root>
