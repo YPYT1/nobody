@@ -46,7 +46,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
     get_select_talent_data : CGEDPlayerSelectTalentData[] = [];
 
     //玩家最大可选栏位
-    player_field_count : number[] = [ 3 , 3 , 3 , 3]
+    player_field_count : number[] = [ 1 , 1 , 1 , 1]
 
     talent_tree_values: {
         [key: string]: {
@@ -79,7 +79,7 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             });
             this.player_talent_data_client.push({
 
-            }); 
+            });
             this.player_talent_list.push({
 
             });

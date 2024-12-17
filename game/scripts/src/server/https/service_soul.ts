@@ -47,7 +47,7 @@ export class ServiceSoul extends UIEventRegisterClass {
             for (let c_i = 1; c_i <= this.player_box_type_count; c_i++) {
                 this.soul_list[index].i[c_i] = {
                     "c" : {},
-                    "d" : [],
+                    "d" : [],   
                 }
             }
         }
@@ -255,6 +255,23 @@ export class ServiceSoul extends UIEventRegisterClass {
         if((level + 1) >= level_max){
             return ret;
         }
+
+
+        if(level >= 15){
+            value_per = SoulAttr_data.value_per_16_20;
+            value_max = SoulAttr_data.value_max_20;
+        }else if(level >= 10){
+            value_per = SoulAttr_data.value_per_11_15;
+            value_max = SoulAttr_data.value_max_15;
+        }else if(level >= 5){
+            value_per = SoulAttr_data.value_per_6_10;
+            value_max = SoulAttr_data.value_max_10;
+        }else{
+            value_per = SoulAttr_data.value_per_1_5;
+            value_max = SoulAttr_data.value_max_5;
+        }
+
+        
         if(level >= 15){
             value_per = SoulAttr_data.value_per_16_20;
             value_max = SoulAttr_data.value_max_20;

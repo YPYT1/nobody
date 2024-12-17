@@ -109,7 +109,12 @@ declare interface CustomGameEventDeclarations {
      */
      MysticalShopSystem_GetShopData: {
         data: {
-            shop_field_list: ShopFieldList[], //玩家商店信息
+            shop_field_list: {
+                list : ShopFieldList[], //商店数据
+                refresh_count : number , //刷新次数
+                refresh_soul : number , //刷新价格
+                refresh_max : number , //刷新上限
+            }, //玩家商店信息
             player_vip_status : number ; //玩家vip状态 0 不是 1是
             player_shop_buy_ts_data : PlayerShopBuyTsClient[],
         };
@@ -407,9 +412,6 @@ declare interface ShopFieldList {
     is_buy: number, // 0 未购买 1 已购买
     is_lock : number , //是否锁定
     is_vip : number , //是否为vip栏位
-    refresh_count : number , //刷新次数
-    refresh_soul : number , //刷新价格
-    refresh_max : number , //刷新上限
     star : number , // 星级
 }   
 //商店刷新信息

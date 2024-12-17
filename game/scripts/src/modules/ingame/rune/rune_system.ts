@@ -49,6 +49,10 @@ export class RuneSystem extends UIEventRegisterClass {
      */
     //玩家单次最大随机数量
     player_select_amount: number[] = [];
+    /**
+     * 玩家单次最大随机数量默認值
+     */
+    player_select_amount_info: number = 2;
     /**     
      * 初始化
      */
@@ -89,7 +93,7 @@ export class RuneSystem extends UIEventRegisterClass {
             this.player_fate_data_index.push(0);
             this.player_challenge_number.push(1);
             this.player_select_rune_max.push(100);
-            this.player_select_amount.push(3);
+            this.player_select_amount.push(this.player_select_amount_info);
         }
 
         for (let i_key in RuneConfig) {
@@ -181,7 +185,7 @@ export class RuneSystem extends UIEventRegisterClass {
         this.player_challenge_number[player_id] = 1;
         this.player_select_rune_max[player_id] = 100;
         //玩家默认最大3次
-        this.player_select_amount[player_id] = 3;
+        this.player_select_amount[player_id] = this.player_select_amount_info;
 
         //初始化英雄相关数据
         if(hHero != null){
@@ -1006,7 +1010,6 @@ export class RuneSystem extends UIEventRegisterClass {
             }
         };
         GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_102_RuneGetATK" , attr_count)
-        
     }
     /**
      * 【独乐乐】如果自身拥有【独乐乐】，则自身获得双倍加成，所有友军获得【独乐乐】加成
