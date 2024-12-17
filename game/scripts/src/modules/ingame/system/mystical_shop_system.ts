@@ -369,7 +369,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * @param callback 
      */
     RefreshOneItemBySoul(player_id: PlayerID, params: CGED["MysticalShopSystem"]["RefreshOneItemBySoul"], callback?: string) {
-        let index = params.index;
         if (this.shop_state_data[player_id].is_ready == 0) {
             let refresh_count = this.shop_field_list[player_id].refresh_count;
             let refresh_max = this.shop_field_list[player_id].refresh_max;
@@ -381,7 +380,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             let refresh_soul = this.shop_field_list[player_id].refresh_soul;
             let player_gold_start = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - refresh_soul });
             if (player_gold_start.status) {
-                GameRules.MysticalShopSystem.PlayerShopItem(player_id, index)
+                GameRules.MysticalShopSystem.PlayerShopItem(player_id)
             } else {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : !" + player_gold_start.msg);
             }

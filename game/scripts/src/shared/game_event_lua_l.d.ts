@@ -29,7 +29,6 @@ declare interface CGED {
         }
         //刷新单个物品
         RefreshOneItemBySoul : {
-            index : number , //物品位置
         }
         //获取商店状态 是否可以购买等
         GetShopState : {
