@@ -5,6 +5,8 @@
 // import { default as PictuerFetterAbility } from "../json/config/server/picture/pictuer_fetter_ability.json";
 export const GLOBAL_FILE = "global";
 
+const AttributeConst = GameUI.CustomUIConfig().KvData.AttributeConst;
+
 declare global {
 
     interface CustomUIConfig {
@@ -17,6 +19,7 @@ declare global {
         ConverAttrAndValueLabel(attr: string, value: number, decimal?: number): string;
         SetHotKey(key: string, down_func: Function, up_func?: Function): void;
         SendCustomEvent: <T1 extends keyof CGED, T2 extends keyof CGED[T1], T3 extends CGED[T1][T2]>(pEventName: T1, event_name: T2, params: T3) => void
+        CheckAttrIsPercent(MainAttr: AttributeMainKey, SubAttr: AttributeSubKey): boolean
     }
 }
 
@@ -115,7 +118,7 @@ GameUI.CustomUIConfig().HideCustomTooltip = function () {
     $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_talentconfig");
 }
 
-const AttributeConst = GameUI.CustomUIConfig().KvData.AttributeConst;
+
 GameUI.CustomUIConfig().ConverAttrAndValueLabel = (attr: string, value: number, decimal: number = 0) => {
     let is_pct = AttributeConst[attr as keyof typeof AttributeConst].is_pct == 1;
     let res_label = "0";
@@ -153,6 +156,14 @@ GameUI.CustomUIConfig().SendCustomEvent = function <
         event_name: event_name,
         params: params
     })
+}
+
+const PercentAttrKeyList: AttributeSubKey[] = ["BasePercent", "BonusPercent", "TotalPercent"];
+GameUI.CustomUIConfig().CheckAttrIsPercent = function (MainAttr: AttributeMainKey, SubAttr: AttributeSubKey) {
+    let attr_data = AttributeConst[MainAttr];
+    let is_pct = attr_data.is_pct == 1;
+    let sub_pct = PercentAttrKeyList.indexOf(SubAttr) != -1;
+    return is_pct || sub_pct
 }
 
 

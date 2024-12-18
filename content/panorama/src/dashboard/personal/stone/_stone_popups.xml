@@ -1,0 +1,133 @@
+<root>
+	<styles>
+        <include src="./../../../_styles/styles.less" />
+		<include src="./../../styles.less" />
+		<include src="./../styles.less" />
+		<include src="./_stone_popups.less" />
+	</styles>
+	<scripts>
+		<include src="./_stone_popups.tsx" />
+	</scripts>
+	<snippets>
+        <snippet name="SoulEquipBorder">
+            <RadioButton class="SoulEquipBorder">
+                <Panel class="Left">
+                    <Panel class="Border">
+                        <Panel class="EquipIcon"/>
+                    </Panel>
+                </Panel>
+                <Panel class="Right">
+                    <Label class="Name" text="{s:slot_name}"/>
+                    <Label class="Desc" text="魂石总等级：{d:ss_level}"/>
+                </Panel>
+            </RadioButton>
+        </snippet>
+
+        <snippet name="ItemStoneAttrRows">
+            <Panel class="ItemStoneAttrRows">
+                <Label class="Name" text="{s:item_name}"/>
+                <Label class="Attr" text="{s:attr}"/>
+
+                <Panel class="State">
+                    <Panel class="StateUpper"/>
+                    <Panel class="StateDown"/>
+                    <Panel class="StateMax"/>
+                </Panel>
+                <Button id="DeleteStoneBtn" />
+            </Panel>
+        </snippet>
+
+        <snippet name="CostPanel">
+            <Panel class="CostPanel">
+                <Panel class="CenterContent">
+                    <Panel id="PriceIcon" />
+                    <Label class="PriceCount" text="{d:cost_count}"/>
+                </Panel>
+                
+            </Panel>
+        </snippet>
+	</snippets>
+
+	<Panel class="PopupsBackground">
+        <Panel class="Container">
+            <Panel class="Header">
+                <Panel class="Title"/>
+                <Button id="ClosedBtn" />
+            </Panel>
+            <Panel  class="Content">
+                <Panel id="SoulEquipList">
+
+                </Panel>
+
+                <Panel class="StrengthenSlot">
+                    <Panel id="SelectEquipIcon" />
+                </Panel>
+
+                <Panel class="SSAttributeBorder">
+                    <Panel class="Header">
+                        <Label class="Title" text="魂石属性"/>
+                    </Panel>
+                    <Panel id="SSAttributeList" />
+                </Panel>
+
+                <Panel id="SSActionResults">
+                    <Panel class="ServerItemContanier">
+                        <Panel class="ServerItemBorder">
+                            <Panel id="ResultsBaseCostItem" class="ServerItem" />
+                            <Panel class="CostItemNum">
+                                <Panel class="CostLabel">
+                                    <Label class="Owned" text="{d:owned_count}  "/>
+                                    <Label class="Need" text="/ {d:need_count}"/>
+                                </Panel>
+                                
+                            </Panel>
+                        </Panel>
+                        <Label class="SuccessLabel"  text="成功率: {d:success}%"/>
+                        <Panel class="ServerItemBorder ExtendItem">
+                            <Panel id="ResultsExtendCostItem" class="ServerItem"/>
+                            <Panel class="CostItemNum">
+                                <Label text="{d:ex_owned_count} / {d:ex_need_count}"/>
+                            </Panel>
+                        </Panel>
+                    </Panel>
+                    
+                    <Panel id="ActionCostItemList" class="UpperPriceCost">
+                        
+                    </Panel>
+                    
+                </Panel>
+
+                <Panel class="SelectSSContent">
+                    <Panel class="Header">
+                        <Label text="属性升级"/>
+                    </Panel>
+                    <Panel id="AttributreUpperList" />
+                </Panel>
+
+                <Panel class="SSOptionContainer">
+                    <Panel class="OptionRadioBtnList">
+                        <RadioButton id="SSAttrRadioDown" class="SSAttrRadioBtn" group="SSAttrRadioGroup" check="true">
+                            <Label text="属性降级"/>
+                        </RadioButton>
+                        <RadioButton id="SSAttrRadioAdd" class="SSAttrRadioBtn" group="SSAttrRadioGroup">
+                            <Label text="属性附加"/>
+                        </RadioButton>
+                    </Panel>
+                    <Panel id="OptionAttributreContainer" class="Down">
+                        <Panel id="OptionAttributreDown" class="OptionAttributre Down">
+                            <Panel id="AttributreDownList" class="SoulStoneList" />
+                        </Panel>
+                        <Panel id="OptionAttributreAdd" class="OptionAttributre Add">
+                            <Panel id="AttributreAddList" class="SoulStoneList" />
+                        </Panel>
+                    </Panel>
+                    <Button id="PopupsOptionConfirmBtn" class="dashboard_btn">
+                        <Label text="确认"/>
+                    </Button>
+                </Panel>
+
+                
+            </Panel>
+        </Panel>
+    </Panel>
+</root>

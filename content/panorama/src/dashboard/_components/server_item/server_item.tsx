@@ -55,6 +55,8 @@ const _SetItemId = (item_id: string | number) => {
         //         );
         //     })
         // }
+    } else {
+        ServerItemIcon.SetImage("");
     }
 }
 const _SetServerItemInfo = (params: ServerInfoConfig) => {

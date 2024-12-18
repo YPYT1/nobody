@@ -24,32 +24,32 @@
 		</snippet>
 		<snippet name="RuneInfo">
 			<Button class="RuneInfo">
-				<Panel class="RuneHeader">
-					<Panel class="SelectHotkey" >
-						<Label text="{s:hotkey}" />
+				<Panel class="RuneHover" />
+				<Panel class="RuneContent">
+					<Panel class="RuneHeader">
+						<Panel class="SelectHotkey" >
+							<Label text="{s:hotkey}" />
+						</Panel>
+						<Panel id="RuneIconBtn" />
 					</Panel>
-					<Panel id="RuneIconBtn" />
+					<Panel class="RuneName">
+						<Panel class="NameDecorate Left"/>	
+						<Label text="{s:rune_name}"/>
+						<Panel class="NameDecorate Right"/>	
+					</Panel>
+					<Panel class="RuneDesc">
+						<Label text="{s:rune_desc}" html="true"/>
+					</Panel>
+					<Panel class="RuneAttrSplit" />
+					<Panel class="RuneTitle">
+						<Panel class="SplitIcon" />
+						<Label text="符文属性"/>
+						<Panel class="SplitIcon Right" />
+					</Panel>
+					<Panel class="RuneAttrPanel">
+						<Panel id="RuneAttr" />
+					</Panel>
 				</Panel>
-				
-	
-				<Panel class="RuneName">
-					<Panel class="NameDecorate Left"/>	
-					<Label text="{s:rune_name}"/>
-					<Panel class="NameDecorate Right"/>	
-				</Panel>
-				<Panel class="RuneDesc">
-					<Label text="{s:rune_desc}" html="true"/>
-				</Panel>
-				<Panel class="RuneAttrSplit" />
-				<Panel class="RuneTitle">
-					<Panel class="SplitIcon" />
-					<Label text="符文属性"/>
-					<Panel class="SplitIcon Right" />
-				</Panel>
-				<Panel class="RuneAttrPanel">
-					<Panel id="RuneAttr" />
-				</Panel>
-				
 			</Button>
 		</snippet>
 
