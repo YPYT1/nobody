@@ -107,7 +107,8 @@ export class ServiceSoul extends UIEventRegisterClass {
             if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
                 let r_data = CustomDeepCopy(this.soul_list[player_id].i[box_type].d) as CGEDGetSoulListData[];
                 let r_data_key_list = Object.keys(r_data);
-                if(r_data_key_list.length < this.player_xq_count){
+                let max = math.min( math.floor(GameRules.ServiceInterface.player_map_level[player_id] / 10) , this.player_xq_count);
+                if(r_data_key_list.length < max){
                     let is_meiyou = true;
                     for (let r_i = 0; r_i < r_data.length; r_i++) {
                         if(r_data[r_i].k == key){
@@ -160,7 +161,6 @@ export class ServiceSoul extends UIEventRegisterClass {
             GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:部位错误...")
         }
     }
-
     /**
      * 魂石升级/降级方法
      * @param p_count 
@@ -179,14 +179,39 @@ export class ServiceSoul extends UIEventRegisterClass {
                     let level = r_data.l;
                     let value = r_data.v;
                     let key = r_data.k;
-                    
+                    let l = this.soul_list[player_id].i[box_type].l;
+                    if(type == 1){
+                        if(level >= 5){
+                            if(GameRules.ServiceInterface.player_map_level[player_id] >= 50){
+                                if(level >= 15){
+                                    if(l < 75){
+                                        GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:历史总等级达到75,即可开放魂石上限为20级");
+                                        return;
+                                    }
+                                }else if(level >= 10){
+                                    if(l < 50){
+                                        GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:历史总等级达到50,即可开放魂石上限为15级");
+                                        return;
+                                    }
+                                }else if(level >= 5){
+                                    if(l < 25){
+                                        GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:历史总等级达到25,即可开放魂石上限为10级");
+                                        return;
+                                    }
+                                }
+                            }else{
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:地图等级50级后开放更高的等级");
+                                return;
+                            }
+                        }
+                    }
                     let ret : { code : boolean , data : CGEDGetSoulListData} = {
-                        code : false , 
+                        code : false, 
                         data : {
                             k : key, //属性键
                             v : value, //属性数值
-                            l : level ,//拼图等级
-                            c : [] ,
+                            l : level,//拼图等级
+                            c : [],
                         },
                     };
                     if(type == 1){
@@ -435,7 +460,6 @@ export class ServiceSoul extends UIEventRegisterClass {
             }
         }
         ret_scope = tostring(value_min) + "-" + tostring(value_max);
-        print("ret_scope : " , ret_scope);
         return ret_scope ;
     }
 
@@ -464,7 +488,6 @@ export class ServiceSoul extends UIEventRegisterClass {
                 attr_value = attr_value / 10;
             }
         }
-        print("attr_value :" ,  attr_value);
         return attr_value;
     }
     /**
