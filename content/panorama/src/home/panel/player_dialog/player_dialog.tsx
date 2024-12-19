@@ -100,7 +100,8 @@ const SetRuneSelectHotkey_R = () => {
 
 const SetRuneSelectHotkeyOrder_1 = () => {
     let is_show = LocalPlayerRuneDialog.BHasClass("Show");
-    if (is_show) {
+    let childPanel = RuneSelectList.GetChild(0)
+    if (is_show && childPanel != null) {
         GameEvents.SendCustomGameEventToServer("RuneSystem", {
             event_name: "PostSelectRune",
             params: {
@@ -112,7 +113,8 @@ const SetRuneSelectHotkeyOrder_1 = () => {
 
 const SetRuneSelectHotkeyOrder_2 = () => {
     let is_show = LocalPlayerRuneDialog.BHasClass("Show");
-    if (is_show) {
+    let childPanel = RuneSelectList.GetChild(1)
+    if (is_show && childPanel != null) {
         GameEvents.SendCustomGameEventToServer("RuneSystem", {
             event_name: "PostSelectRune",
             params: {
@@ -124,7 +126,8 @@ const SetRuneSelectHotkeyOrder_2 = () => {
 
 const SetRuneSelectHotkeyOrder_3 = () => {
     let is_show = LocalPlayerRuneDialog.BHasClass("Show");
-    if (is_show) {
+    let childPanel = RuneSelectList.GetChild(2)
+    if (is_show && childPanel != null) {
         GameEvents.SendCustomGameEventToServer("RuneSystem", {
             event_name: "PostSelectRune",
             params: {
@@ -136,7 +139,8 @@ const SetRuneSelectHotkeyOrder_3 = () => {
 
 const SetRuneSelectHotkeyOrder_4 = () => {
     let is_show = LocalPlayerRuneDialog.BHasClass("Show");
-    if (is_show) {
+    let childPanel = RuneSelectList.GetChild(3)
+    if (is_show && childPanel != null) {
         GameEvents.SendCustomGameEventToServer("RuneSystem", {
             event_name: "PostSelectRune",
             params: {

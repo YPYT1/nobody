@@ -135,7 +135,7 @@ type PopupsViewsType = "None" | "Heroes" | "Ability" | "Items";
 export const HeroDemo = () => {
 
     const [PopupsViews, setPopupsViews] = useState<PopupsViewsType>("None")
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     const [name, setName] = useState("")
 
 
@@ -272,5 +272,5 @@ export const App = () => {
     );
 };
 
-// Game.IsInToolsMode() && render(<App />, $.GetContextPanel());
+Game.IsInToolsMode() && render(<App />, $.GetContextPanel());
 

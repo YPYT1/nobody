@@ -1,7 +1,6 @@
 import { DASHBOARD_NAVBAR } from './../components';
 import { CreateCustomComponent, LoadCustomComponent } from '../_components/component_manager';
-
-
+const ServerItemList = GameUI.CustomUIConfig().KvData.ServerItemList;
 const DASHBOARD = "backpack";
 const SUB_OBJECT = DASHBOARD_NAVBAR[DASHBOARD].Sub;
 
@@ -25,6 +24,7 @@ const EventBus = GameUI.CustomUIConfig().EventBus;
 
 let view_item_id = -1;
 const CGE_Subscribe = () => {
+
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
         // 这个是渲染所有物品
         // $.Msg(["ServiceInterface_GetPlayerServerPackageData"])
@@ -35,8 +35,15 @@ const CGE_Subscribe = () => {
         BackpackItemList.RemoveAndDeleteChildren();
 
         for (let ItemData of ItemList) {
-            let item_id = ItemData.item_id;
-            ids_backpack[item_id] = ItemData
+            let item_id = "" + ItemData.item_id;
+            ids_backpack[item_id] = ItemData;
+            backpack_count_table[item_id] = ItemData.number;
+            
+            let item_data = ServerItemList[item_id as keyof typeof ServerItemList];
+            let item_class = item_data.affiliation_class;
+            if (item_class == 23) {
+                continue
+            }
             let ItemRadio = $.CreatePanel("RadioButton", BackpackItemList, "", { group: "backpack_group" })
             ItemRadio.BLoadLayoutSnippet("BackpackItem");
             let ServerItem = ItemRadio.FindChildTraverse("ServerItem")!;
@@ -54,14 +61,14 @@ const CGE_Subscribe = () => {
                 ViewItem("" + item_id, amount)
             })
 
-            backpack_count_table[`${item_id}`] = ItemData.number;
+
         }
 
 
         EventBus.publish("backpack_update", ids_backpack)
 
         // 储存当前背包物品的数量
-        GameUI.CustomUIConfig().setStorage("backpack_count_table",backpack_count_table)
+        GameUI.CustomUIConfig().setStorage("backpack_count_table", backpack_count_table)
     })
 
     SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})

@@ -1,12 +1,6 @@
-#StonePopups {
-    overflow: noclip;
+@import url("./_common.less");
 
-    &.Show {
-        visibility: visible;
-    }
-}
-
-.SoulStonePopups {
+.PopupsBackground {
     width: 1238px;
     height: 748px;
     horizontal-align: center;
@@ -14,8 +8,19 @@
     // border: 1px solid #fff;
     background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/bg.png");
     background-color: #000000;
+    // flow-children: down;
+    visibility: collapse;
+
+    &.Show {
+        visibility: visible;
+    }
+
+}
+
+.Container {
+    width: 100%;
+    height: 100%;
     flow-children: down;
-    // visibility: collapse;
 
     >.Header {
         width: 100%;
@@ -42,101 +47,10 @@
         }
     }
 
-    .SoulStoneContent {
+    .Content {
         width: 100%;
         height: 100%;
-        // border: 1px solid #fff;
-    }
-
-    .StrengthenSlot {
-        width: 154px;
-        height: 155px;
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/strengthen_slot.png");
-        horizontal-align: center;
-        margin-top: 168px;
-    }
-}
-
-
-.SSAttributeBorder {
-    width: 452px;
-    height: 176px;
-    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/ss_attr_bg.png");
-    horizontal-align: center;
-    vertical-align: bottom;
-    margin-bottom: 180px;
-    flow-children: down;
-
-    .Header {
-        width: 100%;
-        height: 40px;
-        // border: 1px solid #fff;
-        padding-top: 4px;
-
-        .Title {
-            font-size: 16px;
-            horizontal-align: center;
-            color: #FFE57D;
-            text-shadow: 0px 0px 4px 2.0 #c98820;
-            vertical-align: middle;
-        }
-    }
-
-    #SSAttributeList {
-        horizontal-align: center;
-        // width: 300px;
-
-        // height: 200px;
-        flow-children: down;
-
-        .SSAttributeRows {
-            width: 320px;
-            // height: 24px;
-            // border: 1px solid #fff;
-            margin-top: 2px;
-            margin-bottom: 2px;
-
-            .AttrAndLevel {
-                flow-children: right;
-                vertical-align: middle;
-
-                Label {
-                    font-size: 16px;
-                    color: #838383;
-                }
-            }
-
-
-            .AttributeValue {
-                margin-left: 200px;
-                flow-children: right;
-                height: 24px;
-                overflow: noclip;
-
-                Label {
-                    vertical-align: middle;
-                    font-size: 16px;
-                    color: #0f0;
-                }
-
-                .Upper {
-                    width: 23px;
-                    height: 29px;
-                    vertical-align: middle;
-                    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/tip_upper.png");
-                    visibility: collapse;
-                }
-
-                .Max {
-                    width: 39px;
-                    height: 23px;
-                    vertical-align: middle;
-                    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/tip_max.png");
-                    visibility: collapse;
-                }
-            }
-
-        }
+        flow-children: none;
     }
 }
 
@@ -198,75 +112,105 @@
         }
     }
 
-
 }
 
 
-#SelectEquipIcon {
-    width: 72px;
-    height: 72px;
-    align: center center;
-    // border: 1px solid #fff;
+.StrengthenSlot {
+    width: 154px;
+    height: 155px;
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/strengthen_slot.png");
+    horizontal-align: center;
+    margin-top: 148px;
 
-    background-size: 100%;
+    #SelectEquipIcon {
+        width: 72px;
+        height: 72px;
+        align: center center;
+        // border: 1px solid #fff;
 
-    &.1 {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_1.png");
-    }
+        background-size: 100%;
 
-    &.2 {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_2.png");
-    }
+        &.1 {
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_1.png");
+        }
 
-    &.3 {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_3.png");
-    }
+        &.2 {
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_2.png");
+        }
 
-    &.4 {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_4.png");
-    }
+        &.3 {
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_3.png");
+        }
 
-    &.5 {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_5.png");
-    }
+        &.4 {
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_4.png");
+        }
 
-    &.6 {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_6.png");
-    }
-}
+        &.5 {
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_5.png");
+        }
 
-
-#EquipAboutAttribute {
-    margin-top: 40px;
-    margin-right: 40px;
-    height: 100%;
-    horizontal-align: right;
-    visibility: collapse;
-
-    &.Show {
-        visibility: visible;
+        &.6 {
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/equip/slot_6.png");
+        }
     }
 }
 
-#SoulStoneOptionList {
-    border: 1px solid #fff;
-    width: 100%;
+.SSAttributeBorder {
+    width: 452px;
+    height: 176px;
+    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/ss_attr_bg.png");
+    horizontal-align: center;
     vertical-align: bottom;
-    margin-bottom: 24px;
+    margin-bottom: 200px;
+    flow-children: down;
 
-    &.AddStone .AddStone {
-        visibility: visible;
+    >.Header {
+        width: 100%;
+        height: 40px;
+        // border: 1px solid #fff;
+        padding-top: 4px;
+
+        .Title {
+            font-size: 16px;
+            horizontal-align: center;
+            color: #FFE57D;
+            text-shadow: 0px 0px 4px 2.0 #c98820;
+            vertical-align: middle;
+        }
     }
-    .OptionRow {
+
+    #SSAttributeList {
         horizontal-align: center;
-        flow-children: right;
-        visibility: collapse;
+        width: 80%;
+        flow-children: down;
+        // border: 1px solid #fff;
+        overflow: squish scroll;
+
+        .ItemStoneAttrRows {
+            // margin-top: 2px;
+            padding: 1px;
+            border-bottom: 1px solid #3b3b3b;
+
+            .Name {
+                margin-left: 40px;
+                width: 190px;
+            }
+
+            .Attr {
+                color: #0f0;
+            }
+        }
+
     }
 }
 
 .SelectSSContent {
-    // border: 1px solid #fff;
+    margin-top: 20px;
+    margin-right: 40px;
+    horizontal-align: right;
     flow-children: down;
+    // height: 220px;
 
     .Header {
         width: 282px;
@@ -310,87 +254,205 @@
     }
 }
 
-.SelectAttrRows {
-    width: 282px;
-    height: 36px;
-    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/select_attr_row.png");
-    flow-children: right;
-    margin-top: 4px;
-    margin-bottom: 4px;
-
-    padding: 0px 8px;
-
-    Label {
-        font-size: 16px;
-        vertical-align: middle;
-    }
-
-    .Name {
-
-        color: #838383;
-    }
-
-    .Value {
-        color: #0f0;
-        horizontal-align: right;
-    }
-}
-
 .SSOptionContainer {
     horizontal-align: right;
     // margin-right: 40px;
-    margin-top: 330px;
+    margin-top: 300px;
     flow-children: down;
-}
+    margin-right: 40px;
+    // border: 1px solid #fff;
+    height: 360px;
 
-.OptionRadioBtnList {
-    flow-children: right;
-    background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/option_header.png");
+    .OptionRadioBtnList {
+        flow-children: right;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/option_header.png");
 
-    #SSAttrRadioUpper.SSAttrRadioBtn:selected {
-        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/option_header_hover2.png");
+        #SSAttrRadioUpper.SSAttrRadioBtn:selected {
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/option_header_hover2.png");
 
-    }
-
-    .SSAttrRadioBtn {
-        width: 141px;
-        height: 33px;
-
-        &:selected {
-            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/option_header_hover.png");
         }
 
-        background-size: 100%;
+        .SSAttrRadioBtn {
+            width: 141px;
+            height: 33px;
 
-        Label {
-            align: center center;
-            font-size: 18px;
-            color: gradient(linear, 0% 0%, 0% 100%, from(#A9A9A9; ), to(#E7E7E7));
+            &:selected {
+                background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/option_header_hover.png");
+            }
+
+            background-size: 100%;
+
+            Label {
+                align: center center;
+                font-size: 18px;
+                color: gradient(linear, 0% 0%, 0% 100%, from(#A9A9A9; ), to(#E7E7E7));
+            }
+        }
+    }
+
+    #PopupsOptionConfirmBtn {
+        horizontal-align: center;
+        vertical-align: bottom;
+    }
+}
+
+#SSActionResults {
+    // border: 1px solid #fff;
+    flow-children: down;
+    horizontal-align: center;
+    vertical-align: bottom;
+    margin-bottom: 20px;
+
+    &.HideSuccess {
+        .SuccessLabel {
+            visibility: collapse;
+        }
+    }
+
+    .ServerItemContanier {
+        // width: 320px;
+        // border: 1px solid #fff;
+        flow-children: right;
+        horizontal-align: center;
+
+        .SuccessLabel {
+            width: 162px;
+            // border: 1px solid #fff;
+            vertical-align: middle;
+            font-size: 22px;
+            color: #FFF47E;
+            text-align: center;
+            margin-left: 8px;
+            margin-right: 8px;
+            text-shadow: 0px 0px 4px 2.0 #c98820;
+        }
+    }
+
+    .ServerItemBorder {
+        // width: 84px;
+        // height: 84px;
+
+        flow-children: down;
+
+        .ServerItem {
+            width: 84px;
+            height: 84px;
+            // flow-children: right;
+            vertical-align: middle;
+            horizontal-align: center;
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/server_item_border.png");
+
+            .ServerItem {
+                width: 56px;
+                height: 56px;
+                margin-left: 4px;
+                margin-right: 4px;
+            }
+        }
+
+        .CostItemNum {
+            width: 100%;
+            height: 20px;
+            background-color: #00000099;
+            horizontal-align: center;
+
+            .CostLabel {
+                align: center center;
+                flow-children: right;
+            }
+
+            Label {
+                font-size: 16px;
+            }
+
+            .Owned {
+                color: #fff;
+            }
+
+            .Need {
+                color: #666;
+            }
+
+
+        }
+    }
+
+    .UpperPriceCost {
+        margin-top: 12px;
+        // border: 1px solid #fff;
+        horizontal-align: center;
+        // flow-children: right;
+        flow-children: down;
+
+        .CostPanel {
+            vertical-align: middle;
+            horizontal-align: center;
+            // flow-children: right;
+            width: 238px;
+            height: 36px;
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/price_cost_bg.png");
+            background-size: 100%;
+
+            .CenterContent {
+                flow-children: right;
+                horizontal-align: center;
+                vertical-align: middle;
+            }
+
+            #PriceIcon {
+                width: 28px;
+                height: 28px;
+                // background-color: #c98820;
+                vertical-align: middle;
+            }
+
+            .PriceCount {
+                margin-left: 8px;
+                vertical-align: middle;
+                font-size: 16px;
+                color: #A4A4A4;
+            }
         }
     }
 }
 
 #OptionAttributreContainer {
+    width: 100%;
 
-    &.Upper .Upper,
+    &.Add .Add,
     &.Down .Down {
         visibility: visible;
     }
 
     .OptionAttributre {
+        width: 100%;
         visibility: collapse;
         flow-children: down;
 
-        .AttributeList {
+        .SoulStoneList {
+            width: 100%;
             flow-children: down;
+            overflow: squish scroll;
+            height: 260px;
+            padding: 4px;
+            padding-right: 8px;
 
-            RadioButton {
+            .ItemStoneAttrRows {
                 border: 1px solid #666;
+                margin-top: 2px;
+                margin-bottom: 2px;
+                // border: 1px solid #000000;
+                padding: 4px 8px;
 
-                &:selected,
-                &:hover {
-                    border: 1px solid #fff;
+                &:enabled {
+
+                    &:selected,
+                    &:hover {
+                        border: 1px solid #fdc835;
+                        box-shadow: hollow #e7ae12 0px 0px 4px 0px;
+                    }
                 }
+
             }
         }
 
@@ -408,203 +470,116 @@
 
 }
 
+.ItemStoneAttrRows {
+    width: 100%;
+    // height: 32px;
+    flow-children: right;
 
-#AddStoneMenu {
-    width: 243px;
-    horizontal-align: left;
-    transform: translateX(-243px);
-    flow-children: down;
-    background-color: #000000dd;
-    // border: 1px solid #fff;
-    z-index: 99;
 
-    .Header {
-        width: 100%;
-        height: 36px;
-        background-color: #161616;
+    &:enabled {
+        &:hover {
+            border-color: #fff;
+        }
+    }
 
-        Label {
-            horizontal-align: center;
+    &:disabled {
+        brightness: 0.5;
+        saturation: 0.5;
+    }
+
+    Label {
+        vertical-align: middle;
+    }
+
+    .Name {
+        font-size: 16px;
+        width: 140px;
+        color: #999999;
+        text-overflow: shrink;
+    }
+
+    .Attr {
+        font-size: 16px;
+        horizontal-align: right;
+        // color: #0f0;
+    }
+
+    &.is_up .Attr {
+        color: #0f0;
+    }
+
+    &.is_down .Attr {
+        color: #f00;
+    }
+
+    .State {
+        flow-children: right;
+
+        .StateUpper {
+            width: 23px;
+            height: 29px;
             vertical-align: middle;
-            font-size: 18px;
-            color: #CDCDCD;
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/tip_upper.png");
+            visibility: collapse;
+        }
 
+        .StateDown {
+            width: 23px;
+            height: 29px;
+            vertical-align: middle;
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/tip_upper.png");
+            transform: rotateX(180deg);
+            wash-color: #ff0e0e;
+            brightness: 4;
+            visibility: collapse;
+        }
+
+        .StateMax {
+            width: 39px;
+            height: 23px;
+            vertical-align: middle;
+            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/tip_max.png");
+            visibility: collapse;
         }
     }
 
-    #AddStoneList {
-        flow-children: down;
-        width: 100%;
-        max-height: 400px;
-        padding: 0px 4px;
-        overflow: squish scroll;
-
-        .BaseStoneBtn {
-            width: 100%;
-            // height: 32px;
-            flow-children: right;
-            border: 1px solid #000000;
-            padding: 6px 8px;
-
-            // margin-top: 2px;
-            // margin-bottom: 2px;
-            &:hover {
-                border-color: #fff;
-            }
-
-            Label {
-                vertical-align: middle;
-            }
-
-            .Name {
-                color: #838383;
-            }
-
-            .Attr {
-                horizontal-align: right;
-                color: #0f0;
-            }
-        }
-    }
-}
-
-
-.ConfirmPopupContainer {
-    horizontal-align: center;
-    vertical-align: bottom;
-    // width: 100%;
-    // height: 100%;
-    z-index: 999;
-    // background-color: #00000099;
-    visibility: collapse;
-    margin-bottom: 16px;
-
-    &.Show {
-        visibility: visible;
-    }
-
-    .ExtendItem {
+    #DeleteStoneBtn {
+        margin-left: 4px;
+        width: 24px;
+        height: 24px;
+        background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/del_btn.png");
+        background-size: 100%;
         visibility: collapse;
-    }
-
-    .ConfirmPopup {
-        width: 422px;
-        // border: 1px solid #fff;
-        align: center center;
-        flow-children: down;
         
-        .ServerItemContanier {
-            // width: 320px;
-            // border: 1px solid #fff;
-            flow-children: right;
-            horizontal-align: center;
-
-            .SuccessLabel {
-                width: 162px;
-                // border: 1px solid #fff;
-                vertical-align: middle;
-                font-size: 22px;
-                color: #FFF47E;
-                text-align: center;
-                margin-left: 8px;
-                margin-right: 8px;
-                text-shadow: 0px 0px 4px 2.0 #c98820;
-            }
-        }
-
-        .ServerItemBorder {
-            // width: 84px;
-            // height: 84px;
-            
-            flow-children: down;
-
-            .ServerItem {
-                width: 84px;
-                height: 84px;
-                // flow-children: right;
-                vertical-align: middle;
-                horizontal-align: center;
-                background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/server_item_border.png");
-                .ServerItem {
-                    width: 56px;
-                    height: 56px;
-                    margin-left: 4px;
-                    margin-right: 4px;
-                }
-            }
-
-            .CostItemNum {
-                width: 100%;
-                height: 20px;
-                background-color: #00000099;
-                horizontal-align: center;
-
-                .CostLabel {
-                    align: center center;
-                    flow-children: right;
-                }
-
-                Label {
-                    font-size: 16px;
-                }
-
-                .Owned {
-                    color:#fff;
-                }
-
-                .Need {
-                    color:#666;
-                }
-
-                
-            }
-        }
-
-
-        .UpperPriceCost {
-            margin-top: 12px;
-            // border: 1px solid #fff;
-            horizontal-align: center;
-            // flow-children: right;
-            width: 238px;
-            height: 36px;
-            background-image: url("file://{images}/custom_game/dashboard/personal/stone/popups/price_cost_bg.png");
-            background-size: 100%;
-
-            .CostPanel {
-                vertical-align: middle;
-                horizontal-align: center;
-                flow-children: right;
-
-                .PriceIcon {
-                    width: 24px;
-                    height: 24px;
-                    background-color: #c98820;
-                }
-
-                .PriceCount {
-                    margin-left: 8px;
-                    vertical-align: middle;
-                    font-size: 16px;
-                    color:#A4A4A4;
-                }
-            }
+        &:hover {
+            brightness: 2;
         }
     }
-
-
 }
 
-
-
-
-#SSDownLevelOption {
-    border: 1px solid #fff;
+#AttributreUpperList {
+    width: 100%;
     flow-children: down;
+    overflow: squish scroll;
+    height: 260px;
+    padding: 4px;
+    padding-right: 8px;
 
-    #DownLevelItem {
-        width: 64px;
-        height: 64px;
+    .ItemStoneAttrRows {
+        border: 1px solid #666;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        // border: 1px solid #000000;
+        padding: 4px 8px;
+
+        &:enabled {
+
+            &:selected,
+            &:hover {
+                border: 1px solid #fdc835;
+                box-shadow: hollow #e7ae12 0px 0px 4px 0px;
+            }
+        }
 
     }
 }
