@@ -40,7 +40,7 @@ export function Init() {
         }
 
         let index = 0;
-        let item_list = data.list;
+        let item_list = data.itemsdata.list;
         for (let item_id in item_list) {
             let count = item_list[item_id];
             let rowPanel = DeleteGiveItemList.GetChild(index) as Component_ServerItem;
@@ -50,7 +50,7 @@ export function Init() {
             index++;
         }
 
-        DeltetSoulStonePopups.SetDialogVariableInt("give_ratio", data.pro)
+        DeltetSoulStonePopups.SetDialogVariableInt("give_ratio", data.itemsdata.pro)
     })
 }
 
@@ -62,7 +62,6 @@ function InitButton() {
     DeltetConfirmBtn.SetPanelEvent("onactivate", () => {
         DeltetSoulStonePopups.visible = false
         let params = DeltetSoulStonePopups.Data<PanelDataObject>().params as CGED["ServiceSoul"]["SoulDelete"];
-        $.Msg(params)
         GameEvents.SendCustomGameEventToServer("ServiceSoul", {
             event_name: "SoulDelete",
             params: params

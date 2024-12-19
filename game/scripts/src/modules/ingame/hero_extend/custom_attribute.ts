@@ -429,13 +429,13 @@ export class CustomAttribute {
 
     /** 升级额外动作 */
     LevelUpExtendAction(hUnit: CDOTA_BaseNPC) {
-        // 升级击退500码
+        // 升级击退600码
         let vOrigin = hUnit.GetAbsOrigin()
         let enemies = FindUnitsInRadius(
             DotaTeam.GOODGUYS,
             vOrigin,
             null,
-            500,
+            600,
             UnitTargetTeam.ENEMY,
             UnitTargetType.HEROES_AND_CREEPS,
             UnitTargetFlags.NONE,
@@ -448,12 +448,22 @@ export class CustomAttribute {
                 center_y: vOrigin.y,
                 center_z: 0,
                 knockback_height: 0,
-                knockback_distance: 500,
-                knockback_duration: 0.5,
-                duration: 0.5,
+                knockback_distance: 600,
+                knockback_duration: 0.35,
+                duration: 0.35,
             })
+            GameRules.BuffManager.AddGeneralDebuff(hUnit, enemy, DebuffTypes.stunned, 1)
         }
 
+        // 击退特效
+        let effect_fx = ParticleManager.CreateParticle(
+            "particles/units/heroes/hero_keeper_of_the_light/keeper_of_the_light_blinding_light_aoe.vpcf",
+            ParticleAttachment.POINT,
+            hUnit
+        )
+        ParticleManager.SetParticleControl(effect_fx, 1, vOrigin)
+        ParticleManager.SetParticleControl(effect_fx, 2, Vector(600, 600, 600))
+        ParticleManager.ReleaseParticleIndex(effect_fx)
     }
     /**
      * 修改属性
