@@ -258,10 +258,25 @@ export class ServiceSoul extends UIEventRegisterClass {
                         for (const need_item_key in need_item) {
                             let need_item_id = tonumber(need_item_key);
                             let need_item_count = need_item[need_item_id];
-                            if(ret.data.c.hasOwnProperty(need_item_id)){
-                                ret.data.c[need_item_id] += need_item_count;
+                            let set_item_id = need_item_id;
+                            if(type == 1){
+                                //通过不同的石头
+                                let ServerSoulConfigDataConsume = ServerSoulConfig[Sj_config_key as keyof typeof ServerSoulConfig].consume;
+                                let con_data = ServerSoulConfigDataConsume.split("_");
+                                if(con_data[0] == "1"){
+                                    set_item_id = 1287;
+                                }else if(con_data[0] == "2"){
+                                    set_item_id = 1288;
+                                }else if(con_data[0] == "3"){
+                                    set_item_id = 1289;
+                                }else if(con_data[0] == "4"){
+                                    set_item_id = 1290;
+                                }
+                            }
+                            if(ret.data.c.hasOwnProperty(set_item_id)){
+                                ret.data.c[set_item_id] += need_item_count;
                             }else{
-                                ret.data.c[need_item_id] = need_item_count;
+                                ret.data.c[set_item_id] = need_item_count;
                             }
                             let ret_ver = GameRules.ServiceData.VerifyPackageItem(player_id , need_item_id , need_item_count);
                             if(ret_ver.is_verify){
