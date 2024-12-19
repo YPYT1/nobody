@@ -6,6 +6,8 @@ declare global {
         _SetItemId(item_id: string | number): void;
         _SetServerItemInfo(params: ServerInfoConfig): void;
         _SetCount(count: number): void;
+        _UpdateCount(): void;
+        _GetCount(): number;
     }
 }
 
@@ -112,15 +114,28 @@ const _SetCount = (count: number) => {
     MainPanel.SetDialogVariable("count", `${count}`)
 }
 
+const _UpdateCount = () => {
+    let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
+    let backpack_table = GameUI.CustomUIConfig().getStorage("backpack_count_table")
+    let item_count = backpack_table[item_id] ?? 0;
+    MainPanel.Data<PanelDataObject>().count = item_count;
+    MainPanel.SetDialogVariable("count", `${item_count}`)
+}
+
+const _GetCount = () => {
+    return (MainPanel.Data<PanelDataObject>().count as number) ?? 0
+}
+
 (function () {
     MainPanel._SetServerItemInfo = _SetServerItemInfo;
     MainPanel._SetCount = _SetCount;
+    MainPanel._GetCount = _GetCount;
     MainPanel._SetItemId = _SetItemId;
-
+    MainPanel._UpdateCount = _UpdateCount;
     MainPanel.SetPanelEvent("onmouseover", () => {
-        let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
+        let item_id = MainPanel.Data<PanelDataObject>().item_id as string | number;
         let show_tips = MainPanel.Data<PanelDataObject>().show_tips as boolean;
-        if (show_tips && item_id != null) {
+        if (show_tips && item_id != null && item_id != "undefined" && item_id != -1) {
             let count = MainPanel.Data<PanelDataObject>().count as number;
             let show_count = MainPanel.Data<PanelDataObject>().show_count as boolean;
             let rarity = MainPanel.Data<PanelDataObject>().rarity as number

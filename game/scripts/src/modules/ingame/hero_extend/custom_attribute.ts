@@ -43,7 +43,7 @@ export class CustomAttribute {
         //     }
         //     return 1
         // }, 1)
-        
+
     }
 
 
@@ -55,7 +55,7 @@ export class CustomAttribute {
         //增加符文点
         if (up_level % 5 == 0) {
             GameRules.RuneSystem.GetRuneSelectToPlayer(event.player_id)
-        }else{
+        } else {
             //增加天赋点
             GameRules.HeroTalentSystem.AddHeroTalent(event.player_id, 1);
         }
@@ -64,6 +64,9 @@ export class CustomAttribute {
         if (rune_mdf) {
             rune_mdf.OnLevelUprade()
         }
+
+        this.LevelUpExtendAction(hHero)
+        // 升级属性
         this.AttributeInLevelUp(hHero)
     }
 
@@ -103,7 +106,7 @@ export class CustomAttribute {
                     hUnit.custom_attribute_value[attr_key] = 0;
                     hUnit.custom_attribute_show[attr_key] = [0, 0]
                     if (attribute_table[attr_key] == null) { attribute_table[attr_key] = {} }
-                    
+
                     let AttributeValues = hHeroKvData.AttributeValues
                     let AttributeRows = AttributeValues[key as keyof typeof AttributeValues];
                     hUnit.custom_attribute_value[attr_key] = AttributeRows ? AttributeRows.Base : 0;
@@ -119,11 +122,11 @@ export class CustomAttribute {
                             }
                             attribute_table[attr_key][key2] = value
                         }
-                        
+
                     }
 
-                    
-   
+
+
                     // 属性转换表加载
                     // if (attribute_conversion[attr_key] == null) { attribute_conversion[attr_key] = {} }
                     // const ConversionValue = AttributeConst[attr_key]["ConversionValue"];
@@ -424,6 +427,34 @@ export class CustomAttribute {
         this.ModifyAttribute(hUnit, Attr)
     }
 
+    /** 升级额外动作 */
+    LevelUpExtendAction(hUnit: CDOTA_BaseNPC) {
+        // 升级击退500码
+        let vOrigin = hUnit.GetAbsOrigin()
+        let enemies = FindUnitsInRadius(
+            DotaTeam.GOODGUYS,
+            vOrigin,
+            null,
+            500,
+            UnitTargetTeam.ENEMY,
+            UnitTargetType.HEROES_AND_CREEPS,
+            UnitTargetFlags.NONE,
+            FindOrder.ANY,
+            false
+        )
+        for (let enemy of enemies) {
+            enemy.AddNewModifier(hUnit, null, "modifier_knockback_lua", {
+                center_x: vOrigin.x,
+                center_y: vOrigin.y,
+                center_z: 0,
+                knockback_height: 0,
+                knockback_distance: 500,
+                knockback_duration: 0.5,
+                duration: 0.5,
+            })
+        }
+
+    }
     /**
      * 修改属性
      * @param hUnit 

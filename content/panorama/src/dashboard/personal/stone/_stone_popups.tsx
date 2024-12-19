@@ -1,20 +1,30 @@
+import "./_deltet_popups";
+
 
 import { default as server_soul_attr } from "../../../json/config/server/soul/server_soul_attr.json";
 import { default as server_soul_config } from "../../../json/config/server/soul/server_soul_config.json";
-import { LoadCustomComponent } from "../../_components/component_manager";
+import { CreateCustomComponent, LoadCustomComponent } from "../../_components/component_manager";
 
 type SoulConfigID = keyof typeof server_soul_config
 type SoulConfigType = typeof server_soul_config[SoulConfigID];
 
 const CheckAttrIsPercent = GameUI.CustomUIConfig().CheckAttrIsPercent
-const STONE_ADD_LIMIT = 5;
 
+const STONE_UNLOCK_LEVEL = [10, 20, 30, 40, 50]
+const STONE_ADD_LIMIT = STONE_UNLOCK_LEVEL.length;
+/** 卷轴成功率 */
+const ITEM_SUCCESS_RATIO: { [key: string]: number } = {
+    "1283": 5,
+    "1284": 10,
+    "1285": 15,
 
+}
 const StonePopups = $.GetContextPanel();
 const SoulEquipList = $("#SoulEquipList");
 const ClosedBtn = $("#ClosedBtn");
 const SelectEquipIcon = $("#SelectEquipIcon");
 const PopupsOptionConfirmBtn = $("#PopupsOptionConfirmBtn") as Button;
+const PopupsOptionDeltetBtn = $("#PopupsOptionDeltetBtn") as Button;
 const SSAttributeList = $("#SSAttributeList");
 const SSAttrRadioDown = $("#SSAttrRadioDown") as RadioButton;
 const SSAttrRadioAdd = $("#SSAttrRadioAdd") as RadioButton;
@@ -26,13 +36,20 @@ const AttributreDownList = $("#AttributreDownList");
 
 const SSActionResults = $("#SSActionResults");
 const ActionCostItemList = $("#ActionCostItemList");
+const ExtendCostItemList = $("#ExtendCostItemList")
+const DeleteExtendItemBtn = $("#DeleteExtendItemBtn");
 
-
+const DeltetSoulStonePopups = $("#DeltetSoulStonePopups")
 const ResultsBaseCostItem = LoadCustomComponent($("#ResultsBaseCostItem"), "server_item")
 ResultsBaseCostItem._SetServerItemInfo({ show_tips: true, show_count: false, })
-const ResultsExtendCostItem = LoadCustomComponent($("#ResultsExtendCostItem"), "server_item")
-ResultsBaseCostItem._SetServerItemInfo({ show_tips: true, show_count: false, })
 
+const ResultsExtendCostItem = $("#ResultsExtendCostItem")
+const ResultsExtendItem = LoadCustomComponent($("#ResultsExtendItem"), "server_item")
+ResultsExtendItem._SetServerItemInfo({ show_tips: true, show_count: false, hide_bg: true })
+
+const AddExtendItemBtn = $("#AddExtendItemBtn")
+const ShowExtendItemList = $("#ShowExtendItemList");
+const ss_upgrade_protect = [1283, 1284, 1285]
 /** 已拥有魂石属性 */
 let ServerSoulData: NetworkedData<CGEDGetSoulList>;
 
@@ -50,6 +67,10 @@ let g_base_stone_ids: string[] = [];
 let g_slot_attr_index: { [type_id: string]: { [item_id: string]: string } } = {}
 
 let g_soul_attr_key = "";
+/** 个人地图等级 */
+let g_map_level = 0;
+let g_ext_item = -1;
+let g_base_success = 0;
 /** 当前确认按钮操作 */
 type ConfirmActionBtn = "Add" | "Down" | "Upper" | "null";
 let g_confirm_action: ConfirmActionBtn = "null";
@@ -58,7 +79,7 @@ let g_action_attr_index: number = -1;
 export function Init() {
     // 初始化隐藏部分页面
     SSActionResults.visible = false;
-    PopupsOptionConfirmBtn.visible = false;
+
     // 
     InitExcelData()
     // 初始化按钮
@@ -100,6 +121,13 @@ export function Init() {
     }
 
 
+    SSAttributeList.RemoveAndDeleteChildren()
+    for (let level of STONE_UNLOCK_LEVEL) {
+        let AttributeRows = $.CreatePanel("Panel", SSAttributeList, "");
+        AttributeRows.BLoadLayoutSnippet("ItemStoneAttrRows");
+        AttributeRows.SetHasClass("is_lock", true)
+        AttributeRows.SetDialogVariable("lock_state", "地图等级 " + level)
+    }
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
         let data = event.data;
@@ -121,6 +149,7 @@ export function Init() {
                 group: "StoneActionGroup"
             });
             ItemStoneAttrRows.BLoadLayoutSnippet("ItemStoneAttrRows");
+            ItemStoneAttrRows.SetHasClass("is_attr", true)
             let item_name = $.Localize("#custom_serveritem_" + item_id)
             ItemStoneAttrRows.SetDialogVariable("item_name", item_name)
             // 属性
@@ -141,23 +170,26 @@ export function Init() {
 
     GameEvents.Subscribe("ServiceSoul_GetPlayerServerSoulData", event => {
         let data = event.data;
-        ServerSoulData = data;
+        ServerSoulData = data.list;
 
-        // 更新装备等级
-        // let list = ServerSoulData.i;
-        // for (let k in list) {
-        //     let EquipPanel  = SoulEquipList.FindChildTraverse(k)
-        //     if (EquipPanel){
+        g_map_level = data.map_level
+        // $.Msg("ServiceSoul_GetPlayerServerSoulData")
+        // $.Msg(ServerSoulData)
 
-        //     }
-        // }
+        let data_object = data.list.i;
+        for (let id in data_object) {
+            let _data = data_object[id]
+            let rowPanel = SoulEquipList.FindChildTraverse(id);
+            if (rowPanel) {
+                rowPanel.SetDialogVariableInt("ss_level", _data.z)
+                rowPanel.SetDialogVariableInt("history_level", _data.l)
+            }
+        }
 
-        // 验证当前是否有已开启的页面
-        // $.Msg(["select_slot", g_select_slot])
         if (g_select_slot < 0) { return }
         ViewEquipSlot(g_select_slot)
-        // EquipAboutAttribute.SetHasClass("Show", false)
     })
+
 
     GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
     GameUI.CustomUIConfig().SendCustomEvent("ServiceSoul", "GetPlayerServerSoulData", {})
@@ -165,6 +197,9 @@ export function Init() {
 
 
 function InitButton() {
+
+    PopupsOptionConfirmBtn.visible = false;
+    PopupsOptionDeltetBtn.visible = false
 
     SSAttrRadioDown.SetPanelEvent("onactivate", () => {
         ToggleOptionAttributreContainer(0)
@@ -178,9 +213,10 @@ function InitButton() {
         StonePopups.SetHasClass("Show", false)
     })
 
-
+    ExtendCostItemList.SetPanelEvent("onactivate", () => {
+        ExtendCostItemList.visible = false;
+    })
     PopupsOptionConfirmBtn.SetPanelEvent("onactivate", () => {
-        // $.Msg(["PopupsOptionConfirmBtn:", g_confirm_action])
         HideActionAboutView();
         if (g_confirm_action == "Add") {
             ConfirmBtnAction_Add(g_select_slot, g_soul_attr_key)
@@ -190,6 +226,76 @@ function InitButton() {
             ConfirmBtnAction_Upper(g_select_slot, 2)
         }
     })
+
+    PopupsOptionDeltetBtn.SetPanelEvent("onactivate", () => {
+        // 删除的词条
+        let soul_obj = ServerSoulData.i
+        let data_list = Object.values(soul_obj[g_select_slot].d)
+        let del_attr = data_list[g_action_attr_index]
+        DeltetSoulStonePopups.Data<PanelDataObject>().del_attr = del_attr
+        DeltetSoulStonePopups.Data<PanelDataObject>().params = {
+            box_type: g_select_slot,
+            index: g_action_attr_index
+        }
+        GameEvents.SendCustomGameEventToServer("ServiceSoul", {
+            event_name: "DeforehandSoulDelete",
+            params: {
+                box_type: g_select_slot,
+                index: g_action_attr_index
+            }
+        })
+        // $.Msg(["Deltet SoulStone", g_select_slot, g_action_attr_index])
+    })
+
+
+    AddExtendItemBtn.SetPanelEvent("onactivate", () => {
+        ExtendCostItemList.visible = true;
+        // 更新卷轴
+        for (let i = 0; i < ShowExtendItemList.GetChildCount(); i++) {
+            let itemPanel = ShowExtendItemList.GetChild(i)!;
+            let serverItem = itemPanel.GetChild(0) as Component_ServerItem;
+            serverItem._UpdateCount();
+            let count = serverItem._GetCount();
+            itemPanel.SetHasClass("Enabled", count > 0)
+        }
+    })
+
+    DeleteExtendItemBtn.visible = false;
+    DeleteExtendItemBtn.SetPanelEvent("onactivate", () => {
+        // 显示加号
+        AddExtendItemBtn.visible = true;
+        DeleteExtendItemBtn.visible = false;
+        g_ext_item = -1;
+        ResultsExtendItem._SetItemId(-1);
+
+        // 更新成功率
+        SSActionResults.SetDialogVariableInt("success", g_base_success)
+
+    })
+
+    // 扩展物品相关
+    ShowExtendItemList.RemoveAndDeleteChildren()
+    for (let item_id of ss_upgrade_protect) {
+        let e = $.CreatePanel("Button", ShowExtendItemList, "", {
+            class: "ServerItemBorder"
+        });
+        let ItemPanel = CreateCustomComponent(e, "server_item", `${item_id}`);
+        ItemPanel._SetServerItemInfo({ item_id: item_id, show_count: true, show_tips: true })
+        ItemPanel.SetPanelEvent("onactivate", () => {
+            let count = ItemPanel._GetCount();
+            if (count <= 0) { return }
+            AddExtendItemBtn.visible = false;
+            ResultsExtendItem._SetItemId(item_id)
+            g_ext_item = item_id;
+            DeleteExtendItemBtn.visible = true;
+            ExtendCostItemList.visible = false;
+
+            // 更新成功率
+            let item_success = ITEM_SUCCESS_RATIO[`${item_id}`] ?? 0;
+            let final_succes = Math.min(100, item_success + g_base_success)
+            SSActionResults.SetDialogVariableInt("success", final_succes)
+        })
+    }
 }
 
 function InitExcelData() {
@@ -222,7 +328,19 @@ function ViewEquipSlot(slot: number) {
 }
 
 function SetSelectSlot_Attr(slot: number) {
-    SSAttributeList.RemoveAndDeleteChildren();
+    // SSAttributeList.RemoveAndDeleteChildren();
+
+    for (let i = 0; i < SSAttributeList.GetChildCount(); i++) {
+        let rowPanel = SSAttributeList.GetChild(i)!;
+        let need_level = STONE_UNLOCK_LEVEL[i];
+        rowPanel.SetHasClass("is_lock", !(g_map_level >= need_level))
+        rowPanel.SetHasClass("is_unlock", (g_map_level >= need_level))
+        rowPanel.SetHasClass("is_attr", false)
+
+
+        // rowPanel.SetDialogVariable("lock_state", "地图等级 " + level)
+    }
+
     AttributreUpperList.RemoveAndDeleteChildren()
     AttributreDownList.RemoveAndDeleteChildren();
     let haved_key_list: string[] = [];
@@ -236,16 +354,14 @@ function SetSelectSlot_Attr(slot: number) {
             let level = data.l
             if (haved_key_list.indexOf(key) == -1) { haved_key_list.push(key) }
 
-            // let SelectAttrRows = $.CreatePanel("Panel", SelectSSAttributeList, "");
-            // SelectAttrRows.BLoadLayoutSnippet("SelectAttrRows");
+
             let attr_data = server_soul_attr[key as keyof typeof server_soul_attr];
             let MainProperty = attr_data.MainProperty as AttributeMainKey;
             let TypeProperty = attr_data.TypeProperty as AttributeSubKey;
             let num_fixed = attr_data.float
             let attr_name = `${$.Localize(`#custom_attribute_${MainProperty}`).replace("%", "")}`
             let attr_value = parseFloat(data.v.toFixed(num_fixed))
-            // SelectAttrRows.SetDialogVariable("attr_name", `Lv.${data.l} ${attr_name}`)
-            // SelectAttrRows.SetDialogVariable("attr_value", "" + attr_value)
+
 
             // 属性降级
             SetSelectAttrRowsAttr(AttributreDownList, key, false, level - 1, data, attr_index)
@@ -254,10 +370,15 @@ function SetSelectSlot_Attr(slot: number) {
 
             // 当前魂石属性
             let pct_symbol = CheckAttrIsPercent(MainProperty, TypeProperty) ? "%" : "";
-            let AttributeRows = $.CreatePanel("Panel", SSAttributeList, "");
-            AttributeRows.BLoadLayoutSnippet("ItemStoneAttrRows");
-            AttributeRows.SetDialogVariable("item_name", `Lv.${data.l} ${attr_name}`)
-            AttributeRows.SetDialogVariable("attr", "+" + attr_value + pct_symbol)
+
+            let rowPanel = SSAttributeList.GetChild(attr_index)!;
+            rowPanel.SetHasClass("is_attr", true)
+            rowPanel.SetHasClass("is_lock", false)
+            rowPanel.SetHasClass("is_unlock", false)
+            // let AttributeRows = $.CreatePanel("Panel", SSAttributeList, "");
+            // AttributeRows.BLoadLayoutSnippet("ItemStoneAttrRows");
+            rowPanel.SetDialogVariable("item_name", `Lv.${data.l} ${attr_name}`)
+            rowPanel.SetDialogVariable("attr", "+" + attr_value + pct_symbol)
 
             attr_index++;
         }
@@ -279,8 +400,14 @@ function SetSelectSlot_Add(slot: number, haved_key_list: string[]) {
         if (attr_index != null) {
             RowPanel.Data<PanelDataObject>().key = attr_index
             let row_data = server_soul_attr[attr_index as keyof typeof server_soul_attr];
-            let up_value = row_data.up_value;
-            RowPanel.SetDialogVariable("attr", up_value)
+            let up_value = row_data.up_value.split("-");
+            let value1 = up_value[0];
+            let value2 = up_value[1]
+            let pct_symbol = CheckAttrIsPercent(
+                row_data.MainProperty as AttributeMainKey,
+                row_data.TypeProperty as AttributeSubKey,
+            ) ? "%" : "";
+            RowPanel.SetDialogVariable("attr", `+${value1}${pct_symbol} ~ ${value2}${pct_symbol}`)
         }
     }
 
@@ -327,6 +454,7 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
 
     let attr_value_str = `${value1}${pct_symbol} ~ ${value2}${pct_symbol}`
     SSAttributeDownRow.BLoadLayoutSnippet("ItemStoneAttrRows");
+    SSAttributeDownRow.SetHasClass("is_attr", true)
     SSAttributeDownRow.SetHasClass("is_up", is_up)
     SSAttributeDownRow.SetHasClass("is_down", !is_up)
     SSAttributeDownRow.SetDialogVariable("item_name", `Lv.${target_level} ${attr_name}`)
@@ -349,17 +477,20 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
 
 function StoneOption_Upper(key: string, level: number) {
     g_confirm_action = "Upper"
-
     let config_key = level_u_d_config.up[level];
     g_soul_attr_key = config_key
     let up_config = server_soul_config[config_key as keyof typeof server_soul_config];
 
     // 成功率 
     SetSSActionResultsInfo(key, up_config)
+
+    ResultsExtendCostItem.visible = true;
+    AddExtendItemBtn.visible = true;
 }
 
 function StoneOption_Down(key: string, level: number) {
     g_confirm_action = "Down"
+
     let config_key = level_u_d_config.drop[level];
     g_soul_attr_key = config_key
     let up_config = server_soul_config[config_key as keyof typeof server_soul_config];
@@ -381,7 +512,9 @@ function SetSSActionResultsInfo(key: string, up_config: SoulConfigType, is_up: b
     let soul_attr = server_soul_attr[key as keyof typeof server_soul_attr];
     let attr_items = soul_attr.item_id;
     // 成功率 
+    g_base_success = up_config.pro
     SSActionResults.SetDialogVariableInt("success", up_config.pro)
+
     // 消耗素材
     let items = up_config.items;
     let price_cost: { item: string, count: number }[] = [];
@@ -423,6 +556,13 @@ function SetSSActionResultsInfo(key: string, up_config: SoulConfigType, is_up: b
     // 显示 消耗页面 和确认按钮
     SSActionResults.visible = true;
     PopupsOptionConfirmBtn.visible = true;
+    PopupsOptionDeltetBtn.visible = !is_up
+
+    // 清空扩展页面信息
+    ResultsExtendItem._SetItemId(-1);
+    AddExtendItemBtn.visible = true;
+    DeleteExtendItemBtn.visible = false;
+    // PopupsOptionDeltetBtn.visible = false;
 }
 
 function ConfirmBtnAction_Add(select_slot: number, key: string) {
@@ -436,12 +576,14 @@ function ConfirmBtnAction_Add(select_slot: number, key: string) {
 }
 
 function ConfirmBtnAction_Upper(select_slot: number, upper_type: number = 1) {
+
     GameEvents.SendCustomGameEventToServer("ServiceSoul", {
         event_name: "SoulIntensify",
         params: {
             box_type: select_slot,
             index: g_action_attr_index,
             type: upper_type,
+            ext_item: g_ext_item,
         }
     })
 }
@@ -456,11 +598,12 @@ function ConfirmBtnAction_Down(select_slot: number, key: string) {
     // })
 }
 
+/** 隐藏操作按钮 */
 function HideActionAboutView() {
     ResultsExtendCostItem.visible = false;
-    // 显示 消耗页面 和确认按钮
     SSActionResults.visible = false;
     PopupsOptionConfirmBtn.visible = false;
+    PopupsOptionDeltetBtn.visible = false
 }
 function SetSelectSlot_Icon(slot: number) {
     for (let i = 1; i <= 6; i++) {

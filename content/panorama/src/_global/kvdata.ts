@@ -15,7 +15,8 @@ import { default as MysteriousShopConfig } from "../json/config/game/shop/myster
 import { default as RuneAttrConfig } from "../json/config/game/rune/rune_attr_config.json";
 import { default as TalentTreeConfig } from "../json/config/game/hero/talent_tree/talent_tree_config.json";
 
-
+import { default as server_soul_attr } from "../json/config/server/soul/server_soul_attr.json";
+import { default as server_soul_config } from "../json/config/server/soul/server_soul_config.json";
 
 const KvData = {
     AttributeConst,
@@ -29,6 +30,8 @@ const KvData = {
     PictuerFetterAbility,
     RuneAttrConfig,
     TalentTreeConfig,
+    server_soul_attr,
+    server_soul_config,
 }
 
 declare global {

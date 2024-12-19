@@ -18,22 +18,30 @@
                 </Panel>
                 <Panel class="Right">
                     <Label class="Name" text="{s:slot_name}"/>
-                    <Label class="Desc" text="魂石总等级：{d:ss_level}"/>
+                    <Label class="Desc" text="当前总等级：{d:ss_level}"/>
+                    <Label class="HistoryLevel" text="历史总等级: {d:history_level}"/>
                 </Panel>
             </RadioButton>
         </snippet>
 
         <snippet name="ItemStoneAttrRows">
             <Panel class="ItemStoneAttrRows">
-                <Label class="Name" text="{s:item_name}"/>
-                <Label class="Attr" text="{s:attr}"/>
-
-                <Panel class="State">
-                    <Panel class="StateUpper"/>
-                    <Panel class="StateDown"/>
-                    <Panel class="StateMax"/>
+                <Panel class="LockState">
+                    <Panel class="LockIcon"/>
+                    <Label class="LockLabel" text="{s:lock_state}"/>
+                    <Label class="unLockLabel" text="已解锁"/>
                 </Panel>
-                <Button id="DeleteStoneBtn" />
+                <Panel class="AttrState">
+                    <Label class="Name" text="{s:item_name}"/>
+                    <Label class="Attr" text="{s:attr}"/>
+                    <Panel class="State">
+                        <Panel class="StateUpper"/>
+                        <Panel class="StateDown"/>
+                        <Panel class="StateMax"/>
+                    </Panel>
+                    <Button id="DeleteStoneBtn" />
+                </Panel>
+                
             </Panel>
         </snippet>
 
@@ -73,29 +81,28 @@
                 <Panel id="SSActionResults">
                     <Panel class="ServerItemContanier">
                         <Panel class="ServerItemBorder">
-                            <Panel id="ResultsBaseCostItem" class="ServerItem" />
-                            <Panel class="CostItemNum">
-                                <Panel class="CostLabel">
-                                    <Label class="Owned" text="{d:owned_count}  "/>
-                                    <Label class="Need" text="/ {d:need_count}"/>
+                            <Panel id="ResultsBaseCostItem" class="ServerItemPanel" />
+                            <Panel class="CostItemNum" hittest="false">
+                                <Panel class="CostLabel" hittest="false">
+                                    <Label class="Owned" text="{d:owned_count}" hittest="false"/>
+                                    <Label class="Need" text="/ {d:need_count}" hittest="false"/>
                                 </Panel>
                                 
                             </Panel>
                         </Panel>
                         <Label class="SuccessLabel"  text="成功率: {d:success}%"/>
                         <Panel class="ServerItemBorder ExtendItem">
-                            <Panel id="ResultsExtendCostItem" class="ServerItem"/>
-                            <Panel class="CostItemNum">
-                                <Label text="{d:ex_owned_count} / {d:ex_need_count}"/>
+                            <Panel id="ResultsExtendCostItem" class="ServerItemPanel">
+                                <Panel id="ResultsExtendItem" class="ServerItem" />
+                                <Button id="AddExtendItemBtn" />
+                                <Button id="DeleteExtendItemBtn" />
                             </Panel>
                         </Panel>
                     </Panel>
-                    
-                    <Panel id="ActionCostItemList" class="UpperPriceCost">
-                        
-                    </Panel>
-                    
+                    <Panel id="ActionCostItemList" class="UpperPriceCost" />
                 </Panel>
+
+                
 
                 <Panel class="SelectSSContent">
                     <Panel class="Header">
@@ -121,13 +128,52 @@
                             <Panel id="AttributreAddList" class="SoulStoneList" />
                         </Panel>
                     </Panel>
-                    <Button id="PopupsOptionConfirmBtn" class="dashboard_btn">
-                        <Label text="确认"/>
-                    </Button>
+                    <Panel class="ConfirmBtnGroup">
+                        <Button id="PopupsOptionConfirmBtn" class="dashboard_btn">
+                            <Label text="确认"/>
+                        </Button>
+
+                        <Button id="PopupsOptionDeltetBtn" class="dashboard_btn red">
+                            <Label text="删除魂石"/>
+                        </Button>
+                    </Panel>
+                    
                 </Panel>
 
                 
             </Panel>
         </Panel>
+
+        <Button id="ExtendCostItemList">
+            <Panel class="ExtendContainer">
+                <Panel id="ShowExtendItemList">
+
+                </Panel>
+            </Panel>
+        </Button>
+
+        <Button id="DeltetSoulStonePopups">
+            <Panel class="PopupContainer">
+                <Label class="Title" text="是否删除该魂石属性"/>
+                <Panel class="SSAttribute">
+                    <Label class="Name" text="{s:popup_ss_name}"/>
+                    <Label class="Attr" text="{s:popup_ss_attr}"/>
+                </Panel>
+                <Panel id="DeleteGiveItemList" />
+                <Panel class="GiveRatioLabel">
+                    <Label class="Name" text="返还率:"/>
+                    <Label class="Attr" text="{d:give_ratio}%"/>
+                </Panel>
+                <Panel class="ButtonGroup">
+                    <Button id="DeltetConfirmBtn" class="dashboard_btn">
+                        <Label text="确认"/>
+                    </Button>
+
+                    <Button id="DeltetCancelBtn" class="dashboard_btn red">
+                        <Label text="取消"/>
+                    </Button>
+                </Panel>
+            </Panel>
+        </Button>
     </Panel>
 </root>
