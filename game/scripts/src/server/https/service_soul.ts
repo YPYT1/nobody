@@ -21,7 +21,7 @@ export class ServiceSoul extends UIEventRegisterClass {
     //部位数量
     player_box_type_count : number = 6;
     //魂石最大镶嵌数量
-    player_xq_count : number = 6;
+    player_xq_count : number = 5;
     //降级消耗
     
     //魂石数据模板 type对应key
@@ -46,7 +46,6 @@ export class ServiceSoul extends UIEventRegisterClass {
             })
             for (let c_i = 1; c_i <= this.player_box_type_count; c_i++) {
                 this.soul_list[index].i[c_i] = {
-                    "c" : {},
                     "d" : [],
                     "l" : 0 ,
                     "z" : 0 ,
@@ -107,11 +106,16 @@ export class ServiceSoul extends UIEventRegisterClass {
         if(box_type > 0 && box_type <= this.player_box_type_count){
             if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
                 let r_data = CustomDeepCopy(this.soul_list[player_id].i[box_type].d) as CGEDGetSoulListData[];
-                print("=========================");
-                DeepPrintTable(r_data);
                 let r_data_key_list = Object.keys(r_data);
                 if(r_data_key_list.length < this.player_xq_count){
-                    if(!r_data_key_list.includes(key)){
+                    let is_meiyou = true;
+                    for (let r_i = 0; r_i < r_data.length; r_i++) {
+                        if(r_data[r_i].k == key){
+                            is_meiyou = false;
+                            break;
+                        }
+                    }
+                    if(is_meiyou){
                         //获取数据...
                         let ret = this.SoulDataUp(key , 0 , 0);
                         if(ret.code == true){
@@ -120,6 +124,11 @@ export class ServiceSoul extends UIEventRegisterClass {
                             for (const need_item_key in need_item) {
                                 let need_item_id = tonumber(need_item_key);
                                 let need_item_count = need_item[need_item_id];
+                                if(ret.data.c.hasOwnProperty(need_item_id)){
+                                    ret.data.c[need_item_id] += need_item_count;
+                                }else{
+                                    ret.data.c[need_item_id] = need_item_count;
+                                }
                                 let ret_ver = GameRules.ServiceData.VerifyPackageItem(player_id , need_item_id , need_item_count);
                                 if(ret_ver.is_verify){
                                     GameRules.ServiceData.DeletePackageItem(player_id , ret_ver.index , need_item_count);
@@ -131,7 +140,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                             this.soul_list[player_id].i[box_type].d.push(ret.data);
                             this.soul_list[player_id].i[box_type].l ++;
                             this.soul_list[player_id].i[box_type].z ++;
-                                //更新魂石数据
+                            //更新魂石数据
                             this.GetPlayerServerSoulData( player_id , {})
                             //更新背包数据
                             GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {} );
@@ -161,7 +170,8 @@ export class ServiceSoul extends UIEventRegisterClass {
     SoulIntensify(player_id: PlayerID, params: CGED["ServiceSoul"]["SoulIntensify"]){
         let box_type = params.box_type;
         let index = params.index;
-        let type  = params.type;
+        let type = params.type;
+        let ext_item = params.ext_item;
         if(box_type > 0 && box_type <= this.player_box_type_count){
             if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
                 if(this.soul_list[player_id].i[box_type].d[index]){
@@ -169,17 +179,19 @@ export class ServiceSoul extends UIEventRegisterClass {
                     let level = r_data.l;
                     let value = r_data.v;
                     let key = r_data.k;
+                    
                     let ret : { code : boolean , data : CGEDGetSoulListData} = {
                         code : false , 
                         data : {
                             k : key, //属性键
                             v : value, //属性数值
                             l : level ,//拼图等级
+                            c : [] ,
                         },
                     };
                     if(type == 1){
                         if(level < 20){
-                           //获取数据...
+                            //获取数据...
                             ret = this.SoulDataUp(key , level , value);
                         }else{
                             GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:超过最大等级")
@@ -194,17 +206,38 @@ export class ServiceSoul extends UIEventRegisterClass {
                             return
                         }
                     }
+                    
                     if(ret.code == true){
                         let Sj_config_key = "";
+                        let ext_pro = 0;
                         if(type == 1){
                             Sj_config_key = this.level_u_d_config.up[level];
                         }else{
                             Sj_config_key = this.level_u_d_config.drop[level];
                         }
                         let need_item = this.GetUpItem(Sj_config_key , key , type);
+                        if(ext_item){
+                            if(ext_item == 1283){ // 低级魂石升级保护卷
+                                need_item[ext_item] = 1;
+                                ext_pro = 5;
+                            }else if(ext_item == 1284){ // 中级魂石升级保护卷
+                                need_item[ext_item] = 1;
+                                ext_pro = 10;
+                            }else if(ext_item == 1285){ // 高级魂石升级保护卷
+                                need_item[ext_item] = 1;
+                                ext_pro = 15;
+                            }
+                        }
+                        //附加数据记录
+                        ret.data.c = r_data.c;
                         for (const need_item_key in need_item) {
                             let need_item_id = tonumber(need_item_key);
                             let need_item_count = need_item[need_item_id];
+                            if(ret.data.c.hasOwnProperty(need_item_id)){
+                                ret.data.c[need_item_id] += need_item_count;
+                            }else{
+                                ret.data.c[need_item_id] = need_item_count;
+                            }
                             let ret_ver = GameRules.ServiceData.VerifyPackageItem(player_id , need_item_id , need_item_count);
                             if(ret_ver.is_verify){
                                 GameRules.ServiceData.DeletePackageItem(player_id , ret_ver.index , need_item_count);
@@ -213,14 +246,26 @@ export class ServiceSoul extends UIEventRegisterClass {
                                 return ;
                             }
                         }
-                        this.soul_list[player_id].i[box_type].d[index] = ret.data;
-                        if(type == 1){
-                            this.soul_list[player_id].i[box_type].z ++;
-                            if(this.soul_list[player_id].i[box_type].z > this.soul_list[player_id].i[box_type].l){
-                                this.soul_list[player_id].i[box_type].l = this.soul_list[player_id].i[box_type].z ++;
+                        //计算概率
+                        let pro = ServerSoulConfig[Sj_config_key as keyof typeof ServerSoulConfig].pro + ext_pro;
+                        if(RollPercentage(pro)){
+                            this.soul_list[player_id].i[box_type].d[index] = ret.data;
+                            if(type == 1){
+                                this.soul_list[player_id].i[box_type].z ++;
+                                if(this.soul_list[player_id].i[box_type].z > this.soul_list[player_id].i[box_type].l){
+                                    this.soul_list[player_id].i[box_type].l = this.soul_list[player_id].i[box_type].z ++;
+                                }
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级成功....")
+                            }else{
+                                this.soul_list[player_id].i[box_type].z --;
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级成功....")
                             }
                         }else{
-                            this.soul_list[player_id].i[box_type].z --;
+                            if(type == 1){
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败....")
+                            }else{
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级失败....")
+                            }
                         }
                         //更新魂石数据
                         this.GetPlayerServerSoulData( player_id , {})
@@ -240,7 +285,7 @@ export class ServiceSoul extends UIEventRegisterClass {
         }
     }
     /**
-     * 魂石属性创建/升级
+     * 魂石属性创建/升级属性计算
      * @param key 魂石属性key
      * @param level 魂石等级
      * @param num 魂石属性值
@@ -252,6 +297,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                 "k" : key,
                 "l" : 0 ,
                 "v" : 0 ,
+                "c" : [],
             }
         }
         if(level != 0){
@@ -328,6 +374,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                 "k" : key,
                 "l" : level ,
                 "v" : value ,
+                "c" : [],
             }
         }
         let SoulAttr_data = ServerSoulAttr[key as keyof typeof ServerSoulAttr];
@@ -444,7 +491,6 @@ export class ServiceSoul extends UIEventRegisterClass {
                 let item_id_list = ServerSoulAttr[attr_key as keyof typeof ServerSoulAttr].item_id;
                 let section = tonumber(con_data[0]) - 1;
                 let get_item_id = item_id_list[section];
-                print("get_item_id : " , get_item_id);
                 ret[get_item_id] = tonumber(con_data[1]);    
             }else{
                 ret[tonumber(con_data[0])] = tonumber(con_data[1]);
@@ -470,7 +516,6 @@ export class ServiceSoul extends UIEventRegisterClass {
      * @param params 
      */
     GetPlayerServerSoulData(player_id: PlayerID, params:  CGED["ServiceSoul"]["GetPlayerServerSoulData"]){
-        DeepPrintTable(this.soul_list[player_id].i);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceSoul_GetPlayerServerSoulData",
@@ -484,7 +529,107 @@ export class ServiceSoul extends UIEventRegisterClass {
             }
         );
     }
+    /**
+     * 预览魂石删除
+     * @param player_id 
+     * @param params 
+     */
+    DeforehandSoulDelete(player_id: PlayerID, params:  CGED["ServiceSoul"]["DeforehandSoulDelete"]){
+        let box_type = params.box_type;
+        let index = params.index;
+        if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
+            if(this.soul_list[player_id].i[box_type].d[index]){
+                let items = this.soul_list[player_id].i[box_type].d[index].c;
+                let new_items = this.GetDeleteItems(items);
+                CustomGameEventManager.Send_ServerToPlayer(
+                    PlayerResource.GetPlayer(player_id),
+                    "ServiceSoul_DeforehandSoulDelete",
+                    {
+                        data: new_items
+                    }
+                );
+            }else{
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:选择错误..")
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:没有此项..")
+        }
+    }
 
+    /**
+     * 魂石真删除
+     * @param player_id 
+     * @param params 
+     */
+    SoulDelete(player_id: PlayerID, params : CGED["ServiceSoul"]["SoulDelete"]){
+        let box_type = params.box_type;
+        let index = params.index;
+        if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
+            if(this.soul_list[player_id].i[box_type].d[index]){
+                let items = this.soul_list[player_id].i[box_type].d[index].c;
+                let new_items = this.GetDeleteItems(items);
+                for (const key in new_items.list) {
+                    let count = new_items.list[key];
+                    let item_id = tonumber(key);
+                    GameRules.ServiceData.AddPackageItem(
+                        player_id , 
+                        key,
+                        item_id,
+                        "",
+                        count
+                    );
+                }
+                //删除符文数据
+                this.soul_list[player_id].i[box_type].d.splice(index , 1);
+                //更新魂石数据
+                this.GetPlayerServerSoulData( player_id , {})
+                //更新背包数据
+                GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {} );
+            }else{
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:没有此项..")
+            }
+        }else{
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:没有部位..")
+        }
+    }
+
+    /**
+     * 计算返回数据
+     * @param items 
+     * @returns 
+     */
+    GetDeleteItems(items : { //总消耗 //用于删除返回
+        [ item_id : number] : number , //物品数量key
+    } , pro : number = 70 ) : { 
+        list : {
+            [ item_id : number] : number , //物品数量key
+        },
+        pro : number,
+    }{
+        let ret_new : { 
+            list : {
+                [ item_id : number] : number , //物品数量key
+            },
+            pro : number,
+        } = {
+            list : {},
+            pro : pro
+        };
+        for (const key in items) {
+            let item_id = tonumber(key);
+            let count = math.floor((items[key] / 100) * pro);
+            if(count > 0){
+                if(ret_new.list.hasOwnProperty(item_id)){
+                    ret_new.list[item_id] += count;
+                }else{
+                    ret_new.list[item_id] = count;
+                }
+            }
+        }
+        return ret_new;
+    }
+
+    
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         if(cmd == "!HSadd"){
             this.SoulAddOfField( player_id , { "box_type" : 1 , "key" : "1" })

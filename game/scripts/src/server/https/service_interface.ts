@@ -158,7 +158,7 @@ export class ServiceInterface extends UIEventRegisterClass{
         let is_advanced =  ServerSkillExp[key as keyof typeof ServerSkillExp].is_advanced
         if(is_advanced == 0){ //不是高级
             let lvdata = this.GetServerSkillfulLevel( key , skill_exp);
-            let need_number = math.ceil((lvdata.level_exp - lvdata.cur_exp) / 1000);
+            let need_number = lvdata.level_exp - lvdata.cur_exp;
             let need_number_list : { [item_id : number] : number} = {
                 1293 : need_number,
             };
@@ -255,9 +255,10 @@ export class ServiceInterface extends UIEventRegisterClass{
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能升级:材料不足");
                     }
                     if(is_advanced == 1){
+                        
                         up_exp = number;
                     }else{
-                        up_exp = number * 1000;
+                        up_exp = number;
                     }
                     GameRules.ServiceData.DeletePackageItem(player_id , item_ret.index , number);
                 }

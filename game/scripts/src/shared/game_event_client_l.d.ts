@@ -256,7 +256,7 @@ declare interface CustomGameEventDeclarations {
         }
     }
     /**
-     * 玩家魂石装备
+     * 获取玩家预删除数据
      */
     ServiceSoul_GetPlayerServerSoulData : {
         data: {
@@ -265,6 +265,18 @@ declare interface CustomGameEventDeclarations {
         }
     }
 
+    /**
+     * 玩家魂石删除
+     */
+    ServiceSoul_DeforehandSoulDelete : {
+        data: {
+            list : {
+                [ item_id : number ] : number; //{ 物品id : 数量}
+            } 
+            pro : number , // 返还比例
+        }
+    }
+    
     GameInformation_GetPlayerDieData : {
         data: {
             time : number[]
@@ -505,9 +517,6 @@ declare interface CGEDGetSoulList {
             d : CGEDGetSoulListData[]
             z : number , //当前总等级
             l : number , //历史总等级
-            c : { //总消耗 //用于删除返回
-                [ item_id : number] : number , //物品数量key
-            }
         }
     }
 }
@@ -518,6 +527,9 @@ declare interface CGEDGetSoulListData {
     k: string, //属性键
     v: number, //属性数值
     l:number ,//拼图等级
+    c : { //总消耗 //用于删除返回
+        [ item_id : number] : number , //物品数量key
+    }
 }
 
 /**

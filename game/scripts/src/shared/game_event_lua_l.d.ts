@@ -301,6 +301,12 @@ declare interface CGED {
             box_type : number ,//部位  1 武器
             index : number ,// 位置
             type : number , // 1升级 2降级
+            ext_item ? : number , //额外的物品id  只有升级的时候才有 并且使用一个
+        }
+        //预览魂石删除
+        DeforehandSoulDelete : {
+            box_type : number ,//部位  1 武器
+            index : number ,// 位置
         }
         //魂石删除
         SoulDelete: {
