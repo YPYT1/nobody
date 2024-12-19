@@ -380,7 +380,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             let refresh_soul = this.shop_field_list[player_id].refresh_soul;
             let player_gold_start = GameRules.ResourceSystem.ModifyResource(player_id, { Soul: - refresh_soul });
             if (player_gold_start.status) {
-                GameRules.MysticalShopSystem.PlayerShopItem(player_id)
+                GameRules.MysticalShopSystem.PlayerShopItem(player_id ,  true);
             } else {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "神秘商店 : !" + player_gold_start.msg);
             }
@@ -447,7 +447,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
      * 刷新  index有值时为单个刷新
      * @param player_id 
      */
-    private PlayerShopItem(player_id: PlayerID , i_index: number = -1) {
+    private PlayerShopItem(player_id: PlayerID , is_refresh : boolean = false, i_index: number = -1) {
 
         let is_one_refresh = false;
         if(i_index != - 1){
@@ -568,20 +568,19 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         this.shop_field_list[player_id].list[field_index].soul = ItemsCustomInfo.star_soul[item_count];
                     }
                 }
-                if(is_one_refresh){
-                    this.shop_field_list[player_id].refresh_count = this.shop_field_list[player_id].refresh_count + 1;
-                    //刷新价格增加
-                    let refresh_soul = GameRules.MysticalShopSystem.GetSXPrice(this.shop_field_list[player_id].refresh_count);
-                    this.shop_field_list[player_id].refresh_soul = refresh_soul;
-                }
-                
             } else {
                 index--;
                 continue;
             }
-            DeepPrintTable(this.shop_field_list[player_id]);
             //保存
             shop_wp_list.push(item_name);
+        }
+        if(is_refresh){
+            this.shop_field_list[player_id].refresh_count = this.shop_field_list[player_id].refresh_count + 1;
+            //刷新价格增加
+            let refresh_soul = GameRules.MysticalShopSystem.GetSXPrice(this.shop_field_list[player_id].refresh_count);
+
+            this.shop_field_list[player_id].refresh_soul = refresh_soul;
         }
         this.GetShopData(player_id, {});
     }

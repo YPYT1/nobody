@@ -28,7 +28,7 @@ export class ServiceSoul extends UIEventRegisterClass {
     box_type_data : {
         [box_type : number ] : string[]; //类型 - 表id
     }  = {};
-
+    //魂石升级对应模板
     level_u_d_config : {
         up : { [level : number] : string } ,
         drop : { [level : number] : string } ,
@@ -47,7 +47,9 @@ export class ServiceSoul extends UIEventRegisterClass {
             for (let c_i = 1; c_i <= this.player_box_type_count; c_i++) {
                 this.soul_list[index].i[c_i] = {
                     "c" : {},
-                    "d" : [],   
+                    "d" : [],
+                    "l" : 0 ,
+                    "z" : 0 ,
                 }
             }
         }
@@ -105,6 +107,8 @@ export class ServiceSoul extends UIEventRegisterClass {
         if(box_type > 0 && box_type <= this.player_box_type_count){
             if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
                 let r_data = CustomDeepCopy(this.soul_list[player_id].i[box_type].d) as CGEDGetSoulListData[];
+                print("=========================");
+                DeepPrintTable(r_data);
                 let r_data_key_list = Object.keys(r_data);
                 if(r_data_key_list.length < this.player_xq_count){
                     if(!r_data_key_list.includes(key)){
@@ -125,6 +129,8 @@ export class ServiceSoul extends UIEventRegisterClass {
                                 }
                             }
                             this.soul_list[player_id].i[box_type].d.push(ret.data);
+                            this.soul_list[player_id].i[box_type].l ++;
+                            this.soul_list[player_id].i[box_type].z ++;
                                 //更新魂石数据
                             this.GetPlayerServerSoulData( player_id , {})
                             //更新背包数据
@@ -174,7 +180,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                     if(type == 1){
                         if(level < 20){
                            //获取数据...
-                            ret = this.SoulDataUp(key , level , value); 
+                            ret = this.SoulDataUp(key , level , value);
                         }else{
                             GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:超过最大等级")
                             return
@@ -208,6 +214,14 @@ export class ServiceSoul extends UIEventRegisterClass {
                             }
                         }
                         this.soul_list[player_id].i[box_type].d[index] = ret.data;
+                        if(type == 1){
+                            this.soul_list[player_id].i[box_type].z ++;
+                            if(this.soul_list[player_id].i[box_type].z > this.soul_list[player_id].i[box_type].l){
+                                this.soul_list[player_id].i[box_type].l = this.soul_list[player_id].i[box_type].z ++;
+                            }
+                        }else{
+                            this.soul_list[player_id].i[box_type].z --;
+                        }
                         //更新魂石数据
                         this.GetPlayerServerSoulData( player_id , {})
                         //更新背包数据
@@ -461,7 +475,12 @@ export class ServiceSoul extends UIEventRegisterClass {
             PlayerResource.GetPlayer(player_id),
             "ServiceSoul_GetPlayerServerSoulData",
             {
-                data: this.soul_list[player_id]
+                data: {
+                    list : this.soul_list[player_id],
+                    map_level : GameRules.ServiceInterface.player_map_level[player_id]
+                }
+                
+                
             }
         );
     }

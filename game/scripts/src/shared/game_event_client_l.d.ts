@@ -259,7 +259,10 @@ declare interface CustomGameEventDeclarations {
      * 玩家魂石装备
      */
     ServiceSoul_GetPlayerServerSoulData : {
-        data: CGEDGetSoulList
+        data: {
+            list : CGEDGetSoulList , //魂石数据
+            map_level : number , // 地图等级
+        }
     }
 
     GameInformation_GetPlayerDieData : {
@@ -500,6 +503,8 @@ declare interface CGEDGetSoulList {
     i : { [ index : string ] : //部位下标
         {
             d : CGEDGetSoulListData[]
+            z : number , //当前总等级
+            l : number , //历史总等级
             c : { //总消耗 //用于删除返回
                 [ item_id : number] : number , //物品数量key
             }

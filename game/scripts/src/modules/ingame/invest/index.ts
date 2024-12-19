@@ -90,6 +90,7 @@ export class InvestSystem extends UIEventRegisterClass {
             State : false,
             ResourceCount : InvestGetResource,
         };
+        this.GetPlayerInvestData(player_id , {});
         
     }
     //获取玩家投资等级信息
