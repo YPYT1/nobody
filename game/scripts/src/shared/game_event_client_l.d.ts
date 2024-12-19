@@ -270,10 +270,14 @@ declare interface CustomGameEventDeclarations {
      */
     ServiceSoul_DeforehandSoulDelete : {
         data: {
-            list : {
-                [ item_id : number ] : number; //{ 物品id : 数量}
-            } 
-            pro : number , // 返还比例
+            itemsdata : {
+                list : {
+                    [ item_id : number ] : number; //{ 物品id : 数量}
+                } 
+                pro : number , // 返还比例
+            }
+            box_type : number ,//部位  1 武器
+            index : number ,// 位置
         }
     }
     

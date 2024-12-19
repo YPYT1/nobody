@@ -568,7 +568,11 @@ export class ServiceSoul extends UIEventRegisterClass {
                     PlayerResource.GetPlayer(player_id),
                     "ServiceSoul_DeforehandSoulDelete",
                     {
-                        data: new_items
+                        data: {
+                            itemsdata : new_items,
+                            box_type : box_type,
+                            index : index,
+                        }
                     }
                 );
             }else{
