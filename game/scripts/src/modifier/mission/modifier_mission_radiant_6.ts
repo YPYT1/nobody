@@ -20,9 +20,7 @@ export class modifier_mission_radiant_6_box extends BaseModifier {
 
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
         // 增加进度
-        if (this.GetParent().GetHealth() <= 1) {
-            this.is_kill = true;
-        }
+        this.is_kill = true;
         return 0
     }
 

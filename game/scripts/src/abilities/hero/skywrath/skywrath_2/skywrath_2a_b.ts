@@ -24,13 +24,47 @@ export class modifier_skywrath_2a_b extends modifier_skywrath_2a {
 
     surround_mdf = "modifier_skywrath_2a_b_surround";
 
+    ice_cake: CDOTA_BaseNPC[] = [];
+
+
     UpdataSpecialValue(): void {
         this.surround_count += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "73", "count")
         //rune_63	法爷#12	霜降生成的冰块数量翻倍
         const rune63 = this.caster.GetRuneKv("rune_63", "value")
-        if (rune63 > 0) {
-            this.surround_count *= 2
+        if (rune63 > 0) { this.surround_count *= 2 }
+
+        let surround_speed = 300;//this.ability.GetTypesAffixValue(300, "Surround", "skv_surround_speed");
+        let surround_distance = 600;//this.surround_radius;//this.ability.GetTypesAffixValue(, "Surround", "skv_surround_distance")
+
+        if (this.surround_count != this.ice_cake.length) {
+            for (let hSpirit of this.ice_cake) { UTIL_Remove(hSpirit) }
+            this.ice_cake = [];
+            let pre_angle = 360 / this.surround_count;
+            for (let i = 0; i < this.surround_count; i++) {
+                let surround_qangle = i * pre_angle;
+                let hSpirit = GameRules.SummonedSystem.CreatedUnit(
+                    "npc_summoned_dummy",
+                    this.caster.GetAbsOrigin() + Vector(0, 300, 0) as Vector,
+                    this.caster,
+                    -1,
+                    true
+                )
+                this.ice_cake.push(hSpirit)
+                hSpirit.AddNewModifier(this.caster, this.ability, this.surround_mdf, {
+                    // duration: this.surround_duration,
+                    surround_distance: surround_distance,
+                    surround_qangle: surround_qangle,
+                    surround_speed: surround_speed,
+                    surround_entity: this.caster.entindex(),
+                    manacost_bonus: 0,
+                    is_clone: 0,
+                });
+            }
         }
+    }
+
+    OnIntervalThink(): void {
+
     }
 
 }
@@ -51,10 +85,12 @@ export class modifier_skywrath_2a_b_surround extends modifier_skywrath_2a_surrou
         this.AddParticle(cast_fx, false, false, 1, false, false);
     }
 
-    OnDestroy(): void {
-        if (!IsServer()) { return }
-        UTIL_Remove(this.GetParent())
-    }
+    _OnIntervalThink() { }
+
+    // OnDestroy(): void {
+    //     if (!IsServer()) { return }
+    //     UTIL_Remove(this.GetParent())
+    // }
 }
 
 
@@ -76,6 +112,8 @@ export class modifier_skywrath_2a_b_surround_collision extends modifier_skywrath
         }
 
         let surround_d_final = this.ability.GetTypesAffixValue(0, "Surround", "skv_surround_d_final")
+
+        // print("this.ability_damage",this.ability_damage)
         ApplyCustomDamage({
             victim: this.GetParent(),
             attacker: this.GetCaster(),

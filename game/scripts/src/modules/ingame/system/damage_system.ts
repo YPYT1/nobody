@@ -104,19 +104,17 @@ export class DamageSystem {
         let is_primary = params.is_primary ?? false;
         let is_crit = 0;
         let critical_flag = params.critical_flag ?? 0;
-
         if (hTarget.HasModifier("modifier_basic_hits")) {
             params.damage = 1;
             PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type);
             return ApplyDamage(params);
         }
-
         // 暴击
         let CriticalChance = hAttacker.custom_attribute_value.CriticalChance;
         let CriticalDamage = hAttacker.custom_attribute_value.CriticalDamage;
         // 乘区计算
         // let BasicAbilityDmg = (params.BasicAbilityDmg ?? 100) * 0.01
-        let SelfAbilityMul = (params.SelfAbilityMul ?? 100) * 0.01;
+        let SelfAbilityMul = 1 + ((params.SelfAbilityMul ?? 0) * 0.01);
         let DamageBonusMul = (params.DamageBonusMul ?? 0) + hAttacker.custom_attribute_value.DamageBonusMul;
         let AbilityImproved = (params.AbilityImproved ?? 0) + hAttacker.custom_attribute_value.AbilityImproved;
         let ElementDmgMul = (params.ElementDmgMul ?? 0) + hAttacker.custom_attribute_value.AllElementDamageBonus;
@@ -140,12 +138,8 @@ export class DamageSystem {
             params.damage = params.damage * clone_base_factor;
         }
         params.damage = params.damage * DmgReductionPct;
-
-
-        // let element_type = params.element_type
-        // print("is_clone:", params.is_clone, params.attacker.GetTalentKv("117", "shadow"), element_type)
         /** 元素抗性 */
-        let ElementResist = 100 - (params.victim.enemy_attribute_value.AllElementResist ?? 0);
+        let ElementResist =  (params.victim.enemy_attribute_value.AllElementResist ?? 0);
         // 乘区
         DamageBonusMul += this.GetBonusDamageFromProp(params)
         // 游侠天赋击破效果
@@ -237,8 +231,7 @@ export class DamageSystem {
             PopupDamageNumber(hAttacker, hTarget, params.damage_type, params.damage, is_crit, element_type)
             return ApplyDamage(params);
         }
-
-
+        let ElementResistMul = (100 - ElementResist) * 0.01
         /**
          * 造成伤害1=(攻击者攻击力*【1+攻击力加成百分比】*对应技能伤害)*伤害加成*(1+最终伤害)*技能增强*元素伤害百分比*远程或近战伤害增加百分比
             造成伤害2=固定伤害（=攻击者固定伤害-受攻击者固定伤害减免）【造成伤害最小值1】
@@ -249,8 +242,9 @@ export class DamageSystem {
             * (1 + AbilityImproved * 0.01)
             * (1 + ElementDmgMul * 0.01)
             * (1 + FinalDamageMul * 0.01)
-            * math.max(1, ElementResist) * 0.01
+            * math.max(0, ElementResistMul)
             ;
+
         // 根据单位类型进行提升伤害
         if (params.victim.IsBossCreature()) {
             let CreatureDmgLeader = (params.attacker.custom_attribute_value.CreatureDmgLeader ?? 0) * 0.01;
@@ -275,6 +269,7 @@ export class DamageSystem {
         // let attacker_direction = VectorToAngles(attacker_vector).y;
         // let angle_diff = math.abs(AngleDiff(target_direction, attacker_direction));
         // print("degree", angle_diff, angle_diff > 100)
+        // print("ApplyDamage Line:278",params.damage)
         // 特殊机制
         let bonus_dmg_pct = this.AboutSpecialMechanism(params)
         params.damage *= bonus_dmg_pct;

@@ -62,7 +62,7 @@ export class WarningMarker {
         // particles/diy_particles/range_finder_cone.vpcf
         let line_pfx = ParticleManager.CreateParticle(
             "particles/diy_particles/range_finder_cone.vpcf",
-            ParticleAttachment.WORLDORIGIN,
+            ParticleAttachment.POINT,
             caster,
         );
         ParticleManager.SetParticleControl(line_pfx, 0, caster.GetOrigin());

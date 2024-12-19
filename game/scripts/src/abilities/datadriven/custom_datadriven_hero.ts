@@ -16,10 +16,10 @@ export const OnCreated = (params: CGDatadrivenProps) => {
 }
 
 export const OnDeath = (params: CGDatadrivenProps) => {
-    print("OnDeath")
+    // print("OnDeath")
     const hUnit = params.caster;
     let picture_buff = hUnit.FindModifierByName("modifier_picture_abilities") as modifier_picture_abilities;
-    print("picture_buff", picture_buff)
+    // print("picture_buff", picture_buff)
     if (picture_buff) {
         picture_buff._OnDeath()
     }

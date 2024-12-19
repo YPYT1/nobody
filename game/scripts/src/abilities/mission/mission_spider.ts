@@ -11,9 +11,9 @@ export class mission_spider extends BaseCreatureAbility {
     shadowball_maxhp_dmg: number = 40;
     shadowball_speed: number = 350;
 
-    GetIntrinsicModifierName(): string {
-        return "modifier_mission_spider";
-    }
+    // GetIntrinsicModifierName(): string {
+    //     return "modifier_mission_spider";
+    // }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: object): boolean | void {
         if (target) {

@@ -73,7 +73,7 @@ const CustomEventSubscribe = () => {
                 let next = _data.uph!;
                 let lv = _data.lv;
                 TalentNode.SetHasClass("adv_invest",lv > 3);
-                TalentNode.SetDialogVariable("talent_name","灵魂投资")
+                TalentNode.SetDialogVariable("talent_name",$.Localize("#custom_text_soul_invest"))
                 TalentNode.SetHasClass("IsAbility", false)
                 TypesLabel.SetHasClass("Resource", true);
                 TypesLabel.SetHasClass("Show", true)
