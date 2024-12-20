@@ -102,7 +102,7 @@ const GameEventsSubscribeInit = () => {
             }
 
         }
-        
+
         let shop_list = data.shop_field_list.list;
         for (let k in shop_list) {
             let index = parseInt(k) - 1;
@@ -175,12 +175,27 @@ const GameEventsSubscribeInit = () => {
         }
 
         //
-        
-    })
-
-    GameEvents.Subscribe("MysticalShopSystem_GetPlayerShopBuyData", event => {
 
     })
+
+    GameEvents.Subscribe("ResourceSystem_SendPlayerResources", event => {
+        let data = event.data;
+
+        MainPanel.SetDialogVariableInt("gold_count", data.Soul)
+        // ResourcePanel["Gold"]?.SetDialogVariable("amount", `${data.Gold}`)
+        // ResourcePanel["Soul"]?.SetDialogVariableInt("amount", data.Soul)
+        // ResourcePanel["Kills"]?.SetDialogVariableInt("amount", data.Kills)
+    })
+
+
+    GameEvents.SendCustomGameEventToServer("ResourceSystem", {
+        event_name: "GetPlayerResource",
+        params: {}
+    })
+    
+    // GameEvents.Subscribe("MysticalShopSystem_GetPlayerShopBuyData", event => {
+
+    // })
 
     GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
         event_name: "GetPlayerShopBuyData",

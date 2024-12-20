@@ -9,7 +9,7 @@ export class CustomItem extends UIEventRegisterClass {
         super("CustomItem", true)
     }
 
-    Drop(item_key: ItemListKey, vPos: Vector , time : number = -1) {
+    Drop(item_key: ItemListKey, vPos: Vector, time: number = -1) {
         let unit_name = "npc_item_" + item_key
         let ItemUnit = CreateUnitByName(unit_name, vPos, false, null, null, DotaTeam.NEUTRALS)
         if (ItemUnit) {
@@ -27,33 +27,46 @@ export class CustomItem extends UIEventRegisterClass {
     // 物品效果
     useItemEffect(item_name: string, hUnit: CDOTA_BaseNPC) {
         if (item_name == "npc_item_hp") {
-            let effect_fx = ParticleManager.CreateParticle(
-                "particles/items3_fx/fish_bones_active.vpcf",
-                ParticleAttachment.POINT_FOLLOW,
-                hUnit
-            )
-            ParticleManager.ReleaseParticleIndex(effect_fx)
-            //25%最大生命
-            GameRules.BasicRules.Heal(hUnit, hUnit.GetMaxHealth() * 0.25)
-        } else if (item_name == "npc_item_mp") {
-            let effect_fx = ParticleManager.CreateParticle(
-                "particles/items3_fx/mango_active.vpcf",
-                ParticleAttachment.POINT_FOLLOW,
-                hUnit
-            )
-            ParticleManager.ReleaseParticleIndex(effect_fx)
-            // 50%最大蓝量
-            GameRules.BasicRules.RestoreMana(hUnit, hUnit.GetMaxMana() * 0.5)
-        } else if (item_name == "npc_item_all") {
-            let effect_fx = ParticleManager.CreateParticle(
-                "particles/items3_fx/iron_talon_active.vpcf",
-                ParticleAttachment.POINT_FOLLOW,
-                hUnit
-            )
-            ParticleManager.ReleaseParticleIndex(effect_fx)
 
-            GameRules.BasicRules.Heal(hUnit, hUnit.GetMaxHealth())
-            GameRules.BasicRules.RestoreMana(hUnit, hUnit.GetMaxMana())
+            //25%最大生命
+            for (let hHero of HeroList.GetAllHeroes()) {
+                let effect_fx = ParticleManager.CreateParticle(
+                    "particles/items3_fx/fish_bones_active.vpcf",
+                    ParticleAttachment.POINT_FOLLOW,
+                    hHero
+                )
+                ParticleManager.ReleaseParticleIndex(effect_fx)
+                GameRules.BasicRules.Heal(hHero, hHero.GetMaxHealth() * 0.25)
+            }
+
+        } else if (item_name == "npc_item_mp") {
+
+            // 50%最大蓝量
+            for (let hHero of HeroList.GetAllHeroes()) {
+                let effect_fx = ParticleManager.CreateParticle(
+                    "particles/items3_fx/mango_active.vpcf",
+                    ParticleAttachment.POINT_FOLLOW,
+                    hHero
+                )
+                ParticleManager.ReleaseParticleIndex(effect_fx)
+                GameRules.BasicRules.RestoreMana(hHero, hHero.GetMaxMana() * 0.5)
+            }
+
+        } else if (item_name == "npc_item_all") {
+
+
+            for (let hHero of HeroList.GetAllHeroes()) {
+                let effect_fx = ParticleManager.CreateParticle(
+                    "particles/items3_fx/iron_talon_active.vpcf",
+                    ParticleAttachment.POINT_FOLLOW,
+                    hHero
+                )
+                ParticleManager.ReleaseParticleIndex(effect_fx)
+                GameRules.BasicRules.Heal(hHero, hHero.GetMaxHealth())
+                GameRules.BasicRules.RestoreMana(hHero, hHero.GetMaxMana())
+            }
+
+
         }
     }
 

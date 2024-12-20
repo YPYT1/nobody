@@ -53,7 +53,11 @@ const CreateCommonMessage = (event: CommonMessageProps) => {
                 MessagePanel.SetDialogVariable(k, `<span class="wood_color">${value}</span>`);
             } else if (k == "C_Attr") {
                 MessagePanel.SetDialogVariable(k, $.Localize(`#dota_custom_attribute_${data[k]}`));
-            } else {
+            } else if (k == "rune_name") {
+                MessagePanel.SetDialogVariable(k, $.Localize(`#custom_${data[k]}`));
+            }
+
+            else {
                 let value = data[k];
                 if (typeof (value) == "string") {
                     MessagePanel.SetDialogVariable(k, value);

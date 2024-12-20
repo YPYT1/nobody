@@ -92,7 +92,6 @@
 			</Panel>
 			<Panel class="TitleImg"/>
 			<Panel class="RefreshPanel">
-				
 				<Button id="RefreshShopBtn">
 					<Panel class="RefreshCostLabel">
 						<Panel class="CostIcon"/>
@@ -100,6 +99,12 @@
 					</Panel>
 					<Label class="ResreshCountLabel" text="{d:refresh_count} / {d:refresh_max}"/>
 				</Button>
+			</Panel>
+			<Panel class="ShopCurrencyBorder">
+				<Panel class="GoldBorder">
+					<Label text="{d:gold_count}"/>
+				</Panel>
+				<Panel class="GoldIcon"/>
 			</Panel>
 			<Button id="ReadyBtn"></Button>
 		</Panel>

@@ -73,6 +73,7 @@ export class modifier_public_creature extends BaseModifier {
         if (enemies.length > 0) {
             this.caster.PerformAttack(this.caster, false, true, true, false, false, true, false);
             let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+            // print("hit", attack_damage)
             for (let enemy of enemies) {
                 ApplyCustomDamage({
                     victim: enemy,
@@ -115,9 +116,9 @@ export class modifier_public_creature extends BaseModifier {
         return -event.damage * 2
     }
 
-    GetModifierAttackSpeedBaseOverride(): number {
-        return 0.001
-    }
+    // GetModifierAttackSpeedBaseOverride(): number {
+    //     return 0.001
+    // }
 
     GetModifierMoveSpeedBonus_Percentage(): number {
         return this.bonus_move
