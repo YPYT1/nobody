@@ -94,9 +94,31 @@ export class ServiceData extends UIEventRegisterClass {
             customs: "", //自定义字段
         });
 
-        //魂石
+        //魂石 一级
         for (let index = 0; index < 18; index++) {
             let item_id = 10000 + index;
+            this.server_package_list[0].push({
+                id : tostring(item_id),	//系统内唯一id
+                item_id: item_id,	//物品表唯一id
+                number: 1000,	//物品数量
+                customs: "", //自定义字段
+            });
+        }
+
+        //魂石 二级
+        for (let index = 0; index < 18; index++) {
+            let item_id = 10101 + index;
+            this.server_package_list[0].push({
+                id : tostring(item_id),	//系统内唯一id
+                item_id: item_id,	//物品表唯一id
+                number: 1000,	//物品数量
+                customs: "", //自定义字段
+            });
+        }
+
+        //魂石
+        for (let index = 0; index < 7; index++) {
+            let item_id = 1279 + index;
             this.server_package_list[0].push({
                 id : tostring(item_id),	//系统内唯一id
                 item_id: item_id,	//物品表唯一id

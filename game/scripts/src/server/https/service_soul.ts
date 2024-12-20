@@ -261,16 +261,18 @@ export class ServiceSoul extends UIEventRegisterClass {
                             let set_item_id = need_item_id;
                             if(type == 1){
                                 //通过不同的石头
-                                let ServerSoulConfigDataConsume = ServerSoulConfig[Sj_config_key as keyof typeof ServerSoulConfig].consume;
-                                let con_data = ServerSoulConfigDataConsume.split("_");
-                                if(con_data[0] == "1"){
-                                    set_item_id = 1287;
-                                }else if(con_data[0] == "2"){
-                                    set_item_id = 1288;
-                                }else if(con_data[0] == "3"){
-                                    set_item_id = 1289;
-                                }else if(con_data[0] == "4"){
-                                    set_item_id = 1290;
+                                if(set_item_id >= 10000 &&set_item_id < 20000){
+                                    let ServerSoulConfigDataConsume = ServerSoulConfig[Sj_config_key as keyof typeof ServerSoulConfig].consume;
+                                    let con_data = ServerSoulConfigDataConsume.split("_");
+                                    if(con_data[0] == "1"){
+                                        set_item_id = 1287;
+                                    }else if(con_data[0] == "2"){
+                                        set_item_id = 1288;
+                                    }else if(con_data[0] == "3"){
+                                        set_item_id = 1289;
+                                    }else if(con_data[0] == "4"){
+                                        set_item_id = 1290;
+                                    }
                                 }
                             }
                             if(ret.data.c.hasOwnProperty(set_item_id)){
@@ -293,7 +295,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                             if(type == 1){
                                 this.soul_list[player_id].i[box_type].z ++;
                                 if(this.soul_list[player_id].i[box_type].z > this.soul_list[player_id].i[box_type].l){
-                                    this.soul_list[player_id].i[box_type].l = this.soul_list[player_id].i[box_type].z ++;
+                                    this.soul_list[player_id].i[box_type].l = this.soul_list[player_id].i[box_type].z;
                                 }
                                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级成功....")
                             }else{
