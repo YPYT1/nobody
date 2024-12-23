@@ -171,11 +171,7 @@ export function Init() {
     GameEvents.Subscribe("ServiceSoul_GetPlayerServerSoulData", event => {
         let data = event.data;
         ServerSoulData = data.list;
-
         g_map_level = data.map_level
-        // $.Msg("ServiceSoul_GetPlayerServerSoulData")
-        // $.Msg(ServerSoulData)
-
         let data_object = data.list.i;
         for (let id in data_object) {
             let _data = data_object[id]
@@ -420,16 +416,93 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
     let num_fixed = attr_data.float
     let attr_value = parseFloat(data.v.toFixed(num_fixed))
     let attr_name = `${$.Localize(`#custom_attribute_${MainProperty}`).replace("%", "")}`
-    let value_per = 5;
-    if (target_level <= 5) {
-        value_per = attr_data.value_per_1_5
-    } else if (target_level <= 10) {
-        value_per = attr_data.value_per_6_10
-    } else if (target_level <= 15) {
-        value_per = attr_data.value_per_11_15
-    } else if (target_level <= 20) {
-        value_per = attr_data.value_per_16_20
+
+    let per = 100;
+    if(is_up){
+        let level = target_level - 1;
+        if (level > 0) {  // 1-4
+            let value_per = attr_data.value_per_1_5;
+            if (level >= 4) {
+                per += value_per * 4;
+            } else {
+                per += value_per * level;
+            }
+        }
+
+        if (level > 4) { //5-9
+            let value_per = attr_data.value_per_6_10;
+            if (level >= 9) {
+                per += value_per * 5;
+            } else {
+                let cz_level = level - 4;
+                per += value_per * cz_level;
+            }
+        }
+
+        if (level > 9) { // 10-14
+            let value_per = attr_data.value_per_11_15;
+            if (per >= 14) {
+                per += value_per * 5;
+            } else {
+                let cz_level = level - 9;
+                per += value_per * cz_level;
+            }
+        }
+
+        if (level > 14) { // 15-19
+            let value_per = attr_data.value_per_16_20;
+            if (per >= 19) {
+                per += value_per * 5;
+            } else {
+                let cz_level = level - 14;
+                per += value_per * cz_level;
+            }
+        }
+    }else{
+        let level = target_level + 1;
+        if (level > 1) {  // 2-5
+            let value_per = attr_data.value_per_1_5;
+            if (level >= 5) {
+                per += value_per * 4;
+            } else {
+                per += value_per * level;
+            }
+        }
+    
+        if (level > 5) { //6-10
+            let value_per = attr_data.value_per_6_10;
+            if (level >= 10) {
+                per += value_per * 5;
+            } else {
+                let cz_level = level - 5;
+                per += value_per * cz_level;
+            }
+        }
+    
+        if (level > 10) { // 11-15
+            let value_per = attr_data.value_per_11_15;
+            if (per >= 15) {
+                per += value_per * 5;
+            } else {
+                let cz_level = level - 10;
+                per += value_per * cz_level;
+            }
+        }
+    
+        if (level > 15) { // 16-20
+            let value_per = attr_data.value_per_16_20;
+            if (per >= 20) {
+                per += value_per * 5;
+            } else {
+                let cz_level = level - 15;
+                per += value_per * cz_level;
+            }
+        }
+
     }
+    
+
+
     // 属性降级
     let SSAttributeDownRow = $.CreatePanel("RadioButton", e, "", {
         group: "StoneActionGroup"
@@ -442,14 +515,14 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
     if (is_up) {
         g_confirm_action = "Upper"
         let value_arr = attr_data.up_value.split("-");
-        value1 = (parseFloat(value_arr[0]) * (1 + value_per * 0.01)).toFixed(num_fixed)
-        value2 = (parseFloat(value_arr[1]) * (1 + value_per * 0.01)).toFixed(num_fixed)
+        value1 = (parseFloat(value_arr[0]) * (per * 0.01)).toFixed(num_fixed)
+        value2 = (parseFloat(value_arr[1]) * (per * 0.01)).toFixed(num_fixed)
     } else {
         symbol = "-"
         g_confirm_action = "Down"
         let value_arr = attr_data.drop_value.split("-");
-        value1 = (parseFloat(value_arr[0]) * (1 + value_per * 0.01)).toFixed(num_fixed)
-        value2 = (parseFloat(value_arr[1]) * (1 + value_per * 0.01)).toFixed(num_fixed)
+        value1 = (parseFloat(value_arr[0]) * (per * 0.01)).toFixed(num_fixed)
+        value2 = (parseFloat(value_arr[1]) * (per * 0.01)).toFixed(num_fixed)
     }
 
     let attr_value_str = `${value1}${pct_symbol} ~ ${value2}${pct_symbol}`
@@ -460,6 +533,9 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
     SSAttributeDownRow.SetDialogVariable("item_name", `Lv.${target_level} ${attr_name}`)
     if (!is_up && target_level < 0) {
         attr_value_str = "无法降级";
+        SSAttributeDownRow.enabled = false;
+    } else if (is_up && target_level >= 20){
+        attr_value_str = "无法升级";
         SSAttributeDownRow.enabled = false;
     }
     SSAttributeDownRow.SetDialogVariable("attr", attr_value_str)
@@ -588,16 +664,6 @@ function ConfirmBtnAction_Upper(select_slot: number, upper_type: number = 1) {
     })
 }
 
-function ConfirmBtnAction_Down(select_slot: number, key: string) {
-    // GameEvents.SendCustomGameEventToServer("ServiceSoul", {
-    //     event_name: "SoulIntensify",
-    //     params: {
-    //         box_type: select_slot,
-    //         key: key
-    //     }
-    // })
-}
-
 /** 隐藏操作按钮 */
 function HideActionAboutView() {
     ResultsExtendCostItem.visible = false;
@@ -605,6 +671,7 @@ function HideActionAboutView() {
     PopupsOptionConfirmBtn.visible = false;
     PopupsOptionDeltetBtn.visible = false
 }
+
 function SetSelectSlot_Icon(slot: number) {
     for (let i = 1; i <= 6; i++) {
         SelectEquipIcon.SetHasClass(`${i}`, i == slot)

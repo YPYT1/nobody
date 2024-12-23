@@ -149,10 +149,20 @@
             Label {
                 color: #92e872;
             }
+
+            #StatIcon {
+                brightness: 1;
+                saturation: 1;
+            }
         }
 
         &.Max {
             background-image: url("file://{images}/custom_game/dashboard/personal/talent/talent_border_3.png");
+
+            #StatIcon {
+                brightness: 1;
+                saturation: 1;
+            }
 
             &.Final {
                 background-image: url("file://{images}/custom_game/dashboard/personal/talent/final_talent_border_3.png");
@@ -187,6 +197,8 @@
             background-size: 74% 74%;
             // background-color: #f00f0099;
             border-radius: 50%;
+            saturation: 0.1;
+            brightness: 0.1;
 
             &.Init {
                 background-image: url("file://{images}/custom_game/dashboard/personal/talent/icon/Init.png");

@@ -12,6 +12,9 @@
         <Panel class="Value">
             <Label class="Base" text="{s:base_value}"/>
             <Label class="Extra" text="{s:extra_value}"/>
+            <Panel class="Percent">
+                <Label text="{s:base_percent}%"/>
+            </Panel>
         </Panel>
         
     </Panel>

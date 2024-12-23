@@ -1,3 +1,4 @@
+import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { CustomMath } from "../../../utils/custom_math";
 
 
@@ -62,7 +63,7 @@ const InitTalentData = () => {
 
 let hero_talent_tree = InitTalentData();
 export const OpenHeroTalentView = (heroid: number) => {
-    $.Msg(["OpenHeroTalentView 1"])
+    // $.Msg(["OpenHeroTalentView 1"])
     if (select_hero_id == heroid) {
         HeroPopups_Talent.SetHasClass("Open", true)
         return
@@ -81,10 +82,16 @@ export const OpenHeroTalentView = (heroid: number) => {
         optionLabel.Data<PanelDataObject>().index = i;
         HeroTalentConfig.AddOption(optionLabel)
     }
-    $.Schedule(0.01, () => {
+    $.Schedule(0.1, () => {
         HeroTalentConfig.SetSelectedIndex(0);
         HeroTalentConfig.SetPanelEvent("oninputsubmit", () => {
-            config_index = parseInt(HeroTalentConfig.GetSelected().id);
+            let select_panel = HeroTalentConfig.GetSelected();
+            if(select_panel == null){ 
+                config_index = 1
+            } else {
+                config_index = parseInt(HeroTalentConfig.GetSelected().id);
+            }
+            
 
             // $.Msg(["HeroTalentConfig id", config_index])
             // 更换配置
@@ -186,7 +193,7 @@ const CreateTreeNode = (e: Panel, id: string, type: number) => {
     NodePanel.Data<PanelDataObject>().pos = [offset[0] - devalue, offset[1] - devalue]
     NodePanel.SetDialogVariableInt("used", 0)
 
-    let StatIcon = NodePanel.FindChildTraverse("StatIcon")!;
+    let StatIcon = NodePanel.FindChildTraverse("StatIcon") as ImagePanel;
     StatIcon.AddClass(rowdata.img)
     StatIcon.enabled = false;
     StatIcon.SetPanelEvent("onactivate", () => {
@@ -306,6 +313,14 @@ export const InitHeroTalentView = () => {
 const RenderTalentConfig = (config_data: CGEDGetTalentListInfo) => {
 
     HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
+    // 重置所有天赋等级为0
+    for (let i = 0; i < HeroTalentTree.GetChildCount(); i++) {
+        const NodePanel = HeroTalentTree.GetChild(i)!;
+        const StatIcon = NodePanel.FindChildTraverse("StatIcon")!;
+        StatIcon.Data<PanelDataObject>().level = 0;
+    }
+
+
     const config_tree = config_data.i
     for (let tire in config_tree) {
         let row_data = config_tree[tire].k;
@@ -337,13 +352,22 @@ const EmptyTalentConfig = () => {
     for (let i = 0; i < HeroTalentTree.GetChildCount(); i++) {
         const NodePanel = HeroTalentTree.GetChild(i)!;
         const id = NodePanel.id;
-        const StatIcon = NodePanel.FindChildTraverse("StatIcon")!;
+        const StatIcon = NodePanel.FindChildTraverse("StatIcon") as ImagePanel;
         NodePanel.SetDialogVariableInt("used", 0)
         NodePanel.RemoveClass("CanUp")
         NodePanel.RemoveClass("Max")
         const bIsInit = false;
-        StatIcon.enabled = false
+        StatIcon.enabled = false;
+
+        // 
+        let rowdata = server_talent_data[id as keyof typeof server_talent_data];
+        let is_ability = rowdata.is_ability == 1;
+        if(is_ability){
+            let img = rowdata.img
+            StatIcon.SetImage(GetTextureSrc(img))
+        }
     }
+
     for (let i = 0; i < HeroTalentTreePath.GetChildCount(); i++) {
         const PathNode = HeroTalentTreePath.GetChild(i)!;
         if (PathNode) { PathNode.RemoveClass("on"); }

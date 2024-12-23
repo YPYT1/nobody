@@ -1,7 +1,7 @@
 .RowAttribute {
     width: 100%;
     flow-children: right;
-    vertical-align: middle;
+    // vertical-align: middle;
 
     #StatIcon {
         vertical-align: middle;
@@ -17,8 +17,21 @@
 
     }
 
+    &.is_percent {
+
+        .Base,
+        .Extra {
+            visibility: collapse;
+        }
+
+        .Percent {
+            visibility: visible;
+        }
+
+    }
+
     .Value {
-       
+
         vertical-align: middle;
         horizontal-align: right;
         margin-right: 8px;
@@ -29,17 +42,60 @@
         }
 
         .Extra {
-            color:#00ff00;
+            color: #00ff00;
+        }
+    }
+
+    .Percent {
+        visibility: collapse;
+
+        Label {
+            color: #00ff00;
         }
     }
 }
 
 #StatIcon {
-    
+
+    // 
+    background-image: url("file://{images}/custom_game/icon/attribute/Default.png");
+
     &.AttackDamage {
         background-image: url("file://{images}/custom_game/icon/attribute/AttackDamage.png");
     }
 
+    &.AttackSpeed {
+        background-image: url("file://{images}/custom_game/icon/attribute/AttackSpeed.png");
+    }
+
+    &.AttackRange {
+        background-image: url("file://{images}/custom_game/icon/attribute/AttackRange.png");
+    }
+
+    &.AbilityHaste {
+        background-image: url("file://{images}/custom_game/icon/attribute/AbilityHaste.png");
+    }
+
+    &.AllElementDamageBonus {
+        background-image: url("file://{images}/custom_game/icon/attribute/AllElementDamageBonus.png");
+    }
+
+    &.AllElementPent {
+        background-image: url("file://{images}/custom_game/icon/attribute/AllElementPent.png");
+    }
+
+    &.CriticalChance {
+        background-image: url("file://{images}/custom_game/icon/attribute/CriticalChance.png");
+    }
+
+    &.CriticalDamage {
+        background-image: url("file://{images}/custom_game/icon/attribute/CriticalDamage.png");
+    }
+    
+    &.DamageBonusMul {
+        background-image: url("file://{images}/custom_game/icon/attribute/DamageBonusMul.png");
+    }
+    
     &.MaxHealth {
         background-image: url("file://{images}/custom_game/icon/attribute/MaxHealth.png");
     }

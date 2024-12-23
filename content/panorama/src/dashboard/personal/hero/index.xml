@@ -28,7 +28,9 @@
 
 		<snippet name="TalentBorder">
 			<Panel class="TalentBorder" hittest="false">
-				<Button id="StatIcon" />
+				<Image id="StatIcon" />
+			
+		
 				<Panel class="Used" hittest="false">
 					<Label text="{d:used}" hittest="false"/>
 				</Panel>
