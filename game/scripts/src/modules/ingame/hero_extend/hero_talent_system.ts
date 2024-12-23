@@ -351,21 +351,21 @@ export class HeroTalentSystem extends UIEventRegisterClass {
             }
             let t2_lv = 1;
             let t2_r = 5;
-            let r_int = RandomInt(1 , 1000);
-            if(r_int > 995){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
-                t2_lv = 6;
-                t2_r = 6;
-            }else if(r_int > 980){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
-                t2_lv = 5;
-                t2_r = 6;
-            }else if(r_int > 950){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
-                t2_lv = 4;
-                t2_r = 6;
-            }else if(r_int > 900){ // 70%=1级，20%=2级，5%=3级=金色边框
-                t2_lv = 3;
-            }else if(r_int > 700){ //70%=1级，20%=2级，5%=3级=金色边框
-                t2_lv = 2;
-            }
+            // let r_int = RandomInt(1 , 1000);
+            // if(r_int > 995){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
+            //     // t2_lv = 1;
+            //     // t2_r = 5;
+            // }else if(r_int > 980){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
+            //     // t2_lv = 5;
+            //     // t2_r = 6;
+            // }else if(r_int > 950){ //3%=4级，1.5%=5级，0.5%=6级=红色边框
+            //     // t2_lv = 4;
+            //     // t2_r = 6;
+            // }else if(r_int > 900){ // 70%=1级，20%=2级，5%=3级=金色边框
+            //     // t2_lv = 3;
+            // }else if(r_int > 700){ //70%=1级，20%=2级，5%=3级=金色边框
+            //     // t2_lv = 2;
+            // }
             //获取当前等级
             let invest_level = GameRules.InvestSystem.PlayerInvestLevelList[player_id] 
                              + GameRules.InvestSystem.PlayerExtraInvestLevelList[player_id] ;
@@ -475,7 +475,6 @@ export class HeroTalentSystem extends UIEventRegisterClass {
                     });
                 }else if(this.get_select_talent_data[player_id].data[index].type == 2){
                     let level = this.get_select_talent_data[player_id].data[index].lv;
-                    print("level :" , level)
                     //处理投资系统 增加等级
                     GameRules.InvestSystem.PostInvestUp(player_id, level);
                     this.get_select_talent_data[player_id].is_show = 0;
@@ -760,17 +759,17 @@ export class HeroTalentSystem extends UIEventRegisterClass {
      * 技能点变化方法
      */
     PointsChange(player_id : PlayerID ){
-        let hero = PlayerResource.GetSelectedHeroEntity(player_id)
+        // let hero = PlayerResource.GetSelectedHeroEntity(player_id)
         //是否有 锁技
-        if(hero.rune_level_index["rune_2"] && this.player_talent_data[player_id].points > 0){
-            let value = GameRules.RuneSystem.GetKvOfUnit(hero , "rune_2" ,"value");
-            let attr = value * this.player_talent_data[player_id].points;
-            GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_rune_2_bianhua",{
-                "DamageBonusMul" : {
-                    "Base" : attr,
-                }
-            })
-        }
+        // if(hero.rune_level_index["rune_2"] && this.player_talent_data[player_id].points > 0){
+        //     let value = GameRules.RuneSystem.GetKvOfUnit(hero , "rune_2" ,"value");
+        //     let attr = value * this.player_talent_data[player_id].points;
+        //     GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_rune_2_bianhua",{
+        //         "DamageBonusMul" : {
+        //             "Base" : attr,
+        //         }
+        //     })
+        // }
     }
     /**
      * 替换技能

@@ -111,8 +111,22 @@ export class InvestSystem extends UIEventRegisterClass {
     }
     //投资升级
     PostInvestUp(player_id: PlayerID , Level : number) {
-
         this.PlayerInvestLevelList[player_id] += Level;
+        // 获得(总投资等级-1)*1%/3%/5%的伤害加成
+        let hero = PlayerResource.GetSelectedHeroEntity(player_id)
+        // 是否有 
+        if(hero.rune_level_index["rune_2"]){
+            if((this.PlayerInvestLevelList[player_id] + this.PlayerExtraInvestLevelList[player_id]) > 0){
+                let value = GameRules.RuneSystem.GetKvOfUnit(hero , "rune_2" ,"value");
+                let attr = value * (this.PlayerInvestLevelList[player_id] + this.PlayerExtraInvestLevelList[player_id]) - 1;
+                GameRules.CustomAttribute.SetAttributeInKey(hero,"talent_rune_2_bianhua",{
+                    "DamageBonusMul" : {
+                        "Base" : attr,
+                    }
+                })
+            }
+        }
+
         //计算下一级需要量
         this.EqInvestResource(player_id);
         // let hero = PlayerResource.GetSelectedHeroEntity(player_id);

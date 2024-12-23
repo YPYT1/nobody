@@ -17,7 +17,7 @@ import  * as ServerItemList  from "../../json/config/server/item/server_item_lis
 export class ServiceInterface extends UIEventRegisterClass{
     
     //玩家地图等级
-    player_map_level : number[] = [ 25 , 100 , 100 , 100 , 100 , 100 ];
+    player_map_level : number[] = [ 10 , 100 , 100 , 100 , 100 , 100 ];
 
 
     fetter_ability_values: {

@@ -37,7 +37,7 @@ export class ServiceSoul extends UIEventRegisterClass {
         drop : {},
     }
     constructor() {
-        //初始化
+        //初始化0
         super("ServiceSoul" , true);
 
         for (let index = 0; index < this.player_count; index++) {
@@ -205,7 +205,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                             }
                         }
                     }
-                    let ret : { code : boolean , data : CGEDGetSoulListData} = {
+                    let ret : { code : boolean , data : CGEDGetSoulListData , value : number} = {
                         code : false, 
                         data : {
                             k : key, //属性键
@@ -213,21 +213,22 @@ export class ServiceSoul extends UIEventRegisterClass {
                             l : level,//拼图等级
                             c : [],
                         },
+                        value : 0,
                     };
                     if(type == 1){
                         if(level < 20){
                             //获取数据...
                             ret = this.SoulDataUp(key , level , value);
                         }else{
-                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:超过最大等级")
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级超过最大等级");
                             return
                         }
                     }else{
-                        if(level > 0){
+                        if(level >= 1){
                             //获取数据...
                             ret = this.SoulDataDrop(key , level , value);
                         }else{
-                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:不能低于1级")
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级不能低于1级")
                             return
                         }
                     }
@@ -297,16 +298,16 @@ export class ServiceSoul extends UIEventRegisterClass {
                                 if(this.soul_list[player_id].i[box_type].z > this.soul_list[player_id].i[box_type].l){
                                     this.soul_list[player_id].i[box_type].l = this.soul_list[player_id].i[box_type].z;
                                 }
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级成功....")
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级成功:+" + ret.value)
                             }else{
                                 this.soul_list[player_id].i[box_type].z --;
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级成功....")
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级成功:-" + ret.value)
                             }
                         }else{
                             if(type == 1){
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败....")
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败!")
                             }else{
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级失败....")
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级失败!")
                             }
                         }
                         //更新魂石数据
@@ -322,7 +323,7 @@ export class ServiceSoul extends UIEventRegisterClass {
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:配置错误...")    
             }
-        }else{
+        }else{ 
             GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:部位错误...")
         }
     }
@@ -332,15 +333,16 @@ export class ServiceSoul extends UIEventRegisterClass {
      * @param level 魂石等级
      * @param num 魂石属性值
      */
-    SoulDataUp( key : string , level : number = 0 , value : number = 0) : { code : boolean , data : CGEDGetSoulListData}{
-        let ret  : { code : boolean , data : CGEDGetSoulListData} = {
+    SoulDataUp( key : string , level : number = 0 , value : number = 0) : { code : boolean , data : CGEDGetSoulListData , value : number}{
+        let ret  : { code : boolean , data : CGEDGetSoulListData , value : number } = {
             code : true,
             data : {
                 "k" : key,
                 "l" : 0 ,
                 "v" : 0 ,
                 "c" : [],
-            }
+            },
+            value : 0,
         }
         if(level != 0){
             ret.data.l = level;
@@ -351,51 +353,62 @@ export class ServiceSoul extends UIEventRegisterClass {
         let SoulAttr_data = ServerSoulAttr[key as keyof typeof ServerSoulAttr];
         let float = SoulAttr_data.float;
         let up_value = SoulAttr_data.up_value;
-        let value_per = 0;
-        let value_max = 0;
+        let value_max = SoulAttr_data.value_max_5;
         let level_max = SoulAttr_data.level_max;
         if((level + 1) >= level_max){
             return ret;
         }
-
-
-        if(level >= 15){
-            value_per = SoulAttr_data.value_per_16_20;
-            value_max = SoulAttr_data.value_max_20;
-        }else if(level >= 10){
-            value_per = SoulAttr_data.value_per_11_15;
-            value_max = SoulAttr_data.value_max_15;
-        }else if(level >= 5){
-            value_per = SoulAttr_data.value_per_6_10;
-            value_max = SoulAttr_data.value_max_10;
-        }else{
-            value_per = SoulAttr_data.value_per_1_5;
+        let per = 100;
+        if(level > 0){  // 1-4
+            let value_per = SoulAttr_data.value_per_1_5;
             value_max = SoulAttr_data.value_max_5;
+            if(level >= 4){ 
+                per += value_per * 4;
+            }else{
+                per += value_per * level;
+            }
         }
 
-        
-        if(level >= 15){
-            value_per = SoulAttr_data.value_per_16_20;
-            value_max = SoulAttr_data.value_max_20;
-        }else if(level >= 10){
-            value_per = SoulAttr_data.value_per_11_15;
-            value_max = SoulAttr_data.value_max_15;
-        }else if(level >= 5){
-            value_per = SoulAttr_data.value_per_6_10;
+        if(level > 4){ //5-9
+            let value_per = SoulAttr_data.value_per_6_10;
             value_max = SoulAttr_data.value_max_10;
-        }else{
-            value_per = SoulAttr_data.value_per_1_5;
-            value_max = SoulAttr_data.value_max_5;
+            if(level >= 9){
+                per += value_per * 5;
+            }else{
+                let cz_level = level - 4;
+                per += value_per * cz_level;
+            }
         }
-        let per = 100 + value_per * level;
+
+        if(level > 9){ // 10-14
+            let value_per = SoulAttr_data.value_per_11_15;
+            value_max = SoulAttr_data.value_max_15;
+            if(per >= 14){
+                per += value_per * 5;
+            }else{
+                let cz_level = level - 9;
+                per += value_per * cz_level;
+            }
+        }
+
+        if(level > 14){ // 15-19
+            let value_per = SoulAttr_data.value_per_16_20;
+            value_max = SoulAttr_data.value_max_20;
+            if(per >= 19){
+                per += value_per * 5;
+            }else{
+                let cz_level = level - 14;
+                per += value_per * cz_level;
+            }
+        }
         
         let newSection = this.SectionPer(up_value , float , per);
         let add_value = this.ZoomNumber(newSection , float)
         if((value + add_value ) >= value_max){
-
             ret.data.v = value_max;
         }else{
             ret.data.v += add_value;
+            ret.value = add_value;
         }
         ret.data.l = level + 1;
 
@@ -404,47 +417,77 @@ export class ServiceSoul extends UIEventRegisterClass {
 
 
     /**
-     * 魂石属性创建/升级
+     * 魂石属性降级计算
      * @param key 魂石属性key
      * @param level 魂石等级
      * @param num 魂石属性值
      */
-    SoulDataDrop( key : string , level : number = 0 , value : number = 0) : { code : boolean , data : CGEDGetSoulListData}{
-        let ret  : { code : boolean , data : CGEDGetSoulListData} = {
+    SoulDataDrop( key : string , level : number = 0 , value : number = 0) : { code : boolean , data : CGEDGetSoulListData , value : number}{
+        let ret  : { code : boolean , data : CGEDGetSoulListData , value : number} = {
             code : true,
             data : {
                 "k" : key,
                 "l" : level ,
                 "v" : value ,
                 "c" : [],
-            }
+            },
+            value : 0,
         }
         let SoulAttr_data = ServerSoulAttr[key as keyof typeof ServerSoulAttr];
         let float = SoulAttr_data.float;
-        let up_value = SoulAttr_data.up_value;
-        let value_per = 0;
+        let drop_value = SoulAttr_data.drop_value;
         let value_min = 0;
         if((level - 1) < 0){
             return ret;
         }
-        if(level > 15){
-            value_per = SoulAttr_data.value_per_16_20;
-        }else if(level > 10){
-            value_per = SoulAttr_data.value_per_11_15;
-        }else if(level > 5){
-            value_per = SoulAttr_data.value_per_6_10;
-        }else{
-            value_per = SoulAttr_data.value_per_1_5;
-        }
-        let per = 100 + value_per * level;
         
-        let newSection = this.SectionPer(up_value , float , per);
+        let per = 100;
+        if(level > 1){  // 2-5
+            let value_per = SoulAttr_data.value_per_1_5;
+            if(level >= 5){ 
+                per += value_per * 4;
+            }else{
+                per += value_per * level;
+            }
+        }
+
+        if(level > 5){ //6-10
+            let value_per = SoulAttr_data.value_per_6_10;
+            if(level >= 10){
+                per += value_per * 5;
+            }else{
+                let cz_level = level - 5;
+                per += value_per * cz_level;
+            }
+        }
+
+        if(level > 10){ // 11-15
+            let value_per = SoulAttr_data.value_per_11_15;
+            if(per >= 15){
+                per += value_per * 5;
+            }else{
+                let cz_level = level - 10;
+                per += value_per * cz_level;
+            }
+        }
+
+        if(level > 15){ // 16-20
+            let value_per = SoulAttr_data.value_per_16_20;
+            if(per >= 20){
+                per += value_per * 5;
+            }else{
+                let cz_level = level - 15;
+                per += value_per * cz_level;
+            }
+        }
+        
+        let newSection = this.SectionPer(drop_value , float , per);
         let sub_value = this.ZoomNumber(newSection , float)
         if((value - sub_value ) <= value_min){
-
             ret.data.v = value_min;
         }else{
             ret.data.v -= sub_value;
+            ret.value = sub_value;
         }
         ret.data.l--;
 
@@ -477,6 +520,7 @@ export class ServiceSoul extends UIEventRegisterClass {
             }
         }
         ret_scope = tostring(value_min) + "-" + tostring(value_max);
+        print("ret_scope : " , ret_scope)
         return ret_scope ;
     }
 
