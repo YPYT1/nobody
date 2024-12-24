@@ -1,0 +1,44 @@
+<root>
+    <styles>
+        <include src="./store_item.less" />
+        <include src="./../../../_styles/styles.less" />
+    </styles>
+    <scripts>
+		<include src="./store_item.tsx" />
+	</scripts>
+    <Panel class="StoreItem">
+        <Button id="StorePurchaseBtn" class="StoreBorder">
+            <Panel class="Limitation">
+                <Panel class="LimitBackground"/>
+                <Panel class="LabelContent">
+                    <Label text="{s:limit_type}限购"/>
+                    <Label text="{d:limit_count} / {d:limit_max}"/>
+                </Panel>
+            </Panel>
+            <Panel class="StoreIcon">
+                <Image id="StoreIcon" />
+            </Panel>
+            <Label class="GoodsName"  text="{s:goods_name}"/>
+
+            <Panel class="StorePriceContent">
+                <Panel class="CurrencyIcon">
+                    <Image id="CurrencyIcon"  />
+                </Panel>
+                <Panel id="OriginalPanel" class="PriceContent Original">
+                    <Panel class="DiagonalCost">
+                        <Label text="{s:price_cost}"/>
+                        <Panel class="DiagonalShape"/>
+                    </Panel>
+                </Panel>
+                <Panel id="ActualPanel" class="PriceContent Actual">
+                    <Label text="{s:price_cost}"/>
+                </Panel>
+            </Panel>
+        </Button>
+
+        <Panel class="HotTag"/>
+        <Panel class="DiscountTag">
+            <Label text="{d:discount}折"/>
+        </Panel>
+    </Panel>
+</root>

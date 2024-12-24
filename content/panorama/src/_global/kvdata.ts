@@ -18,6 +18,7 @@ import { default as TalentTreeConfig } from "../json/config/game/hero/talent_tre
 import { default as server_soul_attr } from "../json/config/server/soul/server_soul_attr.json";
 import { default as server_soul_config } from "../json/config/server/soul/server_soul_config.json";
 
+import { default as server_shop_list } from "../json/config/server/shop/server_shop_list.json";
 const KvData = {
     AttributeConst,
     ServerItemList,
@@ -32,6 +33,7 @@ const KvData = {
     TalentTreeConfig,
     server_soul_attr,
     server_soul_config,
+    server_shop_list,
 }
 
 declare global {

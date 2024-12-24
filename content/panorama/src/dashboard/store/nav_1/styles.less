@@ -1,0 +1,125 @@
+@import url("./../_nav_panel.less");
+
+.HotTitle {
+    width: 879px;
+    height: 166px;
+    background-image: url("file://{images}/custom_game/dashboard/store/nav_1/title.png");
+}
+
+.CarouselContainer {
+    width: 100%;
+    height: 298px;
+    horizontal-align: center;
+
+    #SectionsCarousel {
+        width: 100%;
+    }
+
+    .UpdateSection {
+        height: 298px;
+        transition-property: opacity, transform;
+        opacity: 0.0;
+
+        background-color: #000c;
+        width: 100%;
+        background-size: cover;
+        // transition-property: brightness;
+        transition-duration: 0.2s;
+
+        &.Focused {
+            opacity: 1.0;
+        }
+
+        .BackgroundImage {
+            width: 100%;
+            height: 100%;
+            background-size: 100%;
+        }
+    }
+
+    .SectionsCarousel {
+        // width: 800px;
+        overflow: clip;
+        flow-children: right;
+        // height: 260px;
+    }
+
+    .NavSection {
+        width: 800px;
+        height: 260px;
+
+        // background-color: #0ff;
+        
+    }
+
+    #SectionsCarouselNav {
+        // horizontal-align: center;
+        // vertical-align: middle;
+        horizontal-align: center;
+        vertical-align: bottom;
+        margin-top: 8px;
+    }
+
+    // .LeftMouseScrollRegion {
+    //     width: 40px;
+    //     height: 40px;
+    //     background-color: #0f0;
+    //     vertical-align: middle;
+    // }
+
+    // .RightMouseScrollRegion {
+    //     width: 40px;
+    //     height: 40px;
+    //     background-color: #f0f;
+    //     vertical-align: middle;
+    //     horizontal-align: right;
+    // }
+}
+
+#Section_1 .BackgroundImage {
+    background-image: url("file://{images}/custom_game/dashboard/store/banner/1.png");
+}
+
+#Section_2 .BackgroundImage {
+    background-image: url("s2r://panorama/images/front_page/map_update_2023_gameplay_psd.vtex");
+}
+
+#Section_3 .BackgroundImage {
+    background-image: url("s2r://panorama/images/front_page/map_update_2023_matchmaking_psd.vtex");
+}
+
+#NavSection4 .BackgroundImage {
+    background-image: url("s2r://panorama/images/front_page/map_update_2023_interface_psd.vtex");
+}
+
+.HotSellingContent {
+    margin-top: 24px;
+    width: 100%;
+    flow-children: down;
+
+    .Header {
+        margin-left: 16px;
+        flow-children: right;
+
+        .HotTitle {
+            width: 17px;
+            height: 24px;
+            vertical-align: middle;
+            background-image: url("file://{images}/custom_game/dashboard/store/nav_1/hot_title.png");
+        }
+
+        Label {
+            vertical-align: middle;
+            font-size: 24px;
+            color:#fff;
+        }
+    }
+    #HotSellItemList {
+        // width: 100%;
+        horizontal-align: center;
+
+        flow-children: right;
+
+        
+    }
+}

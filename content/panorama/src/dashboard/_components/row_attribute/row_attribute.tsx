@@ -1,4 +1,4 @@
-export const COMPONENTS_NAME = "row_attribute";
+export const __COMPONENTS_NAME = "row_attribute";
 
 
 interface AttributeValueProp {

@@ -1,0 +1,37 @@
+<root>
+    <styles>
+        <include src="./store_item_ex1.less" />
+        <include src="./../../../_styles/styles.less" />
+    </styles>
+    <scripts>
+		<include src="./store_item_ex1.tsx" />
+	</scripts>
+    <Panel class="StoreItemMember">
+        <Panel class="StoreBorder">
+            <Panel class="Header">
+                <Panel class="GoodsTitle"/>
+            </Panel>
+
+            <Panel class="StoreContent">
+                <Panel class="StoreIcon">
+                    <Image id="StoreIcon" />
+                    <Label class="VidItemLabel" text="有效期：【<span class='val'>{s:days}</span>】" html="true"/>
+                </Panel>
+                <Panel id="MergeItemList" />
+            </Panel>
+            
+
+            
+
+            <Button id="StorePurchaseBtn" class="PurchaseBtn">
+                <Panel class="LabelContent">
+                    <Panel class="RmbIcon"/>
+                    <Label class="Enabled" text="{s:price_or_receive}"/>
+                    <Label class="Disable" text="{s:price_or_receive_dis}"/>
+                </Panel>
+            </Button>
+        </Panel>
+
+
+    </Panel>
+</root>

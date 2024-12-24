@@ -1,0 +1,21 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+
+	<Panel class="nav_content">
+        <Panel class="NavContentFrame" hittest="false">
+            <Panel class="VirtualNavButton" hittest="false"/>
+            <Panel class="NavContainer" hittest="false">
+				<Panel class="Container">
+					<Panel id="MemberProductsList" />
+				</Panel>
+				
+            </Panel>
+        </Panel>
+	</Panel>
+</root>

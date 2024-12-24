@@ -1,0 +1,191 @@
+.StoreItemMember {
+    // padding: 4px;
+
+    padding: 0px;
+
+    &:hover {
+        brightness: 1.1;
+    }
+
+    &.rare_2 .StoreBorder {
+        background-image: url("file://{images}/custom_game/component/server/store_item_member/store_border_r2.png");
+    }
+
+    &.rare_3 .StoreBorder {
+        background-image: url("file://{images}/custom_game/component/server/store_item_member/store_border_r3.png");
+    }
+
+    &.rare_4 .StoreBorder {
+        background-image: url("file://{images}/custom_game/component/server/store_item_member/store_border_r4.png");
+    }
+
+    &.rare_5 .StoreBorder {
+        background-image: url("file://{images}/custom_game/component/server/store_item_member/store_border_r5.png");
+    }
+
+    .StoreBorder {
+        width: 326px;
+        height: 430px;
+        background-image: url("file://{images}/custom_game/component/server/store_item_member/store_border_r1.png");
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+    }
+
+    .PurchaseBtn {
+        width: 211px;
+        height: 58px;
+        background-image: url("file://{images}/custom_game/component/server/store_item_member/purchase_btn.png");
+        horizontal-align: center;
+        vertical-align: bottom;
+        margin-bottom: 28px;
+
+        &:enabled {
+            &:hover {
+                brightness: 1.5;
+            }
+
+            &:active {
+                pre-transform-scale2d: 0.95;
+            }
+        }
+
+        &:disabled {
+            saturation: 0.1;
+            brightness: 0.5;
+
+            .RmbIcon,
+            .Enabled {
+                visibility: collapse;
+            }
+
+            .Disable {
+                visibility: visible;
+            }
+        }
+
+        .Enabled {
+            visibility: visible;
+        }
+
+        .Disable {
+            visibility: collapse;
+        }
+
+        .LabelContent {
+            align: center center;
+            flow-children: right;
+            margin-bottom: 6px;
+
+            Label {
+                text-overflow: shrink;
+                font-size: 24px;
+                color: #FFFFFF;
+                text-shadow: 0px 0px 2px 2.0 #000000;
+            }
+        }
+
+
+
+    }
+
+    &.is_rmb .RmbIcon {
+        visibility: visible;
+    }
+
+    .RmbIcon {
+        width: 30px;
+        height: 30px;
+        background-image: url("file://{images}/custom_game/component/server/store_item/rmb.png");
+        background-size: 100%;
+        visibility: collapse;
+    }
+
+    .Header {
+        horizontal-align: center;
+        margin-top: 34px;
+    }
+
+    .StoreContent {
+        horizontal-align: center;
+        flow-children: down;
+        vertical-align: middle;
+    }
+
+    &.has_icon .StoreIcon {
+        visibility: visible;
+    }
+
+    .StoreIcon {
+        horizontal-align: center;
+        flow-children: down;
+        visibility: collapse;
+        margin-bottom: 8px;
+
+        Label {
+            font-size: 20px;
+            color:#ffffff;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+        }
+
+        .val {
+            color:#0f0;
+        }
+    }
+
+    #StoreIcon {
+        horizontal-align: center;
+        width: 94px;
+        height: 94px;
+        border: 1px solid #fff;
+        
+        // margin-top: 8px;
+        margin-bottom: 8px;
+    }
+
+    #MergeItemList {
+        horizontal-align: center;
+
+        .ServerItem {
+            width: 64px;
+            height: 64px;
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        flow-children: right;
+    }
+}
+
+.GoodsTitle {
+    background-size: 100%;
+}
+
+#1 .GoodsTitle {
+    width: 79px;
+    height: 45px;
+    background-image: url("file://{images}/custom_game/component/server/store_item_member/goods_id_1.png");
+}
+
+#2 .GoodsTitle {
+    width: 120px;
+    height: 45px;
+    background-image: url("file://{images}/custom_game/component/server/store_item_member/goods_id_2.png");
+}
+
+#88 .GoodsTitle {
+    width: 228px;
+    height: 45px;
+    background-image: url("file://{images}/custom_game/component/server/store_item_member/goods_id_88.png");
+}
+
+#89 .GoodsTitle {
+    width: 225px;
+    height: 45px;
+    background-image: url("file://{images}/custom_game/component/server/store_item_member/goods_id_89.png");
+}
+
+#90 .GoodsTitle {
+    width: 266px;
+    height: 45px;
+    background-image: url("file://{images}/custom_game/component/server/store_item_member/goods_id_90.png");
+}

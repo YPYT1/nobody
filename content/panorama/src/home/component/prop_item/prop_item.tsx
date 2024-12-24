@@ -1,4 +1,4 @@
-export const COMPONENTS_NAME = "prop_item";
+export const __OMPONENTS_NAME = "prop_item";
 
 const MainPanel = $.GetContextPanel() as GameComponent_PropItem;
 const MysteriousShopConfig = GameUI.CustomUIConfig().KvData.MysteriousShopConfig;

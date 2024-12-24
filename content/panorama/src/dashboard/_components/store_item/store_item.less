@@ -1,0 +1,235 @@
+.StoreItem {
+    // padding: 4px;
+
+    padding: 12px;
+
+    &:hover {
+        brightness: 1.3;
+    }
+
+    &.is_discount .DiscountTag,
+    &.is_hot .HotTag,
+    &.limit_purchase .Limitation {
+        opacity: 1;
+    }
+
+    &.is_discount .StorePriceContent .PriceContent.Original {
+        visibility: visible;
+    }
+
+    &.rare_1 .StoreBorder {
+
+
+        .LimitBackground {
+            wash-color: #96FF7Cdd;
+        }
+    }
+
+    &.rare_2 .StoreBorder {
+        background-image: url("file://{images}/custom_game/component/server/store_item/store_border_r2.png");
+
+        .GoodsName {
+            color: #66CAFF
+        }
+
+        .LimitBackground {
+            wash-color: #66CAFFdd;
+        }
+    }
+
+    &.rare_3 .StoreBorder {
+        background-image: url("file://{images}/custom_game/component/server/store_item/store_border_r3.png");
+
+        .GoodsName {
+            color: #C061FF
+        }
+
+        .LimitBackground {
+            wash-color: #C061FFdd;
+        }
+    }
+
+    &.rare_4 .StoreBorder {
+        background-image: url("file://{images}/custom_game/component/server/store_item/store_border_r4.png");
+
+        .GoodsName {
+            color: #FFD700
+        }
+
+        .LimitBackground {
+            wash-color: #FFD700dd;
+        }
+    }
+
+    &.rare_5 .StoreBorder {
+        background-image: url("file://{images}/custom_game/component/server/store_item/store_border_r5.png");
+
+        .GoodsName {
+            color: #ff0000
+        }
+
+        .LimitBackground {
+            wash-color: #ff0000dd;
+        }
+    }
+
+    .StoreBorder {
+        width: 241px;
+        height: 315px;
+        background-image: url("file://{images}/custom_game/component/server/store_item/store_border_r1.png");
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        // flow-children: down;
+    }
+
+    .HotTag {
+        opacity: 0;
+        width: 79px;
+        height: 36px;
+        background-image: url("file://{images}/custom_game/component/server/store_item/hot_tag.png");
+        transform: translateX(-10px) translateY(0px);
+    }
+
+    .DiscountTag {
+        opacity: 0;
+        horizontal-align: right;
+        transform: translateX(10px) translateY(-10px);
+        width: 66px;
+        height: 65px;
+        background-image: url("file://{images}/custom_game/component/server/store_item/discount_tag.png");
+        background-repeat: no-repeat;
+
+        Label {
+            padding: 4px;
+            margin-left: 6px;
+            margin-bottom: 6px;
+            vertical-align: middle;
+            horizontal-align: center;
+            transform: rotateZ(-20deg);
+            transform-origin: 50% 50%;
+            font-size: 24px;
+            color: #FFED75;
+            text-shadow: 0px 0px 4px 4.0 #49300a;
+            letter-spacing: 2px;
+        }
+    }
+
+    .Limitation {
+        opacity: 0;
+        horizontal-align: center;
+        margin-top: 44px;
+
+
+        // border: 1px solid #fff;
+    }
+
+    .LabelContent {
+        horizontal-align: center;
+        flow-children: right;
+        padding: 4px 12px;
+        // padding: 4px;
+
+        Label {
+            vertical-align: middle;
+            color: #ffffff;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+            font-size: 16px;
+        }
+    }
+
+    .LimitBackground {
+        width: 100%;
+        height: 100%;
+        background-color: gradient(linear, 0% 0%, 100% 0%, from(#00000000), color-stop(0.4, #ffffff66), color-stop(0.6, #ffffff66), to(#00000000));
+        border-style: solid;
+        border-color: #ffffff;
+        border-top-width: 1.5px;
+        border-bottom-width: 1.5px;
+        border-brush: gradient(linear, 0% 0%, 100% 0%, from(#00000000), color-stop(0.3, #ffffff), color-stop(0.7, #ffffff), to(#00000000));
+
+    }
+
+    .StoreIcon {
+        // margin-top: 8px;
+        horizontal-align: center;
+        width: 128px;
+        height: 128px;
+        // border: 1px solid #ffffff;
+        vertical-align: middle;
+        margin-bottom: 40px;
+
+        #StoreIcon {
+            width: 128px;
+            height: 128px;
+            // img-shadow: 0px 0px 1px 1.0 #1b1b1bd0;
+        }
+
+    }
+
+    .GoodsName {
+        color: #96FF7C;
+        horizontal-align: center;
+        vertical-align: middle;
+        margin-top: 138px;
+        font-size: 20px;
+        text-shadow: 0px 2px 3px 4.0 #00000099;
+    }
+
+    .StorePriceContent {
+        vertical-align: bottom;
+        horizontal-align: center;
+        flow-children: right;
+        // margin-top: 30px;
+        margin-bottom: 15px;
+
+        #CurrencyIcon,
+        .CurrencyIcon {
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+            // border: 1px solid #fff;
+        }
+
+        .CurrencyIcon {
+            margin-right: 4px;
+        }
+
+        .PriceContent {
+            // margin-left: 5px;
+            // margin-right: 5px;
+            flow-children: right;
+            vertical-align: middle;
+
+            &.Original {
+                visibility: collapse;
+            }
+
+
+
+            .DiagonalShape {
+                width: 100%;
+                height: 12px;
+                background-image: url("file://{images}/custom_game/component/server/store_item/diagonal_shape.png");
+                vertical-align: middle;
+                horizontal-align: right;
+            }
+
+            .DiagonalCost {
+                vertical-align: middle;
+            }
+
+            Label {
+                margin-left: 4px;
+                font-size: 20px;
+                color: #ffffff;
+                text-shadow: 0px 1px 2px 4.0 #00000099;
+                vertical-align: middle;
+                letter-spacing: 1px;
+            }
+        }
+    }
+}
+
+.is_rmb {
+    background-image: url("file://{images}/custom_game/component/server/store_item/rmb.png");
+}

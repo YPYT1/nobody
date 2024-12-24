@@ -1,4 +1,4 @@
-export const COMPONENTS_NAME = "server_item_name";
+export const __COMPONENTS_NAME = "server_item_name";
 
 declare global {
     interface Component_ServerItemName extends Panel {

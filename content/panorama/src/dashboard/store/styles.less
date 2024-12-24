@@ -1,4 +1,5 @@
 @import "./../dashboard_panel.less";
+@import url("./_nav_panel.less");
 
 .DashBoardPanel {
     width: 100%;
@@ -6,26 +7,15 @@
 
 }
 
+.ContentFrame {
+    width: 100%;
+    height: 100%;
+}
+
 .Container {
     width: 100%;
     height: 100%;
     background-color: #333333;
-}
 
-.TestBorder {
-    width: 300px;
-    height: 600px;
-    border: 1px solid #fff;
-    vertical-align: middle;
-    margin-left: 100px;
-
-    flow-children: down;
-
-    RadioButton {
-        width: 200px;
-        height: 56px;
-        border: 1px solid #0f0;
-        margin-top: 4px;
-        margin-bottom: 4px;
-    }
+    background-image: url("file://{images}/custom_game/dashboard/store/bg.png");
 }

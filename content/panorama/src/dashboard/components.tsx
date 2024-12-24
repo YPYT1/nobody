@@ -34,14 +34,27 @@ export const DASHBOARD_NAVBAR = {
     "store": {
         "Show": IsTestMode,
         "Sub": {
-            "list": true,
-            "tag1": true,
-            "tag2": true,
-            "tag3": true,
-            "tag4": true,
+            "nav_1": true, // 热卖
+            "nav_2": true, // 会员
+            "nav_3": true, // 铂金
+            "nav_4": true, // 黄金商铺
+            "nav_5": true, // 钻石商铺
+            "nav_6": true, // 钻石商铺
+            "nav_7": true, // 钻石商铺
+            "nav_8": true, // 钻石商铺
         }
     }
+/**
+ * 1	热卖
+2	会员
+3	铂金
+4	黄金
+5	钻石
+6	元素
+7	黄金兑换
+8	成长礼
 
+ */
 };
 
 /** 跳转到指定路由 */

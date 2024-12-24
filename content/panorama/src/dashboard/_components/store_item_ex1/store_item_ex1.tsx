@@ -1,0 +1,115 @@
+import { CreateCustomComponent } from "../component_manager";
+
+export const __COMPONENTS_NAME = "store_item_ex1";
+const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list;
+
+declare global {
+    interface Component_StoreItemEx1 extends Panel {
+        _SetGoodsId(goods_id: string | number): void;
+        _SetState(state: boolean): void;
+        _GetGoodsId(): string;
+    }
+}
+type ServerShopID = keyof typeof ServerShopList
+type ServerShopTypeProp = typeof ServerShopList[ServerShopID];
+
+const rare_list = [1, 2, 3, 4, 5, 6];
+const MainPanel = $.GetContextPanel() as Component_StoreItemEx1;
+
+const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
+const StoreIcon = $("#StoreIcon") as ImagePanel;
+const MergeItemList = $("#MergeItemList")
+const StorePurchaseBtn = $("#StorePurchaseBtn") as Button;
+
+
+
+const _SetGoodsId = (goods_id: string | number) => {
+    let data = ServerShopList["" + goods_id as keyof typeof ServerShopList];
+    MainPanel.Data<PanelDataObject>().goods_id = goods_id
+    if (data) {
+        let rarity = data.rarity;
+        for (let rare of rare_list) {
+            MainPanel.SetHasClass(`rare_${rare}`, rarity == rare);
+        }
+        // 包含物品列表
+        SetMergeItemList(data)
+        // 物品价格
+        SetPriceView(data)
+        // 物品图片
+        let img = data.AbilityTextureName;
+        MainPanel.SetHasClass("has_icon", img.length > 8)
+        let image_src = GetTextureSrc(img);
+
+        StoreIcon.SetImage(image_src);
+    } else {
+        StoreIcon.SetImage("");
+    }
+}
+function _GetGoodsId() {
+    return MainPanel.Data<PanelDataObject>().goods_id as string
+}
+
+function SetMergeItemList(data: ServerShopTypeProp) {
+    MergeItemList.RemoveAndDeleteChildren();
+    // 基本物品
+    let item_object = { [`${data.item_id}`]: data.number, }
+    //@ts-ignore
+    let merge_str = data.merge as string;
+    if (merge_str.length > 0) {
+        let merge_arr = merge_str.split(",");
+        for (let sub_merge of merge_arr) {
+            let arr = sub_merge.split("_");
+            let item_id = arr[0];
+            let item_count = parseInt(arr[1])
+            item_object[item_id] = item_count
+        }
+    }
+
+    for (let item_id in item_object) {
+        let itemPanel = CreateCustomComponent(MergeItemList, "server_item", item_id);
+        itemPanel._SetServerItemInfo({
+            item_id: item_id,
+            show_count: true,
+            item_count: item_object[item_id],
+            show_tips: true,
+        })
+    }
+
+}
+
+/** 设置物品价格或者领取 */
+function SetPriceView(data: ServerShopTypeProp) {
+    let cost_arr = data.cost.split("_");
+    let price_type = cost_arr[0];
+    let price_count = parseInt(cost_arr[1]);
+    MainPanel.SetHasClass("is_rmb", price_type == "rmb");
+
+    if (price_type == "0") {
+        MainPanel.SetDialogVariable("price_or_receive", "领取")
+        MainPanel.SetDialogVariable("price_or_receive_dis", "已领取")
+
+    } else {
+        MainPanel.SetDialogVariable("price_or_receive", "" + price_count)
+        MainPanel.SetDialogVariable("price_or_receive_dis", "已购买")
+    }
+
+}
+
+function _SetState(state: boolean) {
+    // 是否已购买已领取
+    MainPanel.SetHasClass("is_disable", !state)
+    StorePurchaseBtn.enabled = state;
+
+}
+
+(function () {
+    MainPanel.SetDialogVariable("days", "0天")
+    let goods_id = MainPanel.Data<PanelDataObject>().goods_id as string;
+    if (goods_id) {
+        _SetGoodsId(goods_id)
+    }
+
+    MainPanel._SetGoodsId = _SetGoodsId;
+    MainPanel._SetState = _SetState
+    MainPanel._GetGoodsId = _GetGoodsId;
+})();

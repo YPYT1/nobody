@@ -1,4 +1,4 @@
-export const COMPONENTS_NAME = "server_item";
+export const __COMPONENTS_NAME = "server_item";
 
 declare global {
     interface Component_ServerItem extends Panel {
@@ -28,6 +28,11 @@ const ServerItemIcon = $("#ServerItemIcon") as ImagePanel;
 const rare_list = [1, 2, 3, 4, 5, 6, 7];
 
 const _SetItemId = (item_id: string | number) => {
+    ServerItemIcon.SetHasClass("is_rmb",item_id == "rmb")
+    if(item_id == "rmb"){
+        ServerItemIcon.SetImage("s2r://panorama/images/custom_game/component/server/store_item/rmb_png.vtex");
+        return
+    }
     let data = ServerItemList["" + item_id as keyof typeof ServerItemList];
     MainPanel.Data<PanelDataObject>().item_id = item_id
     if (data) {

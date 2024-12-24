@@ -14,10 +14,15 @@
         </snippet>
 	</snippets>
 	<Panel class="DashBoardPanel">
-		<Panel class="Container">
-            <Panel id="NavButtonList" class="TestBorder">
-
-            </Panel>
+		<Panel class="Container" hittest="false">
+			<Panel class="NavFrame" hittest="false">
+				<Panel id="NavButtonList" class="NavButtonList" hittest="false"/>
+				<Panel class="VirtualContent" hittest="false"/>
+			</Panel>
+        
+			<Panel id="ContentFrame" class="ContentFrame" hittest="false">
+				
+			</Panel>
         </Panel>
 	</Panel>
 </root>

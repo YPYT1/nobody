@@ -1,4 +1,4 @@
-export const COMPONENTS_NAME = "prop_item_star";
+export const __COMPONENTS_NAME = "prop_item_star";
 
 declare global {
     interface GameComponent_PropItemStar extends Panel {

@@ -6,14 +6,15 @@ const NavButtonList = $("#NavButtonList");
 const ContentFrame = $("#ContentFrame");
 const FRAME_PATH = `file://{resources}/layout/custom_game/dashboard/${DASHBOARD}/`;
 
-
 export function Init() {
+    // $.Msg(["InitNavMenu"])
     InitNavMenu()
 }
 
 function InitNavMenu() {
 
     NavButtonList.RemoveAndDeleteChildren()
+    ContentFrame.RemoveAndDeleteChildren()
     let order = 0;
     for (let sub_key in SUB_OBJECT) {
         let sub_state = SUB_OBJECT[sub_key as keyof typeof SUB_OBJECT];
@@ -23,16 +24,18 @@ function InitNavMenu() {
             NavRadioBtn.BLoadLayoutSnippet("NavRadioButton");
             NavRadioBtn.SetDialogVariable("button_txt", $.Localize("#custom_dashboard_nav_" + radiobtn_id))
             NavRadioBtn.checked = order == 0;
-            // NavRadioBtn.SetPanelEvent("onactivate", () => {
-            //     for (let nav_key of Object.keys(SUB_OBJECT)) {
-            //         ContentFrame.SetHasClass(nav_key, nav_key == sub_key)
-            //     }
-            // })
+            NavRadioBtn.SetPanelEvent("onactivate", () => {
+                for (let nav_key of Object.keys(SUB_OBJECT)) {
+                    ContentFrame.SetHasClass(nav_key, nav_key == sub_key)
+                }
+            })
 
-            // let NavContent = $.CreatePanel("Panel", ContentFrame, radiobtn_id);
-            // let nav_path = `${FRAME_PATH}/${sub_key}/index.xml`;
-            // NavContent.BLoadLayout(nav_path, true, false);
-            // ContentFrame.SetHasClass(sub_key, order == 0)
+            let NavContent = $.CreatePanel("Panel", ContentFrame, radiobtn_id, {
+                hittest: false
+            });
+            let nav_path = `${FRAME_PATH}/${sub_key}/index.xml`;
+            NavContent.BLoadLayout(nav_path, true, false);
+            ContentFrame.SetHasClass(sub_key, order == 0)
             order++;
         }
     }

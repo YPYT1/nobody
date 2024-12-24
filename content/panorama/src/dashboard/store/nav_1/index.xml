@@ -1,0 +1,41 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+
+	<Panel class="nav_content">
+        <Panel class="NavContentFrame" hittest="false">
+            <Panel class="VirtualNavButton" hittest="false"/>
+            <Panel class="NavContainer" hittest="false">
+                <Panel class="HotTitle"/>
+                <Panel class="CarouselContainer">
+                    <Carousel id="SectionsCarousel" focus="center" hittest="false">
+						<Panel class="UpdateSection" id="Section_1" >
+							<Panel class="BackgroundImage" />
+						</Panel>
+						<Panel class="UpdateSection" id="Section_2" >
+							<Panel class="BackgroundImage" />
+						</Panel>
+						<Panel class="UpdateSection" id="Section_3">
+							<Panel class="BackgroundImage" />
+						</Panel>
+					</Carousel>
+					<CarouselNav id="SectionsCarouselNav" class="OverlayPips" carouselid="SectionsCarousel" />
+                </Panel>
+                <Panel class="HotSellingContent">
+                    <Panel class="Header">
+                        <Label text="最近热卖 "/>
+                        <Panel class="HotTitle"/>
+                    </Panel>
+                    <Panel id="HotSellItemList">
+
+                    </Panel>
+                </Panel>
+            </Panel>
+        </Panel>
+	</Panel>
+</root>
