@@ -1112,6 +1112,8 @@ export class Spawn extends UIEventRegisterClass {
                     }
                 }
             }
+            //停止圣坛效果
+            GameRules.Altar.Stop();
             //移除物品
             GameRules.ResourceSystem.RemoveAllDropItem()
             GameRules.MapChapter.GetGameSelectPhase(-1, {})
