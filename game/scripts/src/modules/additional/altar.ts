@@ -62,7 +62,7 @@ export class Altar {
         if (this.altar_index == 1) {
             this.CreateAltar()
         } else {
-            let altar_delay = RandomInt(1, 10);
+            let altar_delay = RandomInt(120, 300);
             print("wait altar_delay:", altar_delay)
             GameRules.GetGameModeEntity().SetContextThink("ALTAR_START_DELAY", () => {
                 GameRules.Altar.CreateAltar();
