@@ -13,5 +13,7 @@
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/development/layout.xml" />
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/activation/layout.xml" />
         <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/public/layout.xml" />
+        <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/popups/layout.xml" />
+        
     </Panel>
 </root>

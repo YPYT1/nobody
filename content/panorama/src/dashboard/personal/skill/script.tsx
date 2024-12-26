@@ -1,4 +1,4 @@
-import { CreateCustomComponent } from "../../_components/component_manager"
+import { CreateCustomComponent, LoadCustomComponent, SetCustomComponent } from "../../_components/component_manager"
 import { default as ServerSkillExp } from "./../../../json/config/server/hero/server_skill_exp.json"
 import { default as ServerSkillful } from "./../../../json/config/server/hero/server_skillful.json"
 
@@ -8,7 +8,6 @@ const SendCustomEvent = GameUI.CustomUIConfig().SendCustomEvent
 const MainPanel = $.GetContextPanel()
 const SkillList = $("#SkillList");
 const OffsetTest = $("#OffsetTest") as Button;
-const EventBus = GameUI.CustomUIConfig().EventBus;
 const PopupsServerItem = CreateCustomComponent($("#PopupsServerItem"), 'server_item', "");
 PopupsServerItem._SetServerItemInfo({ item_id: 1001, show_count: true, show_tips: true, })
 const UpperItem = CreateCustomComponent($("#UpperItem"), "server_item", "")
@@ -26,7 +25,16 @@ let main_skill_level: PlayerServerSkillLevelCount = {
 };
 
 let view_skill_id = "";
+
+let BackpackCount_1292 = SetCustomComponent($("#BackpackCount_1292"), "backpack_count", "1292");
+let BackpackCount_1293 = SetCustomComponent($("#BackpackCount_1293"), "backpack_count", "1293");
+
+
 export const Init = () => {
+
+    BackpackCount_1292._SetItemId("1292");
+    BackpackCount_1293._SetItemId("1293");
+
     UppderSkillBtn.enabled = false;
     skill_sub_tree = {}
     for (let id in ServerSkillful) {
@@ -78,7 +86,7 @@ export const Init = () => {
 
         // 查看具体精通信息
         SkillRows.SetPanelEvent("onactivate", () => {
-            // $.Msg(["view skill main id",id])
+            $.Msg(["view skill main id", id])
             ViewSkillMainOfID(id)
         })
     }
@@ -140,20 +148,18 @@ const CGED_Init = () => {
     SendCustomEvent("ServiceInterface", "GetPlayerServerSkillData", {})
 
     // 更新背包
-    EventBus.subscribe("backpack_update", data => {
-        //1292	高阶精通点
-        // $.Msg(["backpack_update111"])
-        // $.Msg(data)
-        let item1292 = data['1292']
-        let item1292_count = item1292 == null ? 0 : item1292.number
-        ServerItemCount[1292] = item1292_count
-        MainPanel.SetDialogVariableInt("skill_point", item1292_count);
-        //1293	技能精通经验
-        let item1293 = data['1293']
-        let item1293_count = item1293 == null ? 0 : item1293.number
-        ServerItemCount[1293] = item1293_count
-        MainPanel.SetDialogVariableInt("skill_exp", item1293_count);
-    })
+    // GameUI.CustomUIConfig().EventBus.subscribe("backpack_count_update", data => {
+    //     //1292	高阶精通点
+    //     // let item1292 = data['1292']
+    //     // let item1292_count = item1292 == null ? 0 : item1292.number
+    //     // ServerItemCount[1292] = item1292_count
+    //     // MainPanel.SetDialogVariableInt("skill_point", item1292_count);
+    //     // //1293	技能精通经验
+    //     // let item1293 = data['1293']
+    //     // let item1293_count = item1293 == null ? 0 : item1293.number
+    //     // ServerItemCount[1293] = item1293_count
+    //     // MainPanel.SetDialogVariableInt("skill_exp", item1293_count);
+    // })
 
 }
 
@@ -208,10 +214,10 @@ const ViewSkillMainOfID = (id: string) => {
     }
 
     let main_data = main_skill_level.level[id];
-    if(main_data == null){ return }
+    if (main_data == null) { 
+        return 
+    }
     let is_adv = main_data.is_adv == 1;
-
-
     MainPanel.SetDialogVariableInt("upper_skill_lv", main_data.lv);
     UpperExpProgress.SetDialogVariableInt("curr_exp", main_data.cur_exp)
     UpperExpProgress.SetDialogVariableInt("upper_exp", main_data.level_exp)

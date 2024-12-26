@@ -1,0 +1,71 @@
+SlottedSlider.HorizontalSlider .SliderNotch {
+    margin-top: 14px;
+    border-bottom: 2px solid #5e686966;
+    border-left: 2px solid #5e686966;
+    border-right: 2px solid #5e686966;
+    background-color: black;
+    width: 12px;
+    height: 12px;
+    vertical-align: bottom;
+    z-index: 3;
+}
+
+Slider.HorizontalSlider,
+SlottedSlider.HorizontalSlider {
+    width: 420px;
+    height: 30px;
+    // overflow: noclip;
+}
+
+Slider.HorizontalSlider #SliderTrack,
+SlottedSlider.HorizontalSlider #SliderTrack {
+    height: 16px;
+    width: 100%;
+    padding: 10px;
+    vertical-align: middle;
+    background-color: #000000;
+}
+
+Slider.HorizontalSlider #SliderTrackProgress,
+SlottedSlider.HorizontalSlider #SliderTrackProgress {
+    width: 100%;
+    height: 10px;
+    vertical-align: middle;
+    // background-color: gradient(linear, 0% 0%, 100% 0%, from(#222222FF), to(#444f52FF));
+    background-color: gradient(linear, 0% 0%, 100% 0%, from(#4244c0), to(#4285c0));
+    // box-shadow: inset black -2px 1px 3px 0px;
+    margin-left: 1px;
+}
+
+Slider.HorizontalSlider #SliderTrackProgress:disabled,
+SlottedSlider.HorizontalSlider #SliderTrackProgress:disabled {
+    width: 100%;
+    height: 10px;
+    background-color: gradient(linear, 0% 0%, 100% 0%, from(#010101FF), to(#333333FF));
+    box-shadow: inset black -2px 1px 3px 0px;
+    margin-left: 1px;
+}
+
+Slider.HorizontalSlider #SliderThumb,
+SlottedSlider.HorizontalSlider #SliderThumb {
+    width: 16px;
+    height: 32px;
+    // background-image: url("file://{images}/custom_game/hud/components/slider_thumb.png");
+    background-color: gradient(radial, 50% 50%, -5% -5%, 60% 60%, from(#aaaaaa), to(#000000));
+    background-size: 100%;
+    border: 2px solid #000000;
+    // background-color: #cacaca;
+    // transform: translateX(-6px);
+}
+
+Slider.HorizontalSlider #SliderThumb:hover,
+SlottedSlider.HorizontalSlider #SliderThumb:hover {
+    background-color: gradient(radial, 50% 50%, -5% -5%, 60% 60%, from(#ffffff), to(#3f3f3f));
+    // background-color: #b8c5d3;
+    // brightness: 1.5;
+}
+
+Slider.HorizontalSlider #SliderThumb:disabled,
+SlottedSlider.HorizontalSlider #SliderThumb:disabled {
+    background-color: #333333;
+}

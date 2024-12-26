@@ -12,8 +12,8 @@ declare global {
     interface CustomUIConfig {
         __storage: { [key: string]: any; };
         setStorage<T extends keyof StorageKeyList>(key: T, value: StorageKeyList[T]): void
-        getStorage<T extends keyof StorageKeyList>(key: T): StorageKeyList[T]
-        clearStorage<T extends keyof StorageKeyList>(key: T):void;
+        getStorage<T extends keyof StorageKeyList>(key: T): StorageKeyList[T] | null
+        clearStorage<T extends keyof StorageKeyList>(key: T): void;
     }
 }
 
@@ -28,12 +28,15 @@ function setStorage<T extends keyof StorageKeyList>(key: T, value: StorageKeyLis
 
 
 
-function getStorage<T extends keyof StorageKeyList>(key: T): StorageKeyList[T] {
+function getStorage<T extends keyof StorageKeyList>(key: T): StorageKeyList[T] | null {
+    if (GameUI.CustomUIConfig().__storage == null) {
+        return null
+    }
     return GameUI.CustomUIConfig().__storage[key];
 }
 
-function clearStorage<T extends keyof StorageKeyList>(key: T){
-    delete GameUI.CustomUIConfig().__storage[key] 
+function clearStorage<T extends keyof StorageKeyList>(key: T) {
+    delete GameUI.CustomUIConfig().__storage[key]
 }
 
 GameUI.CustomUIConfig().setStorage = setStorage;

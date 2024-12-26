@@ -25,5 +25,10 @@
         <Button id="DashboardLoadingSpinner" class="LoadingSpinner">
             <Panel class="SpinnerIcon"/>
         </Button>
+
+        <Panel id="PopupsContent" hittest="false" >
+            <Button id="loading" />
+            <Button id="store_purchase" />
+        </Panel>
     </Panel>
 </root>

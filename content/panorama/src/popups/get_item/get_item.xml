@@ -1,0 +1,18 @@
+<root>
+    <styles>
+        <include src="./get_item.less" />
+        <include src="./../../_styles/styles.less" />
+        <include src="./../../_styles/keyframes.less" />
+    </styles>
+    <scripts>
+		<include src="./get_item.tsx" />
+	</scripts>
+    <Button class="PopupContainer">
+        <Panel class="GetItemContainers">
+            <Button class="GetItemPanel">
+                <Panel id='ItemList' />
+            </Button>
+            <Label class="HitTips" text="点击空白区域返回"/>
+        </Panel>
+    </Button>
+</root>

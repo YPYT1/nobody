@@ -41,6 +41,16 @@ const _SetGoodsId = (goods_id: string | number) => {
         let image_src = GetTextureSrc(img);
 
         StoreIcon.SetImage(image_src);
+
+        let cost = data.cost
+        StorePurchaseBtn.SetPanelEvent("onactivate", () => {
+            if (cost == "0_0") {
+                // 直接领取
+            } else {
+                GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
+            }
+
+        })
     } else {
         StoreIcon.SetImage("");
     }
@@ -54,7 +64,7 @@ function SetMergeItemList(data: ServerShopTypeProp) {
     // 基本物品
     let item_object = { [`${data.item_id}`]: data.number, }
     //@ts-ignore
-    let merge_str = data.merge as string;
+    let merge_str = (data.merge ?? "") as string;
     if (merge_str.length > 0) {
         let merge_arr = merge_str.split(",");
         for (let sub_merge of merge_arr) {

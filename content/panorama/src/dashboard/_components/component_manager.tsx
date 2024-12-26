@@ -6,14 +6,17 @@ interface ComponentProps {
     server_item_name: Component_ServerItemName;
     store_item: Component_StoreItem;
     store_item_ex1: Component_StoreItemEx1;
+    backpack_count: Component_BackpackCount;
 }
 
-// export function LoadComponent_Card<K extends keyof ComponentProps>(e: Panel, key: K): ComponentProps[K] {
-//     e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false);
-//     return e as ComponentProps[K]
-// }
 
 export function LoadCustomComponent<K extends keyof ComponentProps>(e: Panel, key: K): ComponentProps[K] {
+    e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false);
+    return e as ComponentProps[K]
+}
+
+export function SetCustomComponent<K extends keyof ComponentProps>(e: Panel, key: K, item_id: string) {
+    e.Data<PanelDataObject>().item_id = item_id
     e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false);
     return e as ComponentProps[K]
 }

@@ -418,7 +418,7 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
     let attr_name = `${$.Localize(`#custom_attribute_${MainProperty}`).replace("%", "")}`
 
     let per = 100;
-    if(is_up){
+    if (is_up) {
         let level = target_level - 1;
         if (level > 0) {  // 1-4
             let value_per = attr_data.value_per_1_5;
@@ -458,7 +458,7 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
                 per += value_per * cz_level;
             }
         }
-    }else{
+    } else {
         let level = target_level + 1;
         if (level > 1) {  // 2-5
             let value_per = attr_data.value_per_1_5;
@@ -468,7 +468,7 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
                 per += value_per * level;
             }
         }
-    
+
         if (level > 5) { //6-10
             let value_per = attr_data.value_per_6_10;
             if (level >= 10) {
@@ -478,7 +478,7 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
                 per += value_per * cz_level;
             }
         }
-    
+
         if (level > 10) { // 11-15
             let value_per = attr_data.value_per_11_15;
             if (per >= 15) {
@@ -488,7 +488,7 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
                 per += value_per * cz_level;
             }
         }
-    
+
         if (level > 15) { // 16-20
             let value_per = attr_data.value_per_16_20;
             if (per >= 20) {
@@ -500,7 +500,7 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
         }
 
     }
-    
+
 
 
     // 属性降级
@@ -534,7 +534,7 @@ function SetSelectAttrRowsAttr(e: Panel, key: string, is_up: boolean, target_lev
     if (!is_up && target_level < 0) {
         attr_value_str = "无法降级";
         SSAttributeDownRow.enabled = false;
-    } else if (is_up && target_level >= 20){
+    } else if (is_up && target_level >= 20) {
         attr_value_str = "无法升级";
         SSAttributeDownRow.enabled = false;
     }
@@ -623,7 +623,7 @@ function SetSSActionResultsInfo(key: string, up_config: SoulConfigType, is_up: b
         item_id = `${ss_index}`
     }
     let backpack_count_table = GameUI.CustomUIConfig().getStorage("backpack_count_table")
-    let owned_count = backpack_count_table[item_id] ?? 0
+    let owned_count = backpack_count_table ? (backpack_count_table[item_id] ?? 0) : 0
     SSActionResults.SetDialogVariableInt("owned_count", owned_count);
     SSActionResults.SetDialogVariableInt("need_count", ss_count);
     ResultsBaseCostItem._SetItemId(item_id)

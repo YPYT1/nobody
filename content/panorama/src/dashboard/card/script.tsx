@@ -169,9 +169,6 @@ const CustomEventSub = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetCompoundCardList", GetCompoundCardList)
 
-    GameEvents.Subscribe("custom_client_popups", event => {
-        $.Msg(["custom_client_popups", event])
-    })
 }
 
 (() => {

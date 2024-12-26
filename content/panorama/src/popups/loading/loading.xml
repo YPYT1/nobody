@@ -1,0 +1,13 @@
+<root>
+    <styles>
+        <include src="./loading.less" />
+        <include src="./../../_styles/styles.less" />
+        <include src="./../../_styles/keyframes.less" />
+    </styles>
+    <scripts>
+		<include src="./loading.tsx" />
+	</scripts>
+    <Button class="PopupContainer">
+        <Panel class="SpinnerIcon" />
+    </Button>
+</root>

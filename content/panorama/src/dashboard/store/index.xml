@@ -12,6 +12,16 @@
                 <Panel class="Icon"/>
             </RadioButton>
         </snippet>
+
+		<snippet name="ServerCurrency">
+			<Panel class="ServerCurrency">
+				<Panel id="CurrencyIcon"/>
+				<Panel class="CurrencyBorder">
+					<Label class="Count" text="{s:currency_count}"/>
+				</Panel>
+
+			</Panel>
+		</snippet>
 	</snippets>
 	<Panel class="DashBoardPanel">
 		<Panel class="Container" hittest="false">
@@ -19,10 +29,10 @@
 				<Panel id="NavButtonList" class="NavButtonList" hittest="false"/>
 				<Panel class="VirtualContent" hittest="false"/>
 			</Panel>
-        
-			<Panel id="ContentFrame" class="ContentFrame" hittest="false">
-				
-			</Panel>
+			<Panel id="ContentFrame" class="ContentFrame" hittest="false" />
         </Panel>
+		<Panel class="LocalCurrencyPanel">
+			<Panel id="CurrencyList"/>
+		</Panel>
 	</Panel>
 </root>

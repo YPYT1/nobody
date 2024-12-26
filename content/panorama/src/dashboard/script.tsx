@@ -1,25 +1,26 @@
 
 import { DASHBOARD_NAVBAR, ToggleDashboardLoading } from './components';
 import { HideCustomTooltip, ShowCustomTextTooltip } from '../utils/custom_tooltip';
+
 // import { FindOfficialHUDUI } from '../common/panel_operaton';
 
 const DashboardList = $("#DashboardList");
 const DashboardButtonList = $("#DashboardButtonList");
 const DASHBOARD_LIST = Object.keys(DASHBOARD_NAVBAR);
 const dashboard_path = "file://{resources}/layout/custom_game/dashboard/";
-
+const localPlayer = Game.GetLocalPlayerID();
 let open_board = false;
 
 const Initialize = () => {
     GameUI.CustomUIConfig().FindOfficialHUDUI("MenuButtons")!.visible = false;
     const DashboardLoadingSpinner = GameUI.CustomUIConfig().FindOfficialHUDUI("DashboardLoadingSpinner")!;
     DashboardLoadingSpinner.SetHasClass("Show", false)
-    CreateMenuButtons()
+    CreateMenuButtons();
 }
 
-const CustomEventSub = ()=>{
+const CustomEventSub = () => {
 
-    GameEvents.Subscribe("all_popups_closed",event=>{
+    GameEvents.Subscribe("all_popups_closed", event => {
         ToggleDashboardLoading(false)
     })
 }
@@ -84,12 +85,6 @@ const CreateMenuButtons = () => {
         }
     }
 
-
-    // let personal = $.CreatePanel("Panel", DashboardList, "personal",{
-    //     class:"DashBoardPanel"
-    // });
-    // personal.BLoadLayout("file://{resources}/layout/custom_game/dashboard/personal/index.xml", true, false);
-
     DashboardList.SetHasClass("IsOpen", false);
 }
 
@@ -125,6 +120,8 @@ const SetDashboardButton = (MenuButton: Button, dashboard_id: string) => {
     })
 
 }
+
+
 
 (() => {
     Initialize();

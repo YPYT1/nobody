@@ -28,8 +28,8 @@ const ServerItemIcon = $("#ServerItemIcon") as ImagePanel;
 const rare_list = [1, 2, 3, 4, 5, 6, 7];
 
 const _SetItemId = (item_id: string | number) => {
-    ServerItemIcon.SetHasClass("is_rmb",item_id == "rmb")
-    if(item_id == "rmb"){
+    ServerItemIcon.SetHasClass("is_rmb", item_id == "rmb")
+    if (item_id == "rmb") {
         ServerItemIcon.SetImage("s2r://panorama/images/custom_game/component/server/store_item/rmb_png.vtex");
         return
     }
@@ -122,7 +122,12 @@ const _SetCount = (count: number) => {
 const _UpdateCount = () => {
     let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
     let backpack_table = GameUI.CustomUIConfig().getStorage("backpack_count_table")
-    let item_count = backpack_table[item_id] ?? 0;
+    let item_count = 0
+    if (backpack_table != null) {
+        item_count = backpack_table[item_id] ?? 0;
+    }
+
+
     MainPanel.Data<PanelDataObject>().count = item_count;
     MainPanel.SetDialogVariable("count", `${item_count}`)
 }

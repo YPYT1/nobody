@@ -8,6 +8,8 @@ declare global {
 
         /** 设置已限购次数 */
         _SetLimitCount(count: number): void;
+        /** 设置是否可购买 */
+        _SetState(state: boolean): void;
     }
 }
 
@@ -23,6 +25,8 @@ const ActualPanel = $("#ActualPanel");
 const CurrencyIcon = LoadCustomComponent($("#CurrencyIcon"), "server_item");
 CurrencyIcon._SetServerItemInfo({ hide_bg: true, show_count: false, show_tips: false });
 
+const StorePurchaseBtn = $("#StorePurchaseBtn");
+
 const _SetGoodsId = (goods_id: string | number) => {
     let data = ServerShopList["" + goods_id as keyof typeof ServerShopList];
     MainPanel.Data<PanelDataObject>().goods_id = goods_id
@@ -30,7 +34,7 @@ const _SetGoodsId = (goods_id: string | number) => {
     MainPanel.SetDialogVariable("goods_name", goods_name)
     MainPanel.SetDialogVariable("limit_type", "");
     MainPanel.SetDialogVariableInt("limit_count", 0);
-    
+
     if (data) {
         let rarity = data.rarity;
         for (let rare of rare_list) {
@@ -61,7 +65,7 @@ const _SetGoodsId = (goods_id: string | number) => {
         let discount = data.discount;
         MainPanel.SetHasClass("is_discount", discount != 10);
         MainPanel.SetDialogVariableInt("discount", discount);
-        
+
         // 限购
         let purchase_limitation = data.purchase_limitation;
         MainPanel.SetDialogVariableInt("limit_max", purchase_limitation)
@@ -80,11 +84,18 @@ const _SetGoodsId = (goods_id: string | number) => {
             MainPanel.SetDialogVariable("limit_type", "终身")
         }
 
+        StorePurchaseBtn.SetPanelEvent("onactivate", () => {
+            GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
+        })
     } else {
         StoreIcon.SetImage("");
     }
 }
 
+function _SetState(state: boolean) {
+    StorePurchaseBtn.enabled = state;
+    MainPanel.SetHasClass("is_purchased", !state)
+}
 
 function SetPriceView(e: Panel, cost_str: string,) {
     if (cost_str == "0_0") {
@@ -102,6 +113,7 @@ function SetPriceView(e: Panel, cost_str: string,) {
 (function () {
     MainPanel.Data<PanelDataObject>().rarity = 0
     MainPanel._SetGoodsId = _SetGoodsId;
+    MainPanel._SetState = _SetState;
     let goods_id = MainPanel.Data<PanelDataObject>().goods_id as string;
     if (goods_id) {
         _SetGoodsId(goods_id)

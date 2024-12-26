@@ -1,0 +1,94 @@
+<root>
+    <styles>
+        <include src="./store_purchase.less" />
+        <include src="./../../_styles/styles.less" />
+        <include src="./../../_styles/keyframes.less" />
+    </styles>
+    <scripts>
+		<include src="./store_purchase.tsx" />
+	</scripts>
+
+    <snippets>
+        <snippet name="MultipleItemRows">
+            <Panel class="MultipleItemRows">
+                <Panel class="ItemImage">
+                    <Panel id="ServerItem" />
+                </Panel>
+                <Panel class="ItemInfo">
+                    <Label class="ItemName"  text="{s:item_name}" />
+                    <Label class="ItemCount" text="x{d:count}"/>
+                </Panel>
+            </Panel>
+        </snippet>
+    </snippets>
+    <Button class="PopupContainer">
+        <Panel class="Content">
+            <Panel class="LeftContent">
+                <Panel class="Header">
+                    <Panel class="TitleBg">
+                        <Label text="{s:goods_name}"/>
+                    </Panel>
+                    <Panel class="HotTag" />
+                    <Panel class="DiscountTag">
+                        <Label text="{d:discount}折"/>
+                    </Panel>
+                </Panel>
+
+                 <Panel class="StoreIcon">
+                    <Image id="StoreIcon" />
+                </Panel>
+
+                <Panel class="StoreDesc">
+                    <Label text="{s:goods_desc}" html="true"/>
+                </Panel>
+            </Panel>
+            <Panel class="RightContent" hittest="false">
+                <Panel class="StateContent" hittest="false">
+                    <Panel class="StateMultiple" hittest="false">
+                        <Label class="MultipleTitle" text="该商品包含以下物品" />
+                        <Panel class="MultipleItemContent" hittest="false">
+                            <Panel id="MultipleItemList" />
+                        </Panel>
+                    </Panel>
+                </Panel>
+                <Panel class="PurchaseOption" hittest="false">
+                    <Panel class="BuyCountSet">
+                        <Label class="BuyTitle" text="购买数量:"/>
+                        <Slider
+                            id='StoreCountSlider'
+                            class="Slider HorizontalSlider"
+                            direction="horizontal"
+                            value="1" min="0" max="1"
+                        />
+                        <Label class='CountLabel' text='{d:purchase_count}' />
+                    </Panel>
+                    <Panel class="StorePriceContent">
+                        <Panel class="CurrencyIcon">
+                            <Image id="CurrencyIcon"  />
+                        </Panel>
+                        <Panel id="OriginalPanel" class="PriceContent Original">
+                            <Panel class="DiagonalCost">
+                                <Label text="{d:original_price}"/>
+                                <Panel class="DiagonalShape"/>
+                            </Panel>
+                        </Panel>
+                        <Panel id="ActualPanel" class="PriceContent Actual">
+                            <Label text="{d:actual_price}"/>
+                        </Panel>
+                    </Panel>
+                </Panel>
+
+                <Panel class="ButtonGroup">
+                    <Button id="ConfirmButton" class="dashboard_btn">
+                        <Label text="爷要了"/>
+                    </Button>
+
+                    <Button id="CancelButton" class="dashboard_btn red">
+                        <Label text="要不起"/>
+                    </Button>
+                </Panel>
+
+            </Panel>
+        </Panel>
+    </Button>
+</root>

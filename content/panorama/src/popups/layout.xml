@@ -1,0 +1,15 @@
+<root>
+    <scripts>
+        <include src="./script.tsx" />
+    </scripts>
+    <styles>
+        <include src="./styles.less" />
+        <include src="./../_styles/styles.less" />
+    </styles>
+
+    <Panel class="popups" hittest="false">
+        <Button id="loading" />
+        <Button id="store_purchase" />
+        <Button id="get_item" />
+    </Panel>
+</root>

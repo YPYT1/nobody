@@ -1,0 +1,322 @@
+@import url("./../_common_popup.less");
+@import url("./../../_styles/components/slider.less");
+
+.PopupContainer {
+
+    &.is_discount .DiscountTag,
+    &.is_hot .HotTag,
+    &.limit_purchase .Limitation {
+        opacity: 1;
+    }
+
+    &.is_discount .StorePriceContent .PriceContent.Original {
+        visibility: visible;
+    }
+}
+
+
+.Content {
+    width: 912px;
+    height: 520px;
+    background-image: url("file://{images}/custom_game/popups/store_purchase/bg.png");
+    align: center center;
+    flow-children: right;
+    border: 1px solid #fff;
+    background-color: #00000099;
+    // padding: 12px;
+
+    .LeftContent {
+        height: 100%;
+        width: 376px;
+        // border: 1px solid #fff;
+    }
+
+    .RightContent {
+        height: 100%;
+        width: 100%;
+        // border: 1px solid #ff0;
+    }
+}
+
+.HotTag {
+    opacity: 0;
+    width: 79px;
+    height: 36px;
+    background-image: url("file://{images}/custom_game/component/server/store_item/hot_tag.png");
+    transform: translateX(-10px) translateY(0px);
+}
+
+.DiscountTag {
+    opacity: 0;
+    horizontal-align: right;
+    transform: translateX(10px) translateY(-10px);
+    width: 66px;
+    height: 65px;
+    background-image: url("file://{images}/custom_game/component/server/store_item/discount_tag.png");
+    background-repeat: no-repeat;
+    margin-right: 20px;
+
+    Label {
+        padding: 4px;
+        margin-left: 6px;
+        margin-bottom: 6px;
+        vertical-align: middle;
+        horizontal-align: center;
+        transform: rotateZ(-20deg);
+        transform-origin: 50% 50%;
+        font-size: 24px;
+        color: #FFED75;
+        text-shadow: 0px 0px 4px 4.0 #49300a;
+        letter-spacing: 2px;
+    }
+}
+
+.LeftContent {
+
+
+    .Header {
+        margin-top: 36px;
+        width: 100%;
+        overflow: noclip;
+        // border: 1px solid #fff;
+        horizontal-align: center;
+
+
+        .TitleBg {
+            width: 317px;
+            height: 42px;
+            background-image: url("file://{images}/custom_game/popups/store_purchase/header.png");
+            vertical-align: middle;
+            horizontal-align: center;
+
+            Label {
+                font-size: 22px;
+                color: #ffffff;
+                align: center center;
+            }
+        }
+
+
+    }
+
+    .StoreIcon {
+        width: 128px;
+        height: 128px;
+        margin-top: 144px;
+        horizontal-align: center;
+        margin-left: 16px;
+        // border: 1px solid #fff;
+    }
+
+    .StoreDesc {
+        // border: 1px solid #fff;
+        margin-top: 328px;
+        horizontal-align: center;
+        margin-left: 16px;
+        padding: 0px 36px;
+
+        Label {
+            font-size: 16px;
+            color: #CACACA;
+        }
+    }
+}
+
+
+
+.RightContent {
+
+    .StateContent {
+        width: 100%;
+        height: 350px;
+    }
+
+    .MultipleItemRows {
+        margin-top: 2px;
+        margin-bottom: 2px;
+        width: 440px;
+        height: 80px;
+        background-color: #00000099;
+        flow-children: right;
+
+        .ItemImage {
+
+            width: 80px;
+            height: 80px;
+
+            #ServerItem {
+                vertical-align: middle;
+                horizontal-align: center;
+                width: 58px;
+                height: 58px;
+                // background-color: #176917;
+            }
+        }
+
+        .ItemInfo {
+            margin-top: 4px;
+            flow-children: down;
+            margin-left: 6px;
+            vertical-align: middle;
+            // border: 1px solid #fff;
+
+            .ItemName {
+                font-size: 20px;
+                color: #ffffff;
+            }
+
+            .ItemCount {
+                margin-top: 10px;
+                font-size: 18px;
+                color: #A8A8A8;
+            }
+        }
+    }
+
+    .ButtonGroup {
+        vertical-align: bottom;
+        flow-children: right;
+        horizontal-align: center;
+        margin-bottom: 24px;
+
+        Button {
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+    }
+}
+
+.StateMultiple {
+    width: 100%;
+    height: 100%;
+    visibility: visible;
+
+    .MultipleTitle {
+        margin-top: 46px;
+        margin-left: 20px;
+        font-size: 20px;
+        color: #AFAFAF;
+    }
+
+    .MultipleItemContent {
+        margin-top: 86px;
+        horizontal-align: center;
+
+
+    }
+
+    #MultipleItemList {
+        width: 460px;
+        height: 260px;
+        flow-children: down;
+        horizontal-align: center;
+        overflow: scroll scroll;
+        padding: 2px;
+
+        background-color: #00000033;
+
+
+    }
+}
+
+.PurchaseOption {
+    margin-top: 358px;
+    horizontal-align: center;
+    flow-children: down;
+}
+
+.BuyCountSet {
+    flow-children: right;
+
+    .BuyTitle {
+        font-size: 24px;
+        color: #ffffff;
+        margin-right: 12px;
+        vertical-align: middle;
+    }
+
+    #StoreCountSlider {
+        width: 196px;
+        vertical-align: middle;
+        // border: 1px solid #fff;
+    }
+
+    .CountLabel {
+        padding: 4px;
+        min-width: 48px;
+        text-align: center;
+        background-color: #292929;
+        border: 2px solid #000000;
+        border-radius: 4px;
+        margin-left: 12px;
+        color: #ffffff;
+        font-size: 22px;
+        vertical-align: middle;
+    }
+}
+
+
+.StorePriceContent {
+    height: 32px;
+    background-image: url("file://{images}/custom_game/popups/store_purchase/price_bg.png");
+    background-size: 100%;
+    padding: 0px 12px;
+    // border: 1px solid #fff;
+    // vertical-align: bottom;
+    horizontal-align: center;
+    flow-children: right;
+    // margin-top: 30px;
+    margin-top: 4px;
+
+    #CurrencyIcon,
+    .CurrencyIcon {
+        width: 30px;
+        height: 30px;
+        vertical-align: middle;
+        // border: 1px solid #fff;
+    }
+
+    .CurrencyIcon {
+        margin-right: 4px;
+    }
+
+    .PriceContent {
+        // margin-left: 5px;
+        // margin-right: 5px;
+        flow-children: right;
+        vertical-align: middle;
+
+        &.Original {
+            visibility: collapse;
+        }
+
+
+
+        .DiagonalShape {
+            width: 100%;
+            height: 12px;
+            background-image: url("file://{images}/custom_game/component/server/store_item/diagonal_shape.png");
+            background-size: 100%;
+            vertical-align: middle;
+            horizontal-align: right;
+        }
+
+        .DiagonalCost {
+            vertical-align: middle;
+
+            Label {
+                font-size: 18px;
+                color:#A8A8A8;
+            }
+        }
+
+        Label {
+            margin-left: 4px;
+            font-size: 20px;
+            color: #ffffff;
+            text-shadow: 0px 1px 2px 4.0 #00000099;
+            vertical-align: middle;
+            letter-spacing: 1px;
+        }
+    }
+}

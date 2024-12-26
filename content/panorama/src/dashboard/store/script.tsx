@@ -6,8 +6,15 @@ const NavButtonList = $("#NavButtonList");
 const ContentFrame = $("#ContentFrame");
 const FRAME_PATH = `file://{resources}/layout/custom_game/dashboard/${DASHBOARD}/`;
 
+const CurrencyList = $("#CurrencyList");
+
+/**
+ * 1001,1002,1003,1004,1005,1006,1007,1008
+ */
+/** 顶部显示的货币列表 */
+const Show_Top_Currency = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008];
+
 export function Init() {
-    // $.Msg(["InitNavMenu"])
     InitNavMenu()
 }
 

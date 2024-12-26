@@ -34,6 +34,9 @@
                     <Label text="{s:price_cost}"/>
                 </Panel>
             </Panel>
+            <Panel class="StorePurchased">
+                <Label text="已购买"/>
+            </Panel>
         </Button>
 
         <Panel class="HotTag"/>

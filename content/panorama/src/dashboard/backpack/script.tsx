@@ -38,8 +38,13 @@ const CGE_Subscribe = () => {
             let item_id = "" + ItemData.item_id;
             ids_backpack[item_id] = ItemData;
             backpack_count_table[item_id] = ItemData.number;
-            
+
             let item_data = ServerItemList[item_id as keyof typeof ServerItemList];
+            // $.Msg(["item_data", item_id, item_data])
+            if (item_data == null) {
+                $.Msg(["Null ItemId",item_id])
+                continue
+            }
             let item_class = item_data.affiliation_class;
             if (item_class == 23) {
                 continue
@@ -60,20 +65,26 @@ const CGE_Subscribe = () => {
                 let amount = ItemRadio.Data<PanelDataObject>().amount as number;
                 ViewItem("" + item_id, amount)
             })
-
-
         }
 
-
-        EventBus.publish("backpack_update", ids_backpack)
-
         // 储存当前背包物品的数量
-        GameUI.CustomUIConfig().setStorage("backpack_count_table", backpack_count_table)
+        GameUI.CustomUIConfig().setStorage("backpack_count_table", backpack_count_table);
+        // 更新数据
+        $.Schedule(0.1, () => {
+            GameUI.CustomUIConfig().EventBus.publish("backpack_count_update", backpack_count_table)
+        })
+
     })
 
+
+    GameEvents.Subscribe("ServiceInterface_GetPlayerServerGoldPackageData", event => {
+        let data = event.data;
+        let ItemList = Object.values(data);
+    })
+    
     SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
 
-
+    SendCustomEvent("ServiceInterface", "GetPlayerServerGoldPackageData", {})
 }
 
 

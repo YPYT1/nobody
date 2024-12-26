@@ -68,14 +68,14 @@
 					<Panel class="SkillPointPanel">
 						<Panel class="CostIcon Point"/>
 						<Panel class="Border">
-							<Label text="{d:skill_point}"/>
+							<Panel id="BackpackCount_1292" class="Label"/>
 						</Panel>
 					</Panel>
 
 					<Panel class="SkillPointPanel">
 						<Panel class="CostIcon Exp"/>
 						<Panel class="Border">
-							<Label text="{d:skill_exp}"/>
+							<Panel id="BackpackCount_1293" class="Label"/>
 						</Panel>
 					</Panel>
 				</Panel>

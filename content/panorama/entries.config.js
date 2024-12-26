@@ -40,6 +40,7 @@ const ImportDashBoard = GetImportPathFileList("dashboard");
 const ImportHome = GetImportPathFileList("home");
 const ImportTooltip = GetImportPathFileList("tooltip");
 const ImportPublic = GetImportPathFileList("public");
+const ImportPopups = GetImportPathFileList("popups");
 
 const entries = [
     // { import: './utils/x-nettable-dispatcher.ts', filename: 'x-nettable-dispatcher.js' },
@@ -56,11 +57,13 @@ const entries = [
     { import: './dashboard/layout.xml', filename: 'dashboard/layout.xml' },
     { import: './development/layout.xml', filename: 'development/layout.xml' },
     { import: './public/layout.xml', filename: 'public/layout.xml' },
+    { import: './popups/layout.xml', filename: 'popups/layout.xml' },
 
     ...ImportTooltip,
     ...ImportHome,
     ...ImportDashBoard,
     ...ImportPublic,
+    ...ImportPopups,
 ];
 
 module.exports = entries;

@@ -4,12 +4,17 @@ declare global {
 
     interface CustomUIConfig {
         EventBus: EventBus;
-        EventBusClass: typeof EventBus;
     }
 }
 
+
+
 interface CustomEventBusList {
-    backpack_update: { [id: string]: AM2_Server_Backpack }
+    backpack_update: { [id: string]: AM2_Server_Backpack };
+    backpack_count_update: { [item: string]: number };
+    popup_loading: { show: boolean };
+    open_store_purchase: { id: string };
+
 }
 
 interface ICallbackList {
@@ -72,9 +77,11 @@ class EventBus {
             this._eventObject[eventName] = {};
         }
         const id = this._callbackId++;
+        // $.Msg(["subscribe:", eventName, id])
         // 存储订阅者的回调函数
         // callbackId使用后需要自增，供下一个回调函数使用
         this._eventObject[eventName][id] = callback;
+
 
         // 每一次订阅事件，都生成唯一一个取消订阅的函数
         const unSubscribe = () => {
@@ -120,7 +127,7 @@ class EventBus {
     }
 
     // 清除事件
-    clear(eventName: string): void {
+    clear<K extends keyof CustomEventBusList>(eventName?: K): void {
         // 未提供事件名称，默认清除所有事件
         if (!eventName) {
             this._eventObject = {};
@@ -130,7 +137,18 @@ class EventBus {
         // 清除指定事件
         delete this._eventObject[eventName];
     }
-}
-GameUI.CustomUIConfig().EventBusClass = EventBus;
-GameUI.CustomUIConfig().EventBus = new EventBus();
 
+    removeAllListeners() {
+        this._eventObject = {};
+    }
+}
+// if (GameUI.CustomUIConfig().EventBus != null) {
+//     GameUI.CustomUIConfig().EventBus.clear();
+//     // GameUI.CustomUIConfig().EventBus = new EventBus();
+// }
+
+// GameUI.CustomUIConfig().EventBus = new EventBus();
+
+if (GameUI.CustomUIConfig().EventBus == null) {
+    GameUI.CustomUIConfig().EventBus = new EventBus();
+}
