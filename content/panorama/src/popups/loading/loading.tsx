@@ -7,6 +7,11 @@ export const Init = () => {
         MainPanel.SetHasClass("Show", true)
     })
 
+    GameEvents.Subscribe("ServiceInterface_PulbicLoadClose", event => {
+        $.Msg(["ServiceInterface_PulbicLoadClose"])
+        MainPanel.SetHasClass("Show", false)
+    })
+
     if (Game.IsInToolsMode()) {
         MainPanel.SetPanelEvent("onactivate", () => {
             MainPanel.SetHasClass("Show", false)

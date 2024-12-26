@@ -292,6 +292,8 @@ function InitButton() {
             SSActionResults.SetDialogVariableInt("success", final_succes)
         })
     }
+
+    ToggleOptionAttributreContainer(1);
 }
 
 function InitExcelData() {
@@ -601,6 +603,8 @@ function SetSSActionResultsInfo(key: string, up_config: SoulConfigType, is_up: b
         price_cost.push(temp_obj)
     }
 
+    let currency_count = GameUI.CustomUIConfig().getStorage("currency_count");
+
     ActionCostItemList.RemoveAndDeleteChildren()
     for (let item_info of price_cost) {
         let costPanel = $.CreatePanel("Panel", ActionCostItemList, "");
@@ -608,6 +612,11 @@ function SetSSActionResultsInfo(key: string, up_config: SoulConfigType, is_up: b
         let PriceIcon = costPanel.FindChildTraverse("PriceIcon")!;
         let ServerItemPanel = LoadCustomComponent(PriceIcon, "server_item")
         ServerItemPanel._SetServerItemInfo({ item_id: item_info.item, hide_bg: true })
+
+        let self_cost_cont = currency_count != null ? (currency_count[item_info.item] ?? 0) : 0;
+
+        costPanel.SetHasClass("activation", self_cost_cont >= item_info.count)
+        costPanel.SetDialogVariableInt("self_cost_cont", self_cost_cont)
         costPanel.SetDialogVariableInt("cost_count", item_info.count)
     }
 

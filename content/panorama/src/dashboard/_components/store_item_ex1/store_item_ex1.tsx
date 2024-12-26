@@ -46,6 +46,14 @@ const _SetGoodsId = (goods_id: string | number) => {
         StorePurchaseBtn.SetPanelEvent("onactivate", () => {
             if (cost == "0_0") {
                 // 直接领取
+                GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                    event_name: "ShoppingBuy",
+                    params: {
+                        shop_id: ""+goods_id,
+                        count: 1,
+                    }
+                })
+
             } else {
                 GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
             }

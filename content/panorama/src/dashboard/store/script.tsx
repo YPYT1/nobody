@@ -1,3 +1,4 @@
+import { LoadCustomComponent } from "../_components/component_manager";
 import { DASHBOARD_NAVBAR } from "../components";
 
 const DASHBOARD = "store";
@@ -47,6 +48,36 @@ function InitNavMenu() {
         }
     }
 
+    // 货币列表
+    CurrencyList.RemoveAndDeleteChildren();
+    for (let currency_id of Show_Top_Currency) {
+        let ServerCurrency = $.CreatePanel("Panel", CurrencyList, "" + currency_id);
+        ServerCurrency.BLoadLayoutSnippet("ServerCurrency")
+        ServerCurrency.SetDialogVariableInt("currency_count", 0)
+        const _CurrencyIcon = ServerCurrency.FindChildTraverse("CurrencyIcon")!;
+        const CurrencyIcon = LoadCustomComponent(_CurrencyIcon, "server_item");
+        CurrencyIcon._SetServerItemInfo({ item_id: currency_id, show_count: false, hide_bg: true, show_tips: true })
+    }
+
+    GameEvents.Subscribe("ServiceInterface_GetPlayerServerGoldPackageData", event => {
+        let data = event.data;
+        let ItemList = Object.values(data);
+
+        let currency_object:{[item:string]:number} = {}
+        for (let _data of ItemList) {
+            let item_id = _data.item_id;
+            let item_count = _data.number;
+            let ServerCurrency = CurrencyList.FindChildTraverse(`${item_id}`);
+            currency_object[item_id] = item_count;
+            if (ServerCurrency == null) { continue }
+            ServerCurrency.SetDialogVariableInt("currency_count", item_count)
+        }
+
+        GameUI.CustomUIConfig().setStorage("currency_count",currency_object);
+        
+    })
+
+    GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerServerGoldPackageData", {})
 }
 (() => {
     Init();

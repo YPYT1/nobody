@@ -77,14 +77,11 @@ const CGE_Subscribe = () => {
     })
 
 
-    GameEvents.Subscribe("ServiceInterface_GetPlayerServerGoldPackageData", event => {
-        let data = event.data;
-        let ItemList = Object.values(data);
-    })
+    
     
     SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
 
-    SendCustomEvent("ServiceInterface", "GetPlayerServerGoldPackageData", {})
+    
 }
 
 

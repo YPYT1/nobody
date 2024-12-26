@@ -19,6 +19,7 @@ export const Init = () => {
     })
 
     GameEvents.Subscribe("ServiceInterface_GetServerItemPopUp", event => {
+        $.Msg(["ServiceInterface_GetServerItemPopUp"]);
         let items = Object.values(event.data.items);
         for (let i = 0; i < ItemList.GetChildCount(); i++) {
             let rowPanel = ItemList.GetChild(i)!;
@@ -32,6 +33,8 @@ export const Init = () => {
             ServerItem._SetItemId(item_id);
             ServerItem._SetCount(item_count)
         }
+
+        MainPanel.SetHasClass("Show", true);
     })
 
 }

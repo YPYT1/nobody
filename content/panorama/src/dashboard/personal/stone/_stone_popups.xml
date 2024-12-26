@@ -49,9 +49,11 @@
             <Panel class="CostPanel">
                 <Panel class="CenterContent">
                     <Panel id="PriceIcon" />
-                    <Label class="PriceCount" text="{d:cost_count}"/>
+                    <Panel class="PriceLabel">
+                        <Label class="PriceCountSelf" text="{d:self_cost_cont}"/>
+                        <Label class="PriceCount" text="/{d:cost_count}"/>
+                    </Panel>
                 </Panel>
-                
             </Panel>
         </snippet>
 	</snippets>
@@ -113,10 +115,10 @@
 
                 <Panel class="SSOptionContainer">
                     <Panel class="OptionRadioBtnList">
-                        <RadioButton id="SSAttrRadioDown" class="SSAttrRadioBtn" group="SSAttrRadioGroup" check="true">
+                        <RadioButton id="SSAttrRadioDown" class="SSAttrRadioBtn" group="SSAttrRadioGroup" >
                             <Label text="属性降级"/>
                         </RadioButton>
-                        <RadioButton id="SSAttrRadioAdd" class="SSAttrRadioBtn" group="SSAttrRadioGroup">
+                        <RadioButton id="SSAttrRadioAdd" class="SSAttrRadioBtn" group="SSAttrRadioGroup" selected="true">
                             <Label text="属性附加"/>
                         </RadioButton>
                     </Panel>

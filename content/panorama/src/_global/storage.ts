@@ -2,6 +2,7 @@ export const GLOBAL_FILE = "storage";
 
 interface StorageKeyList {
     backpack_count_table: { [item: string]: number };
+    currency_count: { [item: string]: number };
 
     /** 符文属性, 特殊类型 key值*/
     __rune_attr: { [x: string]: number; }

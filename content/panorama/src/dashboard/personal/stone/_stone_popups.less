@@ -436,17 +436,32 @@
             }
 
             #PriceIcon {
-                width: 28px;
-                height: 28px;
+                width: 32px;
+                height: 32px;
                 // background-color: #c98820;
                 vertical-align: middle;
             }
 
-            .PriceCount {
+            &.activation .PriceCountSelf {
+                color: #00ff00;
+            }
+
+            .PriceLabel {
                 margin-left: 8px;
+                flow-children: right;
                 vertical-align: middle;
-                font-size: 16px;
-                color: #A4A4A4;
+            }
+            .PriceCountSelf {
+                
+                // vertical-align: bottom;
+                font-size: 18px;
+                color: #ff0000;
+            }
+
+            .PriceCount {
+                // vertical-align: bottom;
+                font-size: 18px;
+                color: #cccccc;
             }
         }
     }
@@ -738,7 +753,7 @@
     z-index: 99;
     background-color: #00000099;
     visibility: collapse;
-    
+
     .ExtendContainer {
         // width: 300px;
         height: 139px;

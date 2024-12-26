@@ -240,7 +240,7 @@ export function ReloadModules() {
 
     } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段---游戏内UI
         GameRules.EnemyAttribute = new EnemyAttribute();
-        GameRules.MissionSystem.Reload();
+        if(GameRules.MissionSystem != null) GameRules.MissionSystem.Reload();
     } else if (State_Get == GameState.POST_GAME) { //推送结果阶段---游戏内UI
 
     } else if (State_Get == GameState.DISCONNECT) { //断开阶段---游戏内UI

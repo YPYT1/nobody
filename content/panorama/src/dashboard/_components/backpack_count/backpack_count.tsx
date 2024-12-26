@@ -32,13 +32,11 @@ function _GetCount() {
     // 更新背包
     MainPanel._SetItemId = _SetItemId;
     MainPanel._GetCount = _GetCount;
+    EventBus.clear("backpack_count_update");
     EventBus.subscribe("backpack_count_update", data => {
-        if (MainPanel != null) {
-            let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
-            let count = data[item_id] ?? 0;
-            MainPanel.SetDialogVariable("count", "" + count);
-            MainPanel.Data<PanelDataObject>().count = count
-        }
-
+        let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
+        let count = data[item_id] ?? 0;
+        MainPanel.SetDialogVariable("count", "" + count);
+        MainPanel.Data<PanelDataObject>().count = count
     })
 })();

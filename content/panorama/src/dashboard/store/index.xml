@@ -14,12 +14,14 @@
         </snippet>
 
 		<snippet name="ServerCurrency">
-			<Panel class="ServerCurrency">
-				<Panel id="CurrencyIcon"/>
-				<Panel class="CurrencyBorder">
-					<Label class="Count" text="{s:currency_count}"/>
+			<Panel class="ServerCurrency" hittest="false">
+				<Panel class="BorderContent">
+					<Panel id="CurrencyIcon"/>
+					<Panel class="CurrencyBorder" hittest="false">
+						<Label id="CurrencyCount" class="Count" text="{d:currency_count}" hittest="false"/>
+					</Panel>
 				</Panel>
-
+				<Button id="CurrencyExtendBtn" class="ExtendBtn" />
 			</Panel>
 		</snippet>
 	</snippets>

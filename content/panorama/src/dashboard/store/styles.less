@@ -21,14 +21,55 @@
 }
 
 .LocalCurrencyPanel {
-    border: 1px solid #ffffff;
+    margin-top: 36px;
+    margin-right: 36px;
     horizontal-align: right;
-
+    
     #CurrencyList {
         flow-children: right;
     }
 
-    // .ServerCurrency {
+    .ServerCurrency {
+        margin-left: 4px;
+        margin-right: 4px;
+        flow-children: right;
 
-    // }
+        #CurrencyIcon {
+            width: 40px;
+            height: 40px;
+            // background-color: #ffffff;
+            z-index: 2;
+        }
+
+        .CurrencyBorder {
+            z-index: 1;
+            margin-left: 20px;
+            width: 120px;
+            // height: 28px;
+            background-color: #00000099;
+            // border: 1px solid #929292;
+            vertical-align: middle;
+            // border-radius: 6px;
+
+            .Count {
+                margin-left: 32px;
+                font-size: 20px;
+                vertical-align: middle;
+            }
+        }
+
+        .ExtendBtn {
+            width: 33px;
+            height: 33px;
+            vertical-align: middle;
+            background-image: url("file://{images}/custom_game/dashboard/store/ext_btn.png");
+            horizontal-align: right;
+            margin-left: -8px;
+            // visibility: collapse;
+            &:hover {
+                brightness: 2;
+            }
+        }
+
+    }
 }

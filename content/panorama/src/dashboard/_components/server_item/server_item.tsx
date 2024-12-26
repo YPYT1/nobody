@@ -48,20 +48,6 @@ const _SetItemId = (item_id: string | number) => {
             ServerItemIcon.SetImage(image_src);
         }
 
-        // let show_tips = MainPanel.Data<PanelDataObject>().show_tips as boolean;
-        // if (show_tips){
-        //     MainPanel.SetPanelEvent("onmouseover", () => {
-        //         let count = MainPanel.Data<PanelDataObject>().count as number;
-        //         let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
-        //         $.DispatchEvent(
-        //             "UIShowCustomLayoutParametersTooltip",
-        //             MainPanel,
-        //             "custom_tooltip_serveritem",
-        //             "file://{resources}/layout/custom_game/tooltip/server_item/layout.xml",
-        //             `item_id=${item_id}&count=${count}&show_count=${show_count ? 1 : 0}&r=${rarity}`
-        //         );
-        //     })
-        // }
     } else {
         ServerItemIcon.SetImage("");
     }

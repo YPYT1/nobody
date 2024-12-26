@@ -85,7 +85,12 @@ const _SetGoodsId = (goods_id: string | number) => {
         }
 
         StorePurchaseBtn.SetPanelEvent("onactivate", () => {
-            GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
+            if (cost_type == "rmb") {
+                $.Msg(["人民币购买需要单独弹窗", goods_id])
+            } else {
+                GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
+            }
+
         })
     } else {
         StoreIcon.SetImage("");
