@@ -495,6 +495,10 @@ export class ArchiveService extends UIEventRegisterClass {
                     GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
                     GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
                 }
+                /**
+                 * 通用关闭弹窗
+                 */
+                GameRules.ServiceInterface.PulbicLoadClose(player_id);
             },
             (code: number, body: string) => {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "购买出错..")

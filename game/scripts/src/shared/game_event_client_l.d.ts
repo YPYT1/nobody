@@ -228,13 +228,22 @@ declare interface CustomGameEventDeclarations {
     }
 
     /**
+     * 强制关闭加载弹窗
+     */
+    ServiceInterface_PulbicLoadClose : {
+        data: {
+            
+        };
+    }
+
+    /**
      * 背包数据
      */
     ServiceInterface_GetPlayerServerPackageData: {
         data: AM2_Server_Backpack[];
     };
     /**
-     * 背包特殊数据
+     * 货币数据数据
      */
     ServiceInterface_GetPlayerServerGoldPackageData: {
         data: {

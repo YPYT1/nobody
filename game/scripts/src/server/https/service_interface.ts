@@ -469,7 +469,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     }
 
     /**
-     * 获取图鉴配置信息
+     * 强制关闭图鉴加载弹窗
      * @param player_id 
      * @param params 
      */
@@ -477,6 +477,22 @@ export class ServiceInterface extends UIEventRegisterClass{
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_PictuerLoadClose",
+            {
+                data: {
+                }
+            }
+        );
+    }
+
+    /**
+     * 强制关闭通用加载弹窗
+     * @param player_id 
+     * @param params 
+     */
+    PulbicLoadClose(player_id: PlayerID){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_PulbicLoadClose",
             {
                 data: {
                 }
