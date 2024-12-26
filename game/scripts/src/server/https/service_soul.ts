@@ -520,7 +520,6 @@ export class ServiceSoul extends UIEventRegisterClass {
             }
         }
         ret_scope = tostring(value_min) + "-" + tostring(value_max);
-        print("ret_scope : " , ret_scope)
         return ret_scope ;
     }
 

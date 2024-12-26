@@ -54,8 +54,25 @@ export class ArchiveService extends UIEventRegisterClass {
                     for (let index = 0 as PlayerID; index < count; index++) {
                         let steam_id = PlayerResource.GetSteamAccountID(index as PlayerID);
                         GameRules.MapChapter.level_difficulty[index] = data.data.list[steam_id.toString()].level_difficulty;
+                        GameRules.ArchiveService.GetCustomBackpack(index , "22,21");
+                        //获取玩家地图经验 货币等..
+                        GameRules.ServiceData.server_gold_package_list[index]["1001"].number = data.data.list[steam_id.toString()].cz_gold ?? 0;
+                        GameRules.ServiceData.server_gold_package_list[index]["1002"].number = data.data.list[steam_id.toString()].jf_gold ?? 0;
+                        GameRules.ServiceData.server_gold_package_list[index]["1003"].number = data.data.list[steam_id.toString()].jb_gold ?? 0;
+                        GameRules.ServiceData.server_gold_package_list[index]["1004"].number = data.data.list[steam_id.toString()].exp ?? 0;
+                        GameRules.ServiceData.server_gold_package_list[index]["1005"].number = data.data.list[steam_id.toString()].zs_gold ?? 0;
+
+                        //加载技能数据
+                        if(data.data.list[steam_id.toString()].skill_data && data.data.list[steam_id.toString()].skill_data != ""){
+                            GameRules.ServiceInterface.PlayerServerSkillLevelExp[index] = 
+                            JSON.decode(data.data.list[steam_id.toString()].skill_data) as {
+                                [skill_key : string] : number
+                            };
+                            GameRules.ServiceInterface.LoadSkillfulLevel(index);
+                        }else{
+                            GameRules.ServiceInterface.LoadSkillfulLevelInit(index);
+                        }
                     }
-                    print("通关难度:" , GameRules.MapChapter.level_difficulty[0])
                     //0号玩家 的难度作为默认难度
                     GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0])
 
@@ -66,8 +83,6 @@ export class ArchiveService extends UIEventRegisterClass {
                         GameRules.MapChapter.GetGameSelectPhase(-1, {})
                         return null;
                     });
-                    
-
                 }else{
 
                 }
@@ -163,7 +178,7 @@ export class ArchiveService extends UIEventRegisterClass {
             (data: ConfirmDifficultyReturn) => {
                 print("==============获得返回数据================")
                 if (data.code == 200) {
-
+                    //获取玩家背包
                 }
             },
             (code: number, body: string) => {
@@ -300,9 +315,6 @@ export class ArchiveService extends UIEventRegisterClass {
         game_count : 0 ,
         player_list_data : [],
     };
-
-
-    
     /**
      * 添加装备到服务器
      * @param player_id 
@@ -342,7 +354,7 @@ export class ArchiveService extends UIEventRegisterClass {
         let steam_id = PlayerResource.GetSteamAccountID(player_id);
         let param_data = <GetEquipParam>{
             sid: steam_id.toString(),
-            limit : 50 ,
+            limit : 50,
         }
         HttpRequest.AM2Post(ACTION_GET_EQUIP,
             {
@@ -358,7 +370,6 @@ export class ArchiveService extends UIEventRegisterClass {
                 }
             },
             (code: number, body: string) => {
-
 
             }
         )
@@ -445,9 +456,142 @@ export class ArchiveService extends UIEventRegisterClass {
         )
     }
 
+    //商城购买
+    ShoppingBuy(player_id: PlayerID , shop_id : number , buy_count : number , buy_types : number = 1) {
+        //只验证主机
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <ShoppingBuyParam>{
+            sid : tostring(steam_id) , //steamid
+            shop_id : shop_id , //商品id
+            buy_count : buy_count , //购买数量
+            buy_types : buy_types , // 支付方式 1 内部货币  //扫码支付 和充值统一
+        }
+        HttpRequest.AM2Post(ACTION_SHOPPING_BUY,
+            {
+                param: param_data
+            },
+            (data: ShoppingBuyReturn) => {
+                if (data.code == 200) {
+                    //先删除再添加
+                    let red_item = data.data.red_item;
+                    for (const r_e of red_item) {
+                        
+                        GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
+                    }
+                    //循环根据类型添加到不同的地方
+                    let add_item = data.data.add_item;
+                    for (const a_e of add_item) {
+                        let customs = "";
+                        if(a_e.customs){
+                            customs = a_e.customs;
+                        }
+                        GameRules.ServiceData.AddPackageItemSelect(player_id , a_e.id ,  a_e.item_id , customs , a_e.number )
+                    }
+                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+                    GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+                } else {
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id , "购买出错..")
+                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+                    GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+                }
+            },
+            (code: number, body: string) => {
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "购买出错..")
+                GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+                GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+            }
+        )
+    }
+    /**
+     * 获取对应类型背包数据
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    GetCustomBackpack(player_id: PlayerID , aff_class : string) {
+        //只验证主机
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <GetCustomBackpackParam>{
+            sid : tostring(steam_id) , //steamid
+            aff_class : aff_class ,
+        }
+        HttpRequest.AM2Post(ACTION_GET_CUSTOM_BACKPACK,
+            {
+                param: param_data
+            },
+            (data: GetCustomBackpackReturn) => {
+                if (data.code == 200) {
+                    GameRules.ServiceData.server_package_list[player_id] = data.data.list;
+                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+                } else {
+                    GameRules.ServiceData.server_package_list[player_id] = [];
+                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+                }
+            },
+            (code: number, body: string) => {
+                GameRules.ServiceData.server_package_list[player_id] = [];
+                GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+            }
+        )
+    }
 
-    
-
+    /**
+     * 存档技能升级
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    SkillDataUp(player_id: PlayerID , red_item : string , skill_data : string , add_item : string = "") {
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <SkillDataUpParam>{
+            sid : tostring(steam_id) , //steamid
+            skill_data : skill_data ,
+            red_item : red_item,
+            add_item : add_item,
+        }
+        HttpRequest.AM2Post(ACTION_SKILL_DATA_UP,
+            {
+                param: param_data
+            },
+            (data: SkillDataUpReturn) => {
+                if (data.code == 200) {
+                    //先删除再添加
+                    let red_item = data.data.red_item;
+                    for (const r_e of red_item) {
+                        GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
+                    }
+                    //循环根据类型添加到不同的地方
+                    let add_item = data.data.add_item;
+                    for (const a_e of add_item) {
+                        let customs = "";
+                        if(a_e.customs){
+                            customs = a_e.customs;
+                        }
+                        GameRules.ServiceData.AddPackageItemSelect(player_id , a_e.id ,  a_e.item_id , customs , a_e.number )
+                    }
+                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+                    GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+                    //更新存档技能数据
+                    GameRules.ServiceInterface.PlayerServerSkillLevelExp[player_id] = 
+                        JSON.decode(data.data.skill_data) as {
+                            [skill_key : string] : number
+                        };
+                    GameRules.ServiceInterface.LoadSkillfulLevel(player_id);
+                } else {
+                    GameRules.CMsg.SendErrorMsgToPlayer(player_id , "存档技能:升级失败..")
+                    GameRules.ServiceData.server_package_list[player_id] = [];
+                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+                }
+            },
+            (code: number, body: string) => {
+                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "存档技能:升级失败..")
+                GameRules.ServiceData.server_package_list[player_id] = [];
+                GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+            }
+        )
+    }
 
     Debug( cmd: string, args: string[], player_id: PlayerID){
         //游戏结束提交数据
@@ -460,6 +604,14 @@ export class ArchiveService extends UIEventRegisterClass {
         if(cmd == "!GE"){
             this.GetEquip(player_id)
 
+        }
+        if(cmd == "!gm"){
+            let shop_id = args[0] ?? "1";
+            this.ShoppingBuy(player_id , tonumber(shop_id) , 1 )
+        }
+        if(cmd == "!gp"){
+            let aff_class = args[0] ?? "21,2,22";
+            this.GetCustomBackpack(player_id , aff_class)
         }
     }
     

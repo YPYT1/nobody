@@ -234,6 +234,14 @@ declare interface CustomGameEventDeclarations {
         data: AM2_Server_Backpack[];
     };
     /**
+     * 背包特殊数据
+     */
+    ServiceInterface_GetPlayerServerGoldPackageData: {
+        data: {
+            [item_id : string] : AM2_Server_Backpack
+        };
+    };
+    /**
      * 背包更新数据返回
      */
     ServiceInterface_PackageDataUpdate : {

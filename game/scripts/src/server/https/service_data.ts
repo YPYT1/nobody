@@ -16,13 +16,14 @@ export class ServiceData extends UIEventRegisterClass {
     _game_id : string = null
     //服务器时间
     _game_t : number = 9703764246
-
+    //特殊背包数据->货币 经验
+    server_gold_package_list : {
+        [item_id : string] : AM2_Server_Backpack
+    }[] = [];     
     //普通背包数据
     server_package_list : AM2_Server_Backpack[][] = [];     
-
     //怪物卡片背包
     server_monster_package_list : AM2_Server_Backpack[][] = [];
-
     //玩家卡片收集信息  
     server_pictuer_fetter_list : Server_PICTUER_FETTER_CONFIG[] = [];
     //卡片分类
@@ -37,7 +38,6 @@ export class ServiceData extends UIEventRegisterClass {
     player_pictuer_vip : number[] = [];
     constructor(){
         super("ServiceData" , true);
-        //随机添加100张卡片
         for (let index = 0; index < 6; index++) {
             this.server_monster_package_list.push([])
             this.server_pictuer_fetter_list.push({});
@@ -49,89 +49,19 @@ export class ServiceData extends UIEventRegisterClass {
             ]);
             this.player_pictuer_vip.push(0);
             this.server_package_list.push([]);
-        }
-        //假数据
-        this.server_package_list[0].push({
-            id : "123451" , //系统内唯一id
-            item_id: 1201,	//物品表唯一id
-            number: 30,	//物品数量
-            customs: "", //自定义字段
-        });
-        this.server_package_list[0].push({
-            id : "123442",	//系统内唯一id
-            item_id: 1202,	//物品表唯一id
-            number: 40,	//物品数量
-            customs: "", //自定义字段
-        });
-        this.server_package_list[0].push({
-            id : "123443",	//系统内唯一id
-            item_id: 1203,	//物品表唯一id
-            number: 645,	//物品数量
-            customs: "", //自定义字段
-        });
-        this.server_package_list[0].push({
-            id : "123444",	//系统内唯一id
-            item_id: 1282,	//物品表唯一id
-            number: 231,	//物品数量
-            customs: "", //自定义字段
-        });
-        this.server_package_list[0].push({
-            id : "123445",	//系统内唯一id
-            item_id: 3203,	//物品表唯一id
-            number: 324,	//物品数量
-            customs: "", //自定义字段
-        });
-        this.server_package_list[0].push({
-            id : "12344526",	//系统内唯一id
-            item_id: 1292,	//物品表唯一id
-            number: 324,	//物品数量
-            customs: "", //自定义字段
-        });
-        this.server_package_list[0].push({
-            id : "123445154",	//系统内唯一id
-            item_id: 1293,	//物品表唯一id
-            number: 15226,	//物品数量
-            customs: "", //自定义字段
-        });
+            this.server_gold_package_list.push({});
 
-        //魂石 一级
-        for (let index = 0; index < 18; index++) {
-            let item_id = 10000 + index;
-            this.server_package_list[0].push({
-                id : tostring(item_id),	//系统内唯一id
-                item_id: item_id,	//物品表唯一id
-                number: 1000,	//物品数量
-                customs: "", //自定义字段
-            });
+            for (let i_n = 1; i_n <= 5; i_n++) { //初始化空数据
+                let item_id = 1000 + i_n;
+                let item_id_str = tostring(item_id);
+                this.server_gold_package_list[index][item_id_str] = {
+                    id : "",	//系统内唯一id
+                    item_id : item_id,	//物品表唯一id
+                    number : 0,	//物品数量
+                }
+            }
         }
-
-        //魂石 二级
-        for (let index = 0; index < 18; index++) {
-            let item_id = 10101 + index;
-            this.server_package_list[0].push({
-                id : tostring(item_id),	//系统内唯一id
-                item_id: item_id,	//物品表唯一id
-                number: 1000,	//物品数量
-                customs: "", //自定义字段
-            });
-        }
-
-        //魂石
-        for (let index = 0; index < 7; index++) {
-            let item_id = 1279 + index;
-            this.server_package_list[0].push({
-                id : tostring(item_id),	//系统内唯一id
-                item_id: item_id,	//物品表唯一id
-                number: 1000,	//物品数量
-                customs: "", //自定义字段
-            });
-        }
-        this.server_package_list[0].push({
-            id : tostring(1003),	//系统内唯一id
-            item_id: 1003,	//物品表唯一id
-            number: 100000,	//物品数量
-            customs: "", //自定义字段
-        });
+        //初始化结构
         for(let key in PictuerCardData){
             let CardData = PictuerCardData[key as keyof typeof PictuerCardData];
             if(CardData.rarity == 5){
@@ -149,6 +79,7 @@ export class ServiceData extends UIEventRegisterClass {
                 this.server_pictuer_card_special[key] = CardData.special_compound;
             }
         }
+        
     }
     /**
      * 快速查找背包里面卡片的物品数量和下标
@@ -181,7 +112,7 @@ export class ServiceData extends UIEventRegisterClass {
      * @param item_id 
      * @returns 
      */
-    AddPackageItem(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ){
+    AddPackageItem(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ) : boolean{
         let item_id_string = tostring(item_id);
         let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
         if(merge != 1){
@@ -204,6 +135,7 @@ export class ServiceData extends UIEventRegisterClass {
                 "customs" : customs
             })
         }
+        return true
     }
     /**
      * 验证本地背包数量 /或是否拥有
@@ -247,6 +179,70 @@ export class ServiceData extends UIEventRegisterClass {
         return ret;
     }
 
+
+    /**
+     * 验证本地背包数量 /或是否拥有
+     * @param player_id 
+     */
+    GoldVerifyPackageItem(player_id : PlayerID  , item_id : number  , count ? : number , id ?: string) : { is_verify : boolean , index : number} {
+        //检查卡片是否充足
+        let ret : { is_verify : boolean , index : number} = {
+            is_verify : false, 
+            index : -1,
+        }
+        let item_package = GameRules.ServiceData.server_package_list[player_id];
+        let item_id_string = tostring(item_id);
+        let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
+        if(merge != 1){
+            for (let index = 0; index < item_package.length; index++) {
+                const package_item_id = item_package[index].item_id;
+                if(package_item_id == item_id){
+                    if(count){
+                        if(item_package[index].number >= count){
+                            ret.is_verify = true;
+                            ret.index = index;
+                        }
+                    }else{
+                        ret.is_verify = true;
+                        ret.index = index;
+                    }
+                    return ret;
+                }
+            }
+        }else{
+            for (let index = 0; index < item_package.length; index++) {
+                const package_id = item_package[index].id;
+                if(package_id == id){
+                    ret.is_verify = true;
+                    ret.index = index;
+                    return ret;
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * 选择性检测
+     * @param player_id 
+     * @param item_id 
+     * @param count 
+     * @param id 
+     * @returns 
+     */
+    SelectVerifyPackageItem(player_id : PlayerID  , item_id : number  , count ? : number , id ?: string) : { is_verify : boolean , index : number}{
+        //检查卡片是否充足
+        let ret : { is_verify : boolean , index : number} = {
+            is_verify : false, 
+            index : -1,
+        }
+        if(item_id <= 1999){
+
+        }else{
+            return this.VerifyPackageItem(player_id , item_id  , count , id );
+        }
+    }
+
     /**
      * 对本地背包进行数据扣除 (不进行数据同步)
      * @param player_id 
@@ -264,6 +260,94 @@ export class ServiceData extends UIEventRegisterClass {
             return false;
         }
     }
+    /**
+     * 对本地背包进行数据扣除 (不进行数据同步) 返回false时需要同步服务器数据
+     * @param player_id 
+     * @param item_id 
+     * @returns 
+     */
+    DeletePackageItemOfServer(player_id : PlayerID ,item_id : number  , count : number , id ?: string) : boolean {
+        let c_index = -1;
+        let item_package = GameRules.ServiceData.server_package_list[player_id];
+        let item_id_string = tostring(item_id);
+        let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
+        if(merge != 1){
+            for (let index = 0; index < item_package.length; index++) {
+                const package_item_id = item_package[index].item_id;
+                if(package_item_id == item_id){
+                    if(count){
+                        if(item_package[index].number >= count){
+                            c_index = index;
+                        }
+                    }else{
+                        c_index = index;
+                    }
+                }
+            }
+        }else{
+            for (let index = 0; index < item_package.length; index++) {
+                const package_id = item_package[index].id;
+                if(package_id == id){
+                    c_index = index;
+                }
+            }
+        }
+        if(c_index != -1){
+            if(GameRules.ServiceData.server_package_list[player_id][c_index].number > count){
+                GameRules.ServiceData.server_package_list[player_id][c_index].number -= count;
+                return true;
+            }else if(GameRules.ServiceData.server_package_list[player_id][c_index].number = count){
+                GameRules.ServiceData.server_package_list[player_id].splice(c_index , 1);
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+
+
+    /**
+     * 对金币等数据更新
+     * @param player_id 
+     * @param item_id 
+     * @returns 
+     */
+    GoldPackageUpData(player_id : PlayerID ,item_id : number , count : number ) : boolean{
+        let item_package = GameRules.ServiceData.server_gold_package_list[player_id];
+        let item_id_string = tostring(item_id);
+        if(item_package.hasOwnProperty(item_id_string)){
+            GameRules.ServiceData.server_gold_package_list[player_id][item_id_string].number += count;
+        }
+        return true;
+    }
+    /**
+     * 数据背包删除修改分支
+     * @param player_id 
+     */
+    DeletePackageItemSelect(player_id : PlayerID ,item_id : number  , count : number , id ?: string) :  boolean{
+        if(item_id <= 1199){
+            return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , - count );
+        }else{
+            return GameRules.ServiceData.DeletePackageItemOfServer(player_id , item_id , count , id);
+        }
+    }
+
+    /**
+     * 数据背包新增修改分支
+     * @param player_id 
+     */
+    AddPackageItemSelect(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ) :  boolean{
+        if(item_id <= 1199){
+            return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , count );
+        }else{
+            return GameRules.ServiceData.AddPackageItem(player_id , id  , item_id , customs , count )
+        }
+    }
+
+
 
 
     //统一加载玩家存档属性
@@ -416,44 +500,38 @@ export class ServiceData extends UIEventRegisterClass {
             }
             GameRules.ServiceInterface.GetPlayerCardList(player_id , {});
         }
-        if(cmd == "!AddPackageItem"){
-            let msg = args[0];
-            let count = args[1];
-            this.AddPackageItem(player_id , "2232"+msg+count, tonumber(msg) , "" , tonumber(count));
-            GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
-        }
-        if(cmd == "!PDA"){
-            let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
-            let count_id = args[0] ?? "1"; 
-            let ability_id_list = PictuerFetterConfig[count_id as keyof typeof PictuerFetterConfig].ability_id;
-            for (const element of ability_id_list) {
-                if(element != "null"){
-                    let le = element.split("_");
-                    let ab_key = tonumber(le[0]);
-                    let ab_level = tonumber(le[1]);
-                    if(selfhHero.pictuer_ability_name.hasOwnProperty(ab_key)){
-                        if(selfhHero.pictuer_ability_name[ab_key] < ab_level){
-                            selfhHero.pictuer_ability_name[ab_key] = ab_level;
-                        }
-                    }else{
-                        selfhHero.pictuer_ability_name[ab_key] = ab_level;
-                    }
-                }
-            }
-        }
-        if(cmd == "!PFDA"){
-            let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
-            let aid = args[0] ?? "1"; 
-            let level = args[0] ?? "1"; 
-            let ab_key = tonumber(aid);
-            let ab_level = tonumber(level);
-            if(selfhHero.pictuer_ability_name.hasOwnProperty(ab_key)){
-                if(selfhHero.pictuer_ability_name[ab_key] < ab_level){
-                    selfhHero.pictuer_ability_name[ab_key] = ab_level;
-                }
-            }else{
-                selfhHero.pictuer_ability_name[ab_key] = ab_level;
-            }
-        }
+        // if(cmd == "!PDA"){
+        //     let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        //     let count_id = args[0] ?? "1"; 
+        //     let ability_id_list = PictuerFetterConfig[count_id as keyof typeof PictuerFetterConfig].ability_id;
+        //     for (const element of ability_id_list) {
+        //         if(element != "null"){
+        //             let le = element.split("_");
+        //             let ab_key = tonumber(le[0]);
+        //             let ab_level = tonumber(le[1]);
+        //             if(selfhHero.pictuer_ability_name.hasOwnProperty(ab_key)){
+        //                 if(selfhHero.pictuer_ability_name[ab_key] < ab_level){
+        //                     selfhHero.pictuer_ability_name[ab_key] = ab_level;
+        //                 }
+        //             }else{
+        //                 selfhHero.pictuer_ability_name[ab_key] = ab_level;
+        //             }
+        //         }
+        //     }
+        // }
+        // if(cmd == "!PFDA"){
+        //     let selfhHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        //     let aid = args[0] ?? "1"; 
+        //     let level = args[0] ?? "1"; 
+        //     let ab_key = tonumber(aid);
+        //     let ab_level = tonumber(level);
+        //     if(selfhHero.pictuer_ability_name.hasOwnProperty(ab_key)){
+        //         if(selfhHero.pictuer_ability_name[ab_key] < ab_level){
+        //             selfhHero.pictuer_ability_name[ab_key] = ab_level;
+        //         }
+        //     }else{
+        //         selfhHero.pictuer_ability_name[ab_key] = ab_level;
+        //     }
+        // }
     }
 }

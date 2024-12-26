@@ -36,14 +36,14 @@ declare interface AM2_Server_Draw_Data {
 }
 //存档背包
 declare interface AM2_Server_Backpack {
-    id?: string,	//系统内唯一id
+    id: string,	//系统内唯一id
     item_id: number,	//物品表唯一id
     number: number,	//物品数量
-    customs: string, //自定义字段
+    customs ?: string, //自定义字段
 }
 
 declare interface AM2_Server_Backpack_Update {
-    id?: string,	//系统内唯一id
+    id: string,	//系统内唯一id
     item_id: number,	//物品表唯一id
     number: number,	//物品数量
     customs: string, //自定义字段
@@ -113,29 +113,6 @@ declare interface AM2_ImprintItem_ExtraProps {
         k: string, //键
         v: number, //值
     }[]
-}
-
-
-
-//通用用户基础信息返回
-declare interface AM2_Server_UserInfo {
-    jian_hun: number, //箭魂
-    tq: number, //元素精华
-    tb: number, //钻石
-    item_9: number, // 宠物蛋
-    pet_exp : number, //宠物经验
-    item_55 : number , // 宠物蛋碎片
-    item_54 : number , // 武器箱
-    item_93 : number , // 无尽碎片
-    item_97 : number , // 新年货币
-    item_98 : number , // 魂币
-    item_99 : number , // 符文箱
-    item_100 : number , // 符文经验
-    item_2002 : number , // 福字
-    item_2003 : number , // 好运祈愿券
-    item_2004 : number , // 龙币
-    item_2005 : number , // UR宠物兑换箱
-    item_2006 : number , // 大师证明
 }
 
 //圣物轮回返回数据

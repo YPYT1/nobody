@@ -10,7 +10,6 @@ import { modifier_prop_effect } from '../../../modifier/prop_effect/modifier_pro
 /**商店 */
 @reloadable
 export class MysticalShopSystem extends UIEventRegisterClass {
-
     /**
      * 神秘商店物品列表
      */
@@ -52,9 +51,9 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     // 折扣type 初始值
     // box_type_discount_start: number = 18;
     //默认最大栏位
-    shop_field_max: number = 3;
+    shop_field_max : number = 3;
     //VIP栏位
-    shop_field_max_vip: number = 0;
+    shop_field_max_vip : number = 0;
     //商店准备信息
     shop_state_data: ShopStateData[] = [];
     //售卖状态
@@ -65,7 +64,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     //购买结束时间
     countdown_timer : number = 0;
     //玩家购买时间
-    MYSTICAL_SHOP_BUY_ITEM: number = 90;
+    MYSTICAL_SHOP_BUY_ITEM : number = 90;
     //最终等待时间
     MYSTICAL_SHOP_AWAIT: number = 3;
 
@@ -114,7 +113,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     /**
      * 刷新次数上限
      */
-    refresh_limit : number = 10;
+    refresh_limit : number = 100;
     //玩家灵魂消耗率
     /**
      * 当局成长道具上线
@@ -516,7 +515,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                     continue;
                 }
             }
-            
+            print("_name" ,  item_name);
             if (shop_wp_list.includes(item_name)) {
                 //跳过本次 
                 index--;
@@ -830,6 +829,12 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                             for (let i_d = 0; i_d < 6; i_d++) {
                                 this.item_level_probability_group[player_id][i_d][l_i] = 0;
                             }
+                        }else{
+                            for (let i_d = 0; i_d < 6; i_d++) {
+                                //十倍提升
+                                this.item_level_probability_group[player_id][i_d][l_i] = this.item_level_probability_group[player_id][i_d][l_i] * 10;
+                            }
+                            
                         }
                     }
                 }

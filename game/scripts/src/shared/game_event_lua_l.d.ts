@@ -404,6 +404,10 @@ declare interface CGED {
         GetPlayerServerPackageData : {
             
         }
+        //获取存档特殊数据 黄金 良善点 
+        GetPlayerServerGoldPackageData : {
+            
+        }
         //获取技能相关信息
         GetPlayerServerSkillData : {
             

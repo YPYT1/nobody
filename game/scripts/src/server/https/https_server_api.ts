@@ -21,6 +21,9 @@ const ACTION_GET_EQUIP = "/get_equip";
 // 3.2 查看装备
 const ACTION_UPDATE_EQUIP = "/update_equip";
 
+// 4.1 存档技能升级
+const ACTION_SKILL_DATA_UP = "/skill_data_up";
+
 
 
 

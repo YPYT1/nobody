@@ -1,5 +1,13 @@
 //code = 203 统一给玩家看 msg的信息
 
+
+declare interface ItemTReturn { //通关获得的物品
+    id : string, //道具唯一id
+    item_id: number, //物品唯一id
+    count: number, //数量
+    customs ? :  string , //额外数据
+}
+
 declare interface CreateGameParam {
     steamids: number[]
 }
@@ -14,8 +22,11 @@ declare interface CreateGameReturn {
 				inside: number, //是否内侧 0否 1是
 				level_difficulty: string, //通关难度
 				exp: number, //地图经验值
-				tb_gold: number, //钻石
-				tq_gold: number , //元素精华
+				cz_gold: number, //黄金
+				jf_gold: number , //良善点
+                jb_gold: number , //银币
+                zs_gold: number , //钻石
+                skill_data : string,//技能数据
             }
         }
         time : number , // 服务器时间
@@ -82,15 +93,7 @@ declare interface GameOverReturn {
     data :  {
         list : {
             [steam_id : string] : { // steamid
-                add_items : { //通关获得的物品
-                    id : string, //道具唯一id
-                    item_id: number, //物品唯一id
-                    count: number, //数量
-                    class: number, //类型
-                    type: number, //类型
-                    lv: number , //等级
-                    customs :  string , //额外数据
-                }[]
+                add_items : ItemTReturn[]
             }
         }
         level_difficulty : string, //当前可用难度
@@ -113,15 +116,7 @@ declare interface GameDhmReturn {
     code : number, //状态码
     msg : string, //服务器消息
     data :  {
-        add_items : { //通关获得的物品
-            id : number, //道具唯一id
-            item_id: number, //物品唯一id
-            count: string, //数量
-            class: number, //类型
-            type: number, //类型
-            lv: number , //等级
-            customs :  string , //额外数据
-        }[]
+        add_items : ItemTReturn[]
     }
 }
 
@@ -196,3 +191,67 @@ declare interface GameLogReturn {
 
 
 
+
+/**
+ * 存档商城购买参数
+ */
+declare interface ShoppingBuyParam {
+	sid : string , //steamid
+    shop_id : number , //商品id
+    buy_count : number , //购买数量
+    buy_types : number , // 支付方式 1 内部货币  //扫码支付 和充值统一
+}
+/**
+ * 存档商城购买返回数据
+ */
+declare interface ShoppingBuyReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data : {
+        limit : {},
+        add_item : AM2_Server_Backpack[],
+        red_item : AM2_Server_Backpack[],
+    }
+}
+
+/**
+ * 获取背包数据参数
+ */
+declare interface GetCustomBackpackParam {
+	sid : string , //steamid
+    aff_class : string , //affiliation_class 物品类型 , 逗号分割
+}
+/**
+ * 获取背包返回数据
+ */
+declare interface GetCustomBackpackReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        list : AM2_Server_Backpack[]
+    }
+}
+
+
+/**
+ * 存档技能升级参数
+ */
+declare interface SkillDataUpParam {
+	sid : string , //steamid
+    add_item ? : string , // 逗号分割 itemid_number,itemid_number
+    red_item  : string , //  逗号分割 itemid_number,itemid_number
+    skill_data :  string , // `skill_data` : '存档技能数据',
+}
+
+/**
+ * 存档技能升级返回数据
+ */
+declare interface SkillDataUpReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        add_item : AM2_Server_Backpack[],
+        red_item : AM2_Server_Backpack[],
+        skill_data : string , // `skill_data` : '存档技能数据',
+    }
+}

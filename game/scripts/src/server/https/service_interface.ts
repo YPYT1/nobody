@@ -19,17 +19,28 @@ export class ServiceInterface extends UIEventRegisterClass{
     //玩家地图等级
     player_map_level : number[] = [ 10 , 100 , 100 , 100 , 100 , 100 ];
 
-
     fetter_ability_values: {
         [name: string]: {
             [key: string]: number[];
         };
     } = {};
 
+    player_init_count = 4;
+
+    //总经验
+    PlayerServerSkillLevelExp : {
+        [skill_key : string] : number
+    }[] = []
+    //主类型总等级
+    PlayerServerSkillLevelCount : PlayerServerSkillLevelCount[] = [];
+    //分支等级
+    PlayerServerSkillTypeLevel : CGEDServerSkillTypeLevel[] = [];
+
+
     constructor() {
         super("ServiceInterface" , true)
         //初始化总等级
-        for (let index = 0; index < 6; index++) {   
+        for (let player_id = 0 as PlayerID; player_id < this.player_init_count; player_id ++) {   
             this.PlayerServerSkillLevelCount.push({
                 level : {}
             })
@@ -39,6 +50,8 @@ export class ServiceInterface extends UIEventRegisterClass{
             this.player_hero_star.push({
                 6 : 3
             })
+            //玩家技能初始经验
+            this.PlayerServerSkillLevelExp.push({});
         }
         //初始化技能数据
         for (let i_key in PictuerFetterAbility) {
@@ -55,6 +68,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                 this.fetter_ability_values[i_key][A_key] = numlist;
             }
         }
+        
     }
     //玩家对应英雄等级
     player_hero_star : {
@@ -80,10 +94,6 @@ export class ServiceInterface extends UIEventRegisterClass{
         let key:string = params.key;
         GameRules.ArchiveService.VerificationCode(player_id, key);
     }
-    //主类型总等级
-    PlayerServerSkillLevelCount : PlayerServerSkillLevelCount[] = [];
-    //分支等级
-    PlayerServerSkillTypeLevel : CGEDServerSkillTypeLevel[] = [];
     
     /**
      * 技能经验值转等级
@@ -122,40 +132,38 @@ export class ServiceInterface extends UIEventRegisterClass{
      * 加载存档技能等级
      * @param player_id 
      */
+    LoadSkillfulLevelInit(player_id : PlayerID){
+        let sse_length = Object.keys(ServerSkillExp);
+        for (const element of sse_length) {
+            this.PlayerServerSkillLevelExp[player_id][element] = 0
+        }
+        this.LoadSkillfulLevel(player_id);
+    }
+    /**
+     * 加载存档技能等级
+     * @param player_id 
+     */
     LoadSkillfulLevel(player_id : PlayerID){
         this.PlayerServerSkillLevelCount[player_id] = {
             level : {}
         }
         this.PlayerServerSkillTypeLevel[player_id] = {};
-        let level_obj : { [ key : string] : number } =  {};
-        let sse_length = Object.keys(ServerSkillExp).length;
-        for (let index = 1; index <= sse_length; index++) {
-            let key = index.toString();
-            let is_advanced =  ServerSkillExp[key as keyof typeof ServerSkillExp].is_advanced
-            if(is_advanced == 1){
-                level_obj[index.toString()] = RandomInt(1 , 30);
-            }else{
-                if(index == 1){
-                    level_obj[index.toString()] = 99999999;
-                }else{
-                    level_obj[index.toString()] = RandomInt(10000 , 920000);
-                }
-            }
-        }
-        for (const key in level_obj) {
-            this.GenerateSkillLevel(player_id,key , level_obj[key])
+        let obj_exp = this.PlayerServerSkillLevelExp[player_id];
+        //加载主技能经验等级
+        for (const key in obj_exp) {
+            this.GenerateSkillLevel(player_id, key , obj_exp[key])
         }
         //加载分支信息
         for (const key in this.PlayerServerSkillLevelCount[player_id].level) {
-            GameRules.ServiceInterface.GenerateSkillTypeLevel(player_id , key);
+            this.GenerateSkillTypeLevel(player_id , key);
         }
         this.GetPlayerServerSkillData(player_id , {});
     }
     /**
-     * 
+     * 等级预处理
      */
     GenerateSkillLevel(player_id : PlayerID , key : string  , skill_exp : number){
-        let is_advanced =  ServerSkillExp[key as keyof typeof ServerSkillExp].is_advanced
+        let is_advanced =  ServerSkillExp[key as keyof typeof ServerSkillExp].is_advanced;
         if(is_advanced == 0){ //不是高级
             let lvdata = this.GetServerSkillfulLevel( key , skill_exp);
             let need_number = lvdata.level_exp - lvdata.cur_exp;
@@ -247,24 +255,45 @@ export class ServiceInterface extends UIEventRegisterClass{
             let is_advanced =  ServerSkillExp[skill_key as keyof typeof ServerSkillExp].is_advanced
             if(data.lv < max_level){
                 let up_exp = 0;
+                // itemid_number,itemid_number
+                let red_item_str = "";
+                
                 for (const key in data.need_item) {
                     let item_id_number = tonumber(key);
                     let number = data.need_item[key];
+
+                    if(red_item_str == ""){
+                        red_item_str = tostring(item_id_number) + "_" + tostring(number)
+                    }else{
+                        red_item_str += "," + tostring(item_id_number) + "_" + tostring(number);
+                    }
                     let item_ret = GameRules.ServiceData.VerifyPackageItem(player_id , item_id_number , number);
                     if(item_ret.is_verify == false){
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能升级:材料不足");
+                        return ;
                     }
                     if(is_advanced == 1){
-                        
                         up_exp = number;
                     }else{
                         up_exp = number;
                     }
-                    GameRules.ServiceData.DeletePackageItem(player_id , item_ret.index , number);
                 }
-                let zz_exp = this.PlayerServerSkillLevelCount[player_id].level[skill_key].exp + up_exp; 
+
+                let skill_data = CustomDeepCopy(GameRules.ServiceInterface.PlayerServerSkillLevelExp[player_id]) as {
+                    [skill_key : string] : number
+                };
+                skill_data[skill_key] += up_exp;
+                let skill_key_str = JSON.encode(skill_data);
+                let zz_exp = this.PlayerServerSkillLevelCount[player_id].level[skill_key].exp + up_exp;
+
+                //此处要修改...
+                GameRules.ArchiveService.SkillDataUp(player_id , skill_key_str , red_item_str);
+
+
+
                 GameRules.ServiceInterface.GenerateSkillLevel(player_id, skill_key , zz_exp);
                 GameRules.ServiceInterface.GenerateSkillTypeLevel(player_id , skill_key );
+                
                 print("fasong...")
                 this.GetPlayerServerSkillData(player_id , {});
                 this.GetPlayerServerPackageData(player_id , {});
@@ -680,7 +709,22 @@ export class ServiceInterface extends UIEventRegisterClass{
             }
         );
     };
-
+    /**
+         * 获取货币相关数据
+         * @param player_id 
+         * @param params 
+         * @param callback 
+         */
+    GetPlayerServerGoldPackageData(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerServerPackageData"], callback?){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerServerGoldPackageData",
+            {
+                data: GameRules.ServiceData.server_gold_package_list[player_id]
+            }
+        );
+    };
+    
     /**
      * 更新背包物品
      * @param player_id 
@@ -847,8 +891,8 @@ export class ServiceInterface extends UIEventRegisterClass{
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
-        if(cmd == "-LoadSkillfulLevel"){
-            this.LoadSkillfulLevel(player_id)
+        if(cmd == "-LoadSkillfulLevelInit"){
+            this.LoadSkillfulLevelInit(player_id)
         }
         if(cmd == "-PlayerConsumeCard"){
             let suit_id = args[0];
