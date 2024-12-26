@@ -710,17 +710,34 @@ export class ServiceInterface extends UIEventRegisterClass{
         );
     };
     /**
-         * 获取货币相关数据
-         * @param player_id 
-         * @param params 
-         * @param callback 
-         */
+     * 获取货币相关数据
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
     GetPlayerServerGoldPackageData(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerServerPackageData"], callback?){
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerServerGoldPackageData",
             {
                 data: GameRules.ServiceData.server_gold_package_list[player_id]
+            }
+        );
+    };
+    /**
+     * 获取数据
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetServerItemPopUp(player_id: PlayerID, add_items : AM2_Server_Backpack[] , callback?){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetServerItemPopUp",
+            {
+                data : {
+                    items : add_items
+                }
             }
         );
     };
@@ -827,8 +844,19 @@ export class ServiceInterface extends UIEventRegisterClass{
         if(Object.keys(send_obj).length > 0){
             GameRules.ArchiveService.PostLuaLog(player_id , send_obj);
         }
-        
     }
+
+    /**
+     * 商店购买
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    ShoppingBuy(player_id: PlayerID, params: CGED["ServiceInterface"]["ShoppingBuy"], callback?){
+        let shop_id = tonumber(params.shop_id);
+        let count = tonumber(params.count);
+        GameRules.ArchiveService.ShoppingBuy(player_id , shop_id , count);
+    };
 
     /**
      * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)

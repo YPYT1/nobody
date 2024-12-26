@@ -475,7 +475,6 @@ export class ArchiveService extends UIEventRegisterClass {
                     //先删除再添加
                     let red_item = data.data.red_item;
                     for (const r_e of red_item) {
-                        
                         GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
                     }
                     //循环根据类型添加到不同的地方
@@ -489,6 +488,8 @@ export class ArchiveService extends UIEventRegisterClass {
                     }
                     GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
                     GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+                    
+                    GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
                 } else {
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id , "购买出错..")
                     GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});

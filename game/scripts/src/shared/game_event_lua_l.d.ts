@@ -416,6 +416,12 @@ declare interface CGED {
         ServerSkillUp : {
             key : string , // 技能key
         }
+
+        //购买
+        ShoppingBuy : {
+            shop_id : string ,  //购买商品id
+            count : number , //购买数量
+        }
     }
 }
 

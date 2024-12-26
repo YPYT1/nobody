@@ -257,6 +257,14 @@ declare interface CustomGameEventDeclarations {
             SkillTypeLevel : CGEDServerSkillTypeLevel,
         }
     }
+    /**
+     * 获取道具弹窗
+     */
+    ServiceInterface_GetServerItemPopUp : {
+        data : {
+            items : AM2_Server_Backpack[],
+        }
+    }
     //玩家生命数
     GameInformation_GetPlayerLifeData : {
         data: {

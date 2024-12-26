@@ -37,7 +37,7 @@ declare interface AM2_Server_Draw_Data {
 //存档背包
 declare interface AM2_Server_Backpack {
     id: string,	//系统内唯一id
-    item_id: number,	//物品表唯一id
+    item_id: number, //物品表唯一id
     number: number,	//物品数量
     customs ?: string, //自定义字段
 }
