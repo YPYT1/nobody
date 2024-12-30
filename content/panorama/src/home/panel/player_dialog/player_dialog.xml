@@ -57,6 +57,7 @@
 			<Panel class="HeroState">
 				<Label class="Health" text="{d:hp}/ {d:max_hp}  {d:hp_pct}%"/>
 				<Label class="Mana" text="{d:mp}/ {d:max_mp} {d:mp_pct}%" />
+				<Label class="Attack" text="{d:attack}" />
 			</Panel>
 		</snippet>
 	</snippets>

@@ -17,6 +17,20 @@ export class modifier_rune_effect_111 extends BaseModifier {
         this.StartIntervalThink(0.1);
     }
 
+    OnRefresh(params: object): void {
+        if (!IsServer()) { return }
+        let value = 1;
+        if (this.GetParent().rune_level_index["rune_118"]) {
+            value = 2;
+        }
+
+        GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
+            "MoveSpeed": {
+                "BasePercent": this.bonus_ms * value,
+            }
+        })
+
+    }
     OnIntervalThink(): void {
         let vect = this.GetParent().GetAbsOrigin();
         let distance = (vect - this.origin as Vector).Length2D();
@@ -24,9 +38,15 @@ export class modifier_rune_effect_111 extends BaseModifier {
         if (this.move_distance >= 3000) {
             this.move_distance -= 3000;
             this.bonus_ms += 1;
+
+            let value = 1;
+            if (this.GetParent().rune_level_index["rune_118"]) {
+                value = 2;
+            }
+
             GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
                 "MoveSpeed": {
-                    "BasePercent": this.bonus_ms
+                    "BasePercent": this.bonus_ms * value,
                 }
             })
         }

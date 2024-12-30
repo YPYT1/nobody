@@ -84,15 +84,20 @@ export class CustomAI_Boss {
         let diff_data = MapInfoDifficulty[difficulty as "101"]
         let is_final = this.me.GetIntAttr("is_final") == 1;
         // 得到当前难度对应的血量阶段
-        // let boss_hp_phase = is_final ? diff_data.pt_boss : diff_data.ww_boss;
-        let boss_hp_phase = [75, 50, 25];
+        let boss_hp_phase = is_final ? diff_data.pt_boss : diff_data.ww_boss;
+        // let boss_hp_phase = [75, 50, 25];
         boss_hp_phase.sort((a, b) => b - a)
         // DeepPrintTable(boss_hp_phase)
         let index = 0
         for (let hp_phase of boss_hp_phase) {
             if (hp_phase != 0) {
                 if (ability_pool[index] != null) {
-                    this.PhaseStatus.push({ hpPct: hp_phase, activate: false, abilityname: ability_pool[index], mdf: null })
+                    this.PhaseStatus.push({
+                        hpPct: hp_phase,
+                        activate: false,
+                        abilityname: ability_pool[index],
+                        mdf: null
+                    })
                     index += 1;
                 }
             }
@@ -103,13 +108,13 @@ export class CustomAI_Boss {
         }
 
         // 注册移动动作
-        if (this.me.custom_animation["move"]){
+        if (this.me.custom_animation["move"]) {
             let act = this.me.custom_animation["move"].seq
             // this.me.ClearActivityModifiers();
             this.me.AddActivityModifier(act)
             // this.me.SetSequence(act)
         }
-        
+
     }
 
     OnBaseThink(): number {

@@ -63,7 +63,7 @@ export class Altar {
             this.CreateAltar()
         } else {
             let altar_delay = RandomInt(120, 300);
-            print("wait altar_delay:", altar_delay)
+            // print("wait altar_delay:", altar_delay)
             GameRules.GetGameModeEntity().SetContextThink("ALTAR_START_DELAY", () => {
                 GameRules.Altar.CreateAltar();
                 return null
@@ -81,6 +81,16 @@ export class Altar {
             altar_radius: this.altar_radius,
             duration: 60
         })
+
+        // prop_55	【神圣指向】
+        for (let hHero of HeroList.GetAllHeroes()) {
+            if (hHero.prop_count["55"]) {
+                altar_npc.AddNewModifier(hHero, null, "modifier_altar_npc_prop55", {
+                    duration: 60
+                })
+            }
+
+        }
 
     }
 

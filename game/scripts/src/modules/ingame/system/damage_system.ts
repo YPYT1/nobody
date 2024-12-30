@@ -114,7 +114,8 @@ export class DamageSystem {
         let CriticalDamage = hAttacker.custom_attribute_value.CriticalDamage;
         // 乘区计算
         // let BasicAbilityDmg = (params.BasicAbilityDmg ?? 100) * 0.01
-        let SelfAbilityMul = 1 + ((params.SelfAbilityMul ?? 0) * 0.01);
+        // print("params.SelfAbilityMul",params.SelfAbilityMul)
+        let SelfAbilityMul = (params.SelfAbilityMul ?? 100) * 0.01;
         let DamageBonusMul = (params.DamageBonusMul ?? 0) + hAttacker.custom_attribute_value.DamageBonusMul;
         let AbilityImproved = (params.AbilityImproved ?? 0) + hAttacker.custom_attribute_value.AbilityImproved;
         let ElementDmgMul = (params.ElementDmgMul ?? 0) + hAttacker.custom_attribute_value.AllElementDamageBonus;
@@ -139,7 +140,7 @@ export class DamageSystem {
         }
         params.damage = params.damage * DmgReductionPct;
         /** 元素抗性 */
-        let ElementResist =  (params.victim.enemy_attribute_value.AllElementResist ?? 0);
+        let ElementResist = (params.victim.enemy_attribute_value.AllElementResist ?? 0);
         // 乘区
         DamageBonusMul += this.GetBonusDamageFromProp(params)
         // 游侠天赋击破效果
@@ -232,10 +233,7 @@ export class DamageSystem {
             return ApplyDamage(params);
         }
         let ElementResistMul = (100 - ElementResist) * 0.01
-        /**
-         * 造成伤害1=(攻击者攻击力*【1+攻击力加成百分比】*对应技能伤害)*伤害加成*(1+最终伤害)*技能增强*元素伤害百分比*远程或近战伤害增加百分比
-            造成伤害2=固定伤害（=攻击者固定伤害-受攻击者固定伤害减免）【造成伤害最小值1】
-         */
+        // print("SelfAbilityMul", SelfAbilityMul)
         let increased_injury = 1
             * SelfAbilityMul
             * (1 + DamageBonusMul * 0.01)
@@ -244,7 +242,7 @@ export class DamageSystem {
             * (1 + FinalDamageMul * 0.01)
             * math.max(0, ElementResistMul)
             ;
-
+        // print("increased_injury", increased_injury)
         // 根据单位类型进行提升伤害
         if (params.victim.IsBossCreature()) {
             let CreatureDmgLeader = (params.attacker.custom_attribute_value.CreatureDmgLeader ?? 0) * 0.01;
@@ -372,8 +370,11 @@ export class DamageSystem {
         // prop_8	【否定信仰】	队伍对有控制状态效果的人额外造成15%伤害
         let prop_8_count = GameRules.MysticalShopSystem.GetTeamPropCount("prop_8");
         if (prop_8_count > 0) {
-            let prop_8_value = GameRules.MysticalShopSystem.GetTKV('prop_8', 'value', 0);
-            bonus += (prop_8_count * prop_8_value)
+            if (params.victim.IsStunned()) {
+                let prop_8_value = GameRules.MysticalShopSystem.GetTKV('prop_8', 'value', 0);
+                bonus += (prop_8_count * prop_8_value)
+            }
+
         }
 
         // prop_10	【生人勿进】	对自身250码范围内的敌人造成的伤害提升25%

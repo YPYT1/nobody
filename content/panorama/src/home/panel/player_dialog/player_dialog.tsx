@@ -63,6 +63,7 @@ const UpdateHeroStateDialog = () => {
     HeroState.SetDialogVariableInt("max_hp", max_hp)
     HeroState.SetDialogVariableInt("mp", mp)
     HeroState.SetDialogVariableInt("max_mp", max_mp)
+    HeroState.SetDialogVariableInt("attack", Entities.GetDamageMax(entity))
 
     HeroState.SetDialogVariableInt("hp_pct", 100 * hp / max_hp)
     HeroState.SetDialogVariableInt("mp_pct", 100 * mp / max_mp)

@@ -50,7 +50,7 @@ const CustomEventSubscribe = () => {
         SelectList.visible = show;
         // $.Msg(data)
         let list = Object.values(data.data);
-        // $.Msg(["111 HeroTalentSystem_GetSelectTalentData",list.length])
+        $.Msg(["111 HeroTalentSystem_GetSelectTalentData", list.length])
         SelectList.RemoveAndDeleteChildren();
         let order = 0;
         for (let _data of list) {
@@ -72,25 +72,25 @@ const CustomEventSubscribe = () => {
                 let curr = _data.dq!;
                 let next = _data.uph!;
                 let lv = _data.lv;
-                TalentNode.SetHasClass("adv_invest",lv > 3);
-                TalentNode.SetDialogVariable("talent_name",$.Localize("#custom_text_soul_invest"))
+                TalentNode.SetHasClass("adv_invest", lv > 3);
+                TalentNode.SetDialogVariable("talent_name", $.Localize("#custom_text_soul_invest"))
                 TalentNode.SetHasClass("IsAbility", false)
                 TypesLabel.SetHasClass("Resource", true);
                 TypesLabel.SetHasClass("Show", true)
-                TypesLabel.SetDialogVariable("type_label","理财型")
+                TypesLabel.SetDialogVariable("type_label", "理财型")
                 // TalentNode.visible = false
 
-                TalentNode.SetDialogVariableInt("up_value",lv)
-                TalentNode.SetDialogVariableInt("curr",curr)
-                TalentNode.SetDialogVariableInt("next",next)
-                let label = $.Localize("#custom_text_soul_invest_Description",TalentNode)
+                TalentNode.SetDialogVariableInt("up_value", lv)
+                TalentNode.SetDialogVariableInt("curr", curr)
+                TalentNode.SetDialogVariableInt("next", next)
+                let label = $.Localize("#custom_text_soul_invest_Description", TalentNode)
 
-                TalentNode.SetDialogVariable("soul_invest_title",label)
+                TalentNode.SetDialogVariable("soul_invest_title", label)
 
                 // TalentNode.SetDialogVariableInt("max", -1)
 
                 // $.Msg(_data)
-                TalentNode.SetPanelEvent("onactivate",()=>{
+                TalentNode.SetPanelEvent("onactivate", () => {
                     let index = TalentNode.Data<PanelDataObject>().index
                     GameEvents.SendCustomGameEventToServer("HeroTalentSystem", {
                         event_name: "HeroSelectTalentOfIndex",
@@ -147,19 +147,17 @@ const CustomEventSubscribe = () => {
                     ParentAbilityPanel.SetImage(GetTextureSrc(parent_talent.img))
                     ParentAbilityPanel.SetPanelEvent("onmouseover", () => {
                         let _data = hero_talent_list[parent_id]
+                        // $.Msg(["_data",_data.uc])
                         ShowCustomTooltip(ParentAbilityPanel, "talent_tree", "", parent_id, _data.uc)
                     })
                 }
-
-                // let parent_id = AbilityTalentId[ability];
-
-
             } else {
                 let parent_id = AbilityTalentId[link_ability];
                 let parent_talent = TalentTreeConfig[parent_id as "1"];
                 ParentAbilityPanel.SetImage(GetTextureSrc(parent_talent.img))
                 ParentAbilityPanel.SetPanelEvent("onmouseover", () => {
                     let _data = hero_talent_list[parent_id]
+                    // $.Msg(["_data.uc",_data.uc])
                     ShowCustomTooltip(ParentAbilityPanel, "talent_tree", "", parent_id, _data.uc)
                 })
             }
@@ -171,7 +169,7 @@ const CustomEventSubscribe = () => {
             let img_src = GetTextureSrc(row_hero_data.img)
             TalentIcon.SetImage(img_src);
 
-            
+
             let types_value_list = row_hero_data.mark_types.split(",");
             let has_newTypes = row_hero_data.mark_types != "Null";
             TypesLabel.SetHasClass("Show", has_newTypes && level == 1)
@@ -196,11 +194,12 @@ const CustomEventSubscribe = () => {
             let talent_desc = $.Localize(`#custom_talent_${id}_desc`)
             let description_txt = SetLabelDescriptionExtra(
                 talent_desc,
-                level,
+                level - 1,
                 row_hero_data.AbilityValues,
                 row_hero_data.ObjectValues,
                 false
             );
+            // $.Msg(["description_txt", level, description_txt])
             TalentNode.SetDialogVariable("AbilityDescription", description_txt)
 
             // 找到子分支

@@ -54,9 +54,10 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
     }
 
     DoDamageTarget(target: CDOTA_BaseNPC, ability_damage: number): void {
+        let hCaster = this.GetCaster();
+        let hAbility = this.GetAbility();
         target.SetContextThink(DoUniqueString("drow3_b_delay"), () => {
             if (!target.IsAlive()) { return null }
-            let hCaster = this.GetCaster()
             let DamageBonusMul = this.DamageBonusMul;
             if (this.extra_dmg_pct > 0 && GameRules.ElementEffect.State(target, ElementState.burn)) {
                 DamageBonusMul += this.extra_dmg_pct
@@ -67,7 +68,7 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
                 damage: ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 element_type: this.element_type,
-                ability: this.GetAbility(),
+                ability: hAbility,
                 is_primary: this.is_primary,
                 SelfAbilityMul: this.SelfAbilityMul,
                 DamageBonusMul: DamageBonusMul,

@@ -1,5 +1,5 @@
 export let ResourcePanel: { [key in PlayerResourceTyps]?: Panel } = {}
-export const resource_list: PlayerResourceTyps[] = [ "Soul"];
+export const resource_list: PlayerResourceTyps[] = ["Soul"];
 
 
 export const CreatePanel = () => {
@@ -16,8 +16,18 @@ export const CreatePanel = () => {
     GameEvents.Subscribe("ResourceSystem_SendPlayerResources", event => {
         let data = event.data;
         // ResourcePanel["Gold"]?.SetDialogVariable("amount", `${data.Gold}`)
-        ResourcePanel["Soul"]?.SetDialogVariableInt("amount", data.Soul)
-        ResourcePanel["Kills"]?.SetDialogVariableInt("amount", data.Kills)
+        let SoulPanel = ResourcePanel["Soul"]
+        if (SoulPanel) {
+
+            ResourcePanel["Soul"]?.AddClass("Play")
+            $.Schedule(0.25, () => {
+                ResourcePanel["Soul"]?.RemoveClass("Play");
+            })
+
+            SoulPanel.SetDialogVariableInt("amount", data.Soul)
+        }
+
+        // ResourcePanel["Kills"]?.SetDialogVariableInt("amount", data.Kills)
     })
 
     GameEvents.SendCustomGameEventToServer("ResourceSystem", {

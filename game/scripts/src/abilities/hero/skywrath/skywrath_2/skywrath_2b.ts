@@ -83,7 +83,7 @@ export class modifier_skywrath_2b_shield extends BaseModifier {
     _OnHit(hTarget: CDOTA_BaseNPC) {
         this.DecrementStackCount();
         // 反击
-        print("_OnHit",this.ability_damage,this.SelfAbilityMul)
+        // print("_OnHit",this.ability_damage,this.SelfAbilityMul)
         ApplyCustomDamage({
             victim: hTarget,
             attacker: this.GetCaster(),

@@ -192,7 +192,7 @@ const GameEventsSubscribeInit = () => {
         event_name: "GetPlayerResource",
         params: {}
     })
-    
+
     // GameEvents.Subscribe("MysticalShopSystem_GetPlayerShopBuyData", event => {
 
     // })
@@ -312,26 +312,6 @@ export const CreatePanel = () => {
             HideCustomTooltip()
         })
 
-        // const RefreshBtn = ShopItem.FindChildTraverse("RefreshBtn")!;
-        // RefreshBtn.SetPanelEvent("onactivate", () => {
-        //     GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
-        //         event_name: "RefreshOneItemBySoul",
-        //         params: {
-        //             index: i,
-        //         }
-        //     })
-        // })
-
-        // RefreshBtn.SetPanelEvent("onmouseover", () => {
-        //     RefreshBtn.SetHasClass("onmouse", true)
-        //     ShowCustomTextTooltip(RefreshBtn, "#custom_text_mystical_shop_refresh")
-        // })
-
-        // RefreshBtn.SetPanelEvent("onmouseout", () => {
-        //     RefreshBtn.SetHasClass("onmouse", false)
-        //     HideCustomTooltip()
-        // })
-
         const ShopItemCard = ShopItem.FindChildTraverse("ShopItemCard")!;
         ShopItemCard.SetPanelEvent("onactivate", () => {
             let item_key = ShopItemCard.Data<PanelDataObject>().item_key
@@ -367,6 +347,25 @@ export const CreatePanel = () => {
                 // index:1
             }
         })
+    })
+
+    // 重置道具
+    GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
+        for (let i = 0; i < LocalExtremePropsList.GetChildCount(); i++) {
+            let NavItemPanel = LocalExtremePropsList.GetChild(i)!;
+
+            // NavItemPanel.SetHasClass("IsLock", type == 0);
+            // NavItemPanel.SetHasClass("Null", type != 1);
+            // NavItemPanel.SetHasClass("IsVip", is_vip);
+            // 
+            let LimitItem = NavItemPanel.FindChildTraverse("LimitItem") as GameComponent_PropItem;
+
+            LimitItem._SetConfig({ show_tips: false, state: 0 })
+
+
+        }
+
+
     })
 }
 

@@ -1119,6 +1119,11 @@ export class RuneSystem extends UIEventRegisterClass {
             };
             GameRules.CustomAttribute.SetAttributeInKey(hHero, "rune_113_MoveSpeed", attr_count);
         }
+        // 更新 111
+        if(hHero.rune_level_index["rune_111"]){
+            let buff = hHero.FindModifierByName("modifier_rune_effect_111");
+            if(buff){buff.ForceRefresh()}
+        }
         
     }
     /**

@@ -118,3 +118,23 @@ export class modifier_altar_npc extends BaseModifier {
         UTIL_Remove(this.GetParent())
     }
 }
+
+@registerModifier()
+export class modifier_altar_npc_prop55 extends BaseModifier {
+
+    OnCreated(params: object): void {
+        if (!IsServer()) { return }
+        let hCaster = this.GetCaster(); // 道具拥有者
+        let hParent = this.GetParent(); // 目标
+
+        let line_pfx = ParticleManager.CreateParticle(
+            "particles/diy_particles/move.vpcf",
+            ParticleAttachment.POINT_FOLLOW,
+            hCaster,
+        );
+        ParticleManager.SetParticleControl(line_pfx, 1, hParent.GetAbsOrigin());
+        ParticleManager.SetParticleControl(line_pfx, 6, Vector(255, 255, 0))
+        this.AddParticle(line_pfx, false, false, -1, false, false);
+    }
+
+}

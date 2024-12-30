@@ -200,12 +200,16 @@ export class modifier_drow_3b_thinker extends BaseModifier {
             let ability_damage = this.ability_damage
 
             this.parent.SetContextThink("drow_3b", () => {
-                if (this.do_destroy) {
+                if (count >= this.arrow_count) {
                     this.Destroy()
                     return null
                 }
                 let rand = RandomInt(0, enemies.length - 1);
-                let target = enemies[rand]
+                let target = enemies[rand];
+                if (target == null || IsValid(target)) {
+                    count += 1
+                    return 0.01
+                }
                 let target_vect = target.GetAbsOrigin()
                 CreateModifierThinker(
                     hCaster,
@@ -220,10 +224,7 @@ export class modifier_drow_3b_thinker extends BaseModifier {
                 )
                 this.DoDamageTarget(target, ability_damage)
                 count += 1;
-                if (count >= this.arrow_count) {
-                    this.do_destroy = true
-                    return 0.5
-                }
+
                 return 0.1
             }, 0.1)
 

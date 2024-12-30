@@ -1,5 +1,6 @@
 import { HideCustomTooltip, ShowCustomTooltip } from "../utils/custom_tooltip";
 
+const MainPanel = $.GetContextPanel();
 const screen = $("#screen");
 
 const HideOfficialLayoutUI = () => {
@@ -109,7 +110,7 @@ export const Initialize = () => {
     $("#mission").BLoadLayout(layout_path + "/mission/mission.xml", true, false);
     $("#game_loading").BLoadLayout(layout_path + "/game_loading/game_loading.xml", true, false);
     $("#ability_upgrade").BLoadLayout(layout_path + "/ability_upgrade/ability_upgrade.xml", true, false);
-    
+
     if (Game.IsInToolsMode()) {
         $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
         $.GetContextPanel().SetHasClass("IsInToolsMode", true);
@@ -142,6 +143,10 @@ export const Initialize = () => {
         params: {}
     })
 
+
+    // 按键
+
+    // GameUI.IsAltDown()
 }
 
 const DelayLoadFunc = () => {
@@ -151,11 +156,17 @@ const DelayLoadFunc = () => {
     })
 }
 
+const LoopThinker = () => {
+    MainPanel.SetHasClass("is_alt_down", GameUI.IsAltDown())
+    $.Schedule(0.1, LoopThinker)
+}
 (function () {
-    let MainPanel = $.GetContextPanel();
+
     Initialize();
     HideOfficialLayoutUI();
     RegisterCustomTooltip();
     // DelayLoadFunc();
+
+    LoopThinker()
 })();
 

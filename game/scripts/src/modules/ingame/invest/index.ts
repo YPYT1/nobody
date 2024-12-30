@@ -155,6 +155,10 @@ export class InvestSystem extends UIEventRegisterClass {
                 //处理收益其他问题
 
                 //返回修改时间
+
+                // 投资特效
+                const amount = GameRules.InvestSystem.PlayerTimerData[player_id].ResourceCount
+                PopupGoldGain(unit,amount)
                 return GameRules.InvestSystem.PlayerTimerData[player_id].Interval;
             },0)
         }
@@ -220,6 +224,11 @@ export class InvestSystem extends UIEventRegisterClass {
         this.PlayerTimerData[player_id].ResourceCount = this.EqK(player_id , level);
         //重算后发送下消息
         this.GetPlayerInvestData(player_id,{})
+    }
+
+    PlaySpecialEffects(player_id:PlayerID,amount:number){
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        
     }
     /**
      * debug 命令

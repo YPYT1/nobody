@@ -37,7 +37,7 @@ function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
     let talent_name = $.Localize(`#custom_talent_${key}`)
     MainPanel.SetDialogVariable("talent_name", talent_name)
     let talent_desc = $.Localize(`#custom_talent_${key}_desc`)
-    let description_txt = SetLabelDescriptionExtra(talent_desc, level, AbilityValues, ObjectValues, true);
+    let description_txt = SetLabelDescriptionExtra(talent_desc, level - 1, AbilityValues, ObjectValues, true);
 
     let description_lv2 = $.Localize(`#custom_talent_${key}_desc_lv2`);
     if (description_lv2.indexOf("#") != 0) {

@@ -7,7 +7,7 @@ const HudHeathBarContent = $("#HudHeathBarContent");
 // const BossHealthBar = $("#BossHealthBar");
 const UPDATE_PER_TIME = 0.25;
 /** 毎管血多少HP */
-const EVER_MAX_HP = 10000;
+const EVER_MAX_HP = 1000;
 /** 毎管血为多少百分比 */
 const EVER_HP_PCT = 5;
 /** 有几种颜色 */
@@ -166,6 +166,7 @@ function UpdateTopPanelBoss() {
             // let update_time = pPanel.Data<HealtrBarPanelData>().update_time;
             let layer_num = Math.ceil(curr_hp / ever_hp); // 还有几根血条
             pPanel.Data<HealtrBarPanelData>().layer_num = layer_num;
+            pPanel.SetDialogVariableInt("hp_count", layer_num);
             let color_index = (max_layer - layer_num) % TOTAL_COLOR_COUNT;
             let next_color_index = (max_layer - layer_num + 1) % TOTAL_COLOR_COUNT;
 
@@ -207,21 +208,12 @@ function UpdateTopPanelBoss() {
             } else {
                 nextHudHeathBar.style.washColor = `${color_list[next_color_index]}`;
                 nextBossHealthBar.style.washColor = `${color_list[next_color_index]}`;
+                if (layer_num == pPanel.Data<HealtrBarPanelData>().layer_num) {
+                    nextHudHeathBar.style.width = "100%";
+                    nextBossHealthBar.style.width = "100%";
+                }
 
-
-                $.Schedule(0.1, () => {
-                    if (layer_num == pPanel.Data<HealtrBarPanelData>().layer_num) {
-                        nextHudHeathBar.style.width = "100%";
-                        nextBossHealthBar.style.width = "100%";
-                    }
-
-                })
             }
-            // NextHealthBar.style.width = "100%"
-            // NextHealthBar.style.washColor = `${color_list[next_color_index]}`
-            return
-        } else {
-            $.Msg(["huixue"])
             return
         }
 
@@ -229,6 +221,7 @@ function UpdateTopPanelBoss() {
 
         // 当前血量是第几层
         let layer_num = pPanel.Data<HealtrBarPanelData>().layer_num
+        pPanel.SetDialogVariableInt("hp_count", layer_num);
         let color_index = (max_layer - layer_num) % TOTAL_COLOR_COUNT;
         let next_color_index = (max_layer - layer_num + 1) % TOTAL_COLOR_COUNT;
 
@@ -260,11 +253,11 @@ function UpdateTopPanelBoss() {
         // let CurrentHudHealthBar: Panel;
         // HealthBarShine.SetHasClass("Shine",true);
 
-        
-        
-        pPanel.SetDialogVariableInt("hp_count", layer_num);
 
-        if (curr_layer_hp_pct <= 0) {
+
+
+
+        if (curr_layer_hp_pct < 0) {
             pPanel.Data<HealtrBarPanelData>().layer_num = layer_num - 1;
         }
 
