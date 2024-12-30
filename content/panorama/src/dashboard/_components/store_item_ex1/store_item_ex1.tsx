@@ -43,19 +43,27 @@ const _SetGoodsId = (goods_id: string | number) => {
         StoreIcon.SetImage(image_src);
 
         let cost = data.cost
+        let cost_arr = cost.split("_");
+        let cost_type = cost_arr[0];
+        $.Msg(["cost_type",cost_type])
         StorePurchaseBtn.SetPanelEvent("onactivate", () => {
             if (cost == "0_0") {
                 // 直接领取
                 GameEvents.SendCustomGameEventToServer("ServiceInterface", {
                     event_name: "ShoppingBuy",
                     params: {
-                        shop_id: ""+goods_id,
+                        shop_id: "" + goods_id,
                         count: 1,
                     }
                 })
 
             } else {
-                GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
+                if (cost_type == "rmb") {
+                    $.Msg(["人民币购买需要单独弹窗", goods_id])
+                } else {
+                    GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
+                }
+
             }
 
         })

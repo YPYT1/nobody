@@ -59,8 +59,6 @@ function InitSubscribe() {
 
     GameEvents.Subscribe("ServiceSoul_GetPlayerServerSoulData", event => {
         let data = event.data;
-        $.Msg("ServiceSoul_GetPlayerServerSoulData")
-        // $.Msg(data)
         stone_attr_object = {};
         let equip_data = data.list.i;
         for (let id in equip_data) {

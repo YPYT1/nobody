@@ -50,7 +50,7 @@ const CustomEventSubscribe = () => {
         SelectList.visible = show;
         // $.Msg(data)
         let list = Object.values(data.data);
-        $.Msg(["111 HeroTalentSystem_GetSelectTalentData", list.length])
+        // $.Msg(["111 HeroTalentSystem_GetSelectTalentData", list.length])
         SelectList.RemoveAndDeleteChildren();
         let order = 0;
         for (let _data of list) {

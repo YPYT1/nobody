@@ -1,0 +1,417 @@
+@import url("./../_nav_panel.less");
+
+.Container {
+    width: 100%;
+    height: 100%;
+    // background-color: #00000099;
+    flow-children: down;
+}
+
+.Header {
+    horizontal-align: center;
+    margin-top: 90px;
+    margin-left: 360px;
+    width: @RightContentWidth ;
+    // border: 1px solid #fff;
+
+    .ShopTypeTitle {
+        margin-left: 12px;
+        font-size: 36px;
+        color: #ffffff;
+    }
+
+    #ShopFliter {
+        width: 200px;
+        height: 36px;
+        horizontal-align: right;
+    }
+}
+
+.HeaderBanner {
+    // banner
+    width: 1354px;
+    height: 533px;
+    background-image: url("file://{images}/custom_game/dashboard/store/gacha/banner.png");
+
+    .QuickPurchase {
+        flow-children: down;
+        // border: 1px solid #ffffff;
+        margin-left: 40px;
+        margin-top: 40px;
+
+        .Title {
+            width: 154px;
+            height: 24px;
+            background-image: url("file://{images}/custom_game/dashboard/store/gacha/quick_purchase_title.png");
+            horizontal-align: center;
+        }
+
+        .ItemBorder {
+            width: 114px;
+            height: 112px;
+            horizontal-align: center;
+            background-image: url("file://{images}/custom_game/dashboard/store/gacha/quick_purchase_border.png");
+
+            #ServerItem {
+                width: 68px;
+                height: 68px;
+                align: center center;
+                // border: 1px solid #fff;
+            }
+        }
+
+        .QuickPurchaseButton {
+            width: 143px;
+            height: 38px;
+            horizontal-align: center;
+            background-image: url("file://{images}/custom_game/dashboard/store/gacha/qp_button.png");
+
+            &:hover {
+                brightness: 2;
+            }
+
+            &:active {
+                pre-transform-scale2d: 0.95;
+            }
+
+            .IconAndLabel {
+                align: center center;
+                flow-children: right;
+                margin-bottom: 4px;
+
+                #PriceIcon {
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: middle;
+                    // background-color: #fff;
+                }
+
+                Label {
+                    margin-left: 6px;
+                    font-size: 16px;
+                    color: #FFFFFF;
+                    text-shadow: 0px 0px 2px 2.0 #000000;
+                }
+            }
+        }
+
+    }
+
+    #GachaButtonList {
+        vertical-align: bottom;
+        horizontal-align: center;
+        flow-children: right;
+        margin-bottom: 20px;
+
+        .GachaButtonPanel {
+            flow-children: down;
+            margin-left: 8px;
+            margin-right: 8px;
+
+            .GachaCost {
+                horizontal-align: center;
+                flow-children: right;
+
+                #ServerItem {
+                    width: 28px;
+                    height: 28px;
+                    vertical-align: middle;
+                }
+
+                Label {
+                    margin-left: 4px;
+                    font-size: 20px;
+                    color: #ffffff;
+                }
+            }
+
+            &.x10 #GachaButton {
+                background-image: url("file://{images}/custom_game/dashboard/store/gacha/gacha_btn_10.png");
+
+                .GachaLabel {
+                    background-image: url("file://{images}/custom_game/dashboard/store/gacha/gacha_label_10.png");
+                }
+            }
+
+            #GachaButton {
+                width: 218px;
+                height: 80px;
+                background-image: url("file://{images}/custom_game/dashboard/store/gacha/gacha_btn_1.png");
+                margin-top: -8px;
+
+                &:hover {
+                    brightness: 1.5;
+                }
+
+                &:active {
+                    pre-transform-scale2d: 0.95;
+                }
+
+                .GachaLabel {
+                    width: 102px;
+                    height: 28px;
+                    align: center center;
+                    background-image: url("file://{images}/custom_game/dashboard/store/gacha/gacha_label_1.png");
+                }
+            }
+        }
+    }
+
+    #RewardItemShowList {
+        width: 960px;
+        height: 480px;
+        // border: 1px solid #fff;
+        horizontal-align: center;
+        vertical-align: middle;
+
+        .RewardItemShow {
+            width: 142px;
+            height: 148px;
+
+            animation-name: reward_show;
+            animation-iteration-count: infinite;
+
+
+            #RewardItem {
+                width: 72px;
+                height: 72px;
+                align: center center;
+            }
+
+            .BubbleBorder {
+                background-image: url("file://{images}/custom_game/dashboard/store/gacha/bubble_border.png");
+                width: 142px;
+                height: 148px;
+            }
+        }
+
+        #0.RewardItemShow {
+            margin-left: 120px;
+            animation-delay: 0.3s;
+            animation-duration: 7s;
+        }
+
+        #1.RewardItemShow {
+            animation-delay: -1.6s;
+            vertical-align: middle;
+            animation-duration: 6.6s;
+        }
+
+        #2.RewardItemShow {
+            margin-left: 80px;
+            vertical-align: bottom;
+            animation-delay: -0.9s;
+            animation-duration: 8s;
+        }
+
+        #3.RewardItemShow {
+            horizontal-align: right;
+            margin-right: 120px;
+            animation-delay: -0.1s;
+            animation-duration: 7.6s;
+        }
+
+        #4.RewardItemShow {
+            horizontal-align: right;
+            vertical-align: middle;
+            animation-delay: -1.7s;
+            animation-duration: 9s;
+        }
+
+        #5.RewardItemShow {
+            horizontal-align: right;
+            margin-right: 80px;
+            vertical-align: bottom;
+            animation-delay: -2.1s;
+            animation-duration: 8.5s;
+        }
+    }
+}
+
+
+.AccumulatedRewards {
+    width: 1350px;
+    // height: 270px;
+    padding: 12px;
+    background-color: #00000099;
+    border-radius: 8px;
+    flow-children: down;
+
+    .RewardHeader {
+        // margin-top: 24px;
+        margin-left: 24px;
+        width: 203px;
+        height: 22px;
+        background-image: url("file://{images}/custom_game/dashboard/store/gacha/acc_title.png");
+
+    }
+
+    .RewardContent {
+        margin-top: 12px;
+        width: 100%;
+        height: 240px;
+        // border: 1px solid #f00;
+
+        overflow: scroll clip;
+
+        .RewardPanel {
+            // width: 2000px;
+            height: 100%;
+            overflow: noclip;
+            padding-right: 80px;
+        }
+
+        .CurrentProgress {
+            // width: 2000px;
+            height: 6px;
+            background-color: #000000;
+            vertical-align: middle;
+            // border: 1px solid #fff;
+            overflow: clip;
+
+            .ProgressBarLeft {
+                background-color: gradient(linear, 0% 0%, 0% 100%,
+                        from(#7D442899),
+                        color-stop(0.4, #EBBC45),
+                        color-stop(0.6, #EBBC45),
+                        to(#7D442899));
+            }
+        }
+
+        #AccRewardList {
+            width: 100%;
+            // border: 1px solid #ffffff;
+            height: 100%;
+            overflow: noclip;
+            // flow-children: right;
+        }
+
+        .AccRewardItem {
+            // flow-children: down;
+            vertical-align: middle;
+            // margin-bottom: 120px;
+            // border: 1px solid #fff;
+            height: 200px;
+
+            brightness: 0.5;
+            saturation: 0.5;
+
+            &.is_active {
+                brightness: 1;
+                saturation: 1;
+            }
+
+            &.can_receive {
+                .RewardEffect {
+                    visibility: visible;
+                }
+                
+            }
+            &.is_even {
+
+                .RewardItemBorder {
+                    margin-bottom: 0px;
+                    margin-top: 100px;
+                }
+
+                .RewardArrow {
+                    margin-bottom: 0px;
+                    margin-top: 28px;
+                }
+
+                .AccRewardLevel {
+                    margin-bottom: 40px;
+                    margin-top: 0px;
+                }
+
+                .even {
+                    visibility: visible;
+                }
+
+                .odd {
+                    visibility: collapse;
+                }
+            }
+
+            .odd {
+                visibility: visible;
+            }
+
+            .even {
+                visibility: collapse;
+            }
+
+            .RewardArrow {
+                width: 23px;
+                height: 15px;
+                background-image: url("file://{images}/custom_game/dashboard/store/gacha/acc_reward_arrow.png");
+                horizontal-align: center;
+                vertical-align: middle;
+                margin-bottom: 20px;
+                transform: rotateZ(180deg);
+
+                &.odd {
+                    transform: rotateZ(0deg);
+                }
+            }
+
+            .RewardItemBorder {
+                width: 80px;
+                height: 80px;
+                // border: 1px solid #fff;
+                vertical-align: middle;
+                margin-bottom: 100px;
+
+                .ServerItem {
+                    align: center center;
+                    width: 64px;
+                    height: 64px;
+                }
+
+
+            }
+
+            .RewardEffect {
+                width: 100%;
+                height: 100%;
+                overflow: noclip;
+                visibility: collapse;
+            }
+
+            .AccRewardLevel {
+                width: 63px;
+                height: 20px;
+                horizontal-align: center;
+                background-image: url("file://{images}/custom_game/dashboard/store/gacha/acc_reward_level.png");
+                background-size: 100%;
+                vertical-align: middle;
+                margin-top: 40px;
+
+                Label {
+                    align: center center;
+                    color: #FFE68E;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+
+}
+
+@keyframes reward_show {
+    0% {
+        transform: translateY(0px);
+    }
+
+    25% {
+        transform: translateY(10px);
+    }
+
+    75% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}

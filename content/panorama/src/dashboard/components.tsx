@@ -39,7 +39,7 @@ export const DASHBOARD_NAVBAR = {
             "nav_3": true, // 铂金
             "nav_4": true, // 黄金商铺
             "nav_5": true, // 钻石商铺
-            "nav_6": true, // 元素祈福
+            "gacha": true, // 元素祈福
             "nav_7": true, // 黄金兑换
             // "nav_8": true, // 成长礼
         }

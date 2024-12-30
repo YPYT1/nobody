@@ -1,0 +1,95 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+
+	<snippets>
+		<snippet name="GachaButtonPanel">
+			<Panel class="GachaButtonPanel">
+				<Panel class="GachaCost">
+					<Panel id="ServerItem" />
+					<Label text="x{d:count}"/>
+				</Panel>
+				<Button id="GachaButton">
+					<Panel class="GachaLabel"/>
+				</Button>
+			</Panel>
+		</snippet>
+
+		<snippet name="RewardItemShow">
+			<Panel class="RewardItemShow">
+				<Panel id="RewardItem"/>
+				<Panel class="BubbleBorder" hittest="false"/>
+			</Panel>
+		</snippet>
+
+		<snippet name="AccRewardItem">
+			<Panel class="AccRewardItem">
+				<Panel class="RewardArrow even"/>
+				<Panel class="RewardItemBorder">
+					<Panel id="RewardItem"/>
+					<DOTAParticleScenePanel
+						map="scenes/dota_ui_particle_scene_panel_empty"
+						class='RewardEffect'
+						particleName='particles/ui/hud/autocasting_square.vpcf'
+						cameraOrigin="0 0 138"
+						lookAt="0 0 0"
+						fov="45"
+						hittest="false"
+					/>
+				</Panel>
+				<Panel class="RewardArrow odd"/>
+				<Panel class="AccRewardLevel">
+					<Label text="{d:reward_level}"/>
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="nav_content">
+        <Panel class="NavContentFrame" hittest="false">
+            <Panel class="VirtualNavButton" hittest="false"/>
+            <Panel class="NavContainer" hittest="false">
+				<Panel class="Container">
+					<Panel class="HeaderBanner">
+						<Panel id="QuickPurchase" class="QuickPurchase">
+							<Panel class="Title" />
+							<Panel class="ItemBorder">
+								<Panel id="ServerItem" />
+							</Panel>
+							<Button id="QuickPurchaseButton" class="QuickPurchaseButton">
+								<Panel class="IconAndLabel">
+									<Image id="PriceIcon" /> 
+									<Label text="{d:qp_price}"/>
+								</Panel>
+							</Button>
+						</Panel>
+						<Panel id="GachaButtonList" hittest="false"/>
+							
+						<Panel id="RewardItemShowList" hittest="false"/>
+
+					</Panel>
+
+					<Panel class="AccumulatedRewards" hittest="false">
+						<Panel class="RewardHeader" />
+						<Panel class="RewardContent">
+							<Panel class="RewardPanel">
+								<ProgressBar 
+									id='CurrentProgress' 
+									class="CurrentProgress" 
+									value="500" min="0" max="2000" 
+								/>
+								<Panel id="AccRewardList" />
+							</Panel>
+						</Panel>
+					</Panel>
+
+
+				</Panel>
+            </Panel>
+        </Panel>
+	</Panel>
+</root>
