@@ -772,9 +772,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerShoppingLimit",
             {
-                data : {
-                    
-                }
+                data : GameRules.ServiceInterface.ShoppingLimit[player_id]
             }
         );
     };

@@ -424,6 +424,7 @@ declare interface CGED {
         }
         //限购数据
         GetPlayerShoppingLimit : {
+            
         }
     }
 }
