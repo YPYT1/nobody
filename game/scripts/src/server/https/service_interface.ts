@@ -35,6 +35,8 @@ export class ServiceInterface extends UIEventRegisterClass{
     PlayerServerSkillLevelCount : PlayerServerSkillLevelCount[] = [];
     //分支等级
     PlayerServerSkillTypeLevel : CGEDServerSkillTypeLevel[] = [];
+    //商城限购
+    ShoppingLimit : AM2_Server_Shopping_Limit[] = [];
 
 
     constructor() {
@@ -753,6 +755,25 @@ export class ServiceInterface extends UIEventRegisterClass{
             {
                 data : {
                     items : add_items
+                }
+            }
+        );
+    };
+
+
+    /**
+     * 限购数据
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetPlayerShoppingLimit(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerShoppingLimit"], callback?){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerShoppingLimit",
+            {
+                data : {
+                    
                 }
             }
         );

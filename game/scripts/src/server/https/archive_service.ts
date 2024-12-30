@@ -490,6 +490,8 @@ export class ArchiveService extends UIEventRegisterClass {
                     GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
                     
                     GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+
+                    
                 } else {
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id , "购买出错..")
                     GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});

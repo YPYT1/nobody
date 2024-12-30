@@ -422,6 +422,9 @@ declare interface CGED {
             shop_id : string ,  //购买商品id
             count : number , //购买数量
         }
+        //限购数据
+        GetPlayerShoppingLimit : {
+        }
     }
 }
 

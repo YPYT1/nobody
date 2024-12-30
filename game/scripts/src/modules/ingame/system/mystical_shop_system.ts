@@ -105,11 +105,11 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     /**
      * 1-5次增加价格 
      */
-    refresh_price_1_5 : number = 50;
+    refresh_price_1_5 : number = 150;
     /**
      * 5次后增加价格
      */
-    refresh_price_6 : number = 100;
+    refresh_price_6 : number = 150;
     /**
      * 刷新次数上限
      */

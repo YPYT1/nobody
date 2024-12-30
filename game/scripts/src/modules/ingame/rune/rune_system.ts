@@ -1078,6 +1078,49 @@ export class RuneSystem extends UIEventRegisterClass {
             }
         }
     }
+
+    /**
+     * 累积的效果包括：【累积跑动】【累积生存】【累积速度】【累积急速】 符文中的移速、最大生命值、技能急速这3个增益效果
+     * @param player_id  //玩家名字
+     * @param param  //buff名字
+     * @param player_id  //参数
+     */
+    Rune118(player_id: PlayerID, param: { }, key: string) {
+        //更新数值
+        let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        //更新112 累积生存
+        if(hHero.rune_level_index["rune_112"]){
+            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_112","hp_pct");            
+            let value = hHero.rune_trigger_count["rune_112"] * kv_value ;
+            //所有夜魇符文的累积的效果翻倍
+            if(hHero.rune_level_index["rune_118"]){
+                value = value * 2;
+            }
+            let attr_count : CustomAttributeTableType = {
+                "MaxHealth" : {
+                    "BasePercent" : value,
+                }
+            };
+            GameRules.CustomAttribute.SetAttributeInKey(hHero , "rune_112_MaxHealth" , attr_count);
+        }
+        //更新113 累积速度
+        if (hHero.rune_level_index["rune_113"]) {
+            let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero, "rune_113", "move_speed");
+            hHero.rune_trigger_count["rune_113"]++;
+            let value = hHero.rune_trigger_count["rune_113"] * kv_value;
+            //所有夜魇符文的累积的效果翻倍
+            if(hHero.rune_level_index["rune_118"]){
+                value = value * 2;
+            }
+            let attr_count: CustomAttributeTableType = {
+                "MoveSpeed": {
+                    "Base": value,
+                }
+            };
+            GameRules.CustomAttribute.SetAttributeInKey(hHero, "rune_113_MoveSpeed", attr_count);
+        }
+        
+    }
     /**
      * debug 命令
      */

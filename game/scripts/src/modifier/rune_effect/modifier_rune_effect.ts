@@ -169,6 +169,10 @@ export class modifier_rune_effect extends BaseModifier {
             let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(this.caster, "rune_113", "move_speed");
             this.caster.rune_trigger_count["rune_113"]++;
             let value = this.caster.rune_trigger_count["rune_113"] * kv_value;
+            //所有夜魇符文的累积的效果翻倍
+            if(this.caster.rune_level_index["rune_118"]){
+                value = value * 2;
+            }
             let attr_count: CustomAttributeTableType = {
                 "MoveSpeed": {
                     "Base": value,

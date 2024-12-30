@@ -344,6 +344,10 @@ export class Spawn extends UIEventRegisterClass {
                     let kv_value = GameRules.RuneSystem.GetKvOfUnit_V2(hHero,"rune_112","hp_pct");
                     hHero.rune_trigger_count["rune_112"] ++;
                     let value = hHero.rune_trigger_count["rune_112"] * kv_value ;
+                    //所有夜魇符文的累积的效果翻倍
+                    if(hHero.rune_level_index["rune_118"]){
+                        value = value * 2;
+                    }
                     let attr_count : CustomAttributeTableType = {
                         "MaxHealth" : {
                             "BasePercent" : value,
