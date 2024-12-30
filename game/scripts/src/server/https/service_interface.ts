@@ -54,6 +54,13 @@ export class ServiceInterface extends UIEventRegisterClass{
             })
             //玩家技能初始经验
             this.PlayerServerSkillLevelExp.push({});
+            //初始化玩家限购信息
+            this.ShoppingLimit.push(
+                {
+                    limit : {},
+                    sc : "" ,  //首冲信息
+                }
+            );
         }
         //初始化技能数据
         for (let i_key in PictuerFetterAbility) {
