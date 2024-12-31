@@ -73,19 +73,23 @@
 
 					</Panel>
 
-					<Panel class="AccumulatedRewards" hittest="false">
-						<Panel class="RewardHeader" />
-						<Panel class="RewardContent">
-							<Panel class="RewardPanel">
-								<ProgressBar 
-									id='CurrentProgress' 
-									class="CurrentProgress" 
-									value="500" min="0" max="2000" 
-								/>
-								<Panel id="AccRewardList" />
+					<Panel class="GachaRewardContent">
+						<Panel class="AccumulatedRewards" hittest="false">
+							<Panel class="RewardHeader" />
+							<Panel class="RewardContent">
+								<Panel class="RewardPanel">
+									<ProgressBar 
+										id='CurrentProgress' 
+										class="CurrentProgress" 
+										value="500" min="0" max="2000" 
+									/>
+									<Panel id="AccRewardList" />
+								</Panel>
 							</Panel>
 						</Panel>
+						<Button id="RewardReceiveBtn" class="RewardReceiveBtn" />
 					</Panel>
+					
 
 
 				</Panel>

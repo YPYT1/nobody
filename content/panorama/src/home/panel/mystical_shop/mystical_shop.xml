@@ -97,7 +97,7 @@
 						<Panel class="CostIcon"/>
 						<Label text="{d:refresh_cost}"/>
 					</Panel>
-					<Label class="ResreshCountLabel" text="{d:refresh_count} / {d:refresh_max}"/>
+					<!-- <Label class="ResreshCountLabel" text="{d:refresh_count} / {d:refresh_max}"/> -->
 				</Button>
 			</Panel>
 			<Panel class="ShopCurrencyBorder">

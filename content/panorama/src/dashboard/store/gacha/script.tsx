@@ -69,7 +69,7 @@ function InitRewardItem() {
 }
 
 const CURRENT_PROGRESS_BONUS_WIDTH = 80;
-const UI_SCALE = 2;
+const UI_SCALE = 1;
 const CurrentProgress = $("#CurrentProgress") as ProgressBar;
 const REWARD_LIST = {
     [50]: { item_id: 1279, count: 100, receive: 1, },
@@ -105,7 +105,7 @@ function InitCurrentReward() {
         AccRewardItem.SetHasClass("can_receive", can_receive)
         // AccRewardItem.SetHasClass("receive", receive_state);
 
-        AccRewardItem.style.transform = `translatex(${(value - 20) * UI_SCALE}px)`
+        AccRewardItem.style.transform = `translatex(${( value  * UI_SCALE) - 40}px)`
 
         const _RewardItem = AccRewardItem.FindChildTraverse("RewardItem")!
         const RewardItem = LoadCustomComponent(_RewardItem, "server_item")

@@ -180,8 +180,7 @@ const GameEventsSubscribeInit = () => {
 
     GameEvents.Subscribe("ResourceSystem_SendPlayerResources", event => {
         let data = event.data;
-
-        MainPanel.SetDialogVariableInt("gold_count", data.Soul)
+        MainPanel.SetDialogVariable("gold_count", "" + data.Soul)
         // ResourcePanel["Gold"]?.SetDialogVariable("amount", `${data.Gold}`)
         // ResourcePanel["Soul"]?.SetDialogVariableInt("amount", data.Soul)
         // ResourcePanel["Kills"]?.SetDialogVariableInt("amount", data.Kills)
@@ -278,11 +277,6 @@ export const CreatePanel = () => {
         PropItem._SetConfig({ state: 0 })
     }
 
-    // let ToggleButton = $("#ToggleButton") as Button;
-    // ToggleButton.SetPanelEvent("onactivate", () => {
-    //     MysticalShop.ToggleClass("Open")
-    // })
-
     let OpenButton = $("#OpenButton");
     OpenButton.SetPanelEvent("onactivate", () => {
         MysticalShop.ToggleClass("Open")
@@ -353,19 +347,9 @@ export const CreatePanel = () => {
     GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
         for (let i = 0; i < LocalExtremePropsList.GetChildCount(); i++) {
             let NavItemPanel = LocalExtremePropsList.GetChild(i)!;
-
-            // NavItemPanel.SetHasClass("IsLock", type == 0);
-            // NavItemPanel.SetHasClass("Null", type != 1);
-            // NavItemPanel.SetHasClass("IsVip", is_vip);
-            // 
             let LimitItem = NavItemPanel.FindChildTraverse("LimitItem") as GameComponent_PropItem;
-
             LimitItem._SetConfig({ show_tips: false, state: 0 })
-
-
         }
-
-
     })
 }
 

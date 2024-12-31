@@ -228,7 +228,20 @@
     }
 }
 
+.GachaRewardContent {
+    flow-children: down;
 
+    .RewardReceiveBtn {
+        horizontal-align: right;
+        width: 156px;
+        height: 55px;
+        background-image: url("file://{images}/custom_game/dashboard/store/gacha/reward_receive_btn.png");
+        
+        &:hover {
+            brightness: 1.3;
+        }
+    }
+}
 .AccumulatedRewards {
     width: 1350px;
     // height: 270px;
@@ -259,6 +272,7 @@
             height: 100%;
             overflow: noclip;
             padding-right: 80px;
+            // padding-left: 80px;
         }
 
         .CurrentProgress {

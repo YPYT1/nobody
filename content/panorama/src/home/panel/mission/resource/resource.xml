@@ -10,7 +10,7 @@
         <snippet name="ResourceTypePanel">
             <Panel class='ResourceTypePanel'>
                 <Panel id="ResourceIcon" class='ResourceIcon' />
-                <Label class='ResourceAmount' text='{d:amount}' />
+                <Label class='ResourceAmount' text='{s:amount}' />
             </Panel>
         </snippet>
     </snippets>

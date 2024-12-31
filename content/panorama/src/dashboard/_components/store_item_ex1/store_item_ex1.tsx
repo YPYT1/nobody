@@ -39,13 +39,10 @@ const _SetGoodsId = (goods_id: string | number) => {
         let img = data.AbilityTextureName;
         MainPanel.SetHasClass("has_icon", img.length > 8)
         let image_src = GetTextureSrc(img);
-
         StoreIcon.SetImage(image_src);
-
         let cost = data.cost
         let cost_arr = cost.split("_");
         let cost_type = cost_arr[0];
-        $.Msg(["cost_type",cost_type])
         StorePurchaseBtn.SetPanelEvent("onactivate", () => {
             if (cost == "0_0") {
                 // 直接领取

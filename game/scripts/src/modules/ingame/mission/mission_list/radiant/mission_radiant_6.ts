@@ -30,6 +30,7 @@ export class Mission_Radiant_6 extends MissionModule {
         for (let i = 0; i < amount; i++) {
             let box_pos = this.GetToNextPoints(vect, RandomInt(300, 3000))
             let box = CreateUnitByName("npc_mission_box", box_pos, false, null, null, DotaTeam.BADGUYS);
+            GameRules.EnemyAttribute.SetUnitAttr(box);
             box.AddNewModifier(box, null, "modifier_mission_radiant_6_box", { duration: this.limit_time })
             // box.AddNewModifier(box, null, "modifier_basic_countdown", { duration: this.limit_time })
             // box.AddNewModifier(box, null, "modifier_basic_hits", {})
