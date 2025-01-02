@@ -492,6 +492,12 @@ export class ArchiveService extends UIEventRegisterClass {
                     let red_item = data.data.red_item;
                     let add_item = data.data.add_item;
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
+
+
+                    //限购数据
+                    GameRules.ServiceInterface.ShoppingLimit[player_id].limit = data.data.limit.limit;
+                    GameRules.ServiceInterface.ShoppingLimit[player_id].sc = data.data.limit.sc;
+                    GameRules.ServiceInterface.GetPlayerShoppingLimit(player_id , {})
                     
                     GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
                 } else {

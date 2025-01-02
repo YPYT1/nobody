@@ -210,7 +210,7 @@ declare interface ShoppingBuyReturn {
     code : number, //状态码
     msg : string, //服务器消息
     data : {
-        limit : {},
+        limit : AM2_Server_Shopping_Limit,
         add_item : AM2_Server_Backpack[],
         red_item : AM2_Server_Backpack[],
     }
