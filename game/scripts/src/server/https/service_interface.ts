@@ -829,6 +829,7 @@ export class ServiceInterface extends UIEventRegisterClass{
      * @param callback 
      */
     GetPlayerShoppingLimit(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerShoppingLimit"], callback?){
+        DeepPrintTable(GameRules.ServiceInterface.ShoppingLimit[player_id]);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerShoppingLimit",

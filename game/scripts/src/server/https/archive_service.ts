@@ -76,7 +76,7 @@ export class ArchiveService extends UIEventRegisterClass {
                         //发送存档数据
                         GameRules.ServiceInterface.GetServerTime( index  , {});
                         //加载限购数据
-                        GameRules.ServiceInterface.GetServerTime( index  , {});
+                        // GameRules.ServiceInterface.GetServerTime( index  , {});
 
                         //限购数据
                         GameRules.ServiceInterface.ShoppingLimit[index].limit = data.data.list[steam_id.toString()].limit;
@@ -492,11 +492,9 @@ export class ArchiveService extends UIEventRegisterClass {
                     let red_item = data.data.red_item;
                     let add_item = data.data.add_item;
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
-
-
                     //限购数据
-                    GameRules.ServiceInterface.ShoppingLimit[player_id].limit = data.data.limit.limit;
-                    GameRules.ServiceInterface.ShoppingLimit[player_id].sc = data.data.limit.sc;
+                    GameRules.ServiceInterface.ShoppingLimit[player_id].limit = data.data.limit;
+                    // GameRules.ServiceInterface.ShoppingLimit[player_id].sc = data.data.limit.sc;
                     GameRules.ServiceInterface.GetPlayerShoppingLimit(player_id , {})
                     
                     GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
