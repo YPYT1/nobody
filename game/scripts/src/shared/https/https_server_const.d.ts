@@ -27,6 +27,8 @@ declare interface CreateGameReturn {
                 jb_gold: number , //银币
                 zs_gold: number , //钻石
                 skill_data : string,//技能数据
+                limit : AM2_Server_Shopping_Limit_List, //限制
+                sc : string //首冲数据
             }
         }
         time : number , // 服务器时间
@@ -253,5 +255,30 @@ declare interface SkillDataUpReturn {
         add_item : AM2_Server_Backpack[],
         red_item : AM2_Server_Backpack[],
         skill_data : string , // `skill_data` : '存档技能数据',
+    }
+}
+
+
+
+
+/**
+ * 抽奖数据参数
+ */
+declare interface DrawLotteryParam {
+	sid : string , //steamid
+    types : number , //抽奖类型
+    number : number , //抽奖次数
+}
+/**
+ * 抽奖返回数据
+ */
+declare interface DrawLotteryReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        draw_result : AM2_Draw_Lottery_Data[],
+        add_item : AM2_Server_Backpack[],
+        red_item : AM2_Server_Backpack[],
+        draw_record : AM2_Draw_Lottery_Draw_Record,
     }
 }

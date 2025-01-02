@@ -190,6 +190,24 @@ declare interface CustomGameEventDeclarations {
             Msg?: string,
         };
     };
+
+    /**
+     * 获取服务器时间
+     */
+    ServiceInterface_GetServerTime: {
+        data: {
+            time: number, //时间
+            time_string: {
+                yy: number;
+                mm: number;
+                dd: number;
+                h: number;
+                m: number;
+                s: number;
+            },
+        };
+    };
+    
     /**
      * 获取图鉴配置
      */
@@ -267,6 +285,18 @@ declare interface CustomGameEventDeclarations {
         }
     }
     /**
+     * 抽奖结果
+     */
+    ServiceInterface_GetPlayerServerDrawLottery : {
+        data : AM2_Draw_Lottery_Data[],
+    }
+    /**
+     * 抽奖记录
+     */
+    ServiceInterface_GetPlayerServerDrawLotteryDrawRecord : {
+        data : AM2_Draw_Lottery_Draw_Record
+    }
+    /**
      * 获取道具弹窗
      */
     ServiceInterface_GetServerItemPopUp : {
@@ -279,7 +309,7 @@ declare interface CustomGameEventDeclarations {
      * 购买记录
      */
     ServiceInterface_GetPlayerShoppingLimit: {
-        data: AM2_Server_Shopping_Limit; //购买记录 
+        data: AM2_Server_Shopping_Limit,
     };
     //玩家生命数
     GameInformation_GetPlayerLifeData : {

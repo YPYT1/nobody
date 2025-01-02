@@ -276,7 +276,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             }
         }
         this.player_shop_level[player_id] = 0;
-
         this.player_shop_discount[player_id] = 100;
         this.player_get_soul_double_pro[player_id] = 0;
         this.player_shop_field_count[player_id] = this.shop_field_max + this.shop_field_max_vip;
@@ -311,7 +310,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             if (index >= this.shop_field_max) {
                 is_vip = 1;
             }
-
             this.shop_field_list[player_id].refresh_count = 0;
             this.shop_field_list[player_id].refresh_soul = refresh_soul;
             this.shop_field_list[player_id].refresh_max = this.refresh_limit;
@@ -328,6 +326,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                 type : 1 , //类型
             });
         }
+        GameRules.MysticalShopSystem.GetPlayerShopBuyData(player_id , {});
     }
     //刷新神秘商店 并开始售卖
     RefreshMysticalShopItem() {
@@ -668,7 +667,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                         if(!this.player_shop_buy_ts_data[player_id].hasOwnProperty(item_info.key)){
                             let length =  Object.keys(this.player_shop_buy_ts_data[player_id]).length;    
                             if(length >= this.cell_max){
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "极限道具已满..无法购买");
+                                GameRules.CMsg.SendErrorMsgToPlayer(player_id, "成长道具已满..无法购买");
                                 return 
                             }
                         }
@@ -825,7 +824,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                     let l_type= MysteriousShopConfig[p_name as keyof typeof MysteriousShopConfig].type;
                     if(l_type == 2){
                         if(!this.player_shop_buy_ts_data[player_id].hasOwnProperty(p_name)){
-                            //移除池子所有极限道具
+                            //移除池子所有成长道具
                             for (let i_d = 0; i_d < 6; i_d++) {
                                 this.item_level_probability_group[player_id][i_d][l_i] = 0;
                             }
@@ -834,7 +833,6 @@ export class MysticalShopSystem extends UIEventRegisterClass {
                                 //十倍提升
                                 this.item_level_probability_group[player_id][i_d][l_i] = this.item_level_probability_group[player_id][i_d][l_i] * 10;
                             }
-                            
                         }
                     }
                 }

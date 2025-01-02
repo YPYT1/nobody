@@ -41,6 +41,25 @@ declare interface AM2_Server_Backpack {
     number: number,	//物品数量
     customs ?: string, //自定义字段
 }
+//抽奖信息
+declare interface AM2_Draw_Lottery_Data {
+    "k": string, //抽奖表key
+    "i": number, //item_id
+    "q": number, // 品质
+    "n": number, //数量
+    "r" ? : { // 如果有分解转换 此处数据不为空
+        [item_id  : string] : number // 物品id : 数量
+    } 
+}
+//累抽记录
+declare interface AM2_Draw_Lottery_Draw_Record { //
+    [ type  : string] : { //奖池type
+        "c": number , //总次数
+        "n": string , //特殊物品记录
+    } 
+} 
+
+
 
 declare interface AM2_Server_Backpack_Update {
     id: string,	//系统内唯一id
@@ -201,11 +220,17 @@ declare interface AM2_Server_Player_Id_item90 {
 }
 
 declare interface AM2_Server_Shopping_Limit {
-    limit : { //已购信息
-        [goods_id : string] : number
-    },
+    limit : AM2_Server_Shopping_Limit_List,
     sc : string ,  //首冲信息
 }
+
+declare interface AM2_Server_Shopping_Limit_List {
+    [goods_id : string] : {
+        c : number , 
+        t : number ,
+    }
+}
+
 
 declare interface AM2_Server_Ranking_list_Data {
     e : (CGEDGetEquipListInfo | object)[], //装备信息

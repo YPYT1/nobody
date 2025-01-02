@@ -37,7 +37,8 @@ export class ServiceInterface extends UIEventRegisterClass{
     PlayerServerSkillTypeLevel : CGEDServerSkillTypeLevel[] = [];
     //商城限购
     ShoppingLimit : AM2_Server_Shopping_Limit[] = [];
-
+    //玩家抽奖记录
+    DrawRecord : AM2_Draw_Lottery_Draw_Record[] = [];
 
     constructor() {
         super("ServiceInterface" , true)
@@ -61,6 +62,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                     sc : "" ,  //首冲信息
                 }
             );
+            this.DrawRecord.push({});
         }
         //初始化技能数据
         for (let i_key in PictuerFetterAbility) {
@@ -333,6 +335,25 @@ export class ServiceInterface extends UIEventRegisterClass{
     }
     //玩家星数
     player_tj_star_max : number[] = [ 10 , 10 , 10 , 10 , 10 , 10];
+
+    /**
+     * 获取服务器时间 主要用于做限时购买
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetServerTime(player_id: PlayerID, params: CGED["ServiceInterface"]["GetServerTime"], callback?){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetServerTime",
+            {
+                data: {
+                    time : GameRules.ArchiveService._game_t,
+                    time_string:GetCustomSystemTime(),
+                }
+            }
+        );
+    }
 
     
     /**
@@ -767,6 +788,39 @@ export class ServiceInterface extends UIEventRegisterClass{
         );
     };
 
+    /**
+     * 获取抽奖结果
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetPlayerServerDrawLottery(player_id: PlayerID , lottery_data : AM2_Draw_Lottery_Data[] ){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerServerDrawLottery",
+            {
+                data: lottery_data
+            }
+        );
+    };
+
+
+    /**
+     * 获取抽奖记录
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetPlayerServerDrawLotteryDrawRecord(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerServerDrawLotteryDrawRecord"], callback?){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerServerDrawLotteryDrawRecord",
+            {
+                data: GameRules.ServiceInterface.DrawRecord[player_id]
+            }
+        );
+    };
+
 
     /**
      * 限购数据
@@ -779,7 +833,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerShoppingLimit",
             {
-                data : GameRules.ServiceInterface.ShoppingLimit[player_id]
+                data : GameRules.ServiceInterface.ShoppingLimit[player_id],
             }
         );
     };
@@ -899,6 +953,14 @@ export class ServiceInterface extends UIEventRegisterClass{
         let count = tonumber(params.count);
         GameRules.ArchiveService.ShoppingBuy(player_id , shop_id , count);
     };
+    /**
+     * 抽奖
+     */
+    DrawLottery(player_id: PlayerID, params: CGED["ServiceInterface"]["DrawLottery"], callback?){
+        let paramstype = params.type;
+        let count = params.count;
+        GameRules.ArchiveService.DrawLottery(player_id , paramstype , count);
+    }
 
     /**
      * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)
@@ -997,6 +1059,10 @@ export class ServiceInterface extends UIEventRegisterClass{
         }
         if(cmd == "-SendLuaLog"){
             this.SendLuaLog(-1)
+        }
+
+        if(cmd == "-DrawLottery"){
+            this.DrawLottery(player_id , {"count" : 10 , "type" : 1});
         }
 
         // //解锁图鉴

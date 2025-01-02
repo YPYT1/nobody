@@ -422,9 +422,26 @@ declare interface CGED {
             shop_id : string ,  //购买商品id
             count : number , //购买数量
         }
+        //抽奖
+        DrawLottery : {
+            type : number , //奖池类型 默认1
+            count : number , //抽奖次数 
+        }
         //限购数据
         GetPlayerShoppingLimit : {
+
+        }
+        /**
+         * 获取服务器时间
+         */
+        GetServerTime : {
             
+        }
+        /**
+         * 获取抽奖记录
+         */
+        GetPlayerServerDrawLotteryDrawRecord : {
+
         }
     }
 }

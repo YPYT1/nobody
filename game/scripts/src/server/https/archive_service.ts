@@ -21,7 +21,7 @@ export class ArchiveService extends UIEventRegisterClass {
     //整个游戏的game_id 用于API通信 在初始化的时候获取
     _game_id : string = null;
     //服务器时间
-    _game_t : number = 9703764246;
+    _game_t : number = 1;
     //服务器版本
     _game_versions : string = "";
     //构造  
@@ -72,9 +72,20 @@ export class ArchiveService extends UIEventRegisterClass {
                         }else{
                             GameRules.ServiceInterface.LoadSkillfulLevelInit(index);
                         }
+
+                        //发送存档数据
+                        GameRules.ServiceInterface.GetServerTime( index  , {});
+                        //加载限购数据
+                        GameRules.ServiceInterface.GetServerTime( index  , {});
+
+                        //限购数据
+                        GameRules.ServiceInterface.ShoppingLimit[index].limit = data.data.list[steam_id.toString()].limit;
+                        GameRules.ServiceInterface.ShoppingLimit[index].sc = data.data.list[steam_id.toString()].sc;
+
+                        GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
                     }
                     //0号玩家 的难度作为默认难度
-                    GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0])
+                    GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0]);
 
                     Timers.CreateTimer(5, () => {
                         //初始化完成
@@ -341,7 +352,8 @@ export class ArchiveService extends UIEventRegisterClass {
             },
             (code: number, body: string) => {
                 
-            }
+            },
+            player_id
         )
     }
 
@@ -371,7 +383,8 @@ export class ArchiveService extends UIEventRegisterClass {
             },
             (code: number, body: string) => {
 
-            }
+            },
+            player_id
         )
     }
 
@@ -401,7 +414,8 @@ export class ArchiveService extends UIEventRegisterClass {
             },  
             (code: number, body: string) => {
                 
-            }
+            },
+            player_id
         )
     }
 
@@ -432,7 +446,8 @@ export class ArchiveService extends UIEventRegisterClass {
                 print("body : " ,body) 
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "配置装备: 未知错误")
                 GameRules.ServiceEquipment.GetEquipConfig(player_id , {})
-            }
+            },
+            player_id
         )
     }
 
@@ -452,7 +467,8 @@ export class ArchiveService extends UIEventRegisterClass {
             },
             (code: number, body: string) => {
                 // print("code" , code , "body" , body )
-            }
+            },
+            player_id
         )
     }
 
@@ -474,26 +490,11 @@ export class ArchiveService extends UIEventRegisterClass {
                 if (data.code == 200) {
                     //先删除再添加
                     let red_item = data.data.red_item;
-                    for (const r_e of red_item) {
-                        GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
-                    }
-                    //循环根据类型添加到不同的地方
                     let add_item = data.data.add_item;
-                    for (const a_e of add_item) {
-                        let customs = "";
-                        if(a_e.customs){
-                            customs = a_e.customs;
-                        }
-                        GameRules.ServiceData.AddPackageItemSelect(player_id , a_e.id ,  a_e.item_id , customs , a_e.number )
-                    }
-                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
-                    GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
                     
                     GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
-
-                    
                 } else {
-                    GameRules.CMsg.SendErrorMsgToPlayer(player_id , "购买出错..")
                     GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
                     GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
                 }
@@ -506,7 +507,8 @@ export class ArchiveService extends UIEventRegisterClass {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "购买出错..")
                 GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
                 GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
-            }
+            },
+            player_id
         )
     }
     /**
@@ -528,6 +530,7 @@ export class ArchiveService extends UIEventRegisterClass {
                 param: param_data
             },
             (data: GetCustomBackpackReturn) => {
+                DeepPrintTable(data);
                 if (data.code == 200) {
                     GameRules.ServiceData.server_package_list[player_id] = data.data.list;
                     GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
@@ -539,9 +542,48 @@ export class ArchiveService extends UIEventRegisterClass {
             (code: number, body: string) => {
                 GameRules.ServiceData.server_package_list[player_id] = [];
                 GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
-            }
+            },
+            player_id
         )
     }
+
+
+    /**
+     * 抽奖
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    DrawLottery(player_id: PlayerID , type : number = 1 , count : number = 1) {
+        //只验证主机
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <DrawLotteryParam>{
+            sid : tostring(steam_id) , //steamid
+            types : type ,
+            number : count ,
+        }
+        HttpRequest.AM2Post(ACTION_DRAW_LOTTERY,
+            {
+                param: param_data
+            },
+            (data: DrawLotteryReturn) => {
+                if (data.code == 200) {
+                    let red_item = data.data.red_item;
+                    let add_item = data.data.add_item;
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
+                    GameRules.ServiceInterface.GetPlayerServerDrawLottery(player_id , data.data.draw_result);
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
 
     /**
      * 存档技能升级
@@ -587,7 +629,6 @@ export class ArchiveService extends UIEventRegisterClass {
                         };
                     GameRules.ServiceInterface.LoadSkillfulLevel(player_id);
                 } else {
-                    GameRules.CMsg.SendErrorMsgToPlayer(player_id , "存档技能:升级失败..")
                     GameRules.ServiceData.server_package_list[player_id] = [];
                     GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
                 }
@@ -596,8 +637,31 @@ export class ArchiveService extends UIEventRegisterClass {
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "存档技能:升级失败..")
                 GameRules.ServiceData.server_package_list[player_id] = [];
                 GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
-            }
+            },
+            player_id
         )
+    }
+    /**
+     * 公共更新背包内容
+     * @param player_id 
+     * @param red_item 
+     * @param add_item 
+     */
+    RedAndAddBackpack( player_id :PlayerID , red_item : AM2_Server_Backpack[] , add_item : AM2_Server_Backpack[]){
+        //先删除再添加
+        for (const r_e of red_item) {
+            GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
+        }
+        //循环根据类型添加到不同的地方
+        for (const a_e of add_item) {
+            let customs = "";
+            if(a_e.customs){
+                customs = a_e.customs;
+            }
+            GameRules.ServiceData.AddPackageItemSelect(player_id , a_e.id ,  a_e.item_id , customs , a_e.number )
+        }
+        GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+        GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
     }
 
     Debug( cmd: string, args: string[], player_id: PlayerID){
@@ -620,6 +684,10 @@ export class ArchiveService extends UIEventRegisterClass {
             let aff_class = args[0] ?? "21,2,22";
             this.GetCustomBackpack(player_id , aff_class)
         }
+        if(cmd == "!dl"){
+            this.DrawLottery(player_id)
+        }
+        
     }
     
 }
