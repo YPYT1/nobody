@@ -190,6 +190,12 @@ declare interface CustomGameEventDeclarations {
             Msg?: string,
         };
     };
+    /**
+     * 玩家vip信息
+     */
+    ServiceInterface_GetPlayerVipData : {
+        data: ServerPlayerVipData
+    }
 
     /**
      * 获取服务器时间

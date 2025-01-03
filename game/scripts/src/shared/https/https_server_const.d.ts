@@ -8,6 +8,17 @@ declare interface ItemTReturn { //通关获得的物品
     customs ? :  string , //额外数据
 }
 
+declare interface PlayerInfoData{ //基础数据
+    exp: number, //地图经验值
+    cz_gold: number, //黄金
+    jf_gold: number , //良善点
+    jb_gold: number , //银币
+    zs_gold: number , //钻石
+    vip_times : number , //月卡时间
+    vip_zs : number , //终身卡
+}
+
+
 declare interface CreateGameParam {
     steamids: number[]
 }
@@ -28,7 +39,9 @@ declare interface CreateGameReturn {
                 zs_gold: number , //钻石
                 skill_data : string,//技能数据
                 limit : AM2_Server_Shopping_Limit_List, //限制
-                sc : string //首冲数据
+                sc : string, //首冲数据
+                vip_times : number , //月卡时间
+                vip_zs : number , //终身卡
             }
         }
         time : number , // 服务器时间
@@ -213,6 +226,7 @@ declare interface ShoppingBuyReturn {
         limit : AM2_Server_Shopping_Limit_List,
         add_item : AM2_Server_Backpack[],
         red_item : AM2_Server_Backpack[],
+        base : PlayerInfoData,
     }
 }
 

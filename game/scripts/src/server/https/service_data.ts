@@ -21,7 +21,7 @@ export class ServiceData extends UIEventRegisterClass {
         [item_id : string] : AM2_Server_Backpack
     }[] = [];     
     //普通背包数据
-    server_package_list : AM2_Server_Backpack[][] = [];     
+    server_package_list : AM2_Server_Backpack[][] = [];
     //怪物卡片背包
     server_monster_package_list : AM2_Server_Backpack[][] = [];
     //玩家卡片收集信息  
@@ -36,6 +36,8 @@ export class ServiceData extends UIEventRegisterClass {
     locality_player_config_pictuer_fetter : string[][][] = [];
     //是否为图鉴vip
     player_pictuer_vip : number[] = [];
+    //player vip data
+    player_vip_data : ServerPlayerVipData[] = [];
     constructor(){
         super("ServiceData" , true);
         for (let index = 0; index < 6; index++) {
@@ -50,6 +52,12 @@ export class ServiceData extends UIEventRegisterClass {
             this.player_pictuer_vip.push(0);
             this.server_package_list.push([]);
             this.server_gold_package_list.push({});
+
+            
+            this.player_vip_data.push({
+                "vip_times" : 0,
+                "vip_zs" : 0 ,
+            });
 
             for (let i_n = 1; i_n <= 5; i_n++) { //初始化空数据
                 let item_id = 1000 + i_n;
@@ -178,8 +186,6 @@ export class ServiceData extends UIEventRegisterClass {
         }
         return ret;
     }
-
-
     /**
      * 验证本地背包数量 /或是否拥有
      * @param player_id 
@@ -341,7 +347,7 @@ export class ServiceData extends UIEventRegisterClass {
      */
     AddPackageItemSelect(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ) :  boolean{
         if(item_id <= 1199){
-            return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , count );
+            // return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , count );
         }else{
             return GameRules.ServiceData.AddPackageItem(player_id , id  , item_id , customs , count )
         }

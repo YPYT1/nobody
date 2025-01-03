@@ -61,7 +61,11 @@ export class ArchiveService extends UIEventRegisterClass {
                         GameRules.ServiceData.server_gold_package_list[index]["1003"].number = data.data.list[steam_id.toString()].jb_gold ?? 0;
                         GameRules.ServiceData.server_gold_package_list[index]["1004"].number = data.data.list[steam_id.toString()].exp ?? 0;
                         GameRules.ServiceData.server_gold_package_list[index]["1005"].number = data.data.list[steam_id.toString()].zs_gold ?? 0;
-
+                        GameRules.ServiceInterface.GetPlayerServerGoldPackageData(index , {});
+                        //玩家VIP信息
+                        GameRules.ServiceData.player_vip_data[index].vip_times = data.data.list[steam_id.toString()].vip_times ?? 0;
+                        GameRules.ServiceData.player_vip_data[index].vip_zs = data.data.list[steam_id.toString()].vip_zs ?? 0;
+                        GameRules.ServiceInterface.GetPlayerVipData(index , {});
                         //加载技能数据
                         if(data.data.list[steam_id.toString()].skill_data && data.data.list[steam_id.toString()].skill_data != ""){
                             GameRules.ServiceInterface.PlayerServerSkillLevelExp[index] = 
@@ -488,9 +492,13 @@ export class ArchiveService extends UIEventRegisterClass {
             },
             (data: ShoppingBuyReturn) => {
                 if (data.code == 200) {
-                    //先删除再添加
+                    //先删除再添加 
                     let red_item = data.data.red_item;
                     let add_item = data.data.add_item;
+                    let gold_data = data.data.base;
+                    //货币信息
+                    GameRules.ArchiveService.PlayerVipUpdate(player_id , gold_data);
+                    
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
                     //限购数据
                     GameRules.ServiceInterface.ShoppingLimit[player_id].limit = data.data.limit;
@@ -667,7 +675,25 @@ export class ArchiveService extends UIEventRegisterClass {
         GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
         GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
     }
-
+    /**
+     * 公共更新vip信息
+     * @param cmd 
+     * @param args 
+     * @param player_id 
+     */
+    PlayerVipUpdate(player_id :PlayerID , data : ServerPlayerVipData){
+        //获取玩家地图经验 货币等..
+        // GameRules.ServiceData.server_gold_package_list[player_id]["1001"].number = data.cz_gold ?? 0;
+        // GameRules.ServiceData.server_gold_package_list[player_id]["1002"].number = data.jf_gold ?? 0;
+        // GameRules.ServiceData.server_gold_package_list[player_id]["1003"].number = data.jb_gold ?? 0;
+        // GameRules.ServiceData.server_gold_package_list[player_id]["1004"].number = data.exp ?? 0;
+        // GameRules.ServiceData.server_gold_package_list[player_id]["1005"].number = data.zs_gold ?? 0;
+        // GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+        //玩家VIP信息
+        GameRules.ServiceData.player_vip_data[player_id].vip_times = data.vip_times ?? 0;
+        GameRules.ServiceData.player_vip_data[player_id].vip_zs = data.vip_zs ?? 0;
+        GameRules.ServiceInterface.GetPlayerVipData(player_id , {});
+    }
     Debug( cmd: string, args: string[], player_id: PlayerID){
         //游戏结束提交数据
         if (cmd == "-CreateGame") {

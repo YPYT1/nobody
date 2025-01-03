@@ -248,4 +248,9 @@ declare interface Server_PICTUER_FETTER_CONFIG {
 declare interface ServerPlayerConfigPictuerFetter {
     [ pictuer_suit_id : string ] : string[], //激活的卡片
 }
+declare interface ServerPlayerVipData {
+    vip_times : number , //月卡信息
+    vip_zs : number , //终身卡
+}
+
 

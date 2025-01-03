@@ -443,6 +443,12 @@ declare interface CGED {
         GetPlayerServerDrawLotteryDrawRecord : {
 
         }
+        /**
+         * 获取玩家vip信息
+         */
+        GetPlayerVipData : {
+
+        }
     }
 }
 

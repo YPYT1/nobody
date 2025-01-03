@@ -839,6 +839,26 @@ export class ServiceInterface extends UIEventRegisterClass{
         );
     };
     
+
+
+    /**
+     * 限购数据
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetPlayerVipData(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerVipData"], callback?){
+        DeepPrintTable(GameRules.ServiceInterface.ShoppingLimit[player_id]);
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerVipData",
+            {
+                data : GameRules.ServiceData.player_vip_data[player_id],
+            }
+        );
+    };
+    
+
     /**
      * 更新背包物品
      * @param player_id 
