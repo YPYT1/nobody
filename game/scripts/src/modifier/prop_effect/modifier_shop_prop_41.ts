@@ -173,7 +173,7 @@ export class modifier_shop_prop_41_10 extends BaseModifier {
     buff_key = "prop_41_10";
     attr_list: CustomAttributeTableType = {
         "ManaCostRate": {
-            "BasePercent": 105
+            "MulRegion": 100
         }
     }
 }

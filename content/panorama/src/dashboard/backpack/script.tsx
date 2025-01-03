@@ -27,7 +27,6 @@ const CGE_Subscribe = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
         // 这个是渲染所有物品
-        // $.Msg(["ServiceInterface_GetPlayerServerPackageData"])
         let data = event.data;
         let ItemList = Object.values(data);
         let ids_backpack: { [id: string]: AM2_Server_Backpack } = {};
@@ -70,9 +69,9 @@ const CGE_Subscribe = () => {
         // 储存当前背包物品的数量
         GameUI.CustomUIConfig().setStorage("backpack_count_table", backpack_count_table);
         // 更新数据
-        $.Schedule(0.1, () => {
-            GameUI.CustomUIConfig().EventBus.publish("backpack_count_update", backpack_count_table)
-        })
+        // $.Schedule(0.1, () => {
+        //     GameUI.CustomUIConfig().EventBus.publish("backpack_count_update", backpack_count_table)
+        // })
 
     })
 

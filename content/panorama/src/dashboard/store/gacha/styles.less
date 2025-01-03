@@ -226,6 +226,43 @@
             animation-duration: 8.5s;
         }
     }
+
+    .CostItemPanel {
+        horizontal-align: right;
+        margin-right: 40px;
+        margin-top: 40px;
+        flow-children: right;
+
+        #GachaServerItem {
+            width: 40px;
+            height: 40px;
+            vertical-align: middle;
+        }
+
+        .CountBorder {
+            z-index: -1;
+            // width: 120px;
+            padding: 2px;
+            vertical-align: middle;
+            background-color: #000000dd;
+            border: 1px solid #706f6c;
+            border-radius: 5px;
+            margin-left: -20px;
+
+            #GachaItemCount {
+                // width: 100%;
+                min-width: 40px;
+                margin-left: 24px;
+                
+
+                Label {
+                    font-size: 18px;
+                    color:#ffffff;
+                }
+            }
+        }
+
+    }
 }
 
 .GachaRewardContent {
@@ -236,12 +273,13 @@
         width: 156px;
         height: 55px;
         background-image: url("file://{images}/custom_game/dashboard/store/gacha/reward_receive_btn.png");
-        
+
         &:hover {
             brightness: 1.3;
         }
     }
 }
+
 .AccumulatedRewards {
     width: 1350px;
     // height: 270px;
@@ -319,8 +357,9 @@
                 .RewardEffect {
                     visibility: visible;
                 }
-                
+
             }
+
             &.is_even {
 
                 .RewardItemBorder {

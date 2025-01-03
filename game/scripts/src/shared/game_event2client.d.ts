@@ -36,6 +36,14 @@ declare interface CustomGameEventDeclarations {
         };
     };
 
+    CMsg_SendServerMsgToPlayer: {
+        code: number,
+        message: string;
+        /** 默认为0,1为弹窗*/
+        type: number;
+        data?: any
+    };
+
     CMsg_GetEntityListHealthBar: {
         data: {
             boss_list: EntityIndex[], // boss

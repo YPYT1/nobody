@@ -4,11 +4,11 @@ const MainPanel = $.GetContextPanel();
 export const Init = () => {
 
     GameUI.CustomUIConfig().EventBus.subscribe("popup_loading", event => {
-        MainPanel.SetHasClass("Show", true)
+        MainPanel.SetHasClass("Show", event.show)
     })
 
     GameEvents.Subscribe("ServiceInterface_PulbicLoadClose", event => {
-        $.Msg(["ServiceInterface_PulbicLoadClose"])
+        // $.Msg(["ServiceInterface_PulbicLoadClose"])
         MainPanel.SetHasClass("Show", false)
     })
 

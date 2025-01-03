@@ -136,6 +136,39 @@ export class CMsg extends UIEventRegisterClass {
     }
 
     /**
+     * 发送服务器消息到玩家
+     * @param player_id -1则为全体玩家
+     * @param code 
+     * @param message 
+     * @param type 
+     * @param data 
+     */
+    SendServerMsgToPlayer(player_id: PlayerID, code: number, message: string, type: number = 0, data?: any) {
+        if (player_id == -1) {
+            CustomGameEventManager.Send_ServerToAllClients(
+                "CMsg_SendServerMsgToPlayer",
+                {
+                    code,
+                    message,
+                    type,
+                    data,
+                }
+            );
+        } else {
+            CustomGameEventManager.Send_ServerToPlayer(
+                PlayerResource.GetPlayer(player_id),
+                "CMsg_SendServerMsgToPlayer",
+                {
+                    code,
+                    message,
+                    type,
+                    data,
+                }
+            );
+        }
+    }
+
+    /**
      * 设置一个血条到客户端
      * @param hUnit 
      */

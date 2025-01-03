@@ -1,0 +1,230 @@
+@import url("./../_common_popup.less");
+
+.PopupContainer {
+    visibility: visible;
+    background-color: #000000ee;
+
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    opacity: 0;
+
+    background-image: url("file://{images}/custom_game/popups/gacha_result/bg.png");
+
+    &.Show {
+        opacity: 1;
+    }
+}
+
+.ResultItemList {
+    height: 100%;
+    horizontal-align: center;
+    vertical-align: middle;
+    flow-children: right;
+
+    .ResultItem {
+        // border: 1px solid #fff;
+
+        &.is_odd {
+            margin-top: 56px;
+        }
+
+        &.rare_3 {
+            .ResultItemInfo {
+                background-image: url("file://{images}/custom_game/popups/gacha_result/res_border_r3.png");
+            }
+
+            .ResultItemGlow {
+                background-image: url("file://{images}/custom_game/popups/gacha_result/border_glow_r3.png");
+            }
+        }
+
+        &.rare_4 {
+            .ResultItemInfo {
+                background-image: url("file://{images}/custom_game/popups/gacha_result/res_border_r4.png");
+            }
+
+            .ResultItemGlow {
+                background-image: url("file://{images}/custom_game/popups/gacha_result/border_glow_r4.png");
+                animation-duration: 0.55s;
+            }
+        }
+
+        &.rare_5 {
+            .ResultItemInfo {
+                background-image: url("file://{images}/custom_game/popups/gacha_result/res_border_r5.png");
+            }
+
+            .ResultItemGlow {
+                background-image: url("file://{images}/custom_game/popups/gacha_result/border_glow_r5.png");
+                animation-duration: 0.4s;
+            }
+        }
+
+        &.rare_6 {
+            .ResultItemInfo {
+                background-image: url("file://{images}/custom_game/popups/gacha_result/res_border_r6.png");
+            }
+
+            .ResultItemGlow {
+                background-image: url("file://{images}/custom_game/popups/gacha_result/border_glow_r6.png");
+                animation-duration: 0.35s;
+            }
+        }
+
+        &.Conver .ItemInfo .ConverContent {
+            visibility: visible;
+        }
+
+        &.Play {
+            animation-name: play_show;
+            animation-duration: 0.7s;
+            animation-iteration-count: 1;
+
+            &.is_odd {
+                animation-name: play_show2;
+            }
+        }
+    }
+
+    .ResultItemGlow {
+        width: 180px;
+        height: 988px;
+
+        background-position: 50% 50%;
+        // border: 1px solid #0f0;
+        animation-name: play_glow;
+        animation-duration: 0.7s;
+        animation-iteration-count: infinite;
+    }
+
+    .ResultItemInfo {
+        width: 180px;
+        height: 642px;
+        horizontal-align: center;
+        background-image: url("file://{images}/custom_game/popups/gacha_result/res_border_r2.png");
+        vertical-align: middle;
+
+        .ItemInfo {
+            margin-top: 48px;
+            vertical-align: middle;
+            horizontal-align: center;
+            flow-children: down;
+
+            .ServerItem {
+                width: 96px;
+                height: 96px;
+                horizontal-align: center;
+            }
+
+            .ItemCount {
+                horizontal-align: center;
+                margin-top: 4px;
+                background-color: #00000099;
+                padding: 2px 4px;
+                border-radius: 4px;
+                font-size: 20px;
+                font-family: "SourceHanSansSC-Bold";
+                color: #ffffff;
+                font-weight: bold;
+                text-align: center;
+
+
+            }
+
+            .ConverContent {
+                saturation: 0.5;
+                margin-top: 48px;
+                visibility: collapse;
+
+
+                .ServerItem {
+                    width: 80px;
+                    height: 80px;
+                }
+
+                .ItemCount {
+                    font-size: 16px;
+                }
+
+            }
+        }
+
+        .ConverContent {
+            flow-children: down;
+            // border: 1px solid #fff;
+            horizontal-align: center;
+
+            .Arrow {
+                width: 32px;
+                height: 69px;
+                horizontal-align: center;
+                background-image: url("file://{images}/custom_game/popups/gacha_result/arrow.png");
+            }
+        }
+
+        .ItemName {
+            vertical-align: bottom;
+            horizontal-align: center;
+            color: #ffffff;
+            margin-bottom: 50px;
+            font-size: 18px;
+            text-shadow: 0px 0px 2px 2.0 #000000ee;
+        }
+
+
+
+
+    }
+}
+
+.HitTips {
+    horizontal-align: center;
+    vertical-align: bottom;
+    font-size: 24px;
+    color: #ffffff;
+    text-shadow: 0px 2px 2px 2.0 #000000;
+    margin-bottom: 26px;
+}
+
+@keyframes play_show {
+    0% {
+        transform: translateY(-600px);
+        opacity: 0;
+    }
+
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+@keyframes play_show2 {
+    0% {
+        transform: translateY(600px);
+        opacity: 0;
+    }
+
+
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
+@keyframes play_glow {
+    0% {
+        transform: scaleY(1);
+        // opacity: 1;
+    }
+
+    50% {
+        transform: scaleY(1.05);
+        // opacity: 0.7;
+    }
+
+    100% {
+        transform: scaleY(1);
+        // opacity: 1;
+    }
+}

@@ -15,13 +15,13 @@ export function Init() {
         if (mall_category_arr.indexOf(mall_category) != -1) {
             let StoreItem = CreateCustomComponent(ShopItemList, "store_item", goods_id)
             StoreItem._SetGoodsId(goods_id)
-            // StoreItem._SetState(false);
         }
     }
+
+    
 }
 
 (() => {
-
     $.Msg(["Nav3"])
     Init();
 })();

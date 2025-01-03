@@ -102,7 +102,7 @@
 			</Panel>
 			<Panel class="ShopCurrencyBorder">
 				<Panel class="GoldBorder">
-					<Label text="{d:gold_count}"/>
+					<Label text="{s:gold_count}"/>
 				</Panel>
 				<Panel class="GoldIcon"/>
 			</Panel>

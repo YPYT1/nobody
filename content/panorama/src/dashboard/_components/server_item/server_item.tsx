@@ -11,12 +11,14 @@ declare global {
     }
 }
 
+type ServerItemStyleTypes = "default" | "horizontal"
 interface ServerInfoConfig {
     item_id?: string | number;
     item_count?: number;
     show_count?: boolean;
     show_tips?: boolean;
     hide_bg?: boolean;
+    style?: ServerItemStyleTypes;
 }
 
 
@@ -53,13 +55,14 @@ const _SetItemId = (item_id: string | number) => {
     }
 }
 const _SetServerItemInfo = (params: ServerInfoConfig) => {
+    let style = params.style ?? "default";
     let item_id = "" + params.item_id;
     let item_count = params.item_count ?? 0;
     let show_count = params.show_count ?? false;
     let hide_bg = params.hide_bg ?? false;
     let show_tips = params.show_tips ?? false;
     // $.Msg(["SetItemValue",item_id,item_count])
-
+    MainPanel.AddClass(style)
     MainPanel.SetHasClass("zero", !show_count)
     MainPanel.SetHasClass("hide_bg", hide_bg)
     MainPanel.Data<PanelDataObject>().item_id = item_id
@@ -82,16 +85,8 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
                 // $.Msg(["image_src", image_src])
                 ServerItemIcon.SetImage(image_src);
             }
-
-
             MainPanel.SetDialogVariable("count", `${item_count}`)
             MainPanel.Data<PanelDataObject>().count = item_count
-
-
-
-
-
-
 
         } else {
             MainPanel.SetHasClass("zero", false)

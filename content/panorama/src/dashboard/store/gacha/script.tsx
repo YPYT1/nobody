@@ -4,14 +4,15 @@ const QuickPurchase = $("#QuickPurchase");
 const QuickPurchaseButton = $("#QuickPurchaseButton") as Button;
 const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list;
 
+// const CostItemPanel = LoadCustomComponent($("#CostItemPanel"), "server_item")
+// CostItemPanel._SetServerItemInfo({ style: "horizontal", item_id: 1207 })
 export function Init() {
     InitQuickPurchase();
     InitGachaButton();
     InitRewardItem();
     InitCurrentReward();
+    InitGachaItemShow()
 }
-
-
 
 const GACHA_SHOP_ID = "11";
 const GACHA_ITEM_ID = "1207";
@@ -48,6 +49,19 @@ function InitGachaButton() {
         const _ServerItem = GachaButtonPanel.FindChildTraverse("ServerItem")!;
         const ServerItem = LoadCustomComponent(_ServerItem, "server_item");
         ServerItem._SetServerItemInfo({ show_count: false, show_tips: false, hide_bg: true, item_id: _data.item })
+
+        GachaButtonPanel.SetPanelEvent("onactivate", () => {
+            GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true, })
+            GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                event_name: "DrawLottery",
+                params: {
+                    type: 1,
+                    count: _data.count
+                }
+            })
+
+            // 
+        })
     }
 }
 
@@ -105,7 +119,7 @@ function InitCurrentReward() {
         AccRewardItem.SetHasClass("can_receive", can_receive)
         // AccRewardItem.SetHasClass("receive", receive_state);
 
-        AccRewardItem.style.transform = `translatex(${( value  * UI_SCALE) - 40}px)`
+        AccRewardItem.style.transform = `translatex(${(value * UI_SCALE) - 40}px)`
 
         const _RewardItem = AccRewardItem.FindChildTraverse("RewardItem")!
         const RewardItem = LoadCustomComponent(_RewardItem, "server_item")
@@ -117,6 +131,17 @@ function InitCurrentReward() {
     CurrentProgress.style.width = `${2000 * UI_SCALE}px`;
     CurrentProgress.value = current_progress;
 
+}
+
+
+
+function InitGachaItemShow() {
+    const GachaServerItem = LoadCustomComponent($("#GachaServerItem"), "server_item")
+    GachaServerItem._SetServerItemInfo({ hide_bg: true, show_tips: true, show_count: false, item_id: 1207 })
+
+    const GachaItemCount = LoadCustomComponent($("#GachaItemCount"), "backpack_count");
+    GachaItemCount._SetItemId("1207");
+    GachaItemCount._SetLabelStyle({ font_size: 16, color: "#fffffe" })
 }
 
 (() => {

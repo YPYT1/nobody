@@ -250,103 +250,7 @@ export class CustomAttribute {
     }
 
 
-    /** 计算属性 */
-    AttributeCalculate(hUnit: CDOTA_BaseNPC, attr_key: AttributeMainKey[], is_init: boolean = false) {
-        for (let main_key of attr_key) {
-            let is_mul = AttributeConst[main_key].is_mul == 1;
-            if (!is_mul) {
-                let mul_value = 1;
-                if (hUnit.custom_mul_attribute[main_key]) {
-                    let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
-                    // DeepPrintTable(attr_values)
-                    let base_value = 100;
-                    for (let value of attr_values) {
-                        base_value *= (100 + value) * 0.01;
-                    }
-                    mul_value = base_value * 0.01;
-                }
-                // print("mul_value",mul_value)
-                // 非乘算属性
-                let SubAttr = hUnit.custom_attribute_table[main_key as keyof typeof hUnit.custom_attribute_table];
-                let TotalAttrValue = ((SubAttr["Base"]) * (1 + SubAttr["BasePercent"] * 0.01) + SubAttr["Bonus"])
-                    * (1 + SubAttr["TotalPercent"] * 0.01)
-                    + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
-                    + (SubAttr["Fixed"]);
-                TotalAttrValue = TotalAttrValue * mul_value;
-                /** 最低基础值 */
-                let LastState = (SubAttr["Last"] ?? 0) > 0;
-                if (LastState) {
-                    hUnit.custom_attribute_value[main_key] = math.max(SubAttr["Base"], TotalAttrValue);
-                } else {
-                    hUnit.custom_attribute_value[main_key] = TotalAttrValue;
-                }
 
-                hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
-                hUnit.custom_attribute_show[main_key][1] = TotalAttrValue - SubAttr["Base"]
-
-                hUnit.custom_attribute_table[main_key].MulRegion = mul_value
-            } else {
-                // 乘算属性处理
-                let mul_value = 1;
-                if (hUnit.custom_mul_attribute[main_key]) {
-                    let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
-                    let base_value = 100;
-                    for (let value of attr_values) {
-                        base_value = base_value * (100 - value) * 0.01;
-                    }
-                    hUnit.custom_attribute_value[main_key] = 100 - base_value;
-                    mul_value = base_value * 0.01;
-                }
-
-                hUnit.custom_attribute_table[main_key].MulRegion = mul_value
-            }
-        }
-
-        // DeepPrintTable(hUnit.custom_attribute_value)
-
-        // 第二次计算 把额外属性转为绿字,不会
-        // let extra_attribute_table = this.ConversionCalculate(hUnit)
-        // let extra_attribute_value = this.AttributeCalculateExtra(hUnit, extra_attribute_table)
-        // for (let extra_key in extra_attribute_value) {
-        //     hUnit.custom_attribute_value[extra_key] += math.floor(extra_attribute_value[extra_key])
-        //     hUnit.custom_attribute_show[extra_key][1] += math.floor(extra_attribute_value[extra_key])
-        // }
-
-        // 技能急速处理
-        let AbilityHaste = hUnit.custom_attribute_value.AbilityHaste ?? 0;
-        let AbilityCooldownLimit = hUnit.custom_attribute_table.AbilityCooldown.Limit ?? 0;
-        hUnit.custom_attribute_value.AbilityCooldown = math.min(AbilityCooldownLimit, 100 * AbilityHaste / (AbilityHaste + 150))
-        if (!is_init) {
-            const update_state = GameRules.GetDOTATime(false, false) > hUnit.last_attribute_update;
-            // print("update", update_state)
-            if (update_state) {
-                this.UpdateAttributeInGame(hUnit)
-            } else {
-                hUnit.SetContextThink("last_attribute_update", () => {
-                    // print("start last_attribute_update")
-                    this.UpdateAttributeInGame(hUnit)
-                    return null;
-                }, this.update_delay);
-            }
-        }
-
-
-    }
-
-    /**
-     * 属性更新至客户端
-     * @param hUnit 
-     */
-    UpdateAttributeInGame(hUnit: CDOTA_BaseNPC) {
-        // print("UpdateAttributeInGame")
-        // print("hUnit", hUnit, hUnit.IsNull())
-        if (hUnit == null || hUnit.IsNull()) { return }
-        hUnit.last_attribute_update = GameRules.GetDOTATime(false, false) + this.update_delay
-        let buff = hUnit.FindModifierByName("modifier_public_attribute");
-        if (buff) {
-            buff.ForceRefresh();
-        }
-    }
 
     /** 转换属性获取 
      * 比如获得最大2%生命值攻击, 这转换出来的属性,是否能再次吃到加成?
@@ -465,45 +369,7 @@ export class CustomAttribute {
         ParticleManager.SetParticleControl(effect_fx, 2, Vector(600, 600, 600))
         ParticleManager.ReleaseParticleIndex(effect_fx)
     }
-    /**
-     * 修改属性
-     * @param hUnit 
-     * @param Attr 
-     * @param mode `0`为增加 `-1`为减
-     */
-    ModifyAttribute(hUnit: CDOTA_BaseNPC, AttrList: CustomAttributeTableType, mode: number = 0) {
-        // DeepPrintTable(AttrList)
-        if (mode == 0) {
-            for (let key in AttrList) {
-                let attr_key = key as keyof typeof AttrList;
-                let is_mul = AttributeConst[attr_key].is_mul == 1;
-                if (!is_mul) {
-                    for (let k2 in AttrList[key]) {
-                        if (k2 != "MulRegion") {
-                            let value = AttrList[key][k2] as number;
-                            hUnit.custom_attribute_table[key][k2] += value
-                        }
-                    }
-                }
-            }
-        } else {
-            for (let key in AttrList) {
-                let attr_key = key as keyof typeof AttrList;
-                let is_mul = AttributeConst[attr_key].is_mul == 1;
-                if (!is_mul) {
-                    for (let k2 in AttrList[key]) {
-                        if (k2 != "MulRegion") {
-                            let value = AttrList[key][k2] as number;
-                            hUnit.custom_attribute_table[key][k2] -= value
-                        }
 
-                    }
-                }
-            }
-        }
-
-        this.AttributeCalculate(hUnit, Object.keys(AttrList) as AttributeMainKey[]);
-    }
 
     /**
      * 设置一个属性
@@ -533,7 +399,7 @@ export class CustomAttribute {
                     if (hUnit.custom_mul_attribute[attr_key] == null) {
                         hUnit.custom_mul_attribute[attr_key] = {}
                     }
-                    hUnit.custom_mul_attribute[attr_key][key] = (attr_list[attr_key].MulRegion ?? 0)
+                    hUnit.custom_mul_attribute[attr_key][key] = (attr_list[attr_key].MulRegion ?? 1)
                 }
             }
         }
@@ -565,8 +431,6 @@ export class CustomAttribute {
                     new_object[k][k2] = attr_value
                 }
             }
-            // print("============ origin_object")
-            // DeepPrintTable(origin_object)
             // 移除原本的值
             for (let k in origin_object) {
                 let row_data = origin_object[k as keyof typeof origin_object];
@@ -625,18 +489,142 @@ export class CustomAttribute {
         this.ModifyAttribute(hUnit, temp_attr_list, -1)
     }
 
-    /** 获取物品的属性 */
-    // GetItemAttribute(item_name: string) {
-    //     let data = ItemArmsJson[item_name as keyof typeof ItemArmsJson];
-    //     let AttributeValues = data.AttributeValues as CustomAttributeTableType
-    //     return AttributeValues
-    // }
+    /**
+     * 修改属性
+     * @param hUnit 
+     * @param Attr 
+     * @param mode `0`为增加 `-1`为减
+     */
+    ModifyAttribute(hUnit: CDOTA_BaseNPC, AttrList: CustomAttributeTableType, mode: number = 0) {
+        DeepPrintTable(AttrList)
+        if (mode == 0) {
+            for (let key in AttrList) {
+                let attr_key = key as keyof typeof AttrList;
+                let is_mul = AttributeConst[attr_key].is_mul == 1;
+                if (!is_mul) {
+                    for (let k2 in AttrList[key]) {
+                        if (k2 != "MulRegion") {
+                            let value = AttrList[key][k2] as number;
+                            hUnit.custom_attribute_table[key][k2] += value
+                        }
+                    }
+                }
+            }
+        } else {
+            for (let key in AttrList) {
+                let attr_key = key as keyof typeof AttrList;
+                let is_mul = AttributeConst[attr_key].is_mul == 1;
+                if (!is_mul) {
+                    for (let k2 in AttrList[key]) {
+                        if (k2 != "MulRegion") {
+                            let value = AttrList[key][k2] as number;
+                            hUnit.custom_attribute_table[key][k2] -= value
+                        }
 
-    // GetAbilityAttribute(ability_name: string) {
-    //     let data = AbilitiesArmsJson[ability_name as keyof typeof AbilitiesArmsJson];
-    //     let AttributeValues = data.AttributeValues as CustomAttributeTableType
-    //     return AttributeValues
-    // }
+                    }
+                }
+            }
+        }
+
+        this.AttributeCalculate(hUnit, Object.keys(AttrList) as AttributeMainKey[]);
+    }
+
+    /** 计算属性 */
+    AttributeCalculate(hUnit: CDOTA_BaseNPC, attr_key: AttributeMainKey[], is_init: boolean = false) {
+        for (let main_key of attr_key) {
+            let is_mul = AttributeConst[main_key].is_mul == 1;
+            if (!is_mul) {
+                let mul_value = 1;
+                if (hUnit.custom_mul_attribute[main_key]) {
+                    let attr_values = Object.values(hUnit.custom_mul_attribute[main_key]);
+                    // DeepPrintTable(attr_values)
+                    let base_value = 100;
+                    for (let value of attr_values) {
+                        base_value *= (100 + value) * 0.01;
+                    }
+                    mul_value = base_value * 0.01;
+                }
+                // print("mul_value",mul_value)
+                // 非乘算属性
+                let SubAttr = hUnit.custom_attribute_table[main_key as keyof typeof hUnit.custom_attribute_table];
+                let TotalAttrValue = ((SubAttr["Base"]) * (1 + SubAttr["BasePercent"] * 0.01) + SubAttr["Bonus"])
+                    * (1 + SubAttr["TotalPercent"] * 0.01)
+                    + (SubAttr["Bonus"]) * (SubAttr["BonusPercent"] * 0.01)
+                    + (SubAttr["Fixed"]);
+                TotalAttrValue = TotalAttrValue * mul_value;
+                /** 最低基础值 */
+                let LastState = (SubAttr["Last"] ?? 0) > 0;
+                if (LastState) {
+                    hUnit.custom_attribute_value[main_key] = math.max(SubAttr["Base"], TotalAttrValue);
+                } else {
+                    hUnit.custom_attribute_value[main_key] = TotalAttrValue;
+                }
+
+                hUnit.custom_attribute_show[main_key][0] = SubAttr["Base"];
+                hUnit.custom_attribute_show[main_key][1] = TotalAttrValue - SubAttr["Base"]
+                hUnit.custom_attribute_table[main_key].MulRegion = mul_value
+            } else {
+                // 乘算属性处理
+                let mul_value = 1;
+                hUnit.custom_attribute_value[main_key] = hUnit.custom_attribute_table[main_key].Base;
+                const custom_mul_attribute = Object.values(hUnit.custom_mul_attribute[main_key] ?? {})
+                if (custom_mul_attribute.length > 0) {
+                    let base_value = 100;
+                    for (let value of custom_mul_attribute) {
+                        base_value = base_value * (100 - value) * 0.01;
+                    }
+                    hUnit.custom_attribute_value[main_key] = 100 - base_value;
+                    mul_value = base_value * 0.01;
+                }
+                hUnit.custom_attribute_table[main_key].MulRegion = mul_value
+
+                // print("value", main_key, hUnit.custom_attribute_value[main_key])
+            }
+        }
+
+        // DeepPrintTable(hUnit.custom_attribute_value)
+
+        // 第二次计算 把额外属性转为绿字,不会
+        // let extra_attribute_table = this.ConversionCalculate(hUnit)
+        // let extra_attribute_value = this.AttributeCalculateExtra(hUnit, extra_attribute_table)
+        // for (let extra_key in extra_attribute_value) {
+        //     hUnit.custom_attribute_value[extra_key] += math.floor(extra_attribute_value[extra_key])
+        //     hUnit.custom_attribute_show[extra_key][1] += math.floor(extra_attribute_value[extra_key])
+        // }
+
+        // 技能急速处理
+        let AbilityHaste = hUnit.custom_attribute_value.AbilityHaste ?? 0;
+        let AbilityCooldownLimit = hUnit.custom_attribute_table.AbilityCooldown.Limit ?? 0;
+        hUnit.custom_attribute_value.AbilityCooldown = math.min(AbilityCooldownLimit, 100 * AbilityHaste / (AbilityHaste + 150))
+        if (!is_init) {
+            const update_state = GameRules.GetDOTATime(false, false) > hUnit.last_attribute_update;
+            // print("update", update_state)
+            if (update_state) {
+                this.UpdateAttributeInGame(hUnit)
+            } else {
+                hUnit.SetContextThink("last_attribute_update", () => {
+                    // print("start last_attribute_update")
+                    this.UpdateAttributeInGame(hUnit)
+                    return null;
+                }, this.update_delay);
+            }
+        }
+
+
+    }
+
+    /**
+     * 属性更新至客户端
+     * @param hUnit 
+     */
+    UpdateAttributeInGame(hUnit: CDOTA_BaseNPC) {
+        if (hUnit == null || hUnit.IsNull()) { return }
+        hUnit.last_attribute_update = GameRules.GetDOTATime(false, false) + this.update_delay
+        let buff = hUnit.FindModifierByName("modifier_public_attribute");
+        if (buff) {
+            buff.ForceRefresh();
+        }
+    }
 
 
     /** 修改转换属性 */
@@ -843,12 +831,12 @@ export class CustomAttribute {
         }
 
         if (cmd == "-atest") {
-            for (let i = 0; i < 10; i++) {
-                this.SetAttributeInKey(hHero, "atest", {
-                    'MoveSpeed': {
-                        "BasePercent": -200,
+            for (let i = 0; i < 3; i++) {
+                this.SetAttributeInKey(hHero, "atest" + i, {
+                    'EvasionProb': {
+                        "Base": 50,
                     },
-                }, 5 + i * 0.5)
+                }, 3)
             }
         }
 
@@ -916,6 +904,21 @@ export class CustomAttribute {
                 damage_type: DamageTypes.MAGICAL,
                 ability: null,
                 element_type: element_type,
+            })
+        }
+
+        if (cmd == "-getime") {
+            let dotatime10 = GameRules.GetDOTATime(true, false);
+            let dotatime00 = GameRules.GetDOTATime(false, false);
+            let dotatime01 = GameRules.GetDOTATime(false, true);
+            let dotatime11 = GameRules.GetDOTATime(true, true);
+            let gametime = GameRules.GetGameTime()
+            DeepPrintTable({
+                dotatime10,
+                dotatime00,
+                dotatime01,
+                dotatime11,
+                gametime,
             })
         }
     }

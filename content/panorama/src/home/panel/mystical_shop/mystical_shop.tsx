@@ -43,7 +43,7 @@ const GameEventsSubscribeInit = () => {
     })
 
     GameEvents.Subscribe("MysticalShopSystem_GetShopData", event => {
-        $.Msg("MysticalShopSystem_GetShopData")
+        // $.Msg("MysticalShopSystem_GetShopData")
         let data = event.data;
         // 刷新次数和刷新价格
         let shop_info = data.shop_field_list;

@@ -16,6 +16,7 @@ const Initialize = () => {
     const DashboardLoadingSpinner = GameUI.CustomUIConfig().FindOfficialHUDUI("DashboardLoadingSpinner")!;
     DashboardLoadingSpinner.SetHasClass("Show", false)
     CreateMenuButtons();
+    GetServerTime();
 }
 
 const CustomEventSub = () => {
@@ -121,8 +122,32 @@ const SetDashboardButton = (MenuButton: Button, dashboard_id: string) => {
 
 }
 
+function GetServerTime() {
 
+    GameEvents.Subscribe("ServiceInterface_GetServerTime", event => {
+        let data = event.data;
+        let time_string = event.data.time_string;
+        GameUI.CustomUIConfig().setStorage("unix_time", data.time)
+        const unix_date = new Date(Date.UTC(
+            time_string.yy,
+            time_string.mm - 1,
+            time_string.dd,
+            0,
+            0,
+            0,
+        ));
+        let today_time = Math.floor(unix_date.getTime() / 1000) - 28800;
+        GameUI.CustomUIConfig().setStorage("today_time", today_time)
+    })
+
+    GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+        event_name: "GetServerTime",
+        params: {}
+    })
+}
 
 (() => {
     Initialize();
+
+    $.Msg(["Up"])
 })();

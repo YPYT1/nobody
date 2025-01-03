@@ -73,7 +73,7 @@ export class modifier_skywrath_4b_buff extends BaseModifier {
 
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
             "ManaCostRate": {
-                "Base": -this.mana_value,
+                "MulRegion": -this.mana_value,
             },
             "AbilityCooldown2": {
                 "Base": this.cd_value,

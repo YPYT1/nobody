@@ -11,5 +11,7 @@
         <Button id="loading" />
         <Button id="store_purchase" />
         <Button id="get_item" />
+        <Button id="gacha_result" />
+        <Button id="server_msg" />
     </Panel>
 </root>

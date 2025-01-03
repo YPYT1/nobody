@@ -52,7 +52,6 @@ const UpdataAttributeData = () => {
     const netdata = CustomNetTables.GetTableValue("unit_attribute", `${queryUnit}`)
     if (netdata == null) { return }
     // 扩展数据
-    let show = netdata.show;
     let value = netdata.value;
     let table = netdata.table;
 

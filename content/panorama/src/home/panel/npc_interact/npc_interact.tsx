@@ -7,6 +7,7 @@ const GameRestartVote = $("#GameRestartVote")
 const InitPanel = () => {
     SetPanel_GameRestartVote()
     SetPanel_NpcInteract_GameRestart();
+    Setpanel_Npcinteract_Soulstone_Challenge();
 }
 
 const SetPanel_GameRestartVote = () => {
@@ -56,9 +57,8 @@ const GameRestartVoteTimer = () => {
 
 }
 const SetPanel_NpcInteract_GameRestart = () => {
-    // NpcInteract_GameRestart
+
     NpcInteract_GameRestart.RemoveAndDeleteChildren();
-    // NpcInteract_GameRestart.SetHasClass("IsHost", player_id == 0);
     NpcInteract_GameRestart.BLoadLayoutSnippet("ConfirmWindow");
     NpcInteract_GameRestart.SetDialogVariable("confirm_title", `投票开启新游戏`);
     NpcInteract_GameRestart.SetDialogVariable("btn_text_confirm", "是");
@@ -83,14 +83,10 @@ const SetPanel_NpcInteract_GameRestart = () => {
 const UpdateSelectUnit = () => {
     let queryUnit = Players.GetLocalPlayerPortraitUnit();
     let unit_label = Entities.GetUnitLabel(queryUnit);
-    // $.Msg(["unit_label", queryUnit,unit_label])
-    if (queryUnit == Players.GetPlayerHeroEntityIndex(player_id)) {
-        return
-    }
+    if (queryUnit == Players.GetPlayerHeroEntityIndex(player_id)) { return }
     let unit_name = Entities.GetUnitName(queryUnit);
     NpcInteract_GameRestart.SetHasClass("Show", unit_name == "npc_interact_game_restart" && player_id == 0)
-
-
+    NpcInteract_SoulstoneChallenge.SetHasClass("Show", unit_name == "npc_interact_soulstone_challenge" && player_id == 0)
 }
 
 const CustomGameEventsSubscribe = () => {
@@ -113,9 +109,32 @@ const CustomGameEventsSubscribe = () => {
     })
 }
 
+
+const NpcInteract_SoulstoneChallenge = $("#npc_interact_soulstone_challenge")
+function Setpanel_Npcinteract_Soulstone_Challenge() {
+    NpcInteract_SoulstoneChallenge.RemoveAndDeleteChildren();
+    NpcInteract_SoulstoneChallenge.BLoadLayoutSnippet("ConfirmWindow");
+    NpcInteract_SoulstoneChallenge.SetDialogVariable("confirm_title", `是否开启魂石挑战`);
+    NpcInteract_SoulstoneChallenge.SetDialogVariable("btn_text_confirm", "是");
+    NpcInteract_SoulstoneChallenge.SetDialogVariable("btn_text_cancel", "否");
+    let BtnConfirm = NpcInteract_SoulstoneChallenge.FindChildTraverse("BtnConfirm") as Button;
+    let BtnCancel = NpcInteract_SoulstoneChallenge.FindChildTraverse("BtnCancel") as Button;
+
+    BtnConfirm.SetPanelEvent("onactivate", () => {
+        NpcInteract_SoulstoneChallenge.RemoveClass("Show");
+
+    })
+
+    BtnCancel.SetPanelEvent("onactivate", () => {
+        NpcInteract_SoulstoneChallenge.RemoveClass("Show");
+        GameUI.SelectUnit(-1 as EntityIndex, false)
+    })
+
+}
 export const Init = () => {
     InitPanel()
     CustomGameEventsSubscribe();
+
     GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelectUnit);
     GameEvents.SendCustomGameEventToServer("MapChapter", {
         event_name: "GetPlayerVoteData",

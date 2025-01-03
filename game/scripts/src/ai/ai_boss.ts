@@ -102,6 +102,8 @@ export class CustomAI_Boss {
                 }
             }
         }
+
+        // 读取技能来配置阶段
         if (boss_hp_phase[0] > 0) {
             const mdf = this.me.AddNewModifier(this.me, null, "modifier_state_boss_phase_hp", {})
             mdf.SetStackCount(boss_hp_phase[0])

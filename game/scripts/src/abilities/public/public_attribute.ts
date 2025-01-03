@@ -128,7 +128,7 @@ export class modifier_public_attribute extends BaseModifier {
         CustomNetTables.SetTableValue("unit_attribute", `${hUnit.GetEntityIndex()}`, {
             table: hUnit.custom_attribute_table,
             value: hUnit.custom_attribute_value,
-            show: hUnit.custom_attribute_show,
+            // show: hUnit.custom_attribute_show,
         })
     }
 

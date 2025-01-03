@@ -7,6 +7,6 @@
 		<include src="./backpack_count.tsx" />
 	</scripts>
     <Panel class="BackpackCount">
-        <Label text="{s:count}"/>
+        <Label id="CountLabel" text="{s:count}"/>
     </Panel>
 </root>

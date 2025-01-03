@@ -34,5 +34,5 @@ declare interface CustomNetTableDeclarations {
 interface UnitAttributeNT {
     table: CustomAttributeTableType;
     value: CustomAttributeValueType;
-    show: CustomAttributeShowType;
+    // show: CustomAttributeShowType;
 }

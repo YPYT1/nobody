@@ -28,7 +28,8 @@
         </snippet>
     </snippets>
 	<Panel class="npc_interact">
-        <Panel id="NpcInteract_GameRestart" />
-        <Panel id="GameRestartVote"  />
+        <Panel id="NpcInteract_GameRestart" class="ConfirmWindowContainer" />
+        <Panel id="GameRestartVote"  class="ConfirmWindowContainer"/>
+        <Panel id="npc_interact_soulstone_challenge" class="ConfirmWindowContainer"/>
 	</Panel>
 </root>

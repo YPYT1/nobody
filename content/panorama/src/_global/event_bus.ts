@@ -14,6 +14,7 @@ interface CustomEventBusList {
     backpack_count_update: { [item: string]: number };
     popup_loading: { show: boolean };
     open_store_purchase: { id: string };
+    shoping_limit_update: AM2_Server_Shopping_Limit_List
 
 }
 
@@ -142,12 +143,6 @@ class EventBus {
         this._eventObject = {};
     }
 }
-// if (GameUI.CustomUIConfig().EventBus != null) {
-//     GameUI.CustomUIConfig().EventBus.clear();
-//     // GameUI.CustomUIConfig().EventBus = new EventBus();
-// }
-
-// GameUI.CustomUIConfig().EventBus = new EventBus();
 
 if (GameUI.CustomUIConfig().EventBus == null) {
     GameUI.CustomUIConfig().EventBus = new EventBus();

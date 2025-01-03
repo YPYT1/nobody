@@ -1,0 +1,35 @@
+<root>
+    <styles>
+        <include src="./gacha_result.less" />
+        <include src="./../../_styles/styles.less" />
+        <include src="./../../_styles/keyframes.less" />
+    </styles>
+    <scripts>
+		<include src="./gacha_result.tsx" />
+	</scripts>
+
+    <snippets>
+        <snippet name="ResultItem">
+            <Panel class="ResultItem">
+                <Panel class="ResultItemGlow"/>
+                <Panel class="ResultItemInfo">
+                    <Panel class="ItemInfo">
+                        <Panel class="ConverContent">
+                            <Panel id="ConverServerItem" class="ServerItem Conver"/>
+                            <Label class="ItemCount" text="{s:conver_item_count}"/>
+                            <Panel class="Arrow"/>
+                        </Panel>
+                        <Panel id="ServerItem" class="ServerItem" />
+                        <Label class="ItemCount" text="{s:item_count}"/>
+                    </Panel>
+                    <!-- <Label class="ItemName" text="{s:item_name}"/> -->
+                </Panel>
+            </Panel>
+            
+        </snippet>
+    </snippets>
+    <Button class="PopupContainer">
+        <Panel id='ItemList' class="ResultItemList" />
+        <Label class="HitTips" text="点击空白区域返回"/>
+    </Button>
+</root>

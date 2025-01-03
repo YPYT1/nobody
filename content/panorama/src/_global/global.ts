@@ -19,7 +19,8 @@ declare global {
         ConverAttrAndValueLabel(attr: string, value: number, decimal?: number): string;
         SetHotKey(key: string, down_func: Function, up_func?: Function): void;
         SendCustomEvent: <T1 extends keyof CGED, T2 extends keyof CGED[T1], T3 extends CGED[T1][T2]>(pEventName: T1, event_name: T2, params: T3) => void
-        CheckAttrIsPercent(MainAttr: string, SubAttr: string): boolean
+        CheckAttrIsPercent(MainAttr: string, SubAttr: string): boolean;
+        getServerTime():number;
     }
 }
 
@@ -167,3 +168,7 @@ GameUI.CustomUIConfig().CheckAttrIsPercent = function (MainAttr: AttributeMainKe
 }
 
 
+GameUI.CustomUIConfig().getServerTime = function(){
+    const dotatime = Game.GetDOTATime(false,false);
+    return dotatime
+}

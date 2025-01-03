@@ -1,0 +1,26 @@
+<root>
+    <styles>
+        <include src="./server_msg.less" />
+        <include src="./../../_styles/styles.less" />
+        <include src="./../../_styles/keyframes.less" />
+    </styles>
+    <scripts>
+		<include src="./server_msg.tsx" />
+	</scripts>
+    <Button class="PopupContainer">
+        <Panel class="PopupWindows">
+            <Panel class="ServerCode">
+                <Label text="code:{d:code}"/>
+            </Panel>
+
+            <Panel class="ServerMsg">
+                <Label text="{s:message}"/>
+            </Panel>
+
+            <Button id="ConfirmButton" class="dashboard_btn">
+                <Label text="确认"/>
+            </Button>
+
+        </Panel>
+    </Button>
+</root>

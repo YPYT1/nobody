@@ -25,6 +25,7 @@ let g_actual_price = 0;
 
 let g_item_object: { [x: string]: number } = {}
 
+let g_my_price = 0;
 export const Init = () => {
 
     MultipleItemList.RemoveAndDeleteChildren();
@@ -42,7 +43,6 @@ export const Init = () => {
     })
 
 
-    GameUI.CustomUIConfig().EventBus.clear("open_store_purchase");
     GameUI.CustomUIConfig().EventBus.subscribe("open_store_purchase", event => {
         MainPanel.SetHasClass("Show", true);
         let goods_id = event.id;
@@ -103,7 +103,9 @@ export const Init = () => {
         }
 
 
-
+        // 当前货币
+        const currency_count = GameUI.CustomUIConfig().getStorage("currency_count")!;
+        // $.Msg(["currency_count", currency_count])
         // 购买所需货币
         let cost_arr = data.cost.split("_");
 
@@ -113,19 +115,26 @@ export const Init = () => {
             CurrencyIcon._SetItemId("rmb");
         } else {
             CurrencyIcon._SetItemId(cost_type)
+            g_my_price = currency_count[cost_type] ?? 0;
         }
+
+        // 最大购买次数
+        const shoping_limit = GameUI.CustomUIConfig().getStorage("shoping_limit") ?? {};
+        const limit_count = shoping_limit[goods_id] ? shoping_limit[goods_id].c : 0;
+        const is_limit = data.purchase_limitation != 0;
+        const purchase_single = data.purchase_single;
+        const single_max = is_limit ? (purchase_single - limit_count) : data.purchase_single;
+
         // 单价
         let original_cost_arr = data.original_cost.split("_");
         g_original_price = parseInt(original_cost_arr[1]);
         g_actual_price = parseInt(cost_arr[1]);
-
-        let limit_count = -1;
-        let value_max = 100;
-        let curr_value = 1;
-        StoreCountSlider.value = curr_value;
-        StoreCountSlider.min = 1;
-        StoreCountSlider.max = value_max;
-        StoreCountSlider.visible = (limit_count == -1) || limit_count > 1;
+        let min_count = g_my_price >= g_actual_price ? 1 : 0
+        let max_count = Math.min(single_max, Math.floor(g_my_price / g_actual_price))
+        StoreCountSlider.value = min_count;
+        StoreCountSlider.min = min_count;
+        StoreCountSlider.max = Math.max(min_count, max_count);
+        StoreCountSlider.visible = ((single_max == 99) || single_max > 1) && min_count > 0;
 
         UpdateCurrentStoreCount(1);
 
@@ -139,7 +148,7 @@ export const Init = () => {
 
     ConfirmButton.SetPanelEvent("onactivate", () => {
         // 购买物品信息
-        $.Msg(["buy", g_goods_id, g_goods_count])
+        // $.Msg(["buy", g_goods_id, g_goods_count])
         MainPanel.SetHasClass("Show", false);
 
         GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true, })
@@ -173,6 +182,9 @@ function UpdateCurrentStoreCount(count: number) {
         index++;
     }
 
+    let price_state = g_my_price >= total_actual_price
+
+    ConfirmButton.enabled = count > 0 && (g_my_price >= total_actual_price);
 }
 
 (() => {

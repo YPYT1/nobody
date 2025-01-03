@@ -4,6 +4,7 @@ const MainPanel = $.GetContextPanel();
 
 let ServerItemPanel = LoadCustomComponent($("#ItemBorder"), "server_item");
 ServerItemPanel._SetServerItemInfo({ show_count: false })
+
 const SetTooltipView = (item_id: string, count: number, show_count: number) => {
     let item_data = ServerItemList[item_id as keyof typeof ServerItemList];
     let rarity = item_data.quality
@@ -12,11 +13,11 @@ const SetTooltipView = (item_id: string, count: number, show_count: number) => {
     MainPanel.SetDialogVariable("item_name", item_name);
     MainPanel.SetDialogVariable("item_desc", item_desc);
     MainPanel.SetDialogVariableInt("item_amount", count);
+
     for (let r = 1; r <= 6; r++) {
         MainPanel.SetHasClass("rare_" + r, r == rarity)
     }
 
-    // $.Msg(["show_count",show_count])
     MainPanel.SetHasClass("show_count", show_count == 1)
     ServerItemPanel._SetItemId(item_id)
 }

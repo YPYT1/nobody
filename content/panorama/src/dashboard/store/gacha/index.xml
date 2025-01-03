@@ -68,9 +68,16 @@
 							</Button>
 						</Panel>
 						<Panel id="GachaButtonList" hittest="false"/>
-							
 						<Panel id="RewardItemShowList" hittest="false"/>
-
+						<Panel class="CostItemPanel">
+							<Panel id="GachaServerItem"/>
+							<Panel class="CountBorder">
+								<Panel id="GachaItemCount"/>
+							</Panel>
+							
+						</Panel>
+						
+						
 					</Panel>
 
 					<Panel class="GachaRewardContent">

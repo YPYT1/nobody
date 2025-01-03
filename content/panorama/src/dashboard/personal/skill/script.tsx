@@ -146,21 +146,6 @@ const CGED_Init = () => {
     })
 
     SendCustomEvent("ServiceInterface", "GetPlayerServerSkillData", {})
-
-    // 更新背包
-    // GameUI.CustomUIConfig().EventBus.subscribe("backpack_count_update", data => {
-    //     //1292	高阶精通点
-    //     // let item1292 = data['1292']
-    //     // let item1292_count = item1292 == null ? 0 : item1292.number
-    //     // ServerItemCount[1292] = item1292_count
-    //     // MainPanel.SetDialogVariableInt("skill_point", item1292_count);
-    //     // //1293	技能精通经验
-    //     // let item1293 = data['1293']
-    //     // let item1293_count = item1293 == null ? 0 : item1293.number
-    //     // ServerItemCount[1293] = item1293_count
-    //     // MainPanel.SetDialogVariableInt("skill_exp", item1293_count);
-    // })
-
 }
 
 

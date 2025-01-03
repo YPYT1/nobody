@@ -357,7 +357,7 @@ const HeroEditorAbility = () => {
         setAbilityEnti(e)
     }, [])
 
-    useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
+    // useGameEvent("dota_player_update_selected_unit", UpdateLocalPlayer, []);
     useGameEvent("dota_player_update_query_unit", UpdateLocalPlayer, []);
 
     // UpdateLocalPlayer();
