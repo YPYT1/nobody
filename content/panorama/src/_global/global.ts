@@ -20,7 +20,9 @@ declare global {
         SetHotKey(key: string, down_func: Function, up_func?: Function): void;
         SendCustomEvent: <T1 extends keyof CGED, T2 extends keyof CGED[T1], T3 extends CGED[T1][T2]>(pEventName: T1, event_name: T2, params: T3) => void
         CheckAttrIsPercent(MainAttr: string, SubAttr: string): boolean;
-        getServerTime():number;
+        // getServerTime(): number;
+        ConvertServerItemToArray(input: string): { item_id: string; item_count: number; }[];
+        ConvertServerItemToObject(input: string): { [item_id: string]: number; };
     }
 }
 
@@ -168,7 +170,34 @@ GameUI.CustomUIConfig().CheckAttrIsPercent = function (MainAttr: AttributeMainKe
 }
 
 
-GameUI.CustomUIConfig().getServerTime = function(){
-    const dotatime = Game.GetDOTATime(false,false);
-    return dotatime
+// GameUI.CustomUIConfig().getServerTime = function () {
+//     const dotatime = Game.GetDOTATime(false, false);
+//     return dotatime
+// }
+
+
+
+GameUI.CustomUIConfig().ConvertServerItemToArray = function (item_input: string) {
+    let data_array = []
+    let item_arr = item_input.split(",");
+    for (let row_item of item_arr) {
+        let row_data = row_item.split("_");
+        let item_id = row_data[0]
+        let item_count = parseInt(row_data[1])
+        data_array.push({ item_id, item_count })
+    }
+    return data_array
+}
+
+GameUI.CustomUIConfig().ConvertServerItemToObject = function (item_input: string) {
+    let data_object: { [item_id: string]: number } = {}
+    let item_arr = item_input.split(",");
+    for (let row_item of item_arr) {
+        let row_data = row_item.split("_");
+        let item_id = row_data[0]
+        let item_count = parseInt(row_data[1])
+        data_object[item_id] = item_count
+    }
+
+    return data_object
 }

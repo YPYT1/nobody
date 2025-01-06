@@ -194,7 +194,12 @@ declare interface CustomGameEventDeclarations {
      * 玩家vip信息
      */
     ServiceInterface_GetPlayerVipData : {
-        data: ServerPlayerVipData
+        data: {
+            [shop_id : string] : {
+                item_id : string,
+                t : number,
+            }
+        }
     }
 
     /**

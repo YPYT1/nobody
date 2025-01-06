@@ -11,7 +11,6 @@
             <Panel class="Header">
                 <Panel class="GoodsTitle"/>
             </Panel>
-
             <Panel class="StoreContent">
                 <Panel class="StoreIcon">
                     <Image id="StoreIcon" />
@@ -19,10 +18,6 @@
                 </Panel>
                 <Panel id="MergeItemList" />
             </Panel>
-            
-
-            
-
             <Button id="StorePurchaseBtn" class="PurchaseBtn">
                 <Panel class="LabelContent">
                     <Panel class="RmbIcon"/>
@@ -31,7 +26,5 @@
                 </Panel>
             </Button>
         </Panel>
-
-
     </Panel>
 </root>

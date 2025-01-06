@@ -11,15 +11,6 @@ export function Init() {
         let StoreItem = CreateCustomComponent(HotSellItemList, "store_item", goods_id)
         StoreItem._SetGoodsId(goods_id)
     }
-
-    
-    // // 
-    // GameEvents.Subscribe("ServiceInterface_GetPlayerShoppingLimit", event => {
-    //     let limit = event.data.limit;
-    //     let data = limit[goods_id];
-        
-    // })
-
 }
 
 (() => {

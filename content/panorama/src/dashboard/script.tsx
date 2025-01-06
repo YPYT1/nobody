@@ -20,11 +20,11 @@ const Initialize = () => {
 }
 
 const CustomEventSub = () => {
-
     GameEvents.Subscribe("all_popups_closed", event => {
         ToggleDashboardLoading(false)
     })
 }
+
 const CreateMenuButtons = () => {
     // ReturnButton
     let ReturnButton = $("#ReturnButton");
@@ -149,5 +149,5 @@ function GetServerTime() {
 (() => {
     Initialize();
 
-    $.Msg(["Up"])
+    // $.Msg(["Up"])
 })();

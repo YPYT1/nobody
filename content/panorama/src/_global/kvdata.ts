@@ -19,6 +19,8 @@ import { default as server_soul_attr } from "../json/config/server/soul/server_s
 import { default as server_soul_config } from "../json/config/server/soul/server_soul_config.json";
 
 import { default as server_shop_list } from "../json/config/server/shop/server_shop_list.json";
+import { default as server_draw_acc } from "../json/config/server/shop/server_draw_acc.json";
+
 const KvData = {
     AttributeConst,
     ServerItemList,
@@ -34,6 +36,7 @@ const KvData = {
     server_soul_attr,
     server_soul_config,
     server_shop_list,
+    server_draw_acc,
 }
 
 declare global {

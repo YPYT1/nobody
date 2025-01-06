@@ -21,9 +21,10 @@ const StoreIcon = $("#StoreIcon") as ImagePanel;
 const MergeItemList = $("#MergeItemList")
 const StorePurchaseBtn = $("#StorePurchaseBtn") as Button;
 
-
-
+let g_goods_id = ""
+let g_limit_max = 0;
 const _SetGoodsId = (goods_id: string | number) => {
+    g_goods_id = "" + goods_id;
     let data = ServerShopList["" + goods_id as keyof typeof ServerShopList];
     MainPanel.Data<PanelDataObject>().goods_id = goods_id
     if (data) {
@@ -35,6 +36,9 @@ const _SetGoodsId = (goods_id: string | number) => {
         SetMergeItemList(data)
         // 物品价格
         SetPriceView(data)
+        // 限购
+        let purchase_limitation = data.purchase_limitation;
+        g_limit_max = purchase_limitation
         // 物品图片
         let img = data.AbilityTextureName;
         MainPanel.SetHasClass("has_icon", img.length > 8)
@@ -125,6 +129,15 @@ function _SetState(state: boolean) {
 
 }
 
+function _SetLimitCount(count: number) {
+    MainPanel.SetDialogVariableInt("limit_count", count);
+    MainPanel.Data<PanelDataObject>().limit_count = count;
+    const is_purchased = g_limit_max == count
+    MainPanel.SetHasClass("is_purchased", is_purchased)
+    StorePurchaseBtn.enabled = !is_purchased;
+
+}
+
 (function () {
     MainPanel.SetDialogVariable("days", "0天")
     let goods_id = MainPanel.Data<PanelDataObject>().goods_id as string;
@@ -135,4 +148,33 @@ function _SetState(state: boolean) {
     MainPanel._SetGoodsId = _SetGoodsId;
     MainPanel._SetState = _SetState
     MainPanel._GetGoodsId = _GetGoodsId;
+
+    // GameUI.CustomUIConfig().EventBus.clear("shoping_limit_update");
+    GameUI.CustomUIConfig().EventBus.subscribe("shoping_limit_update", data => {
+        let item_id = MainPanel.id;
+        if (data[item_id] == null) { return }
+        let count = data[item_id].c
+        MainPanel.SetDialogVariable("count", "" + count);
+        _SetLimitCount(count)
+    })
+
+    GameEvents.Subscribe("ServiceInterface_GetPlayerVipData", event => {
+        let data = event.data;
+        let item_id = MainPanel.id;
+        let time_data = data[item_id];
+        if (time_data == null) { return };
+        let shop_time = time_data.t;
+        if (shop_time == 0) {
+            MainPanel.SetDialogVariable("days", "0天");
+        } else if (shop_time == -1) {
+            MainPanel.SetDialogVariable("days", "无限");
+        } else {
+            let today_time = GameUI.CustomUIConfig().getStorage("today_time")!;
+            let diff = shop_time - today_time;
+            let day = Math.floor(diff / (60 * 60 * 24));
+            // $.Msg({ shop_time, today_time, diff, day })
+            MainPanel.SetDialogVariable("days", `${day}天`);
+        }
+
+    })
 })();

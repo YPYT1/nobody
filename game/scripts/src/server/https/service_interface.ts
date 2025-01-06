@@ -848,12 +848,28 @@ export class ServiceInterface extends UIEventRegisterClass{
      * @param callback 
      */
     GetPlayerVipData(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerVipData"], callback?){
+
+        let d : {
+            [shop_id : string] : {
+                item_id : string,
+                t : number,
+            }
+        } = {
+            "1" : {
+                item_id : "20000",
+                t : GameRules.ServiceData.player_vip_data[player_id].vip_times,
+            },
+            "2" : {
+                item_id : "20001",
+                t : GameRules.ServiceData.player_vip_data[player_id].vip_zs == 1 ? -1 : 0,
+            },
+        }
         DeepPrintTable(GameRules.ServiceInterface.ShoppingLimit[player_id]);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerVipData",
             {
-                data : GameRules.ServiceData.player_vip_data[player_id],
+                data : d,
             }
         );
     };

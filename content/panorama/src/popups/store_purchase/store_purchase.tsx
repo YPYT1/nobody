@@ -43,6 +43,7 @@ export const Init = () => {
     })
 
 
+    // GameUI.CustomUIConfig().EventBus.clear("open_store_purchase");
     GameUI.CustomUIConfig().EventBus.subscribe("open_store_purchase", event => {
         MainPanel.SetHasClass("Show", true);
         let goods_id = event.id;
@@ -148,11 +149,8 @@ export const Init = () => {
 
     ConfirmButton.SetPanelEvent("onactivate", () => {
         // 购买物品信息
-        // $.Msg(["buy", g_goods_id, g_goods_count])
         MainPanel.SetHasClass("Show", false);
-
         GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true, })
-
         GameEvents.SendCustomGameEventToServer("ServiceInterface", {
             event_name: "ShoppingBuy",
             params: {

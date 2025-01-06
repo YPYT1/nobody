@@ -79,16 +79,13 @@ function InitNavMenu() {
     })
 
 
-    // 获取存档货币
-    GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerServerGoldPackageData", {})
-
-
+    
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerShoppingLimit", event => {
         let limit = event.data.limit;
         let limit_data: AM2_Server_Shopping_Limit_List = {}
         let today_time = GameUI.CustomUIConfig().getStorage("today_time")!;
-        $.Msg(["today_time",today_time])
+        // $.Msg(["today_time",today_time])
         for (let goods_id in limit) {
             let data = limit[goods_id];
             let shop_data = ServerShopList["" + goods_id as keyof typeof ServerShopList];
@@ -113,15 +110,24 @@ function InitNavMenu() {
         GameUI.CustomUIConfig().EventBus.publish("shoping_limit_update", limit)
     })
 
+    
+
+
+    // GameEvents.Subscribe("ServiceInterface_GetPlayerVipData",event=>{
+    //     let data = event.data;
+    //     $.Msg(["ServiceInterface_GetPlayerVipData 11"])
+    //     $.Msg(data)
+    // })
+
+    // 获取存档货币
+    GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerServerGoldPackageData", {})
+    GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerVipData", {})
     // 每日限购
     $.Schedule(0.01, () => {
         GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerShoppingLimit", {})
-        $.Msg(["Send 1111"])
     })
-
 }
 
 (() => {
-    GameUI.CustomUIConfig().EventBus.clear("shoping_limit_update");
     Init();
 })();

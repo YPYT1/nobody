@@ -412,18 +412,18 @@ const InitCardList = () => {
      * 如果C级的卡片数量不能被3整除，就只添加能被3整除的部分，不被3整除的部分保留在左侧展示栏
      */
     OncClickAdd.SetPanelEvent("onactivate", () => {
-        $.Msg(["OncClickAdd"])
+        // $.Msg(["OncClickAdd"])
         // $.Msg(special_card_list)
         // $.Msg(card_compose_list)
         for (let row_data of card_compose_list) {
-            $.Msg([" ========== RowAction ================"])
-            $.Msg(row_data)
+            // $.Msg([" ========== RowAction ================"])
+            // $.Msg(row_data)
             let row_len = row_data.length
             if (row_len >= ROW_CARD_LIMIT) {
-                $.Msg(["IsMax"])
+                // $.Msg(["IsMax"])
                 continue
             } else if (row_len == 0) {
-                $.Msg(["NewAdd"])
+                // $.Msg(["NewAdd"])
                 let add_state = false;
                 let rare = 0;
                 for (let rare_list of rarity_card_list) {
@@ -455,11 +455,11 @@ const InitCardList = () => {
                     }
                 }
 
-                $.Msg(["add_state", add_state])
+                // $.Msg(["add_state", add_state])
                 // AddCompositeCard(card_id)
                 // 如果为0的情况则直接按照规则填充
             } else {
-                $.Msg(["Buchong"])
+                // $.Msg(["Buchong"])
                 let f_id = row_data[0];
                 let f_data = _PictuerCardData[f_id as keyof typeof _PictuerCardData]
                 let f_rare = f_data.rarity;

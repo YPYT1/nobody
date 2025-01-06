@@ -1,5 +1,7 @@
 import { LoadCustomComponent } from "../../_components/component_manager";
 
+const ServerDrawAcc = GameUI.CustomUIConfig().KvData.server_draw_acc;
+
 const QuickPurchase = $("#QuickPurchase");
 const QuickPurchaseButton = $("#QuickPurchaseButton") as Button;
 const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list;
@@ -83,53 +85,55 @@ function InitRewardItem() {
 }
 
 const CURRENT_PROGRESS_BONUS_WIDTH = 80;
-const UI_SCALE = 1;
+const UI_SCALE = 2;
 const CurrentProgress = $("#CurrentProgress") as ProgressBar;
-const REWARD_LIST = {
-    [50]: { item_id: 1279, count: 100, receive: 1, },
-    [150]: { item_id: 1279, count: 100, receive: 0, },
-    [250]: { item_id: 1279, count: 100, receive: 0, },
-    [350]: { item_id: 1279, count: 100, receive: 0, },
-    [500]: { item_id: 1279, count: 100, receive: 0, },
-    [600]: { item_id: 1279, count: 100, receive: 0, },
-    [1500]: { item_id: 1279, count: 100, receive: 0, },
-    [2000]: { item_id: 1279, count: 100, receive: 0, },
-}
-const current_progress = 500;
+const REWARD_LIST = Object.values(ServerDrawAcc)
 
+const current_progress = 550;
 const AccRewardList = $("#AccRewardList");
 function InitCurrentReward() {
     AccRewardList.RemoveAndDeleteChildren()
     let order = 0;
-    for (let k in REWARD_LIST) {
-        let value = parseInt(k);
-        let _data = REWARD_LIST[value as keyof typeof REWARD_LIST]
+    let max_progress = 0;
+    let stage = 0;
+    for (let _data of REWARD_LIST) {
+        let value = _data.count;
+        let item_info = GameUI.CustomUIConfig().ConvertServerItemToArray(_data.item_id)[0];
+        let item_id = item_info.item_id;
+        let item_count = item_info.item_count;
         let is_even = (order % 2) == 0;
-        let receive = _data.receive;
-        let is_active = current_progress >= value;
 
-        let can_receive = (receive == 0) && is_active;
+        if (current_progress >= value){
+            stage = order + 1;
+        }
+        // let receive = 0;
+        // let is_active = current_progress >= value;
+        // let can_receive = (receive == 0) && is_active;
         // let is_active = (receive == 0) && can_state;
-        let AccRewardItem = $.CreatePanel("Panel", AccRewardList, k)
+        let AccRewardItem = $.CreatePanel("Panel", AccRewardList, `${value}`)
         AccRewardItem.BLoadLayoutSnippet("AccRewardItem");
         AccRewardItem.SetDialogVariableInt("reward_level", value)
         AccRewardItem.SetHasClass("is_even", !is_even);
 
-        AccRewardItem.SetHasClass("is_active", is_active);
-        AccRewardItem.SetHasClass("can_receive", can_receive)
+        // AccRewardItem.SetHasClass("is_active", is_active);
+        // AccRewardItem.SetHasClass("can_receive", can_receive)
         // AccRewardItem.SetHasClass("receive", receive_state);
 
-        AccRewardItem.style.transform = `translatex(${(value * UI_SCALE) - 40}px)`
+        let offsetX = (1 + order) * 40;
+        AccRewardItem.style.transform = `translatex(${(offsetX * UI_SCALE) - 40}px)`
 
         const _RewardItem = AccRewardItem.FindChildTraverse("RewardItem")!
         const RewardItem = LoadCustomComponent(_RewardItem, "server_item")
-        RewardItem._SetServerItemInfo({ show_count: true, show_tips: true, item_id: _data.item_id, item_count: _data.count })
+        RewardItem._SetServerItemInfo({ show_count: true, show_tips: true, item_id: item_id, item_count: item_count })
+
+        max_progress = value;
         order++;
-
-
     }
-    CurrentProgress.style.width = `${2000 * UI_SCALE}px`;
-    CurrentProgress.value = current_progress;
+
+    // $.Msg(["max_progress",max_progress])
+    CurrentProgress.max = order * 40;
+    CurrentProgress.style.width = `${order * 40 * UI_SCALE}px`;
+    CurrentProgress.value = stage * 40;
 
 }
 

@@ -7,17 +7,14 @@ const member_goods = [
     "89",   // 月卡领取
     "2",  // 终身
     "90",  // 终身领取
-    "90", // 双卡
+    "91", // 双卡
 ]
 
 export function Init() {
-
     MemberProductsList.RemoveAndDeleteChildren();
-    // $.Msg(["MemberProductsList", MemberProductsList])
     for (let goods_id of member_goods) {
         let StoreItem = CreateCustomComponent(MemberProductsList, 'store_item_ex1', goods_id)
         StoreItem._SetGoodsId(goods_id);
-        // StoreItem._SetState( false )
     }
 }
 

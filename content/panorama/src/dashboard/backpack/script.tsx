@@ -69,9 +69,9 @@ const CGE_Subscribe = () => {
         // 储存当前背包物品的数量
         GameUI.CustomUIConfig().setStorage("backpack_count_table", backpack_count_table);
         // 更新数据
-        // $.Schedule(0.1, () => {
-        //     GameUI.CustomUIConfig().EventBus.publish("backpack_count_update", backpack_count_table)
-        // })
+        $.Schedule(0.1, () => {
+            GameUI.CustomUIConfig().EventBus.publish("backpack_count_update", backpack_count_table)
+        })
 
     })
 

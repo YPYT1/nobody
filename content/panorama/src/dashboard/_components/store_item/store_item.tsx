@@ -129,6 +129,7 @@ function SetPriceView(e: Panel, cost_str: string,) {
         e.SetDialogVariable("price_cost", "" + price_cost)
     }
 }
+
 (function () {
     MainPanel.Data<PanelDataObject>().rarity = 0
     MainPanel._SetGoodsId = _SetGoodsId;
@@ -139,6 +140,7 @@ function SetPriceView(e: Panel, cost_str: string,) {
         _SetGoodsId(goods_id)
     }
 
+    // EventBus.clear("shoping_limit_update")
     EventBus.subscribe("shoping_limit_update", data => {
         let item_id = MainPanel.id;
         if (data[item_id] == null) { return }

@@ -3,6 +3,7 @@ const MainPanel = $.GetContextPanel();
 
 export const Init = () => {
 
+    // GameUI.CustomUIConfig().EventBus.clear("popup_loading");
     GameUI.CustomUIConfig().EventBus.subscribe("popup_loading", event => {
         MainPanel.SetHasClass("Show", event.show)
     })

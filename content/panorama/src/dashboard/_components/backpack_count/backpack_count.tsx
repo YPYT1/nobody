@@ -51,6 +51,7 @@ function _GetCount() {
     MainPanel._GetCount = _GetCount;
     MainPanel._SetLabelStyle = _SetLabelStyle;
     
+    EventBus.clear("backpack_count_update");
     EventBus.subscribe("backpack_count_update", data => {
         let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
         let count = data[item_id] ?? 0;
