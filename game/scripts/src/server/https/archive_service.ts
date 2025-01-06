@@ -24,6 +24,9 @@ export class ArchiveService extends UIEventRegisterClass {
     _game_t : number = 1;
     //服务器版本
     _game_versions : string = "";
+
+    //获取背包数据class 
+    _b_class : string = "22,21,28";
     //构造  
     constructor() {
         super("ArchiveService" , true)
@@ -54,7 +57,7 @@ export class ArchiveService extends UIEventRegisterClass {
                     for (let index = 0 as PlayerID; index < count; index++) {
                         let steam_id = PlayerResource.GetSteamAccountID(index as PlayerID);
                         GameRules.MapChapter.level_difficulty[index] = data.data.list[steam_id.toString()].level_difficulty;
-                        GameRules.ArchiveService.GetCustomBackpack(index , "22,21");
+                        GameRules.ArchiveService.GetCustomBackpack(index , this._b_class);
                         //获取玩家地图经验 货币等..
                         GameRules.ServiceData.server_gold_package_list[index]["1001"].number = data.data.list[steam_id.toString()].cz_gold ?? 0;
                         GameRules.ServiceData.server_gold_package_list[index]["1002"].number = data.data.list[steam_id.toString()].jf_gold ?? 0;
@@ -79,8 +82,10 @@ export class ArchiveService extends UIEventRegisterClass {
 
                         //发送存档数据
                         GameRules.ServiceInterface.GetServerTime( index  , {});
-                        //加载限购数据
-                        // GameRules.ServiceInterface.GetServerTime( index  , {});
+
+                        //获取累抽次数
+                        // GameRules.ServiceInterface.DrawRecord[index] = data.data.draw_record;
+                        // GameRules.ServiceInterface.GetPlayerServerDrawLotteryDrawRecord(index , {});
 
                         //限购数据
                         GameRules.ServiceInterface.ShoppingLimit[index].limit = data.data.list[steam_id.toString()].limit;
@@ -496,8 +501,10 @@ export class ArchiveService extends UIEventRegisterClass {
                     let red_item = data.data.red_item;
                     let add_item = data.data.add_item;
                     let gold_data = data.data.base;
-                    //货币信息
+                    //Vip信息
                     GameRules.ArchiveService.PlayerVipUpdate(player_id , gold_data);
+                    //货币信息
+                    GameRules.ArchiveService.PlayerGoldUpdate(player_id , gold_data);
                     
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
                     //限购数据
@@ -580,11 +587,17 @@ export class ArchiveService extends UIEventRegisterClass {
                 param: param_data
             },
             (data: DrawLotteryReturn) => {
+                DeepPrintTable(data);
                 if (data.code == 200) {
                     let red_item = data.data.red_item;
                     let add_item = data.data.add_item;
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
                     GameRules.ServiceInterface.GetPlayerServerDrawLottery(player_id , data.data.draw_result);
+                    DeepPrintTable(data.data.draw_record);
+                    //获取累抽次数
+                    GameRules.ServiceInterface.DrawRecord[player_id] = data.data.draw_record;
+                    GameRules.ServiceInterface.GetPlayerServerDrawLotteryDrawRecord(player_id , {});
+                    
                 } else {
 
                 }
@@ -660,17 +673,23 @@ export class ArchiveService extends UIEventRegisterClass {
      * @param add_item 
      */
     RedAndAddBackpack( player_id :PlayerID , red_item : AM2_Server_Backpack[] , add_item : AM2_Server_Backpack[]){
+        DeepPrintTable(red_item);
         //先删除再添加
-        for (const r_e of red_item) {
-            GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
-        }
-        //循环根据类型添加到不同的地方
-        for (const a_e of add_item) {
-            let customs = "";
-            if(a_e.customs){
-                customs = a_e.customs;
+        if(red_item){
+            for (const r_e of red_item) {
+                GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
             }
-            GameRules.ServiceData.AddPackageItemSelect(player_id , a_e.id ,  a_e.item_id , customs , a_e.number )
+        }
+        
+        //循环根据类型添加到不同的地方
+        if(add_item){
+            for (const a_e of add_item) {
+                let customs = "";
+                if(a_e.customs){
+                    customs = a_e.customs;
+                }
+                GameRules.ServiceData.AddPackageItemSelect(player_id , a_e.id ,  a_e.item_id , customs , a_e.number )
+            }
         }
         GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
         GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
@@ -693,6 +712,27 @@ export class ArchiveService extends UIEventRegisterClass {
         GameRules.ServiceData.player_vip_data[player_id].vip_times = data.vip_times ?? 0;
         GameRules.ServiceData.player_vip_data[player_id].vip_zs = data.vip_zs ?? 0;
         GameRules.ServiceInterface.GetPlayerVipData(player_id , {});
+    }
+
+
+    /**
+     * 公共更新货币信息
+     * @param cmd 
+     * @param args 
+     * @param player_id 
+     */
+    PlayerGoldUpdate(player_id :PlayerID , data : PlayerInfoData){
+        //获取玩家地图经验 货币等..
+        GameRules.ServiceData.server_gold_package_list[player_id]["1001"].number = data.cz_gold ?? 0;
+        GameRules.ServiceData.server_gold_package_list[player_id]["1002"].number = data.jf_gold ?? 0;
+        GameRules.ServiceData.server_gold_package_list[player_id]["1003"].number = data.jb_gold ?? 0;
+        GameRules.ServiceData.server_gold_package_list[player_id]["1004"].number = data.exp ?? 0;
+        GameRules.ServiceData.server_gold_package_list[player_id]["1005"].number = data.zs_gold ?? 0;
+        GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+        //玩家VIP信息
+        // GameRules.ServiceData.player_vip_data[player_id].vip_times = data.vip_times ?? 0;
+        // GameRules.ServiceData.player_vip_data[player_id].vip_zs = data.vip_zs ?? 0;
+        // GameRules.ServiceInterface.GetPlayerVipData(player_id , {});
     }
     Debug( cmd: string, args: string[], player_id: PlayerID){
         //游戏结束提交数据
