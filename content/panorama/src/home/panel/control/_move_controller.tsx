@@ -179,11 +179,6 @@ function ChangeCameraValue(value: number) {
     GameUI.SetCameraPitchMax(pitchmin);
 }
 function MoveStateEvent(eventData: { Direction: CMoveDirection, State: 0 | 1 }) {
-
-    let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
-    GameUI.SetCameraTarget(hero_entity);
-
-
     GameEvents.SendCustomGameEventToServer("BasicRules", {
         event_name: "MoveState",
         params: eventData

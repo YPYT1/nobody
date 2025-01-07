@@ -38,7 +38,6 @@ export class BasicRules extends UIEventRegisterClass {
         } else {
             hCaster.GiveMana(fManaAmount)
         }
-
     }
 
 
@@ -75,5 +74,36 @@ export class BasicRules extends UIEventRegisterClass {
                 }
             }
         }
+    }
+
+    last_acc_thinker: CDOTA_BaseNPC[] = [];
+
+    CreateRoundAcceleration() {
+        // print("CreateRoundAcceleration")
+        this.RemoveRoundAcceleration()
+        let x = GameRules.MapChapter.ChapterData.map_centre_x;
+        let y = GameRules.MapChapter.ChapterData.map_centre_y;
+        let vOrigin = Vector(x, y, 128);
+        const last_acc_thinker = CreateModifierThinker(
+            null,
+            null,
+            "modifier_creature_acceleration_thinker",
+            {
+                duration: 60,
+            },
+            vOrigin,
+            DotaTeam.BADGUYS,
+            false
+        )
+
+        this.last_acc_thinker.push(last_acc_thinker)
+    }
+
+    RemoveRoundAcceleration() {
+        // print("RemoveRoundAcceleration")
+        for (let acc_thinker of this.last_acc_thinker) {
+            UTIL_Remove(acc_thinker)
+        }
+        this.last_acc_thinker = []
     }
 }

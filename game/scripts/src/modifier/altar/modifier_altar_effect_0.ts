@@ -8,6 +8,7 @@ export class ModifierAltarEffect extends BaseModifier {
     color = Vector(255, 255, 255);
     caster: CDOTA_BaseNPC;
     player_id: PlayerID;
+    icon_index = 0;
 
     OnCreated(params: any): void {
         if (!IsServer()) { return }
@@ -21,6 +22,15 @@ export class ModifierAltarEffect extends BaseModifier {
         ParticleManager.SetParticleControl(effect_fx, 2, this.color)
         this.AddParticle(effect_fx, false, false, -1, false, false);
         this.effect_fx = effect_fx;
+
+        let icon_effect = ParticleManager.CreateParticle(
+            "particles/title_fx/title00028/title00028.vpcf",
+            ParticleAttachment.OVERHEAD_FOLLOW,
+            this.GetParent()
+        )
+        ParticleManager.SetParticleControl(icon_effect, 1, Vector(this.icon_index, 0, 0))
+        this.AddParticle(icon_effect, false, false, -1, false, false)
+
         this._OnCreated(params);
     }
 
@@ -39,6 +49,7 @@ export class modifier_altar_effect_1 extends ModifierAltarEffect {
 
     buff_key: string = "altar_1"
     color = Vector(255, 230, 2);
+    icon_index = 0;
 
     GetTexture(): string {
         return "altar/光明圣坛"
@@ -61,12 +72,17 @@ export class modifier_altar_effect_1 extends ModifierAltarEffect {
     }
 }
 
-// 2 神速圣坛[红]	持续15秒，玩家英雄移动速度提高100%，且免疫减速效果。
+// 2 神速圣坛[]	持续15秒，玩家英雄移动速度提高100%，且免疫减速效果。
 @registerModifier()
 export class modifier_altar_effect_2 extends ModifierAltarEffect {
 
     buff_key: string = "altar_2"
     color = Vector(255, 64, 64);
+    icon_index = 1;
+
+    GetTexture(): string {
+        return "altar/神速圣坛"
+    }
 
     _OnCreated(params: any): void {
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
@@ -90,6 +106,11 @@ export class modifier_altar_effect_3 extends ModifierAltarEffect {
 
     buff_key: string = "altar_3"
     color = Vector(76, 198, 255);
+    icon_index = 3;
+
+    GetTexture(): string {
+        return "altar/寒冰圣坛"
+    }
 
     _OnCreated(params: any): void {
         this.StartIntervalThink(0.1)
@@ -171,6 +192,12 @@ export class modifier_altar_effect_4 extends ModifierAltarEffect {
 
     buff_key: string = "altar_4"
     color = Vector(0, 96, 240);
+    icon_index = 4;
+
+    GetTexture(): string {
+        return "altar/雷霆圣坛"
+    }
+    
 
     _OnCreated(params: any): void {
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
@@ -193,6 +220,12 @@ export class modifier_altar_effect_5 extends ModifierAltarEffect {
 
     buff_key: string = "altar_5"
     color = Vector(248, 60, 3);
+    icon_index = 5;
+
+    GetTexture(): string {
+        return "altar/炙热圣坛"
+    }
+    
 
     _OnCreated(params: any): void {
 
@@ -210,6 +243,12 @@ export class modifier_altar_effect_6 extends ModifierAltarEffect {
 
     buff_key: string = "altar_6"
     color = Vector(255, 150, 52);
+    icon_index = 8;
+
+    GetTexture(): string {
+        return "altar/神圣圣坛"
+    }
+    
 
     _OnCreated(params: any): void {
         this.caster.AddNewModifier(this.caster, null, "modifier_state_damage_immunity", { duration: this.GetDuration() })
@@ -229,7 +268,12 @@ export class modifier_altar_effect_7 extends ModifierAltarEffect {
 
     buff_key: string = "altar_7"
     color = Vector(147, 0, 206);
+    icon_index = 7;
 
+    GetTexture(): string {
+        return "altar/经验圣坛"
+    }
+    
 
     _OnCreated(params: any): void {
         GameRules.ResourceSystem.ModifyAcquisitionRate(this.player_id, "SingleExp", 100)
@@ -248,7 +292,12 @@ export class modifier_altar_effect_8 extends ModifierAltarEffect {
 
     buff_key: string = "altar_8"
     color = Vector(4, 109, 1);
-
+    icon_index = 2;
+    
+    GetTexture(): string {
+        return "altar/灵魂圣坛"
+    }
+    
     _OnCreated(params: any): void {
         GameRules.ResourceSystem.ModifyAcquisitionRate(this.player_id, "Soul", 100)
     }
@@ -271,6 +320,6 @@ export class modifier_altar_effect_9 extends ModifierAltarEffect {
         let hParent = this.GetParent();
         let iIndex = RandomInt(1, 8)
         hParent.AddNewModifier(hParent, null, "modifier_altar_effect_" + iIndex, { duration: 20 })
-        this.Destroy()
+        this.Destroy();
     }
 }

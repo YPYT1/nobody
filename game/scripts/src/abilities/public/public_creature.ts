@@ -57,7 +57,7 @@ export class modifier_public_creature extends BaseModifier {
             this.StartIntervalThink(1)
             return
         }
-        this.bonus_move += this.bonus_value;
+        // this.bonus_move += this.bonus_value;
         let enemies = FindUnitsInRadius(
             DotaTeam.BADGUYS,
             this.GetParent().GetAbsOrigin(),
@@ -103,7 +103,7 @@ export class modifier_public_creature extends BaseModifier {
             ModifierFunction.ATTACKSPEED_BASE_OVERRIDE,
             ModifierFunction.PROCATTACK_FEEDBACK,
             // ModifierFunction.MOVESPEED_BONUS_CONSTANT,
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
+            // ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
             ModifierFunction.IGNORE_MOVESPEED_LIMIT
         ]
     }
@@ -120,9 +120,9 @@ export class modifier_public_creature extends BaseModifier {
     //     return 0.001
     // }
 
-    GetModifierMoveSpeedBonus_Percentage(): number {
-        return this.bonus_move
-    }
+    // GetModifierMoveSpeedBonus_Percentage(): number {
+    //     return this.bonus_move
+    // }
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
