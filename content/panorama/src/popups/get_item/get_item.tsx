@@ -35,6 +35,7 @@ export const Init = () => {
         }
 
         MainPanel.SetHasClass("Show", true);
+        GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: false })
     })
 
 }

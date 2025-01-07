@@ -1,0 +1,184 @@
+@import url("./../_common_popup.less");
+
+
+.PopupsWindows {
+    width: 422px;
+    height: 183px;
+    background-image: url("file://{images}/custom_game/dashboard/popup_box_1.png");
+    align: center center;
+    padding: 24px;
+    visibility: collapse;
+
+    &.Show {
+        visibility: visible;
+    }
+}
+
+#DuguaiMoviePanel {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+
+    transition-property: opacity;
+    transition-duration: 0.2s;
+
+    &.Show {
+        opacity: 1;
+    }
+}
+
+#CompoundCardList {
+
+    flow-children: right-wrap;
+    horizontal-align: center;
+    vertical-align: middle;
+    // border: 1px solid #fff;
+    padding: 12px;
+
+
+    .CompoundCardItem {
+        // border: 1px solid #fff;
+        width: 158px; // 102
+        height: 204px; // 148
+        margin: 6px;
+
+        #CardInfo {
+            align: center center;
+
+        }
+
+    }
+
+    #DragPanel {
+        visibility: collapse;
+    }
+
+
+}
+
+&.Gambling #CompoundCardList #DragPanel {
+    visibility: visible;
+}
+
+.CardBackPanel {
+
+    // background-color: #0f0;
+
+    .CardBg {
+        width: 140px;
+        height: 200px;
+        horizontal-align: center;
+        vertical-align: middle;
+        background-image: url("file://{images}/custom_game/dashboard/card/default_card_bg.png");
+        background-size: 100%;
+    }
+
+    .CardBorder {
+        width: 158px; // 102
+        height: 204px; // 148
+        background-image: url("file://{images}/custom_game/dashboard/card/card_r6.png");
+        background-size: 100%;
+    }
+}
+
+#CompoundCard {
+    width: 100%;
+    height: 100%;
+    background-color: #000000dd;
+    // visibility: collapse;
+
+    &.Gambling {
+        background-color: #000000;
+    }
+    
+    &.Show {
+        visibility: visible;
+    }
+
+    .PopupsBox {
+        visibility: visible;
+    }
+}
+
+.PopupContainer {
+
+
+    .ButtonGroup {
+        horizontal-align: center;
+        vertical-align: bottom;
+        flow-children: right;
+        margin-bottom: 12px;
+
+        Button {
+            margin-left: 12px;
+            margin-right: 12px;
+        }
+    }
+
+    .PopupsWindows {
+        width: 422px;
+        height: 183px;
+        background-image: url("file://{images}/custom_game/dashboard/popup_box_1.png");
+        align: center center;
+        padding: 24px;
+        visibility: collapse;
+
+        &.Show {
+            visibility: visible;
+        }
+    }
+
+    .PopupsHeader {
+        margin-top: 24px;
+        // vertical-align: middle;
+        horizontal-align: center;
+
+        Label {
+            font-size: 20px;
+            color: #ffffff;
+            text-shadow: 0px 0px 2px 2.0 #000000;
+        }
+    }
+
+    .PopupsBody {
+        width: 100%;
+        vertical-align: middle;
+        // border: 1px solid #ffffff;
+    }
+
+    .PopupsBox {
+        width: 804px;
+        height: 568px;
+        align: center center;
+        background-image: url("file://{images}/custom_game/dashboard/popups_box.png");
+        // flow-children: down;
+        visibility: collapse;
+
+        &.Show {
+            visibility: visible;
+        }
+
+        .PopupsContainer {
+            width: 100%;
+            height: 100%;
+            flow-children: down;
+        }
+        
+        .PopupsBody {
+            margin-top: 24px;
+            height: 468px;
+        }
+
+        .PopupsFooter {
+            border: 1px solid #ffffff;
+            width: 100%;
+            height: 42px;
+            // vertical-align: bottom;
+            margin-bottom: 8px;
+
+            // Button {
+            //     align: center center;
+            // }
+        }
+    }
+}

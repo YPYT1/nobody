@@ -28,7 +28,7 @@
 		</snippet>
 
 		<snippet name="AccRewardItem">
-			<Panel class="AccRewardItem">
+			<Button class="AccRewardItem">
 				<Panel class="RewardArrow even"/>
 				<Panel class="RewardItemBorder">
 					<Panel id="RewardItem"/>
@@ -46,7 +46,7 @@
 				<Panel class="AccRewardLevel">
 					<Label text="{d:reward_level}"/>
 				</Panel>
-			</Panel>
+			</Button>
 		</snippet>
 	</snippets>
 	<Panel class="nav_content">

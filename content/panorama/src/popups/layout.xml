@@ -13,5 +13,6 @@
         <Button id="get_item" />
         <Button id="gacha_result" />
         <Button id="server_msg" />
+        <Button id="card_result" />
     </Panel>
 </root>

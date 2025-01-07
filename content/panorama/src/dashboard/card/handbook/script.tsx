@@ -268,7 +268,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
 
 
 
-
+    GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: false })
 
 }
 

@@ -53,13 +53,13 @@ declare interface AM2_Draw_Lottery_Data {
 }
 //累抽记录
 declare interface AM2_Draw_Lottery_Draw_Record { //
-    [ type  : string] : { //奖池type
-        "c": number , //总次数
-        "acc" : number , //领取节点
-        "n": string , //特殊物品记录
-    } 
+    [ type  : string] : AM2_Draw_Lottery_Draw_Record_List
 } 
-
+declare interface AM2_Draw_Lottery_Draw_Record_List { //奖池type
+    "c": number , //总次数
+    "acc" : number , //领取节点
+    "n": string , //特殊物品记录
+} 
 
 
 declare interface AM2_Server_Backpack_Update {

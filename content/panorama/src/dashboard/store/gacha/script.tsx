@@ -6,7 +6,8 @@ const ServerDrawAcc = GameUI.CustomUIConfig().KvData.server_draw_acc;
 const QuickPurchase = $("#QuickPurchase");
 const QuickPurchaseButton = $("#QuickPurchaseButton") as Button;
 const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list;
-
+const RewardReceiveBtn = $("#RewardReceiveBtn")
+RewardReceiveBtn.enabled = false;
 // const CostItemPanel = LoadCustomComponent($("#CostItemPanel"), "server_item")
 // CostItemPanel._SetServerItemInfo({ style: "horizontal", item_id: 1207 })
 export function Init() {
@@ -89,7 +90,7 @@ const UI_SCALE = 2;
 const CurrentProgress = $("#CurrentProgress") as ProgressBar;
 const REWARD_LIST = Object.values(ServerDrawAcc)
 
-const current_progress = 550;
+
 const AccRewardList = $("#AccRewardList");
 function InitCurrentReward() {
     AccRewardList.RemoveAndDeleteChildren()
@@ -102,23 +103,22 @@ function InitCurrentReward() {
         let item_id = item_info.item_id;
         let item_count = item_info.item_count;
         let is_even = (order % 2) == 0;
-
-        // if (current_progress >= value){
-        //     stage = order + 1;
-        // }
-        // let receive = 0;
-        // let is_active = current_progress >= value;
-        // let can_receive = (receive == 0) && is_active;
-        // let is_active = (receive == 0) && can_state;
         let AccRewardItem = $.CreatePanel("Panel", AccRewardList, `${value}`)
         AccRewardItem.BLoadLayoutSnippet("AccRewardItem");
         AccRewardItem.SetDialogVariableInt("reward_level", value)
         AccRewardItem.SetHasClass("is_even", !is_even);
 
-        // AccRewardItem.SetHasClass("is_active", is_active);
-        // AccRewardItem.SetHasClass("can_receive", can_receive)
-        // AccRewardItem.SetHasClass("receive", receive_state);
-
+        AccRewardItem.enabled = false;
+        AccRewardItem.SetPanelEvent("onactivate", () => {
+            GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true })
+            GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                event_name: "GetServerDrawAcc",
+                params: {
+                    type: 1,
+                    count: value
+                }
+            })
+        })
         let offsetX = (1 + order) * 40;
         AccRewardItem.style.transform = `translatex(${(offsetX * UI_SCALE) - 40}px)`
 
@@ -131,24 +131,74 @@ function InitCurrentReward() {
     }
 
     // $.Msg(["max_progress",max_progress])
-    CurrentProgress.max = order * 40;
+    CurrentProgress.max = order;
     CurrentProgress.style.width = `${order * 40 * UI_SCALE}px`;
     CurrentProgress.value = 0;
 
-    MainPanel.SetDialogVariable("total_draw","0");
+    MainPanel.SetDialogVariable("total_draw", "0");
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerDrawLotteryDrawRecord", event => {
         let data = event.data;
-        $.Msg(["data", data])
+        if (data["1"] != null) { UpdateReward(data["1"]) }
     })
 
     GameEvents.SendCustomGameEventToServer("ServiceInterface", {
         event_name: "GetPlayerServerDrawLotteryDrawRecord",
         params: {}
     })
+
+
+    RewardReceiveBtn.SetPanelEvent("onactivate", () => {
+        GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true })
+        GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+            event_name: "GetServerDrawAcc",
+            params: {
+                type: 1,
+                count: -1
+            }
+        })
+    })
 }
 
-function UpdateReward(progress_value: number) {
 
+function UpdateReward(DrawRecordData: AM2_Draw_Lottery_Draw_Record_List) {
+    const current_progress = DrawRecordData.c;
+    const current_acc = DrawRecordData.acc;
+    let order = 0;
+    let stage = 0;
+    let one_receive = false;
+    for (let _data of REWARD_LIST) {
+        let value = _data.count;
+        let item_info = GameUI.CustomUIConfig().ConvertServerItemToArray(_data.item_id)[0];
+        let item_id = item_info.item_id;
+        let item_count = item_info.item_count;
+        let is_even = (order % 2) == 0;
+        let progress_meet = current_progress >= value
+        let can_receive = current_progress >= value && current_acc < value;
+        if (current_progress >= value) {
+            stage = order + 1;
+        }
+
+        let AccRewardItem = AccRewardList.FindChildTraverse(`${value}`)!;
+        AccRewardItem.SetHasClass("progress_meet", progress_meet);
+        AccRewardItem.SetHasClass("can_receive", can_receive);
+        // AccRewardItem.SetHasClass("can_receive", can_receive)
+        // AccRewardItem.SetHasClass("receive", receive_state);
+
+        AccRewardItem.enabled = can_receive;
+        if (can_receive) {
+            one_receive = true;
+        }
+        order++;
+    }
+
+    CurrentProgress.value = stage;
+
+    MainPanel.SetDialogVariable("total_draw", `${current_progress}`);
+
+    RewardReceiveBtn.enabled = one_receive
+
+    $.Msg(["ScrollToRightEdge11"])
+    AccRewardList.ScrollToRightEdge()
 }
 
 function InitGachaItemShow() {

@@ -46,7 +46,6 @@
 
         </Panel>
         <Button id="Card_PopupsBg" class="PopupsBackground">
-           
             <Panel id="PlayerConsumeCard" class="PopupsWindows">
                 <Panel class="PopupsHeader">
                     <Label text="是否登记卡片"/>
@@ -59,25 +58,7 @@
                         <Label text="取消" />
                     </Button>
                 </Panel>
-                
             </Panel>
-
-            <Panel id="CompoundCard" >
-                <Panel class="PopupsBox">
-                    <Panel class="PopupsContainer">
-                        <Panel class="PopupsBody">
-                            <Panel id="CompoundCardList" />
-                        </Panel>
-                        <Panel class="ButtonGroup">
-                            <Button id="ClosedPopupsBtn" class="dashboard_btn">
-                                <Label text="焯" />
-                            </Button>
-                        </Panel>
-                    </Panel>
-                </Panel>
-            </Panel>
-            
-            <Movie id="DuguaiMoviePanel" src="file://{resources}/videos/custom_game/duguai.webm" html="false"/>
         </Button>
 	</Panel>
 </root>
