@@ -427,6 +427,10 @@ declare interface CGED {
             type : number , //奖池类型 默认1
             count : number , //抽奖次数 
         }
+        GetServerDrawAcc : {
+            type : number , //奖池类型 默认1
+            count : number , //领取到多少 -1 表示全部
+        }
         //限购数据
         GetPlayerShoppingLimit : {
 

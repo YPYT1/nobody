@@ -1000,6 +1000,14 @@ export class ServiceInterface extends UIEventRegisterClass{
     }
 
     /**
+     * 累抽领取
+     */
+    GetServerDrawAcc(player_id: PlayerID, params: CGED["ServiceInterface"]["DrawLottery"], callback?){
+        let paramstype = params.type;
+        let count = params.count;
+        GameRules.ArchiveService.GetServerDrawAcc(player_id , paramstype , count);
+    }
+    /**
      * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)
      * @param name 符文名
      * @param key 技能键
