@@ -30,6 +30,7 @@ export class EnemyAttribute {
         hUnit.enemy_attribute_table_key = {};
         hUnit.enemy_attribute_table = {};
         hUnit.SpecialMark = {};
+        hUnit.RemoveAbility("twin_gate_portal_warp");
         for (let k in EnemyAttributeConst) {
             let attr_key = k as EnemyAttributeKey;
             hUnit.enemy_attribute_table[attr_key] = {

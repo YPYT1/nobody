@@ -48,22 +48,27 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
     }
 
     DoDamageTarget(target: CDOTA_BaseNPC, ability_damage: number): void {
+        let hCaster = this.GetCaster();
+        let hAbility = this.GetAbility();
         target.SetContextThink(DoUniqueString("drow3_b_delay"), () => {
             let DamageBonusMul = 0
             if (this.talent_37) {
                 // 集火
-                let stack = target.GetModifierStackCount("modifier_drow_3b_b_stack", this.GetCaster());
+                if(target == null || !target.IsAlive()){ 
+                    return null
+                }
+                let stack = target.GetModifierStackCount("modifier_drow_3b_b_stack", hCaster);
                 let buff_increase = this.ability.GetTypesAffixValue(stack, "Buff", "skv_buff_increase");
                 // print("talent_37", buff_increase, this.bonus_dmg)
                 DamageBonusMul += buff_increase * this.bonus_dmg
-                target.AddNewModifier(this.caster, this.GetAbility(), "modifier_drow_3b_b_stack", {
+                target.AddNewModifier(this.caster, hAbility, "modifier_drow_3b_b_stack", {
                     duration: 2,
                     max_stack: this.limit_stack,
                 })
             }
             ApplyCustomDamage({
                 victim: target,
-                attacker: this.GetCaster(),
+                attacker: hCaster,
                 damage: ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 element_type: this.element_type,

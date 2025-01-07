@@ -81,6 +81,7 @@
 					</Panel>
 
 					<Panel class="GachaRewardContent">
+						
 						<Panel class="AccumulatedRewards" hittest="false">
 							<Panel class="RewardHeader" />
 							<Panel class="RewardContent">
@@ -94,7 +95,11 @@
 								</Panel>
 							</Panel>
 						</Panel>
-						<Button id="RewardReceiveBtn" class="RewardReceiveBtn" />
+						<Panel class="BottomContent">
+							<Label class="TotalDraw" text="当前祈福次数: {s:total_draw}"/>
+							<Button id="RewardReceiveBtn" class="RewardReceiveBtn" />
+						</Panel>
+						
 					</Panel>
 					
 

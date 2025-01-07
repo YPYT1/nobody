@@ -5,7 +5,7 @@ import "./_portrait";
 import "./_arms_selector";
 import "./_buff_list";
 import "./_invest";
-import { CreatePanel_Talent } from "./_talent";
+import { CreateHeroTalentTree, CreatePanel_Talent } from "./_talent";
 import { OnInitMoveHotkey } from "./_move_controller";
 
 
@@ -36,6 +36,26 @@ export const CreatePanel_ActionAbility = () => {
 
     InitAbilityAction();
     CreatePanel_Talent()
+
+    GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
+        let data = event.data;
+        let player_info = Game.GetPlayerInfo(Players.GetLocalPlayer())
+        let heroid = player_info.player_selected_hero_id;
+        CreateHeroTalentTree(heroid)
+
+        let hero_entity = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+        GameUI.SetCameraTarget(hero_entity);
+
+        GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+            event_name: "GetShopState",
+            params: {}
+        });
+
+        GameEvents.SendCustomGameEventToServer("MysticalShopSystem", {
+            event_name: "GetShopData",
+            params: {}
+        });
+    })
 }
 
 export const UpdateAbilityList = () => {

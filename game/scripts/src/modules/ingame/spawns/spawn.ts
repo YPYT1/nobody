@@ -319,6 +319,8 @@ export class Spawn extends UIEventRegisterClass {
     StartSpawnControl() {
         GameRules.GetGameModeEntity().SetContextThink("StartSpawnControl", () => {
             GameRules.Spawn._round_index++;
+
+
             GameRules.GameInformation.GetPlayGameHeadData(-1, {})
             let playercount = GetPlayerCount();
             for (let index = 0 as PlayerID; index < playercount; index++) {
@@ -389,6 +391,9 @@ export class Spawn extends UIEventRegisterClass {
                 GameRules.GetGameModeEntity().StopThink("CreateBossTime" + "_" + (this._round_index - 1));
                 //boss刷怪器
                 GameRules.Spawn.CreateBossTime();
+                // 回合加速器
+                GameRules.BasicRules.CreateRoundAcceleration()
+
             }
             let boss_name_list = this.map_info_round[this._round_index].boss_name_list;
             let boss_name_list_index = RandomInt(0, boss_name_list.length - 1);
@@ -1103,6 +1108,7 @@ export class Spawn extends UIEventRegisterClass {
     }
     //清空所有怪物
     StopAllSpawnAndMonster() {
+        GameRules.BasicRules.RemoveRoundAcceleration();
         GameRules.GetGameModeEntity().SetContextThink("StopAllSpawnAndMonster", () => {
             GameRules.Spawn._game_start = false;
             GameRules.MapChapter._game_select_phase = 999;

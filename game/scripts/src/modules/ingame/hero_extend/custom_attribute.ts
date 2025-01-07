@@ -447,7 +447,7 @@ export class CustomAttribute {
                 }
             }
             // DeepPrintTable(new_object)
-            hUnit.custom_attribute_key_table[key] = attr_list
+            hUnit.custom_attribute_key_table[key] = attr_list;
             this.ModifyAttribute(hUnit, new_object)
         }
 
@@ -496,7 +496,16 @@ export class CustomAttribute {
      * @param mode `0`为增加 `-1`为减
      */
     ModifyAttribute(hUnit: CDOTA_BaseNPC, AttrList: CustomAttributeTableType, mode: number = 0) {
-        DeepPrintTable(AttrList)
+        let is_zero: boolean[] = []
+        for (let key in AttrList) {
+            let attr_key = key as keyof typeof AttrList;
+            for (let k2 in AttrList[key]) {
+                let value = AttrList[key][k2] as number;
+                is_zero.push(value == 0)
+            }
+        }
+        // 如果所有值都为0则跳过
+        if (is_zero.indexOf(false) == -1) { return }
         if (mode == 0) {
             for (let key in AttrList) {
                 let attr_key = key as keyof typeof AttrList;
@@ -864,8 +873,6 @@ export class CustomAttribute {
 
         if (cmd == "-multest") {
             let value = [-50, -50, -50, -50, 50, 50, 50];
-
-
             for (let i = 0; i < 5; i++) {
                 let mul_key = DoUniqueString("mul_key");
                 this.SetAttributeInKey(hHero, mul_key, {

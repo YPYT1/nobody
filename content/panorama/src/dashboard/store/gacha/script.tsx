@@ -1,5 +1,6 @@
 import { LoadCustomComponent } from "../../_components/component_manager";
 
+const MainPanel = $.GetContextPanel();
 const ServerDrawAcc = GameUI.CustomUIConfig().KvData.server_draw_acc;
 
 const QuickPurchase = $("#QuickPurchase");
@@ -70,17 +71,16 @@ function InitGachaButton() {
 /** 当期奖品显示 */
 const GACHA_ITEM_SHOW = [1279, 1280, 1281, 1282, 1283, 1284]
 const RewardItemShowList = $("#RewardItemShowList")
+
 function InitRewardItem() {
     RewardItemShowList.RemoveAndDeleteChildren();
     for (let i = 0; i < GACHA_ITEM_SHOW.length; i++) {
         let item_id = GACHA_ITEM_SHOW[i];
-
         let RewardItemShow = $.CreatePanel("Panel", RewardItemShowList, `${i}`);
         RewardItemShow.BLoadLayoutSnippet("RewardItemShow");
         let _RewardItem = RewardItemShow.FindChildTraverse("RewardItem")!;
         let RewardItem = LoadCustomComponent(_RewardItem, "server_item")
         RewardItem._SetServerItemInfo({ item_id: item_id, hide_bg: true, show_count: false, show_tips: true })
-
     }
 }
 
@@ -103,9 +103,9 @@ function InitCurrentReward() {
         let item_count = item_info.item_count;
         let is_even = (order % 2) == 0;
 
-        if (current_progress >= value){
-            stage = order + 1;
-        }
+        // if (current_progress >= value){
+        //     stage = order + 1;
+        // }
         // let receive = 0;
         // let is_active = current_progress >= value;
         // let can_receive = (receive == 0) && is_active;
@@ -133,11 +133,23 @@ function InitCurrentReward() {
     // $.Msg(["max_progress",max_progress])
     CurrentProgress.max = order * 40;
     CurrentProgress.style.width = `${order * 40 * UI_SCALE}px`;
-    CurrentProgress.value = stage * 40;
+    CurrentProgress.value = 0;
 
+    MainPanel.SetDialogVariable("total_draw","0");
+    GameEvents.Subscribe("ServiceInterface_GetPlayerServerDrawLotteryDrawRecord", event => {
+        let data = event.data;
+        $.Msg(["data", data])
+    })
+
+    GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+        event_name: "GetPlayerServerDrawLotteryDrawRecord",
+        params: {}
+    })
 }
 
+function UpdateReward(progress_value: number) {
 
+}
 
 function InitGachaItemShow() {
     const GachaServerItem = LoadCustomComponent($("#GachaServerItem"), "server_item")

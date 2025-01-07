@@ -92,7 +92,6 @@ export class modifier_drow_2b_b extends modifier_drow_2b {
 
         if (RollPercentage(this.sp_chance)) {
             this.caster.SetContextThink(DoUniqueString("sp_chance"), () => {
-                print("this.sp_extra",this.sp_extra ,this.sp_extra > 0)
                 if (this.sp_extra > 0) {
                     this.PlayEffect(params);
                 } else {

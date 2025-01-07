@@ -19,3 +19,5 @@ import "./prop_effect/__init__";
 import "./mission/__init__";
 import "./altar/__init__";
 import "./picture/__init__";
+
+import "./creature/__init__";

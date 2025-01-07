@@ -129,7 +129,7 @@ export const CreatePanel_Talent = () => {
 let HeroSubNodeObject: { [id: string]: number[] } = {};
 let hero_talent_tree_object: { [node: number]: { [key: string]: boolean } } = {}
 
-const CreateHeroTalentTree = (heroId: HeroID) => {
+export const CreateHeroTalentTree = (heroId: HeroID) => {
     // PlayerTalentTreeList.RemoveAndDeleteChildren();
     // const ALPos = AbilityList.GetPositionWithinWindow();
     // hero_talent_tree_object = {};
@@ -188,12 +188,7 @@ const CreateHeroTalentTree = (heroId: HeroID) => {
 
 const GameEventsSubscribe = () => {
 
-    GameEvents.Subscribe("HeroTalentSystem_ResetHeroTalent", (event) => {
-        let data = event.data;
-        let player_info = Game.GetPlayerInfo(Players.GetLocalPlayer())
-        let heroid = player_info.player_selected_hero_id;
-        CreateHeroTalentTree(heroid)
-    })
+    
 
     GameEvents.Subscribe("HeroTalentSystem_GetHeroTalentListData", (event) => {
         let data = event.data;
@@ -201,7 +196,7 @@ const GameEventsSubscribe = () => {
         talent_points = data.talent_points;
         // let local_hero = Players.GetPlayerHeroEntityIndex(local_player);
         MainPanel.SetDialogVariableInt("point_count", talent_points);
-        
+
 
     })
 
