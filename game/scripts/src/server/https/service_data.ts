@@ -52,7 +52,6 @@ export class ServiceData extends UIEventRegisterClass {
             this.player_pictuer_vip.push(0);
             this.server_package_list.push([]);
             this.server_gold_package_list.push({});
-
             
             this.player_vip_data.push({
                 "vip_times" : 0,
@@ -158,6 +157,7 @@ export class ServiceData extends UIEventRegisterClass {
         let item_package = GameRules.ServiceData.server_package_list[player_id];
         let item_id_string = tostring(item_id);
         let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
+        print("--------------" , item_id )
         if(merge != 1){
             for (let index = 0; index < item_package.length; index++) {
                 const package_item_id = item_package[index].item_id;
@@ -191,38 +191,16 @@ export class ServiceData extends UIEventRegisterClass {
      * @param player_id 
      */
     GoldVerifyPackageItem(player_id : PlayerID  , item_id : number  , count ? : number , id ?: string) : { is_verify : boolean , index : number} {
-        //检查卡片是否充足
+        //检查是否充足
         let ret : { is_verify : boolean , index : number} = {
             is_verify : false, 
             index : -1,
         }
-        let item_package = GameRules.ServiceData.server_package_list[player_id];
+        let item_package = GameRules.ServiceData.server_gold_package_list[player_id];
         let item_id_string = tostring(item_id);
-        let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
-        if(merge != 1){
-            for (let index = 0; index < item_package.length; index++) {
-                const package_item_id = item_package[index].item_id;
-                if(package_item_id == item_id){
-                    if(count){
-                        if(item_package[index].number >= count){
-                            ret.is_verify = true;
-                            ret.index = index;
-                        }
-                    }else{
-                        ret.is_verify = true;
-                        ret.index = index;
-                    }
-                    return ret;
-                }
-            }
-        }else{
-            for (let index = 0; index < item_package.length; index++) {
-                const package_id = item_package[index].id;
-                if(package_id == id){
-                    ret.is_verify = true;
-                    ret.index = index;
-                    return ret;
-                }
+        if(item_package[item_id_string]){
+            if(item_package[item_id_string].number > count){
+                ret.is_verify = true;
             }
         }
         return ret;
@@ -237,13 +215,8 @@ export class ServiceData extends UIEventRegisterClass {
      * @returns 
      */
     SelectVerifyPackageItem(player_id : PlayerID  , item_id : number  , count ? : number , id ?: string) : { is_verify : boolean , index : number}{
-        //检查卡片是否充足
-        let ret : { is_verify : boolean , index : number} = {
-            is_verify : false, 
-            index : -1,
-        }
-        if(item_id <= 1999){
-
+        if(item_id <= 1199){
+            return this.GoldVerifyPackageItem(player_id , item_id  , count)
         }else{
             return this.VerifyPackageItem(player_id , item_id  , count , id );
         }
@@ -347,7 +320,7 @@ export class ServiceData extends UIEventRegisterClass {
      */
     AddPackageItemSelect(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ) :  boolean{
         if(item_id <= 1199){
-            // return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , count );
+            return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , count );
         }else{
             return GameRules.ServiceData.AddPackageItem(player_id , id  , item_id , customs , count )
         }

@@ -55,6 +55,7 @@ declare interface AM2_Draw_Lottery_Data {
 declare interface AM2_Draw_Lottery_Draw_Record { //
     [ type  : string] : { //奖池type
         "c": number , //总次数
+        "acc" : number , //领取节点
         "n": string , //特殊物品记录
     } 
 } 

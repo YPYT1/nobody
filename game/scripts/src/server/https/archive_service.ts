@@ -32,6 +32,10 @@ export class ArchiveService extends UIEventRegisterClass {
         super("ArchiveService" , true)
     }
 
+    //累抽数据
+
+    
+
     Init() {
        
     }
@@ -80,12 +84,12 @@ export class ArchiveService extends UIEventRegisterClass {
                             GameRules.ServiceInterface.LoadSkillfulLevelInit(index);
                         }
 
-                        //发送存档数据
+                        //发送服务器时间
                         GameRules.ServiceInterface.GetServerTime( index  , {});
-
+                        //
                         //获取累抽次数
-                        // GameRules.ServiceInterface.DrawRecord[index] = data.data.draw_record;
-                        // GameRules.ServiceInterface.GetPlayerServerDrawLotteryDrawRecord(index , {});
+                        GameRules.ServiceInterface.DrawRecord[index] = data.data.list[steam_id.toString()].draw_record;
+                        GameRules.ServiceInterface.GetPlayerServerDrawLotteryDrawRecord(index , {});
 
                         //限购数据
                         GameRules.ServiceInterface.ShoppingLimit[index].limit = data.data.list[steam_id.toString()].limit;
@@ -587,17 +591,16 @@ export class ArchiveService extends UIEventRegisterClass {
                 param: param_data
             },
             (data: DrawLotteryReturn) => {
-                DeepPrintTable(data);
                 if (data.code == 200) {
                     let red_item = data.data.red_item;
                     let add_item = data.data.add_item;
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
                     GameRules.ServiceInterface.GetPlayerServerDrawLottery(player_id , data.data.draw_result);
-                    DeepPrintTable(data.data.draw_record);
                     //获取累抽次数
                     GameRules.ServiceInterface.DrawRecord[player_id] = data.data.draw_record;
                     GameRules.ServiceInterface.GetPlayerServerDrawLotteryDrawRecord(player_id , {});
-                    
+
+                    DeepPrintTable(data);
                 } else {
 
                 }

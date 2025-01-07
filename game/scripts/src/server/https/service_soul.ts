@@ -130,9 +130,11 @@ export class ServiceSoul extends UIEventRegisterClass {
                                 }else{
                                     ret.data.c[need_item_id] = need_item_count;
                                 }
-                                let ret_ver = GameRules.ServiceData.VerifyPackageItem(player_id , need_item_id , need_item_count);
+                                print("need_item_id" , need_item_id);
+
+                                let ret_ver = GameRules.ServiceData.SelectVerifyPackageItem(player_id , need_item_id , need_item_count);
                                 if(ret_ver.is_verify){
-                                    GameRules.ServiceData.DeletePackageItem(player_id , ret_ver.index , need_item_count);
+                                    GameRules.ServiceData.DeletePackageItemSelect(player_id , ret_ver.index , need_item_count);
                                 }else{
                                     GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:材料不足...")
                                     return ;
@@ -281,9 +283,9 @@ export class ServiceSoul extends UIEventRegisterClass {
                             }else{
                                 ret.data.c[set_item_id] = need_item_count;
                             }
-                            let ret_ver = GameRules.ServiceData.VerifyPackageItem(player_id , need_item_id , need_item_count);
+                            let ret_ver = GameRules.ServiceData.SelectVerifyPackageItem(player_id , need_item_id , need_item_count);
                             if(ret_ver.is_verify){
-                                GameRules.ServiceData.DeletePackageItem(player_id , ret_ver.index , need_item_count);
+                                GameRules.ServiceData.DeletePackageItemSelect(player_id , ret_ver.index , need_item_count);
                             }else{
                                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:材料不足...")
                                 return ;

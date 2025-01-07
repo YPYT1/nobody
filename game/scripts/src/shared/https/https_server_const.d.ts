@@ -42,6 +42,7 @@ declare interface CreateGameReturn {
                 sc : string, //首冲数据
                 vip_times : number , //月卡时间
                 vip_zs : number , //终身卡
+                draw_record : AM2_Draw_Lottery_Draw_Record, //累抽数据
             }
         }
         time : number , // 服务器时间
