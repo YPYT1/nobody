@@ -42,7 +42,9 @@ declare interface CreateGameReturn {
                 sc : string, //首冲数据
                 vip_times : number , //月卡时间
                 vip_zs : number , //终身卡
-                draw_record : AM2_Draw_Lottery_Draw_Record, //累抽数据
+                acc_count : number , //累抽数据
+
+                draw_record : AM2_Draw_Lottery_Draw_Record
             }
         }
         time : number , // 服务器时间
@@ -288,6 +290,31 @@ declare interface DrawLotteryParam {
  * 抽奖返回数据
  */
 declare interface DrawLotteryReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        draw_result : AM2_Draw_Lottery_Data[],
+        add_item : AM2_Server_Backpack[],
+        red_item : AM2_Server_Backpack[],
+        draw_record : AM2_Draw_Lottery_Draw_Record,
+    }
+}
+
+
+
+
+/**
+ * 累抽领取参数
+ */
+declare interface GetServerDrawAccParam {
+	sid : string , //steamid
+    type : number , //抽奖类型  默认1
+    count : number , // 领取到的目标 -1 表示领取到最新
+}
+/**
+ * 抽奖返回数据
+ */
+declare interface GetServerDrawAccReturn {
     code : number, //状态码
     msg : string, //服务器消息
     data :  {

@@ -770,6 +770,8 @@ const ACTION_SHOPPING_LIMIT_GET = "/shopping_limit_get";
 const ACTION_DRAW_LOTTERY = "/draw_lottery";
 
 
+const ACTION_GET_SERVER_DRAW_ACC = "/get_server_draw_acc"
+
 // 排行榜 设置
 // /ranking_list/set
 // froms=类型int

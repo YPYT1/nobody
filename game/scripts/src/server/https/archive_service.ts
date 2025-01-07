@@ -614,6 +614,48 @@ export class ArchiveService extends UIEventRegisterClass {
 
 
     /**
+     * 领取累抽奖励
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    GetServerDrawAcc(player_id: PlayerID , type : number = 1 , count : number = 1) {
+        //只验证主机
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <GetServerDrawAccParam>{
+            sid : tostring(steam_id) , //steamid
+            type : type ,
+            count : count ,
+        }
+        HttpRequest.AM2Post(ACTION_GET_SERVER_DRAW_ACC,
+            {
+                param: param_data
+            },
+            (data: GetServerDrawAccReturn) => {
+                if (data.code == 200) {
+                    // let red_item = data.data.red_item;
+                    let add_item = data.data.add_item;
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , [] , add_item);
+                    GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+                    //获取累抽次数
+                    GameRules.ServiceInterface.DrawRecord[player_id] = data.data.draw_record;
+                    GameRules.ServiceInterface.GetPlayerServerDrawLotteryDrawRecord(player_id , {});
+
+                    DeepPrintTable(data);
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
+
+    /**
      * 存档技能升级
      * @param player_id 
      * @param shop_id 
@@ -759,6 +801,9 @@ export class ArchiveService extends UIEventRegisterClass {
         }
         if(cmd == "!dl"){
             this.DrawLottery(player_id)
+        }
+        if(cmd == "!GetServerDrawAcc"){
+            this.GetServerDrawAcc(player_id , 1 , -1);
         }
         
     }
