@@ -1002,7 +1002,7 @@ export class ServiceInterface extends UIEventRegisterClass{
     /**
      * 累抽领取
      */
-    GetServerDrawAcc(player_id: PlayerID, params: CGED["ServiceInterface"]["DrawLottery"], callback?){
+    GetServerDrawAcc(player_id: PlayerID, params: CGED["ServiceInterface"]["GetServerDrawAcc"], callback?){
         let paramstype = params.type;
         let count = params.count;
         GameRules.ArchiveService.GetServerDrawAcc(player_id , paramstype , count);
