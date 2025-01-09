@@ -60,8 +60,16 @@ declare interface AM2_Draw_Lottery_Draw_Record_List { //奖池type
     "acc" : number , //领取节点
     "n": string , //特殊物品记录
 } 
-
-
+//通行证记录
+declare interface AM2_Draw_Pass_Record { //
+    [ type  : string] : AM2_Draw_Pass_Record_List
+} 
+declare interface AM2_Draw_Pass_Record_List { //奖池type
+    "c": number , //总数量
+    "pt_acc" : number , //领取节点
+    "gj_acc" : number , //高级领取节点
+    "adv" : number , //高级标识
+}
 declare interface AM2_Server_Backpack_Update {
     id: string,	//系统内唯一id
     item_id: number,	//物品表唯一id

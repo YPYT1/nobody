@@ -94,6 +94,9 @@ export class ArchiveService extends UIEventRegisterClass {
                         //限购数据
                         GameRules.ServiceInterface.ShoppingLimit[index].limit = data.data.list[steam_id.toString()].limit;
                         GameRules.ServiceInterface.ShoppingLimit[index].sc = data.data.list[steam_id.toString()].sc;
+                        //成长礼
+                        GameRules.ServiceInterface.PassRecord[index] = data.data.list[steam_id.toString()].pass_record;
+                        GameRules.ServiceInterface.GetPlayerServerPassRecord(index , {});
 
                         GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
                     }
@@ -654,6 +657,48 @@ export class ArchiveService extends UIEventRegisterClass {
         )
     }
 
+    /**
+     * 通行证领取
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    GetServerPass(player_id: PlayerID , type : number = 1 , count : number = 1 , get_type : number = 1) {
+        //只验证主机  AM2_Draw_Pass_Record
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <GetServerPassParam>{
+            sid : tostring(steam_id) , //steamid
+            type : type ,
+            count : count ,
+            get_type : get_type,
+        }
+        HttpRequest.AM2Post(ACTION_GET_SERVER_PASS,
+            {
+                param: param_data
+            },
+            (data: GetServerPassReturn) => {
+                if (data.code == 200) {
+                    // let red_item = data.data.red_item;
+                    let add_item = data.data.add_item;
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , [] , add_item);
+                    GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+                    //
+                    GameRules.ServiceInterface.PassRecord[player_id] = data.data.pass_record;
+                    GameRules.ServiceInterface.GetPlayerServerPassRecord(player_id , {});
+
+                    DeepPrintTable(data);
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
 
     /**
      * 存档技能升级
@@ -718,7 +763,6 @@ export class ArchiveService extends UIEventRegisterClass {
      * @param add_item 
      */
     RedAndAddBackpack( player_id :PlayerID , red_item : AM2_Server_Backpack[] , add_item : AM2_Server_Backpack[]){
-        DeepPrintTable(red_item);
         //先删除再添加
         if(red_item){
             for (const r_e of red_item) {
@@ -804,6 +848,9 @@ export class ArchiveService extends UIEventRegisterClass {
         }
         if(cmd == "!GetServerDrawAcc"){
             this.GetServerDrawAcc(player_id , 1 , -1);
+        }
+        if(cmd == "!GetServerPass"){
+            this.GetServerPass(player_id , 1 , 20 , 1)
         }
         
     }

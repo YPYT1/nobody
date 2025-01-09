@@ -157,7 +157,6 @@ export class ServiceData extends UIEventRegisterClass {
         let item_package = GameRules.ServiceData.server_package_list[player_id];
         let item_id_string = tostring(item_id);
         let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
-        print("--------------" , item_id )
         if(merge != 1){
             for (let index = 0; index < item_package.length; index++) {
                 const package_item_id = item_package[index].item_id;
