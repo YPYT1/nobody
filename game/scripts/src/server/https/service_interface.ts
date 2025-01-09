@@ -40,6 +40,9 @@ export class ServiceInterface extends UIEventRegisterClass{
     //玩家抽奖记录
     DrawRecord : AM2_Draw_Lottery_Draw_Record[] = [];
 
+    //玩家通行证记录
+    PassRecord : AM2_Draw_Pass_Record[] = [];
+
     constructor() {
         super("ServiceInterface" , true)
         //初始化总等级
@@ -63,6 +66,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
             );
             this.DrawRecord.push({});
+            this.PassRecord.push({});
         }
         //初始化技能数据
         for (let i_key in PictuerFetterAbility) {
@@ -804,7 +808,7 @@ export class ServiceInterface extends UIEventRegisterClass{
         );
     };
 
-
+    
     /**
      * 获取抽奖记录
      * @param player_id 
@@ -820,6 +824,24 @@ export class ServiceInterface extends UIEventRegisterClass{
             }
         );
     };
+
+    /**
+     * 成长礼记录
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetPlayerServerPassRecord(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerServerDrawLotteryDrawRecord"], callback?){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerServerPassRecord",
+            {
+                data: GameRules.ServiceInterface.PassRecord[player_id]
+            }
+        );
+    };
+
+
 
 
     /**
@@ -1007,6 +1029,17 @@ export class ServiceInterface extends UIEventRegisterClass{
         let count = params.count;
         GameRules.ArchiveService.GetServerDrawAcc(player_id , paramstype , count);
     }
+    /**
+     * 累抽领取
+     */
+    GetServerPass(player_id: PlayerID, params: CGED["ServiceInterface"]["GetServerPass"], callback?){
+        let paramstype = params.type;
+        let count = params.count;
+        let get_type = params.get_type;
+        GameRules.ArchiveService.GetServerPass(player_id , paramstype , count , get_type);
+    }
+
+    
     /**
      * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)
      * @param name 符文名

@@ -427,10 +427,18 @@ declare interface CGED {
             type : number , //奖池类型 默认1
             count : number , //抽奖次数 
         }
+        //累抽领取
         GetServerDrawAcc : {
             type : number , //奖池类型 默认1
             count : number , //领取到多少 -1 表示全部
         }
+        //通行证领取
+        GetServerPass : {
+            type : number , //通行证类型 
+            count : number , //领取到多少 -1 表示全部
+            get_type : number , // 获取类型 1 普通 2高级
+        }
+
         //限购数据
         GetPlayerShoppingLimit : {
 
@@ -446,6 +454,12 @@ declare interface CGED {
          */
         GetPlayerServerDrawLotteryDrawRecord : {
 
+        }
+        /**
+         * 获取玩家成长礼 通行证
+         */
+        GetPlayerServerPassRecord : {
+            
         }
         /**
          * 获取玩家vip信息

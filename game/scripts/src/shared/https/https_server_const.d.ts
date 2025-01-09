@@ -42,7 +42,8 @@ declare interface CreateGameReturn {
                 sc : string, //首冲数据
                 vip_times : number , //月卡时间
                 vip_zs : number , //终身卡
-                draw_record : AM2_Draw_Lottery_Draw_Record
+                draw_record : AM2_Draw_Lottery_Draw_Record,
+                pass_record : AM2_Draw_Pass_Record,
             }
         }
         time : number , // 服务器时间
@@ -297,10 +298,6 @@ declare interface DrawLotteryReturn {
         draw_record : AM2_Draw_Lottery_Draw_Record,
     }
 }
-
-
-
-
 /**
  * 累抽领取参数
  */
@@ -318,5 +315,28 @@ declare interface GetServerDrawAccReturn {
     data :  {
         add_item : AM2_Server_Backpack[],
         draw_record : AM2_Draw_Lottery_Draw_Record,
+    }
+}
+
+
+
+/**
+ * 通行证数据
+ */
+declare interface GetServerPassParam {
+	sid : string , //steamid
+    type : number , //通行证类型 
+    count : number , // 领取到的目标 -1 表示领取到最新
+    get_type : number , // 获取类型 1 普通 2高级
+}
+/**
+ * 抽奖返回数据
+ */
+declare interface GetServerPassReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        add_item : AM2_Server_Backpack[],
+        pass_record : AM2_Draw_Pass_Record,
     }
 }

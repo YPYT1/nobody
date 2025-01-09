@@ -772,6 +772,8 @@ const ACTION_DRAW_LOTTERY = "/draw_lottery";
 
 const ACTION_GET_SERVER_DRAW_ACC = "/get_server_draw_acc"
 
+const ACTION_GET_SERVER_PASS = "/get_server_pass"
+
 // 排行榜 设置
 // /ranking_list/set
 // froms=类型int

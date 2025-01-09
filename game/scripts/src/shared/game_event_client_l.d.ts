@@ -308,6 +308,12 @@ declare interface CustomGameEventDeclarations {
         data : AM2_Draw_Lottery_Draw_Record
     }
     /**
+     * 成长礼记录
+     */
+    ServiceInterface_GetPlayerServerPassRecord : {
+        data : AM2_Draw_Pass_Record 
+    }
+    /**
      * 获取道具弹窗
      */
     ServiceInterface_GetServerItemPopUp : {
