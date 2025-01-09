@@ -43,18 +43,16 @@ export const DASHBOARD_NAVBAR = {
             "nav_7": true, // 黄金兑换
             // "nav_8": true, // 成长礼
         }
-    }
-/**
- * 1	热卖
-2	会员
-3	铂金
-4	黄金
-5	钻石
-6	元素
-7	黄金兑换
-8	成长礼
+    },
 
- */
+    "event": {
+        "Show": IsTestMode,
+        "Sub": {
+            "bp": true, // 成长礼
+            "quest": true, // 常驻活动,
+        }
+    },
+
 };
 
 /** 跳转到指定路由 */
@@ -111,9 +109,3 @@ export const ClosedDashboard = (e: Panel) => {
     }
     DashboardList.SetHasClass("IsOpen", false);
 };
-
-const DashboardLoadingSpinner = FindOfficialHUDUI("DashboardLoadingSpinner")!;
-export function ToggleDashboardLoading(open: boolean) {
-    // DashboardLoadingSpinner.SetHasClass("Show", open)
-
-}

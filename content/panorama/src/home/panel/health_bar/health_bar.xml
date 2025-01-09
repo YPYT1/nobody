@@ -60,15 +60,15 @@
                     <Panel class="AttributeList">
                         <Panel class="AttributeRows att1">
 							<Panel class="Icon"/>
-							<Label text="19999"/>
+							<Label text="{s:boss_attack}"/>
 						</Panel>
 						<Panel class="AttributeRows att2">
 							<Panel class="Icon"/>
-							<Label text="19999"/>
+							<Label text="{s:boss_armor}"/>
 						</Panel>
 						<Panel class="AttributeRows att3">
 							<Panel class="Icon"/>
-							<Label text="19999"/>
+							<Label text="{s:boss_magice_armor}"/>
 						</Panel>
                     </Panel>
                 </Panel>

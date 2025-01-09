@@ -2,10 +2,15 @@
 // import { default as ServerItemList } from "../json/config/server/item/server_item_list.json";
 // import { default as PictuerCardData } from "../json/config/server/picture/pictuer_card_data.json";
 // import { default as PictuerFetterConfig } from "../json/config/server/picture/pictuer_fetter_config.json";
+
+import { DASHBOARD_NAVBAR } from "../dashboard/components";
+
 // import { default as PictuerFetterAbility } from "../json/config/server/picture/pictuer_fetter_ability.json";
 export const GLOBAL_FILE = "global";
 
 const AttributeConst = GameUI.CustomUIConfig().KvData.AttributeConst;
+
+
 
 declare global {
 
@@ -23,6 +28,11 @@ declare global {
         // getServerTime(): number;
         ConvertServerItemToArray(input: string): { item_id: string; item_count: number; }[];
         ConvertServerItemToObject(input: string): { [item_id: string]: number; };
+
+        DashboardRoute<
+            Key extends keyof typeof DASHBOARD_NAVBAR,
+            T2 extends typeof DASHBOARD_NAVBAR[Key]
+        >(dashboard_id: Key, nav: keyof T2["Sub"]): void
     }
 }
 

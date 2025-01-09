@@ -1,0 +1,27 @@
+<root>
+    <styles>
+        <include src="./payment.less" />
+        <include src="./../../_styles/styles.less" />
+        <include src="./../../_styles/keyframes.less" />
+        <!-- <include src="file://{resources}/layout/custom_game/_global/qrcode.js" /> -->
+    </styles>
+    <scripts>
+		<include src="./payment.tsx" />
+	</scripts>
+    <Button class="PopupContainer">
+        <Panel class="PopupWindows">
+            <Panel class="ServerCode">
+                <Label text="code:{d:code}"/>
+            </Panel>
+
+          
+            <UICanvas id="CanvasPanel" />
+            
+
+            <Button id="ConfirmButton" class="dashboard_btn">
+                <Label text="确认"/>
+            </Button>
+
+        </Panel>
+    </Button>
+</root>

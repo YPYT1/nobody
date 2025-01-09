@@ -14,6 +14,7 @@ interface CustomEventBusList {
     backpack_count_update: { [item: string]: number };
     popup_loading: { show: boolean };
     open_store_purchase: { id: string };
+    open_rmb_purchase: { id: string };
     shoping_limit_update: AM2_Server_Shopping_Limit_List
 
 }

@@ -1,4 +1,3 @@
-import { ToggleDashboardLoading } from "../../components";
 import { LoadCustomComponent } from "../../_components/component_manager";
 
 const MainPanel = $.GetContextPanel();
@@ -158,7 +157,6 @@ const InitComposeButton = () => {
 }
 
 const SendCompoundCard = (state: number = 1) => {
-    ToggleDashboardLoading(true);
     let list: string[][] = [];
     for (let row of card_compose_list) {
         if (row.length == ROW_CARD_LIMIT) {

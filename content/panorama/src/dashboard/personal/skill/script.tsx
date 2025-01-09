@@ -86,7 +86,7 @@ export const Init = () => {
 
         // 查看具体精通信息
         SkillRows.SetPanelEvent("onactivate", () => {
-            $.Msg(["view skill main id", id])
+            // $.Msg(["view skill main id", id])
             ViewSkillMainOfID(id)
         })
     }

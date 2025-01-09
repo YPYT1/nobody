@@ -92,6 +92,8 @@ const InitItemDetails = () => {
 
     UseBackpackItemBtn.SetPanelEvent("onactivate", () => {
         $.Msg(["UseBackpackItem:", view_item_id])
+
+        // GameUI.CustomUIConfig().DashboardRoute("personal","stone")
     })
 
     UpdateBackpackBtn.SetPanelEvent("onactivate", () => {
@@ -130,7 +132,7 @@ export const Init = () => {
             NavRadioBtn.BLoadLayoutSnippet("CardNavRadioButton");
             NavRadioBtn.SetDialogVariable("button_txt", $.Localize("#custom_dashboard_nav_" + radiobtn_id))
             NavRadioBtn.checked = order == 0;
-            NavRadioBtn.SetPanelEvent("onactivate", () => {
+            NavRadioBtn.SetPanelEvent("onselect", () => {
 
             })
 

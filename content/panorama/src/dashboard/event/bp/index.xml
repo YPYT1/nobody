@@ -1,0 +1,78 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+	<snippets>
+		<snippet name="LeftNavButton">
+			<RadioButton class="LeftNavButton" group="Dashboard_Event_Quest">
+				<Panel class="NavIcon"/>
+				<Label text="{s:nav_label}"/>
+			</RadioButton>
+		</snippet>
+
+		<snippet name="NavContent">
+			<Panel class="NavContent">
+				<Panel class="BaseFrame">
+					<Panel class="PurchaseContent">
+						<Panel class="ChestBoxContent">
+							<Panel class="ChestBox"/>
+							<Panel class="ChestTips">
+								<Label text="成长礼回报率<span class='green'>3000%</span>" html="true"/>
+							</Panel>
+						</Panel>
+						<Panel class="PriceContent">
+							<Panel class="PriceShow">
+								<Panel class="Original PriceLabel">
+									<Label text="￥368"/>
+									<Panel class="DiagonalShape"/>
+								</Panel>
+								<Panel class="Actual PriceLabel">
+									<Label text="￥68"/>
+								</Panel>
+							</Panel>
+							<Button id="BpPurchaseBtn"/>
+						</Panel>
+					</Panel>
+					
+					<Panel class="FrameTitle"/>
+					<Panel class="BattlePassContent">
+						<Panel id="BattlePassList"/>
+					</Panel>
+						
+					
+				</Panel>
+			</Panel>
+		</snippet>
+
+		<snippet name="BattlePassItem">
+			<Panel class="BattlePassItem">
+				<Panel class="ItemContent pt">
+					<Panel id="PtItemList" class="ItemList"/>
+				</Panel>
+				<Panel class="BpLevel">
+					<Label text="{s:level}"/>
+				</Panel>
+				<Panel class="ItemContent gj">
+					<Panel id="GjItemList" class="ItemList"/>
+				</Panel>
+			</Panel>
+		</snippet>
+
+		<snippet name="BpItemBorder">
+			<Panel class="BpItemBorder">
+				<Panel id="ServerItem">
+				<Panel class="ItemState Locking"/>
+				<Panel class="ItemState Already"/>
+				<Panel class="ItemState Hover"/>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="nav_content">
+		<Panel id="NavContentFrame" />
+		<Panel id="LeftNavBtnList" class="LeftNavBtnList" />
+	</Panel>
+</root>

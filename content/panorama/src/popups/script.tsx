@@ -12,6 +12,7 @@ const popups_ids: string[] = [
     "gacha_result",
     "server_msg",
     "card_result",
+    "payment",
 ]
 
 const InitPopupsContent = () => {

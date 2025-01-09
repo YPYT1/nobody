@@ -1,0 +1,82 @@
+@import "./../dashboard_panel.less";
+
+.DashBoardPanel {
+    width: 100%;
+    height: 100%;
+    background-color: #0b0b20;
+}
+
+.ContentFrame {
+    width: 100%;
+    height: 100%;
+
+    &.quest #event_quest,
+    &.bp #event_bp {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+.nav_content {
+    opacity: 0;
+
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    // transition-delay: 0.01s;
+}
+.NavButtonContainer {
+    width: 1920px;
+    height: 49px;
+    // border: 1px solid #fff;
+    vertical-align: bottom;
+    horizontal-align: center;
+    // background-image: url("file://{images}/custom_game/dashboard/event/nav_btn_bg.png");
+    background-color: #ffffff0a;
+    border-style: solid;
+    border-color: #ffffff33;
+    border-width: 1px 0px 1px 0px;
+    
+    .NavButtonListHor2 {
+        horizontal-align: center;
+        flow-children: right;
+        vertical-align: middle;
+        
+        RadioButton {
+            width: 194px;
+            height: 46px;
+            margin-left: 4px;
+            margin-right: 4px;
+            // border: 1px solid #fff;
+            // border-style: dashed;
+            // border-width: 2px;
+            // border-color: #fff;
+            vertical-align: middle;
+
+            &.is_first {
+                .RadioBox {
+                    visibility: collapse;
+                }
+            }
+
+            Label {
+                color:#ffffff;
+                align: center center;
+                font-size: 20px;
+            }
+
+            &:selected {
+                Label {
+                    color: #FBFAA9;
+                    text-shadow: 0px 0px 8px 8.0 #967009;
+                }
+            }
+
+            .RadioBox {
+                width: 1px;
+                height: 27px;
+                background-image: url("file://{images}/custom_game/dashboard/event/nav_btn_border.png");
+                vertical-align: middle;
+            }
+        }
+    }
+}
