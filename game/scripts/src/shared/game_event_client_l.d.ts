@@ -716,7 +716,7 @@ declare interface CGEDPlayerListData {
     exp : number, //通关奖励经验
     old_exp : number, //当时的经验
     pass_item : CGEDPlayerPassItem[],
-    skill_exp : CGEDPlayerSkillExp[],
+    skill_exp : CGEDPlayerSkillExp,
     is_mvp : number , //是否为mvp
 }
 

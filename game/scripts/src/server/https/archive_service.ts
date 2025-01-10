@@ -260,7 +260,7 @@ export class ArchiveService extends UIEventRegisterClass {
                                 GameRules.ServiceData.AddPackageItemSelect(index , add_item.id ,  add_item.item_id , add_item.customs , add_item.number )
                             }
                         }
-                        let CGEDPlayerSkillExp : CGEDPlayerSkillExp[] = [
+                        let CGEDPlayerSkillExp : CGEDPlayerSkillExp = 
                             {
                                 "1" : {
                                     "exp" : 123,
@@ -279,7 +279,7 @@ export class ArchiveService extends UIEventRegisterClass {
                                     "old_exp" : 225432,
                                 },
                             }
-                        ];
+                        ;
                         this.general_game_over_data_pass_data.player_list_data.push({
                             "exp" : 200,
                             "is_mvp" : 1,
