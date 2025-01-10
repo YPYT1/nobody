@@ -11,5 +11,16 @@
         <Panel class="ItemCount">
             <Label text="{s:count}"/>
         </Panel>
+        <!-- <Panel class="ItemState Locking" hittest="false"/>
+        <Panel class="ItemState Already" hittest="false"/>
+        <DOTAParticleScenePanel
+            map="scenes/dota_ui_particle_scene_panel_empty"
+            class='ItemState Hover'
+            particleName='particles/ui/hud/autocasting_square.vpcf'
+            cameraOrigin="0 0 118"
+            lookAt="0 0 0"
+            fov="45"
+            hittest="false"
+        /> -->
     </Panel>
 </root>

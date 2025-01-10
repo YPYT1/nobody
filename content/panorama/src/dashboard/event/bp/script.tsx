@@ -49,15 +49,17 @@ function InitServerPassData() {
 };
 
 export function Init() {
+
     InitServerPassData();
 
     LeftNavBtnList.RemoveAndDeleteChildren()
     NavContentFrame.RemoveAndDeleteChildren()
     // return;
-    let bp_type_list = Object.values(all_pass_data);
+    // let bp_type_list = Object.values(all_pass_data);
     for (let pass_type in all_pass_data) {
+        // $.Msg(["pass_type", pass_type, pass_type == "1"])
+        NavContentFrame.SetHasClass(pass_type, pass_type == "1");
         let row_pass_data = all_pass_data[pass_type];
-
         let NavRadioBtn = $.CreatePanel("RadioButton", LeftNavBtnList, pass_type, {
             group: "Dashboard_Event_BP",
         });
@@ -68,28 +70,54 @@ export function Init() {
             SwitchNavContent(pass_type)
         })
 
-
         let NavContent = $.CreatePanel("Panel", NavContentFrame, pass_type);
         NavContent.BLoadLayoutSnippet("NavContent");
-        NavContent.SetHasClass("1",pass_type == "1");
         let BattlePassList = NavContent.FindChildTraverse("BattlePassList")!;
         for (let level in row_pass_data) {
             let row_data = row_pass_data[level];
-
             let BattlePassItem = $.CreatePanel("Panel", BattlePassList, level);
             BattlePassItem.BLoadLayoutSnippet("BattlePassItem");
             BattlePassItem.SetDialogVariable("level", level);
-            BattlePassItem.AddClass("Locking");
+            
             let pt_arr = ConvertServerItemToArray(row_data.pt_item_id);
             const PtItemList = BattlePassItem.FindChildTraverse("PtItemList")!;
-            SetPassRowItemList(pt_arr,PtItemList)
-           
+            PtItemList.AddClass("Locking");
+            SetPassRowItemList(pt_arr, PtItemList)
+
             let gj_arr = ConvertServerItemToArray(row_data.gj_item_id);
             const GjItemList = BattlePassItem.FindChildTraverse("GjItemList")!;
-            SetPassRowItemList(gj_arr,GjItemList)
+            GjItemList.AddClass("Locking");
+            SetPassRowItemList(gj_arr, GjItemList)
+            PtItemList.enabled = false;
+            PtItemList.SetPanelEvent("onactivate", () => {
+                GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true })
+                GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                    event_name: "GetServerPass",
+                    params: {
+                        type: parseInt(pass_type),
+                        count: parseInt(level),
+                        get_type: 1
+
+                    }
+                })
+            })
+            GjItemList.enabled = false;
+            GjItemList.SetPanelEvent("onactivate", () => {
+                GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true })
+                GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                    event_name: "GetServerPass",
+                    params: {
+                        type: parseInt(pass_type),
+                        count: parseInt(level),
+                        get_type: 2
+                    }
+                })
+
+            })
         }
     }
 
+    InitCustomGameEvens();
 }
 
 
@@ -116,6 +144,54 @@ function SwitchNavContent(nav: string) {
     }
 }
 
+
+function InitCustomGameEvens() {
+
+    GameEvents.Subscribe("ServiceInterface_GetPlayerServerPassRecord", event => {
+        UpdateBattlePass(event.data)
+    })
+
+    GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+        event_name: "GetPlayerServerPassRecord",
+        params: {}
+    })
+}
+
+function UpdateBattlePass(data: AM2_Draw_Pass_Record) {
+    for (let pass_type in data) {
+        const type_data = data[pass_type];
+        const level = type_data.c
+        const pt_acc = type_data.pt_acc;
+        const gj_acc = type_data.gj_acc;
+        const is_adv = type_data.adv == 1;
+        const NavContent = NavContentFrame.FindChildTraverse(pass_type)!;
+        const BattlePassList = NavContent.FindChildTraverse("BattlePassList")!;
+        for (let i = 0; i < level; i++) {
+            const BattlePassItem = BattlePassList.GetChild(i);
+            if (BattlePassItem) {
+                BattlePassItem.AddClass("on");
+                // 领取状态
+                const pt_state = pt_acc <= i ? "Hover" : "Already";
+                const PtItemList = BattlePassItem.FindChildTraverse("PtItemList")!;
+                PtItemList.RemoveClass("Locking");
+                PtItemList.RemoveClass("Hover");
+                PtItemList.RemoveClass("Already");
+                PtItemList.AddClass(pt_state)
+                PtItemList.enabled = pt_state == "Hover";
+                if (is_adv) {
+                    const GjItemList = BattlePassItem.FindChildTraverse("GjItemList")!;
+                    const gj_state = gj_acc <= i ? "Hover" : "Already";
+
+                    GjItemList.RemoveClass("Locking");
+                    GjItemList.RemoveClass("Hover");
+                    GjItemList.RemoveClass("Already");
+                    GjItemList.AddClass(gj_state)
+                    GjItemList.enabled = gj_state == "Hover";
+                }
+            }
+        }
+    }
+}
 (() => {
     Init();
 })();

@@ -18,8 +18,11 @@
 		<snippet name="NavContent">
 			<Panel class="NavContent">
 				<Panel class="Header">
-					<Label text="{s:header_text}"/>
+					<Panel class="Title">
+						<Label text="{s:header_text}"/>
+					</Panel>
 				</Panel>
+				
 				<Panel id="QuestList"/>
 			</Panel>
 		</snippet>

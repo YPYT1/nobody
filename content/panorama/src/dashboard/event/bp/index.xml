@@ -49,25 +49,33 @@
 		</snippet>
 
 		<snippet name="BattlePassItem">
-			<Panel class="BattlePassItem">
+			<Button class="BattlePassItem">
 				<Panel class="ItemContent pt">
-					<Panel id="PtItemList" class="ItemList"/>
+					<Button id="PtItemList" class="ItemList"/>
 				</Panel>
 				<Panel class="BpLevel">
 					<Label text="{s:level}"/>
 				</Panel>
 				<Panel class="ItemContent gj">
-					<Panel id="GjItemList" class="ItemList"/>
+					<Button id="GjItemList" class="ItemList"/>
 				</Panel>
-			</Panel>
+			</Button>
 		</snippet>
 
 		<snippet name="BpItemBorder">
 			<Panel class="BpItemBorder">
-				<Panel id="ServerItem">
-				<Panel class="ItemState Locking"/>
-				<Panel class="ItemState Already"/>
-				<Panel class="ItemState Hover"/>
+				<Panel id="ServerItem" />
+				<Panel class="ItemState Locking" hittest="false"/>
+				<Panel class="ItemState Already" hittest="false"/>
+				<DOTAParticleScenePanel
+					map="scenes/dota_ui_particle_scene_panel_empty"
+					class='ItemState Hover'
+					particleName='particles/ui/hud/autocasting_square.vpcf'
+					cameraOrigin="0 0 112"
+					lookAt="0 0 0"
+					fov="45"
+					hittest="false"
+				/>
 			</Panel>
 		</snippet>
 	</snippets>

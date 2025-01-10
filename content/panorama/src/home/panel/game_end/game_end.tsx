@@ -1,5 +1,7 @@
 // import { CreateServerItem } from "../../../common/server_item";
 
+import { CreateCustomComponent } from "../../../dashboard/_components/component_manager";
+
 const ShowBtn = $("#ShowBtn");
 const ClosedBtn = $("#ClosedBtn");
 const PlayerList = $("#PlayerList");
@@ -9,15 +11,23 @@ const GameEndContainer = $("#GameEndContainer");
 
 const CreateServerItem = GameUI.CustomUIConfig().CreateServerItem;
 
+function FormatNumberToTime(time: number) {
+    let min = Math.floor(time / 60);
+    let sec_num = Math.floor(time % 60);
+    let sec = sec_num < 10 ? `0${sec_num}` : `${sec_num}`;
+    return [min, sec];
+}
 export const Init = () => {
 
     GameEvents.Subscribe("ArchiveService_GetPlayerGameOverData", event => {
+        // $.Msg(["ArchiveService_GetPlayerGameOverData"])
+        // $.Msg(event)
         PlayerList.RemoveAndDeleteChildren();
         let data = event.data;
         let player_list_data = Object.values(data.player_list_data);
-        let play_time = data.time;
+        let TimeLabel = FormatNumberToTime(data.time);
         let player_id = 0;
-        GameEndContainer.SetDialogVariable("play_time", `${play_time}`)
+        GameEndContainer.SetDialogVariable("play_time", `通关时间: ${TimeLabel.join(":")}`)
         GameEndContainer.SetHasClass("is_win", data.state == 1);
         GameEndContainer.RemoveClass("Closed");
         let mvp_player = -1;
@@ -49,10 +59,17 @@ export const Init = () => {
             // Item
             let RewardList = PlayerInfoRows.FindChildTraverse("RewardList")!;
             let pass_item_list = Object.values(row_data.pass_item);
-
             for (let ItemData of pass_item_list) {
-                let RewardItem = CreateServerItem(ItemData.item_id, ItemData.number, RewardList);
-                RewardItem.AddClass("PassItem");
+                let item_id = ItemData.item_id
+                const ServerItem = CreateCustomComponent(RewardList, "server_item", "");
+                ServerItem._SetServerItemInfo({
+                    item_id: item_id,
+                    item_count: ItemData.number,
+                    show_count: true,
+                    show_tips: true,
+                })
+                // let RewardItem = CreateServerItem(ItemData.item_id, ItemData.number, RewardList);
+                // RewardItem.AddClass("PassItem");
             }
 
             let AbilityTypesInfo = PlayerInfoRows.FindChildTraverse("AbilityTypesInfo")!;

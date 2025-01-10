@@ -69,6 +69,8 @@ export const Init = () => {
         event_name: "GetPlayerServerTalent",
         params: {}
     })
+
+    
 }
 
 const SetHeroDetails = (hero_id: number) => {

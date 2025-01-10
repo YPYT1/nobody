@@ -77,6 +77,7 @@ function InitNavMenu() {
 
         GameUI.CustomUIConfig().setStorage("currency_count", currency_object);
 
+        
     })
 
 

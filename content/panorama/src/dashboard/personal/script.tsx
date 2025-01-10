@@ -44,11 +44,22 @@ export const Init = () => {
     // CustomEventSub();
 }
 
-const InitPlayerProfile = ()=>{
-    MainPanel.SetDialogVariableInt("level",0);
-    MainPanel.SetDialogVariableInt("exp",0)
-    MainPanel.SetDialogVariableInt("up_exp",100)
-    
+const InitPlayerProfile = () => {
+
+
+    MainPanel.SetDialogVariableInt("level", 0);
+    MainPanel.SetDialogVariableInt("exp", 0)
+    MainPanel.SetDialogVariableInt("up_exp", 100)
+
+
+    // 地图经验更新 1004
+    GameEvents.Subscribe("ServiceInterface_GetPlayerServerGoldPackageData", event => {
+        let data = event.data;
+        const exp_data = data["1004"];
+        if (exp_data != null) {
+            MainPanel.SetDialogVariableInt("exp", exp_data.number)
+        }
+    })
 }
 
 (() => {
