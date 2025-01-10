@@ -48,6 +48,7 @@ const entries = [
     { import: './_global/kvdata.ts', filename: '_global/kvdata.js' },
     { import: './_global/event_bus.ts', filename: '_global/event_bus.js' },
     { import: './_global/storage.ts', filename: '_global/storage.js' },
+    // { import: './_global/qrcode.js', filename: '_global/storage.js' },
 
     { import: './loading-screen/layout.xml', filename: 'custom_loading_screen.xml' },
     { import: './team_select/layout.xml', filename: 'team_select.xml' },

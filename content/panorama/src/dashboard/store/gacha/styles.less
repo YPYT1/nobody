@@ -330,9 +330,10 @@
         overflow: scroll clip;
 
         .RewardPanel {
+            // width: 100%;
             height: 100%;
             overflow: scroll;
-            padding-right: 80px;
+            // padding-right: 80px;
             // padding-left: 80px;
             // layout-position: fixed;
         }
@@ -342,10 +343,13 @@
             height: 6px;
             background-color: #000000;
             vertical-align: middle;
+            margin-right: 84px;
+            // padding-right: 84px;
             // border: 1px solid #fff;
-            overflow: clip;
-
+            // overflow: clip;
+            // visibility: collapse;
             .ProgressBarLeft {
+                overflow: clip;
                 background-color: gradient(linear, 0% 0%, 0% 100%,
                         from(#7D442899),
                         color-stop(0.4, #EBBC45),
@@ -359,16 +363,19 @@
             // border: 1px solid #ffffff;
             height: 100%;
             overflow: scroll scroll;
-            // flow-children: right;
+            flow-children: right;
             // scroll-behavior: smooth
+            // padding-right: 80px;
+            padding-left: 42px;
         }
 
         .AccRewardItem {
-            // flow-children: down;
+            width: 84px;
+            margin: 0px;
             vertical-align: middle;
-            // margin-bottom: 120px;
-            // border: 1px solid #fff;
             height: 200px;
+            overflow: clip;
+            // margin-right: -10px;
 
             brightness: 0.15;
             saturation: 0.15;

@@ -123,6 +123,12 @@ function UpdateTopPanelBoss() {
 
             EvenHudHeathBar.style.washColor = `${color_list[0]}`;
             EvenBossHealthBar.style.washColor = `${color_list[0]}`;
+
+            let boss_attack = Entities.GetDamageMax(entity);
+            pPanel.SetDialogVariable("boss_attack", `${boss_attack}`);
+
+            pPanel.SetDialogVariable("boss_armor", `${0}`);
+            pPanel.SetDialogVariable("boss_magice_armor", `${0}`);
         }
         let dotatime = Game.GetDOTATime(false, false);
         let max_layer = Math.ceil(100 / EVER_HP_PCT); // 最大根数

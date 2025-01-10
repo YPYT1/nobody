@@ -102,12 +102,12 @@ function InitCurrentReward() {
         let item_info = GameUI.CustomUIConfig().ConvertServerItemToArray(_data.item_id)[0];
         let item_id = item_info.item_id;
         let item_count = item_info.item_count;
-        let is_even = (order % 2) == 0;
+        let is_even = (order % 2) != 0;
         let AccRewardItem = $.CreatePanel("Panel", AccRewardList, `${value}`)
         AccRewardItem.BLoadLayoutSnippet("AccRewardItem");
         AccRewardItem.SetDialogVariableInt("reward_level", value)
         AccRewardItem.SetHasClass("is_even", !is_even);
-
+        AccRewardItem.AddClass("order_" + order)
         AccRewardItem.enabled = false;
         AccRewardItem.SetPanelEvent("onactivate", () => {
             GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true })
@@ -119,8 +119,8 @@ function InitCurrentReward() {
                 }
             })
         })
-        let offsetX = (1 + order) * 40;
-        AccRewardItem.style.transform = `translatex(${(offsetX * UI_SCALE) - 40}px)`
+        // let offsetX = order * 40;
+        // AccRewardItem.style.transform = `translatex(${(offsetX * UI_SCALE) - 40}px)`
 
         const _RewardItem = AccRewardItem.FindChildTraverse("RewardItem")!
         const RewardItem = LoadCustomComponent(_RewardItem, "server_item")
@@ -130,21 +130,18 @@ function InitCurrentReward() {
         order++;
     }
 
-    // $.Msg(["max_progress",max_progress])
     CurrentProgress.max = order;
-    CurrentProgress.style.width = `${order * 40 * UI_SCALE}px`;
+    CurrentProgress.style.width = `${(order) * 84}px`;
     CurrentProgress.value = 0;
 
     MainPanel.SetDialogVariable("total_draw", "0");
+
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerDrawLotteryDrawRecord", event => {
         let data = event.data;
         if (data["1"] != null) { UpdateReward(data["1"]) }
     })
 
-    GameEvents.SendCustomGameEventToServer("ServiceInterface", {
-        event_name: "GetPlayerServerDrawLotteryDrawRecord",
-        params: {}
-    })
+
 
 
     RewardReceiveBtn.SetPanelEvent("onactivate", () => {
@@ -157,6 +154,14 @@ function InitCurrentReward() {
             }
         })
     })
+
+    $.Schedule(0.1, () => {
+        GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+            event_name: "GetPlayerServerDrawLotteryDrawRecord",
+            params: {}
+        })
+    })
+
 }
 
 
@@ -191,14 +196,23 @@ function UpdateReward(DrawRecordData: AM2_Draw_Lottery_Draw_Record_List) {
         order++;
     }
 
+    // $.Msg(["stage", stage])
     CurrentProgress.value = stage;
 
     MainPanel.SetDialogVariable("total_draw", `${current_progress}`);
 
     RewardReceiveBtn.enabled = one_receive
 
-    $.Msg(["ScrollToRightEdge11"])
-    AccRewardList.ScrollToRightEdge()
+    // $.Msg(["ScrollToRightEdge11"])
+    // AccRewardList.ScrollToRightEdge();
+
+
+    let target_paenl = AccRewardList.GetChild(Math.min(78,stage) )
+    if (target_paenl) {
+        target_paenl.ScrollParentToMakePanelFit(0, false)
+    }
+
+
 }
 
 function InitGachaItemShow() {

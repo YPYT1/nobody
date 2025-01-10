@@ -1,0 +1,49 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+
+	<snippets>
+		<snippet name="LeftNavButton">
+			<RadioButton class="LeftNavButton" group="Dashboard_Event_Quest">
+				<Panel class="NavIcon"/>
+				<Label text="{s:nav_label}"/>
+			</RadioButton>
+		</snippet>
+
+		<snippet name="NavContent">
+			<Panel class="NavContent">
+				<Panel class="Header">
+					<Label text="{s:header_text}"/>
+				</Panel>
+				<Panel id="QuestList"/>
+			</Panel>
+		</snippet>
+
+		<snippet name="QuestRows">
+			<Panel class="QuestRows">
+				<Panel id="QuestRewardItem"/>
+				<Panel class="RightContent">
+					<Panel class="QuestLabel">
+						<Label text="EX:每日游玩0/3局游戏"/>
+					</Panel>
+					<Panel class="QuestState">
+						<Button id="FinishButton" class="Receive">
+							<Label text="领取奖励"/>
+						</Button>
+						<Label class="InProgress" text="未完成"/>
+						<Panel class="Completed" />
+					</Panel>
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="nav_content">
+		<Panel id="LeftNavBtnList" class="LeftNavBtnList" />
+		<Panel id="NavContentFrame" />
+	</Panel>
+</root>

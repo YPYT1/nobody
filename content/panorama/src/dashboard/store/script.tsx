@@ -33,7 +33,8 @@ function InitNavMenu() {
             NavRadioBtn.BLoadLayoutSnippet("NavRadioButton");
             NavRadioBtn.SetDialogVariable("button_txt", $.Localize("#custom_dashboard_nav_" + radiobtn_id))
             NavRadioBtn.checked = order == 0;
-            NavRadioBtn.SetPanelEvent("onactivate", () => {
+
+            NavRadioBtn.SetPanelEvent('onselect', () => {
                 for (let nav_key of Object.keys(SUB_OBJECT)) {
                     ContentFrame.SetHasClass(nav_key, nav_key == sub_key)
                 }
@@ -79,7 +80,7 @@ function InitNavMenu() {
     })
 
 
-    
+
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerShoppingLimit", event => {
         let limit = event.data.limit;
@@ -110,7 +111,7 @@ function InitNavMenu() {
         GameUI.CustomUIConfig().EventBus.publish("shoping_limit_update", limit)
     })
 
-    
+
 
 
     // GameEvents.Subscribe("ServiceInterface_GetPlayerVipData",event=>{

@@ -14,5 +14,6 @@
         <Button id="gacha_result" />
         <Button id="server_msg" />
         <Button id="card_result" />
+        <Button id="payment" />
     </Panel>
 </root>

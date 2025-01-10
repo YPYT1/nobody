@@ -27,10 +27,16 @@ export class EntityKilled {
                 // 圣坛效果
 
                 // this.KilledOnMdf(hAttacker, hTarget)
-                // let hAbility = EntIndexToHScript(entindex_inflictor) as CDOTABaseAbility;
+                let hAbility = EntIndexToHScript(entindex_inflictor) as CDOTABaseAbility;
                 // 技能击杀
                 // this.ArmsKillAbility(hAttacker, hTarget,hAbility)
                 // 掉落经验
+                if (hAbility.custom_ability_types != null) {
+                    GameRules.HeroAbilityType.AddAbilityTypeExp(
+                        hAttacker.GetPlayerOwnerID(),
+                        hAbility.custom_ability_types.skv_type
+                    )
+                }
             }
 
 

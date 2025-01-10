@@ -1,4 +1,3 @@
-import { ToggleDashboardLoading } from "../../components";
 import { LoadCustomComponent } from "../../_components/component_manager";
 import { CardPopupsToggle } from "../_popups";
 import { SetLabelDescriptionExtra } from "../../../utils/ability_description";
@@ -59,7 +58,6 @@ const InitPictureCostInfo = () => {
 
 
     SavePictureBtn.SetPanelEvent("onactivate", () => {
-        ToggleDashboardLoading(true);
         GameEvents.SendCustomGameEventToServer("ServiceInterface", {
             event_name: "SavePictuerFetter",
             params: {
@@ -145,7 +143,6 @@ const UpdatePictureFliter = () => {
 const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetPlayerCardList"]>) => {
     // 这里需要等待 pictuer_list 读取完毕
     $.Schedule(0, () => {
-        ToggleDashboardLoading(false)
         let card_list = Object.values(params.data.card);
         pictuer_list = params.data.pictuer_list;
         let card_object: { [card_id: string]: AM2_Server_Backpack } = {};

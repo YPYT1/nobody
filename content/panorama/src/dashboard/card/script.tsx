@@ -22,7 +22,7 @@ export const Init = () => {
             NavRadioBtn.BLoadLayoutSnippet("CardNavRadioButton");
             NavRadioBtn.SetDialogVariable("button_txt", $.Localize("#custom_dashboard_nav_" + radiobtn_id))
             NavRadioBtn.checked = order == 0;
-            NavRadioBtn.SetPanelEvent("onactivate", () => {
+            NavRadioBtn.SetPanelEvent("onselect", () => {
                 for (let nav_key of Object.keys(SUB_OBJECT)) {
                     ContentFrame.SetHasClass(nav_key, nav_key == sub_key)
                 }

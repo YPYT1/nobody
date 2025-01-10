@@ -1,0 +1,50 @@
+.LeftNavBtnList {
+    vertical-align: middle;
+    flow-children: down;
+
+
+
+}
+
+.LeftNavButton {
+    width: 268px;
+    height: 88px;
+    background-image: url("file://{images}/custom_game/dashboard/event/left_nav_btn.png");
+    transition-property: background-image;
+    transition-duration: 0.15s;
+
+    Label {
+        margin-left: 94px;
+        margin-top: 18px;
+        font-size: 18px;
+        color: #B4BBC1;
+    }
+
+    &:selected,
+    &:hover {
+        background-image: url("file://{images}/custom_game/dashboard/event/left_nav_btn2.png");
+
+        Label {
+            color: #FFF38A;
+            text-shadow: 0px 0px 4px 4.0 #6e501799;
+        }
+
+        .NavIcon {
+            background-color: gradient(linear, 0% 0%, 0% 100%, from(#ffed88), to(#e5b142));
+        }
+    }
+
+    .NavIcon {
+        width: 54px;
+        height: 54px;
+        margin-left: 24px;
+        margin-top: 18px;
+        background-size: 100%;
+        background-color: gradient(linear, 0% 0%, 0% 100%, from(#dae2e3), to(#8f989b));
+        opacity-mask: url("file://{images}/custom_game/dashboard/event/left_nav_icon_def.png");
+
+        transition-property: background-color;
+        transition-duration: 0.15s;
+    }
+
+}

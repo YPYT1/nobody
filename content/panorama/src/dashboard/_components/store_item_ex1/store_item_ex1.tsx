@@ -50,6 +50,7 @@ const _SetGoodsId = (goods_id: string | number) => {
         StorePurchaseBtn.SetPanelEvent("onactivate", () => {
             if (cost == "0_0") {
                 // 直接领取
+                GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true });
                 GameEvents.SendCustomGameEventToServer("ServiceInterface", {
                     event_name: "ShoppingBuy",
                     params: {

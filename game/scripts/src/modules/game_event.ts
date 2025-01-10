@@ -30,6 +30,7 @@ import { PlayerAttribute } from './ingame/hero_extend/player_attribute';
 import { ServiceTalent } from '../server/https/service_talent';
 import { ServiceSoul } from '../server/https/service_soul';
 import { InvestSystem } from './ingame/invest';
+import { HeroAbilityType } from './ingame/hero_extend/hero_ability_type';
 
 declare global {
 
@@ -72,6 +73,7 @@ declare global {
         MissionSystem: MissionSystem;
         Altar:Altar;
         PlayerAttribute:PlayerAttribute;
+        HeroAbilityType:HeroAbilityType;
     }
 }
 
@@ -121,7 +123,8 @@ export class GameEvent {
             GameRules.WarningMarker = new WarningMarker();
             GameRules.HeroTalentSystem = new HeroTalentSystem();
             GameRules.NpcSystem = new NpcSystem();
-            GameRules.PlayerAttribute = new PlayerAttribute()
+            GameRules.PlayerAttribute = new PlayerAttribute();
+            GameRules.HeroAbilityType = new HeroAbilityType();
             // @ts-expect-error @eslint-disable-next-line
             GameRules.ModuleActivated = true;
             GameRules.ArchiveService.CheckjhmCode(0);
