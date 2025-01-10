@@ -319,8 +319,14 @@ export class Spawn extends UIEventRegisterClass {
     StartSpawnControl() {
         GameRules.GetGameModeEntity().SetContextThink("StartSpawnControl", () => {
             GameRules.Spawn._round_index++;
-
-
+            if(GameRules.Spawn._round_index % 2 == 0){
+                GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
+                GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
+                    //重新设置时间
+                    GameRules.MysticalShopSystem.RefreshMysticalShopItem();
+                    return null;
+                }, 3)
+            }
             GameRules.GameInformation.GetPlayGameHeadData(-1, {})
             let playercount = GetPlayerCount();
             for (let index = 0 as PlayerID; index < playercount; index++) {
@@ -1097,12 +1103,12 @@ export class Spawn extends UIEventRegisterClass {
             //     "即将开启灵魂商店，可自行购买灵魂道具…… ",
             //     {}
             // );
-            GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
-            GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
-                //重新设置时间
-                GameRules.MysticalShopSystem.RefreshMysticalShopItem();
-                return null;
-            }, 3)
+            // GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
+            // GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
+            //     //重新设置时间
+            //     GameRules.MysticalShopSystem.RefreshMysticalShopItem();
+            //     return null;
+            // }, 3)
             return null
         }, 0)
     }
@@ -1356,6 +1362,7 @@ export class Spawn extends UIEventRegisterClass {
             //重新设置时间
             GameRules.GameInformation.boss_time = 0;
             GameRules.GameInformation.SetPlayGameTime(0);
+            GameRules.Spawn.StartSpawnControl();
             return null;
         }, 3)
         GameRules.CMsg.RemoveBossHealthBar(killed_unit);
@@ -1370,6 +1377,22 @@ export class Spawn extends UIEventRegisterClass {
                 GameRules.Spawn.TemporarilyStopTheGame();
                 GameRules.ServiceInterface.SendLuaLog(-1);
             }
+            let goldbag_count_max = 20 + this.player_count * 2;
+            let goldbag_index = 0;
+            Timers.CreateTimer(0.1, () => {
+                if (goldbag_index < goldbag_count_max) {
+                    let randommax = RandomFloat(1, 3);
+                    let new_Vector = Vector(vect.x, vect.y, vect.z);
+                    new_Vector.x = new_Vector.x + RandomFloat(0, 500);
+                    let target_Vector = RotatePosition(vect, QAngle(0, RandomFloat(0, 359), 0), new_Vector);
+                    GameRules.ResourceSystem.DropResourceItem("TeamExp", target_Vector, randommax , null);
+                    goldbag_index++;
+                    return 0.1
+                } else {
+                    return null;
+                }
+            })
+            
         } else {
             GameRules.MapChapter.GameWin();
         }

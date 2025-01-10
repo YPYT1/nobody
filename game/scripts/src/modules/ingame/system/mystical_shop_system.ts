@@ -64,7 +64,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
     //购买结束时间
     countdown_timer : number = 0;
     //玩家购买时间
-    MYSTICAL_SHOP_BUY_ITEM : number = 90;
+    MYSTICAL_SHOP_BUY_ITEM : number = 60;
     //最终等待时间
     MYSTICAL_SHOP_AWAIT: number = 3;
 
@@ -434,10 +434,10 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             // );
             GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE6);
             //继续游戏
-            GameRules.GetGameModeEntity().SetContextThink("StartSpawnControlStartSpawnControl", () => {
-                GameRules.Spawn.StartSpawnControl()
-                return null;
-            }, this.MYSTICAL_SHOP_AWAIT);
+            // GameRules.GetGameModeEntity().SetContextThink("StartSpawnControlStartSpawnControl", () => {
+            //     GameRules.Spawn.StartSpawnControl()
+            //     return null;
+            // }, this.MYSTICAL_SHOP_AWAIT);
             
         }
     }

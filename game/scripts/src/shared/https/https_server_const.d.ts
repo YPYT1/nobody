@@ -4,7 +4,7 @@
 declare interface ItemTReturn { //通关获得的物品
     id : string, //道具唯一id
     item_id: number, //物品唯一id
-    count: number, //数量
+    number: number, //数量
     customs ? :  string , //额外数据
 }
 

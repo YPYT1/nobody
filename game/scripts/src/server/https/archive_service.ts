@@ -251,22 +251,13 @@ export class ArchiveService extends UIEventRegisterClass {
                             for (const add_item of add_items) {
                                 let item_id = tostring(add_item.item_id);
                                 let quality = ServerItemList[item_id as keyof typeof ServerItemList].quality;
-                                let affiliation_class = ServerItemList[item_id as keyof typeof ServerItemList].affiliation_class;
                                 PlayerPassItem.push({
                                     "item_id" : tostring(add_item.item_id),
-                                    "number" : add_item.count,
+                                    "number" : add_item.number,
                                     "quality" : quality,
                                     "type" : 1,
                                 });
-                                if(affiliation_class >= 10){
-                                    GameRules.ServiceData.AddPackageItem(
-                                        index , 
-                                        add_item.id,
-                                        add_item.item_id,
-                                        add_item.customs,
-                                        add_item.count
-                                    );
-                                }
+                                GameRules.ServiceData.AddPackageItemSelect(index , add_item.id ,  add_item.item_id , add_item.customs , add_item.number )
                             }
                         }
                         let CGEDPlayerSkillExp : CGEDPlayerSkillExp[] = [
@@ -306,7 +297,7 @@ export class ArchiveService extends UIEventRegisterClass {
                         //触发难度选择重置
                     }
                 }
-                let player_count = 6;
+                let player_count = 4;
                 //发送给每个玩家数据
                 for (let index = 0 as PlayerID; index < player_count; index++) {
                     GameRules.ArchiveService.GetPlayerGameOverData(index , {})
@@ -320,7 +311,7 @@ export class ArchiveService extends UIEventRegisterClass {
     }
 
     /**
-     * 获取天赋选择列表
+     * 游戏结束数据
      */
     GetPlayerGameOverData(player_id: PlayerID, params: CGED["ArchiveService"]["GetPlayerGameOverData"], callback?) {
         CustomGameEventManager.Send_ServerToPlayer(
@@ -686,8 +677,6 @@ export class ArchiveService extends UIEventRegisterClass {
                     //
                     GameRules.ServiceInterface.PassRecord[player_id] = data.data.pass_record;
                     GameRules.ServiceInterface.GetPlayerServerPassRecord(player_id , {});
-
-                    DeepPrintTable(data);
                 } else {
 
                 }
@@ -851,6 +840,9 @@ export class ArchiveService extends UIEventRegisterClass {
         }
         if(cmd == "!GetServerPass"){
             this.GetServerPass(player_id , 1 , 20 , 1)
+        }
+        if(cmd == "!GetPlayerGameOverData"){
+            this.GetPlayerGameOverData(player_id , {});
         }
         
     }
