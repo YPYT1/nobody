@@ -5,7 +5,7 @@ const ConfirmButton = $("#ConfirmButton");
 const CanvasPanel = $("#CanvasPanel") as UICanvas;
 
 export const Init = () => {
-    MainPanel.SetHasClass("Show", true);
+    MainPanel.SetHasClass("Show", false);
     ConfirmButton.SetPanelEvent("onactivate", () => {
         MainPanel.SetHasClass("Show", false);
     })

@@ -22,6 +22,8 @@ import { default as server_shop_list } from "../json/config/server/shop/server_s
 import { default as server_draw_acc } from "../json/config/server/shop/server_draw_acc.json";
 
 import { default as server_pass_data } from "../json/config/server/server_pass/server_pass_data.json";
+import { default as server_skill_exp } from "../json/config/server/hero/server_skill_exp.json";
+
 
 const KvData = {
     AttributeConst,
@@ -40,6 +42,7 @@ const KvData = {
     server_shop_list,
     server_draw_acc,
     server_pass_data,
+    server_skill_exp,
 }
 
 declare global {

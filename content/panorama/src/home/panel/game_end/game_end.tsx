@@ -1,6 +1,10 @@
 // import { CreateServerItem } from "../../../common/server_item";
 
+import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { CreateCustomComponent } from "../../../dashboard/_components/component_manager";
+
+
+const server_skill_exp = GameUI.CustomUIConfig().KvData.server_skill_exp;
 
 const ShowBtn = $("#ShowBtn");
 const ClosedBtn = $("#ClosedBtn");
@@ -20,7 +24,7 @@ function FormatNumberToTime(time: number) {
 export const Init = () => {
 
     GameEvents.Subscribe("ArchiveService_GetPlayerGameOverData", event => {
-        // $.Msg(["ArchiveService_GetPlayerGameOverData"])
+        // $.Msg(["ArchiveService_GetPlayerGameOverData 11"])
         // $.Msg(event)
         PlayerList.RemoveAndDeleteChildren();
         let data = event.data;
@@ -34,6 +38,7 @@ export const Init = () => {
         for (let row_data of player_list_data) {
             let PlayerInfoRows = $.CreatePanel("Panel", PlayerList, "");
             let playerInfo = Game.GetPlayerInfo(row_data.player_id)
+            PlayerInfoRows.SetHasClass("Local", row_data.player_id == Game.GetLocalPlayerID())
             PlayerInfoRows.BLoadLayoutSnippet("PlayerInfoRows");
 
             // Avatar
@@ -52,8 +57,8 @@ export const Init = () => {
             PlayerInfoRows.SetDialogVariableInt("player_lv", 1)
             PlayerInfoRows.SetDialogVariableInt("bonus_exp", row_data.exp)
 
-            let OriginExp = PlayerInfoRows.FindChildTraverse("OriginExp")!
-            let BonusExp = PlayerInfoRows.FindChildTraverse("BonusExp")!
+            let OriginExp = PlayerInfoRows.FindChildTraverse("OriginExp")!;
+            let BonusExp = PlayerInfoRows.FindChildTraverse("BonusExp")!;
             PlayExpAnimation(OriginExp, BonusExp, 50, 60);
 
             // Item
@@ -72,20 +77,22 @@ export const Init = () => {
                 // RewardItem.AddClass("PassItem");
             }
 
+            const skill_exp = row_data.skill_exp;
             let AbilityTypesInfo = PlayerInfoRows.FindChildTraverse("AbilityTypesInfo")!;
-            for (let i = 0; i < 7; i++) {
+            for (let type_id in skill_exp) {
+                const _row_data = skill_exp[type_id];
+                const old_exp = _row_data.old_exp;
+                const exp = _row_data.exp;
+                const type_skill_data = server_skill_exp[type_id as keyof typeof server_skill_exp];
                 let AbilityTypesRows = $.CreatePanel("Panel", AbilityTypesInfo, "");
                 AbilityTypesRows.BLoadLayoutSnippet("AbilityTypesRows");
-                let TypesIcon = AbilityTypesRows.FindChildTraverse("TypesIcon")!;
-                TypesIcon.AddClass("bounce");
-
+                AbilityTypesRows.SetDialogVariableInt("bonus_type_exp", exp)
+                let TypesIcon = AbilityTypesRows.FindChildTraverse("TypesIcon") as ImagePanel;
+                TypesIcon.SetImage(GetTextureSrc(type_skill_data.img))
                 let OriginExp = AbilityTypesRows.FindChildTraverse("OriginExp")!
                 let BonusExp = AbilityTypesRows.FindChildTraverse("BonusExp")!
                 AbilityTypesRows.SetDialogVariableInt("arms_level", 1)
-
-                PlayExpAnimation(OriginExp, BonusExp, 50, 60);
-
-
+                PlayExpAnimation(OriginExp, BonusExp, 0, 100);
             }
 
             if (row_data.is_mvp == 1) {

@@ -40,12 +40,12 @@
         <snippet name="AbilityTypesRows">
             <Panel class="AbilityTypesRows">
                 <Panel class="TypesImage">
-                    <Panel id="TypesIcon" class="ArmsIcon" />
+                    <Image id="TypesIcon" class="ArmsIcon" />
                 </Panel>
                 <Panel class="TypesInfo">
                     <Panel class="Header">
                         <Label class="LevelLabel" text="Lv.{d:arms_level}" />
-                        <Label class="BonusExp" text="+{d:bonus_exp}" />
+                        <Label class="BonusExp" text="+{d:bonus_type_exp}" />
                     </Panel>
                     <Panel class="AboutExp">
                         <Panel id="BonusExp" class="BonusExpBar"/>

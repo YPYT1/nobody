@@ -1,7 +1,8 @@
 import { GetTextureSrc } from "../../../common/custom_kv_method";
 import { CustomMath } from "../../../utils/custom_math";
+import { LoadCustomComponent } from "../../_components/component_manager";
 
-
+const CheckAttrIsPercent = GameUI.CustomUIConfig().CheckAttrIsPercent
 interface ServerTalentProps {
     id: string,
     sub: { [order: number]: ServerTalentProps }
@@ -33,7 +34,7 @@ let select_hero_id = -1;
 let config_index = 0;
 
 
-
+const HeroDetailsPanel = $("#HeroDetailsPanel");
 const server_talent_data = GameUI.CustomUIConfig().KvData.server_talent_data;
 
 const InitTalentData = () => {
@@ -60,17 +61,91 @@ const InitTalentData = () => {
 
     return hero_talent_tree
 }
+const HeroAttributeList = $("#HeroAttributeList")
+export const SetHeroDetails = (hero_id: number) => {
+    // select_hero_id = hero_id;
+    // 需要获取对应英雄数据
+    const heroname = GameUI.CustomUIConfig().HeroIDToName(hero_id)
+    HeroDetailsPanel.SetDialogVariable("hero_name", $.Localize("#" + heroname))
+    HeroDetailsPanel.SetDialogVariableInt("curr_count", 0);
+    HeroDetailsPanel.SetDialogVariableInt("need_count", 5);
 
+    const talent_config_index = GameUI.CustomUIConfig().getStorage("talent_config_index")!;
+    if (talent_config_index == null) {
+        return
+    }
+    const config_index = talent_config_index[hero_id]
+
+    if (localData[hero_id] != null) {
+        const config_data = Object.values(localData[hero_id])[config_index];
+        UpdateHeroAttributeList(config_data)
+    }
+
+}
+
+const UpdateHeroAttributeList = (config_data: CGEDGetTalentListInfo) => {
+    const config_tree = config_data.i
+
+    let attr_object: { [main: string]: { [sub: string]: number } } = {}
+    for (let tire in config_tree) {
+        let row_data = config_tree[tire].k;
+        for (let id in row_data) {
+            let row_talent = row_data[id];
+            let rowdata = server_talent_data[id as keyof typeof server_talent_data];
+            const ObjectValues = rowdata.ObjectValues as CustomAttributeTableType
+
+            for (let main_key in ObjectValues) {
+                if (attr_object[main_key] == null) {
+                    attr_object[main_key] = {}
+                }
+                let main_data = ObjectValues[main_key as keyof typeof ObjectValues];
+                for (let sub_key in main_data) {
+                    let value = main_data[sub_key as keyof typeof main_data]! * row_talent.uc;
+                    if (value > 0) {
+                        if (attr_object[main_key][sub_key] == null) {
+                            attr_object[main_key][sub_key] = 0
+                        }
+                        attr_object[main_key][sub_key] += (value)
+                    }
+
+                }
+            }
+
+        }
+    }
+
+
+    // 生成属性
+    HeroAttributeList.RemoveAndDeleteChildren();
+    for (let main_key in attr_object) {
+        for (let sub_key in attr_object[main_key]) {
+            let value = attr_object[main_key][sub_key];
+            let _Panel = $.CreatePanel("Panel", HeroAttributeList, "");
+            let PanelAttributeRow = LoadCustomComponent(_Panel, "row_attribute");
+            PanelAttributeRow.SetAttributeMainKey(main_key, value, 0)
+            // PanelAttributeRow.SetAttributeMainKey(attr_main, value);
+            let is_pct = CheckAttrIsPercent(main_key, sub_key)
+
+            PanelAttributeRow.IsPercent(is_pct)
+            PanelAttributeRow.SetPercentValue(value)
+        }
+
+    }
+}
+
+let hero_talent_config_index = {}
 let hero_talent_tree = InitTalentData();
+
 export const OpenHeroTalentView = (heroid: number) => {
-    // $.Msg(["OpenHeroTalentView 1"])
+    // $.Msg(["OpenHeroTalentView",heroid])
+    let talent_config_index = GameUI.CustomUIConfig().getStorage("talent_config_index")!;
+    const SelectedIndex = talent_config_index[heroid]
     if (select_hero_id == heroid) {
         HeroPopups_Talent.SetHasClass("Open", true)
         return
     }
     select_hero_id = heroid;
     HeroPopups_Talent.SetDialogVariableInt("talent_point", 0)
-
     HeroTalentConfig.RemoveAllOptions();
     const CONFIG_LEN = Object.values(localData[heroid]).length;
     for (let i = 0; i < CONFIG_LEN; i++) {
@@ -82,18 +157,20 @@ export const OpenHeroTalentView = (heroid: number) => {
         optionLabel.Data<PanelDataObject>().index = i;
         HeroTalentConfig.AddOption(optionLabel)
     }
-    $.Schedule(0.1, () => {
-        HeroTalentConfig.SetSelectedIndex(0);
+
+    $.Schedule(0.01, () => {
+        // let talent_config_index = GameUI.CustomUIConfig().getStorage("talent_config_index")!;
+        HeroTalentConfig.SetSelectedIndex(SelectedIndex);
         HeroTalentConfig.SetPanelEvent("oninputsubmit", () => {
             let select_panel = HeroTalentConfig.GetSelected();
-            if(select_panel == null){ 
-                config_index = 1
+            if (select_panel == null) {
+                config_index = SelectedIndex
             } else {
                 config_index = parseInt(HeroTalentConfig.GetSelected().id);
             }
-            
 
-            // $.Msg(["HeroTalentConfig id", config_index])
+            talent_config_index[select_hero_id] = config_index;
+            GameUI.CustomUIConfig().setStorage("talent_config_index", talent_config_index);
             // 更换配置
             EmptyTalentConfig();
 
@@ -192,7 +269,7 @@ const CreateTreeNode = (e: Panel, id: string, type: number) => {
     NodePanel.SetPositionInPixels(offset[0] - devalue, offset[1] - devalue, 0)
     NodePanel.Data<PanelDataObject>().pos = [offset[0] - devalue, offset[1] - devalue]
     NodePanel.SetDialogVariableInt("used", 0)
-
+    // $.Msg(["CreateTreeNode 1"])
     let StatIcon = NodePanel.FindChildTraverse("StatIcon") as ImagePanel;
     StatIcon.AddClass(rowdata.img)
     StatIcon.enabled = false;
@@ -256,6 +333,7 @@ export const InitHeroTalentView = () => {
         // $.Msg(["localData", localData])
         // 更新天赋页面
         // $.Msg(Object.values(serverData[select_hero_id]).length)
+        GameUI.CustomUIConfig().setStorage("talent_data", localData)
         let server_config = Object.values(serverData[select_hero_id])[config_index];
         let config_data = Object.values(localData[select_hero_id])[config_index];
         // HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
@@ -346,23 +424,25 @@ const RenderTalentConfig = (config_data: CGEDGetTalentListInfo) => {
         }
 
     }
+
+    //
+    UpdateHeroAttributeList(config_data)
 }
 
 const EmptyTalentConfig = () => {
     for (let i = 0; i < HeroTalentTree.GetChildCount(); i++) {
         const NodePanel = HeroTalentTree.GetChild(i)!;
         const id = NodePanel.id;
+        // $.Msg(["EmptyTalentConfig"])
         const StatIcon = NodePanel.FindChildTraverse("StatIcon") as ImagePanel;
         NodePanel.SetDialogVariableInt("used", 0)
         NodePanel.RemoveClass("CanUp")
         NodePanel.RemoveClass("Max")
         const bIsInit = false;
         StatIcon.enabled = false;
-
-        // 
         let rowdata = server_talent_data[id as keyof typeof server_talent_data];
         let is_ability = rowdata.is_ability == 1;
-        if(is_ability){
+        if (is_ability) {
             let img = rowdata.img
             StatIcon.SetImage(GetTextureSrc(img))
         }

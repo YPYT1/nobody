@@ -4,8 +4,10 @@ interface StorageKeyList {
     backpack_count_table: { [item: string]: number };
     currency_count: { [item: string]: number };
     unix_time: number;
-    today_time:number;
-    shoping_limit:AM2_Server_Shopping_Limit_List;
+    today_time: number;
+    shoping_limit: AM2_Server_Shopping_Limit_List;
+    talent_config_index: { [heroid: number]: number };
+    talent_data: { [hero_id: number]: NetworkedData<CGEDGetTalentListInfo[]> };
     /** 符文属性, 特殊类型 key值*/
     __rune_attr: { [x: string]: number; }
 }

@@ -143,17 +143,18 @@
         // flow-children: down;
         background-image: url("file://{images}/custom_game/hud/hero_selection/select_hero_title.png");
         background-repeat: no-repeat;
-        height: 150px;
+        height: 100px;
+        // border: 1px solid #fff;
 
         .HeaderTitle {
             width: 461px;
-
         }
 
         #HeaderTabList {
             vertical-align: bottom;
             horizontal-align: center;
             flow-children: right;
+            visibility: collapse;
 
             RadioButton {
                 width: 44px;
@@ -376,10 +377,141 @@
         transition-duration: 0.5s;
         opacity: 0;
         visibility: collapse;
+
         &.Show {
             visibility: visible;
             opacity: 1;
         }
     }
 
+}
+
+#HeroSelectionContainer {
+
+    .SelectHeroInfo {
+        flow-children: down;
+        horizontal-align: center;
+        vertical-align: bottom;
+        margin-bottom: 120px;
+
+        .HeroNameBorder {
+            width: 235px;
+            height: 146px;
+            background-image: url("file://{images}/custom_game/hud/hero_selection/heroname_border.png");
+
+            .HeroLevel {
+                horizontal-align: center;
+                vertical-align: middle;
+                margin-bottom: 32px;
+                font-size: 28px;
+                color: #ffffff;
+                text-shadow: 0px 0px 2px 2.0 #000000;
+                opacity: 0;
+            }
+
+            .HeroName {
+                horizontal-align: center;
+                vertical-align: bottom;
+                font-size: 24px;
+                color: #ffffff;
+                margin-bottom: 20px;
+            }
+        }
+    }
+
+    .HeroTalentSelection {
+        horizontal-align: center;
+        flow-children: right;
+
+        #TalentConfigTips {
+            width: 32px;
+            height: 32px;
+            background-image: url("file://{images}/custom_game/hud/hero_selection/talent_tips.png");
+
+        }
+
+        #SelectionHeroTalentConfig {
+            margin-left: 8px;
+            width: 162px;
+            height: 32px;
+            margin-left: 4px;
+            border: 1px solid #ddd;
+            background-color: #090909;
+            vertical-align: middle;
+
+            &:disabled {
+                wash-color: #ff000099;
+            }
+
+
+            Label {
+                horizontal-align: center;
+                vertical-align: middle;
+                font-size: 14px;
+                margin-left: 4px;
+                font-size: 16px;
+            }
+        }
+    }
+}
+
+#SelectionHeroTalentConfigDropDownMenu {
+    width: 162px;
+    
+    Label {
+        height: 28px;
+        font-size: 16px;
+    }
+}
+
+#TalentTooltips {
+    flow-children: down;
+    overflow: noclip;
+    width: 356px;
+    background-color: #000000dd;
+    horizontal-align: center;
+    vertical-align: bottom;
+    margin-right: 600px;
+    margin-bottom: 120px;
+    padding: 12px;
+
+    opacity: 0;
+
+    &.Show {
+        opacity: 1;
+    }
+
+    .Header {
+        width: 100%;
+        height: 90px;
+        overflow: noclip;
+
+        // flow-children: down;
+        Label {
+            horizontal-align: center;
+            vertical-align: bottom;
+            font-size: 20px;
+            color: #ffffff;
+        }
+    }
+
+    .TooltipsIcon {
+        width: 98px;
+        height: 98px;
+        background-image: url("file://{images}/custom_game/hud/hero_selection/talent_tips_max.png");
+        horizontal-align: center;
+        transform: translateY(-40px);
+    }
+
+    #TalentAttributeList {
+        width: 100%;
+        flow-children: down;
+
+        .RowAttribute {
+            margin: 4px;
+            border-bottom: 1px solid #333333;
+            // padding-bottom: 4px;
+            // padding-top: 0px;
+        }
+    }
 }

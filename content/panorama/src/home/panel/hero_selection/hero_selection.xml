@@ -124,15 +124,37 @@
 						<RadioButton class="dark" group="HeroTypeGroup" />
 					</Panel>
 				</Panel>
-				<Panel id="HeroesList">
-					
-				</Panel>
-
+				<Panel id="HeroesList" />
 				<Panel class="BottomButton">
 					<Button id="HeroConfirm" class="ButtonClass" >
 						<Label text="#准备" />
 					</Button>
 				</Panel>
+			</Panel>
+
+			<Panel class="SelectHeroInfo">
+				<Panel class="HeroNameBorder">
+					<Label class="HeroLevel" text="99"/>
+					<Label class="HeroName" text="{s:local_heroname}"/>
+				</Panel>
+				<Panel class="HeroTalentSelection">
+					<Panel id="TalentConfigTips" />
+					<DropDown id="SelectionHeroTalentConfig">
+						<Label id="0" text="天赋页1"/>
+						<Label id="1" text="天赋页2"/>
+						<Label id="2" text="天赋页3"/>
+					</DropDown>
+
+				</Panel>
+			</Panel>
+
+			<Panel id="TalentTooltips">
+				<Panel class="Header">
+					<Panel class="TooltipsIcon"/>
+					<Label text="{s:config_index}"/>
+				</Panel>
+				
+				<Panel id="TalentAttributeList"/>
 			</Panel>
         </Panel>
     </Button>

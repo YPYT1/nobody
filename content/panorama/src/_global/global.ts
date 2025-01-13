@@ -29,6 +29,7 @@ declare global {
         ConvertServerItemToArray(input: string): { item_id: string; item_count: number; }[];
         ConvertServerItemToObject(input: string): { [item_id: string]: number; };
 
+        HeroIDToName(heroid: number): string;
         DashboardRoute<
             Key extends keyof typeof DASHBOARD_NAVBAR,
             T2 extends typeof DASHBOARD_NAVBAR[Key]
@@ -210,4 +211,15 @@ GameUI.CustomUIConfig().ConvertServerItemToObject = function (item_input: string
     }
 
     return data_object
+}
+
+const NpcHeroesCustom = GameUI.CustomUIConfig().KvData.npc_heroes_custom;
+let HeroIdTable: { [heroid: number]: string } = {}
+for (let k in NpcHeroesCustom) {
+    let hero_data = NpcHeroesCustom[k as keyof typeof NpcHeroesCustom];
+    let heroid = hero_data.HeroID;
+    HeroIdTable[heroid] = hero_data.override_hero;
+}
+GameUI.CustomUIConfig().HeroIDToName = function (heroid: number) {
+    return HeroIdTable[heroid]
 }
