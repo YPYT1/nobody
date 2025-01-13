@@ -11,7 +11,7 @@ import "./modifier_knockback_lua";
 import "./modifier_element";
 import "./modifier_state";
 import "./modifier_custom_appearance_underground";
-
+import "./modifier_public";
 
 import "./talent_effect/__init__";
 import "./rune_effect/__init__";
@@ -21,3 +21,5 @@ import "./altar/__init__";
 import "./picture/__init__";
 
 import "./creature/__init__";
+
+

@@ -85,6 +85,7 @@ export class ResourceSystem extends UIEventRegisterClass {
     ) {
         if (player_id == -1) { return { status: false, msg: "player = -1", } }
         let hHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        if (hHero == null) { return { status: false, msg: "no player", } }
         let ret: { status: boolean, msg: string } = { status: true, msg: "", };
         for (let [resource, amount] of pairs(resource_input)) {
             amount = math.ceil(amount);

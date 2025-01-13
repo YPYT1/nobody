@@ -5,6 +5,8 @@ import { UIEventRegisterClass } from "../class_extends/ui_event_register_class";
 @reloadable
 export class BasicRules extends UIEventRegisterClass {
 
+    last_acc_thinker: CDOTA_BaseNPC[] = [];
+
     constructor() {
         super("BasicRules");
     }
@@ -76,8 +78,6 @@ export class BasicRules extends UIEventRegisterClass {
         }
     }
 
-    last_acc_thinker: CDOTA_BaseNPC[] = [];
-
     CreateRoundAcceleration() {
         // print("CreateRoundAcceleration")
         this.RemoveRoundAcceleration()
@@ -105,5 +105,36 @@ export class BasicRules extends UIEventRegisterClass {
             UTIL_Remove(acc_thinker)
         }
         this.last_acc_thinker = []
+    }
+
+    // boss（数量）*500 金币、经验；符文选择机会一次
+    BossChestDrop(vPos: Vector, boss_wave: number) {
+        const chestUnit = CreateUnitByName(
+            "npc_public_treasure_chest",
+            vPos,
+            false,
+            null,
+            null,
+            DotaTeam.GOODGUYS
+        );
+        chestUnit.AddNewModifier(chestUnit, null, "modifier_publice_treasure_chest", {
+            boss_wave: boss_wave
+        })
+    }
+
+    BossChestReward(boss_wave: number) {
+        // Boss奖励=boss（数量）*500 金币、经验；符文选择机会一次。
+        let gold = boss_wave * 500;
+        let exp = boss_wave * 500;
+
+        for (let i = 0 as PlayerID; i < PlayerResource.GetPlayerCountForTeam(DotaTeam.GOODGUYS); i++) {
+            GameRules.ResourceSystem.ModifyResource(i, {
+                SingleExp: exp,
+                Soul: gold,
+            })
+        }
+        GameRules.RuneSystem.GetRuneSelectToAll();
+
+
     }
 }
