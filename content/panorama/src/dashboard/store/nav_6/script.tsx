@@ -3,7 +3,7 @@ import { CreateCustomComponent } from "../../_components/component_manager";
 
 const ShopItemList = $("#ShopItemList");
 
-const mall_category = "3";
+const mall_category = "6";
 const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list
 
 export function Init() {
@@ -16,9 +16,8 @@ export function Init() {
             let StoreItem = CreateCustomComponent(ShopItemList, "store_item", goods_id)
             StoreItem._SetGoodsId(goods_id)
         }
-    }
 
-    
+    }
 }
 
 (() => {

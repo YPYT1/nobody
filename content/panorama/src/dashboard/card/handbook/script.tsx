@@ -211,7 +211,7 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
         let item_id = card.item_id;
         let card_id = `${item_id}`;
         let card_data = _PictuerCardData[card_id as keyof typeof _PictuerCardData];
-
+        // $.Msg(["card_data",card_id,card_data])
 
         let card_rare = card_data.rarity;
         let card_count = card.number;

@@ -28,7 +28,10 @@
 	<Panel class="DashBoardPanel">
 		<Panel class="Container" hittest="false">
 			<Panel class="NavFrame" hittest="false">
-				<Panel id="NavButtonList" class="NavButtonList" hittest="false"/>
+				<Panel class="ButtonList">
+					<Panel id="NavButtonList" class="NavButtonList" hittest="false"/>
+					<Button id="ChapterBpRouteBtn" />
+				</Panel>
 				<Panel class="VirtualContent" hittest="false"/>
 			</Panel>
 			<Panel id="ContentFrame" class="ContentFrame" hittest="false" />

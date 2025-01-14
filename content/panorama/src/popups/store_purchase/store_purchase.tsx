@@ -55,6 +55,7 @@ export const Init = () => {
         MainPanel.SetDialogVariable("goods_name", goods_name)
         MainPanel.SetDialogVariable("goods_desc", goods_desc)
 
+        //@ts-ignore
         let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
         StoreIcon.SetImage(image_src);
 

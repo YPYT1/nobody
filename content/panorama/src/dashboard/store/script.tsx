@@ -11,6 +11,7 @@ const FRAME_PATH = `file://{resources}/layout/custom_game/dashboard/${DASHBOARD}
 
 const CurrencyList = $("#CurrencyList");
 
+const ChapterBpRouteBtn = $("#ChapterBpRouteBtn");
 /**
  * 1001,1002,1003,1004,1005,1006,1007,1008
  */
@@ -77,7 +78,7 @@ function InitNavMenu() {
 
         GameUI.CustomUIConfig().setStorage("currency_count", currency_object);
 
-        
+
     })
 
 
@@ -112,24 +113,20 @@ function InitNavMenu() {
         GameUI.CustomUIConfig().EventBus.publish("shoping_limit_update", limit)
     })
 
-
-
-
-    // GameEvents.Subscribe("ServiceInterface_GetPlayerVipData",event=>{
-    //     let data = event.data;
-    //     $.Msg(["ServiceInterface_GetPlayerVipData 11"])
-    //     $.Msg(data)
-    // })
-
     // 获取存档货币
     GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerServerGoldPackageData", {})
     GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerVipData", {})
     // 每日限购
-    $.Schedule(0.01, () => {
+    $.Schedule(0.1, () => {
         GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerShoppingLimit", {})
+    })
+
+    ChapterBpRouteBtn.SetPanelEvent("onactivate", () => {
+        GameUI.CustomUIConfig().DashboardRoute("event", "bp");
     })
 }
 
 (() => {
+    // $.Msg(["222"])
     Init();
 })();

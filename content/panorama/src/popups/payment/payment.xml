@@ -9,19 +9,53 @@
 		<include src="./payment.tsx" />
 	</scripts>
     <Button class="PopupContainer">
-        <Panel class="PopupWindows">
-            <Panel class="ServerCode">
-                <Label text="code:{d:code}"/>
+
+        <Panel class="Content">
+            <Panel class="LeftContent">
+                <Panel class="Header">
+                    <Panel class="TitleBg">
+                        <Label text="{s:goods_name}"/>
+                    </Panel>
+                    <Panel class="HotTag" />
+                    <Panel class="DiscountTag">
+                        <Label text="{d:discount}折"/>
+                    </Panel>
+                </Panel>
+
+                <Panel class="StoreIcon">
+                    <Image id="StoreIcon" />
+                </Panel>
+                <Panel class="StorePriceShow">
+                    <Image id="CurrencyIcon" />
+                    <Label text="{s:currency_cost}"/>
+                </Panel>
+                <Panel class="StoreDesc">
+                    <Label text="{s:goods_desc}" html="true"/>
+                </Panel>
             </Panel>
+            <Panel class="RightContent" hittest="false">
+                <Panel class="StateContent" hittest="false">
+                    <UICanvas id="CanvasPanel" />
+                </Panel>
+                <Panel class="PaymentOption PurchaseOption" hittest="false">
+                    <RadioButton id="Pay_wx" class="AM2Radio" group="PaymentTypeGroup">
+                        <Panel class="TypeIcon wx"/>
+                        <Label text="微信支付"/>
+                    </RadioButton>
+                    <RadioButton id="Pay_alipay" class="AM2Radio" group="PaymentTypeGroup">
+                        <Panel class="TypeIcon alipay"/>
+                        <Label text="支付宝"/>
+                    </RadioButton>
+                </Panel>
 
-          
-            <UICanvas id="CanvasPanel" />
-            
+                <Panel class="ButtonGroup">
+                    <Button id="ConfirmButton" class="dashboard_btn">
+                        <Label text="确认"/>
+                    </Button>
+                </Panel>
 
-            <Button id="ConfirmButton" class="dashboard_btn">
-                <Label text="确认"/>
-            </Button>
-
+            </Panel>
         </Panel>
+
     </Button>
 </root>

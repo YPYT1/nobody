@@ -55,7 +55,7 @@ const CreateMenuButtons = () => {
     $.Each(DASHBOARD_NAVBAR_LIST, (data, i) => {
         const dashboard_id = data[0];
         const row_data = data[1];
-        $.Msg(["dashboard_id",dashboard_id])
+        // $.Msg(["dashboard_id",dashboard_id])
         // let row_data = DASHBOARD_NAVBAR[dashboard_id as keyof typeof DASHBOARD_NAVBAR];
         if (row_data.Show) {
             let DashboardButton = $.CreatePanel("Button", DashboardButtonList, dashboard_id + "Button", {
@@ -66,24 +66,40 @@ const CreateMenuButtons = () => {
             let DashboardPanel = DashboardList.FindChildTraverse(dashboard_id)!;
             if (DashboardPanel == null) {
                 DashboardPanel = $.CreatePanel("Panel", DashboardList, dashboard_id);
+                DashboardPanel.BLoadLayout(dashboard_path + dashboard_id + "/index.xml", false, false);
             }
-            DashboardPanel.BLoadLayout(dashboard_path + dashboard_id + "/index.xml", false, false);
 
             const DashboardClosedBtn = DashboardPanel.FindChildTraverse("DashboardClosedBtn");
             if (DashboardClosedBtn) {
-                // let row_board = DashboardList.FindChildTraverse(id);
                 DashboardClosedBtn.SetPanelEvent("onactivate", () => {
                     DashboardPanel.SetHasClass("Show", false);
                     DashboardButton.SetHasClass("Selected", false);
                     DashboardList.SetHasClass("IsOpen", false);
                 })
-
             }
         }
     })
 
     DashboardList.SetHasClass("IsOpen", false);
 }
+
+const RegisterKeyEscDashBoard = (e: Panel) => {
+    $.RegisterKeyBind(e, "key_Escape", () => {
+        $.DispatchEvent("DropInputFocus", e);
+        for (let id in DASHBOARD_NAVBAR) {
+            let row_board = DashboardList.FindChildTraverse(id);
+            let row_button = DashboardButtonList.FindChildTraverse(id + "Button");
+            if (row_board && row_button) {
+                row_board.RemoveClass("Show");
+                row_button.RemoveClass("Selected");
+            }
+
+        }
+        DashboardList.SetHasClass("IsOpen", false);
+    });
+};
+
+
 
 const SetDashboardButton = (MenuButton: Button, dashboard_id: string) => {
     // const DashboardButton = MenuButton.FindChildTraverse("DashboardButton") as Button;
@@ -92,13 +108,11 @@ const SetDashboardButton = (MenuButton: Button, dashboard_id: string) => {
             let row_board = DashboardList.FindChildTraverse(id);
             let row_button = DashboardButtonList.FindChildTraverse(id + "Button");
             if (row_board && row_button) {
-
                 if (id == dashboard_id) {
                     row_board.ToggleClass("Show");
                     row_button.ToggleClass("Selected");
                     open_board = MenuButton.BHasClass("Selected");
                     DashboardList.SetHasClass("IsOpen", open_board);
-                    // DashboardList.SetHasClass("IsClosed", !open_board);
                 } else {
                     row_board.SetHasClass("Show", false);
                     row_button.SetHasClass("Selected", false);
@@ -106,15 +120,19 @@ const SetDashboardButton = (MenuButton: Button, dashboard_id: string) => {
             }
         }
 
-
+        $.DispatchEvent("SetInputFocus", MenuButton);
 
     })
+
     MenuButton.SetPanelEvent("onmouseover", () => {
         ShowCustomTextTooltip(MenuButton, "", dashboard_id);
     })
     MenuButton.SetPanelEvent("onmouseout", () => {
         HideCustomTooltip();
     })
+
+    // 注册
+    RegisterKeyEscDashBoard(MenuButton);
 
 }
 
@@ -155,6 +173,7 @@ function DashboardRoute<
                 row_board.ToggleClass("Show");
                 row_button.ToggleClass("Selected");
                 DashboardList.SetHasClass("IsOpen", true);
+                $.DispatchEvent("SetInputFocus", row_button);
             } else {
                 row_board.SetHasClass("Show", false);
                 row_button.SetHasClass("Selected", false);
@@ -172,9 +191,6 @@ function DashboardRoute<
 
 
 (() => {
-    $.Msg(["Initialize"]);
-    // const InitializeState: boolean = ContentPanel.Data<PanelDataObject>().Initialize ?? false;
-    // ContentPanel.Data<PanelDataObject>().Initialize = true;
     GameUI.CustomUIConfig().DashboardRoute = DashboardRoute;
     Initialize();
 })();

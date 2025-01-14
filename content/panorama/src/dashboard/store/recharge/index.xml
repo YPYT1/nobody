@@ -17,7 +17,7 @@
             </Panel>
         </Panel>
 		<Panel class="Header">
-			<Label class="ShopTypeTitle" text="铂金商铺" />
+			<Label class="ShopTypeTitle" text="铂金兑换" />
 		</Panel>
 		
 	</Panel>

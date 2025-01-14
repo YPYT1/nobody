@@ -11,13 +11,13 @@ interface ComponentProps {
 
 
 export function LoadCustomComponent<K extends keyof ComponentProps>(e: Panel, key: K): ComponentProps[K] {
-    e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false);
+    e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, false, false);
     return e as ComponentProps[K]
 }
 
 export function SetCustomComponent<K extends keyof ComponentProps>(e: Panel, key: K, item_id: string) {
     e.Data<PanelDataObject>().item_id = item_id
-    e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false);
+    e.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, false, false);
     return e as ComponentProps[K]
 }
 
@@ -25,6 +25,6 @@ export function CreateCustomComponent<K extends keyof ComponentProps>(e: Panel, 
     let compPanel = $.CreatePanel("Panel", e, id) as ComponentProps[K];
     // $.Msg(["compPanel",compPanel])
     // $.Msg(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`)
-    compPanel.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, true, false)
+    compPanel.BLoadLayout(`file://{resources}/layout/custom_game/dashboard/_components/${key}/${key}.xml`, false, false)
     return compPanel
 }

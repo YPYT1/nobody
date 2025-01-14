@@ -72,19 +72,20 @@ const _SetServerItemInfo = (params: ServerInfoConfig) => {
     if (params.item_id != null) {
         let data = ServerItemList[item_id as keyof typeof ServerItemList];
         if (data) {
-            let rarity = data.quality;
-            MainPanel.Data<PanelDataObject>().rarity = rarity
-            for (let rare of rare_list) {
-                MainPanel.SetHasClass(`rare_${rare}`, rarity == rare);
-            }
-            if (data.affiliation_class == 23) {
+            _SetItemId(item_id)
+            // let rarity = data.quality;
+            // MainPanel.Data<PanelDataObject>().rarity = rarity
+            // for (let rare of rare_list) {
+            //     MainPanel.SetHasClass(`rare_${rare}`, rarity == rare);
+            // }
+            // if (data.affiliation_class == 23) {
 
-            } else {
-                //@ts-ignore
-                let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
-                // $.Msg(["image_src", image_src])
-                ServerItemIcon.SetImage(image_src);
-            }
+            // } else {
+            //     //@ts-ignore
+            //     let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
+            //     // $.Msg(["image_src", image_src])
+            //     ServerItemIcon.SetImage(image_src);
+            // }
             MainPanel.SetDialogVariable("count", `${item_count}`)
             MainPanel.Data<PanelDataObject>().count = item_count
 

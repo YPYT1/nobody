@@ -19,7 +19,7 @@ let pictuer_list: { [x: string]: { [key: number]: number; }; } = {}
 let pic_fliter_text = ""
 
 export const Init = () => {
-    $.Msg(["Init"])
+    $.Msg(["card/register"])
     let picture_count = Object.keys(PictuerFetterConfig).length
     MainPanel.SetDialogVariableInt("card_count", 0);
     MainPanel.SetDialogVariableInt("card_max", picture_count);
@@ -103,7 +103,6 @@ const InitAllPictuerList = () => {
             let CardPanel = $.CreatePanel("Button", List, "" + card_id);
             // CardPanel.BLoadLayoutSnippet("Card");
             let _CardPanel = LoadCustomComponent(CardPanel, "card_item")
-            // CardPanel.BLoadLayout("file://{resources}/layout/custom_game/dashboard/card/_components/card_item/card_item.xml",true,false);
             _CardPanel.SetCardItem(`${card_id}`, false, false);
             CardPanel.AddClass("PictureMode");
             CardPanel.AddClass("Null"); // 卡片3状态 默认空Null 未登记 UnEquip 已登记 Equip

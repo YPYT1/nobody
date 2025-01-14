@@ -19,7 +19,7 @@ const InitPopupsContent = () => {
     for (let key of popups_ids) {
         $("#" + key).BLoadLayout(
             `file://{resources}/layout/custom_game/popups/${key}/${key}.xml`,
-            true,
+            false,
             false
         );
     }

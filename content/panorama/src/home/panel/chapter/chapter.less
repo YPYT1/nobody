@@ -198,14 +198,47 @@
         visibility: visible;
     }
 
+    .ChapterInfoContent {
+        z-index: 99;
+        transform: translateX(-30px) translateY(-30px);
+        // border: 1px solid #fff;
+    }
+
     #ChapterLogo {
         width: 456px;
         height: 244px;
         // border: 1px solid #fff;
-        // background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo.png");
+        background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo.png");
+    }
+    
+    #ChapterBpRouteBtn {
+        width: 82px;
+        height: 83px;
+        background-image: url("file://{images}/custom_game/hud/chapter/chapter_bp_btn.png");
+        vertical-align: middle;
+        horizontal-align: right;
+
+        &:hover {
+            brightness: 2;
+        }
     }
 }
 
+#Page_2 #ChapterLogo {
+    background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo2.png");
+}
+
+#Page_3 #ChapterLogo {
+    background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo3.png");
+}
+
+#Page_4 #ChapterLogo {
+    background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo4.png");
+}
+
+#Page_5 #ChapterLogo {
+    background-image: url("file://{images}/custom_game/hud/chapter/chapter_logo5.png");
+}
 #ChapterPageBg {
     width: 100%;
     height: 100%;

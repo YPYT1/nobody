@@ -92,27 +92,27 @@ export const Initialize = () => {
 
     const control = $("#control");
     control.RemoveAndDeleteChildren()
-    control.BLoadLayout(layout_path + "/control/control.xml", true, false);
+    control.BLoadLayout(layout_path + "/control/control.xml", false, false);
     // $("#resource").BLoadLayout(layout_path + "/resource/resource.xml", true, false);
-    $("#top_info").BLoadLayout(layout_path + "/top_info/top_info.xml", true, false);
-    $("#chapter").BLoadLayout(layout_path + "/chapter/chapter.xml", true, false);
-    $("#message").BLoadLayout(layout_path + "/message/message.xml", true, false);
-    $("#mystical_shop").BLoadLayout(layout_path + "/mystical_shop/mystical_shop.xml", true, false);
-    $("#element_bond").BLoadLayout(layout_path + "/element_bond/element_bond.xml", true, false);
-    $("#hero_selection").BLoadLayout(layout_path + "/hero_selection/hero_selection.xml", true, false);
-    $("#health_bar").BLoadLayout(layout_path + "/health_bar/health_bar.xml", true, false);
-    $("#game_end").BLoadLayout(layout_path + "/game_end/game_end.xml", true, false);
-    $("#scoreboard").BLoadLayout(layout_path + "/scoreboard/scoreboard.xml", true, false);
-    $("#player_dialog").BLoadLayout(layout_path + "/player_dialog/player_dialog.xml", true, false);
-    $("#npc_interact").BLoadLayout(layout_path + "/npc_interact/npc_interact.xml", true, false);
-    $("#right_items").BLoadLayout(layout_path + "/right_items/right_items.xml", true, false);
-    $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", true, false);
-    $("#mission").BLoadLayout(layout_path + "/mission/mission.xml", true, false);
-    $("#game_loading").BLoadLayout(layout_path + "/game_loading/game_loading.xml", true, false);
-    $("#ability_upgrade").BLoadLayout(layout_path + "/ability_upgrade/ability_upgrade.xml", true, false);
+    $("#top_info").BLoadLayout(layout_path + "/top_info/top_info.xml", false, false);
+    $("#chapter").BLoadLayout(layout_path + "/chapter/chapter.xml", false, false);
+    $("#message").BLoadLayout(layout_path + "/message/message.xml", false, false);
+    $("#mystical_shop").BLoadLayout(layout_path + "/mystical_shop/mystical_shop.xml", false, false);
+    $("#element_bond").BLoadLayout(layout_path + "/element_bond/element_bond.xml", false, false);
+    $("#hero_selection").BLoadLayout(layout_path + "/hero_selection/hero_selection.xml", false, false);
+    $("#health_bar").BLoadLayout(layout_path + "/health_bar/health_bar.xml", false, false);
+    $("#game_end").BLoadLayout(layout_path + "/game_end/game_end.xml", false, false);
+    $("#scoreboard").BLoadLayout(layout_path + "/scoreboard/scoreboard.xml", false, false);
+    $("#player_dialog").BLoadLayout(layout_path + "/player_dialog/player_dialog.xml", false, false);
+    $("#npc_interact").BLoadLayout(layout_path + "/npc_interact/npc_interact.xml", false, false);
+    $("#right_items").BLoadLayout(layout_path + "/right_items/right_items.xml", false, false);
+    $("#talent").BLoadLayout(layout_path + "/talent/talent.xml", false, false);
+    $("#mission").BLoadLayout(layout_path + "/mission/mission.xml", false, false);
+    $("#game_loading").BLoadLayout(layout_path + "/game_loading/game_loading.xml", false, false);
+    $("#ability_upgrade").BLoadLayout(layout_path + "/ability_upgrade/ability_upgrade.xml", false, false);
 
     if (Game.IsInToolsMode()) {
-        $("#development").BLoadLayout(layout_path + "/development/development.xml", true, false);
+        $("#development").BLoadLayout(layout_path + "/development/development.xml", false, false);
         $.GetContextPanel().SetHasClass("IsInToolsMode", true);
     }
 

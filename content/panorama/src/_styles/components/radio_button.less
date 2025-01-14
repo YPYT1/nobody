@@ -1,0 +1,62 @@
+.AM2Radio {
+    background-color: none;
+    flow-children: right;
+    color: white;
+    transition-property: background-color, box-shadow, color, brightness;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-out;
+
+    &.HideRadioBox {
+        >.RadioBox {
+            visibility: collapse;
+        }
+    }
+
+    >.RadioBox {
+        min-width: 20px;
+        min-height: 20px;
+        border-radius: 50%;
+        // background-color: gradient(radial, 50% 50%, 0% 0%, 10% 10%, from(#000000), to(#000000));
+        border: 2px solid #9b9b9b;
+        padding: 2px;
+        box-shadow: #00000055 0px 0px 1px 3px;
+        transition-property: background-color, box-shadow, color, border;
+        transition-duration: 0.1s;
+        transition-timing-function: ease-in-out;
+        vertical-align: middle;
+        // background-image: url("file://{images}/custom_game/dashboard/decompose/check_on.png");
+    }
+
+    &:selected>.RadioBox {
+        background-color: #ffffff;
+        border: 2px solid #000000;
+        box-shadow: #929291 0px 0px 6px 0px;
+        transition-property: background-color;
+        transition-duration: 0.1s;
+        transition-timing-function: ease-in-out;
+    }
+
+    &:enabled:hover {
+        .RadioBox {
+            background-color: #ffffff;
+            box-shadow: #e6e6e6 0px 0px 2px 0px;
+            // border-color: #e6e6e6;
+            // border: 1px solid #e6e6e6;
+        }
+
+        Label {
+            brightness: 1.5;
+        }
+    }
+
+    >Label {
+        // color: @baseColor;
+        margin-left: 4px;
+        font-size: 16px;
+        vertical-align: middle;
+        transition-property: color;
+        transition-duration: 0.2s;
+        transition-timing-function: linear;
+
+    }
+}

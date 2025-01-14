@@ -36,11 +36,12 @@ export const DASHBOARD_NAVBAR = {
         "Sub": {
             "nav_1": true, // 热卖
             "nav_2": true, // 会员
-            "nav_3": true, // 铂金
-            "nav_4": true, // 黄金商铺
-            "nav_5": true, // 钻石商铺
+            "nav_3": true, // 铂金商铺
+            "nav_4": true, // 钻石商铺
+            "nav_5": true, // 图鉴兑换
+            "nav_6": true, // 魂石兑换
             "gacha": true, // 元素祈福
-            "nav_7": true, // 黄金兑换
+            "recharge": true, // 黄金兑换
             // "nav_8": true, // 成长礼
         }
     },

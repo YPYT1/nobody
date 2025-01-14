@@ -30,7 +30,7 @@ export const Init = () => {
 
             let NavContent = $.CreatePanel("Panel", ContentFrame, radiobtn_id);
             let nav_path = `${FRAME_PATH}/${sub_key}/index.xml`;
-            NavContent.BLoadLayout(nav_path, true, false);
+            NavContent.BLoadLayout(nav_path, false, false);
             ContentFrame.SetHasClass(sub_key, order == 0)
             order++;
         }
@@ -77,6 +77,4 @@ const ClosedPopups = (e: Panel) => {
 
 (() => {
     Init();
-
-    $.Msg(["111"])
 })();

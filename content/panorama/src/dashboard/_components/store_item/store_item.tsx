@@ -27,14 +27,14 @@ CurrencyIcon._SetServerItemInfo({ hide_bg: true, show_count: false, show_tips: f
 
 const StorePurchaseBtn = $("#StorePurchaseBtn");
 
-let g_goods_id: string | number = ""
+let g_goods_id: string = "-1"
 let g_limit_max = 0;
 const _SetGoodsId = (goods_id: string | number) => {
-    g_goods_id = goods_id
-    let data = ServerShopList["" + goods_id as keyof typeof ServerShopList];
-    MainPanel.Data<PanelDataObject>().goods_id = goods_id
-    let goods_name = $.Localize("#custom_text_goods_" + goods_id);
-    MainPanel.SetDialogVariable("goods_name", goods_name + "  " + goods_id)
+    g_goods_id = "" + goods_id
+    let data = ServerShopList[g_goods_id as keyof typeof ServerShopList];
+    MainPanel.Data<PanelDataObject>().goods_id = g_goods_id
+    let goods_name = $.Localize("#custom_text_goods_" + g_goods_id);
+    MainPanel.SetDialogVariable("goods_name", goods_name + "  " + g_goods_id)
     MainPanel.SetDialogVariable("limit_type", "");
     MainPanel.SetDialogVariableInt("limit_count", 0);
     MainPanel.Data<PanelDataObject>().limit_count = 0;
@@ -57,6 +57,7 @@ const _SetGoodsId = (goods_id: string | number) => {
         // 售价 
         SetPriceView(OriginalPanel, data.original_cost);
         SetPriceView(ActualPanel, data.cost);
+        // @ts-ignore
         let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
         StoreIcon.SetImage(image_src);
 
@@ -90,7 +91,7 @@ const _SetGoodsId = (goods_id: string | number) => {
 
         StorePurchaseBtn.SetPanelEvent("onactivate", () => {
             if (cost_type == "rmb") {
-                $.Msg(["人民币购买需要单独弹窗", goods_id])
+                GameUI.CustomUIConfig().EventBus.publish("open_rmb_purchase", { id: "" + goods_id })
             } else {
                 const limit_count = MainPanel.Data<PanelDataObject>().limit_count as number;
                 GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
@@ -131,20 +132,21 @@ function SetPriceView(e: Panel, cost_str: string,) {
 }
 
 (function () {
+    // EventBus.clear("shoping_limit_update")
     MainPanel.Data<PanelDataObject>().rarity = 0
     MainPanel._SetGoodsId = _SetGoodsId;
     // MainPanel._SetState = _SetState;
-    let goods_id = MainPanel.id;
+    g_goods_id = MainPanel.id;
     // let goods_id = MainPanel.Data<PanelDataObject>().goods_id as string;
-    if (goods_id) {
-        _SetGoodsId(goods_id)
+    if (g_goods_id != "-1") {
+        _SetGoodsId(g_goods_id)
+        
     }
 
-    // EventBus.clear("shoping_limit_update")
     EventBus.subscribe("shoping_limit_update", data => {
-        let item_id = MainPanel.id;
-        if (data[item_id] == null) { return }
-        let count = data[item_id].c
+        if (data[g_goods_id] == null) { return }
+        let count = data[g_goods_id].c ?? 0
+        const MainPanel = $.GetContextPanel() as Component_StoreItem;
         MainPanel.SetDialogVariable("count", "" + count);
         _SetLimitCount(count)
     })

@@ -25,7 +25,7 @@ export const CreatePanel_ActionAbility = () => {
         var AbilityPanel = $.CreatePanel("Panel", AbilityList, "");
         AbilityPanel.BLoadLayout(
             "file://{resources}/layout/custom_game/home/component/ability/action_ability.xml",
-            true, false
+            false, false
         );
         AbilityPanel.Data<PanelDataObject>().SetAbility(i);
         AbilityPanel.Data<PanelDataObject>().RegisterArmsEvent()

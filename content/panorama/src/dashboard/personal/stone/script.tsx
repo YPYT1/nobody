@@ -52,7 +52,7 @@ export function Init() {
     // GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
 
     // 魂石页面
-    StonePopups.BLoadLayout("file://{resources}/layout/custom_game/dashboard/personal/stone/_stone_popups.xml", true, false);
+    StonePopups.BLoadLayout("file://{resources}/layout/custom_game/dashboard/personal/stone/_stone_popups.xml", false, false);
 }
 
 function InitSubscribe() {

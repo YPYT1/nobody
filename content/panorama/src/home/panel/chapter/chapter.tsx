@@ -263,6 +263,10 @@ const CreateChapterSelectPanel = () => {
         ChapterPageBg.SetImage(bg_src)
         // $.Msg(bg_src)
 
+        const ChapterBpRouteBtn = ChapterPageInfo.FindChildTraverse("ChapterBpRouteBtn") as Button;
+        ChapterBpRouteBtn.SetPanelEvent("onactivate",()=>{
+            GameUI.CustomUIConfig().DashboardRoute("event","bp");
+        })
         let OffsetTest = ChapterPageInfo.FindChildTraverse("OffsetTest") as Button;
         if (OffsetTest) {
             let actualuiscale_x = OffsetTest.actualuiscale_x;

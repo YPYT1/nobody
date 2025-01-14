@@ -16,10 +16,10 @@
 				</Panel>
             </Panel>
         </Panel>
-		<Panel class="Header">
-			<Label class="ShopTypeTitle" text="钻石商铺" />
+		<Panel class="ShopHeader">
+			<Label class="ShopTypeTitle" text="图鉴兑换" />
 
-			<DropDown id="ShopFliter">
+			<DropDown id="ExchangeFilter_Nav5" class="ExchangeFilter">
 				<Label text="{Entry 1}" id="entry1"/>
 				<Label text="{Entry 2}" id="entry2"/>
 				<Label text="{Entry 3}" id="entry3"/>

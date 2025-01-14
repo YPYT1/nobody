@@ -13,7 +13,11 @@
 				<Button id="OffsetTest">
 					<Label text="{s:offset}"/>
 				</Button>
-				<Panel id="ChapterLogo" hittest="false"/>
+				<Panel class="ChapterInfoContent">
+					<Panel id="ChapterLogo" hittest="false"/>
+					<Button id="ChapterBpRouteBtn" />
+				</Panel>
+				
 				<Panel id="ChapterList" hittest="false"/>
 			</Panel>
 		</snippet>
@@ -41,23 +45,23 @@
 			</Panel>
 		</snippet>
 	</snippets>
-	<Panel class="Chapter">
-		<Panel id="ChapterContainer" class="Show">
-			<Panel id="ChapterSelect">
-				<Panel class="Header">
-					<Panel  class="Title">
+	<Panel class="Chapter" hittest="false">
+		<Panel id="ChapterContainer" class="Show" hittest="false">
+			<Panel id="ChapterSelect" hittest="false">
+				<Panel class="Header" hittest="false">
+					<Panel class="Title">
 						<Label text="#请选择关卡"/>
 					</Panel>
 				</Panel>
-				<Panel class="Body">
-					<Panel class="Info">
+				<Panel class="Body" hittest="false">
+					<Panel class="Info" hittest="false">
 						<Panel id="ChapterPageList" />
 					</Panel>
 				</Panel>
 				<Panel class="Footer"></Panel>
 			</Panel>
-			<Panel class="ChapterBorder">
-				<Panel class="Body">
+			<Panel class="ChapterBorder" hittest="false">
+				<Panel class="Body" hittest="false">
 					<Button id="LeftBtn" class="TurningPageBtn" />
 					<Button id="RightBtn" class="TurningPageBtn" />
 				</Panel>

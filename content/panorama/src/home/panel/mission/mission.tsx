@@ -37,7 +37,7 @@ export const Init = () => {
     DireComplete.SetDialogVariable("desc", "奖励: 1000经验 夜魇符文")
     $("#resource").BLoadLayout(
         "file://{resources}/layout/custom_game/home/panel/mission/resource/resource.xml",
-        true,
+        false,
         false
     );
 

@@ -21,7 +21,7 @@ const StoreIcon = $("#StoreIcon") as ImagePanel;
 const MergeItemList = $("#MergeItemList")
 const StorePurchaseBtn = $("#StorePurchaseBtn") as Button;
 
-let g_goods_id = ""
+let g_goods_id = "-1"
 let g_limit_max = 0;
 const _SetGoodsId = (goods_id: string | number) => {
     g_goods_id = "" + goods_id;
@@ -40,7 +40,8 @@ const _SetGoodsId = (goods_id: string | number) => {
         let purchase_limitation = data.purchase_limitation;
         g_limit_max = purchase_limitation
         // 物品图片
-        let img = data.AbilityTextureName;
+        // @ts-ignore
+        let img = data.AbilityTextureName ?? "";
         MainPanel.SetHasClass("has_icon", img.length > 8)
         let image_src = GetTextureSrc(img);
         StoreIcon.SetImage(image_src);
@@ -61,7 +62,7 @@ const _SetGoodsId = (goods_id: string | number) => {
 
             } else {
                 if (cost_type == "rmb") {
-                    $.Msg(["人民币购买需要单独弹窗", goods_id])
+                    GameUI.CustomUIConfig().EventBus.publish("open_rmb_purchase", { id: "" + goods_id })
                 } else {
                     GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
                 }
@@ -140,24 +141,16 @@ function _SetLimitCount(count: number) {
 }
 
 (function () {
+    // GameUI.CustomUIConfig().EventBus.clear("shoping_limit_update");
     MainPanel.SetDialogVariable("days", "0天")
     let goods_id = MainPanel.Data<PanelDataObject>().goods_id as string;
     if (goods_id) {
-        _SetGoodsId(goods_id)
+        _SetGoodsId(goods_id);
     }
 
     MainPanel._SetGoodsId = _SetGoodsId;
     MainPanel._SetState = _SetState
     MainPanel._GetGoodsId = _GetGoodsId;
-
-    // GameUI.CustomUIConfig().EventBus.clear("shoping_limit_update");
-    GameUI.CustomUIConfig().EventBus.subscribe("shoping_limit_update", data => {
-        let item_id = MainPanel.id;
-        if (data[item_id] == null) { return }
-        let count = data[item_id].c
-        MainPanel.SetDialogVariable("count", "" + count);
-        _SetLimitCount(count)
-    })
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerVipData", event => {
         let data = event.data;
@@ -176,6 +169,13 @@ function _SetLimitCount(count: number) {
             // $.Msg({ shop_time, today_time, diff, day })
             MainPanel.SetDialogVariable("days", `${day}天`);
         }
+    })
 
+    GameUI.CustomUIConfig().EventBus.subscribe("shoping_limit_update", data => {
+        if (data[g_goods_id] == null) { return }
+        let count = data[g_goods_id].c
+        const MainPanel = $.GetContextPanel()
+        MainPanel.SetDialogVariable("count", "" + count);
+        _SetLimitCount(count)
     })
 })();

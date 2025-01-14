@@ -17,13 +17,13 @@
             </Panel>
         </Panel>
 		<Panel class="Header">
-			<Label class="ShopTypeTitle" text="黄金商铺" />
+			<Label class="ShopTypeTitle" text="魂石兑换" />
 
-			<DropDown id="ShopFliter">
-				<Label text="{Entry 1}" id="entry1" />
-				<Label text="{Entry 2}" id="entry2" />
-				<Label text="{Entry 3}" id="entry3" />
-				<Label text="{Entry 4}" id="entry4" />
+			<DropDown id="ExchangeFilter_Nav6">
+				<Label text="{Entry 1}" id="entry1"/>
+				<Label text="{Entry 2}" id="entry2"/>
+				<Label text="{Entry 3}" id="entry3"/>
+				<Label text="{Entry 4}" id="entry4"/>
 			</DropDown>
 		</Panel>
 		
