@@ -25,6 +25,13 @@ const ACTION_UPDATE_EQUIP = "/update_equip";
 const ACTION_SKILL_DATA_UP = "/skill_data_up";
 
 
+// 4.2 获取图鉴相关数据
+const ACTION_GET_PICTUER_DATA = "/get_pictuer_data";
+
+
+// 4.3 修改图鉴相关数据
+const ACTION_PICTUER_SAVE = "/pictuer_save";
+
 
 
 // 1.4 本地联机游戏追加人员

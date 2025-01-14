@@ -923,7 +923,30 @@ export class MapChapter extends UIEventRegisterClass {
 
     //游戏胜利 普通关卡
     GameWin() {
-        print("GameWin : " )
+        //通关卡片奖励
+        let player_count = GetPlayerCount()
+        for (let p_id = 0 as PlayerID; p_id < player_count; p_id++) {
+            let p_c = 2;
+            let r_i = RandomInt(1 , 100);
+            if(r_i <= 10 ){
+                p_c = 4
+            }else if(r_i <= 30){
+                p_c = 3
+            }
+            for (let i = 0; i < p_c; i++) {
+                let c_p = GetCommonProbability(GameRules.Spawn._pass_card_id_pro);
+                if(GameRules.Spawn._pass_card_id_list[c_p].length > 0){
+                    let c_i_l_i = RandomInt( 0 , GameRules.Spawn._pass_card_id_list[c_p].length - 1);
+                    let item_id_str = GameRules.Spawn._pass_card_id_list[c_p][c_i_l_i];
+                    if(GameRules.Spawn.player_card_drop[p_id].hasOwnProperty(item_id_str)){
+                        GameRules.Spawn.player_card_drop[p_id][item_id_str] += 1;
+                    }else{
+                        GameRules.Spawn.player_card_drop[p_id][item_id_str] = 1
+                    }
+                }
+            }
+        }
+
         Timers.CreateTimer(3, () => {
             let player_count = GetPlayerCount();
 

@@ -6,9 +6,12 @@ import { reloadable } from "../../../utils/tstl-utils";
 import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
 import * as UnitNormal from "../../../json/units/monster/normal.json";
 import * as EliteNormal from "../../../json/units/monster/elite.json";
+import * as BossNormal from "../../../json/units/monster/boss.json";
 import * as MapInfoRound from "../../../json/config/map_info_round.json";
 import * as MapInfoDifficulty from "../../../json/config/map_info_difficulty.json";
 import * as EliteAbilities from "../../../json/abilities/creature/elite.json";
+
+import * as PictuerCardData from "../../../json/config/server/picture/pictuer_card_data.json";
 
 @reloadable
 export class Spawn extends UIEventRegisterClass {
@@ -152,9 +155,33 @@ export class Spawn extends UIEventRegisterClass {
     //玩家是否死亡
     player_round_die : number[] = []
 
+    //玩家卡片掉落  
+    player_card_drop : {
+        [item_id : string] : number,
+    }[] = [];
+
+    //怪物卡片稀有度获取
+    _pictuer_card_data_rarity : {
+        [item_id : string] : number 
+    } = {};
+    //稀有度概率
+    _pictuer_rarity_pro : number[] = [ 1000 , 1000 , 1000 , 500 , 200 , 1000];
+    //怪物对应卡片
+    _normal_card_data : {
+        [name : string] : string 
+    } = {}
+    //最终boss击杀奖励池 获取当前所有卡片
+    _pass_card_id_list : string[][] = [];
+    //最终boss击杀奖励池概率
+    _pass_card_id_pro : number[] = [];
+    //击杀boss次数
+    _kill_boss_count = 0;
     constructor() {
         super("Spawn" , true);
-
+        for (const key in PictuerCardData) {
+            let pic_data = PictuerCardData[key as keyof typeof PictuerCardData];
+            this._pictuer_card_data_rarity[key] = pic_data.rarity
+        }
         for (const key in EliteAbilities) {
             let init = EliteAbilities[key as keyof typeof EliteAbilities];
             if(init.is_pass == 1){
@@ -162,6 +189,19 @@ export class Spawn extends UIEventRegisterClass {
             }else{
                 this._elite_abi_list_.no_pass.push(key);
             }
+        }
+        //卡片掉落信息
+        for (const key in UnitNormal) {
+            this._normal_card_data[key] = tostring(UnitNormal[key as keyof typeof UnitNormal].card_id);
+        }
+        for (const key in EliteNormal) {
+            this._normal_card_data[key] = tostring(EliteNormal[key as keyof typeof EliteNormal].card_id);
+        }
+        for (const key in BossNormal) {
+            this._normal_card_data[key] = tostring(BossNormal[key as keyof typeof BossNormal].card_id);
+        }
+        for (let index = 0; index < 7 ; index++) {
+            this._pass_card_id_pro.push(0);
         }
     }
 
@@ -176,13 +216,24 @@ export class Spawn extends UIEventRegisterClass {
 
     //初始化地图信息
     Init(x: number, y: number) {
+        //玩家通关卡片掉落
+        this._pass_card_id_pro = [];
+        this._pass_card_id_list = [];
+
+        for (let index = 0; index < 7 ; index++) {
+            this._pass_card_id_pro.push(0);
+            this._pass_card_id_list.push([]);
+        }
         //关卡boss
         this.StageBossVector = Vector(x, y, 0);
         this.player_count = GetPlayerCount();
         this._Vector = Vector(x, y, 128);
         GameRules.Spawn.player_round_die = [];
-        //击杀计数器
+        this.player_card_drop = [];
+        this._kill_boss_count = 0;
+        //击杀计数器 卡片掉落
         for (let index: PlayerID = 0; index < this.player_count; index++) {
+            this.player_card_drop.push({});
             GameRules.Spawn.player_round_die.push(1);
             if (this._player_sum_kill.hasOwnProperty(index)) {
                 this._player_sum_kill[index] = 0;
@@ -192,7 +243,6 @@ export class Spawn extends UIEventRegisterClass {
                 this._player_round_sum_kill.push(0);
             }
         }
-
         //加载怪物血量公式 加载怪物攻击公式
         for (const key in UnitNormal) {
             let init = UnitNormal[key as keyof typeof UnitNormal]
@@ -236,13 +286,18 @@ export class Spawn extends UIEventRegisterClass {
                     new_monster_list = {
                         "1": TwiceMapInfoRoundInit.monster_list["1"] as string
                     }
+                    GameRules.Spawn.AddPassCard(TwiceMapInfoRoundInit.monster_list["1"])
                     monster_count_list["1"] = math.ceil(TwiceMapInfoRoundInit.monster_count_list["1"]);
                 } else {
                     for (let index = 1; index <= monster_list_kyes.length; index++) {
                         new_monster_list[index.toString()] = TwiceMapInfoRoundInit.monster_list[index.toString()];
+                        GameRules.Spawn.AddPassCard(TwiceMapInfoRoundInit.monster_list[index.toString()])
                         monster_count_list[index.toString()] = math.ceil(TwiceMapInfoRoundInit.monster_count_list[index.toString()]
                             * GameRules.PUBLIC_CONST.PLAYER_COUNT_REF_MONSTER[this.player_count - 1]);
                     }
+                }
+                if(TwiceMapInfoRoundInit.elite_name != "null"){
+                    GameRules.Spawn.AddPassCard(TwiceMapInfoRoundInit.elite_name);
                 }
                 // TwiceMapInfoRoundInit.round_index;
                 this.map_info_round[TwiceMapInfoRoundInit.round_index] = {
@@ -270,7 +325,6 @@ export class Spawn extends UIEventRegisterClass {
                 }
             }
         }
-
         //回合数量修改
         this._round_max = MapInfoDifficultyData.round_max;
         //怪物数量修改
@@ -281,6 +335,35 @@ export class Spawn extends UIEventRegisterClass {
         GameRules.Spawn.OnSpawnLoadCoord();
         //初始化流程怪物
         GameRules.Spawn.SpawnInit();
+    }
+    /**
+     * 通关boss掉落卡片数据
+     * @param name 
+     */
+    AddPassCard(name : string){
+        if(GameRules.Spawn._normal_card_data.hasOwnProperty(name)){
+            let item_id_str = GameRules.Spawn._normal_card_data[name];
+            let item_id_r = GameRules.Spawn._pictuer_card_data_rarity[item_id_str];
+            if(!GameRules.Spawn._pass_card_id_list[item_id_r].includes(item_id_str)){
+                GameRules.Spawn._pass_card_id_list[item_id_r].push(item_id_str);
+                if(GameRules.Spawn._pass_card_id_pro[item_id_r] == 0){
+                    let pro = 0;
+                    if(item_id_r == 2){
+                        pro = 66;
+                    }
+                    if(item_id_r == 3){
+                        pro = 30;
+                    }
+                    if(item_id_r == 4){
+                        pro = 3;
+                    }
+                    if(item_id_r == 5){
+                        pro = 1;
+                    }
+                    GameRules.Spawn._pass_card_id_pro[item_id_r] = pro;
+                }
+            }
+        }
     }
 
     OnSpawnLoadCoord() {
@@ -544,6 +627,7 @@ export class Spawn extends UIEventRegisterClass {
             return
         }
         GameRules.Spawn._game_boss_name = boss_name;
+        GameRules.Spawn.AddPassCard(GameRules.Spawn._game_boss_name);
         //半分钟提示
         GameRules.GetGameModeEntity().SetContextThink("BossHint" + "_" + this._round_index, () => {
             if(this._round_index >= this._round_max){
@@ -1307,6 +1391,41 @@ export class Spawn extends UIEventRegisterClass {
         }
         // let player_id = killer.GetPlayerOwnerID();
         let unit_label = target.GetUnitLabel();
+        //卡片掉落
+
+        //玩家卡片掉落  
+        // player_card_drop : {
+        //     [item_id : string] : number,
+        // }[] = [];
+
+        // //怪物卡片稀有度获取
+        // _pictuer_card_data_rarity : {
+        //     [item_id : string] : number 
+        // } = {};
+        // //稀有度概率
+        // _pictuer_rarity_pro : number[] = [ 1000 , 1000 , 1000 , 500 , 200 , 1000];
+        // //怪物对应卡片
+        // _normal_card_data : {
+        //     [name : string] : string 
+        // } = {}
+        let unit_name = target.GetUnitName();
+        if(GameRules.Spawn._normal_card_data.hasOwnProperty(unit_name)){
+            let item_id_str = GameRules.Spawn._normal_card_data[unit_name];
+            if(GameRules.Spawn._pictuer_card_data_rarity.hasOwnProperty(item_id_str)){
+                let pro_v = GameRules.Spawn._pictuer_card_data_rarity[item_id_str];
+                let rd_n = RandomInt(1 , pro_v);
+                if(rd_n == pro_v){
+                    let p_id = killer.GetPlayerOwnerID();
+                    if(GameRules.Spawn.player_card_drop[p_id].hasOwnProperty(item_id_str)){
+                        GameRules.Spawn.player_card_drop[p_id][item_id_str] += 1;
+                    }else{
+                        GameRules.Spawn.player_card_drop[p_id][item_id_str] = 1
+                    }
+                }
+            }
+        }
+
+
         //普通怪处理
         if (unit_label == "creatur_normal") {
             //判断是否掉落全体宝物箱 排除任务怪
@@ -1328,7 +1447,6 @@ export class Spawn extends UIEventRegisterClass {
             if(RIntNumber <= GameRules.PUBLIC_CONST.CREATUR_NORMAL_DROP_MP){
                 GameRules.CustomItem.Drop( "mp", vect , 120);
             }
-            //处理数据
         } else if (unit_label == "unit_elite") {//unit_elite
             //判断是否掉落全体宝物箱 排除任务怪
             let vect = target.GetAbsOrigin();
@@ -1345,6 +1463,7 @@ export class Spawn extends UIEventRegisterClass {
         } else if (unit_label == "creature_boss") {//boss
             GameRules.Spawn.BossKill(target);
         }
+        
         // 单位回收
         // GameRules.Spawn.CreepNormalRecovery(killed_unit);
     }
@@ -1371,29 +1490,18 @@ export class Spawn extends UIEventRegisterClass {
         this._map_boss_refresh = false;
         
         if (GameRules.Spawn._round_index < GameRules.Spawn._round_max) {
+            this._kill_boss_count ++;
             let vect = killed_unit.GetAbsOrigin();
+            //击杀boss掉落物品
+            GameRules.BasicRules.BossChestDrop(vect , this._kill_boss_count);
+
             GameRules.CustomItem.Drop("all", vect , 120);
             if(GameRules.MapChapter._game_select_phase != 999){
                 GameRules.Spawn.TemporarilyStopTheGame();
                 GameRules.ServiceInterface.SendLuaLog(-1);
             }
-            let goldbag_count_max = 20 + this.player_count * 2;
-            let goldbag_index = 0;
-            Timers.CreateTimer(0.1, () => {
-                if (goldbag_index < goldbag_count_max) {
-                    let randommax = RandomFloat(1, 3);
-                    let new_Vector = Vector(vect.x, vect.y, vect.z);
-                    new_Vector.x = new_Vector.x + RandomFloat(0, 500);
-                    let target_Vector = RotatePosition(vect, QAngle(0, RandomFloat(0, 359), 0), new_Vector);
-                    GameRules.ResourceSystem.DropResourceItem("TeamExp", target_Vector, randommax , null);
-                    goldbag_index++;
-                    return 0.1
-                } else {
-                    return null;
-                }
-            })
-            
         } else {
+            //奖励卡片
             GameRules.MapChapter.GameWin();
         }
         

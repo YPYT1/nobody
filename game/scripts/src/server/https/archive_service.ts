@@ -26,7 +26,7 @@ export class ArchiveService extends UIEventRegisterClass {
     _game_versions : string = "";
 
     //获取背包数据class 
-    _b_class : string = "22,21,28";
+    _b_class : string = "21,22,28";
     //构造  
     constructor() {
         super("ArchiveService" , true)
@@ -61,7 +61,11 @@ export class ArchiveService extends UIEventRegisterClass {
                     for (let index = 0 as PlayerID; index < count; index++) {
                         let steam_id = PlayerResource.GetSteamAccountID(index as PlayerID);
                         GameRules.MapChapter.level_difficulty[index] = data.data.list[steam_id.toString()].level_difficulty;
+                        //获取背包数据
                         GameRules.ArchiveService.GetCustomBackpack(index , this._b_class);
+                        //获取图鉴数据
+                        GameRules.ArchiveService.GetPictuerDataParam(index);
+                        
                         //获取玩家地图经验 货币等..
                         GameRules.ServiceData.server_gold_package_list[index]["1001"].number = data.data.list[steam_id.toString()].cz_gold ?? 0;
                         GameRules.ServiceData.server_gold_package_list[index]["1002"].number = data.data.list[steam_id.toString()].jf_gold ?? 0;
@@ -220,10 +224,33 @@ export class ArchiveService extends UIEventRegisterClass {
      */
     GameOver( state : number , exp : number[] = [] ,cj : string[] = [], hero : string []  = [], is_endless : number = -1 , is_nianshou : number = -1){
         print("==============游戏结束================");
+        //技能经验获取
+        let exp_list = GameRules.HeroAbilityType.GetAbilityTypeExp();
+
         let host_steam_id = PlayerResource.GetSteamAccountID(0);
         let param_data = <GameOverParam>{
             state: 1,
             host_steam_id : host_steam_id,
+            ext_items : {},
+            skill_exp : {},
+        }
+        let player_count = GetPlayerCount();
+        for (let p_id = 0 as PlayerID; p_id < player_count; p_id++) {
+            //掉落卡片
+            let player_steam_id = tostring(PlayerResource.GetSteamAccountID(p_id));
+            param_data.ext_items[player_steam_id] = GameRules.Spawn.player_card_drop[p_id];
+            //技能经验
+            let skill_exp = CustomDeepCopy(GameRules.ServiceInterface.PlayerServerSkillLevelExp[p_id]) as {
+                [skill_key: string]: number;
+            };
+            for (const e_k in exp_list[p_id]) {
+                if(skill_exp.hasOwnProperty(e_k)){
+                    skill_exp[e_k] += exp_list[p_id][e_k];
+                }else{
+                    skill_exp[e_k] = exp_list[p_id][e_k];
+                }
+            }
+            param_data.skill_exp[player_steam_id] = JSON.encode(skill_exp);
         }
         HttpRequest.AM2Post(ACTION_GAME_OVER,
             {
@@ -245,43 +272,48 @@ export class ArchiveService extends UIEventRegisterClass {
                         let steam_id = PlayerResource.GetSteamAccountID(index);
                         let steam_id_string = tostring(steam_id);
                         let PlayerPassItem : CGEDPlayerPassItem[] = [];
+                        let player_exp : number = 0;
+                        let CGEDPlayerSkillExp : CGEDPlayerSkillExp = {};
                         //获取掉落
                         if(data.data.list.hasOwnProperty(steam_id_string)){
                             let add_items = data.data.list[steam_id_string].add_items;
                             for (const add_item of add_items) {
                                 let item_id = tostring(add_item.item_id);
-                                let quality = ServerItemList[item_id as keyof typeof ServerItemList].quality;
-                                PlayerPassItem.push({
-                                    "item_id" : tostring(add_item.item_id),
-                                    "number" : add_item.number,
-                                    "quality" : quality,
-                                    "type" : 1,
-                                });
-                                GameRules.ServiceData.AddPackageItemSelect(index , add_item.id ,  add_item.item_id , add_item.customs , add_item.number )
+                                if(item_id == "1004"){
+                                    player_exp = add_item.number;
+                                }else{
+                                    let quality = ServerItemList[item_id as keyof typeof ServerItemList].quality;
+                                    PlayerPassItem.push({
+                                        "item_id" : tostring(add_item.item_id),
+                                        "number" : add_item.number,
+                                        "quality" : quality,
+                                        "type" : 1,
+                                    });
+                                    
+                                }
                             }
+                            GameRules.ArchiveService.RedAndAddBackpack(index , [] , add_items);
+                            // 构造老的技能经验数据
+                            for (const e_l_k in exp_list[index]) {
+                                if(exp_list[index][e_l_k] > 0){
+                                    let skill_old_exp = GameRules.ServiceInterface.PlayerServerSkillLevelExp[index][e_l_k];
+                                    let skill_exp = exp_list[index][e_l_k];
+                                    CGEDPlayerSkillExp[e_l_k] = {
+                                        "old_exp" : skill_old_exp,
+                                        "exp" : skill_exp,
+                                    }
+                                }
+                            }
+                            //经验经验
+                            GameRules.ServiceInterface.PlayerServerSkillLevelExp[index] = 
+                                JSON.decode(data.data.list[steam_id_string].skill_exp) as {
+                                    [skill_key: string]: number;
+                                };
+                            GameRules.ServiceInterface.LoadSkillfulLevel(index);
                         }
-                        let CGEDPlayerSkillExp : CGEDPlayerSkillExp = 
-                            {
-                                "1" : {
-                                    "exp" : 123,
-                                    "old_exp" : 23423,
-                                },
-                                "2" : {
-                                    "exp" : 324,
-                                    "old_exp" : 4234,
-                                },
-                                "3" : {
-                                    "exp" : 20,
-                                    "old_exp" : 53451,
-                                },
-                                "4" : {
-                                    "exp" : 20,
-                                    "old_exp" : 225432,
-                                },
-                            }
-                        ;
+                        
                         this.general_game_over_data_pass_data.player_list_data.push({
-                            "exp" : 200,
+                            "exp" : player_exp,
                             "is_mvp" : 1,
                             "old_exp" : 100,
                             "player_id" : index,
@@ -290,7 +322,8 @@ export class ArchiveService extends UIEventRegisterClass {
                             "skill_exp" : CGEDPlayerSkillExp,
                         })
                         //重新发送背包数据
-                        GameRules.ServiceInterface.GetPlayerServerPackageData( index , {})
+                        GameRules.ServiceInterface.GetPlayerServerPackageData(index , {});
+                        GameRules.ServiceInterface.GetPlayerServerGoldPackageData(index , {});
                     }
                     if(data.data.level_difficulty != GameRules.MapChapter.level_difficulty[0]){
                         GameRules.MapChapter.level_difficulty[0] = data.data.level_difficulty;
@@ -303,6 +336,8 @@ export class ArchiveService extends UIEventRegisterClass {
                     GameRules.ArchiveService.GetPlayerGameOverData(index , {})
                 }
                 GameRules.NpcSystem.CreationNpc();
+                //清理技能经验
+                GameRules.HeroAbilityType.InitTypeExp();
             },
             (code: number, body: string) => {
 
@@ -503,7 +538,6 @@ export class ArchiveService extends UIEventRegisterClass {
                     GameRules.ArchiveService.PlayerVipUpdate(player_id , gold_data);
                     //货币信息
                     GameRules.ArchiveService.PlayerGoldUpdate(player_id , gold_data);
-                    
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
                     //限购数据
                     GameRules.ServiceInterface.ShoppingLimit[player_id].limit = data.data.limit;
@@ -547,8 +581,8 @@ export class ArchiveService extends UIEventRegisterClass {
                 param: param_data
             },
             (data: GetCustomBackpackReturn) => {
-                DeepPrintTable(data);
                 if (data.code == 200) {
+                    //更新普通背包
                     GameRules.ServiceData.server_package_list[player_id] = data.data.list;
                     GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
                 } else {
@@ -688,6 +722,121 @@ export class ArchiveService extends UIEventRegisterClass {
         )
     }
 
+    /**
+     * 获取图鉴
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    GetPictuerDataParam(player_id: PlayerID) {
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <SkillDataUpParam>{
+            sid : tostring(steam_id) , //steamid
+        }
+        HttpRequest.AM2Post(ACTION_GET_PICTUER_DATA,
+            {
+                param: param_data
+            },
+            (data: GetPictuerDataReturn) => {
+                if (data.code == 200) {
+                    //更新图鉴数据
+                    GameRules.ServiceData.server_monster_package_list[player_id] = data.data.list;
+
+                    if(data.data.pictuer.pictuer_data && data.data.pictuer.pictuer_data != ""){
+                        GameRules.ServiceData.server_pictuer_fetter_list[player_id] = JSON.decode(data.data.pictuer.pictuer_data) as ServerPlayerConfigPictuerFetter;
+                    }
+                    
+                    GameRules.ServiceInterface.GetPlayerCardList(player_id , {});
+
+                    //配置数据
+                    if(data.data.pictuer.pictuer_config && data.data.pictuer.pictuer_config != ""){
+                        GameRules.ServiceData.server_player_config_pictuer_fetter[player_id] = 
+                          JSON.decode(data.data.pictuer.pictuer_config) as string[][];
+                        GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id] = 
+                            JSON.decode(data.data.pictuer.pictuer_config) as string[][];
+                    }
+                    GameRules.ServiceInterface.GetConfigPictuerFetter(player_id , {});
+
+                    
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
+    /**
+     * 图鉴保存等功能
+     * @param player_id 
+     * @param pictuer_data 
+     * @param pictuer_config 
+     * @param red_item_str 
+     * @param type 
+     */ 
+    PictuerSave(player_id: PlayerID , 
+        pictuer_data : string , 
+        pictuer_config : string , 
+        red_item_str : string , 
+        check_data ? : {count : number , index : number},
+        type : number = 1,
+    ) {
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <PictuerSaveParam>{
+            sid : tostring(steam_id) , //steamid
+            pictuer_data : pictuer_data,
+            pictuer_config : pictuer_config,
+            red_item_str : red_item_str,
+        }
+        HttpRequest.AM2Post(ACTION_PICTUER_SAVE,
+            {
+                param: param_data
+            },
+            (data: PictuerSaveReturn) => {
+                if (data.code == 200) {
+                    //扣除物品 保存至服务器
+                    if(check_data){
+                        if(check_data.count == 1){
+                            delete GameRules.ServiceData.server_monster_package_list[player_id][check_data.index];
+                            GameRules.ServiceData.server_monster_package_list[player_id].splice(check_data.index , 1)
+                        }else{
+                            GameRules.ServiceData.server_monster_package_list[player_id][check_data.index].number -- ;
+                        }
+                    }
+                    if(data.data.pictuer.pictuer_data && data.data.pictuer.pictuer_data != ""){
+                        let d : ServerPlayerConfigPictuerFetter = JSON.decode(data.data.pictuer.pictuer_data) as any;
+                        GameRules.ServiceData.server_pictuer_fetter_list[player_id] =  d;
+                    }
+                    GameRules.ServiceInterface.GetPlayerCardList(player_id , {});
+
+                    //配置数据
+                    if(pictuer_config && data.data.pictuer.pictuer_config && data.data.pictuer.pictuer_config != ""){
+                        GameRules.ServiceData.server_player_config_pictuer_fetter[player_id] = 
+                        JSON.decode(data.data.pictuer.pictuer_config) as string[][];
+                        GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id] = 
+                        JSON.decode(data.data.pictuer.pictuer_config) as string[][];
+                    }
+                    GameRules.ServiceInterface.GetConfigPictuerFetter(player_id , {});
+
+                    if(type == 1){
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "图鉴:激活成功");
+                    }else if(type == 2){
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "图鉴:保存成功");
+                    }
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
 
     /**
      * 存档技能升级
@@ -696,13 +845,12 @@ export class ArchiveService extends UIEventRegisterClass {
      * @param buy_count 
      * @param buy_types 
      */
-    SkillDataUp(player_id: PlayerID , red_item : string , skill_data : string , add_item : string = "") {
+    SkillDataUp(player_id: PlayerID , skill_data : string , red_item_str : string  , zz_exp : number, skill_key : string) {
         let steam_id = PlayerResource.GetSteamAccountID(player_id);
         let param_data = <SkillDataUpParam>{
             sid : tostring(steam_id) , //steamid
             skill_data : skill_data ,
-            red_item : red_item,
-            add_item : add_item,
+            red_item_str : red_item_str,
         }
         HttpRequest.AM2Post(ACTION_SKILL_DATA_UP,
             {
@@ -712,35 +860,22 @@ export class ArchiveService extends UIEventRegisterClass {
                 if (data.code == 200) {
                     //先删除再添加
                     let red_item = data.data.red_item;
-                    for (const r_e of red_item) {
-                        GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
-                    }
-                    //循环根据类型添加到不同的地方
-                    let add_item = data.data.add_item;
-                    for (const a_e of add_item) {
-                        let customs = "";
-                        if(a_e.customs){
-                            customs = a_e.customs;
-                        }
-                        GameRules.ServiceData.AddPackageItemSelect(player_id , a_e.id ,  a_e.item_id , customs , a_e.number )
-                    }
-                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
-                    GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , []);
                     //更新存档技能数据
                     GameRules.ServiceInterface.PlayerServerSkillLevelExp[player_id] = 
                         JSON.decode(data.data.skill_data) as {
                             [skill_key : string] : number
                         };
-                    GameRules.ServiceInterface.LoadSkillfulLevel(player_id);
+                    GameRules.ServiceInterface.GenerateSkillLevel(player_id, skill_key , zz_exp);
+                    GameRules.ServiceInterface.GenerateSkillTypeLevel(player_id , skill_key );
+                    
+                    print("fasong...")
+                    GameRules.ServiceInterface.GetPlayerServerSkillData(player_id , {});
                 } else {
-                    GameRules.ServiceData.server_package_list[player_id] = [];
-                    GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
                 }
             },
             (code: number, body: string) => {
-                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "存档技能:升级失败..")
-                GameRules.ServiceData.server_package_list[player_id] = [];
-                GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
+
             },
             player_id
         )
@@ -755,6 +890,7 @@ export class ArchiveService extends UIEventRegisterClass {
         //先删除再添加
         if(red_item){
             for (const r_e of red_item) {
+                print("DeletePackageItemSelect : ")
                 GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
             }
         }
@@ -771,6 +907,7 @@ export class ArchiveService extends UIEventRegisterClass {
         }
         GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {});
         GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+        GameRules.ServiceInterface.GetPlayerCardList(player_id , {});
     }
     /**
      * 公共更新vip信息

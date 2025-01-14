@@ -25,12 +25,12 @@ export class ServiceData extends UIEventRegisterClass {
     //怪物卡片背包
     server_monster_package_list : AM2_Server_Backpack[][] = [];
     //玩家卡片收集信息  
-    server_pictuer_fetter_list : Server_PICTUER_FETTER_CONFIG[] = [];
+    server_pictuer_fetter_list : ServerPlayerConfigPictuerFetter[] = [];
     //卡片分类
     server_pictuer_card_rarity : { [ rarity : number] : string[] } = {};
     //特殊合成分类
     server_pictuer_card_special : { [ card_id : string ] : number[] } = {};
-    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 服务器
+    //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 服务器 []
     server_player_config_pictuer_fetter : string[][][] = [];
     //玩家图鉴配置 // 层级关系  player_id-配置栏-羁绊id 本地
     locality_player_config_pictuer_fetter : string[][][] = [];
@@ -110,6 +110,63 @@ export class ServiceData extends UIEventRegisterClass {
             }
         }
         return ret;
+    }
+
+    /**
+     * 对本地怪物卡片背包进行数据写入
+     * @param player_id 
+     * @param item_id 
+     * @returns 
+     */
+    AddPackageMonsterItem(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ) : boolean{
+        let check = this.GetMonsterPackageIndexAndCount(player_id , item_id);
+        if(check.index != -1){
+            GameRules.ServiceData.server_monster_package_list[player_id][check.index].number += count;
+        }else{
+            GameRules.ServiceData.server_monster_package_list[player_id].push({
+                "id" : id,
+                "item_id" : item_id,
+                "number" : count , 
+                "customs" : ""
+            })
+        }
+        return true
+    }
+
+    /**
+     * 对本地背包进行数据扣除 (不进行数据同步) 返回false时需要同步服务器数据
+     * @param player_id 
+     * @param item_id 
+     * @returns 
+     */
+    DeletePackageMonsterItemServer(player_id : PlayerID ,item_id : number  , count : number , id ?: string) : boolean {
+        let c_index = -1;
+        let item_package = GameRules.ServiceData.server_monster_package_list[player_id];
+        for (let index = 0; index < item_package.length; index++) {
+            const package_item_id = item_package[index].item_id;
+            if(package_item_id == item_id){
+                if(count){
+                    if(item_package[index].number >= count){
+                        c_index = index;
+                    }
+                }else{
+                    c_index = index;
+                }
+            }
+        }
+        if(c_index != -1){
+            if(GameRules.ServiceData.server_monster_package_list[player_id][c_index].number > count){
+                GameRules.ServiceData.server_monster_package_list[player_id][c_index].number -= count;
+                return true;
+            }else if(GameRules.ServiceData.server_monster_package_list[player_id][c_index].number = count){
+                GameRules.ServiceData.server_monster_package_list[player_id].splice(c_index , 1);
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
 
@@ -245,8 +302,10 @@ export class ServiceData extends UIEventRegisterClass {
      * @returns 
      */
     DeletePackageItemOfServer(player_id : PlayerID ,item_id : number  , count : number , id ?: string) : boolean {
+        print("DeletePackageItemOfServer : "  );
         let c_index = -1;
         let item_package = GameRules.ServiceData.server_package_list[player_id];
+        print("item_package :" , item_package );
         let item_id_string = tostring(item_id);
         let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
         if(merge != 1){
@@ -308,6 +367,8 @@ export class ServiceData extends UIEventRegisterClass {
     DeletePackageItemSelect(player_id : PlayerID ,item_id : number  , count : number , id ?: string) :  boolean{
         if(item_id <= 1199){
             return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , - count );
+        }else if( 2000 <= item_id  && item_id < 3500){
+            return GameRules.ServiceData.DeletePackageMonsterItemServer(player_id , item_id , count );
         }else{
             return GameRules.ServiceData.DeletePackageItemOfServer(player_id , item_id , count , id);
         }
@@ -320,13 +381,12 @@ export class ServiceData extends UIEventRegisterClass {
     AddPackageItemSelect(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ) :  boolean{
         if(item_id <= 1199){
             return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , count );
+        }else if(item_id <= 2000 && item_id < 3500){
+            return GameRules.ServiceData.AddPackageMonsterItem(player_id , id  , item_id , customs , count );
         }else{
             return GameRules.ServiceData.AddPackageItem(player_id , id  , item_id , customs , count )
         }
     }
-
-
-
 
     //统一加载玩家存档属性
     LoadPlayerServerAttr(player_id : PlayerID){

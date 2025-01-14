@@ -235,7 +235,7 @@ declare interface CustomGameEventDeclarations {
     ServiceInterface_GetPlayerCardList : {
         data: {
             card : AM2_Server_Backpack[],
-            pictuer_list : Server_PICTUER_FETTER_CONFIG, //我的图鉴列表
+            pictuer_list : ServerPlayerConfigPictuerFetter, //我的图鉴列表
         };
     }
     /**

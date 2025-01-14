@@ -302,16 +302,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                 let zz_exp = this.PlayerServerSkillLevelCount[player_id].level[skill_key].exp + up_exp;
 
                 //此处要修改...
-                GameRules.ArchiveService.SkillDataUp(player_id , skill_key_str , red_item_str);
-
-
-
-                GameRules.ServiceInterface.GenerateSkillLevel(player_id, skill_key , zz_exp);
-                GameRules.ServiceInterface.GenerateSkillTypeLevel(player_id , skill_key );
-                
-                print("fasong...")
-                this.GetPlayerServerSkillData(player_id , {});
-                this.GetPlayerServerPackageData(player_id , {});
+                GameRules.ArchiveService.SkillDataUp(player_id , skill_key_str , red_item_str   , zz_exp , skill_key);
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "技能升级:技能已满级..");
             }
@@ -378,7 +369,7 @@ export class ServiceInterface extends UIEventRegisterClass{
             if(check_data.index >= 0 && check_data.count > 0){
                 //copy一份数据
                 let server_pictuer_fetter_copy = 
-                    CustomDeepCopy(GameRules.ServiceData.server_pictuer_fetter_list[player_id]) as Server_PICTUER_FETTER_CONFIG;
+                    CustomDeepCopy(GameRules.ServiceData.server_pictuer_fetter_list[player_id]) as ServerPlayerConfigPictuerFetter;
                 if(server_pictuer_fetter_copy.hasOwnProperty(suit_id)){
                     if(!server_pictuer_fetter_copy[suit_id].includes(card_id)){
                         server_pictuer_fetter_copy[suit_id].push(card_id);
@@ -389,19 +380,9 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }else{
                     server_pictuer_fetter_copy[suit_id] = [card_id];
                 }
-                //扣除物品 保存至服务器
-                if(check_data.count == 1){
-                    // delete GameRules.ServiceData.server_monster_package_list[player_id][check_data.index];
-                    GameRules.ServiceData.server_monster_package_list[player_id].splice(check_data.index , 1)
-                }else{
-                    GameRules.ServiceData.server_monster_package_list[player_id][check_data.index].number -- ;
-                }
-                GameRules.ServiceData.server_pictuer_fetter_list[player_id] = 
-                    CustomDeepCopy(server_pictuer_fetter_copy) as Server_PICTUER_FETTER_CONFIG;
-                Timers.CreateTimer(1, () => {
-                    GameRules.ServiceInterface.GetPlayerCardList(player_id , {})
-                    GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:激活成功...");
-                });
+                let pictuer_data = json.encode(server_pictuer_fetter_copy);
+                let red_item_str = item_id + "_1";
+                GameRules.ArchiveService.PictuerSave(player_id , pictuer_data , "" , red_item_str , check_data)
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片不足...");
             }
@@ -468,9 +449,9 @@ export class ServiceInterface extends UIEventRegisterClass{
     SavePictuerFetter(player_id: PlayerID, params: CGED["ServiceInterface"]["SavePictuerFetter"], callback?){
         let i = params.index;
         //保存数据
-        GameRules.ServiceData.server_player_config_pictuer_fetter[player_id][i] = CustomDeepCopy(
-            GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id][i]
-        ) 
+        let pictuer_config = json.encode(GameRules.ServiceData.locality_player_config_pictuer_fetter[player_id]);
+        GameRules.ArchiveService.PictuerSave(player_id , "" , pictuer_config , "" , null , 2)
+
         this.GetConfigPictuerFetter(player_id , {})
     }
     //还原图鉴配置

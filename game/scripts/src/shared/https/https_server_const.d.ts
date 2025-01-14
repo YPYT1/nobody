@@ -100,6 +100,16 @@ declare interface ConfirmDifficultyReturn {
 declare interface GameOverParam {
 	state: number , //结束状态 0 输了 1赢了
     host_steam_id : number ,//主机steamid
+    bosskills : number ,
+    bossmax : number , 
+    ext_items : {
+        [ sid : string] : {
+            [item_id : number] : number,
+        }
+    },
+    skill_exp : {
+        [ sid : string] : string,
+    }
 }
 /**
  * 游戏结束返回
@@ -110,7 +120,8 @@ declare interface GameOverReturn {
     data :  {
         list : {
             [steam_id : string] : { // steamid
-                add_items : ItemTReturn[]
+                add_items : ItemTReturn[],
+                skill_exp : string,
             }
         }
         level_difficulty : string, //当前可用难度
@@ -256,8 +267,7 @@ declare interface GetCustomBackpackReturn {
  */
 declare interface SkillDataUpParam {
 	sid : string , //steamid
-    add_item ? : string , // 逗号分割 itemid_number,itemid_number
-    red_item  : string , //  逗号分割 itemid_number,itemid_number
+    red_item_str  : string , //  逗号分割 itemid_number,itemid_number
     skill_data :  string , // `skill_data` : '存档技能数据',
 }
 
@@ -268,7 +278,6 @@ declare interface SkillDataUpReturn {
     code : number, //状态码
     msg : string, //服务器消息
     data :  {
-        add_item : AM2_Server_Backpack[],
         red_item : AM2_Server_Backpack[],
         skill_data : string , // `skill_data` : '存档技能数据',
     }
@@ -330,7 +339,7 @@ declare interface GetServerPassParam {
     get_type : number , // 获取类型 1 普通 2高级
 }
 /**
- * 抽奖返回数据
+ * 通行证返回数据
  */
 declare interface GetServerPassReturn {
     code : number, //状态码
@@ -338,5 +347,54 @@ declare interface GetServerPassReturn {
     data :  {
         add_item : AM2_Server_Backpack[],
         pass_record : AM2_Draw_Pass_Record,
+    }
+}
+
+
+
+/**
+ *  获取图鉴参数
+ */
+declare interface GetPictuerDataParam {
+	sid : string , //steamid
+}
+/**
+ *  获取图鉴返回数据
+ */
+declare interface GetPictuerDataReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        list : AM2_Server_Backpack[],
+        pictuer : {
+            pictuer_data : string,
+            pictuer_config : string,
+        },
+    }
+}
+
+
+
+/**
+ * 图鉴保存参数
+ */
+declare interface PictuerSaveParam {
+	sid : string , //steamid
+    pictuer_data ? : string , //图鉴激活数据
+    pictuer_config ? : string , // 图鉴配置数据
+    red_item_str ? : string , // 删除物品
+}
+/**
+ * 图鉴保存返回数据
+ */
+declare interface PictuerSaveReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        red_item : AM2_Server_Backpack[],
+        pictuer : {
+            pictuer_data : string,
+            pictuer_config : string,
+        },
     }
 }
