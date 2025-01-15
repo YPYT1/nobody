@@ -182,6 +182,14 @@ declare interface CustomGameEventDeclarations {
         };
     }
     /**
+     * 获取玩家所选天赋
+     */
+    ServiceTalent_GetSelectTalentIndex : {
+        data : {
+            index : number;
+        }
+    }
+    /**
      * 游戏激活状态
      */
     ServiceInterface_GetGameActivate: {
@@ -541,7 +549,7 @@ declare interface CGEDGetTalentListInfo {
     u : number , //总投入点 用于反算可以使用的点
     y : number , //可用天赋点
     i : { //天赋信息
-        [tier_number : number ] : {
+        [tier_number : string ] : {
             c : number , //当前层点了多少点
             k : {
                 [talent_key : string] : { //有key就是解锁 没有就是没解锁

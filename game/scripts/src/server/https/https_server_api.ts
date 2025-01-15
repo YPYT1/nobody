@@ -35,7 +35,8 @@ const ACTION_PICTUER_SAVE = "/pictuer_save";
 // 4.4 修改魂石相关数据
 const ACTION_PLAYER_SOUL_STONE_SAVE = "/player_soul_stone_save";
 
-
+// 4.4 修改魂石相关数据
+const ACTION_PLAYER_TALENT_SAVE = "/player_talent_save";
 
 
 

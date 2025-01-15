@@ -5,6 +5,7 @@ import { UIEventRegisterClass } from '../../modules/class_extends/ui_event_regis
 import * as PictuerCardData from "../../json/config/server/picture/pictuer_card_data.json";
 import * as PictuerFetterConfig from "../../json/config/server/picture/pictuer_fetter_config.json";
 import * as ServerTalentData from "../../json/config/server/hero/server_talent_data.json";
+import * as ServerSoulAttr from "../../json/config/server/soul/server_soul_attr.json";
 import { reloadable } from '../../utils/tstl-utils';
 
 import  * as ServerItemList  from "../../json/config/server/item/server_item_list.json";
@@ -392,14 +393,16 @@ export class ServiceData extends UIEventRegisterClass {
         let attr_count :  CustomAttributeTableType  = {
             
         };
+        let hero_id = selfhHero.GetHeroID();
+        let hero_id_str = tostring(hero_id);
         //加载天赋属性
         let select_talent_index = GameRules.ServiceTalent.select_talent_index;
-        let hero_id = 6;
-        let talent_data = GameRules.ServiceTalent.player_server_talent_list[player_id][hero_id][select_talent_index].i;
+        let talent_data = GameRules.ServiceTalent.player_server_talent_list[player_id][hero_id_str][select_talent_index].i;
         for (let index = 0; index < 6; index++) {
-            if(talent_data.hasOwnProperty(index)){
-                for (const key in talent_data[index].k) {
-                    if(talent_data[index].k[key].uc > 0){
+            let index_str = tostring(index)
+            if(talent_data.hasOwnProperty(index_str)){
+                for (const key in talent_data[index_str].k) {
+                    if(talent_data[index_str].k[key].uc > 0){
                         let attr = ServerTalentData[key as keyof typeof ServerTalentData].ObjectValues as CustomAttributeTableType;
                         for (const key1 in attr) {
                             for (const key2 in attr[key1]) {
@@ -407,9 +410,9 @@ export class ServiceData extends UIEventRegisterClass {
                                     attr_count[key1] = {};
                                 }
                                 if(attr_count[key1].hasOwnProperty(key2)){
-                                    attr_count[key1][key2] += attr[key1][key2];
+                                    attr_count[key1][key2] += attr[key1][key2] * talent_data[index_str].k[key].uc;
                                 }else{
-                                    attr_count[key1][key2] = attr[key1][key2];
+                                    attr_count[key1][key2] = attr[key1][key2] * talent_data[index_str].k[key].uc;
                                 }
                             }
                         }
@@ -461,6 +464,25 @@ export class ServiceData extends UIEventRegisterClass {
         //加载装备属性
 
         //加载魂石属性
+        let SoulList = GameRules.ServiceSoul.soul_list[player_id].i;
+        for (const s_key in SoulList) { 
+            for (const d_data of SoulList[s_key].d) {
+                let soul_key = d_data.k;
+                let soul_value = d_data.v;
+                let MainProperty = ServerSoulAttr[soul_key as keyof typeof ServerSoulAttr].MainProperty;
+                let TypeProperty = ServerSoulAttr[soul_key as keyof typeof ServerSoulAttr].TypeProperty;
+                if(!attr_count.hasOwnProperty(MainProperty)){
+                    attr_count[MainProperty] = {};
+                }
+                if(attr_count[MainProperty].hasOwnProperty(TypeProperty)){
+                    attr_count[MainProperty][TypeProperty] += soul_value;
+                }else{
+                    attr_count[MainProperty][TypeProperty] = soul_value;
+                }
+            }
+        }
+        
+
 
         //商城道具属性
         GameRules.CustomAttribute.SetAttributeInKey(selfhHero , "attr_server_" + player_id , attr_count)

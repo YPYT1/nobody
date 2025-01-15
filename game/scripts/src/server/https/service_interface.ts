@@ -17,7 +17,7 @@ import  * as ServerItemList  from "../../json/config/server/item/server_item_lis
 export class ServiceInterface extends UIEventRegisterClass{
     
     //玩家地图等级
-    player_map_level : number[] = [ 10 , 100 , 100 , 100 , 100 , 100 ];
+    player_map_level : number[] = [ 0 , 0 , 0 , 0 , 0 , 0 ];
 
     fetter_ability_values: {
         [name: string]: {
@@ -866,7 +866,6 @@ export class ServiceInterface extends UIEventRegisterClass{
      * @param callback 
      */
     GetPlayerShoppingLimit(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerShoppingLimit"], callback?){
-        DeepPrintTable(GameRules.ServiceInterface.ShoppingLimit[player_id]);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerShoppingLimit",

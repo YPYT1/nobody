@@ -349,6 +349,14 @@ declare interface CGED {
             hero_id : number,
             index : number , //配置index
         }
+        //获取所选天赋
+        GetSelectTalentIndex : {
+            
+        }
+        //设置所选天赋
+        SetSelectTalentIndex : {
+            index : number, //从0开始
+        }
     }
     //存档接口
     ServiceInterface : {

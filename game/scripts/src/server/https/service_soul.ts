@@ -125,14 +125,12 @@ export class ServiceSoul extends UIEventRegisterClass {
                             let red_item_str = "";
                             for (const need_item_key in need_item) {
                                 let need_item_id = need_item_key;
-                                print("need_item_id : " , need_item_id);
                                 let need_item_count = need_item[need_item_id];
                                 if(red_item_str == ""){
                                     red_item_str = need_item_key + "_" + need_item_count;
                                 }else{
                                     red_item_str += "," + need_item_key + "_" + need_item_count;
                                 }
-                                print("red_item_str :" , red_item_str)
                                 if(ret.data.c.hasOwnProperty(need_item_id)){
                                     ret.data.c[need_item_id] += need_item_count;
                                 }else{

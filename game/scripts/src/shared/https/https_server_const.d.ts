@@ -45,6 +45,7 @@ declare interface CreateGameReturn {
                 draw_record : AM2_Draw_Lottery_Draw_Record,
                 pass_record : AM2_Draw_Pass_Record,
                 pa : string, //魂石数据
+                talentdata : string , //天赋数据
             }
         }
         time : number , // 服务器时间
@@ -420,5 +421,25 @@ declare interface PlayerSoulStoneSaveReturn {
         add_item : AM2_Server_Backpack[],
         pa : string,
 
+    }
+}
+
+
+
+/**
+ * 天赋保存参数
+ */
+declare interface PlayerTalentSaveParam {
+	sid : string , //steamid
+    talentdata  : string , //天赋数据
+}
+/**
+ * 天赋升级返回数据
+ */
+declare interface PlayerTalentSaveReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        talentdata : string,
     }
 }

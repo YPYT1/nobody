@@ -7,6 +7,7 @@ import { HttpRequest } from "./http_request";
 import { reloadable } from '../../utils/tstl-utils';
 import { UIEventRegisterClass } from "../../modules/class_extends/ui_event_register_class";
 import  * as ServerItemList  from "../../json/config/server/item/server_item_list.json";
+import { Development } from '../../modules/development/index';
 
 @reloadable 
 export class ArchiveService extends UIEventRegisterClass {
@@ -112,12 +113,18 @@ export class ArchiveService extends UIEventRegisterClass {
                         GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
                         //地图经验
                         let player_map_level = GameRules.ServiceInterface.GetServerMapLevel(GameRules.ServiceData.server_gold_package_list[index]["1004"].number);
-                        DeepPrintTable(player_map_level);
+                        GameRules.ServiceInterface.player_map_level[index] = player_map_level.level;
+                        
+                        let talentdata = data.data.list[steam_id.toString()].talentdata;
+                        
+                        //初始化天赋
+                        GameRules.ServiceTalent.ServiceTalentInitByPlayerId(index , GameRules.ServiceInterface.player_map_level[index] , talentdata);
+                        
                     }
                     //0号玩家 的难度作为默认难度
                     GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0]);
 
-                    Timers.CreateTimer(5, () => {
+                    Timers.CreateTimer(2, () => {
                         //初始化完成
                         GameRules.MapChapter._game_select_phase = 0;
 
@@ -892,7 +899,7 @@ export class ArchiveService extends UIEventRegisterClass {
     }
 
     /**
-     * 图鉴保存等功能
+     * 魂石保存等功能
      * @param player_id 
      * @param pictuer_data 
      * @param pictuer_config 
@@ -949,6 +956,41 @@ export class ArchiveService extends UIEventRegisterClass {
                         }
                     }
                     
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
+    /**
+     * 天赋保存等功能
+     * @param player_id 
+     * @param talentdata 
+     */ 
+    PlayerTalentSave(player_id: PlayerID , 
+        talentdata : string , 
+    ) {
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <PlayerTalentSaveParam>{
+            sid : tostring(steam_id) , //steamid
+            talentdata : talentdata,
+            
+        }
+        HttpRequest.AM2Post(ACTION_PLAYER_TALENT_SAVE,
+            {
+                param: param_data
+            },
+            (data: PlayerTalentSaveReturn) => {
+                if (data.code == 200) {
+                    GameRules.ServiceTalent.player_server_talent_list[player_id] = JSON.decode( data.data.talentdata) as {
+                        [hero_id: number]: CGEDGetTalentListInfo[];
+                    }
+                    GameRules.ServiceTalent.GetPlayerServerTalent(player_id, {});
                 } else {
 
                 }
