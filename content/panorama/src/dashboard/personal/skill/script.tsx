@@ -26,15 +26,15 @@ let main_skill_level: PlayerServerSkillLevelCount = {
 
 let view_skill_id = "";
 
-let BackpackCount_1292 = SetCustomComponent($("#BackpackCount_1292"), "backpack_count", "1292");
-let BackpackCount_1293 = SetCustomComponent($("#BackpackCount_1293"), "backpack_count", "1293");
-
-
+// const GachaItemCount = GameUI.CustomUIConfig().SetComponent_BackpackCount($("#GachaItemCount"),"1207")
+// SetCustomComponent($("#BackpackCount_1292"), "backpack_count", "1292");
+// let BackpackCount_1293 = SetCustomComponent($("#BackpackCount_1293"), "backpack_count", "1293");
 export const Init = () => {
 
-    BackpackCount_1292._SetItemId("1292");
-    BackpackCount_1293._SetItemId("1293");
-
+    let BackpackCount_1292 = GameUI.CustomUIConfig().SetComponent_BackpackCount($("#BackpackCount_1292"), "1292")
+    BackpackCount_1292.BackpackCount._SetLabelStyle({ font_size: 16, color: "#fffffe" })
+    let BackpackCount_1293 = GameUI.CustomUIConfig().SetComponent_BackpackCount($("#BackpackCount_1293"), "1293")
+    BackpackCount_1293.BackpackCount._SetLabelStyle({ font_size: 16, color: "#fffffe" })
     UppderSkillBtn.enabled = false;
     skill_sub_tree = {}
     for (let id in ServerSkillful) {
@@ -199,8 +199,8 @@ const ViewSkillMainOfID = (id: string) => {
     }
 
     let main_data = main_skill_level.level[id];
-    if (main_data == null) { 
-        return 
+    if (main_data == null) {
+        return
     }
     let is_adv = main_data.is_adv == 1;
     MainPanel.SetDialogVariableInt("upper_skill_lv", main_data.lv);

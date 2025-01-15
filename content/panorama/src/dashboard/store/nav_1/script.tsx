@@ -8,8 +8,9 @@ export function Init() {
 
     HotSellItemList.RemoveAndDeleteChildren()
     for (let goods_id of hot_goods) {
-        let StoreItem = CreateCustomComponent(HotSellItemList, "store_item", goods_id)
-        StoreItem._SetGoodsId(goods_id)
+        let StoreItem = GameUI.CustomUIConfig().SetStoreItemPanel(HotSellItemList, goods_id);
+        // $.Msg(["goods_id",goods_id])
+        StoreItem.StoreItem._SetGoodsId(goods_id)
     }
 }
 

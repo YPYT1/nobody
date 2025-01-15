@@ -1,6 +1,7 @@
 
 import { DASHBOARD_NAVBAR } from './components';
 import { HideCustomTooltip, ShowCustomTextTooltip } from '../utils/custom_tooltip';
+import { EventBus } from '../_global/event_bus';
 
 // import { FindOfficialHUDUI } from '../common/panel_operaton';
 const ContentPanel = $.GetContextPanel();
@@ -191,6 +192,15 @@ function DashboardRoute<
 
 
 (() => {
+    // $.Msg(["11"])
+    // GameUI.CustomUIConfig().EventBus.removeAllListeners();
+    // GameUI.CustomUIConfig().ServerEventBus = new EventBus()
+    GameUI.CustomUIConfig().ServerEventBus = new EventBus()
+    if (GameUI.CustomUIConfig().ServerEventBus == null){
+        GameUI.CustomUIConfig().ServerEventBus = new EventBus()
+    }
+
+    
     GameUI.CustomUIConfig().DashboardRoute = DashboardRoute;
     Initialize();
 })();

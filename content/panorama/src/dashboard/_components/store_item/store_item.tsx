@@ -18,7 +18,6 @@ const MainPanel = $.GetContextPanel() as Component_StoreItem;
 const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list;
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 const StoreIcon = $("#StoreIcon") as ImagePanel;
-const EventBus = GameUI.CustomUIConfig().EventBus;
 const OriginalPanel = $("#OriginalPanel");
 const ActualPanel = $("#ActualPanel");
 
@@ -91,10 +90,10 @@ const _SetGoodsId = (goods_id: string | number) => {
 
         StorePurchaseBtn.SetPanelEvent("onactivate", () => {
             if (cost_type == "rmb") {
-                GameUI.CustomUIConfig().EventBus.publish("open_rmb_purchase", { id: "" + goods_id })
+                GameUI.CustomUIConfig().ServerEventBus.publish("open_rmb_purchase", { id: "" + goods_id })
             } else {
                 const limit_count = MainPanel.Data<PanelDataObject>().limit_count as number;
-                GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
+                GameUI.CustomUIConfig().ServerEventBus.publish("open_store_purchase", { id: "" + goods_id })
             }
 
         })
@@ -132,7 +131,6 @@ function SetPriceView(e: Panel, cost_str: string,) {
 }
 
 (function () {
-    // EventBus.clear("shoping_limit_update")
     MainPanel.Data<PanelDataObject>().rarity = 0
     MainPanel._SetGoodsId = _SetGoodsId;
     // MainPanel._SetState = _SetState;
@@ -143,7 +141,7 @@ function SetPriceView(e: Panel, cost_str: string,) {
         
     }
 
-    EventBus.subscribe("shoping_limit_update", data => {
+    GameUI.CustomUIConfig().ServerEventBus.subscribe("shoping_limit_update", data => {
         if (data[g_goods_id] == null) { return }
         let count = data[g_goods_id].c ?? 0
         const MainPanel = $.GetContextPanel() as Component_StoreItem;

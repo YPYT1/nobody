@@ -9,11 +9,11 @@
 
     <Panel class="popups" hittest="false">
         <Button id="loading" />
-        <Button id="store_purchase" />
+        <!-- <Button id="store_purchase" /> -->
         <Button id="get_item" />
         <Button id="gacha_result" />
         <Button id="server_msg" />
         <Button id="card_result" />
-        <Button id="payment" />
+        <!-- <Button id="payment" /> -->
     </Panel>
 </root>

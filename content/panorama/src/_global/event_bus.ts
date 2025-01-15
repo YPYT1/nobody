@@ -4,6 +4,7 @@ declare global {
 
     interface CustomUIConfig {
         EventBus: EventBus;
+        ServerEventBus: EventBus;
     }
 }
 
@@ -40,7 +41,7 @@ interface ISubscribe {
 
 
 
-class EventBus {
+export class EventBus {
 
     private _eventObject: IEventObject;
     private _callbackId: number;

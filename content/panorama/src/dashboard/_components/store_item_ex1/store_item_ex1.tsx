@@ -62,9 +62,9 @@ const _SetGoodsId = (goods_id: string | number) => {
 
             } else {
                 if (cost_type == "rmb") {
-                    GameUI.CustomUIConfig().EventBus.publish("open_rmb_purchase", { id: "" + goods_id })
+                    GameUI.CustomUIConfig().ServerEventBus.publish("open_rmb_purchase", { id: "" + goods_id })
                 } else {
-                    GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: "" + goods_id })
+                    GameUI.CustomUIConfig().ServerEventBus.publish("open_store_purchase", { id: "" + goods_id })
                 }
 
             }
@@ -141,7 +141,6 @@ function _SetLimitCount(count: number) {
 }
 
 (function () {
-    // GameUI.CustomUIConfig().EventBus.clear("shoping_limit_update");
     MainPanel.SetDialogVariable("days", "0天")
     let goods_id = MainPanel.Data<PanelDataObject>().goods_id as string;
     if (goods_id) {
@@ -171,7 +170,7 @@ function _SetLimitCount(count: number) {
         }
     })
 
-    GameUI.CustomUIConfig().EventBus.subscribe("shoping_limit_update", data => {
+    GameUI.CustomUIConfig().ServerEventBus.subscribe("shoping_limit_update", data => {
         if (data[g_goods_id] == null) { return }
         let count = data[g_goods_id].c
         const MainPanel = $.GetContextPanel()

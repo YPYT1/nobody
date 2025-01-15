@@ -182,11 +182,14 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
     card_compose_list = [[], [], [], [], [], [], [], []]
     UpdateComposeInfo();
     let card_list = Object.values(data.card);
+    // $.Msg(["card_list",card_list])
     MainPanel.SetDialogVariableInt("card_count", card_list.length);
     card_list.sort((a, b) => {
         let data_a = GetPictureCardData(`${a.item_id}`);
         let data_b = GetPictureCardData(`${b.item_id}`);
-        return data_a.rarity - data_b.rarity
+        if (data_a == null || data_b == null){ return - 1}
+        // $.Msg(["data_a",a.item_id,data_a])
+        return (data_a.rarity ?? 1) - (data_b.rarity ?? 1)
     })
     for (let i = 0; i < CardList.GetChildCount(); i++) {
         let CardPanel = CardList.GetChild(i)!
@@ -211,6 +214,9 @@ const GetPlayerCardList = (params: NetworkedData<CustomGameEventDeclarations["Se
         let item_id = card.item_id;
         let card_id = `${item_id}`;
         let card_data = _PictuerCardData[card_id as keyof typeof _PictuerCardData];
+        if (card_data == null){
+            continue
+        }
         // $.Msg(["card_data",card_id,card_data])
 
         let card_rare = card_data.rarity;

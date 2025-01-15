@@ -58,7 +58,7 @@ const CustomEventSubscribe = () => {
             let id = _data.key;
             let type = _data.type;
             let level = _data.lv;
-            let row_hero_data = TalentTreeConfig[id as "1"];
+            let row_hero_data = TalentTreeConfig[id as keyof typeof TalentTreeConfig];
 
             let TalentNode = SelectList.GetChild(order - 1)!;
             if (TalentNode == null) {
@@ -126,6 +126,7 @@ const CustomEventSubscribe = () => {
                 HideCustomTooltip()
             })
             const link_ability = row_hero_data.link_ability;
+            // $.Msg(["row_hero_data", id, row_hero_data])
             if (row_hero_data.is_ability == 1) {
                 let ability_data = npc_abilities_custom[link_ability as "drow_4a"];
                 let manacost = ability_data.AbilityManaCost ?? 0;
@@ -144,6 +145,7 @@ const CustomEventSubscribe = () => {
                     ParentAbilityPanel.SetPanelEvent("onmouseover", () => { })
                 } else {
                     let parent_talent = TalentTreeConfig[parent_id as "1"];
+                    // $.Msg(["parent_talent", parent_talent])
                     ParentAbilityPanel.SetImage(GetTextureSrc(parent_talent.img))
                     ParentAbilityPanel.SetPanelEvent("onmouseover", () => {
                         let _data = hero_talent_list[parent_id]
@@ -152,14 +154,18 @@ const CustomEventSubscribe = () => {
                     })
                 }
             } else {
-                let parent_id = AbilityTalentId[link_ability];
-                let parent_talent = TalentTreeConfig[parent_id as "1"];
-                ParentAbilityPanel.SetImage(GetTextureSrc(parent_talent.img))
-                ParentAbilityPanel.SetPanelEvent("onmouseover", () => {
-                    let _data = hero_talent_list[parent_id]
-                    // $.Msg(["_data.uc",_data.uc])
-                    ShowCustomTooltip(ParentAbilityPanel, "talent_tree", "", parent_id, _data.uc)
-                })
+                let parent_ability_key = row_hero_data.parent_ability_key;
+                // $.Msg(["parent_ability_key",parent_ability_key , parent_ability_key != null])
+                if (parent_ability_key != "null") {
+                    let parent_id = AbilityTalentId[link_ability];
+                    let parent_talent = TalentTreeConfig[parent_id as "1"];
+                    ParentAbilityPanel.SetImage(GetTextureSrc(parent_talent.img))
+                    ParentAbilityPanel.SetPanelEvent("onmouseover", () => {
+                        let _data = hero_talent_list[parent_id]
+                        ShowCustomTooltip(ParentAbilityPanel, "talent_tree", "", parent_id, _data.uc)
+                    })
+                }
+
             }
             TalentNode.SetHasClass("IsAttribute", row_hero_data.tier_number == 99)
             TalentNode.SetDialogVariable("talent_name", $.Localize(`#custom_talent_${id}`))
