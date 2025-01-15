@@ -88,6 +88,13 @@ export class ArchiveService extends UIEventRegisterClass {
                             GameRules.ServiceInterface.LoadSkillfulLevelInit(index);
                         }
 
+                        //加载魂石数据
+                        if(data.data.list[steam_id.toString()].pa && data.data.list[steam_id.toString()].pa != ""){
+                            GameRules.ServiceSoul.soul_list[index] = 
+                            JSON.decode(data.data.list[steam_id.toString()].pa) as CGEDGetSoulList;
+                            GameRules.ServiceSoul.GetPlayerServerSoulData(index , {});
+                        }
+
                         //发送服务器时间
                         GameRules.ServiceInterface.GetServerTime( index  , {});
                         //
@@ -101,8 +108,11 @@ export class ArchiveService extends UIEventRegisterClass {
                         //成长礼
                         GameRules.ServiceInterface.PassRecord[index] = data.data.list[steam_id.toString()].pass_record;
                         GameRules.ServiceInterface.GetPlayerServerPassRecord(index , {});
-
+                        //发送限购数据
                         GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
+                        //地图经验
+                        let player_map_level = GameRules.ServiceInterface.GetServerMapLevel(GameRules.ServiceData.server_gold_package_list[index]["1004"].number);
+                        DeepPrintTable(player_map_level);
                     }
                     //0号玩家 的难度作为默认难度
                     GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0]);
@@ -880,6 +890,76 @@ export class ArchiveService extends UIEventRegisterClass {
             player_id
         )
     }
+
+    /**
+     * 图鉴保存等功能
+     * @param player_id 
+     * @param pictuer_data 
+     * @param pictuer_config 
+     * @param red_item_str 
+     * @param type 
+     */ 
+    PlayerSoulStoneSave(player_id: PlayerID , 
+        pa_data : string , 
+        red_item_str : string , 
+        type : number = 1,
+        add_item_str ? : string , 
+        up_num : number = 0,
+    ) {
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <PlayerSoulStoneSaveParam>{
+            sid : tostring(steam_id) , //steamid
+            pa : pa_data,
+            red_item_str : red_item_str,
+            add_item_str : add_item_str,
+            
+        }
+        HttpRequest.AM2Post(ACTION_PLAYER_SOUL_STONE_SAVE,
+            {
+                param: param_data
+            },
+            (data: PlayerSoulStoneSaveReturn) => {
+                if (data.code == 200) {
+                    //扣除物品 保存至服务器
+                    GameRules.ServiceSoul.soul_list[player_id] = JSON.decode(data.data.pa) as CGEDGetSoulList;
+                    //更新魂石数据
+                    GameRules.ServiceSoul.GetPlayerServerSoulData( player_id , {})
+                    //更新背包数据
+                    let red_item = data.data.red_item;
+                    let add_item = data.data.add_item;
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
+                    
+                    if(type == 1){
+                        GameRules.CMsg.SendErrorMsgToPlayer(player_id, "魂石:镶嵌成功");
+                    }else if(type == 2){
+                        if(up_num != 0){
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级成功:+" + up_num)
+                        }else{
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败!")
+                        }
+                    }else if(type == 3){
+                        if(up_num != 0){
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级成功:-" + up_num)
+                        }else{
+                            GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级失败!")
+                        }
+                    }else if(type == 4){
+                        if(add_item != null && add_item.length > 0){
+                            GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+                        }
+                    }
+                    
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
     /**
      * 公共更新背包内容
      * @param player_id 
@@ -890,7 +970,6 @@ export class ArchiveService extends UIEventRegisterClass {
         //先删除再添加
         if(red_item){
             for (const r_e of red_item) {
-                print("DeletePackageItemSelect : ")
                 GameRules.ServiceData.DeletePackageItemSelect(player_id , r_e.item_id , r_e.number , r_e.id);
             }
         }

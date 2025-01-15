@@ -594,7 +594,6 @@ declare interface CGEDGetEquipListInfo {
  * 魂石服务器数据
  */
 declare interface CGEDGetSoulList {
-    id ? : string, //唯一id 用于服务器修改数据
     i : { [ index : string ] : //部位下标
         {
             d : CGEDGetSoulListData[]

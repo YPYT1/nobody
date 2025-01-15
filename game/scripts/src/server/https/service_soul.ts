@@ -122,31 +122,37 @@ export class ServiceSoul extends UIEventRegisterClass {
                         if(ret.code == true){
                             let Sj_config_key = this.level_u_d_config.up[0];
                             let need_item = this.GetUpItem(Sj_config_key , key , 1);
+                            let red_item_str = "";
                             for (const need_item_key in need_item) {
-                                let need_item_id = tonumber(need_item_key);
+                                let need_item_id = need_item_key;
+                                print("need_item_id : " , need_item_id);
                                 let need_item_count = need_item[need_item_id];
+                                if(red_item_str == ""){
+                                    red_item_str = need_item_key + "_" + need_item_count;
+                                }else{
+                                    red_item_str += "," + need_item_key + "_" + need_item_count;
+                                }
+                                print("red_item_str :" , red_item_str)
                                 if(ret.data.c.hasOwnProperty(need_item_id)){
                                     ret.data.c[need_item_id] += need_item_count;
                                 }else{
                                     ret.data.c[need_item_id] = need_item_count;
                                 }
-                                print("need_item_id" , need_item_id);
 
-                                let ret_ver = GameRules.ServiceData.SelectVerifyPackageItem(player_id , need_item_id , need_item_count);
-                                if(ret_ver.is_verify){
-                                    GameRules.ServiceData.DeletePackageItemSelect(player_id , ret_ver.index , need_item_count);
-                                }else{
+                                let ret_ver = GameRules.ServiceData.SelectVerifyPackageItem(player_id , tonumber(need_item_id) , need_item_count);
+                                if(!ret_ver.is_verify){
                                     GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:材料不足...")
                                     return ;
                                 }
                             }
-                            this.soul_list[player_id].i[box_type].d.push(ret.data);
-                            this.soul_list[player_id].i[box_type].l ++;
-                            this.soul_list[player_id].i[box_type].z ++;
-                            //更新魂石数据
-                            this.GetPlayerServerSoulData( player_id , {})
-                            //更新背包数据
-                            GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {} );
+                            print("red_item_str :" , red_item_str)
+                            let new_soul_list =  CustomDeepCopy(this.soul_list[player_id]) as CGEDGetSoulList;
+                            new_soul_list.i[box_type].d.push(ret.data);
+                            new_soul_list.i[box_type].l ++;
+                            new_soul_list.i[box_type].z ++;
+                            let new_soul_list_str = JSON.encode(new_soul_list);
+                            GameRules.ArchiveService.PlayerSoulStoneSave(player_id , new_soul_list_str , red_item_str)
+                            
                         }else{
                             GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败...")
                         }
@@ -258,9 +264,15 @@ export class ServiceSoul extends UIEventRegisterClass {
                         }
                         //附加数据记录
                         ret.data.c = r_data.c;
+                        let red_item_str = "";
                         for (const need_item_key in need_item) {
                             let need_item_id = tonumber(need_item_key);
-                            let need_item_count = need_item[need_item_id];
+                            let need_item_count = need_item[need_item_key];
+                            if(red_item_str == ""){
+                                red_item_str = need_item_key + "_" + need_item_count;
+                            }else{
+                                red_item_str += "," + need_item_key + "_" + need_item_count;
+                            }
                             let set_item_id = need_item_id;
                             if(type == 1){
                                 //通过不同的石头
@@ -278,44 +290,39 @@ export class ServiceSoul extends UIEventRegisterClass {
                                     }
                                 }
                             }
-                            if(ret.data.c.hasOwnProperty(set_item_id)){
-                                ret.data.c[set_item_id] += need_item_count;
+                            if(ret.data.c.hasOwnProperty(need_item_key)){
+                                ret.data.c[need_item_key] += need_item_count;
                             }else{
-                                ret.data.c[set_item_id] = need_item_count;
+                                ret.data.c[need_item_key] = need_item_count;
                             }
                             let ret_ver = GameRules.ServiceData.SelectVerifyPackageItem(player_id , need_item_id , need_item_count);
-                            if(ret_ver.is_verify){
-                                GameRules.ServiceData.DeletePackageItemSelect(player_id , ret_ver.index , need_item_count);
-                            }else{
+                            if(!ret_ver.is_verify){
                                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:材料不足...")
                                 return ;
                             }
                         }
                         //计算概率
                         let pro = ServerSoulConfig[Sj_config_key as keyof typeof ServerSoulConfig].pro + ext_pro;
+                        let new_soul_list =  CustomDeepCopy(this.soul_list[player_id]) as CGEDGetSoulList;
                         if(RollPercentage(pro)){
-                            this.soul_list[player_id].i[box_type].d[index] = ret.data;
+                            new_soul_list.i[box_type].d[index] = ret.data;
                             if(type == 1){
-                                this.soul_list[player_id].i[box_type].z ++;
-                                if(this.soul_list[player_id].i[box_type].z > this.soul_list[player_id].i[box_type].l){
-                                    this.soul_list[player_id].i[box_type].l = this.soul_list[player_id].i[box_type].z;
+                                new_soul_list.i[box_type].z ++;
+                                if(new_soul_list.i[box_type].z > new_soul_list.i[box_type].l){
+                                    new_soul_list.i[box_type].l = new_soul_list.i[box_type].z;
                                 }
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级成功:+" + ret.value)
                             }else{
-                                this.soul_list[player_id].i[box_type].z --;
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级成功:-" + ret.value)
+                                new_soul_list.i[box_type].z --;
                             }
                         }else{
-                            if(type == 1){
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败!")
-                            }else{
-                                GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:降级失败!")
-                            }
+                            ret.value = 0;
                         }
-                        //更新魂石数据
-                        this.GetPlayerServerSoulData( player_id , {})
-                        //更新背包数据
-                        GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {} );
+                        let new_soul_list_str = JSON.encode(new_soul_list);
+                        let post_type = 2
+                        if(type == 2){
+                            post_type = 3
+                        }
+                        GameRules.ArchiveService.PlayerSoulStoneSave(player_id , new_soul_list_str , red_item_str ,post_type , "" , ret.value)
                     }else{
                         GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:升级失败...")
                     }
@@ -561,10 +568,10 @@ export class ServiceSoul extends UIEventRegisterClass {
      * @param type  //升级还是降级 1 升级 2降级
      */
     GetUpItem( key : string , attr_key : string , type : number ): {
-        [item_id : number ]  : number,
+        [item_id : string ]  : number,
     }{
         let ret : {
-            [item_id : number ]  : number,
+            [item_id : string ]  : number,
         } = {};
         let SoulUpData = ServerSoulConfig[key as keyof typeof ServerSoulConfig];
         let consume = SoulUpData.consume;
@@ -575,7 +582,7 @@ export class ServiceSoul extends UIEventRegisterClass {
             if(type == 1){
                 let item_id_list = ServerSoulAttr[attr_key as keyof typeof ServerSoulAttr].item_id;
                 let section = tonumber(con_data[0]) - 1;
-                let get_item_id = item_id_list[section];
+                let get_item_id = tostring(item_id_list[section]);
                 ret[get_item_id] = tonumber(con_data[1]);    
             }else{
                 ret[tonumber(con_data[0])] = tonumber(con_data[1]);
@@ -584,7 +591,7 @@ export class ServiceSoul extends UIEventRegisterClass {
         for (const element of items) {
             if(element != "null"){
                 let item_data = element.split("_");
-                let item_id = tonumber(item_data[0]);
+                let item_id = item_data[0];
                 let item_count = tonumber(item_data[1]);
                 if(ret.hasOwnProperty(item_id)){
                     ret[item_id] += item_count;
@@ -657,23 +664,23 @@ export class ServiceSoul extends UIEventRegisterClass {
             if(this.soul_list[player_id].i[box_type].d[index]){
                 let items = this.soul_list[player_id].i[box_type].d[index].c;
                 let new_items = this.GetDeleteItems(items);
+                let add_item_str = "";
                 for (const key in new_items.list) {
                     let count = new_items.list[key];
-                    let item_id = tonumber(key);
-                    GameRules.ServiceData.AddPackageItem(
-                        player_id , 
-                        key,
-                        item_id,
-                        "",
-                        count
-                    );
+                    if(add_item_str == ""){
+                        add_item_str = key + "_" + count;
+                    }else{
+                        add_item_str += "," + key + "_" + count;
+                    }
                 }
+                let new_soul_list =  CustomDeepCopy(this.soul_list[player_id]) as CGEDGetSoulList;
+                let level = new_soul_list.i[box_type].d[index].l;
+                //删除当前等级
+                new_soul_list.i[box_type].z -= level;
                 //删除符文数据
-                this.soul_list[player_id].i[box_type].d.splice(index , 1);
-                //更新魂石数据
-                this.GetPlayerServerSoulData( player_id , {})
-                //更新背包数据
-                GameRules.ServiceInterface.GetPlayerServerPackageData(player_id , {} );
+                new_soul_list.i[box_type].d.splice(index , 1);
+                let new_soul_list_str = JSON.encode(new_soul_list);
+                GameRules.ArchiveService.PlayerSoulStoneSave(player_id , new_soul_list_str , "" , 4 , add_item_str )
             }else{
                 GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:没有此项..")
             }

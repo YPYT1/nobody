@@ -402,7 +402,7 @@ export class Spawn extends UIEventRegisterClass {
     StartSpawnControl() {
         GameRules.GetGameModeEntity().SetContextThink("StartSpawnControl", () => {
             GameRules.Spawn._round_index++;
-            if(GameRules.Spawn._round_index % 2 == 0){
+            if(GameRules.Spawn._round_index % 5 == 0){
                 GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE5);
                 GameRules.GetGameModeEntity().SetContextThink("RefreshMysticalShopItem" + "_" + this._round_index, () => {
                     //重新设置时间
@@ -1412,9 +1412,11 @@ export class Spawn extends UIEventRegisterClass {
         if(GameRules.Spawn._normal_card_data.hasOwnProperty(unit_name)){
             let item_id_str = GameRules.Spawn._normal_card_data[unit_name];
             if(GameRules.Spawn._pictuer_card_data_rarity.hasOwnProperty(item_id_str)){
-                let pro_v = GameRules.Spawn._pictuer_card_data_rarity[item_id_str];
+                let card_rarity = GameRules.Spawn._pictuer_card_data_rarity[item_id_str];
+                let pro_v = GameRules.Spawn._pictuer_rarity_pro[card_rarity];
                 let rd_n = RandomInt(1 , pro_v);
                 if(rd_n == pro_v){
+                    print("d card:" , item_id_str , " , pro_v :" , pro_v , ",rd_n :" , rd_n);
                     let p_id = killer.GetPlayerOwnerID();
                     if(GameRules.Spawn.player_card_drop[p_id].hasOwnProperty(item_id_str)){
                         GameRules.Spawn.player_card_drop[p_id][item_id_str] += 1;

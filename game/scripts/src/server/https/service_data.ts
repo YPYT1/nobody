@@ -302,10 +302,8 @@ export class ServiceData extends UIEventRegisterClass {
      * @returns 
      */
     DeletePackageItemOfServer(player_id : PlayerID ,item_id : number  , count : number , id ?: string) : boolean {
-        print("DeletePackageItemOfServer : "  );
         let c_index = -1;
         let item_package = GameRules.ServiceData.server_package_list[player_id];
-        print("item_package :" , item_package );
         let item_id_string = tostring(item_id);
         let merge = ServerItemList[item_id_string as keyof typeof ServerItemList].merge;
         if(merge != 1){
@@ -381,7 +379,7 @@ export class ServiceData extends UIEventRegisterClass {
     AddPackageItemSelect(player_id : PlayerID , id : string , item_id : number , customs : string , count : number ) :  boolean{
         if(item_id <= 1199){
             return GameRules.ServiceData.GoldPackageUpData(player_id , item_id , count );
-        }else if(item_id <= 2000 && item_id < 3500){
+        }else if(2000 <= item_id && item_id < 3500){
             return GameRules.ServiceData.AddPackageMonsterItem(player_id , id  , item_id , customs , count );
         }else{
             return GameRules.ServiceData.AddPackageItem(player_id , id  , item_id , customs , count )

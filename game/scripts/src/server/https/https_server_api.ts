@@ -32,6 +32,11 @@ const ACTION_GET_PICTUER_DATA = "/get_pictuer_data";
 // 4.3 修改图鉴相关数据
 const ACTION_PICTUER_SAVE = "/pictuer_save";
 
+// 4.4 修改魂石相关数据
+const ACTION_PLAYER_SOUL_STONE_SAVE = "/player_soul_stone_save";
+
+
+
 
 
 // 1.4 本地联机游戏追加人员

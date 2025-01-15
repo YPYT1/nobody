@@ -109,6 +109,40 @@ export class ServiceInterface extends UIEventRegisterClass{
         let key:string = params.key;
         GameRules.ArchiveService.VerificationCode(player_id, key);
     }
+
+    /**
+     * 地图经验值转等级
+     * @param key 
+     */
+    GetServerMapLevel(exp : number) : { level : number , cur_exp : number , level_exp : number , is_max : number}{
+        let exp_equation = "lv*500";
+        let max_level =  50;
+        let yyexp = exp;
+        let level = 0;
+        for (let index = 1; index < max_level; index++) { 
+            let param = {
+                lv : index,
+            } 
+            let use_exp = LFUN.eval(exp_equation , param )
+            if(yyexp >= use_exp){
+                level ++;
+                yyexp -= use_exp;
+            }else{
+                return {
+                    level : level,
+                    cur_exp : yyexp,
+                    level_exp : use_exp,
+                    is_max : 0,
+                };
+            }
+        }
+        return {
+            level : max_level,
+            cur_exp : -1,
+            level_exp : -1,
+            is_max : 1,
+        };
+    }
     
     /**
      * 技能经验值转等级

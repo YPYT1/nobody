@@ -44,6 +44,7 @@ declare interface CreateGameReturn {
                 vip_zs : number , //终身卡
                 draw_record : AM2_Draw_Lottery_Draw_Record,
                 pass_record : AM2_Draw_Pass_Record,
+                pa : string, //魂石数据
             }
         }
         time : number , // 服务器时间
@@ -396,5 +397,28 @@ declare interface PictuerSaveReturn {
             pictuer_data : string,
             pictuer_config : string,
         },
+    }
+}
+
+/**
+ * 魂石升级保存参数
+ */
+declare interface PlayerSoulStoneSaveParam {
+	sid : string , //steamid
+    pa ? : string , //魂石保存数据
+    red_item_str ? : string , // 删除物品
+    add_item_str ? : string , // 增加物品
+}
+/**
+ * 魂石保存升级返回数据
+ */
+declare interface PlayerSoulStoneSaveReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        red_item : AM2_Server_Backpack[],
+        add_item : AM2_Server_Backpack[],
+        pa : string,
+
     }
 }
