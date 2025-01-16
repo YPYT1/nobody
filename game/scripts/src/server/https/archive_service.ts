@@ -246,7 +246,7 @@ export class ArchiveService extends UIEventRegisterClass {
 
         let host_steam_id = PlayerResource.GetSteamAccountID(0);
         let param_data = <GameOverParam>{
-            state: 1,
+            state: state,
             host_steam_id : host_steam_id,
             ext_items : {},
             skill_exp : {},
