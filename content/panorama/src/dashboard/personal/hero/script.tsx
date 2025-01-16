@@ -75,6 +75,7 @@ export const Init = () => {
 
     InitHeroTalentView()
     InitHeroStarUpView()
+    InitPlayerProfile();
     // 读取所有英雄天赋数据
     GameEvents.SendCustomGameEventToServer("ServiceTalent", {
         event_name: "GetPlayerServerTalent",
@@ -84,7 +85,32 @@ export const Init = () => {
 
 }
 
+const PlayerExp = $("#PlayerExp") as ProgressBar;
+const InitPlayerProfile = () => {
 
+
+    MainPanel.SetDialogVariableInt("level", 0);
+    MainPanel.SetDialogVariableInt("exp", 0)
+    MainPanel.SetDialogVariableInt("up_exp", 100)
+    PlayerExp.value = 0
+
+    // 地图经验更新 1004
+    GameEvents.Subscribe("ServiceInterface_GetPlayerMapLevel", event => {
+        let data = event.data;
+        MainPanel.SetDialogVariableInt("level", data.level)
+        MainPanel.SetDialogVariableInt("exp", data.cur_exp)
+        MainPanel.SetDialogVariableInt("up_exp", data.level_exp)
+        PlayerExp.value =  Math.floor(data.cur_exp / data.level_exp * 100) 
+    })
+
+
+    GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+        event_name: "GetPlayerMapLevel",
+        params: {
+
+        }
+    })
+}
 
 const OpenHeroTalent = () => {
     if (select_hero_id == -1) { return }

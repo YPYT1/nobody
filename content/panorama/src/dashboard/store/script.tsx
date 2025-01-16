@@ -127,6 +127,6 @@ function InitNavMenu() {
 
 
 (() => {
-    $.Msg(["2"])
+    $.Msg(["1"])
     Init();
 })();

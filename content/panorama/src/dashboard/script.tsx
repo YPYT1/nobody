@@ -192,7 +192,7 @@ function DashboardRoute<
 
 
 (() => {
-    // $.Msg(["11"])
+    $.Msg(["111"])
     // GameUI.CustomUIConfig().EventBus.removeAllListeners();
     // GameUI.CustomUIConfig().ServerEventBus = new EventBus()
     GameUI.CustomUIConfig().ServerEventBus = new EventBus()

@@ -26,8 +26,8 @@ export const DASHBOARD_NAVBAR = {
         "Show": IsTestMode,
         "Sub": {
             "all": true,
-            "type1": true,
-            "type2": true,
+            // "type1": true,
+            // "type2": true,
         }
     },
 

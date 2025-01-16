@@ -3,6 +3,9 @@ DropDown {
     background-repeat: no-repeat;
     background-position: right 24px 35%;
     background-size: 20px 20px;
+    &:hover {
+        brightness: 2;
+    }
     
     Label {
         color: #d4d4d4;
@@ -57,9 +60,10 @@ DropDownMenu.DropDownMenuVisible {
     transition-property: box-shadow;
     transform: translateY(0px);
     flow-children: down;
-    background-color: #000000;
-    border: 1px solid #333333;
+    background-color: #000000ee;
+    border: 1px solid #7c7c7c;
     // border-radius: 8px;
+    padding: 2px;
 
     Label {
         width: 100%;
@@ -70,7 +74,7 @@ DropDownMenu.DropDownMenuVisible {
         font-size: 18px;
         font-weight: normal;
         z-index: 0;
-
+        border-bottom: 1px solid #363636;
         &:hover {
             background-color: #818181;
         }

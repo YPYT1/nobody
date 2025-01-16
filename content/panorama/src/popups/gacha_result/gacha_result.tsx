@@ -10,16 +10,16 @@ export const Init = () => {
     MainPanel.Data<PanelDataObject>().state = 0;
 
     MainPanel.SetPanelEvent("onactivate", () => {
-        $.Msg(["MainPanel onactivate"])
+        // $.Msg(["MainPanel onactivate"])
         const state = MainPanel.Data<PanelDataObject>().state;
-        $.Msg(["state", state])
-        // if (state == 1) {
-        //     MainPanel.SetHasClass("Show", false);
+        // $.Msg(["state", state])
+        if (state == 1) {
+            MainPanel.SetHasClass("Show", false);
 
-        //     $.Schedule(0.1, () => {
-        //         ClearItemListPanel()
-        //     })
-        // }
+            $.Schedule(0.1, () => {
+                ClearItemListPanel()
+            })
+        }
 
 
     })

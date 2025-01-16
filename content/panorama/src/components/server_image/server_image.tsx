@@ -30,19 +30,19 @@ class ServerImage {
             return
         }
         let data = ServerItemList[item_id as keyof typeof ServerItemList];
+        // $.Msg(["data", item_id, data])
         MainPanel.Data<PanelDataObject>().item_id = item_id
         if (data) {
             let rarity = data.quality;
             for (let rare of this.rare_list) {
                 MainPanel.SetHasClass(`rare_${rare}`, rarity == rare);
             }
-            if (data.affiliation_class == 23) {
 
-            } else {
-                //@ts-ignore
-                let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
-                MainPanel.SetImage(image_src);
-            }
+            //@ts-ignore
+            let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
+            // $.Msg(["image_src", image_src])
+            MainPanel.SetImage(image_src);
+
 
         } else {
             MainPanel.SetImage("");

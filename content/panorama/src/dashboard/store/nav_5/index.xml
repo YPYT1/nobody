@@ -59,13 +59,7 @@
         </Panel>
 		<Panel class="ShopHeader">
 			<Label class="ShopTypeTitle" text="图鉴兑换" />
-
-			<DropDown id="ExchangeFilter_Nav5" class="ExchangeFilter">
-				<Label text="{Entry 1}" id="entry1"/>
-				<Label text="{Entry 2}" id="entry2"/>
-				<Label text="{Entry 3}" id="entry3"/>
-				<Label text="{Entry 4}" id="entry4"/>
-			</DropDown>
+			<DropDown id="ExchangeFilter_Nav5" class="ExchangeFilter" />
 		</Panel>
 		
 	</Panel>

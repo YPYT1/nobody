@@ -19,7 +19,7 @@ let pictuer_list: { [x: string]: { [key: number]: number; }; } = {}
 let pic_fliter_text = ""
 
 export const Init = () => {
-    $.Msg(["card/register"])
+    // $.Msg(["card/register"])
     let picture_count = Object.keys(PictuerFetterConfig).length
     MainPanel.SetDialogVariableInt("card_count", 0);
     MainPanel.SetDialogVariableInt("card_max", picture_count);

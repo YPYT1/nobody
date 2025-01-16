@@ -88,14 +88,14 @@ export class modifier_skywrath_3a_b_channel extends BaseModifier {
         let dust_impact = ParticleManager.CreateParticle(
             "particles/generic_gameplay/dust_impact.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
-            this.caster
+            this.parent
         )
         ParticleManager.ReleaseParticleIndex(dust_impact)
 
         let aoe_fx = ParticleManager.CreateParticle(
             "particles/units/heroes/hero_zeus/zeus_cloud.vpcf",
             ParticleAttachment.ABSORIGIN_FOLLOW,
-            this.caster
+            this.parent
         )
         ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.radius, 0, 0))
         this.AddParticle(aoe_fx, false, false, -1, false, false)

@@ -102,7 +102,7 @@ function InitEvents() {
 
 
     })
-
+    MainPanel.SetHasClass("Show", true);
 
 
     Pay_wx.SetPanelEvent("onselect", () => {

@@ -14,7 +14,7 @@ const StoreIcon = $("#StoreIcon") as ImagePanel;
 const StoreCountSlider = $("#StoreCountSlider") as SliderPanel & Panel;
 
 const CurrencyIcon = LoadCustomComponent($("#CurrencyIcon"), "server_item");
-CurrencyIcon._SetServerItemInfo({ hide_bg: true, show_count: false, show_tips: false });
+CurrencyIcon._SetServerItemInfo({ hide_bg: true, show_count: false, show_tips: true });
 
 let g_goods_id = ""
 let g_goods_count = 0;

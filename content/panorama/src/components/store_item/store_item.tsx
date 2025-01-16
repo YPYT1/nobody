@@ -56,8 +56,10 @@ class StoreItem {
         let g_goods_id = "" + goods_id
         let data = ServerShopList[g_goods_id as keyof typeof ServerShopList];
         MainPanel.Data<PanelDataObject>().goods_id = g_goods_id
+        // @ts-ignore
+        MainPanel.Data<PanelDataObject>().filter = data.filter ?? -1
         let goods_name = $.Localize("#custom_text_goods_" + g_goods_id);
-        MainPanel.SetDialogVariable("goods_name", goods_name + "  " + g_goods_id)
+        MainPanel.SetDialogVariable("goods_name", goods_name)
         MainPanel.SetDialogVariable("limit_type", "");
         MainPanel.SetDialogVariableInt("limit_count", 0);
         MainPanel.Data<PanelDataObject>().limit_count = 0;
