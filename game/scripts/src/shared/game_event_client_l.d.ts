@@ -329,12 +329,18 @@ declare interface CustomGameEventDeclarations {
             items : AM2_Server_Backpack[],
         }
     }
-
     /**
      * 购买记录
      */
     ServiceInterface_GetPlayerShoppingLimit: {
         data: AM2_Server_Shopping_Limit,
+    };
+
+    /**
+     * 地图经验
+     */
+    ServiceInterface_GetPlayerMapLevel: {
+        data: AM2_Server_Exp_Data,
     };
     //玩家生命数
     GameInformation_GetPlayerLifeData : {

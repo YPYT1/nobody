@@ -193,7 +193,7 @@ export class ServiceTalent extends UIEventRegisterClass{
     Init(){
         
     }
-    //获取玩家装备配置
+    //获取玩家天赋配置
     GetPlayerServerTalent(player_id: PlayerID, params: CGED["ServiceTalent"]["GetPlayerServerTalent"], callback?) {
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
@@ -228,7 +228,7 @@ export class ServiceTalent extends UIEventRegisterClass{
     }
     //加载服务器配置
     LoadPlayerServerTalent(player_id : PlayerID , Data : { [hero_id : number] : string}){
-        let player_map_level = GameRules.ServiceInterface.player_map_level[player_id];
+        let player_map_level = GameRules.ServiceInterface.player_map_level[player_id].level;
         for (const key in Data) {
             let hero_id : number = tonumber(key);
             if(Data[hero_id] != ""){
@@ -353,7 +353,7 @@ export class ServiceTalent extends UIEventRegisterClass{
             //初始化可以点的天赋
             this.player_talent_list[player_id][hero_id][ti] = {
                 u : 0,
-                y : GameRules.ServiceInterface.player_map_level[player_id],
+                y : GameRules.ServiceInterface.player_map_level[player_id].level,
                 i : {}
             };
             for( const Tkey in ServerTalentData){

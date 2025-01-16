@@ -113,12 +113,12 @@ export class ArchiveService extends UIEventRegisterClass {
                         GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
                         //地图经验
                         let player_map_level = GameRules.ServiceInterface.GetServerMapLevel(GameRules.ServiceData.server_gold_package_list[index]["1004"].number);
-                        GameRules.ServiceInterface.player_map_level[index] = player_map_level.level;
+                        GameRules.ServiceInterface.player_map_level[index] = player_map_level;
                         
                         let talentdata = data.data.list[steam_id.toString()].talentdata;
                         
                         //初始化天赋
-                        GameRules.ServiceTalent.ServiceTalentInitByPlayerId(index , GameRules.ServiceInterface.player_map_level[index] , talentdata);
+                        GameRules.ServiceTalent.ServiceTalentInitByPlayerId(index , GameRules.ServiceInterface.player_map_level[index].level , talentdata);
                         
                     }
                     //0号玩家 的难度作为默认难度
@@ -1065,6 +1065,8 @@ export class ArchiveService extends UIEventRegisterClass {
         GameRules.ServiceData.server_gold_package_list[player_id]["1004"].number = data.exp ?? 0;
         GameRules.ServiceData.server_gold_package_list[player_id]["1005"].number = data.zs_gold ?? 0;
         GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
+        //更新经验相关的数据
+        GameRules.ServiceInterface.MapExpUpdate(player_id , GameRules.ServiceData.server_gold_package_list[player_id]["1004"].number );
         //玩家VIP信息
         // GameRules.ServiceData.player_vip_data[player_id].vip_times = data.vip_times ?? 0;
         // GameRules.ServiceData.player_vip_data[player_id].vip_zs = data.vip_zs ?? 0;

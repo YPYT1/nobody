@@ -451,6 +451,10 @@ declare interface CGED {
         GetPlayerShoppingLimit : {
 
         }
+        //获取地图经验
+        GetPlayerMapLevel : {
+            
+        }
         /**
          * 获取服务器时间
          */

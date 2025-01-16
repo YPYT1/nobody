@@ -107,7 +107,7 @@ export class ServiceSoul extends UIEventRegisterClass {
             if(this.soul_list[player_id].i.hasOwnProperty(box_type)){
                 let r_data = CustomDeepCopy(this.soul_list[player_id].i[box_type].d) as CGEDGetSoulListData[];
                 let r_data_key_list = Object.keys(r_data);
-                let max = math.min( math.floor(GameRules.ServiceInterface.player_map_level[player_id] / 10) , this.player_xq_count);
+                let max = math.min( math.floor(GameRules.ServiceInterface.player_map_level[player_id].level / 10) , this.player_xq_count);
                 if(r_data_key_list.length < max){
                     let is_meiyou = true;
                     for (let r_i = 0; r_i < r_data.length; r_i++) {
@@ -188,7 +188,7 @@ export class ServiceSoul extends UIEventRegisterClass {
                     let l = this.soul_list[player_id].i[box_type].l;
                     if(type == 1){
                         if(level >= 5){
-                            if(GameRules.ServiceInterface.player_map_level[player_id] >= 50){
+                            if(GameRules.ServiceInterface.player_map_level[player_id].level >= 50){
                                 if(level >= 15){
                                     if(l < 75){
                                         GameRules.CMsg.SendErrorMsgToPlayer(player_id , "魂石功能:历史总等级达到75,即可开放魂石上限为20级");
@@ -612,10 +612,8 @@ export class ServiceSoul extends UIEventRegisterClass {
             {
                 data: {
                     list : this.soul_list[player_id],
-                    map_level : GameRules.ServiceInterface.player_map_level[player_id]
+                    map_level : GameRules.ServiceInterface.player_map_level[player_id].level
                 }
-                
-                
             }
         );
     }

@@ -10,6 +10,7 @@ import * as ServerSkillful from "../../json/config/server/hero/server_skillful.j
 import * as PictuerCardData from "../../json/config/server/picture/pictuer_card_data.json";
 import * as PictuerFetterConfig from "../../json/config/server/picture/pictuer_fetter_config.json";
 import * as PictuerFetterAbility from "../../json/config/server/picture/pictuer_fetter_ability.json";
+import * as NpcHeroesCustom from "../../json/npc_heroes_custom.json";
 
 import  * as ServerItemList  from "../../json/config/server/item/server_item_list.json";
 
@@ -17,7 +18,7 @@ import  * as ServerItemList  from "../../json/config/server/item/server_item_lis
 export class ServiceInterface extends UIEventRegisterClass{
     
     //玩家地图等级
-    player_map_level : number[] = [ 0 , 0 , 0 , 0 , 0 , 0 ];
+    player_map_level : AM2_Server_Exp_Data[] = [];
 
     fetter_ability_values: {
         [name: string]: {
@@ -67,6 +68,12 @@ export class ServiceInterface extends UIEventRegisterClass{
             );
             this.DrawRecord.push({});
             this.PassRecord.push({});
+            this.player_map_level.push({
+                "cur_exp" : 0 , 
+                "is_max" : 0 ,
+                "level" : 0 ,
+                "level_exp" : 0,
+            })
         }
         //初始化技能数据
         for (let i_key in PictuerFetterAbility) {
@@ -114,7 +121,7 @@ export class ServiceInterface extends UIEventRegisterClass{
      * 地图经验值转等级
      * @param key 
      */
-    GetServerMapLevel(exp : number) : { level : number , cur_exp : number , level_exp : number , is_max : number}{
+    GetServerMapLevel(exp : number) : AM2_Server_Exp_Data{
         let exp_equation = "lv*500";
         let max_level =  50;
         let yyexp = exp;
@@ -143,7 +150,51 @@ export class ServiceInterface extends UIEventRegisterClass{
             is_max : 1,
         };
     }
-    
+    /**
+     * 地图经验更新时处理
+     */
+    MapExpUpdate(player_id : PlayerID , exp : number){
+        if(exp != GameRules.ServiceData.server_gold_package_list[player_id]["1004"].number){
+            let new_player_map_level = GameRules.ServiceInterface.GetServerMapLevel(exp);
+            let is_up_soul_and_talent = false;
+            //是否产生了升级
+            if(GameRules.ServiceInterface.player_map_level[player_id].level > new_player_map_level.level){ 
+                is_up_soul_and_talent = true;
+            }
+            GameRules.ServiceInterface.player_map_level[player_id] = new_player_map_level;
+
+            if(is_up_soul_and_talent){
+                let map_level = GameRules.ServiceInterface.player_map_level[player_id].level;
+                //重新发送魂石信息
+                GameRules.ServiceSoul.GetPlayerServerSoulData(player_id , {});
+                //重新修改天赋点
+                for (const key in NpcHeroesCustom) {
+                    let hero = NpcHeroesCustom[key as keyof typeof NpcHeroesCustom];
+                    let hero_id_str = tostring(hero.HeroID);
+                    if(GameRules.ServiceTalent.player_server_talent_list[player_id].hasOwnProperty(hero_id_str)){
+                        //如果有 就进行处理
+                        for (let x = 0; x < GameRules.ServiceTalent.index_count; x++) {
+                            if(GameRules.ServiceTalent.player_server_talent_list[player_id][hero_id_str][x]){
+                                let c = GameRules.ServiceTalent.player_talent_list[player_id][hero_id_str][x].u + 
+                                    GameRules.ServiceTalent.player_talent_list[player_id][hero_id_str][x].y;
+                                if(map_level > c){
+                                    let chazhi = map_level - c;
+                                    GameRules.ServiceTalent.player_talent_list[player_id][hero_id_str][x].y += chazhi;
+                                    GameRules.ServiceTalent.player_server_talent_list[player_id][hero_id_str][x].y += chazhi;
+                                }
+                            }
+                        }
+                    }
+                }
+                //重新推送天赋信息
+                GameRules.ServiceTalent.GetPlayerServerTalent(player_id , {});
+            }
+
+            GameRules.ServiceInterface.GetPlayerMapLevel(player_id , {});
+
+        }
+    }
+
     /**
      * 技能经验值转等级
      * @param key 
@@ -789,6 +840,22 @@ export class ServiceInterface extends UIEventRegisterClass{
             }
         );
     };
+
+    /**
+     * 获取地图经验
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    GetPlayerMapLevel(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerMapLevel"], callback?){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_GetPlayerMapLevel",
+            {
+                data : GameRules.ServiceInterface.player_map_level[player_id],
+            }
+        );
+    };
     /**
      * 获取数据
      * @param player_id 
@@ -878,7 +945,7 @@ export class ServiceInterface extends UIEventRegisterClass{
 
 
     /**
-     * 限购数据
+     * 月卡 vip功能
      * @param player_id 
      * @param params 
      * @param callback 
@@ -900,7 +967,6 @@ export class ServiceInterface extends UIEventRegisterClass{
                 t : GameRules.ServiceData.player_vip_data[player_id].vip_zs == 1 ? -1 : 0,
             },
         }
-        DeepPrintTable(GameRules.ServiceInterface.ShoppingLimit[player_id]);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerVipData",

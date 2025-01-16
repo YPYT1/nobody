@@ -233,6 +233,13 @@ declare interface AM2_Server_Shopping_Limit {
     sc : string ,  //首冲信息
 }
 
+declare interface AM2_Server_Exp_Data{ 
+    level : number , //当前等级
+    cur_exp : number , //现在的经验
+    level_exp : number ,  // 升级所需经验
+    is_max : number //是否满级
+}
+
 declare interface AM2_Server_Shopping_Limit_List {
     [goods_id : string] : {
         c : number , 
