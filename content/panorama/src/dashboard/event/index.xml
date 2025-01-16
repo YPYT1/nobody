@@ -13,12 +13,12 @@
 
         
     </snippets>
-	<Panel class="DashBoardPanel">
+	<Button class="DashBoardPanel">
 		<Panel id="ContentFrame" class="ContentFrame" hittest="false" />
 
         <Panel class="NavButtonContainer">
             <Panel id="NavButtonList" class="NavButtonListHor2" hittest="false"/>
         </Panel>
         
-	</Panel>
+	</Button>
 </root>

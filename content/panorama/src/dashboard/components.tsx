@@ -6,7 +6,7 @@ export const DASHBOARD_NAVBAR = {
 
     // 个人档案
     "personal": {
-        "Show": IsTestMode,
+        "Show": true,
         "Sub": { // 子菜单
             "hero": true,
             "skill": true,
@@ -15,7 +15,7 @@ export const DASHBOARD_NAVBAR = {
     },
 
     "card": {
-        "Show": IsTestMode,
+        "Show": true,
         "Sub": {
             "handbook": true,
             "register": true,
@@ -23,7 +23,7 @@ export const DASHBOARD_NAVBAR = {
     },
 
     "backpack": {
-        "Show": IsTestMode,
+        "Show": true,
         "Sub": {
             "all": true,
             // "type1": true,
@@ -47,10 +47,10 @@ export const DASHBOARD_NAVBAR = {
     },
 
     "event": {
-        "Show": IsTestMode,
+        "Show": true,
         "Sub": {
             "bp": true, // 成长礼
-            "quest": true, // 常驻活动,
+            "quest": false, // 常驻活动,
         }
     },
 

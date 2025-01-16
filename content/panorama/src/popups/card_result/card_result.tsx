@@ -117,6 +117,4 @@ const CustomEventSub = () => {
 (() => {
     Init();
     ContextPanel.SetHasClass("Show", false)
-
-    // $.Msg(["11111"])
 })();
