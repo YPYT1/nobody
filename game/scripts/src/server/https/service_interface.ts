@@ -185,7 +185,6 @@ export class ServiceInterface extends UIEventRegisterClass{
                                     GameRules.ServiceTalent.player_talent_list[player_id][hero_id_str][x].y;
                                 if(map_level > c){
                                     let chazhi = map_level - c;
-                                    print("chazhi :" , chazhi);
                                     GameRules.ServiceTalent.player_talent_list[player_id][hero_id_str][x].y += chazhi;
                                     GameRules.ServiceTalent.player_server_talent_list[player_id][hero_id_str][x].y += chazhi;
                                 }

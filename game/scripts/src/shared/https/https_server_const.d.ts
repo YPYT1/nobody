@@ -124,9 +124,9 @@ declare interface GameOverReturn {
             [steam_id : string] : { // steamid
                 add_items : ItemTReturn[],
                 skill_exp : string,
+                level_difficulty : string, //当前可用难度
             }
         }
-        level_difficulty : string, //当前可用难度
     }
 }
 

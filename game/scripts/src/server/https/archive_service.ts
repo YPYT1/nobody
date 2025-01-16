@@ -275,6 +275,7 @@ export class ArchiveService extends UIEventRegisterClass {
             },
             (data: GameOverReturn) => {
                 print("==============获得返回数据================")
+                DeepPrintTable(data);
                 if (data.code == 200) {
                     //胜负状态
                     this.general_game_over_data_pass_data.state = state;
@@ -341,17 +342,23 @@ export class ArchiveService extends UIEventRegisterClass {
                         //重新发送背包数据
                         GameRules.ServiceInterface.GetPlayerServerPackageData(index , {});
                         GameRules.ServiceInterface.GetPlayerServerGoldPackageData(index , {});
-                    }
-                    if(data.data.level_difficulty != GameRules.MapChapter.level_difficulty[0]){
-                        GameRules.MapChapter.level_difficulty[0] = data.data.level_difficulty;
-                        //触发难度选择重置
+
+                        //难度问题
+                        if(index == 0){
+                            if(data.data.list[steam_id_string].level_difficulty != GameRules.MapChapter.level_difficulty[0]){
+                                GameRules.MapChapter.DifficultySelectInit(data.data.list[steam_id_string].level_difficulty);
+                            }
+                        }
+                        GameRules.MapChapter.level_difficulty[index] = data.data.list[steam_id_string].level_difficulty;
                     }
                 }
                 let player_count = 4;
                 //发送给每个玩家数据
                 for (let index = 0 as PlayerID; index < player_count; index++) {
                     GameRules.ArchiveService.GetPlayerGameOverData(index , {})
+                    // GameRules.MapChapter.GetDifficultyMax( index , {});
                 }
+                
                 GameRules.NpcSystem.CreationNpc();
                 //清理技能经验
                 GameRules.HeroAbilityType.InitTypeExp();

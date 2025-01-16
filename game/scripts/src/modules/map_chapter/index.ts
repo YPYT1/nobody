@@ -144,8 +144,9 @@ export class MapChapter extends UIEventRegisterClass {
         //开始游戏确认功能
         GameRules.MapChapter.SelectDifficultyAffirmThink();
     }
-    //难度初始化
+    //难度更新
     DifficultySelectInit( str : string = ""){
+        print(str);
         this._map_list = {};
         this._map_list["c1"] = {
             user_difficulty: 101, // 玩家最高可选难度
@@ -182,18 +183,19 @@ export class MapChapter extends UIEventRegisterClass {
                 for (const unlock_difficulty of unlock_difficulty_list) {
                     if(unlock_difficulty != "null"){
                         let unlock_difficulty_str = tostring(unlock_difficulty);
+                        let unlock_difficulty_num = tonumber(unlock_difficulty);
                         let UnlockMidData = MapInfoDifficulty[unlock_difficulty_str as keyof typeof MapInfoDifficulty];
                         let UnlockChapterKey = UnlockMidData.chapter_key;
                         if(this._map_list.hasOwnProperty(UnlockChapterKey)){
-                            if(this._map_list[UnlockChapterKey].user_difficulty < mid_number){
-                                this._map_list[UnlockChapterKey].user_difficulty = mid_number;
+                            if(this._map_list[UnlockChapterKey].user_difficulty < unlock_difficulty_num){
+                                this._map_list[UnlockChapterKey].user_difficulty = unlock_difficulty_num;
                             }
                         }else{
                             let unlock_default_difficulty = ChapterInfo[UnlockChapterKey as keyof typeof ChapterInfo].default_difficulty;
                             let unlock_default_max = ChapterInfo[UnlockChapterKey as keyof typeof ChapterInfo].default_max;
                             let unlock_difficulty_max = unlock_default_difficulty + unlock_default_max - 1;
                             this._map_list[UnlockChapterKey] = {
-                                user_difficulty : tonumber(unlock_difficulty), // 玩家最高可选难度
+                                user_difficulty : unlock_difficulty_num, // 玩家最高可选难度
                                 difficulty_max : unlock_difficulty_max, // 地图最高难度
                                 map_key: map_key, //地图编号 m1 m2 
                             };
@@ -201,6 +203,10 @@ export class MapChapter extends UIEventRegisterClass {
                     }
                 }
             }
+        }
+
+        for (let index = 0 as PlayerID; index < 4; index++) {
+            GameRules.MapChapter.GetDifficultyMax( index , {});
         }
         // if(str && str != ""){
         //     let str_list = str.split(",");
@@ -327,6 +333,7 @@ export class MapChapter extends UIEventRegisterClass {
     }
     //获取游戏最高难度
     GetDifficultyMax(player_id: PlayerID, params: CGED["MapChapter"]["GetDifficultyMax"]) {
+        DeepPrintTable( this._map_list);
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "MapChapter_GetDifficultyMax",
@@ -1077,6 +1084,9 @@ export class MapChapter extends UIEventRegisterClass {
         }
         if(cmd == "-getplayer"){
             print(GetPlayerCount())
+        }
+        if(cmd == "--D"){
+            this.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0]);
         }
     }
 }
