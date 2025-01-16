@@ -72,7 +72,7 @@
 						<Panel class="CostItemPanel">
 							<Panel id="GachaServerItem"/>
 							<Panel class="CountBorder">
-								<Panel id="GachaItemCount"/>
+								<Label id="GachaItemCount" text="{s:count}"/>
 							</Panel>
 							
 						</Panel>

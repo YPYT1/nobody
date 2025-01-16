@@ -4,9 +4,9 @@ interface ComponentProps {
     server_item: Component_ServerItem;
     row_attribute: Component_RowAttribute;
     server_item_name: Component_ServerItemName;
-    store_item: Component_StoreItem;
+    // store_item: Component_StoreItem;
     store_item_ex1: Component_StoreItemEx1;
-    backpack_count: Component_BackpackCount;
+    // backpack_count: Component_BackpackCount;
 }
 
 

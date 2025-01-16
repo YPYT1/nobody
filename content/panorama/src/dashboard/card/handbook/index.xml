@@ -23,13 +23,13 @@
         <snippet name="CardCompose">
             <Panel class="CardCompose">
                 <Panel id="SourceList">
-                    <Image class="Item" >
+                    <Image class="Item" scaling='stretch-to-fit-y-preserve-aspect'>
                         <Label text="{s:card_id}"/>
                     </Image>
-                    <Image class="Item" >
+                    <Image class="Item" scaling='stretch-to-fit-y-preserve-aspect'>
                         <Label text="{s:card_id}"/>
                     </Image>
-                    <Image class="Item" >
+                    <Image class="Item" scaling='stretch-to-fit-y-preserve-aspect'>
                         <Label text="{s:card_id}"/>
                     </Image>
                 </Panel>

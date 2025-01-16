@@ -80,8 +80,8 @@ GameEvents.Subscribe("MapChapter_GetPlayerSelectHeroList", event => {
                 HeroCardButton.checked = card_hero_id == `${hero_id}`
             }
 
-            MainPanel.SetDialogVariable("local_heroname",$.Localize(`#${hero_name}`))
-            
+            MainPanel.SetDialogVariable("local_heroname", $.Localize(`#${hero_name}`))
+
         }
     }
 
@@ -237,9 +237,15 @@ const InitHeroTalentConfig = () => {
             } else {
                 config_index = parseInt(HeroTalentConfig.GetSelected().id);
             }
+            // $.Msg(["config_index",config_index])
             select_talent_index = config_index
             // $.Msg(["select talent", local_select_id, select_talent_index])
-
+            GameEvents.SendCustomGameEventToServer('ServiceTalent', {
+                event_name: "SetSelectTalentIndex",
+                params: {
+                    index: config_index,
+                }
+            })
         })
     })
 

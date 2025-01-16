@@ -28,6 +28,7 @@ export const Init = () => {
         Pay_alipay.checked = false;
         CanvasPanel.ClearJS(`rgba(255,255,255,0)`)
         MainPanel.SetHasClass("Show", false);
+        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel().id);
     })
     InitEvents()
 }
@@ -75,12 +76,14 @@ function CreateQRCode(ui_Panel: UICanvas, str_url: string, code_size: number) {
 
 function InitEvents() {
 
-    GameUI.CustomUIConfig().EventBus.clear("open_rmb_purchase");
-    GameUI.CustomUIConfig().EventBus.subscribe("open_rmb_purchase", event => {
+    // GameUI.CustomUIConfig().EventBus.clear("open_rmb_purchase");
+    MainPanel.SetPanelEvent("onload",()=>{
+    // GameUI.CustomUIConfig().EventBus.subscribe("open_rmb_purchase", event => {
         MainPanel.SetHasClass("Show", true);
-        let goods_id = event.id;
+        // let goods_id = event.id;
+        
+        let goods_id = $.GetContextPanel().GetAttributeString("id", "");
         g_goods_id = goods_id;
-
         let data = ServerShopList[goods_id as keyof typeof ServerShopList];
         let goods_name = $.Localize("#custom_text_goods_" + goods_id);
         let goods_desc = $.Localize("#custom_text_goods_" + goods_id + "_desc").replaceAll("\n", "<br>");

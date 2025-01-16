@@ -34,7 +34,7 @@ function InitQuickPurchase() {
     // $.Msg(["qp_price",qp_price])
     QuickPurchase.SetDialogVariableInt("qp_price", parseInt(qp_price))
     QuickPurchaseButton.SetPanelEvent("onactivate", () => {
-        GameUI.CustomUIConfig().EventBus.publish("open_store_purchase", { id: GACHA_SHOP_ID })
+        GameUI.CustomUIConfig().ServerEventBus.publish("open_store_purchase", { id: GACHA_SHOP_ID })
     })
 }
 
@@ -218,10 +218,9 @@ function UpdateReward(DrawRecordData: AM2_Draw_Lottery_Draw_Record_List) {
 function InitGachaItemShow() {
     const GachaServerItem = LoadCustomComponent($("#GachaServerItem"), "server_item")
     GachaServerItem._SetServerItemInfo({ hide_bg: true, show_tips: true, show_count: false, item_id: 1207 })
-
-    const GachaItemCount = LoadCustomComponent($("#GachaItemCount"), "backpack_count");
-    GachaItemCount._SetItemId("1207");
-    GachaItemCount._SetLabelStyle({ font_size: 16, color: "#fffffe" })
+    $.Msg(["1207 2"])
+    const GachaItemCount = GameUI.CustomUIConfig().SetComponent_BackpackCount($("#GachaItemCount"),"1207")
+    GachaItemCount.BackpackCount._SetLabelStyle({ font_size: 16, color: "#fffffe" })
 }
 
 (() => {

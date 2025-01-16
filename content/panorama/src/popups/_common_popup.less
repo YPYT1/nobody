@@ -2,9 +2,13 @@
     width: 100%;
     height: 100%;
     background-color: #00000099;
-    visibility: collapse;
+    opacity: 0;
 
+    transition-property: opacity;
+    // transition-delay: 0.05s;
+    transition-duration: 0.2s;
     &.Show {
-        visibility: visible;
+        opacity: 1;
+        // visibility: visible;
     }
 }

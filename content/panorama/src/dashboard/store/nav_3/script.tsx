@@ -13,14 +13,15 @@ export function Init() {
         let goods_data = ServerShopList[goods_id as keyof typeof ServerShopList];
         let mall_category_arr = ("" + goods_data.mall_category).split(",");
         if (mall_category_arr.indexOf(mall_category) != -1) {
-            let StoreItem = CreateCustomComponent(ShopItemList, "store_item", goods_id)
-            StoreItem._SetGoodsId(goods_id)
+            let StoreItem = GameUI.CustomUIConfig().SetStoreItemPanel(ShopItemList, goods_id);
+            StoreItem.StoreItem._SetGoodsId(goods_id)
         }
     }
 
-    
+
 }
 
 (() => {
+    $.Msg(["1"])
     Init();
 })();

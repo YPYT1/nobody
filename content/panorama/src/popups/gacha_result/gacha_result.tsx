@@ -5,20 +5,25 @@ const MainPanel = $.GetContextPanel();
 const ItemList = $("#ItemList")
 
 
-const testdata: AM2_Draw_Lottery_Data[] = [
-    { "n": 1, "q": 3, "i": 3509, "k": "14" },
-    { "n": 5000, "q": 3, "i": 1003, "k": "3" },
-    { "n": 1000, "q": 2, "i": 1003, "k": "2" },
-    { "n": 15000, "q": 4, "i": 1003, "k": "4" },
-    { "n": 1, "q": 3, "i": 3509, "k": "14" },
-    { "n": 1000, "q": 2, "i": 1003, "k": "2" },
-    { "n": 500, "q": 1, "i": 1003, "k": "1" },
-    { "n": 1, "q": 3, "i": 3511, "k": "16" },
-    { "n": 5000, "q": 3, "i": 1003, "k": "3" },
-    { "n": 1, "q": 3, "i": 3512, "k": "17", "r": { "3509": 1 } },
-]
 export const Init = () => {
     MainPanel.SetHasClass("Show", false);
+    MainPanel.Data<PanelDataObject>().state = 0;
+
+    MainPanel.SetPanelEvent("onactivate", () => {
+        $.Msg(["MainPanel onactivate"])
+        const state = MainPanel.Data<PanelDataObject>().state;
+        $.Msg(["state", state])
+        // if (state == 1) {
+        //     MainPanel.SetHasClass("Show", false);
+
+        //     $.Schedule(0.1, () => {
+        //         ClearItemListPanel()
+        //     })
+        // }
+
+
+    })
+    
     ItemList.RemoveAndDeleteChildren()
     for (let i = 0; i < 10; i++) {
         let _ = $.CreatePanel("Panel", ItemList, "");
@@ -37,20 +42,19 @@ export const Init = () => {
         _.visible = false;
     }
 
-    MainPanel.SetPanelEvent("onactivate", () => {
-
-        MainPanel.SetHasClass("Show", false);
-
-        $.Schedule(0.1, () => {
-            ClearItemListPanel()
-        })
-
-    })
+    
 
     // $.Msg(["Subscribe ServiceInterface_GetPlayerServerDrawLottery"])
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerDrawLottery", event => {
         let list_data = Object.values(event.data)
+        MainPanel.Data<PanelDataObject>().state = 0;
         GenerateGachaResult(list_data)
+        $.Schedule(1, () => {
+            if (MainPanel.BHasClass("Show")) {
+                MainPanel.Data<PanelDataObject>().state = 1
+            }
+
+        })
     })
 
     // GenerateGachaResult(testdata)

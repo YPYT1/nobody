@@ -72,7 +72,7 @@ export class modifier_drow_3b_b_thinker extends modifier_drow_3b_thinker {
                 damage: ability_damage,
                 damage_type: DamageTypes.MAGICAL,
                 element_type: this.element_type,
-                ability: this.GetAbility(),
+                ability: hAbility,
                 is_primary: true,
                 SelfAbilityMul: this.SelfAbilityMul,
                 DamageBonusMul: this.DamageBonusMul + DamageBonusMul,

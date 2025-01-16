@@ -33,7 +33,10 @@ declare global {
         DashboardRoute<
             Key extends keyof typeof DASHBOARD_NAVBAR,
             T2 extends typeof DASHBOARD_NAVBAR[Key]
-        >(dashboard_id: Key, nav: keyof T2["Sub"]): void
+        >(dashboard_id: Key, nav: keyof T2["Sub"]): void;
+
+        Popups_StorePurchase(id: string): void;
+        Popups_Payment(id: string): void;
     }
 }
 
@@ -222,4 +225,23 @@ for (let k in NpcHeroesCustom) {
 }
 GameUI.CustomUIConfig().HeroIDToName = function (heroid: number) {
     return HeroIdTable[heroid]
+}
+
+
+GameUI.CustomUIConfig().Popups_StorePurchase = function (id: string) {
+    $.DispatchEvent(
+        "UIShowCustomLayoutPopupParameters",
+        "custom_popups_store_purchase",
+        "file://{resources}/layout/custom_game/popups/store_purchase/store_purchase.xml",
+        `id=${id}`
+    );
+}
+
+GameUI.CustomUIConfig().Popups_Payment = function (id: string) {
+    $.DispatchEvent(
+        "UIShowCustomLayoutPopupParameters",
+        "custom_popups_payment",
+        "file://{resources}/layout/custom_game/popups/payment/payment.xml",
+        `id=${id}`
+    );
 }

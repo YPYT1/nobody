@@ -26,7 +26,12 @@ let g_actual_price = 0;
 let g_item_object: { [x: string]: number } = {}
 
 let g_my_price = 0;
+
 export const Init = () => {
+
+    // MainPanel.SetPanelEvent('onload', () => {
+    //     MainPanel.SetHasClass("Show", true);
+    // })
 
     MultipleItemList.RemoveAndDeleteChildren();
     for (let i = 0; i < 10; i++) {
@@ -40,13 +45,16 @@ export const Init = () => {
 
     CancelButton.SetPanelEvent("onactivate", () => {
         MainPanel.SetHasClass("Show", false);
+        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel().id);
     })
 
 
-    // GameUI.CustomUIConfig().EventBus.clear("open_store_purchase");
-    GameUI.CustomUIConfig().EventBus.subscribe("open_store_purchase", event => {
+    // GameUI.CustomUIConfig().ServerEventBus.clear("open_store_purchase");
+    MainPanel.SetPanelEvent('onload', () => {
+        // GameUI.CustomUIConfig().ServerEventBus.subscribe("open_store_purchase", event => {
         MainPanel.SetHasClass("Show", true);
-        let goods_id = event.id;
+        // let goods_id = event.id;
+        let goods_id = $.GetContextPanel().GetAttributeString("id", "");
         g_goods_id = goods_id;
         let data = ServerShopList[goods_id as keyof typeof ServerShopList];
         let goods_name = $.Localize("#custom_text_goods_" + goods_id);
@@ -159,6 +167,8 @@ export const Init = () => {
                 count: g_goods_count,
             }
         })
+
+        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel().id);
     })
 }
 

@@ -1,3 +1,4 @@
+import { SetStoreItemPanel } from "../../components/store_item/store_item";
 import { LoadCustomComponent } from "../_components/component_manager";
 import { DASHBOARD_NAVBAR } from "../components";
 
@@ -16,7 +17,7 @@ const ChapterBpRouteBtn = $("#ChapterBpRouteBtn");
  * 1001,1002,1003,1004,1005,1006,1007,1008
  */
 /** 顶部显示的货币列表 */
-const Show_Top_Currency = [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008];
+const Show_Top_Currency = [1001, 1002, 1003, 1004, 1005];
 
 export function Init() {
     InitNavMenu()
@@ -81,9 +82,6 @@ function InitNavMenu() {
 
     })
 
-
-
-
     GameEvents.Subscribe("ServiceInterface_GetPlayerShoppingLimit", event => {
         let limit = event.data.limit;
         let limit_data: AM2_Server_Shopping_Limit_List = {}
@@ -110,7 +108,7 @@ function InitNavMenu() {
             }
         }
         GameUI.CustomUIConfig().setStorage("shoping_limit", limit);
-        GameUI.CustomUIConfig().EventBus.publish("shoping_limit_update", limit)
+        GameUI.CustomUIConfig().ServerEventBus.publish("shoping_limit_update", limit)
     })
 
     // 获取存档货币
@@ -126,7 +124,9 @@ function InitNavMenu() {
     })
 }
 
+
+
 (() => {
-    // $.Msg(["222"])
+    $.Msg(["2"])
     Init();
 })();
