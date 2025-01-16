@@ -158,13 +158,19 @@ export class ServiceInterface extends UIEventRegisterClass{
             let new_player_map_level = GameRules.ServiceInterface.GetServerMapLevel(exp);
             let is_up_soul_and_talent = false;
             //是否产生了升级
-            if(GameRules.ServiceInterface.player_map_level[player_id].level > new_player_map_level.level){ 
+            if(new_player_map_level.level > GameRules.ServiceInterface.player_map_level[player_id].level){ 
                 is_up_soul_and_talent = true;
             }
             GameRules.ServiceInterface.player_map_level[player_id] = new_player_map_level;
-
+            if(is_up_soul_and_talent){
+                print("is_up_soul_and_talent true")
+            }else{
+                print("is_up_soul_and_talent false")
+            }
+            
             if(is_up_soul_and_talent){
                 let map_level = GameRules.ServiceInterface.player_map_level[player_id].level;
+                print("map_level : " , map_level)
                 //重新发送魂石信息
                 GameRules.ServiceSoul.GetPlayerServerSoulData(player_id , {});
                 //重新修改天赋点
@@ -179,6 +185,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                                     GameRules.ServiceTalent.player_talent_list[player_id][hero_id_str][x].y;
                                 if(map_level > c){
                                     let chazhi = map_level - c;
+                                    print("chazhi :" , chazhi);
                                     GameRules.ServiceTalent.player_talent_list[player_id][hero_id_str][x].y += chazhi;
                                     GameRules.ServiceTalent.player_server_talent_list[player_id][hero_id_str][x].y += chazhi;
                                 }
@@ -848,6 +855,7 @@ export class ServiceInterface extends UIEventRegisterClass{
      * @param callback 
      */
     GetPlayerMapLevel(player_id: PlayerID, params: CGED["ServiceInterface"]["GetPlayerMapLevel"], callback?){
+        
         CustomGameEventManager.Send_ServerToPlayer(
             PlayerResource.GetPlayer(player_id),
             "ServiceInterface_GetPlayerMapLevel",

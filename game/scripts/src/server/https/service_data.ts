@@ -354,8 +354,14 @@ export class ServiceData extends UIEventRegisterClass {
     GoldPackageUpData(player_id : PlayerID ,item_id : number , count : number ) : boolean{
         let item_package = GameRules.ServiceData.server_gold_package_list[player_id];
         let item_id_string = tostring(item_id);
+        if(item_id == 1004){
+            //更新经验相关的数据 必须优先更新
+            let new_exp = GameRules.ServiceData.server_gold_package_list[player_id][item_id_string].number + count;
+            GameRules.ServiceInterface.MapExpUpdate(player_id , new_exp);
+        }
         if(item_package.hasOwnProperty(item_id_string)){
             GameRules.ServiceData.server_gold_package_list[player_id][item_id_string].number += count;
+
         }
         return true;
     }

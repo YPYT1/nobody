@@ -1058,6 +1058,8 @@ export class ArchiveService extends UIEventRegisterClass {
      * @param player_id 
      */
     PlayerGoldUpdate(player_id :PlayerID , data : PlayerInfoData){
+        //更新经验相关的数据 必须优先更新
+        GameRules.ServiceInterface.MapExpUpdate(player_id , data.exp);
         //获取玩家地图经验 货币等..
         GameRules.ServiceData.server_gold_package_list[player_id]["1001"].number = data.cz_gold ?? 0;
         GameRules.ServiceData.server_gold_package_list[player_id]["1002"].number = data.jf_gold ?? 0;
@@ -1065,8 +1067,7 @@ export class ArchiveService extends UIEventRegisterClass {
         GameRules.ServiceData.server_gold_package_list[player_id]["1004"].number = data.exp ?? 0;
         GameRules.ServiceData.server_gold_package_list[player_id]["1005"].number = data.zs_gold ?? 0;
         GameRules.ServiceInterface.GetPlayerServerGoldPackageData(player_id , {});
-        //更新经验相关的数据
-        GameRules.ServiceInterface.MapExpUpdate(player_id , GameRules.ServiceData.server_gold_package_list[player_id]["1004"].number );
+        
         //玩家VIP信息
         // GameRules.ServiceData.player_vip_data[player_id].vip_times = data.vip_times ?? 0;
         // GameRules.ServiceData.player_vip_data[player_id].vip_zs = data.vip_zs ?? 0;
