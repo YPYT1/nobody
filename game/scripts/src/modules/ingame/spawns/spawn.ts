@@ -1483,7 +1483,9 @@ export class Spawn extends UIEventRegisterClass {
             //重新设置时间
             GameRules.GameInformation.boss_time = 0;
             GameRules.GameInformation.SetPlayGameTime(0);
-            GameRules.Spawn.StartSpawnControl();
+            if(GameRules.Spawn._round_index < GameRules.Spawn._round_max){
+                GameRules.Spawn.StartSpawnControl();
+            }
             return null;
         }, 3)
         GameRules.CMsg.RemoveBossHealthBar(killed_unit);
