@@ -81,7 +81,7 @@ function UpdateTopPanelBoss() {
         if (!Entities.IsValidEntity(entity)) { return; }
         let pPanel = overhead_panel_boss[entity];
         if (pPanel === null || pPanel === undefined) {
-            $.Msg("CreatePanel")
+            // $.Msg("CreatePanel")
             pPanel = $.CreatePanel("Panel", TopHealthBarContent, "");
             pPanel.BLoadLayoutSnippet("TopHealthBar");
             overhead_panel_boss[entity] = pPanel;
