@@ -46,8 +46,8 @@ export class ArchiveService extends UIEventRegisterClass {
         let param_data = <CreateGameParam>{
             steamids: []
         }
-        for (let index = 0; index < count; index++) {
-            let steam_id = PlayerResource.GetSteamAccountID(0);
+        for (let index = 0 as PlayerID; index < count; index++) {
+            let steam_id = PlayerResource.GetSteamAccountID(index);
             param_data.steamids.push(steam_id);
         }
         HttpRequest.AM2Post(ACTION_CREATE_GAME,
@@ -116,7 +116,6 @@ export class ArchiveService extends UIEventRegisterClass {
                         GameRules.ServiceInterface.player_map_level[index] = player_map_level;
                         
                         let talentdata = data.data.list[steam_id.toString()].talentdata;
-                        
                         //初始化天赋
                         GameRules.ServiceTalent.ServiceTalentInitByPlayerId(index , GameRules.ServiceInterface.player_map_level[index].level , talentdata);
                         
