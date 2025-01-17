@@ -274,7 +274,6 @@ export class ArchiveService extends UIEventRegisterClass {
             },
             (data: GameOverReturn) => {
                 print("==============获得返回数据================")
-                DeepPrintTable(data);
                 if (data.code == 200) {
                     //胜负状态
                     this.general_game_over_data_pass_data.state = state;
@@ -283,6 +282,8 @@ export class ArchiveService extends UIEventRegisterClass {
 
                     this.general_game_over_data_pass_data.game_count = GameRules.MapChapter.game_count;
 
+                    this.general_game_over_data_pass_data.player_list_data = [];
+                    
                     let player_count = GetPlayerCount();
                     
                     for (let index = 0 as PlayerID; index < player_count; index++) {
@@ -306,7 +307,6 @@ export class ArchiveService extends UIEventRegisterClass {
                                         "quality" : quality,
                                         "type" : 1,
                                     });
-                                    
                                 }
                             }
                             GameRules.ArchiveService.RedAndAddBackpack(index , [] , add_items);
@@ -354,6 +354,7 @@ export class ArchiveService extends UIEventRegisterClass {
                 let player_count = 4;
                 //发送给每个玩家数据
                 for (let index = 0 as PlayerID; index < player_count; index++) {
+                    GameRules.Spawn.player_card_drop[index] = {};
                     GameRules.ArchiveService.GetPlayerGameOverData(index , {})
                     // GameRules.MapChapter.GetDifficultyMax( index , {});
                 }
