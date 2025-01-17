@@ -117,6 +117,7 @@ const GameEventsSubscribeInit = () => {
             let IsLimit = row_data.type == 2
             // $.Msg(["Item", row_data.type, row_data.rarity, item_label])
             // ShopItem.Data<PanelDataObject>().is_vip = is_vip
+
             ShopItem.SetHasClass("IsLimit", IsLimit);
             ShopItem.SetHasClass("IsVip", is_vip);
             ShopItem.SetHasClass("IsBuy", row_data.is_buy == 1);
@@ -124,6 +125,7 @@ const GameEventsSubscribeInit = () => {
             const is_enabled = row_data.is_lock == 0 && local_vip >= row_data.is_vip && row_data.is_buy == 0;
             ShopItem.SetHasClass("Enabled", is_enabled)
             ShopItem.SetDialogVariableInt("cost", row_data.soul);
+            ShopItem.Data<PanelDataObject>().cost = row_data.soul
             // ShopItem.SetDialogVariableInt("refresh_cost", row_data.refresh_soul);
             ShopItem.SetDialogVariable("item_name", $.Localize(`#custom_shopitem_${row_data.key}`));
             const ItemIcon = ShopItem.FindChildTraverse("ItemIcon") as ImagePanel;
@@ -181,9 +183,8 @@ const GameEventsSubscribeInit = () => {
     GameEvents.Subscribe("ResourceSystem_SendPlayerResources", event => {
         let data = event.data;
         MainPanel.SetDialogVariable("gold_count", "" + data.Soul)
-        // ResourcePanel["Gold"]?.SetDialogVariable("amount", `${data.Gold}`)
-        // ResourcePanel["Soul"]?.SetDialogVariableInt("amount", data.Soul)
-        // ResourcePanel["Kills"]?.SetDialogVariableInt("amount", data.Kills)
+        MainPanel.Data<PanelDataObject>().gold_count = data.Soul
+        UpShopItemListCost()
     })
 
 
@@ -202,6 +203,17 @@ const GameEventsSubscribeInit = () => {
     })
 }
 
+const UpShopItemListCost = () => {
+    if (MysticalShop.BHasClass("Open")) {
+        const gold_count = MainPanel.Data<PanelDataObject>().gold_count
+        for (let i = 0; i < ShopItemList.GetChildCount(); i++) {
+            const ShopItem = ShopItemList.GetChild(i)!;
+            const row_cost = ShopItem.Data<PanelDataObject>().cost as number;
+            ShopItem.SetHasClass("is_enough", gold_count >= row_cost)
+        }
+    }
+
+}
 
 /**
  * 弹窗购物

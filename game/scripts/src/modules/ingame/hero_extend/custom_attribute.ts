@@ -873,12 +873,11 @@ export class CustomAttribute {
 
         if (cmd == "-multest") {
             let value = [-50, -50, -50, -50, 50, 50, 50];
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 1; i++) {
                 let mul_key = DoUniqueString("mul_key");
                 this.SetAttributeInKey(hHero, mul_key, {
-                    'MoveSpeed': {
-                        "Bonus": -5,
-                        "BasePercent": -10,
+                    'CriticalDamage': {
+                        "MulRegion": -30,
                     },
                 }, 5 + i)
             }

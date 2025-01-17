@@ -20,7 +20,7 @@
 							<Label class="ItemDesc" text="{s:item_desc}" html="true"/>
 							<Panel class="ItemPrice">
 								<Panel class="PriceIcon"/>
-								<Label text="{d:cost}"/>
+								<Label class="ItemCost" text="{d:cost}"/>
 							</Panel>
 						</Panel>
 						
