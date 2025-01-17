@@ -24,6 +24,7 @@ export function Init() {
 }
 
 function InitNavMenu() {
+    $.GetContextPanel().SetPanelEvent("onactivate", () => { })
     NavButtonList.RemoveAndDeleteChildren();
     ContentFrame.RemoveAndDeleteChildren();
     let order = 0;
@@ -127,6 +128,5 @@ function InitNavMenu() {
 
 
 (() => {
-    $.Msg(["1"])
     Init();
 })();

@@ -18,6 +18,8 @@ const Initialize = () => {
     DashboardLoadingSpinner.SetHasClass("Show", false)
     CreateMenuButtons();
     GetServerTime();
+
+    ContentPanel.SetPanelEvent("onactivate", () => { })
 }
 
 const CreateMenuButtons = () => {
@@ -192,15 +194,12 @@ function DashboardRoute<
 
 
 (() => {
-    $.Msg(["111"])
-    // GameUI.CustomUIConfig().EventBus.removeAllListeners();
-    // GameUI.CustomUIConfig().ServerEventBus = new EventBus()
     GameUI.CustomUIConfig().ServerEventBus = new EventBus()
-    if (GameUI.CustomUIConfig().ServerEventBus == null){
+    if (GameUI.CustomUIConfig().ServerEventBus == null) {
         GameUI.CustomUIConfig().ServerEventBus = new EventBus()
     }
 
-    
+
     GameUI.CustomUIConfig().DashboardRoute = DashboardRoute;
     Initialize();
 })();

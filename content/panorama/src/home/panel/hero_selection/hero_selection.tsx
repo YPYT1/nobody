@@ -250,7 +250,7 @@ const InitHeroTalentConfig = () => {
     })
 
     TalentConfigTips.SetPanelEvent("onmouseover", () => {
-        TalentTooltips.SetHasClass("Show", true)
+        
         UpdateTalentDataInTips()
     })
 
@@ -264,6 +264,11 @@ const CheckAttrIsPercent = GameUI.CustomUIConfig().CheckAttrIsPercent
 function UpdateTalentDataInTips() {
     // $.Msg(["select talent", local_select_id, select_talent_index])
     const localData = GameUI.CustomUIConfig().getStorage("talent_data")!;
+    // $.Msg(["localData",localData])
+    if (localData == null){ 
+        return 
+    }
+    TalentTooltips.SetHasClass("Show", true)
     const config_data = Object.values(localData[local_select_id])[select_talent_index];
     // $.Msg(config_data)
     TalentTooltips.SetDialogVariable("config_index", "天赋页" + (select_talent_index + 1))

@@ -12,6 +12,7 @@ const MainPanel = $.GetContextPanel();
 
 export const Init = () => {
     // 加载nav button
+    MainPanel.SetPanelEvent("onactivate", () => { })
     NavButtonList.RemoveAndDeleteChildren();
     ContentFrame.RemoveAndDeleteChildren();
     let order = 0;
@@ -19,13 +20,13 @@ export const Init = () => {
         let sub_state = SUB_OBJECT[sub_key as keyof typeof SUB_OBJECT];
         if (sub_state) {
             let radiobtn_id = `${DASHBOARD}_${sub_key}`
-            let NavRadioBtn = $.CreatePanel("RadioButton", NavButtonList, radiobtn_id,{
-                group:"Dashboard_Event_Group"
+            let NavRadioBtn = $.CreatePanel("RadioButton", NavButtonList, radiobtn_id, {
+                group: "Dashboard_Event_Group"
             });
             NavRadioBtn.BLoadLayoutSnippet("NavRadioButton");
             NavRadioBtn.SetDialogVariable("button_txt", $.Localize("#custom_dashboard_nav_" + radiobtn_id))
             NavRadioBtn.checked = order == 0;
-            NavRadioBtn.SetHasClass("is_first",order == 0);
+            NavRadioBtn.SetHasClass("is_first", order == 0);
             NavRadioBtn.SetPanelEvent("onselect", () => {
                 for (let nav_key of Object.keys(SUB_OBJECT)) {
                     ContentFrame.SetHasClass(nav_key, nav_key == sub_key)

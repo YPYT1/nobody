@@ -160,6 +160,8 @@ const ShowChapterInfoTips = (e: Panel, chapter_key: string) => {
     let curr_chapter_data = DifficultyMaxData[chapter_key];
     let user_difficulty = curr_chapter_data.user_difficulty;
 
+    // 可选择关卡
+    // $.Msg(["DifficultyMaxData",DifficultyMaxData])
     for (let i = 0; i < default_max; i++) {
         const DifficultyButton = ChapterDiffList.GetChild(i) as RadioButton;
         const diff_value = i + default_difficulty;
@@ -175,6 +177,7 @@ const ShowChapterInfoTips = (e: Panel, chapter_key: string) => {
                         difficulty: `${diff_value}`
                     }
                 })
+                
             })
         } else {
             DifficultyButton.SetPanelEvent("onactivate", () => { })
@@ -325,7 +328,6 @@ const CreateChapterSelectPanel = () => {
 }
 
 const UpdateChapterPage = (data: { [key: string]: UserMapSelectDifficulty }) => {
-
     for (let chapter_key in data) {
         let chapter_id = `Chapter_${chapter_key}`
         let ChapterSelectBtn = PageList.FindChildTraverse(chapter_id)!;
@@ -353,6 +355,7 @@ export const Init = () => {
                 event_name: "SelectDifficultyAffirm",
                 params: {}
             })
+            HideChapterInfoTips();
         })
 
     })

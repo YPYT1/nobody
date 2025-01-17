@@ -22,6 +22,5 @@ export function Init() {
 }
 
 (() => {
-    $.Msg(["1"])
     Init();
 })();

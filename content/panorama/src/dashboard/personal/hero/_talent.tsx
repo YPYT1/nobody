@@ -325,15 +325,14 @@ export const InitHeroTalentView = () => {
         let data = event.data;
         serverData = data.server;
         localData = data.local;
+        GameUI.CustomUIConfig().setStorage("talent_data", localData)
         if (select_hero_id == -1) {
             TalentSaveBtn.enabled = false;
             HeroTalentConfig.enabled = true;
             return
         }
-        // $.Msg(["localData", localData])
         // 更新天赋页面
         // $.Msg(Object.values(serverData[select_hero_id]).length)
-        GameUI.CustomUIConfig().setStorage("talent_data", localData)
         let server_config = Object.values(serverData[select_hero_id])[config_index];
         let config_data = Object.values(localData[select_hero_id])[config_index];
         // HeroPopups_Talent.SetDialogVariableInt("talent_point", config_data.y)
