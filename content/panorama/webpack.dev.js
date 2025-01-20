@@ -8,7 +8,7 @@ const entry = Object.assign({}, entries);
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     context: path.resolve(__dirname, 'src'),
     output: {
         path: path.resolve(__dirname, 'layout/custom_game'),

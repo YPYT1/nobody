@@ -126,8 +126,8 @@ export class modifier_prop_effect extends BaseModifier {
         if (this.object["prop_40"]) {
             if (GameRules.MapChapter._game_select_phase == 3) {
                 let count = GameRules.MysticalShopSystem.player_shop_buy_data[this.player_id]["prop_40"];
-                let limit = this.Prop_Object("prop_40", "limit");
-                let value = this.Prop_Object("prop_40", "value");
+                let limit = this.Prop_Object("prop_40", "limit") ?? 10;
+                let value = this.Prop_Object("prop_40", "value") ?? 1;
                 GameRules.ResourceSystem.ModifyResource(this.player_id, {
                     "Soul": value * math.min(count, limit)
                 })

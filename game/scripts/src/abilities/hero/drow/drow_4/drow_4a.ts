@@ -71,7 +71,7 @@ export class modifier_drow_4a extends BaseHeroModifier {
             if (this.caster.rune_level_index.hasOwnProperty("rune_49")) {
                 let bonus_ingame = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_49', 'bonus_ingame')
                 let duration = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_49', 'duration');
-                print("bonus_ingame", bonus_ingame, "duration", duration)
+                // print("bonus_ingame", bonus_ingame, "duration", duration)
                 GameRules.CustomAttribute.SetAttributeInKey(this.caster, 'rune_49_effect', {
                     'DamageBonusMul': {
                         "Base": bonus_ingame

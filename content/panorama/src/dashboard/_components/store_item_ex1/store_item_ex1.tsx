@@ -144,11 +144,8 @@ function _SetLimitCount(count: number) {
 
 (function () {
     MainPanel.SetDialogVariable("days", "0天")
-    let goods_id = MainPanel.Data<PanelDataObject>().goods_id as string;
-    if (goods_id) {
-        _SetGoodsId(goods_id);
-    }
-
+    g_goods_id = MainPanel.Data<PanelDataObject>().goods_id as string;
+    _SetGoodsId(g_goods_id);
     MainPanel._SetGoodsId = _SetGoodsId;
     MainPanel._SetState = _SetState
     MainPanel._GetGoodsId = _GetGoodsId;

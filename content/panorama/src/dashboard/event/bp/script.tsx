@@ -78,7 +78,7 @@ export function Init() {
             let BattlePassItem = $.CreatePanel("Panel", BattlePassList, level);
             BattlePassItem.BLoadLayoutSnippet("BattlePassItem");
             BattlePassItem.SetDialogVariable("level", level);
-            
+
             let pt_arr = ConvertServerItemToArray(row_data.pt_item_id);
             const PtItemList = BattlePassItem.FindChildTraverse("PtItemList")!;
             PtItemList.AddClass("Locking");
@@ -189,6 +189,12 @@ function UpdateBattlePass(data: AM2_Draw_Pass_Record) {
                     GjItemList.enabled = gj_state == "Hover";
                 }
             }
+        }
+
+        // $.Msg(["pt_acc",pt_acc])
+        let target_paenl = BattlePassList.GetChild(Math.min(78, pt_acc))
+        if (target_paenl) {
+            target_paenl.ScrollParentToMakePanelFit(0, false)
         }
     }
 }

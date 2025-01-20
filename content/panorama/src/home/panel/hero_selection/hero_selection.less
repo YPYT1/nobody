@@ -255,13 +255,23 @@
                 opacity: 0;
             }
 
-            &:hover,
+            &:enabled:hover,
             &:selected {
                 border: 2px solid #fff565;
                 box-shadow: #cca7007a 0px 0px 6px 1px;
 
                 #HeroMovie {
                     opacity: 1;
+                }
+            }
+
+            &:disabled {
+                saturation: 0.2;
+                brightness: 0.2;
+
+                &:selected {
+                    saturation: 1;
+                    brightness: 1;
                 }
             }
 

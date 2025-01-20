@@ -24,8 +24,8 @@ function FormatNumberToTime(time: number) {
 export const Init = () => {
 
     GameEvents.Subscribe("ArchiveService_GetPlayerGameOverData", event => {
-        $.Msg(["ArchiveService_GetPlayerGameOverData"])
-        $.Msg(event)
+        // $.Msg(["ArchiveService_GetPlayerGameOverData"])
+        // $.Msg(event)
         PlayerList.RemoveAndDeleteChildren();
         let data = event.data;
         let player_list_data = Object.values(data.player_list_data);
