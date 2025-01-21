@@ -126,46 +126,11 @@ export function Init() {
         let AttributeRows = $.CreatePanel("Panel", SSAttributeList, "");
         AttributeRows.BLoadLayoutSnippet("ItemStoneAttrRows");
         AttributeRows.SetHasClass("is_lock", true)
-        AttributeRows.SetDialogVariable("lock_state", "地图等级 " + level)
+        AttributeRows.SetDialogVariable("lock_state", "个人等级 " + level)
     }
 
-    GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
-        let data = event.data;
-        let ItemList = Object.values(data);
-        let ids_backpack: { [id: string]: AM2_Server_Backpack } = {}
-        AttributreAddList.RemoveAndDeleteChildren()
-        for (let ItemData of ItemList) {
-            let item_id = ItemData.item_id;
-            ids_backpack[item_id] = ItemData
-        }
 
-        for (let item_id of g_base_stone_ids) {
-            let item_data = ids_backpack[item_id];
-            if (item_data == null) { continue }
-            let count = item_data.number;
-            if (count <= 0) { continue }
-            // let row_data = server_soul_attr[attr_index as keyof typeof server_soul_attr];
-            let ItemStoneAttrRows = $.CreatePanel("RadioButton", AttributreAddList, item_id, {
-                group: "StoneActionGroup"
-            });
-            ItemStoneAttrRows.BLoadLayoutSnippet("ItemStoneAttrRows");
-            ItemStoneAttrRows.SetHasClass("is_attr", true)
-            let item_name = $.Localize("#custom_serveritem_" + item_id)
-            ItemStoneAttrRows.SetDialogVariable("item_name", item_name)
-            // 属性
-            // ItemStoneAttrRows.SetDialogVariable("attr", "+10 ~ +20")
-            ItemStoneAttrRows.SetPanelEvent("onactivate", () => {
-                // 魂石附加功能
-                let key = ItemStoneAttrRows.Data<PanelDataObject>().key
-                StoneOption_Add(g_select_slot, key)
-            })
-
-        }
-
-        ViewEquipSlot(g_select_slot)
-
-
-    })
+    InitAddStoneBtnList()
 
 
     GameEvents.Subscribe("ServiceSoul_GetPlayerServerSoulData", event => {
@@ -191,6 +156,61 @@ export function Init() {
     GameUI.CustomUIConfig().SendCustomEvent("ServiceSoul", "GetPlayerServerSoulData", {})
 }
 
+function InitAddStoneBtnList() {
+    for (let item_id of g_base_stone_ids) {
+        let ItemStoneAttrRows = $.CreatePanel("RadioButton", AttributreAddList, item_id, {
+            group: "StoneActionGroup"
+        });
+        ItemStoneAttrRows.BLoadLayoutSnippet("ItemStoneAttrRows");
+        ItemStoneAttrRows.SetHasClass("is_attr", true)
+        let item_name = $.Localize("#custom_serveritem_" + item_id)
+        ItemStoneAttrRows.SetDialogVariable("item_name", item_name)
+        ItemStoneAttrRows.SetDialogVariable("attr", "+10 ~ +20")
+        ItemStoneAttrRows.SetPanelEvent("onactivate", () => {
+            // 魂石附加功能
+            let key = ItemStoneAttrRows.Data<PanelDataObject>().key
+            StoneOption_Add(g_select_slot, key)
+        })
+    }
+
+    GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
+        let data = event.data;
+        let ItemList = Object.values(data);
+        let ids_backpack: { [id: string]: AM2_Server_Backpack } = {}
+        // AttributreAddList.RemoveAndDeleteChildren()
+        for (let ItemData of ItemList) {
+            let item_id = ItemData.item_id;
+            ids_backpack[item_id] = ItemData
+        }
+
+        for (let item_id of g_base_stone_ids) {
+            let item_data = ids_backpack[item_id];
+            if (item_data == null) { continue }
+            let count = item_data.number;
+            if (count <= 0) { continue }
+            // let row_data = server_soul_attr[attr_index as keyof typeof server_soul_attr];
+            // let ItemStoneAttrRows = $.CreatePanel("RadioButton", AttributreAddList, item_id, {
+            //     group: "StoneActionGroup"
+            // });
+            // ItemStoneAttrRows.BLoadLayoutSnippet("ItemStoneAttrRows");
+            // ItemStoneAttrRows.SetHasClass("is_attr", true)
+            // let item_name = $.Localize("#custom_serveritem_" + item_id)
+            // ItemStoneAttrRows.SetDialogVariable("item_name", item_name)
+            // 属性
+            // ItemStoneAttrRows.SetDialogVariable("attr", "+10 ~ +20")
+            // ItemStoneAttrRows.SetPanelEvent("onactivate", () => {
+            //     // 魂石附加功能
+            //     let key = ItemStoneAttrRows.Data<PanelDataObject>().key
+            //     StoneOption_Add(g_select_slot, key)
+            // })
+
+        }
+
+        ViewEquipSlot(g_select_slot)
+
+
+    })
+}
 
 function InitButton() {
 
@@ -292,6 +312,9 @@ function InitButton() {
             SSActionResults.SetDialogVariableInt("success", final_succes)
         })
     }
+
+    // AttributreAddList
+    AttributreAddList.RemoveAndDeleteChildren()
 
     ToggleOptionAttributreContainer(1);
 }

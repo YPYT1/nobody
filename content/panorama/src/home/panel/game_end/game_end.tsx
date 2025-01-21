@@ -66,6 +66,7 @@ export const Init = () => {
             let pass_item_list = Object.values(row_data.pass_item);
             for (let ItemData of pass_item_list) {
                 let item_id = ItemData.item_id
+                $.Msg(["item_id",item_id])
                 const ServerItem = CreateCustomComponent(RewardList, "server_item", "");
                 ServerItem._SetServerItemInfo({
                     item_id: item_id,

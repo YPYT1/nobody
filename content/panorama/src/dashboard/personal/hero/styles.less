@@ -9,8 +9,15 @@
 
     opacity-mask: url("s2r://panorama/images/loadout_backgrounds/loadout_background_image_mask_psd.vtex");
     // wash-color: #00000099;
-    blur: gaussian(6px);
-    saturation: 0.3;
+    blur: gaussian(1px);
+    // saturation: 0.3;
+
+    DOTAScenePanel {
+        visibility: collapse;
+        &.Show {
+            visibility: visible;
+        }
+    }
 }
 
 .Container {

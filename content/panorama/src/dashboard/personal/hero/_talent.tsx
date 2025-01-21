@@ -62,6 +62,7 @@ const InitTalentData = () => {
     return hero_talent_tree
 }
 const HeroAttributeList = $("#HeroAttributeList")
+const HeroBackground = $("#HeroBackground");
 export const SetHeroDetails = (hero_id: number) => {
     // select_hero_id = hero_id;
     // 需要获取对应英雄数据
@@ -69,6 +70,13 @@ export const SetHeroDetails = (hero_id: number) => {
     HeroDetailsPanel.SetDialogVariable("hero_name", $.Localize("#" + heroname))
     HeroDetailsPanel.SetDialogVariableInt("curr_count", 0);
     HeroDetailsPanel.SetDialogVariableInt("need_count", 5);
+
+
+    for(let i = 0;i<HeroBackground.GetChildCount();i++){
+        let rowPanel = HeroBackground.GetChild(i)!;
+        let row_id = rowPanel.id;
+        rowPanel.visible = row_id == `${hero_id}`
+    }
 
     const talent_config_index = GameUI.CustomUIConfig().getStorage("talent_config_index")!;
     if (talent_config_index == null) {

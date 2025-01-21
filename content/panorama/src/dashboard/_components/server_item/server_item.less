@@ -92,7 +92,65 @@
         }
     }
 
+    &.is_card {
+        width: 100%;
+        height: 100%;
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-image: url("file://{images}/custom_game/icon/server_item/card_r_2.png");
+
+        &.hide_bg {
+            background-img-opacity: 0;
+
+            .ItemCount {
+                background-color: #00000000;
+            }
+        }
+
+        &.rare_3 {
+            background-image: url("file://{images}/custom_game/icon/server_item/card_r_3.png");
+        }
+
+        &.rare_4 {
+            background-image: url("file://{images}/custom_game/icon/server_item/card_r_4.png");
+        }
+
+        &.rare_5 {
+            background-image: url("file://{images}/custom_game/icon/server_item/card_r_5.png");
+        }
+
+        &.rare_6 {
+            background-image: url("file://{images}/custom_game/icon/server_item/card_r_6.png");
+        }
+
+        &.zero {
+            .ItemCount {
+                visibility: collapse;
+            }
+        }
+
+        #ServerItemIcon {
+            width: 100%;
+            height: 100%;
+            align: center center;
+        }
+
+        .ItemCount {
+            vertical-align: bottom;
+            width: 100%;
+            // height: 20px;
+            background-color: #000000dd;
+            margin-bottom: 6px;
+            border-radius: 0% 0% 8px 0%;
+            // padding: 1px;
+
+            Label {
+                color: #ffffff;
+                font-size: 14px;
+                vertical-align: middle;
+                horizontal-align: right;
+            }
+        }
+    }
+
 }
-
-
-

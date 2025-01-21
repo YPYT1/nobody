@@ -62,7 +62,26 @@
 		
 
 			<Panel class="ContentBody">
-				<Panel id="HeroBackground" />
+				<Panel id="HeroBackground">
+					<DOTAScenePanel
+						id="6"
+						class='full hero_backgroud'
+						map='maps/backgrounds/hero_showcase_drow_ranger_arcana.vmap'
+						camera='hero_camera'
+						light='light_frontpage'
+						particleonly="false"
+						renderdeferred="true"
+					/>
+					<DOTAScenePanel
+						id="101"
+						class='full hero_backgroud'
+						map='maps/backgrounds/hero_showcase_skywrath_vengeful_arcana'
+						camera='herocamera'
+						light='light_frontpage'
+						particleonly="false"
+						renderdeferred="true"
+					/>
+				</Panel>
 				<Panel class="HeroSelection">
 					<Panel id="SelectionHeroList" class="HeroList"/>
 				</Panel>
@@ -89,7 +108,7 @@
 					<Panel class="Separator" />
 
 					<Panel class="OperationBtnList">
-						<Panel class="OptionRow UpStar">
+						<Panel class="OptionRow UpStar Hidden">
 							<Panel class="ItemCost">
 								<Image id="ServerItemIcon" class="fragment"/>
 								<Label text="{d:curr_count} / {d:need_count}"/>
@@ -102,7 +121,7 @@
 							<Panel class="ItemCost">
 								
 							</Panel>
-							<Button id="HeroTalentBtn" class="dashboard_btn red">
+							<Button id="HeroTalentBtn" class="dashboard_btn green">
 								<Label text="天赋" />
 							</Button>
 						</Panel>

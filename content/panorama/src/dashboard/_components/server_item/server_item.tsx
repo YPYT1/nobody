@@ -42,7 +42,10 @@ const _SetItemId = (item_id: string | number) => {
         for (let rare of rare_list) {
             MainPanel.SetHasClass(`rare_${rare}`, rarity == rare);
         }
-
+        
+        let is_card = data.affiliation_class == 23
+        MainPanel.SetHasClass("is_card",is_card);
+        MainPanel.SetHasClass("default",!is_card);
         //@ts-ignore
         let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
         ServerItemIcon.SetImage(image_src);

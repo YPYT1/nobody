@@ -32,16 +32,16 @@ export const DASHBOARD_NAVBAR = {
     },
 
     "store": {
-        "Show": IsTestMode,
+        "Show": true,
         "Sub": {
-            "nav_1": true, // 热卖
-            "nav_2": true, // 会员
-            "nav_3": true, // 铂金商铺
-            "nav_4": true, // 钻石商铺
+            "nav_1": IsTestMode, // 热卖
+            "nav_2": IsTestMode, // 会员
+            "nav_3": IsTestMode, // 铂金商铺
+            "nav_4": IsTestMode, // 钻石商铺
             "nav_5": true, // 图鉴兑换
             "nav_6": true, // 魂石兑换
             "gacha": true, // 元素祈福
-            "recharge": true, // 黄金兑换
+            "recharge": IsTestMode, // 铂金兑换
             // "nav_8": true, // 成长礼
         }
     },
