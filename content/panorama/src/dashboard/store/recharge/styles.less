@@ -33,6 +33,7 @@
         background-image: url("file://{images}/custom_game/dashboard/store/recharge/store_border.png");
         background-repeat: no-repeat;
         background-position: 50% 50%;
+
         // flow-children: down;
         &:hover {
             brightness: 2;
@@ -51,7 +52,7 @@
         background-size: 100%;
     }
 
-    
+
     .GoodsName {
         color: gradient(linear, 0% 0%, 0% 100%, from(#FFEC9F), to(#FFD24A));
         horizontal-align: center;
@@ -85,6 +86,16 @@
     }
 
 
+    &.Double {
+        .DoubleBorder {
+            visibility: visible;
+        }
+
+        .Bonus {
+            visibility: collapse;
+        }
+    }
+
     .DoubleBorder {
         width: 66px;
         height: 65px;
@@ -98,7 +109,7 @@
             font-weight: bold;
             color: #FFED75;
             text-shadow: 0px 0px 2px 2.0 #00000099;
-            transform:rotateZ(-12deg);
+            transform: rotateZ(-12deg);
             transform-origin: 0% 0%;
         }
     }
@@ -108,10 +119,10 @@
         height: 33px;
         background-image: url("file://{images}/custom_game/dashboard/store/recharge/bonus_border.png");
         margin-top: 32px;
-        visibility: collapse;
-        
+        visibility: visible;
+
         Label {
-            color:#fff;
+            color: #fff;
             font-size: 24px;
             horizontal-align: right;
             margin-right: 32px;

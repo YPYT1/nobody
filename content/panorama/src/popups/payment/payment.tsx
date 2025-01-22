@@ -8,7 +8,7 @@ const CanvasPanel = $("#CanvasPanel") as UICanvas;
 const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list;
 const ServerItemList = GameUI.CustomUIConfig().KvData.ServerItemList;
 const StoreIcon = $("#StoreIcon") as ImagePanel;
-
+const PaymentOption = $("#PaymentOption");
 const CurrencyIcon = LoadCustomComponent($("#CurrencyIcon"), "server_item");
 CurrencyIcon._SetServerItemInfo({ hide_bg: true, show_count: false, show_tips: false });
 CurrencyIcon._SetItemId("rmb");
@@ -20,6 +20,11 @@ const Pay_alipay = $("#Pay_alipay") as RadioButton;
 let g_goods_id = "";
 let g_order = "";
 let g_recharge_count = 0;
+let g_pay_type = 0;
+let g_pay_m_table: { [k: string]: string } = {
+    "0": "",
+    "1": ""
+}
 export const Init = () => {
     // MainPanel.SetHasClass("Show", false);
 
@@ -33,7 +38,7 @@ export const Init = () => {
         $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel().id);
 
         if (g_order.length > 10) {
-
+            GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true })
             GameEvents.SendCustomGameEventToServer("ServiceInterface", {
                 event_name: "GetOrderItem",
                 params: {
@@ -84,6 +89,9 @@ function CreateQRCode(ui_Panel: UICanvas, str_url: string, code_size: number) {
     //     }
     // }
     // $.Msg(["end",Game.GetGameTime()])
+
+    Pay_alipay.enabled = true;
+    Pay_wx.enabled = true;
 }
 
 
@@ -137,7 +145,14 @@ function InitEvents() {
         CanvasPanel.AddClass("Show");
         CanvasPanel.AddClass("ShowLoding");
         CanvasPanel.ClearJS(`rgba(0,0,0,)`)
-
+        Pay_alipay.enabled = false;
+        Pay_wx.enabled = false;
+        g_pay_type = 0
+        const pay_m = g_pay_m_table[`${g_pay_type}`]
+        if (pay_m.length > 10) {
+            CreateQRCode(CanvasPanel, pay_m, 250);
+            return
+        }
         if (g_goods_id == "-1") {
             GameEvents.SendCustomGameEventToServer("ServiceInterface", {
                 event_name: "RechargeOrder",
@@ -164,7 +179,14 @@ function InitEvents() {
         CanvasPanel.AddClass("Show");
         CanvasPanel.AddClass("ShowLoding")
         CanvasPanel.ClearJS(`rgba(0,0,0,0)`)
-
+        Pay_alipay.enabled = false;
+        Pay_wx.enabled = false;
+        g_pay_type = 1
+        const pay_m = g_pay_m_table[`${g_pay_type}`]
+        if (pay_m.length > 10) {
+            CreateQRCode(CanvasPanel, pay_m, 250);
+            return
+        }
         if (g_goods_id == "-1") {
             GameEvents.SendCustomGameEventToServer("ServiceInterface", {
                 event_name: "RechargeOrder",
@@ -193,6 +215,8 @@ function InitEvents() {
         let order = data.pay_order;
         let pay_m = data.pay_m;
         g_order = order;
+        g_pay_m_table[`${g_pay_type}`] = pay_m;
+
         CreateQRCode(CanvasPanel, pay_m, 250);
 
     })

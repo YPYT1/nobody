@@ -40,7 +40,7 @@
                         <Panel class="SpinnerIcon"/>
                     </UICanvas>
                 </Panel>
-                <Panel class="PaymentOption PurchaseOption" hittest="false">
+                <Panel id="PaymentOption" class="PaymentOption PurchaseOption" hittest="false">
                     <RadioButton id="Pay_wx" class="AM2Radio" group="PaymentTypeGroup">
                         <Panel class="TypeIcon wx"/>
                         <Label text="微信支付"/>

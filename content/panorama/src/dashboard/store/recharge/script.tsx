@@ -10,11 +10,28 @@ const recharge_list = [
 ]
 
 export function Init() {
+
+
     RechargeStoreList.RemoveAndDeleteChildren();
     for (let recharge_index of recharge_list) {
         let rechargePanel = $.CreatePanel("Panel", RechargeStoreList, `${recharge_index}`) as RechargePanel;
         rechargePanel.RechargeItem = new RechargeItem(rechargePanel, recharge_index)
     }
+
+    GameEvents.Subscribe("ServiceInterface_GetPlayerShoppingLimit", event => {
+        let sc = event.data.sc ?? "";
+        let sc_arr = sc.split("|");
+
+        for (let i = 0; i < RechargeStoreList.GetChildCount(); i++) {
+            let rowPanel = RechargeStoreList.GetChild(i) as RechargePanel;
+            let row_id = rowPanel.id;
+            let has_first = sc_arr.indexOf(row_id) == -1;
+            // $.Msg(["has_first",has_first])
+            rowPanel.SetHasClass("Double", has_first)
+        }
+    })
+
+    GameUI.CustomUIConfig().SendCustomEvent("ServiceInterface", "GetPlayerShoppingLimit", {})
 }
 
 
@@ -46,8 +63,8 @@ class RechargeItem {
 
 
         this.StorePurchaseBtn.SetPanelEvent("onactivate", () => {
-            GameUI.CustomUIConfig().Popups_Payment("-1" ,this.recharge_num);
-            
+            GameUI.CustomUIConfig().Popups_Payment("-1", this.recharge_num);
+
             // GameUI.CustomUIConfig().ServerEventBus.publish("open_rmb_purchase", { id: "rechargers", recharge: this.recharge_num })
 
         })
