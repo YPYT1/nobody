@@ -27,7 +27,7 @@ export class ArchiveService extends UIEventRegisterClass {
     _game_versions : string = "";
 
     //获取背包数据class 
-    _b_class : string = "21,22,28";
+    _b_class : string = "21,22,28,33";
     //构造  
     constructor() {
         super("ArchiveService" , true)
@@ -105,12 +105,13 @@ export class ArchiveService extends UIEventRegisterClass {
 
                         //限购数据
                         GameRules.ServiceInterface.ShoppingLimit[index].limit = data.data.list[steam_id.toString()].limit;
-                        GameRules.ServiceInterface.ShoppingLimit[index].sc = data.data.list[steam_id.toString()].sc;
+                        GameRules.ServiceInterface.ShoppingLimit[index].sc = data.data.list[steam_id.toString()].bow_wash;
+                        //发送限购数据
+                        GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
                         //成长礼
                         GameRules.ServiceInterface.PassRecord[index] = data.data.list[steam_id.toString()].pass_record;
                         GameRules.ServiceInterface.GetPlayerServerPassRecord(index , {});
-                        //发送限购数据
-                        GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
+                        
                         //地图经验
                         let player_map_level = GameRules.ServiceInterface.GetServerMapLevel(GameRules.ServiceData.server_gold_package_list[index]["1004"].number);
                         GameRules.ServiceInterface.player_map_level[index] = player_map_level;
@@ -1108,6 +1109,11 @@ export class ArchiveService extends UIEventRegisterClass {
                     let add_item = data.data.add_item;
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , [] , add_item);
                     GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+                     //限购数据
+                     GameRules.ServiceInterface.ShoppingLimit[player_id].limit = data.data.limit;
+                     GameRules.ServiceInterface.ShoppingLimit[player_id].sc = data.data.bow_wash;
+                     //发送限购数据
+                     GameRules.ServiceInterface.GetPlayerShoppingLimit(player_id , {})
                     // GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
                 } else {
 

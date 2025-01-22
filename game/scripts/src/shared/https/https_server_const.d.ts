@@ -39,7 +39,7 @@ declare interface CreateGameReturn {
                 zs_gold: number , //钻石
                 skill_data : string,//技能数据
                 limit : AM2_Server_Shopping_Limit_List, //限制
-                sc : string, //首冲数据
+                bow_wash : string, //首冲数据
                 vip_times : number , //月卡时间
                 vip_zs : number , //终身卡
                 draw_record : AM2_Draw_Lottery_Draw_Record,
@@ -487,5 +487,7 @@ declare interface GetOrderItemReturn {
     msg : string, //服务器消息
     data :  {
         add_item : AM2_Server_Backpack[],
+        limit : AM2_Server_Shopping_Limit_List,
+        bow_wash : string,
     }
 }
