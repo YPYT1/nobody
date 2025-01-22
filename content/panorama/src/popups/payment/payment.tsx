@@ -6,6 +6,7 @@ const MainPanel = $.GetContextPanel();
 const ConfirmButton = $("#ConfirmButton");
 const CanvasPanel = $("#CanvasPanel") as UICanvas;
 const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list;
+const ServerItemList = GameUI.CustomUIConfig().KvData.ServerItemList;
 const StoreIcon = $("#StoreIcon") as ImagePanel;
 
 const CurrencyIcon = LoadCustomComponent($("#CurrencyIcon"), "server_item");
@@ -18,6 +19,7 @@ const Pay_alipay = $("#Pay_alipay") as RadioButton;
 
 let g_goods_id = "";
 let g_order = "";
+let g_recharge_count = 0;
 export const Init = () => {
     // MainPanel.SetHasClass("Show", false);
 
@@ -87,27 +89,42 @@ function CreateQRCode(ui_Panel: UICanvas, str_url: string, code_size: number) {
 
 function InitEvents() {
 
-    // GameUI.CustomUIConfig().EventBus.clear("open_rmb_purchase");
     MainPanel.SetPanelEvent("onload", () => {
-        // GameUI.CustomUIConfig().EventBus.subscribe("open_rmb_purchase", event => {
         MainPanel.SetHasClass("Show", true);
-        // let goods_id = event.id;
+        g_goods_id = $.GetContextPanel().GetAttributeString("id", "");
+        g_recharge_count = $.GetContextPanel().GetAttributeInt("recharge", 0);
 
-        let goods_id = $.GetContextPanel().GetAttributeString("id", "");
-        g_goods_id = goods_id;
-        let data = ServerShopList[goods_id as keyof typeof ServerShopList];
-        let goods_name = $.Localize("#custom_text_goods_" + goods_id);
-        let goods_desc = $.Localize("#custom_text_goods_" + goods_id + "_desc").replaceAll("\n", "<br>");
-        // $.Msg(["goods_desc",goods_desc])
-        MainPanel.SetDialogVariable("goods_name", goods_name)
-        MainPanel.SetDialogVariable("goods_desc", goods_desc)
 
-        //@ts-ignore
-        let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
-        StoreIcon.SetImage(image_src);
+        // $.Msg(["g_goods_id", g_goods_id])
+        if (g_goods_id != "-1") {
+            let data = ServerShopList[g_goods_id as keyof typeof ServerShopList];
+            let goods_name = $.Localize("#custom_text_goods_" + g_goods_id);
+            let goods_desc = $.Localize("#custom_text_goods_" + g_goods_id + "_desc").replaceAll("\n", "<br>");
+            // $.Msg(["goods_desc",goods_desc])
+            MainPanel.SetDialogVariable("goods_name", goods_name)
+            MainPanel.SetDialogVariable("goods_desc", goods_desc)
+            //@ts-ignore
+            let texture_name = data.AbilityTextureName ?? "null";
+            if (texture_name == "null") {
+                let item_id = "" + data.item_id;
+                let item_data = ServerItemList[item_id as keyof typeof ServerItemList];
+                texture_name = item_data.AbilityTextureName ?? ""
+            }
+            let image_src = GetTextureSrc(texture_name);
 
-        let cost_str = data.cost.split("_")[1]
-        MainPanel.SetDialogVariable("currency_cost", cost_str)
+            StoreIcon.SetImage(image_src);
+
+            let cost_str = data.cost.split("_")[1]
+            MainPanel.SetDialogVariable("currency_cost", cost_str)
+        } else {
+            MainPanel.SetDialogVariable("goods_name", `充值 ${g_recharge_count * 10}钻石 `)
+            MainPanel.SetDialogVariable("goods_desc", "")
+
+            MainPanel.SetDialogVariable("currency_cost", `${g_recharge_count}`)
+
+            MainPanel.AddClass(`recharge_${g_recharge_count}`);
+        }
+
         // 这里需要发送到服务器进
 
 
@@ -120,28 +137,53 @@ function InitEvents() {
         CanvasPanel.AddClass("Show");
         CanvasPanel.AddClass("ShowLoding");
         CanvasPanel.ClearJS(`rgba(0,0,0,)`)
-        GameEvents.SendCustomGameEventToServer("ServiceInterface", {
-            event_name: "RechargeOrder",
-            params: {
-                from: 0, // 0wx 1alipai
-                count: 1,
-                shop_id: parseInt(g_goods_id),
-            }
-        })
+
+        if (g_goods_id == "-1") {
+            GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                event_name: "RechargeOrder",
+                params: {
+                    from: 0, // 0wx 1alipai
+                    count: g_recharge_count,
+                    shop_id: -1,
+                }
+            })
+        } else {
+            GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                event_name: "RechargeOrder",
+                params: {
+                    from: 0, // 0wx 1alipai
+                    count: 1,
+                    shop_id: parseInt(g_goods_id),
+                }
+            })
+        }
+
     })
 
     Pay_alipay.SetPanelEvent("onselect", () => {
         CanvasPanel.AddClass("Show");
         CanvasPanel.AddClass("ShowLoding")
         CanvasPanel.ClearJS(`rgba(0,0,0,0)`)
-        GameEvents.SendCustomGameEventToServer("ServiceInterface", {
-            event_name: "RechargeOrder",
-            params: {
-                from: 1, // 0wx 1alipai
-                count: 1,
-                shop_id: parseInt(g_goods_id),
-            }
-        })
+
+        if (g_goods_id == "-1") {
+            GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                event_name: "RechargeOrder",
+                params: {
+                    from: 1, // 0wx 1alipai
+                    count: g_recharge_count,
+                    shop_id: -1,
+                }
+            })
+        } else {
+            GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                event_name: "RechargeOrder",
+                params: {
+                    from: 1, // 0wx 1alipai
+                    count: 1,
+                    shop_id: parseInt(g_goods_id),
+                }
+            })
+        }
     })
 
     GameEvents.Subscribe("ServiceInterface_RechargeOrderData", event => {

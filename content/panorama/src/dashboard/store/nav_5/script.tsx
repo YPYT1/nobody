@@ -8,6 +8,19 @@ const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list
 
 const ExchangeFilter_Nav5 = $("#ExchangeFilter_Nav5") as DropDown;
 
+const filter_label: { [k: string]: string } = {
+    "3517": "精良图鉴兑换 ",
+    "3518": "史诗图鉴兑换",
+    "3519": "传说图鉴兑换",
+    "3520": "不朽图鉴兑换",
+
+    "3525": "元素大陆图鉴兑换",
+    "3521": "熔火炼狱图鉴兑换",
+    "3522": "极北之地图鉴兑换",
+    "3523": "狂风之地图鉴兑换",
+    "3524": "雷霆之地图鉴兑换",
+}
+
 export function Init() {
     let filter_object: number[] = [-1]
     ShopItemList.RemoveAndDeleteChildren();
@@ -26,7 +39,8 @@ export function Init() {
     for (let _filter of filter_object) {
         const option_id = `${_filter}`
         if (!ExchangeFilter_Nav5.HasOption(option_id)) {
-            let text = $.Localize(`#custom_serveritem_${option_id}`);
+            // let text = option_id ; //$.Localize(`#custom_serveritem_${option_id}`);
+            let text = filter_label[option_id];
             if (_filter <= 0) {
                 text = "全部"
             }

@@ -36,7 +36,7 @@ declare global {
         >(dashboard_id: Key, nav: keyof T2["Sub"]): void;
 
         Popups_StorePurchase(id: string): void;
-        Popups_Payment(id: string): void;
+        Popups_Payment(id: string, recharge?: number): void;
     }
 }
 
@@ -237,11 +237,11 @@ GameUI.CustomUIConfig().Popups_StorePurchase = function (id: string) {
     );
 }
 
-GameUI.CustomUIConfig().Popups_Payment = function (id: string) {
+GameUI.CustomUIConfig().Popups_Payment = function (id: string, recharge: number = 0) {
     $.DispatchEvent(
         "UIShowCustomLayoutPopupParameters",
         "custom_popups_payment",
         "file://{resources}/layout/custom_game/popups/payment/payment.xml",
-        `id=${id}`
+        `id=${id}&recharge=${recharge}`
     );
 }

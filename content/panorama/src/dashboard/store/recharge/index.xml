@@ -6,19 +6,34 @@
 	<scripts>
 		<include src="./script.tsx" />
 	</scripts>
-
+	<snippets>
+		<snippet name="StoreItem">
+			<Panel class="StoreItem">
+				<Button id="StorePurchaseBtn" class="StoreBorder">
+					<Panel class="StoreIcon" />
+					<Label class="GoodsName" text="{s:goods_name}"/>
+					<Panel class="StorePriceContent">
+						<Panel class="CurrencyIcon"  />
+						<Label text="{s:price_cost}"/>
+					</Panel>
+				</Button>
+				<Panel class="DoubleBorder">
+					<Label text="X2"/>
+				</Panel>
+				<Panel class="Bonus">
+					<Label text="{s:bonus_amount}" />
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
 	<Panel class="nav_content">
         <Panel class="NavContentFrame" hittest="false">
             <Panel class="VirtualNavButton" hittest="false"/>
             <Panel class="NavContainer" hittest="false">
 				<Panel class="Container">
-					<Panel id="ShopItemList"/>
+					<Panel id="RechargeStoreList" />
 				</Panel>
             </Panel>
         </Panel>
-		<Panel class="Header">
-			<Label class="ShopTypeTitle" text="铂金兑换" />
-		</Panel>
-		
 	</Panel>
 </root>

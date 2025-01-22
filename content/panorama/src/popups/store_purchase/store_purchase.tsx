@@ -64,7 +64,13 @@ export const Init = () => {
         MainPanel.SetDialogVariable("goods_desc", goods_desc)
 
         //@ts-ignore
-        let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
+        let texture_name = data.AbilityTextureName ?? "null";
+        if (texture_name == "null") {
+            let item_id = "" + data.item_id;
+            let item_data = ServerItemList[item_id as keyof typeof ServerItemList];
+            texture_name = item_data.AbilityTextureName ?? ""
+        }
+        let image_src = GetTextureSrc(texture_name);
         StoreIcon.SetImage(image_src);
 
         // 折扣

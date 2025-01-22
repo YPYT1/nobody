@@ -128,5 +128,6 @@ function InitNavMenu() {
 
 
 (() => {
+    $.Msg([" "])
     Init();
 })();

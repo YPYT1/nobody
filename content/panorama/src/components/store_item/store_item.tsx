@@ -1,5 +1,6 @@
 
 const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list;
+const ServerItemList = GameUI.CustomUIConfig().KvData.ServerItemList;
 const GetTextureSrc = GameUI.CustomUIConfig().GetTextureSrc;
 
 declare global {
@@ -78,7 +79,13 @@ class StoreItem {
             this.SetPriceView(OriginalPanel, data.original_cost);
             this.SetPriceView(ActualPanel, data.cost);
             // @ts-ignore
-            let image_src = GetTextureSrc(data.AbilityTextureName ?? "");
+            let texture_name = data.AbilityTextureName ?? "";
+            if(texture_name == "null"){
+                let item_id = ""+data.item_id;
+                let item_data = ServerItemList[item_id as keyof typeof ServerItemList];
+                texture_name = item_data.AbilityTextureName ?? ""
+            }
+            let image_src = GetTextureSrc(texture_name);
             this.StoreIcon.SetImage(image_src);
 
             // 热卖

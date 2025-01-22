@@ -1,4 +1,5 @@
 @import url("./../_nav_panel.less");
+// @import url("./../../../components/store_item/store_item.less");
 
 .Container {
     width: 100%;
@@ -6,31 +7,134 @@
     background-color: #00000099;
 }
 
-.Header {
+#RechargeStoreList {
+    vertical-align: middle;
     horizontal-align: center;
-    margin-top: 90px;
-    margin-left: 360px;
-    width: @RightContentWidth ;
+    width: 1000px;
+    // height: 912px;
     // border: 1px solid #fff;
+    // padding: 40px 40px;
 
-    .ShopTypeTitle {
-        margin-left: 12px;
-        font-size: 36px;
-        color:#ffffff;
-    }
+    flow-children: right-wrap;
 
-    #ShopFliter {
-        width: 200px;
-        height: 36px;
-        horizontal-align: right;
+    .StoreItemMember {
+        margin: 0px 30px;
+        // border: 1px solid #fff;
     }
 }
 
-#ShopItemList {
-    width: 100%;
-    margin: 10px;
+.StoreItem {
     padding: 12px;
+    margin: 10px 32px;
 
-    flow-children: right-wrap;
-    overflow: scroll;
+    .StoreBorder {
+        width: 241px;
+        height: 315px;
+        background-image: url("file://{images}/custom_game/dashboard/store/recharge/store_border.png");
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        // flow-children: down;
+        &:hover {
+            brightness: 2;
+        }
+    }
+
+    .StoreIcon {
+        // margin-top: 8px;
+        horizontal-align: center;
+        width: 128px;
+        height: 128px;
+        // border: 1px solid #ffffff;
+        vertical-align: middle;
+        margin-bottom: 40px;
+        background-image: url("file://{images}/custom_game/dashboard/store/recharge/6.png");
+        background-size: 100%;
+    }
+
+    
+    .GoodsName {
+        color: gradient(linear, 0% 0%, 0% 100%, from(#FFEC9F), to(#FFD24A));
+        horizontal-align: center;
+        vertical-align: middle;
+        margin-top: 138px;
+        font-size: 22px;
+        text-shadow: 0px 1px 3px 4.0 #00000099;
+    }
+
+    .StorePriceContent {
+        vertical-align: bottom;
+        horizontal-align: center;
+        flow-children: right;
+        // margin-top: 30px;
+        margin-bottom: 16px;
+
+        .CurrencyIcon {
+            width: 16px;
+            height: 24px;
+            background-image: url("file://{images}/custom_game/dashboard/store/recharge/rmb.png");
+        }
+
+        Label {
+            margin-left: 6px;
+            font-size: 20px;
+            color: #ffffff;
+            text-shadow: 0px 1px 2px 4.0 #00000099;
+            vertical-align: middle;
+            letter-spacing: 1px;
+        }
+    }
+
+
+    .DoubleBorder {
+        width: 66px;
+        height: 65px;
+        background-image: url("file://{images}/custom_game/dashboard/store/recharge/double_border.png");
+        horizontal-align: right;
+        visibility: collapse;
+
+        Label {
+            align: center center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #FFED75;
+            text-shadow: 0px 0px 2px 2.0 #00000099;
+            transform:rotateZ(-12deg);
+            transform-origin: 0% 0%;
+        }
+    }
+
+    .Bonus {
+        width: 158px;
+        height: 33px;
+        background-image: url("file://{images}/custom_game/dashboard/store/recharge/bonus_border.png");
+        margin-top: 32px;
+        visibility: collapse;
+        
+        Label {
+            color:#fff;
+            font-size: 24px;
+            horizontal-align: right;
+            margin-right: 32px;
+        }
+    }
+}
+
+#30 .StoreIcon {
+    background-image: url("file://{images}/custom_game/dashboard/store/recharge/30.png");
+}
+
+#98 .StoreIcon {
+    background-image: url("file://{images}/custom_game/dashboard/store/recharge/98.png");
+}
+
+#198 .StoreIcon {
+    background-image: url("file://{images}/custom_game/dashboard/store/recharge/198.png");
+}
+
+#328 .StoreIcon {
+    background-image: url("file://{images}/custom_game/dashboard/store/recharge/328.png");
+}
+
+#648 .StoreIcon {
+    background-image: url("file://{images}/custom_game/dashboard/store/recharge/648.png");
 }
