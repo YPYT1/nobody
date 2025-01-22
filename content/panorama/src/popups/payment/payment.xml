@@ -35,7 +35,9 @@
             </Panel>
             <Panel class="RightContent" hittest="false">
                 <Panel class="StateContent" hittest="false">
-                    <UICanvas id="CanvasPanel" />
+                    <UICanvas id="CanvasPanel">
+                        <Panel class="SpinnerIcon"/>
+                    </UICanvas>
                 </Panel>
                 <Panel class="PaymentOption PurchaseOption" hittest="false">
                     <RadioButton id="Pay_wx" class="AM2Radio" group="PaymentTypeGroup">

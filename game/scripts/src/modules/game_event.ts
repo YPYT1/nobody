@@ -140,14 +140,14 @@ export class GameEvent {
             //创建游戏
             GameRules.ArchiveService.CreateGame();
             GameRules.Altar = new Altar();
-            // SendToConsole("dota_hud_healthbars 1"); // 血条设置
+            
         } else if (State_Get == GameState.PRE_GAME) { //赛前阶段
 
         } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段
 
         } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段
             GameRules.EnemyAttribute = new EnemyAttribute();
-            
+            SendToConsole("dota_hud_healthbars 1"); // 血条设置
         } else if (State_Get == GameState.POST_GAME) { //推送结果阶段
 
         } else if (State_Get == GameState.DISCONNECT) { //断开阶段

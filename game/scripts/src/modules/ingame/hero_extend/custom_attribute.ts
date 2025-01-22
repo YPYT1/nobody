@@ -779,39 +779,43 @@ export class CustomAttribute {
                 )
             }
 
-            let szWearables = wearable_data.wearables;
-            for (let wearable of szWearables) {
-                let hWearable = Entities.CreateByClassname("wearable_item") as CDOTA_BaseNPC
-                if (hWearable != null) {
-                    hWearable.wrarable_model = wearable.model
-                    hWearable.SetModel(wearable.model)
-                    hWearable.SetTeam(DotaTeam.GOODGUYS)
-                    hWearable.SetOwner(hUnit)
-                    hWearable.FollowEntity(hUnit, true)
-                    let material = wearable.material
-                    if (material) {
-                        if (material.index) {
-                            hWearable.SetMaterialGroup(material.index)
-                        } else {
-                            hWearable.SetBodygroupByName(material.group, material.value)
+            hUnit.SetContextThink("wearables_delay_load", () => {
+                let szWearables = wearable_data.wearables;
+                for (let wearable of szWearables) {
+                    let hWearable = Entities.CreateByClassname("wearable_item") as CDOTA_BaseNPC
+                    if (hWearable != null) {
+                        hWearable.wrarable_model = wearable.model
+                        hWearable.SetModel(wearable.model)
+                        hWearable.SetTeam(DotaTeam.GOODGUYS)
+                        hWearable.SetOwner(hUnit)
+                        hWearable.FollowEntity(hUnit, true)
+                        let material = wearable.material
+                        if (material) {
+                            if (material.index) {
+                                hWearable.SetMaterialGroup(material.index)
+                            } else {
+                                hWearable.SetBodygroupByName(material.group, material.value)
+                            }
+
                         }
 
+                        // hWearable.SetRenderColor(255,0,0);
+                        for (let w_particle of wearable.particle) {
+
+                            let particle_index = ParticleManager.CreateParticle(
+                                w_particle,
+                                ParticleAttachment.POINT_FOLLOW,
+                                hWearable
+                            )
+
+                            // this.particle_test.push(particle_index)
+                        }
+                        // hWearable.SetSkin(1)
                     }
-
-                    // hWearable.SetRenderColor(255,0,0);
-                    for (let w_particle of wearable.particle) {
-
-                        let particle_index = ParticleManager.CreateParticle(
-                            w_particle,
-                            ParticleAttachment.POINT_FOLLOW,
-                            hWearable
-                        )
-
-                        // this.particle_test.push(particle_index)
-                    }
-                    // hWearable.SetSkin(1)
                 }
-            }
+                return null
+            }, 0.01)
+
         }
     }
 

@@ -51,6 +51,7 @@ export const DASHBOARD_NAVBAR = {
         "Sub": {
             "bp": true, // 成长礼
             "quest": false, // 常驻活动,
+            "exchange":true, // 兑换
         }
     },
 

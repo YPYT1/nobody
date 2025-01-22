@@ -17,7 +17,7 @@ const Pay_alipay = $("#Pay_alipay") as RadioButton;
 
 
 let g_goods_id = "";
-
+let g_order = "";
 export const Init = () => {
     // MainPanel.SetHasClass("Show", false);
 
@@ -29,16 +29,27 @@ export const Init = () => {
         CanvasPanel.ClearJS(`rgba(255,255,255,0)`)
         MainPanel.SetHasClass("Show", false);
         $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel().id);
+
+        if (g_order.length > 10) {
+
+            GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                event_name: "GetOrderItem",
+                params: {
+                    pay_order: g_order
+                }
+            })
+        }
     })
     InitEvents()
 }
 
 
 function CreateQRCode(ui_Panel: UICanvas, str_url: string, code_size: number) {
-    ui_Panel.AddClass("Show")
-    ui_Panel.RemoveClass("Hide")
+    // ui_Panel.AddClass("Show")
+    // ui_Panel.RemoveClass("Hide");
+    ui_Panel.RemoveClass("ShowLoding");
     ui_Panel.ClearJS(`rgba(255,255,255,0)`)
-    ui_Panel.RemoveAndDeleteChildren();
+    // ui_Panel.RemoveAndDeleteChildren();
     let qrcode = new QRCode(8, 3);
     qrcode.addData(str_url);
     qrcode.make();
@@ -77,11 +88,11 @@ function CreateQRCode(ui_Panel: UICanvas, str_url: string, code_size: number) {
 function InitEvents() {
 
     // GameUI.CustomUIConfig().EventBus.clear("open_rmb_purchase");
-    MainPanel.SetPanelEvent("onload",()=>{
-    // GameUI.CustomUIConfig().EventBus.subscribe("open_rmb_purchase", event => {
+    MainPanel.SetPanelEvent("onload", () => {
+        // GameUI.CustomUIConfig().EventBus.subscribe("open_rmb_purchase", event => {
         MainPanel.SetHasClass("Show", true);
         // let goods_id = event.id;
-        
+
         let goods_id = $.GetContextPanel().GetAttributeString("id", "");
         g_goods_id = goods_id;
         let data = ServerShopList[goods_id as keyof typeof ServerShopList];
@@ -106,13 +117,42 @@ function InitEvents() {
 
 
     Pay_wx.SetPanelEvent("onselect", () => {
-        // $.Msg(["Pay_wx"])
-        CreateQRCode(CanvasPanel, "http://www.baidu.com", 250)
+        CanvasPanel.AddClass("Show");
+        CanvasPanel.AddClass("ShowLoding");
+        CanvasPanel.ClearJS(`rgba(0,0,0,)`)
+        GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+            event_name: "RechargeOrder",
+            params: {
+                from: 0, // 0wx 1alipai
+                count: 1,
+                shop_id: parseInt(g_goods_id),
+            }
+        })
     })
 
     Pay_alipay.SetPanelEvent("onselect", () => {
-        // $.Msg(["Pay_alipay"])
-        CreateQRCode(CanvasPanel, "http://www.google.com", 250)
+        CanvasPanel.AddClass("Show");
+        CanvasPanel.AddClass("ShowLoding")
+        CanvasPanel.ClearJS(`rgba(0,0,0,0)`)
+        GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+            event_name: "RechargeOrder",
+            params: {
+                from: 1, // 0wx 1alipai
+                count: 1,
+                shop_id: parseInt(g_goods_id),
+            }
+        })
+    })
+
+    GameEvents.Subscribe("ServiceInterface_RechargeOrderData", event => {
+        // $.Msg(["ServiceInterface_RechargeOrderData"])
+        // $.Msg(event.data)
+        let data = event.data;
+        let order = data.pay_order;
+        let pay_m = data.pay_m;
+        g_order = order;
+        CreateQRCode(CanvasPanel, pay_m, 250);
+
     })
 }
 

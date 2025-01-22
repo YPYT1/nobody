@@ -19,6 +19,7 @@ export const Init = () => {
 }
 
 function SendServerMsgToPlayer(event: NetworkedData<CustomGameEventDeclarations["CMsg_SendServerMsgToPlayer"]>) {
+    GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: false })
     if (event.type == 1) {
         // 弹窗
         MainPanel.SetHasClass("Show", true);

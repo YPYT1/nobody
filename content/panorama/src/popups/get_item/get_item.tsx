@@ -19,8 +19,12 @@ export const Init = () => {
     })
 
     GameEvents.Subscribe("ServiceInterface_GetServerItemPopUp", event => {
+        GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: false })
         // $.Msg(["ServiceInterface_GetServerItemPopUp"]);
-        let items = Object.values(event.data.items);
+        // $.Msg(event.data)
+        let items = Object.values(event.data.items ?? {});
+        // $.Msg([items.length])
+        if (items.length <= 0) { return }
         for (let i = 0; i < ItemList.GetChildCount(); i++) {
             let rowPanel = ItemList.GetChild(i)!;
             rowPanel.visible = false;
@@ -35,7 +39,7 @@ export const Init = () => {
         }
 
         MainPanel.SetHasClass("Show", true);
-        GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: false })
+
     })
 
 }

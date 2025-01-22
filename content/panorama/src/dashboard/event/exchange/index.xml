@@ -1,0 +1,19 @@
+<root>
+	<styles>
+		<include src="./styles.less" />
+		<include src="./../../../_styles/styles.less" />
+	</styles>
+	<scripts>
+		<include src="./script.tsx" />
+	</scripts>
+	<Panel class="nav_content">
+		<Panel class="ExchangeBorder">
+			<Panel class="InputContainer">
+				<TextEntry id="GiftCode" class="GiftCode"  maxchars="24" placeholder="输入礼包码" />
+				<Button id="GiftCodeBtn" class="dashboard_btn yellow">
+					<Label text="兑换" />
+				</Button>
+			</Panel>
+		</Panel>
+	</Panel>
+</root>
