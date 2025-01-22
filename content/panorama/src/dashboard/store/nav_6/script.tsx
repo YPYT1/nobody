@@ -8,6 +8,14 @@ const ServerShopList = GameUI.CustomUIConfig().KvData.server_shop_list
 
 const ExchangeFilter = $("#ExchangeFilter_Nav6") as DropDown;
 
+// 1级魂石兑换、2级魂石兑换、3级魂石兑换、4级魂石兑换
+
+const filter_label: { [k: string]: string } = {
+    "1287": "1级魂石兑换 ",
+    "1288": "2级魂石兑换",
+    "1289": "3级魂石兑换",
+    "1290": "4级魂石兑换",
+}
 export function Init() {
     let filter_object: number[] = [-1]
     ShopItemList.RemoveAndDeleteChildren();
@@ -15,6 +23,7 @@ export function Init() {
         let goods_data = ServerShopList[goods_id as keyof typeof ServerShopList];
         let mall_category_arr = ("" + goods_data.mall_category).split(",");
         if (mall_category_arr.indexOf(mall_category) != -1) {
+            // $.Msg(["goods_id",goods_id])
             let storePanel = GameUI.CustomUIConfig().SetStoreItemPanel(ShopItemList, goods_id);
             const filter = storePanel.Data<PanelDataObject>().filter as number;
             if (filter_object.indexOf(filter) == -1) {
@@ -26,7 +35,7 @@ export function Init() {
     for (let _filter of filter_object) {
         const option_id = `${_filter}`
         if (!ExchangeFilter.HasOption(option_id)) {
-            let text = $.Localize(`#custom_serveritem_${option_id}`);
+            let text = filter_label[option_id];// $.Localize(`#custom_serveritem_${option_id}`);
             if (_filter <= 0) {
                 text = "全部"
             }

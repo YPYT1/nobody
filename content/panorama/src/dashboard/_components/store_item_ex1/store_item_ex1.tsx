@@ -63,10 +63,8 @@ const _SetGoodsId = (goods_id: string | number) => {
             } else {
                 if (cost_type == "rmb") {
                     GameUI.CustomUIConfig().Popups_Payment("" + goods_id)
-                    // GameUI.CustomUIConfig().ServerEventBus.publish("open_rmb_purchase", { id: "" + goods_id })
                 } else {
                     GameUI.CustomUIConfig().Popups_StorePurchase("" + goods_id)
-                    // GameUI.CustomUIConfig().ServerEventBus.publish("open_store_purchase", { id: "" + goods_id })
                 }
 
             }

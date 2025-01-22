@@ -90,7 +90,7 @@ const _SetGoodsId = (goods_id: string | number) => {
 
         StorePurchaseBtn.SetPanelEvent("onactivate", () => {
             if (cost_type == "rmb") {
-                GameUI.CustomUIConfig().ServerEventBus.publish("open_rmb_purchase", { id: "" + goods_id })
+                // GameUI.CustomUIConfig().ServerEventBus.publish("open_rmb_purchase", { id: "" + goods_id })
             } else {
                 const limit_count = MainPanel.Data<PanelDataObject>().limit_count as number;
                 GameUI.CustomUIConfig().ServerEventBus.publish("open_store_purchase", { id: "" + goods_id })

@@ -24,6 +24,7 @@
 
                 <Panel class="StoreIcon">
                     <Image id="StoreIcon" />
+                    <Panel class="RechargeIcon"/>
                 </Panel>
                 <Panel class="StorePriceShow">
                     <Image id="CurrencyIcon" />
