@@ -1010,6 +1010,117 @@ export class ArchiveService extends UIEventRegisterClass {
     }
 
     /**
+     * 兑换码
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    GameDhm(player_id: PlayerID , keys : string ) {
+        //只验证主机  AM2_Draw_Pass_Record
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <GameDhmParam>{
+            sid : tostring(steam_id) , //steamid
+            keys : keys ,
+        }
+        HttpRequest.AM2Post(ACTION_GAME_DHM,
+            {
+                param: param_data
+            },
+            (data: GameDhmReturn) => {
+                if (data.code == 200) {
+                    // let red_item = data.data.red_item;
+                    let add_item = data.data.add_item;
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , [] , add_item);
+                    GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
+
+    /**
+     * 生成支付订单 商品id -1 为充值
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    RechargeOrder(player_id: PlayerID , from : number , count : number , shop_id : number = -1) {
+        //只验证主机  AM2_Draw_Pass_Record
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <RechargeOrderParam>{
+            sid : tostring(steam_id) , //steamid
+            from : from ,
+            shop_id : shop_id,
+            count : count,
+        }
+        HttpRequest.AM2Post(ACTION_RECHARGE_ORDER,
+            {
+                param: param_data
+            },
+            (data: RechargeOrderReturn) => {
+                if (data.code == 200) {
+                    // let red_item = data.data.red_item;
+                    let pay_m = data.data.pay_m;
+                    let pay_order = data.data.pay_order;
+                    GameRules.ServiceInterface.RechargeOrderData(player_id , pay_order , pay_m );
+                    // GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
+
+    /**
+     * 查询订单数据
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    GetOrderItem(player_id: PlayerID , pay_order : string) {
+        //只验证主机  AM2_Draw_Pass_Record
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <GetOrderItemParam>{
+            sid : tostring(steam_id) , //steamid
+            pay_order : pay_order ,
+        }
+        HttpRequest.AM2Post(ACTION_GET_ORDER_ITEM,
+            {
+                param: param_data
+            },
+            (data: GetOrderItemReturn) => {
+                if (data.code == 200) {
+                    // let red_item = data.data.red_item;
+                    let add_item = data.data.add_item;
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , [] , add_item);
+                    GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+                    // GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
+
+    /**
      * 公共更新背包内容
      * @param player_id 
      * @param red_item 

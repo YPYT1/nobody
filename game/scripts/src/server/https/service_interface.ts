@@ -881,6 +881,26 @@ export class ServiceInterface extends UIEventRegisterClass{
         );
     };
 
+
+    /**
+     * 获取数据
+     * @param player_id 
+     * @param params 
+     * @param callback 
+     */
+    RechargeOrderData(player_id: PlayerID, pay_order : string , pay_m : string){
+        CustomGameEventManager.Send_ServerToPlayer(
+            PlayerResource.GetPlayer(player_id),
+            "ServiceInterface_RechargeOrderData",
+            {
+                data : {
+                    pay_order : pay_order, //订单编号
+                    pay_m : pay_m, //订单支付秘钥
+                }
+            }
+        );
+    };
+
     /**
      * 获取抽奖结果
      * @param player_id 
@@ -1126,6 +1146,31 @@ export class ServiceInterface extends UIEventRegisterClass{
         GameRules.ArchiveService.GetServerPass(player_id , paramstype , count , get_type);
     }
 
+    /**
+     * 兑换码
+     */
+    GameDhm(player_id: PlayerID, params: CGED["ServiceInterface"]["GameDhm"], callback?){
+        let key = params.key;
+        GameRules.ArchiveService.GameDhm(player_id , key );
+    }
+
+
+    /**
+     * 生成支付订单
+     */
+    RechargeOrder(player_id: PlayerID, params: CGED["ServiceInterface"]["RechargeOrder"], callback?){
+        let from = params.from;
+        let count = params.count;
+        let shop_id = params.shop_id;
+        GameRules.ArchiveService.RechargeOrder(player_id , from , count , shop_id);
+    }
+    /**
+     * 查询订单
+     */
+    GetOrderItem(player_id: PlayerID, params: CGED["ServiceInterface"]["GetOrderItem"], callback?){
+        let pay_order = params.pay_order;
+        GameRules.ArchiveService.GetOrderItem(player_id , pay_order );
+    }
     
     /**
      * 快速获取技能值 (如果大于技能等级则返回最高等级 如果小于最低等级则返回最低等级)

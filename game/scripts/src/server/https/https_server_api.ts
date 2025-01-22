@@ -14,6 +14,12 @@ const ACTION_CHECKJHM_CODE = "/checkjhm";
 // 2.1 兑换码领取
 const ACTION_GAME_DHM = "/gamedhm";
 
+// 2.2 生成支付订单
+const ACTION_RECHARGE_ORDER = "/recharge_order";
+
+// 2.3 订单查询
+const ACTION_GET_ORDER_ITEM = "/get_order_item";
+
 // 3.1 添加装备 
 const ACTION_ADD_EQUIP = "/add_equip";
 // 3.2 查看装备

@@ -446,6 +446,25 @@ declare interface CGED {
             count : number , //领取到多少 -1 表示全部
             get_type : number , // 获取类型 1 普通 2高级
         }
+        //兑换码
+        GameDhm : {
+            key : string, //兑换key
+        }
+        /**
+         * 生成支付订单
+         */
+        RechargeOrder : {
+            from : number , //支付来源
+            count : number ,  //购买数量
+            shop_id : number , //商品id 充值用-1
+        }
+
+        /**
+         * 查询支付订单
+         */
+        GetOrderItem : {
+            pay_order : string, //订单号
+        }
 
         //限购数据
         GetPlayerShoppingLimit : {

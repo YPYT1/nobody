@@ -131,27 +131,6 @@ declare interface GameOverReturn {
 }
 
 
-
-/**
- * 游戏兑换码
- */
-declare interface GameDhmParam {
-	sid : string , //steamid
-    keys : string , //兑换码
-}
-/**
- * 游戏结束返回
- */
-declare interface GameDhmReturn {
-    code : number, //状态码
-    msg : string, //服务器消息
-    data :  {
-        add_items : ItemTReturn[]
-    }
-}
-
-
-
 /**
  * 新增装备
  */
@@ -441,5 +420,72 @@ declare interface PlayerTalentSaveReturn {
     msg : string, //服务器消息
     data :  {
         talentdata : string,
+    }
+}
+
+
+
+/**
+ * 兑换码请求数据
+ */
+declare interface GameDhmParam {
+	sid : string , //steamid
+    keys : string , //通行证类型 
+}
+/**
+ * 兑换码返回数据
+ */
+declare interface GameDhmReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        add_item : AM2_Server_Backpack[],
+    }
+}
+
+
+
+
+
+/**
+ * 兑换码请求数据
+ */
+declare interface RechargeOrderParam {
+	sid : string , //steamid
+    from : number , //0 是微信 1是支付宝
+    shop_id : number , //购买商品的id
+    count : number , //购买数量
+
+}
+/**
+ * 兑换码返回数据
+ */
+declare interface RechargeOrderReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        pay_order : string,
+        pay_m : string,
+    }
+}
+
+
+
+/**
+ * 兑换码请求数据
+ */
+declare interface GetOrderItemParam {
+	sid : string , //steamid
+    pay_order : string , //订单号
+
+}
+/**
+ * 兑换码返回数据
+ */
+declare interface GetOrderItemReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        add_item : AM2_Server_Backpack[],
     }
 }

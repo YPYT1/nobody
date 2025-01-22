@@ -247,6 +247,15 @@ declare interface CustomGameEventDeclarations {
         };
     }
     /**
+     * 生成支付订单的数据
+     */
+    ServiceInterface_RechargeOrderData : {
+        data: {
+            pay_order : string, //订单编号
+            pay_m : string, //订单支付秘钥
+        };
+    }
+    /**
      * 图鉴合成结果
      */
     ServiceInterface_GetCompoundCardList : {
