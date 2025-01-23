@@ -328,6 +328,10 @@ export class ArchiveService extends UIEventRegisterClass {
                                     [skill_key: string]: number;
                                 };
                             GameRules.ServiceInterface.LoadSkillfulLevel(index);
+
+                            //成长礼
+                            GameRules.ServiceInterface.PassRecord[index] = data.data.list[steam_id.toString()].pass_record;
+                            GameRules.ServiceInterface.GetPlayerServerPassRecord(index , {});
                         }
                         
                         this.general_game_over_data_pass_data.player_list_data.push({
@@ -1230,6 +1234,41 @@ export class ArchiveService extends UIEventRegisterClass {
             this.GetPlayerGameOverData(player_id , {});
         }
         
+    }
+
+    /**
+     * 使用物品
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    UseItem(player_id: PlayerID , use_item_id , count : number = 1) {
+        //只验证主机
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <UseItemParam>{
+            sid : tostring(steam_id) , //steamid
+            use_item_id : use_item_id ,
+            number : count ,
+        }
+        HttpRequest.AM2Post(ACTION_USE_ITEM,
+            {
+                param: param_data
+            },
+            (data: UseItemReturn) => {
+                if (data.code == 200) {
+                    let red_item = data.data.red_item;
+                    let add_item = data.data.add_item;
+                    GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
     }
     
 }

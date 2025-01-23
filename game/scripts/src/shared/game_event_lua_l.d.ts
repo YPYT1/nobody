@@ -435,6 +435,11 @@ declare interface CGED {
             type : number , //奖池类型 默认1
             count : number , //抽奖次数 
         }
+        //使用功能
+        UseItem : {
+            use_item_id  : number , //使用
+            count : number , //抽奖次数 
+        }
         //累抽领取
         GetServerDrawAcc : {
             type : number , //奖池类型 默认1

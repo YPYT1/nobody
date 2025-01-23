@@ -1127,7 +1127,14 @@ export class ServiceInterface extends UIEventRegisterClass{
         let count = params.count;
         GameRules.ArchiveService.DrawLottery(player_id , paramstype , count);
     }
-
+    /**
+     * 物品使用
+     */
+    UseItem(player_id: PlayerID, params: CGED["ServiceInterface"]["UseItem"], callback?){
+        let use_item_id  = params.use_item_id;
+        let count = params.count;
+        GameRules.ArchiveService.UseItem(player_id , use_item_id  , count);
+    }
     /**
      * 累抽领取
      */

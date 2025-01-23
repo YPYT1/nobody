@@ -125,6 +125,7 @@ declare interface GameOverReturn {
                 add_items : ItemTReturn[],
                 skill_exp : string,
                 level_difficulty : string, //当前可用难度
+                pass_record : AM2_Draw_Pass_Record, //通行证返回数据
             }
         }
     }
@@ -489,5 +490,27 @@ declare interface GetOrderItemReturn {
         add_item : AM2_Server_Backpack[],
         limit : AM2_Server_Shopping_Limit_List,
         bow_wash : string,
+    }
+}
+
+
+
+/**
+ * 物品使用数据参数
+ */
+declare interface UseItemParam {
+	sid : string , //steamid
+    use_item_id : number , //使用的物品
+    number : number , //使用次数
+}
+/**
+ * 物品使用返回数据
+ */
+declare interface UseItemReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        add_item : AM2_Server_Backpack[],
+        red_item : AM2_Server_Backpack[],
     }
 }

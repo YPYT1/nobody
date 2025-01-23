@@ -45,6 +45,10 @@ const ACTION_PLAYER_SOUL_STONE_SAVE = "/player_soul_stone_save";
 const ACTION_PLAYER_TALENT_SAVE = "/player_talent_save";
 
 
+// 4.4 使用物品
+const ACTION_USE_ITEM = "/use_item";
+
+
 
 // 1.4 本地联机游戏追加人员
 // 路由	/addtogame
