@@ -1260,6 +1260,7 @@ export class ArchiveService extends UIEventRegisterClass {
                     let red_item = data.data.red_item;
                     let add_item = data.data.add_item;
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
+                    GameRules.ServiceInterface.GetServerItemPopUp(player_id , add_item);
                 } else {
 
                 }
