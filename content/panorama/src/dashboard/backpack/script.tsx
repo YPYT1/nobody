@@ -1,5 +1,6 @@
 import { DASHBOARD_NAVBAR } from './../components';
 import { CreateCustomComponent, LoadCustomComponent } from '../_components/component_manager';
+import { GetTextureSrc } from '../../common/custom_kv_method';
 const ServerItemList = GameUI.CustomUIConfig().KvData.ServerItemList;
 const DASHBOARD = "backpack";
 const SUB_OBJECT = DASHBOARD_NAVBAR[DASHBOARD].Sub;
@@ -22,11 +23,16 @@ const SendCustomEvent = GameUI.CustomUIConfig().SendCustomEvent;
 const GetServerItemData = GameUI.CustomUIConfig().GetServerItemData;
 const EventBus = GameUI.CustomUIConfig().EventBus;
 
+const UseBackpackCount = $("#UseBackpackCount") as TextEntry;
 let view_item_id = -1;
 const CGE_Subscribe = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
         // 这个是渲染所有物品
+        // if (true) {
+        //     InitAllBackpackItemList()
+        //     return
+        // }
         let data = event.data;
         let ItemList = Object.values(data);
         let ids_backpack: { [id: string]: AM2_Server_Backpack } = {};
@@ -41,7 +47,7 @@ const CGE_Subscribe = () => {
             let item_data = ServerItemList[item_id as keyof typeof ServerItemList];
             // $.Msg(["item_data", item_id, item_data])
             if (item_data == null) {
-                $.Msg(["Null ItemId",item_id])
+                $.Msg(["Null ItemId", item_id])
                 continue
             }
             let item_class = item_data.affiliation_class;
@@ -68,19 +74,47 @@ const CGE_Subscribe = () => {
 
         // 储存当前背包物品的数量
         GameUI.CustomUIConfig().setStorage("backpack_count_table", backpack_count_table);
-        // // 更新数据
-        // $.Schedule(0.1, () => {
-        //     GameUI.CustomUIConfig().ServerEventBus.publish("backpack_count_update", backpack_count_table)
-        // })
-
     })
 
 
-    
-    
+
+
     SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
 
-    
+
+}
+
+/** 背包全道具图鉴 */
+const InitAllBackpackItemList = () => {
+    BackpackItemList.RemoveAndDeleteChildren();
+    for (let item_id in ServerItemList) {
+        let data = ServerItemList[item_id as keyof typeof ServerItemList];
+        let ItemRadio = $.CreatePanel("RadioButton", BackpackItemList, "", { group: "backpack_group" })
+        ItemRadio.BLoadLayoutSnippet("BackpackItem");
+        ItemRadio.AddClass("test");
+
+        let item_name = $.Localize("#custom_serveritem_" + item_id);
+        ItemRadio.SetDialogVariable("item_name", item_name)
+        let ServerItemImage = ItemRadio.FindChildTraverse("ServerItemImage") as ImagePanel;
+        let texture_name = data.AbilityTextureName;
+        ServerItemImage.SetImage(GetTextureSrc(texture_name))
+
+        ItemRadio.SetPanelEvent("onmouseover", () => {
+            $.DispatchEvent(
+                "UIShowCustomLayoutParametersTooltip",
+                ItemRadio,
+                "custom_tooltip_serveritem",
+                "file://{resources}/layout/custom_game/tooltip/server_item/layout.xml",
+                `item_id=${item_id}&count=${0}&show_count=${0}`
+            );
+        })
+
+        ItemRadio.SetPanelEvent("onmouseout", () => {
+            $.DispatchEvent('UIHideCustomLayoutTooltip', "custom_tooltip_serveritem");
+        })
+
+    }
+
 }
 
 
@@ -91,7 +125,21 @@ const InitItemDetails = () => {
     ItemDetails.SetDialogVariableInt("item_amount", 0)
 
     UseBackpackItemBtn.SetPanelEvent("onactivate", () => {
-        $.Msg(["UseBackpackItem:", view_item_id])
+        let text = UseBackpackCount.text.length <= 0 ? "1" : UseBackpackCount.text
+        let count = Math.max(1, parseInt(text))
+        $.Msg(["UseBackpackItem:", view_item_id, count])
+
+        // 弹窗
+        if (view_item_id > 0) {
+            GameEvents.SendCustomGameEventToServer("ServiceInterface", {
+                event_name: "UseItem",
+                params: {
+                    use_item_id: view_item_id, //使用
+                    count: count
+                }
+            })
+        }
+        // 请求
 
         // GameUI.CustomUIConfig().DashboardRoute("personal","stone")
     })
@@ -99,11 +147,23 @@ const InitItemDetails = () => {
     UpdateBackpackBtn.SetPanelEvent("onactivate", () => {
         SendCustomEvent("ServiceInterface", "GetPlayerServerPackageData", {})
     })
+
+
+    UseBackpackCount.SetPanelEvent('ontextentrychange', () => {
+        let text = UseBackpackCount.text
+        if (text.indexOf("-") != -1) {
+            UseBackpackCount.text = "";
+        } else if (parseInt(text) > 10) {
+            UseBackpackCount.text = "10";
+        } else if (parseInt(text) < 1) {
+            UseBackpackCount.text = "1";
+        }
+    })
 }
 
 const ViewItem = (item_id: string, count: number) => {
     view_item_id = parseInt(item_id);
-    let item_data = GetServerItemData(item_id)
+    let item_data = ServerItemList[item_id as keyof typeof ServerItemList]
     let item_rare = item_data.quality
     // let item_name = $.Localize("#custom_serveritem_" + item_id)
     let item_desc = $.Localize("#custom_serveritem_" + item_id + "_desc")
@@ -118,7 +178,12 @@ const ViewItem = (item_id: string, count: number) => {
     Component_ItemName._SetItemId(item_id)
     ItemComponent._SetItemId(item_id)
     ItemDetails.SetHasClass("Show", true)
+
+    let can_use = item_data.uses == 1;
+    // $.Msg(["can_use", item_id, item_data.is_use, can_use])
+    ItemDetails.SetHasClass("can_use", can_use)
 }
+
 export const Init = () => {
     // 加载nav button
     NavButtonList.RemoveAndDeleteChildren();

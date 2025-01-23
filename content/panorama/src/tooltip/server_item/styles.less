@@ -86,7 +86,7 @@
     .ItemDesc {
         width: 100%;
         padding: 16px 24px;
-
+        flow-children: down;
         // border: 1px solid #fff;
         Label {
 
@@ -95,6 +95,17 @@
         }
 
     }
+
+    .Dev {
+        visibility: collapse;
+        padding: 16px 24px;
+        font-size: 16px;
+        color:#ffba3a;
+    }
+}
+
+.is_dev .Dev {
+    visibility: visible;
 }
 
 .ItemAmount {

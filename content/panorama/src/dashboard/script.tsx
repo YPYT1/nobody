@@ -128,7 +128,7 @@ const SetDashboardButton = (MenuButton: Button, dashboard_id: string) => {
     })
 
     MenuButton.SetPanelEvent("onmouseover", () => {
-        ShowCustomTextTooltip(MenuButton, "", dashboard_id);
+        ShowCustomTextTooltip(MenuButton, "", $.Localize("#custom_dashboard_" + dashboard_id));
     })
     MenuButton.SetPanelEvent("onmouseout", () => {
         HideCustomTooltip();
@@ -199,7 +199,25 @@ function DashboardRoute<
         GameUI.CustomUIConfig().ServerEventBus = new EventBus()
     }
 
+    GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
+        let data = event.data;
+        let game_select_phase = data.game_select_phase;
+        // $("#top_info").Data<PanelDataObject>().GameSelectPhase = game_select_phase
+        let HudPanel = $.GetContextPanel();
+        if (HudPanel) {
+            for (let phase = -1; phase < 10; phase++) {
+                HudPanel.SetHasClass("GameSelectPhase_" + phase, game_select_phase == phase);
+            }
+            HudPanel.SetHasClass("GameSelectPhase_999", game_select_phase == 999);
+        }
+    })
+
 
     GameUI.CustomUIConfig().DashboardRoute = DashboardRoute;
     Initialize();
+
+    GameEvents.SendCustomGameEventToServer("MapChapter", {
+        event_name: "GetGameSelectPhase",
+        params: {}
+    })
 })();

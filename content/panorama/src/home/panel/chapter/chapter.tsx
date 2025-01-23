@@ -177,7 +177,7 @@ const ShowChapterInfoTips = (e: Panel, chapter_key: string) => {
                         difficulty: `${diff_value}`
                     }
                 })
-                
+
             })
         } else {
             DifficultyButton.SetPanelEvent("onactivate", () => { })
@@ -231,6 +231,7 @@ const ChapterPageTurning = (page_num: FlippingPagesType) => {
 }
 
 
+const numToText = ["零","一","二","三","四","五","六","七","八","九","十"]
 
 const CreateChapterSelectPanel = () => {
     // 生成章节分页
@@ -242,19 +243,21 @@ const CreateChapterSelectPanel = () => {
         ChapterPageInfo.BLoadLayoutSnippet("ChapterPageInfo")
         ChapterPageInfo.SetHasClass("Show", page == "1");
         const ChapterList = ChapterPageInfo.FindChildTraverse("ChapterList")!
+        let chapter_num = 1;
         for (let chapter_key in PageData) {
             let data = PageData[chapter_key];
             let chapter_data = ChapterInfo[chapter_key as keyof typeof ChapterInfo];
             let ChapterSelectBtn = $.CreatePanel("RadioButton", ChapterList, `Chapter_${chapter_key}`)
             ChapterSelectBtn.BLoadLayoutSnippet("ChapterSelectBtn");
             ChapterSelectBtn.SetHasClass("is_boss", data.is_boss == 1);
-            ChapterSelectBtn.SetDialogVariable("chapter_name", chapter_key);
+            ChapterSelectBtn.SetDialogVariable("chapter_name", "区域 " + numToText[chapter_num]);
             ChapterSelectBtn.enabled = false;
             ChapterSelectBtn.SetPanelEvent("onactivate", () => {
                 ShowChapterInfoTips(ChapterSelectBtn, chapter_key)
             })
             let diff_value = data.is_boss == 1 ? 193 / 2 : 161 / 2;
             ChapterSelectBtn.style.transform = `translateX(${chapter_data.x - diff_value}px) translateY(${chapter_data.y - diff_value}px)`
+            chapter_num++
         }
 
         // 章节背景
@@ -267,8 +270,8 @@ const CreateChapterSelectPanel = () => {
         // $.Msg(bg_src)
 
         const ChapterBpRouteBtn = ChapterPageInfo.FindChildTraverse("ChapterBpRouteBtn") as Button;
-        ChapterBpRouteBtn.SetPanelEvent("onactivate",()=>{
-            GameUI.CustomUIConfig().DashboardRoute("event","bp");
+        ChapterBpRouteBtn.SetPanelEvent("onactivate", () => {
+            GameUI.CustomUIConfig().DashboardRoute("event", "bp");
         })
         let OffsetTest = ChapterPageInfo.FindChildTraverse("OffsetTest") as Button;
         if (OffsetTest) {
@@ -291,7 +294,7 @@ const CreateChapterSelectPanel = () => {
         // $.Msg(["LeftBtn onactivate"])
         ChapterPageTurning(-1)
     })
-    
+
     RightBtn.enabled = true
     RightBtn.SetPanelEvent("onactivate", () => {
         // $.Msg(["RightBtn onactivate"])

@@ -20,6 +20,9 @@ const SetTooltipView = (item_id: string, count: number, show_count: number) => {
 
     MainPanel.SetHasClass("show_count", show_count == 1)
     ServerItemPanel._SetItemId(item_id)
+
+    // dev
+    MainPanel.SetDialogVariable("dev_text", `物品ID: #${item_id}`)
 }
 
 
@@ -39,7 +42,7 @@ export function Init() {
         let show_count = $.GetContextPanel().GetAttributeInt("show_count", 0);
         // let rarity = $.GetContextPanel().GetAttributeInt("r", 0);
         // $.Msg([item_id, count, rarity, show_count])
-
+        MainPanel.SetHasClass("is_dev", Game.IsInToolsMode())
         SetTooltipView(item_id, count, show_count)
         // $.Msg([count,item_id,show_count])
     });

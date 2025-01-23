@@ -25,9 +25,9 @@
             </Panel>
             <Panel class="SplitLine"/>
             <Panel class="ItemDesc">
-               <Label text="{s:item_desc}"/>
+               <Label class="Desc" text="{s:item_desc}"/>
             </Panel>
-            
+            <Label class="Dev" text="{s:dev_text}"/>
         </Panel>
     </Panel>
 </root>

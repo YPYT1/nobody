@@ -46,13 +46,6 @@ class BackpackCount {
             })
         });
 
-        // GameUI.CustomUIConfig().ServerEventBus.subscribe("backpack_count_update", data => {
-        //     const MainPanel = this.ContentPanel;
-        //     let item_id = MainPanel.Data<PanelDataObject>().item_id as string;
-        //     let count = data[item_id] ?? 0;
-        //     MainPanel.SetDialogVariable("count", "" + count);
-        //     MainPanel.Data<PanelDataObject>().count = count
-        // })
     }
 
     _SetItemId = (item_id: string) => {

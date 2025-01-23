@@ -15,8 +15,11 @@
             <Panel class="BackpackItem">
                 <Panel class="Selected" hittest="false" />
                 <Panel id="ServerItem" />
+                <Image id="ServerItemImage"/>
+                <Label class="ItemName" text="{s:item_name}"/>
             </Panel>
         </snippet>
+
         
     </snippets>
     <Panel class="DashBoardPanel">
@@ -49,9 +52,13 @@
                         </Panel>
 
                         <Panel class="Footer">
-                            <Button id="UseBackpackItemBtn" class="dashboard_btn green">
+                            <Panel class="UseBackpackItem">
+                                <TextEntry id="UseBackpackCount" maxchars="2" textmode="numeric"/>
+                                <Button id="UseBackpackItemBtn" class="dashboard_btn green">
                                 <Label text="使用"/>
                             </Button>
+                            </Panel>
+                            
 
                             <Button id="UpdateBackpackBtn" class="dashboard_btn red">
                                 <Label text="更新背包"/>

@@ -58,8 +58,8 @@ class RechargeItem {
         this.StorePurchaseBtn = e.FindChildTraverse("StorePurchaseBtn")!;
         // price_cost
         this.ContentPanel.SetDialogVariable("price_cost", recharge_index)
-        this.ContentPanel.SetDialogVariable("goods_name", `${parseInt(recharge_index) * 10} 钻石`)
-        this.ContentPanel.SetDialogVariable("bonus_amount", `${parseInt(recharge_index) * 3}`)
+        this.ContentPanel.SetDialogVariable("goods_name", `${parseInt(recharge_index) * 100} 铂金`)
+        this.ContentPanel.SetDialogVariable("bonus_amount", `${parseInt(recharge_index) * 3000}`)
 
 
         this.StorePurchaseBtn.SetPanelEvent("onactivate", () => {

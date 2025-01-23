@@ -120,7 +120,9 @@ export const Init = () => {
 
 
         // 当前货币
-        const currency_count = GameUI.CustomUIConfig().getStorage("currency_count")!;
+        const backpack_count_table = GameUI.CustomUIConfig().getStorage('backpack_count_table')!;
+
+        const currency_count = GameUI.CustomUIConfig().getStorage('currency_count')!;
         // $.Msg(["currency_count", currency_count])
         // 购买所需货币
         let cost_arr = data.cost.split("_");
@@ -131,7 +133,16 @@ export const Init = () => {
             CurrencyIcon._SetItemId("rmb");
         } else {
             CurrencyIcon._SetItemId(cost_type)
-            g_my_price = currency_count[cost_type] ?? 0;
+
+            if (currency_count[cost_type] != null) {
+                g_my_price = currency_count[cost_type]
+            } else if (backpack_count_table[cost_type] == null) {
+                g_my_price = backpack_count_table[cost_type]
+            } else {
+                g_my_price = 0
+            }
+
+
         }
 
         // 最大购买次数

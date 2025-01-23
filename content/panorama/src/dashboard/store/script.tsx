@@ -83,8 +83,10 @@ function InitNavMenu() {
 
     })
 
+    
     GameEvents.Subscribe("ServiceInterface_GetPlayerShoppingLimit", event => {
         let limit = event.data.limit;
+        // $.Msg(["limit",limit])
         let limit_data: AM2_Server_Shopping_Limit_List = {}
         let today_time = GameUI.CustomUIConfig().getStorage("today_time")!;
         // $.Msg(["today_time",today_time])
@@ -93,7 +95,10 @@ function InitNavMenu() {
             let shop_data = ServerShopList["" + goods_id as keyof typeof ServerShopList];
             let limitdata = shop_data.purchase_limitation_time.split("_")
             let limit_time = 0; //限购时长
-            if (limitdata[0] == "D") { //天
+            // $.Msg(["limitdata[0]",limitdata[0]])
+            if (limitdata[0] == "XG"){
+                limit_time = 99999999999
+            } else if (limitdata[0] == "D") { //天
                 limit_time = 1 * 60 * 60 * 24 - 1; //
             } else if (limitdata[0] == "W") { //周
                 limit_time = 1 * 60 * 60 * 24 * 7 - 1; // 
@@ -128,6 +133,7 @@ function InitNavMenu() {
 
 
 (() => {
-    $.Msg([" "])
+    // $.Msg([" "])
+    GameUI.CustomUIConfig().ServerEventBus.clear("shoping_limit_update")
     Init();
 })();
