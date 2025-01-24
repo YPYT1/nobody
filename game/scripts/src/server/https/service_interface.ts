@@ -672,7 +672,9 @@ export class ServiceInterface extends UIEventRegisterClass{
                 }
             }
             //根据合成的等级获取新卡片
-            let new_card : number[] = [];
+            let add_list : {
+                [ item_id : string] : number , //物品数量key
+            } = {};
             for (const list_key in list_obj) {
                 //特殊卡处理
                 let cz_ts = false;
@@ -703,20 +705,29 @@ export class ServiceInterface extends UIEventRegisterClass{
                     }
 
                 }
+                
                 //判断是否为特殊组合
                 if(is_ts){
                     if(RollPercentage(13)){
                         //进阶为特殊卡片
                         let get_c_id = is_pictuer_id;
                         let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
-                        new_card.push(get_item_id);
+                        if(add_list.hasOwnProperty(tostring(get_item_id))){
+                            add_list[tostring(get_item_id)] ++;
+                        }else{
+                            add_list[tostring(get_item_id)] = 1;
+                        }
                     }else{
                         //不进阶
                         let length = GameRules.ServiceData.server_pictuer_card_special[is_pictuer_id].length;
                         let RInt = RandomInt(0 , length - 1);
                         let get_c_id = tostring(GameRules.ServiceData.server_pictuer_card_special[is_pictuer_id][RInt]);
                         let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
-                        new_card.push(get_item_id);
+                        if(add_list.hasOwnProperty(tostring(get_item_id))){
+                            add_list[tostring(get_item_id)] ++;
+                        }else{
+                            add_list[tostring(get_item_id)] = 1;
+                        }
                     }
                 }else{
                     if(list_obj[list_key].hasOwnProperty("0")){
@@ -734,20 +745,22 @@ export class ServiceInterface extends UIEventRegisterClass{
                         let RInt = RandomInt(0 , length - 1);
                         let get_c_id = GameRules.ServiceData.server_pictuer_card_rarity[rarity][RInt];
                         let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
-                        new_card.push(get_item_id);
+                        if(add_list.hasOwnProperty(tostring(get_item_id))){
+                            add_list[tostring(get_item_id)] ++;
+                        }else{
+                            add_list[tostring(get_item_id)] = 1;
+                        }
                         //特殊卡片处理
                     }
                 }
             }
             //增加数量
             let add_item_str = "";
-            for (let index = 0; index < new_card.length; index++) {
-                //判断是否有
-                let item_id =  new_card[index]; 
+            for (const item_id in add_list) {
                 if(add_item_str == ""){
-                    add_item_str = item_id + "_" + 1;
+                    add_item_str = item_id + "_" + add_list[item_id];
                 }else{
-                    add_item_str += "," + item_id + "_" + 1;
+                    add_item_str += "," + item_id + "_" + add_list[item_id];
                 }
             }
             GameRules.ArchiveService.PulbicItemAddDel(player_id , red_item_str , add_item_str , 1 , type)
