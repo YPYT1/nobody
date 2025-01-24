@@ -1300,7 +1300,9 @@ export class ArchiveService extends UIEventRegisterClass {
                         let new_card_string : string[] = [];
                         for (let index = 0; index < add_item.length; index++) {
                             const element = add_item[index];
-                            new_card_string.push(tostring(element.item_id));
+                            for (let elc = 0; elc < element.number; elc++) {
+                                new_card_string.push(tostring(element.item_id));       
+                            }
                         }
                         GameRules.ServiceInterface.GetCompoundCardList(player_id , new_card_string , cardtype);
                     }
