@@ -176,6 +176,8 @@ export class Spawn extends UIEventRegisterClass {
     _pass_card_id_pro : number[] = [];
     //击杀boss次数
     _kill_boss_count = 0;
+    //击杀boss总数
+    _boss_count = 0;
     constructor() {
         super("Spawn" , true);
         for (const key in PictuerCardData) {

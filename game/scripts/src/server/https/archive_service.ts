@@ -250,6 +250,8 @@ export class ArchiveService extends UIEventRegisterClass {
             host_steam_id : host_steam_id,
             ext_items : {},
             skill_exp : {},
+            bosskills : GameRules.Spawn._kill_boss_count,
+            bossmax : 6,
         }
         let player_count = GetPlayerCount();
         for (let p_id = 0 as PlayerID; p_id < player_count; p_id++) {
