@@ -127,7 +127,7 @@
 				<Panel id="HeroesList" />
 				<Panel class="BottomButton">
 					<Button id="HeroConfirm" class="ButtonClass" >
-						<Label text="#准备" />
+						<Label text="准备" />
 					</Button>
 				</Panel>
 			</Panel>

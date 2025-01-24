@@ -73,7 +73,7 @@
                             </Panel>
                         </Panel>
                         <Panel id="ActualPanel" class="PriceContent Actual">
-                            <Label text="{d:actual_price}"/>
+                            <Label text="{d:actual_price} / {d:g_my_price}"/>
                         </Panel>
                     </Panel>
                 </Panel>

@@ -133,10 +133,10 @@ const InitItemDetails = () => {
     UseBackpackItemBtn.SetPanelEvent("onactivate", () => {
         let text = UseBackpackCount.text.length <= 0 ? "1" : UseBackpackCount.text
         let count = Math.max(1, parseInt(text))
-        $.Msg(["UseBackpackItem:", view_item_id, count])
-
+        // $.Msg(["UseBackpackItem:", view_item_id, count])
         // 弹窗
         if (view_item_id > 0) {
+            GameUI.CustomUIConfig().EventBus.publish("popup_loading", { show: true })
             GameEvents.SendCustomGameEventToServer("ServiceInterface", {
                 event_name: "UseItem",
                 params: {

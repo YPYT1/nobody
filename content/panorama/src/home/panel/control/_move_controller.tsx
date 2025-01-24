@@ -142,29 +142,29 @@ export function OnInitMoveHotkey() {
 
 
 
-    GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
-        // GameUI.SetCameraDistance(value);
-        // GameUI.SetCameraPitchMax(pitchmin);
-        // if (value == 6 && camera_value < MAX_CAMERA_DISTANCE) {
-        //     camera_value += 7;
-        //     ChangeCameraValue(camera_value);
-        //     return true
-        // } else if (value == 5 && camera_value > 800) {
-        //     camera_value -= 7;
-        //     ChangeCameraValue(camera_value);
-        //     return true
-        // }
+    // GameUI.SetMouseCallback((event: MouseEvent, value: MouseButton | MouseScrollDirection) => {
+    //     // GameUI.SetCameraDistance(value);
+    //     // GameUI.SetCameraPitchMax(pitchmin);
+    //     // if (value == 6 && camera_value < MAX_CAMERA_DISTANCE) {
+    //     //     camera_value += 7;
+    //     //     ChangeCameraValue(camera_value);
+    //     //     return true
+    //     // } else if (value == 5 && camera_value > 800) {
+    //     //     camera_value -= 7;
+    //     //     ChangeCameraValue(camera_value);
+    //     //     return true
+    //     // }
 
-        if (Game.IsInToolsMode()) { return false }
+    //     if (Game.IsInToolsMode()) { return false }
 
-        if (value == 1) {
-            return true
-        } else {
-            return false
-        }
+    //     if (value == 1) {
+    //         return true
+    //     } else {
+    //         return false
+    //     }
 
 
-    });
+    // });
 
 }
 

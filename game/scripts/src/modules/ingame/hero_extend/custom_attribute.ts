@@ -854,11 +854,14 @@ export class CustomAttribute {
         }
 
         if (cmd == "-uptest") {
-
+            print(cmd)
             this.SetAttributeInKey(hHero, "uptest", {
-                "MoveSpeed": {
-                    "Up_Base": 5
-                }
+                "AbilityHaste": {
+                    "Base": 5
+                },
+                "AbilityCooldown2": {
+                    "Base": 5
+                },
             })
         }
         if (cmd == "-addattr") {

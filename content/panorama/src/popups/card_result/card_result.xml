@@ -40,6 +40,12 @@
                 </Panel>
             </Panel>
         </Panel>
-        <Movie id="DuguaiMoviePanel" src="file://{resources}/videos/custom_game/duguai.webm" html="false"/>
+        <Movie 
+            id="DuguaiMoviePanel" 
+            src="file://{resources}/videos/custom_game/duguai.webm" 
+            html="false" 
+            repeat="true"
+            autoplay="onload"
+        />
     </Button>
 </root>

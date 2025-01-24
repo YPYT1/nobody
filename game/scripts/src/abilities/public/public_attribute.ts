@@ -219,10 +219,14 @@ export class modifier_public_attribute extends BaseModifier {
     GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
         if (event.ability == null) { return 100 }
         let hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
-        let ability_name = event.ability.GetAbilityName()
+        let ability_name = event.ability.GetAbilityName();
+        if (ability_name == "public_blink") {
+            return 0
+        }
         let hAbility = event.ability as BaseHeroAbility;
         let ability_cd_limit = 55;
         let base_cd = 100;
+
         if (IsServer()) {
             ability_cd_limit = hUnit.custom_attribute_table.AbilityCooldown.Limit
             // 复仇冷却
@@ -231,19 +235,20 @@ export class modifier_public_attribute extends BaseModifier {
                 base_cd *= (1 - fuchou_cd)
             }
             // 召唤技能冷却
-            if (hAbility.GetCustomAbilityType != null) {
-                let custom_at = hAbility.GetCustomAbilityType();
-                if (custom_at.indexOf("Summon") != -1) {
-                    let skv_summon_cooldown = hAbility.GetTypesAffixValue(1, "Summon", "skv_summon_cooldown") * 0.01;
-                    base_cd *= (1 - skv_summon_cooldown)
-                }
-            }
+            // if (hAbility.GetCustomAbilityType() != null) {
+            //     let custom_at = hAbility.GetCustomAbilityType();
+            //     if (custom_at.indexOf("Summon") != -1) {
+            //         let skv_summon_cooldown = hAbility.GetTypesAffixValue(1, "Summon", "skv_summon_cooldown") * 0.01;
+            //         base_cd *= (1 - skv_summon_cooldown)
+            //     }
+            // }
         }
 
         let AbilityCooldown1 = this.AttributeData.AbilityCooldown ?? 0;
-        let ability_cd = math.min(ability_cd_limit * 0.01, AbilityCooldown1)
+        // print("AbilityCooldown1", ability_cd_limit * 0.01, AbilityCooldown1, math.min(ability_cd_limit, AbilityCooldown1))
+        let ability_cd = math.min(ability_cd_limit, AbilityCooldown1) * 0.01
+        let AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01
         base_cd *= (1 - ability_cd)
-        let AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01;
         base_cd *= (1 - AbilityCooldown2);
 
         return 100 - base_cd

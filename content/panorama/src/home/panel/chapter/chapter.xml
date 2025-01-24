@@ -50,7 +50,7 @@
 			<Panel id="ChapterSelect" hittest="false">
 				<Panel class="Header" hittest="false">
 					<Panel class="Title">
-						<Label text="#请选择关卡"/>
+						<Label text="请选择关卡"/>
 					</Panel>
 				</Panel>
 				<Panel class="Body" hittest="false">
@@ -73,7 +73,7 @@
 					<Panel id="About">
 						<Panel class="TitleName">
 							<Panel class="NameTextrue Left"/>	
-							<Label text="#关卡说明"/>
+							<Label text="关卡说明"/>
 							<Panel class="NameTextrue Right"/>
 						</Panel>
 						<Panel class="ChapterDesc">
@@ -83,7 +83,7 @@
 					
 					<Panel id="DiffInfo" class="TitleName">
 						<Panel class="NameTextrue Left"/>	
-						<Label text="#难度选择"/>
+						<Label text="难度选择"/>
 						<Panel class="NameTextrue Right"/>
 					</Panel>
 
@@ -91,7 +91,7 @@
 						
 					<Panel class="TitleName">
 						<Panel class="NameTextrue Left"/>	
-						<Label text="#掉落信息"/>
+						<Label text="掉落信息"/>
 						<Panel class="NameTextrue Right"/>
 					</Panel>
 
@@ -99,10 +99,10 @@
 					
 					<Panel id="ChapterOption" class="flow-right">
 						<Button id="ChapterConfirmBtn" class="btn">
-							<Label text="#开始挑战" />
+							<Label text="开始挑战" />
 						</Button>
 						<Button id="ChapterCancelBtn" class="btn cancel">
-							<Label text="#还是算了" />
+							<Label text="还是算了" />
 						</Button>
 					</Panel>
 				
@@ -110,7 +110,7 @@
 			</Panel>
 		</Panel>
 		<Button id="TestToggleBtn" class="btn">
-			<Label text="#关卡切换页面"/>
+			<Label text="关卡切换页面"/>
 		</Button>
 
 	</Panel>

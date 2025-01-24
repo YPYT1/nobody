@@ -14,7 +14,7 @@ export const Init = () => {
 
 
 const GetCompoundCardList = (event: NetworkedData<CustomGameEventDeclarations["ServiceInterface_GetCompoundCardList"]>) => {
-    $.Msg(["GetCompoundCardList", event])
+    // $.Msg(["GetCompoundCardList", event])
     let data = event.data;
     let type = data.type
     // ToggleDashboardLoading(false)
@@ -79,7 +79,7 @@ const CompoundCard_DragEnd = (panel: Panel, draggedPanel: Panel) => {
 
 
 const LoopPlayDdzBgm = () => {
-    $.Msg(["LoopPlayDdzBgm", stop_loop_play])
+    // $.Msg(["LoopPlayDdzBgm", stop_loop_play])
     if (stop_loop_play) { 
         Game.StopSound(sound_handle)
         return 
