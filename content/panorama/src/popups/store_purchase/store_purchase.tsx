@@ -121,25 +121,29 @@ export const Init = () => {
 
         // 当前货币
         const backpack_count_table = GameUI.CustomUIConfig().getStorage('backpack_count_table')!;
-
         const currency_count = GameUI.CustomUIConfig().getStorage('currency_count')!;
         // $.Msg(["currency_count", currency_count])
         // 购买所需货币
+        // $.Msg(["backpack_count_table"])
+        // $.Msg(backpack_count_table)
+        // $.Msg(currency_count)
         let cost_arr = data.cost.split("_");
 
         let cost_type = cost_arr[0];
+        // $.Msg(["cost_type",cost_type])
         CurrencyIcon.SetHasClass("is_rmb", cost_type == "rmb")
         if (cost_type == "rmb") {
             CurrencyIcon._SetItemId("rmb");
         } else {
             CurrencyIcon._SetItemId(cost_type)
-
+            // $.Msg(["currency_count[cost_type]",currency_count[cost_type]])
+            // $.Msg(["backpack_count_table[cost_type]",backpack_count_table[cost_type]])
             if (currency_count[cost_type] != null) {
-                g_my_price = currency_count[cost_type]
-            } else if (backpack_count_table[cost_type] == null) {
-                g_my_price = backpack_count_table[cost_type]
+                g_my_price = currency_count[cost_type];
+            } else if (backpack_count_table[cost_type] != null) {
+                g_my_price = backpack_count_table[cost_type];
             } else {
-                g_my_price = 0
+                g_my_price = 0;
             }
 
 
@@ -162,7 +166,8 @@ export const Init = () => {
         StoreCountSlider.min = min_count;
         StoreCountSlider.max = Math.max(min_count, max_count);
         StoreCountSlider.visible = ((single_max == 99) || single_max > 1) && min_count > 0;
-
+        MainPanel.SetDialogVariableInt("g_my_price",g_my_price)
+        
         UpdateCurrentStoreCount(1);
 
 

@@ -1,4 +1,5 @@
 import { HideCustomTooltip, ShowCustomTooltip } from "../utils/custom_tooltip";
+import { SetHotKey } from "./panel/control/_move_controller";
 
 const MainPanel = $.GetContextPanel();
 const screen = $("#screen");
@@ -111,10 +112,10 @@ export const Initialize = () => {
     $("#game_loading").BLoadLayout(layout_path + "/game_loading/game_loading.xml", false, false);
     $("#ability_upgrade").BLoadLayout(layout_path + "/ability_upgrade/ability_upgrade.xml", false, false);
 
-    if (Game.IsInToolsMode()) {
-        $("#development").BLoadLayout(layout_path + "/development/development.xml", false, false);
-        $.GetContextPanel().SetHasClass("IsInToolsMode", true);
-    }
+
+    $("#development").BLoadLayout(layout_path + "/development/development.xml", false, false);
+       
+    
 
     GameEvents.Subscribe("MapChapter_GetGameSelectPhase", event => {
         let data = event.data;

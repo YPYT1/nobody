@@ -147,11 +147,13 @@ const InitComposeButton = () => {
     ButtonComposeMode1.enabled = false;
     ButtonComposeMode2.enabled = false;
     ButtonComposeMode1.SetPanelEvent("onactivate", () => {
+        ButtonComposeMode1.enabled = false;
         SendCompoundCard(0);
     })
 
 
     ButtonComposeMode2.SetPanelEvent("onactivate", () => {
+        ButtonComposeMode2.enabled = false;
         SendCompoundCard(1);
     })
 }

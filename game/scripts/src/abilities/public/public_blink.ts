@@ -1,12 +1,13 @@
 import { modifier_generic_arc_lua } from "../../modifier/modifier_generic_arc_lua";
 import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../utils/dota_ts_adapter";
+import { BaseHeroAbility } from "../hero/base_hero_ability";
 
 
 @registerAbility()
-export class public_blink extends BaseAbility {
+export class public_blink extends BaseHeroAbility {
 
     distance: number;
-    caster: CDOTA_BaseNPC;
+    // caster: CDOTA_BaseNPC;
 
     Precache(context: CScriptPrecacheContext): void {
         precacheResString("particles/units/heroes/hero_faceless_void/faceless_void_time_walk.vpcf", context)

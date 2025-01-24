@@ -146,15 +146,15 @@
 							</Panel>
 
 							<Button id="TalentSaveBtn" class="dashboard_btn green">
-								<Label text="#Save" />
+								<Label text="保存" />
 							</Button>
 
 							<Button id="TalentResetBtn" class="dashboard_btn">
-								<Label text="#Reset" />
+								<Label text="还原" />
 							</Button>
 
 							<Button id="TalentClearBtn" class="dashboard_btn red">
-								<Label text="#Clear" />
+								<Label text="重置" />
 							</Button>
 
 							<Panel class="TalentPoint">

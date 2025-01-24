@@ -29,7 +29,7 @@
 						<Panel class="LimitTag"/>
 					</Panel>
 					<Panel class="ItemLockState">
-						<Label text="#已锁定"/>
+						<Label text="已锁定"/>
 					</Panel>
 				</Button>
 
@@ -122,10 +122,10 @@
 				<Panel class="PopupFooter">
 					<Panel class="ButtonGroup">
 						<Button id="BtnConfirm" class="BtnCancel">
-							<Label text="#爷要了" />
+							<Label text="爷要了" />
 						</Button>
 						<Button id="BtnCancel" class="BtnConfirm">
-							<Label text="#要不起" />
+							<Label text="要不起" />
 						</Button>
 					</Panel>
 				</Panel>
