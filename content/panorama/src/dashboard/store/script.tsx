@@ -17,7 +17,7 @@ const ChapterBpRouteBtn = $("#ChapterBpRouteBtn");
  * 1001,1002,1003,1004,1005,1006,1007,1008
  */
 /** 顶部显示的货币列表 */
-const Show_Top_Currency = [1001, 1002, 1003, 1004, 1005];
+const Show_Top_Currency = [1001, 1003, 1005];
 
 export function Init() {
     InitNavMenu()

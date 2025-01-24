@@ -194,6 +194,7 @@ function DashboardRoute<
 
 
 (() => {
+    // $.Msg(["1"])
     GameUI.CustomUIConfig().ServerEventBus = new EventBus()
     if (GameUI.CustomUIConfig().ServerEventBus == null) {
         GameUI.CustomUIConfig().ServerEventBus = new EventBus()

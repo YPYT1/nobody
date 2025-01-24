@@ -114,9 +114,8 @@ function CreatePlayerStatePanel() {
         let HeroIcon = PlayerState.FindChildTraverse("HeroIcon") as ImagePanel;
         HeroIcon.SetImage(`file://{images}/heroes/selection/${heroname}.png`)
 
-
         PlayerState.SetDialogVariable("hero_name", $.Localize(`#${heroname}`))
-        PlayerState.SetDialogVariable("player_name", "玩家名字")
+        PlayerState.SetDialogVariable("player_name", playerInfo.player_name)
     }
 
     // 创建英雄列表搜

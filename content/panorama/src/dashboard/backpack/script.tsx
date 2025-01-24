@@ -25,6 +25,7 @@ const EventBus = GameUI.CustomUIConfig().EventBus;
 
 const UseBackpackCount = $("#UseBackpackCount") as TextEntry;
 let view_item_id = -1;
+
 const CGE_Subscribe = () => {
 
     GameEvents.Subscribe("ServiceInterface_GetPlayerServerPackageData", event => {
@@ -70,6 +71,11 @@ const CGE_Subscribe = () => {
                 let amount = ItemRadio.Data<PanelDataObject>().amount as number;
                 ViewItem("" + item_id, amount)
             })
+
+            if (view_item_id == ItemData.item_id) {
+                ItemRadio.checked = true;
+                ViewItem("" + view_item_id, ItemData.number)
+            }
         }
 
         // 储存当前背包物品的数量

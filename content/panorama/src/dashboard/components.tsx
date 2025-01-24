@@ -1,6 +1,6 @@
 // 菜单列表
 
-const IsTestMode = Game.IsInToolsMode()
+const IsTestMode = false; //Game.IsInToolsMode()
 const FindOfficialHUDUI = GameUI.CustomUIConfig().FindOfficialHUDUI;
 export const DASHBOARD_NAVBAR = {
 
@@ -37,7 +37,7 @@ export const DASHBOARD_NAVBAR = {
             "nav_1": IsTestMode, // 热卖
             "nav_2": IsTestMode, // 会员
             "nav_3": IsTestMode, // 铂金商铺
-            "nav_4": IsTestMode, // 钻石商铺
+            "nav_4": true, // 钻石商铺
             "nav_5": true, // 图鉴兑换
             "nav_6": true, // 魂石兑换
             "gacha": true, // 元素祈福
@@ -49,7 +49,7 @@ export const DASHBOARD_NAVBAR = {
     "event": {
         "Show": true,
         "Sub": {
-            "bp": true, // 成长礼
+            "bp": false, // 成长礼
             "quest": false, // 常驻活动,
             "exchange":true, // 兑换
         }
