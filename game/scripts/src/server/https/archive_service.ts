@@ -568,8 +568,8 @@ export class ArchiveService extends UIEventRegisterClass {
                     //Vip信息
                     GameRules.ArchiveService.PlayerVipUpdate(player_id , gold_data);
                     //货币信息
-                    GameRules.ArchiveService.PlayerGoldUpdate(player_id , gold_data);
                     GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
+                    GameRules.ArchiveService.PlayerGoldUpdate(player_id , gold_data);
                     //限购数据
                     GameRules.ServiceInterface.ShoppingLimit[player_id].limit = data.data.limit;
                     // GameRules.ServiceInterface.ShoppingLimit[player_id].sc = data.data.limit.sc;
