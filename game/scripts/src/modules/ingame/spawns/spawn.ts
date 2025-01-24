@@ -1504,6 +1504,7 @@ export class Spawn extends UIEventRegisterClass {
                 GameRules.Spawn.TemporarilyStopTheGame();
                 GameRules.ServiceInterface.SendLuaLog(-1);
             }
+            GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE6);
         } else {
             //奖励卡片
             GameRules.MapChapter.GameWin();

@@ -33,6 +33,7 @@ declare interface CreateGameReturn {
 				inside: number, //是否内侧 0否 1是
 				level_difficulty: string, //通关难度
 				exp: number, //地图经验值
+                new_user : number , //新用户状态
 				cz_gold: number, //黄金
 				jf_gold: number , //良善点
                 jb_gold: number , //银币
@@ -507,6 +508,29 @@ declare interface UseItemParam {
  * 物品使用返回数据
  */
 declare interface UseItemReturn {
+    code : number, //状态码
+    msg : string, //服务器消息
+    data :  {
+        add_item : AM2_Server_Backpack[],
+        red_item : AM2_Server_Backpack[],
+    }
+}
+
+
+
+
+/**
+ * 物品使用数据参数
+ */
+declare interface PulbicItemAddDelParam {
+	sid : string , //steamid
+    red_item_str : string , //使用的物品
+    add_item_str : string , //使用次数
+}
+/**
+ * 物品使用返回数据
+ */
+declare interface PulbicItemAddDelReturn {
     code : number, //状态码
     msg : string, //服务器消息
     data :  {

@@ -432,7 +432,7 @@ export class MysticalShopSystem extends UIEventRegisterClass {
             //     "他们又来了，他们更强了……",
             //     {}
             // );
-            GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE6);
+            // GameRules.CMsg.SendMsgToAll(CGMessageEventType.MESSAGE6);
             //继续游戏
             // GameRules.GetGameModeEntity().SetContextThink("StartSpawnControlStartSpawnControl", () => {
             //     GameRules.Spawn.StartSpawnControl()

@@ -652,6 +652,7 @@ export class ServiceInterface extends UIEventRegisterClass{
                     }
                 }
             }
+            let red_item_str = "";
             //检查数量是否足够
             for (const itemid in consume) {
                 consume[itemid].d = GameRules.ServiceData.GetMonsterPackageIndexAndCount(player_id , tonumber(itemid))
@@ -663,10 +664,15 @@ export class ServiceInterface extends UIEventRegisterClass{
                     GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片不足...");
                     return ;
                 }
+                let need_item_count = consume[itemid].c;
+                if(red_item_str == ""){
+                    red_item_str = itemid + "_" + need_item_count;
+                }else{
+                    red_item_str += "," + itemid + "_" + need_item_count;
+                }
             }
             //根据合成的等级获取新卡片
             let new_card : number[] = [];
-            let new_card_string : string[] = [];
             for (const list_key in list_obj) {
                 //特殊卡处理
                 let cz_ts = false;
@@ -704,7 +710,6 @@ export class ServiceInterface extends UIEventRegisterClass{
                         let get_c_id = is_pictuer_id;
                         let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
                         new_card.push(get_item_id);
-                        new_card_string.push(get_item_id.toString());
                     }else{
                         //不进阶
                         let length = GameRules.ServiceData.server_pictuer_card_special[is_pictuer_id].length;
@@ -712,7 +717,6 @@ export class ServiceInterface extends UIEventRegisterClass{
                         let get_c_id = tostring(GameRules.ServiceData.server_pictuer_card_special[is_pictuer_id][RInt]);
                         let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
                         new_card.push(get_item_id);
-                        new_card_string.push(get_item_id.toString());
                     }
                 }else{
                     if(list_obj[list_key].hasOwnProperty("0")){
@@ -731,47 +735,25 @@ export class ServiceInterface extends UIEventRegisterClass{
                         let get_c_id = GameRules.ServiceData.server_pictuer_card_rarity[rarity][RInt];
                         let get_item_id = PictuerCardData[get_c_id as keyof typeof PictuerCardData].item_id;
                         new_card.push(get_item_id);
-                        new_card_string.push(get_item_id.toString());
                         //特殊卡片处理
                     }
                 }
-                
-            }
-
-            //扣除物品 保存至服务器
-            for (const itemid in consume) {
-                if(consume[itemid].d.count <= consume[itemid].c){
-                    // GameRules.ServiceData.server_monster_package_list[player_id][].number = 0;
-                    GameRules.ServiceData.server_monster_package_list[player_id].splice(consume[itemid].d.index , 1)
-                }else{
-                    GameRules.ServiceData.server_monster_package_list[player_id][consume[itemid].d.index].number -= consume[itemid].c;
-                }
             }
             //增加数量
+            let add_item_str = "";
             for (let index = 0; index < new_card.length; index++) {
                 //判断是否有
-                let is_ok = false;
                 let item_id =  new_card[index]; 
-                let plength = GameRules.ServiceData.server_monster_package_list[player_id].length;
-                for (let n = 0; n < plength; n++) {
-                    if(GameRules.ServiceData.server_monster_package_list[player_id][n].item_id == item_id){
-                        GameRules.ServiceData.server_monster_package_list[player_id][n].number ++;
-                        is_ok = true;
-                        break
-                    }
-                }
-                if(is_ok == false){
-                    GameRules.ServiceData.server_monster_package_list[player_id].push({
-                        id : tostring(item_id),
-                        "number" : 1,
-                        "customs" : "",
-                        item_id : item_id,
-                    })
+                if(add_item_str == ""){
+                    add_item_str = item_id + "_" + 1;
+                }else{
+                    add_item_str += "," + item_id + "_" + 1;
                 }
             }
-            this.GetPlayerCardList(player_id , {});
+            GameRules.ArchiveService.PulbicItemAddDel(player_id , red_item_str , add_item_str , 1 , type)
+            // this.GetPlayerCardList(player_id , {});
 
-            this.GetCompoundCardList(player_id , new_card_string , type);
+            // this.GetCompoundCardList(player_id , new_card_string , type);
         }else{
             GameRules.CMsg.SendErrorMsgToPlayer(player_id, "怪物图鉴:卡片合成最大不能超过8个...");
         }

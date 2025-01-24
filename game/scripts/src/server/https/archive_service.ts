@@ -1271,5 +1271,48 @@ export class ArchiveService extends UIEventRegisterClass {
             player_id
         )
     }
+
+    /**
+     * 物品置换
+     * @param player_id 
+     * @param shop_id 
+     * @param buy_count 
+     * @param buy_types 
+     */
+    PulbicItemAddDel(player_id: PlayerID , red_item_str : string , add_item_str : string , type : number = 1 , cardtype : number = 1) {
+        //只验证主机
+        let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        let param_data = <PulbicItemAddDelParam>{
+            sid : tostring(steam_id) , //steamid
+            red_item_str : red_item_str ,
+            add_item_str : add_item_str ,
+        }
+        HttpRequest.AM2Post(ACTION_PULBIC_ITEM_ADD_DEL,
+            {
+                param: param_data
+            },
+            (data: PulbicItemAddDelReturn) => {
+                if (data.code == 200) {
+                    let red_item = data.data.red_item;
+                    let add_item = data.data.add_item;
+                    if(type == 1){ //卡片合成
+                        GameRules.ArchiveService.RedAndAddBackpack(player_id , red_item , add_item);
+                        let new_card_string : string[] = [];
+                        for (let index = 0; index < add_item.length; index++) {
+                            const element = add_item[index];
+                            new_card_string.push(tostring(element.item_id));
+                        }
+                        GameRules.ServiceInterface.GetCompoundCardList(player_id , new_card_string , cardtype);
+                    }
+                } else {
+
+                }
+            },
+            (code: number, body: string) => {
+
+            },
+            player_id
+        )
+    }
     
 }
