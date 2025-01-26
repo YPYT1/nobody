@@ -148,6 +148,10 @@ export class GameEvent {
         } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段
             GameRules.EnemyAttribute = new EnemyAttribute();
             SendToConsole("dota_hud_healthbars 1"); // 血条设置
+            if (!IsInToolsMode() && GameRules.IsCheatMode()) {
+                // GameRules.TwiceGameProcess.GameLoser();
+                GameRules.SetGameWinner(DotaTeam.BADGUYS);
+            }
         } else if (State_Get == GameState.POST_GAME) { //推送结果阶段
 
         } else if (State_Get == GameState.DISCONNECT) { //断开阶段

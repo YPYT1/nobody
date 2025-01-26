@@ -10,6 +10,7 @@ try {
 /** 要加密的项目列表 */
 const encrypt_files = [
     '**/*.lua',
+    '!game/scripts/vscripts/ai/**/*.lua',
     '!game/scripts/vscripts/abilities/**/*.lua',
     '!game/scripts/vscripts/modifier/**/*.lua',
     '!game/scripts/vscripts/json/**/*.lua',

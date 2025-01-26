@@ -4,7 +4,6 @@ import { ConvertAttributeToLabel } from "../../../utils/attribute_method";
 import { HideCustomTooltip, ShowCustomTextTooltip } from "../../../utils/custom_tooltip";
 import { FormatNumberToTime } from "../../../utils/method";
 import { SetHotKey } from "../control/_move_controller";
-import { testCode } from "./canvas_test";
 
 
 const DevCustomAttributeList = $("#DevCustomAttributeList");
@@ -20,7 +19,7 @@ const UpMouseOffset = () => {
 }
 
 const StartLoop = () => {
-    UpdateTopInfoTime();
+    UpdateInGameTime();
     // UpdateUnitAngle();
     $.Schedule(0.1, StartLoop);
 }
@@ -33,7 +32,7 @@ const UpdateUnitAngle = () => {
 
     $.Msg(vHero)
 }
-const UpdateTopInfoTime = () => {
+const UpdateInGameTime = () => {
     let DotaGameTime = Game.GetDOTATime(false, false);
     let TimeLabel = FormatNumberToTime(DotaGameTime);
     MainPanel.SetDialogVariable("dota_time", TimeLabel.join(":"));
@@ -66,6 +65,7 @@ const OpenAttributePanel = () => {
 
 export const Initialize = () => {
     MainPanel.SetDialogVariable("dota_time", "0");
+    MainPanel.SetHasClass("tools_mode",Game.IsInToolsMode())
     if (DevCustomAttributeList) {
         DevCustomAttributeList.RemoveAndDeleteChildren();
 
@@ -84,7 +84,7 @@ export const Initialize = () => {
                 } else {
                     for (let k in row_attr_table) {
                         let value = row_attr_table[k as keyof typeof row_attr_table] ?? 0
-                        RowPanel.SetDialogVariable(k, `${value}`)
+                        RowPanel.SetDialogVariable(k, `${parseFloat(value) }`)
                     }
                 }
                 ShowCustomTextTooltip(RowPanel, "属性加成", "#custom_text_attr_bonus")
@@ -106,8 +106,11 @@ export const Initialize = () => {
 
     SetHotKey("`", OpenAttributePanel)
     StartLoop();
-    UpMouseOffset();
-    testCode()
+    if(Game.IsInToolsMode()){
+        
+        UpMouseOffset();
+    }
+    
 }
 
 
@@ -120,6 +123,6 @@ function _flattenArrayOfTuples(arrOfTuples: number[][]) {
 }
 
 (function () {
-    if (Game.IsInToolsMode()) Initialize();
+    Initialize();
 })();
 

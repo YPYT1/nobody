@@ -6,6 +6,7 @@ let ServerItemPanel = LoadCustomComponent($("#ItemBorder"), "server_item");
 ServerItemPanel._SetServerItemInfo({ show_count: false })
 
 const SetTooltipView = (item_id: string, count: number, show_count: number) => {
+    $.Msg(["item_id",item_id])
     let item_data = ServerItemList[item_id as keyof typeof ServerItemList];
     let rarity = item_data.quality
     let item_name = $.Localize("#custom_serveritem_" + item_id)

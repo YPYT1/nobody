@@ -18,6 +18,6 @@
                 <Label text="等待主机激活"/>
             </Panel>
         </Button>
-        
+        <Panel id="pre-img" class="image-precache"/>
     </Panel>
 </root>

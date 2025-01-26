@@ -36,6 +36,7 @@ export const Init = () => {
         GameEndContainer.RemoveClass("Closed");
         let mvp_player = -1;
         for (let row_data of player_list_data) {
+            // $.Msg(["row_data",row_data])
             let PlayerInfoRows = $.CreatePanel("Panel", PlayerList, "");
             let playerInfo = Game.GetPlayerInfo(row_data.player_id)
             PlayerInfoRows.SetHasClass("Local", row_data.player_id == Game.GetLocalPlayerID())
@@ -50,11 +51,11 @@ export const Init = () => {
             Avater.SetPanelEvent("oncontextmenu", () => { })
             // player and hero
             let hero_id = playerInfo.player_selected_hero;
-            let heroname = GameUI.SendCustomHUDError
+            // let heroname = GameUI.SendCustomHUDError
             PlayerInfoRows.SetDialogVariable("hero_name", $.Localize(`#${hero_id}`));
             PlayerInfoRows.SetDialogVariable("player_name", playerInfo.player_name)
             // exp 缺经验表
-            PlayerInfoRows.SetDialogVariableInt("player_lv", 1)
+            PlayerInfoRows.SetDialogVariableInt("player_lv", 0)
             PlayerInfoRows.SetDialogVariableInt("bonus_exp", row_data.exp)
 
             let OriginExp = PlayerInfoRows.FindChildTraverse("OriginExp")!;
@@ -66,7 +67,7 @@ export const Init = () => {
             let pass_item_list = Object.values(row_data.pass_item);
             for (let ItemData of pass_item_list) {
                 let item_id = ItemData.item_id
-                $.Msg(["item_id",item_id])
+                // $.Msg(["item_id",item_id])
                 const ServerItem = CreateCustomComponent(RewardList, "server_item", "");
                 ServerItem._SetServerItemInfo({
                     item_id: item_id,

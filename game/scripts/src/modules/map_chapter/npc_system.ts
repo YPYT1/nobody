@@ -11,20 +11,20 @@ export class NpcSystem extends UIEventRegisterClass {
     /**
      * npc集合
      */
-    npc_collection_list : {
-        [ name : string] : {
-            unit : CDOTA_BaseNPC,
-            is_refresh : boolean,
+    npc_collection_list: {
+        [name: string]: {
+            unit: CDOTA_BaseNPC,
+            is_refresh: boolean,
         }
     } = {};
 
     constructor() {
-        super("NpcSystem" , true);
+        super("NpcSystem", true);
         for (let [key, RowData] of pairs(Interact)) {
-            if(RowData.is_enable == 1){
+            if (RowData.is_enable == 1) {
                 this.npc_collection_list[key] = {
-                    unit : null,
-                    is_refresh : false,
+                    unit: null,
+                    is_refresh: false,
                 };
             }
         }
@@ -40,9 +40,12 @@ export class NpcSystem extends UIEventRegisterClass {
         let map_centre_y = ChapterData.map_centre_y;
         let vLocation = Vector(ChapterData.map_centre_x + 500, ChapterData.map_centre_y, 256);
         for (const key in this.npc_collection_list) {
-            if(this.npc_collection_list[key].is_refresh == false){
-                let target_Vector = RotatePosition(Vector(map_centre_x, map_centre_y, 0), QAngle(0,  23 * (index + 1), 0), vLocation);
-                this.npc_collection_list[key].unit =  CreateUnitByName(
+            if (this.npc_collection_list[key].is_refresh == false) {
+                let InteractNpcData = Interact[key as keyof typeof Interact];
+                let overhead_effect = InteractNpcData.overhead_effect;
+
+                let target_Vector = RotatePosition(Vector(map_centre_x, map_centre_y, 0), QAngle(0, 23 * (index + 1), 0), vLocation);
+                this.npc_collection_list[key].unit = CreateUnitByName(
                     key,
                     target_Vector,
                     true,
@@ -50,7 +53,14 @@ export class NpcSystem extends UIEventRegisterClass {
                     null,
                     DotaTeam.GOODGUYS
                 );
-                index ++;
+                if (overhead_effect.length > 10) {
+                    let effect_fx = ParticleManager.CreateParticle(
+                        overhead_effect,
+                        ParticleAttachment.OVERHEAD_FOLLOW,
+                        this.npc_collection_list[key].unit
+                    )
+                }
+                index++;
                 this.npc_collection_list[key].is_refresh = true;
             }
         }
@@ -58,9 +68,9 @@ export class NpcSystem extends UIEventRegisterClass {
     /**
      * 移除所有npc
      */
-    RemoveNPC(){
+    RemoveNPC() {
         for (const key in this.npc_collection_list) {
-            if(this.npc_collection_list[key].unit){
+            if (this.npc_collection_list[key].unit) {
                 this.npc_collection_list[key].unit.RemoveSelf();
                 this.npc_collection_list[key].unit = null;
                 this.npc_collection_list[key].is_refresh = false;
@@ -71,9 +81,9 @@ export class NpcSystem extends UIEventRegisterClass {
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
         if (cmd == "-npc") {
             this.CreationNpc()
-        }else if (cmd == "-dnpc") {
+        } else if (cmd == "-dnpc") {
             this.RemoveNPC()
         }
     }
-    
+
 }
