@@ -334,9 +334,9 @@ export class Spawn extends UIEventRegisterClass {
         //根据玩家数量修改上线
         this._unit_limit = math.floor(this._unit_limit + GameRules.PUBLIC_CONST.PLAYER_COUNT_MONSTER_MAX[this.player_count - 1]);
         //初始化刷怪
-        GameRules.Spawn.OnSpawnLoadCoord();
+        // GameRules.Spawn.OnSpawnLoadCoord();
         //初始化流程怪物
-        GameRules.Spawn.SpawnInit();
+        // GameRules.Spawn.SpawnInit();
     }
     /**
      * 通关boss掉落卡片数据

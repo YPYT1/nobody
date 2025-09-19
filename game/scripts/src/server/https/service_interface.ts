@@ -97,7 +97,7 @@ export class ServiceInterface extends UIEventRegisterClass{
         [hero_id : string] : number 
     }[] = [];
     //游戏激活状态
-    _game_activate = 0;
+    _game_activate = 1;
     //获取游戏是否激活
     GetGameActivate(player_id: PlayerID, params: CGED["ServiceInterface"]["GetGameActivate"], callback?) {  
         CustomGameEventManager.Send_ServerToPlayer(

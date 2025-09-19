@@ -42,171 +42,183 @@ export class ArchiveService extends UIEventRegisterClass {
     }
     //创建游戏
     CreateGame() {
-        let count = GetPlayerCount();
-        let param_data = <CreateGameParam>{
-            steamids: []
-        }
-        for (let index = 0 as PlayerID; index < count; index++) {
-            let steam_id = PlayerResource.GetSteamAccountID(index);
-            param_data.steamids.push(steam_id);
-        }
-        HttpRequest.AM2Post(ACTION_CREATE_GAME,
-            {
-                param : param_data 
-            },
-            (data: CreateGameReturn) => {
-                if(data.code == 200){
-                    this._game_id = data.data.game_id;
-                    this._game_t = data.data.time;
-                    this._game_versions = data.data.v;
-                    for (let index = 0 as PlayerID; index < count; index++) {
-                        let steam_id = PlayerResource.GetSteamAccountID(index as PlayerID);
-                        GameRules.MapChapter.level_difficulty[index] = data.data.list[steam_id.toString()].level_difficulty;
-                        //获取背包数据
-                        GameRules.ArchiveService.GetCustomBackpack(index , this._b_class);
-                        //获取图鉴数据
-                        GameRules.ArchiveService.GetPictuerDataParam(index);
+
+        
+
+
+        Timers.CreateTimer(2, () => {
+            GameRules.MapChapter.DifficultySelectInit("|101|102"); 
+            //初始化完成
+            GameRules.MapChapter._game_select_phase = 0;
+
+            GameRules.MapChapter.GetGameSelectPhase(-1, {})
+            return null;
+        });
+        // let count = GetPlayerCount();
+        // let param_data = <CreateGameParam>{
+        //     steamids: []
+        // }
+        // for (let index = 0 as PlayerID; index < count; index++) {
+        //     let steam_id = PlayerResource.GetSteamAccountID(index);
+        //     param_data.steamids.push(steam_id);
+        // }
+        // HttpRequest.AM2Post(ACTION_CREATE_GAME,
+        //     {
+        //         param : param_data 
+        //     },
+        //     (data: CreateGameReturn) => {
+        //         if(data.code == 200){
+        //             this._game_id = data.data.game_id;
+        //             this._game_t = data.data.time;
+        //             this._game_versions = data.data.v;
+        //             for (let index = 0 as PlayerID; index < count; index++) {
+        //                 let steam_id = PlayerResource.GetSteamAccountID(index as PlayerID);
+        //                 GameRules.MapChapter.level_difficulty[index] = data.data.list[steam_id.toString()].level_difficulty;
+        //                 //获取背包数据
+        //                 GameRules.ArchiveService.GetCustomBackpack(index , this._b_class);
+        //                 //获取图鉴数据
+        //                 GameRules.ArchiveService.GetPictuerDataParam(index);
                         
-                        //获取玩家地图经验 货币等..
-                        GameRules.ServiceData.server_gold_package_list[index]["1001"].number = data.data.list[steam_id.toString()].cz_gold ?? 0;
-                        GameRules.ServiceData.server_gold_package_list[index]["1002"].number = data.data.list[steam_id.toString()].jf_gold ?? 0;
-                        GameRules.ServiceData.server_gold_package_list[index]["1003"].number = data.data.list[steam_id.toString()].jb_gold ?? 0;
-                        GameRules.ServiceData.server_gold_package_list[index]["1004"].number = data.data.list[steam_id.toString()].exp ?? 0;
-                        GameRules.ServiceData.server_gold_package_list[index]["1005"].number = data.data.list[steam_id.toString()].zs_gold ?? 0;
-                        GameRules.ServiceInterface.GetPlayerServerGoldPackageData(index , {});
-                        //玩家VIP信息
-                        GameRules.ServiceData.player_vip_data[index].vip_times = data.data.list[steam_id.toString()].vip_times ?? 0;
-                        GameRules.ServiceData.player_vip_data[index].vip_zs = data.data.list[steam_id.toString()].vip_zs ?? 0;
-                        GameRules.ServiceInterface.GetPlayerVipData(index , {});
-                        //加载技能数据
-                        if(data.data.list[steam_id.toString()].skill_data && data.data.list[steam_id.toString()].skill_data != ""){
-                            GameRules.ServiceInterface.PlayerServerSkillLevelExp[index] = 
-                            JSON.decode(data.data.list[steam_id.toString()].skill_data) as {
-                                [skill_key : string] : number
-                            };
-                            GameRules.ServiceInterface.LoadSkillfulLevel(index);
-                        }else{
-                            GameRules.ServiceInterface.LoadSkillfulLevelInit(index);
-                        }
+        //                 //获取玩家地图经验 货币等..
+        //                 GameRules.ServiceData.server_gold_package_list[index]["1001"].number = data.data.list[steam_id.toString()].cz_gold ?? 0;
+        //                 GameRules.ServiceData.server_gold_package_list[index]["1002"].number = data.data.list[steam_id.toString()].jf_gold ?? 0;
+        //                 GameRules.ServiceData.server_gold_package_list[index]["1003"].number = data.data.list[steam_id.toString()].jb_gold ?? 0;
+        //                 GameRules.ServiceData.server_gold_package_list[index]["1004"].number = data.data.list[steam_id.toString()].exp ?? 0;
+        //                 GameRules.ServiceData.server_gold_package_list[index]["1005"].number = data.data.list[steam_id.toString()].zs_gold ?? 0;
+        //                 GameRules.ServiceInterface.GetPlayerServerGoldPackageData(index , {});
+        //                 //玩家VIP信息
+        //                 GameRules.ServiceData.player_vip_data[index].vip_times = data.data.list[steam_id.toString()].vip_times ?? 0;
+        //                 GameRules.ServiceData.player_vip_data[index].vip_zs = data.data.list[steam_id.toString()].vip_zs ?? 0;
+        //                 GameRules.ServiceInterface.GetPlayerVipData(index , {});
+        //                 //加载技能数据
+        //                 if(data.data.list[steam_id.toString()].skill_data && data.data.list[steam_id.toString()].skill_data != ""){
+        //                     GameRules.ServiceInterface.PlayerServerSkillLevelExp[index] = 
+        //                     JSON.decode(data.data.list[steam_id.toString()].skill_data) as {
+        //                         [skill_key : string] : number
+        //                     };
+        //                     GameRules.ServiceInterface.LoadSkillfulLevel(index);
+        //                 }else{
+        //                     GameRules.ServiceInterface.LoadSkillfulLevelInit(index);
+        //                 }
 
-                        //加载魂石数据
-                        if(data.data.list[steam_id.toString()].pa && data.data.list[steam_id.toString()].pa != ""){
-                            GameRules.ServiceSoul.soul_list[index] = 
-                            JSON.decode(data.data.list[steam_id.toString()].pa) as CGEDGetSoulList;
-                            GameRules.ServiceSoul.GetPlayerServerSoulData(index , {});
-                        }
+        //                 //加载魂石数据
+        //                 if(data.data.list[steam_id.toString()].pa && data.data.list[steam_id.toString()].pa != ""){
+        //                     GameRules.ServiceSoul.soul_list[index] = 
+        //                     JSON.decode(data.data.list[steam_id.toString()].pa) as CGEDGetSoulList;
+        //                     GameRules.ServiceSoul.GetPlayerServerSoulData(index , {});
+        //                 }
 
-                        //发送服务器时间
-                        GameRules.ServiceInterface.GetServerTime( index  , {});
-                        //
-                        //获取累抽次数
-                        GameRules.ServiceInterface.DrawRecord[index] = data.data.list[steam_id.toString()].draw_record;
-                        GameRules.ServiceInterface.GetPlayerServerDrawLotteryDrawRecord(index , {});
+        //                 //发送服务器时间
+        //                 GameRules.ServiceInterface.GetServerTime( index  , {});
+        //                 //
+        //                 //获取累抽次数
+        //                 GameRules.ServiceInterface.DrawRecord[index] = data.data.list[steam_id.toString()].draw_record;
+        //                 GameRules.ServiceInterface.GetPlayerServerDrawLotteryDrawRecord(index , {});
 
-                        //限购数据
-                        GameRules.ServiceInterface.ShoppingLimit[index].limit = data.data.list[steam_id.toString()].limit;
-                        GameRules.ServiceInterface.ShoppingLimit[index].sc = data.data.list[steam_id.toString()].bow_wash;
-                        //发送限购数据
-                        GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
-                        //成长礼
-                        GameRules.ServiceInterface.PassRecord[index] = data.data.list[steam_id.toString()].pass_record;
-                        GameRules.ServiceInterface.GetPlayerServerPassRecord(index , {});
+        //                 //限购数据
+        //                 GameRules.ServiceInterface.ShoppingLimit[index].limit = data.data.list[steam_id.toString()].limit;
+        //                 GameRules.ServiceInterface.ShoppingLimit[index].sc = data.data.list[steam_id.toString()].bow_wash;
+        //                 //发送限购数据
+        //                 GameRules.ServiceInterface.GetPlayerShoppingLimit(index , {})
+        //                 //成长礼
+        //                 GameRules.ServiceInterface.PassRecord[index] = data.data.list[steam_id.toString()].pass_record;
+        //                 GameRules.ServiceInterface.GetPlayerServerPassRecord(index , {});
                         
-                        //地图经验
-                        let player_map_level = GameRules.ServiceInterface.GetServerMapLevel(GameRules.ServiceData.server_gold_package_list[index]["1004"].number);
-                        GameRules.ServiceInterface.player_map_level[index] = player_map_level;
+        //                 //地图经验
+        //                 let player_map_level = GameRules.ServiceInterface.GetServerMapLevel(GameRules.ServiceData.server_gold_package_list[index]["1004"].number);
+        //                 GameRules.ServiceInterface.player_map_level[index] = player_map_level;
                         
-                        let talentdata = data.data.list[steam_id.toString()].talentdata;
-                        //初始化天赋
-                        GameRules.ServiceTalent.ServiceTalentInitByPlayerId(index , GameRules.ServiceInterface.player_map_level[index].level , talentdata);
+        //                 let talentdata = data.data.list[steam_id.toString()].talentdata;
+        //                 //初始化天赋
+        //                 GameRules.ServiceTalent.ServiceTalentInitByPlayerId(index , GameRules.ServiceInterface.player_map_level[index].level , talentdata);
                         
-                    }
-                    //0号玩家 的难度作为默认难度
-                    GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0]);
+        //             }
+        //             //0号玩家 的难度作为默认难度
+        //             GameRules.MapChapter.DifficultySelectInit(GameRules.MapChapter.level_difficulty[0]);
 
-                    Timers.CreateTimer(2, () => {
-                        //初始化完成
-                        GameRules.MapChapter._game_select_phase = 0;
+        //             Timers.CreateTimer(2, () => {
+        //                 //初始化完成
+        //                 GameRules.MapChapter._game_select_phase = 0;
 
-                        GameRules.MapChapter.GetGameSelectPhase(-1, {})
-                        return null;
-                    });
-                }else{
+        //                 GameRules.MapChapter.GetGameSelectPhase(-1, {})
+        //                 return null;
+        //             });
+        //         }else{
 
-                }
-            },
-            (code: number, body: string) => {
+        //         }
+        //     },
+        //     (code: number, body: string) => {
 
-            }
-        )
+        //     }
+        // )
     }
     //验证激活码
     VerificationCode(player_id: PlayerID, code: string) {
-        let steam_id = PlayerResource.GetSteamAccountID(player_id);
-        let param_data = <VerificationCodeParam>{
-            sid: steam_id.toString(),
-            code: code,
-        }
-        HttpRequest.AM2Post(ACTION_VERIFICATION_CODE,
-            {
-                param: param_data
-            },
-            (data: VerificationCodeReturn) => {
-                if (data.code == 200) {
-                    if(data.data.inside == 1){
-                        GameRules.ServiceInterface._game_activate = 1;
-                        for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
-                            GameRules.ServiceInterface.GetGameActivate(index , {})
-                        }
-                    }else{
-                        for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
-                            GameRules.ServiceInterface.GetGameActivate(index , {})
-                        }
-                    }
-                } else {
-                    for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
-                        GameRules.ServiceInterface.GetGameActivate(index , {})
-                    }
-                }
-            },
-            (code: number, body: string) => {
-                for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
-                    GameRules.ServiceInterface.GetGameActivate(index , {})
-                }
-            }
-        )
+        // let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        // let param_data = <VerificationCodeParam>{
+        //     sid: steam_id.toString(),
+        //     code: code,
+        // }
+        // HttpRequest.AM2Post(ACTION_VERIFICATION_CODE,
+        //     {
+        //         param: param_data
+        //     },
+        //     (data: VerificationCodeReturn) => {
+        //         if (data.code == 200) {
+        //             if(data.data.inside == 1){
+        //                 GameRules.ServiceInterface._game_activate = 1;
+        //                 for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+        //                     GameRules.ServiceInterface.GetGameActivate(index , {})
+        //                 }
+        //             }else{
+        //                 for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+        //                     GameRules.ServiceInterface.GetGameActivate(index , {})
+        //                 }
+        //             }
+        //         } else {
+        //             for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+        //                 GameRules.ServiceInterface.GetGameActivate(index , {})
+        //             }
+        //         }
+        //     },
+        //     (code: number, body: string) => {
+        //         for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+        //             GameRules.ServiceInterface.GetGameActivate(index , {})
+        //         }
+        //     }
+        // )
     }
     //验证激活码
     CheckjhmCode(player_id: PlayerID) {
-        //只验证主机
-        let param_data = <CreateGameParam>{
-            steamids: []
-        }
-        let player_count = 6;
-        let steam_id = PlayerResource.GetSteamAccountID(player_id);
-        param_data.steamids.push(steam_id);
-        HttpRequest.AM2Post(ACTION_CHECKJHM_CODE,
-            {
-                param: param_data
-            },
-            (data: VerificationCodeReturn) => {
-                if (data.code == 200) {
-                    if(data.data.inside == 1){
-                        GameRules.ServiceInterface._game_activate = 1;
-                        for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
-                            GameRules.ServiceInterface.GetGameActivate(index , {})
-                        }
-                    }else{
+        // //只验证主机
+        // let param_data = <CreateGameParam>{
+        //     steamids: []
+        // }
+        // let player_count = 6;
+        // let steam_id = PlayerResource.GetSteamAccountID(player_id);
+        // param_data.steamids.push(steam_id);
+        // HttpRequest.AM2Post(ACTION_CHECKJHM_CODE,
+        //     {
+        //         param: param_data
+        //     },
+        //     (data: VerificationCodeReturn) => {
+        //         if (data.code == 200) {
+        //             if(data.data.inside == 1){
+        //                 GameRules.ServiceInterface._game_activate = 1;
+        //                 for (let index = 0 as PlayerID; index < GetPlayerCount(); index++) {
+        //                     GameRules.ServiceInterface.GetGameActivate(index , {})
+        //                 }
+        //             }else{
                         
-                    }
-                } else {
+        //             }
+        //         } else {
 
-                }
-            },
-            (code: number, body: string) => {
+        //         }
+        //     },
+        //     (code: number, body: string) => {
 
-            }
-        )
+        //     }
+        // )
     }
     /**
      * 确认难度
@@ -215,23 +227,23 @@ export class ArchiveService extends UIEventRegisterClass {
      * @param player_id 
      */
     ConfirmDifficulty(){
-        print("==============提交确认难度================")
-        let param_data = <ConfirmDifficultyParam>{
-            nd: parseInt(GameRules.MapChapter.GameDifficulty),
-        }
-        HttpRequest.AM2Post(ACTION_CONFIRM_DIFFICULTY,
-            {
-                param: param_data
-            },
-            (data: ConfirmDifficultyReturn) => {
-                print("==============获得返回数据================")
-                if (data.code == 200) {
-                    //获取玩家背包
-                }
-            },
-            (code: number, body: string) => {
-            }
-        )
+        // print("==============提交确认难度================")
+        // let param_data = <ConfirmDifficultyParam>{
+        //     nd: parseInt(GameRules.MapChapter.GameDifficulty),
+        // }
+        // HttpRequest.AM2Post(ACTION_CONFIRM_DIFFICULTY,
+        //     {
+        //         param: param_data
+        //     },
+        //     (data: ConfirmDifficultyReturn) => {
+        //         print("==============获得返回数据================")
+        //         if (data.code == 200) {
+        //             //获取玩家背包
+        //         }
+        //     },
+        //     (code: number, body: string) => {
+        //     }
+        // )
     }
     /**
      * 游戏结束

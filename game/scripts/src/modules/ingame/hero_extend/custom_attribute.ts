@@ -146,7 +146,7 @@ export class CustomAttribute {
                 GameRules.HeroTalentSystem.RegisterHeroTalent(hUnit);
 
                 //初始化存档给英雄提供的属性
-                GameRules.ServiceData.LoadPlayerServerAttr(player_id);
+                // GameRules.ServiceData.LoadPlayerServerAttr(player_id);
 
                 GameRules.InvestSystem.StartEarnings(player_id);
                 return null
