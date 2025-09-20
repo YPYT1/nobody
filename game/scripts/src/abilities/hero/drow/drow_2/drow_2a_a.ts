@@ -1,6 +1,6 @@
-import { StackModifier } from "../../../../modifier/extends/modifier_stack";
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { drow_2a, modifier_drow_2a } from "./drow_2a";
+import { StackModifier } from '../../../../modifier/extends/modifier_stack';
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { drow_2a, modifier_drow_2a } from './drow_2a';
 
 /**
  * 
@@ -11,21 +11,20 @@ import { drow_2a, modifier_drow_2a } from "./drow_2a";
  */
 @registerAbility()
 export class drow_2a_a extends drow_2a {
-
     talent_13: number;
     talent_14: number;
     max_stack: number = 0;
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_2a_a"
+        return 'modifier_drow_2a_a';
     }
 
     UpdataSpecialValue(): void {
-        this.talent_14 = this.caster.hero_talent["14"] ?? 0;
-        this.talent_13 = this.caster.hero_talent["13"] ?? 0;
+        this.talent_14 = this.caster.hero_talent['14'] ?? 0;
+        this.talent_13 = this.caster.hero_talent['13'] ?? 0;
         if (this.talent_13 > 0) {
             // rune_33	游侠#8	连续射击【击破】最大层数提高至30层
-            if (this.caster.rune_level_index.hasOwnProperty("rune_33")) {
-                this.max_stack = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_33", "max_stack")
+            if (this.caster.rune_level_index.hasOwnProperty('rune_33')) {
+                this.max_stack = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_33', 'max_stack');
             } else {
                 this.max_stack = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '13', 'max_stack');
             }
@@ -34,13 +33,13 @@ export class drow_2a_a extends drow_2a {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            let ability_damage = extraData.a;
-            let SelfAbilityMul = extraData.SelfAbilityMul;
-            let DamageBonusMul = extraData.DamageBonusMul;
-            let FinalDamageMul = extraData.FinalDamageMul ?? 0;
+            const ability_damage = extraData.a;
+            const SelfAbilityMul = extraData.SelfAbilityMul;
+            const DamageBonusMul = extraData.DamageBonusMul;
+            const FinalDamageMul = extraData.FinalDamageMul ?? 0;
             if (this.talent_14 > 0) {
-                let ElementDmgMul = extraData.ElementDmgMul;
-                let damage_vect = Vector(extraData.x, extraData.y, 0);
+                const ElementDmgMul = extraData.ElementDmgMul;
+                const damage_vect = Vector(extraData.x, extraData.y, 0);
                 ApplyCustomDamage({
                     victim: target,
                     attacker: this.caster,
@@ -54,7 +53,7 @@ export class drow_2a_a extends drow_2a {
                     DamageBonusMul: DamageBonusMul,
                     ElementDmgMul: ElementDmgMul,
                     FinalDamageMul: FinalDamageMul,
-                })
+                });
             } else {
                 ApplyCustomDamage({
                     victim: target,
@@ -67,37 +66,35 @@ export class drow_2a_a extends drow_2a {
                     SelfAbilityMul: SelfAbilityMul,
                     DamageBonusMul: DamageBonusMul,
                     FinalDamageMul: FinalDamageMul,
-                })
+                });
             }
 
             if (this.talent_13 > 0) {
-                target.AddNewModifier(this.caster, this, "modifier_drow_2a_a_debuff", {
+                target.AddNewModifier(this.caster, this, 'modifier_drow_2a_a_debuff', {
                     init_stack: 1,
                     stack_add: 1,
                     max_stack: this.max_stack,
                     duration: 3,
-                })
+                });
             }
-            return true
+            return true;
         }
     }
-
 }
 
 @registerModifier()
 export class modifier_drow_2a_a extends modifier_drow_2a {
-
     UpdataSpecialValue(): void {
-        this.proj_count = this.ability.GetSpecialValueFor("proj_count")
-            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "12", 'bonus_value');
+        this.proj_count =
+            this.ability.GetSpecialValueFor('proj_count') + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '12', 'bonus_value');
 
-        if (this.caster.hero_talent.hasOwnProperty("14")) {
+        if (this.caster.hero_talent.hasOwnProperty('14')) {
             this.proj_name = G_PorjLinear.drow.wind;
         }
 
-        this.ElementDmgMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '14', 'wind_dmg_pct')
+        this.ElementDmgMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '14', 'wind_dmg_pct');
     }
 }
 
 @registerModifier()
-export class modifier_drow_2a_a_debuff extends StackModifier { }
+export class modifier_drow_2a_a_debuff extends StackModifier {}

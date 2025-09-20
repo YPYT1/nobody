@@ -1,4 +1,4 @@
-import { MissionModule } from "../_mission_module";
+import { MissionModule } from '../_mission_module';
 
 /**
  * 你被包围了	夜魇的试炼	"【夜魇的试炼】：在接取任务的地点（此时判定圈内玩家），
@@ -10,17 +10,16 @@ import { MissionModule } from "../_mission_module";
 
  */
 export class Mission_Dire_5 extends MissionModule {
-
     limit_time = 30;
     check_radius = 1000;
 
     ExecuteLogic(start: Vector): void {
         this.progress_value = 0;
-        this.progress_max = this.limit_time
+        this.progress_max = this.limit_time;
         this.mdf_thinker = CreateModifierThinker(
             null,
             null,
-            "modifier_mission_dire_5_thinker",
+            'modifier_mission_dire_5_thinker',
             {
                 duration: this.limit_time,
                 radius: this.check_radius,
@@ -28,10 +27,10 @@ export class Mission_Dire_5 extends MissionModule {
             start,
             DotaTeam.BADGUYS,
             false
-        )
+        );
     }
 
     MissionOverTime(): void {
-        this.EndOfMission(true)
+        this.EndOfMission(true);
     }
 }

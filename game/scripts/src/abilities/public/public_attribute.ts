@@ -1,20 +1,20 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../utils/dota_ts_adapter";
-import { BaseHeroAbility } from "../hero/base_hero_ability";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../utils/dota_ts_adapter';
+import type { BaseHeroAbility } from '../hero/base_hero_ability';
 
 // import * as NpcAbilityCustom from "./../../json/npc_abilities_custom.json"
 
 /** 需要同步的数据 */
 const UpdateAttributeKyes: AttributeMainKey[] = [
-    "AttackRate",
-    "AttackDamage",
-    "AttackRange",
-    "AttackSpeed",
-    "MoveSpeed",
-    "MaxHealth",
-    "HealthRegen",
-    "MaxMana",
-    "ManaRegen",
-    "PickItemRadius",
+    'AttackRate',
+    'AttackDamage',
+    'AttackRange',
+    'AttackSpeed',
+    'MoveSpeed',
+    'MaxHealth',
+    'HealthRegen',
+    'MaxMana',
+    'ManaRegen',
+    'PickItemRadius',
     'AbilityHaste',
     'AbilityCooldown',
     'AbilityCooldown2',
@@ -24,15 +24,13 @@ const UpdateAttributeKyes: AttributeMainKey[] = [
 // 属性
 @registerAbility()
 export class public_attribute extends BaseAbility {
-
     GetIntrinsicModifierName(): string {
-        return "modifier_public_attribute"
+        return 'modifier_public_attribute';
     }
 }
 
 @registerModifier()
 export class modifier_public_attribute extends BaseModifier {
-
     bIsHero: boolean;
     BaseKvHp: number;
     AttributeData: CustomAttributeValueType;
@@ -41,41 +39,54 @@ export class modifier_public_attribute extends BaseModifier {
     hAbility: CDOTABaseAbility;
     iParentEntity: EntityIndex;
     // timer: number;
-    IsHidden(): boolean { return true }
-    RemoveOnDeath(): boolean { return false; }
-    GetAttributes(): ModifierAttribute { return ModifierAttribute.PERMANENT }
+    IsHidden(): boolean {
+        return true;
+    }
+
+    RemoveOnDeath(): boolean {
+        return false;
+    }
+
+    GetAttributes(): ModifierAttribute {
+        return ModifierAttribute.PERMANENT;
+    }
 
     /** 初始化属性 */
     OnCreated(params: any): void {
         this.caster = this.GetCaster();
-        this.AttributeData = {}
+        this.AttributeData = {};
         this.hAbility = this.GetAbility();
         this.BaseKvHp = this.GetParent().GetMaxHealth();
         this.SetHasCustomTransmitterData(true);
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.hParent = this.GetParent();
         this.iParentEntity = this.GetParent().entindex();
-        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_rune_effect", {})
-        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_prop_effect", {})
-        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_picture_abilities", {})
-        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_talent_effect", {})
-        this.hParent.AddNewModifier(this.hParent, this.hAbility, "modifier_public_attribute_delay", {})
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, 'modifier_rune_effect', {});
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, 'modifier_prop_effect', {});
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, 'modifier_picture_abilities', {});
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, 'modifier_talent_effect', {});
+        this.hParent.AddNewModifier(this.hParent, this.hAbility, 'modifier_public_attribute_delay', {});
 
-
-        this.ForceRefresh()
-        this.StartIntervalThink(0.1)
+        this.ForceRefresh();
+        this.StartIntervalThink(0.1);
     }
 
     /** 更新属性 */
     OnRefresh(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this._UpdateAttribute();
     }
 
     OnIntervalThink(): void {
-        if (!this.hParent.IsAlive() || this.AttributeData.PickItemRadius < 1) { return }
-        let vPos = this.hParent.GetAbsOrigin();
-        let ExpItems = FindUnitsInRadius(
+        if (!this.hParent.IsAlive() || this.AttributeData.PickItemRadius < 1) {
+            return;
+        }
+        const vPos = this.hParent.GetAbsOrigin();
+        const ExpItems = FindUnitsInRadius(
             DotaTeam.NEUTRALS,
             vPos,
             null,
@@ -85,36 +96,28 @@ export class modifier_public_attribute extends BaseModifier {
             UnitTargetFlags.INVULNERABLE,
             FindOrder.ANY,
             false
-        )
+        );
         // print("ExpItems",ExpItems.length)
-        for (let ExpItem of ExpItems) {
+        for (const ExpItem of ExpItems) {
             // 拾取物品为经验
-            const unitname = ExpItem.GetUnitName()
-            if (unitname == "npc_exp"
-                && !ExpItem.HasModifier("modifier_pick_animation")
-                && !ExpItem.HasModifier("modifier_generic_arc_lua")
-            ) {
-                ExpItem.AddNewModifier(ExpItem, null, "modifier_pick_animation", {
+            const unitname = ExpItem.GetUnitName();
+            if (unitname == 'npc_exp' && !ExpItem.HasModifier('modifier_pick_animation') && !ExpItem.HasModifier('modifier_generic_arc_lua')) {
+                ExpItem.AddNewModifier(ExpItem, null, 'modifier_pick_animation', {
                     picker: this.iParentEntity,
-                })
-
+                });
             } else {
-                if (unitname == "npc_item_hp"
-                    || unitname == "npc_item_mp"
-                    || unitname == "npc_item_all"
-                ) {
+                if (unitname == 'npc_item_hp' || unitname == 'npc_item_mp' || unitname == 'npc_item_all') {
                     UTIL_Remove(ExpItem);
-                    GameRules.CustomItem.useItemEffect(unitname, this.hParent)
+                    GameRules.CustomItem.useItemEffect(unitname, this.hParent);
                 }
             }
         }
-
     }
 
     _UpdateAttribute() {
         // print("[modifier_public_attribute]:_UpdateAttribute");
-        let hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
-        for (let k of UpdateAttributeKyes) {
+        const hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
+        for (const k of UpdateAttributeKyes) {
             this.AttributeData[k] = hUnit.custom_attribute_value[k];
         }
 
@@ -125,20 +128,20 @@ export class modifier_public_attribute extends BaseModifier {
         // 写入网表
         // DeepPrintTable(hUnit.custom_attribute_value)
         // print("AttackRate:", hUnit.custom_attribute_value.AttackRate)
-        CustomNetTables.SetTableValue("unit_attribute", `${hUnit.GetEntityIndex()}`, {
+        CustomNetTables.SetTableValue('unit_attribute', `${hUnit.GetEntityIndex()}`, {
             table: hUnit.custom_attribute_table,
             value: hUnit.custom_attribute_value,
             // show: hUnit.custom_attribute_show,
-        })
+        });
     }
 
     AddCustomTransmitterData() {
-        let hUnit = this.GetParent();
-        let TransmitterData: CustomAttributeValueType = {};
-        for (let k of UpdateAttributeKyes) {
-            TransmitterData[k] = hUnit.custom_attribute_value[k]
+        const hUnit = this.GetParent();
+        const TransmitterData: CustomAttributeValueType = {};
+        for (const k of UpdateAttributeKyes) {
+            TransmitterData[k] = hUnit.custom_attribute_value[k];
         }
-        return TransmitterData
+        return TransmitterData;
     }
 
     HandleCustomTransmitterData(data: CustomAttributeValueType) {
@@ -150,7 +153,7 @@ export class modifier_public_attribute extends BaseModifier {
             // [ModifierState.PROVIDES_VISION]: true,
             [ModifierState.BLOCK_DISABLED]: true,
             [ModifierState.DISARMED]: true,
-        }
+        };
     }
 
     DeclareFunctions(): ModifierFunction[] {
@@ -169,70 +172,72 @@ export class modifier_public_attribute extends BaseModifier {
             ModifierFunction.BONUS_DAY_VISION,
             ModifierFunction.BONUS_NIGHT_VISION,
             ModifierFunction.IGNORE_MOVESPEED_LIMIT,
-        ]
+        ];
     }
 
     GetModifierIgnoreMovespeedLimit(): 0 | 1 {
-        return 1
+        return 1;
     }
 
     GetBonusDayVision(): number {
-        return this.AttributeData.VisionRange ?? 800
+        return this.AttributeData.VisionRange ?? 800;
     }
 
     GetBonusNightVision(): number {
-        return this.AttributeData.VisionRange ?? 800
+        return this.AttributeData.VisionRange ?? 800;
     }
 
     GetModifierAttackRangeOverride(): number {
-        return this.AttributeData.AttackRange
+        return this.AttributeData.AttackRange;
     }
 
     GetModifierBaseAttackTimeConstant(): number {
-        return this.AttributeData.AttackRate
+        return this.AttributeData.AttackRate;
     }
 
     GetModifierAttackSpeedBonus_Constant(): number {
-        return this.AttributeData.AttackSpeed
+        return this.AttributeData.AttackSpeed;
     }
 
     GetModifierMoveSpeedOverride(): number {
-        return this.AttributeData.MoveSpeed
+        return this.AttributeData.MoveSpeed;
     }
 
     GetModifierHealthBonus(): number {
-        return math.max(0, (this.AttributeData.MaxHealth ?? 0) - this.BaseKvHp)
+        return math.max(0, (this.AttributeData.MaxHealth ?? 0) - this.BaseKvHp);
     }
 
     GetModifierConstantHealthRegen(): number {
-        return this.AttributeData.HealthRegen
+        return this.AttributeData.HealthRegen;
     }
 
     GetModifierManaBonus(): number {
-        return this.AttributeData.MaxMana
+        return this.AttributeData.MaxMana;
     }
 
     GetModifierConstantManaRegen(): number {
-        return this.AttributeData.ManaRegen
+        return this.AttributeData.ManaRegen;
     }
 
     GetModifierPercentageCooldown(event: ModifierAbilityEvent): number {
-        if (event.ability == null) { return 100 }
-        let hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
-        let ability_name = event.ability.GetAbilityName();
-        if (ability_name == "public_blink") {
-            return 0
+        if (event.ability == null) {
+            return 100;
         }
-        let hAbility = event.ability as BaseHeroAbility;
+        const hUnit = this.GetParent() as CDOTA_BaseNPC_Hero;
+        const ability_name = event.ability.GetAbilityName();
+        if (ability_name == 'public_blink') {
+            return 0;
+        }
+        const hAbility = event.ability as BaseHeroAbility;
         let ability_cd_limit = 55;
         let base_cd = 100;
 
         if (IsServer()) {
-            ability_cd_limit = hUnit.custom_attribute_table.AbilityCooldown.Limit
+            ability_cd_limit = hUnit.custom_attribute_table.AbilityCooldown.Limit;
             // 复仇冷却
-            if (ability_name == "drow_5" && this.caster.rune_level_index.hasOwnProperty("rune_51")) {
-                let fuchou_cd = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_51', 'fuchou_cd') * 0.01;
-                base_cd *= (1 - fuchou_cd)
+            if (ability_name == 'drow_5' && this.caster.rune_level_index.hasOwnProperty('rune_51')) {
+                const fuchou_cd = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_51', 'fuchou_cd') * 0.01;
+                base_cd *= 1 - fuchou_cd;
             }
             // 召唤技能冷却
             // if (hAbility.GetCustomAbilityType() != null) {
@@ -244,16 +249,15 @@ export class modifier_public_attribute extends BaseModifier {
             // }
         }
 
-        let AbilityCooldown1 = this.AttributeData.AbilityCooldown ?? 0;
+        const AbilityCooldown1 = this.AttributeData.AbilityCooldown ?? 0;
         // print("AbilityCooldown1", ability_cd_limit * 0.01, AbilityCooldown1, math.min(ability_cd_limit, AbilityCooldown1))
-        let ability_cd = math.min(ability_cd_limit, AbilityCooldown1) * 0.01
-        let AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01
-        base_cd *= (1 - ability_cd)
-        base_cd *= (1 - AbilityCooldown2);
+        const ability_cd = math.min(ability_cd_limit, AbilityCooldown1) * 0.01;
+        const AbilityCooldown2 = (this.AttributeData.AbilityCooldown2 ?? 0) * 0.01;
+        base_cd *= 1 - ability_cd;
+        base_cd *= 1 - AbilityCooldown2;
 
-        return 100 - base_cd
+        return 100 - base_cd;
     }
-
 
     // GetModifierPercentageManacostStacking(): number {
     //     return -100
@@ -263,26 +267,27 @@ export class modifier_public_attribute extends BaseModifier {
 /** 延迟给一些无法初始化的属性值 比如蓝量 */
 @registerModifier()
 export class modifier_public_attribute_delay extends BaseModifier {
-
-    IsHidden(): boolean { return true }
+    IsHidden(): boolean {
+        return true;
+    }
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
-        this.StartIntervalThink(0.1)
+        if (!IsServer()) {
+            return;
+        }
+        this.StartIntervalThink(0.1);
     }
 
     OnIntervalThink(): void {
-        let hParent = this.GetParent();
+        const hParent = this.GetParent();
         hParent.GiveMana(hParent.GetMaxMana());
-        this.Destroy()
-        this.StartIntervalThink(-1)
+        this.Destroy();
+        this.StartIntervalThink(-1);
     }
-
 }
 
 @registerModifier()
 export class modifier_public_revive_thinker extends BaseModifier {
-
     team: DotaTeam;
     origin: Vector;
     player_id: PlayerID;
@@ -292,43 +297,45 @@ export class modifier_public_revive_thinker extends BaseModifier {
     rescue_radius: number;
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.rescue_radius = 225;
         this.state = true;
-        this.player_id = this.GetCaster().GetPlayerOwnerID()
+        this.player_id = this.GetCaster().GetPlayerOwnerID();
         this.team = this.GetCaster().GetTeamNumber();
         this.origin = this.GetParent().GetAbsOrigin();
-        let duration = this.GetDuration();
-        let cast_fx = ParticleManager.CreateParticle(
-            "particles/diy_particles/event_ring_anim/event_ring_anim.vpcf",
+        const duration = this.GetDuration();
+        const cast_fx = ParticleManager.CreateParticle(
+            'particles/diy_particles/event_ring_anim/event_ring_anim.vpcf',
             ParticleAttachment.POINT,
             this.GetParent()
-        )
-        ParticleManager.SetParticleControl(cast_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
-        ParticleManager.SetParticleControl(cast_fx, 1, Vector(duration, 0, 0))
-        ParticleManager.SetParticleControl(cast_fx, 2, Vector(this.rescue_radius, 0, 0))
-        ParticleManager.SetParticleControl(cast_fx, 3, Vector(0, 255, 0))
-        ParticleManager.SetParticleControl(cast_fx, 3, Vector(255, 255, 0))
+        );
+        ParticleManager.SetParticleControl(cast_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5));
+        ParticleManager.SetParticleControl(cast_fx, 1, Vector(duration, 0, 0));
+        ParticleManager.SetParticleControl(cast_fx, 2, Vector(this.rescue_radius, 0, 0));
+        ParticleManager.SetParticleControl(cast_fx, 3, Vector(0, 255, 0));
+        ParticleManager.SetParticleControl(cast_fx, 3, Vector(255, 255, 0));
         // this.AddParticle(cast_fx, false, false, -1, false, false);
         this.rescue_time = GameRules.GetDOTATime(false, false) + duration / 2;
         this.cast_fx = cast_fx;
         // print("revive duration", duration)
-        this.StartIntervalThink(0.1)
+        this.StartIntervalThink(0.1);
     }
 
     OnIntervalThink(): void {
-        let game_select_phase = GameRules.MapChapter._game_select_phase;
+        const game_select_phase = GameRules.MapChapter._game_select_phase;
         if (game_select_phase == 999) {
             this.StartIntervalThink(-1);
-            this.OnDestroy()
-            return
+            this.OnDestroy();
+            return;
         }
         if (this.state) {
             if (this.rescue_time <= GameRules.GetDOTATime(false, false)) {
                 this.state = false;
             }
         } else {
-            let other_hero = FindUnitsInRadius(
+            const other_hero = FindUnitsInRadius(
                 this.team,
                 this.origin,
                 null,
@@ -341,18 +348,18 @@ export class modifier_public_revive_thinker extends BaseModifier {
             );
             if (other_hero.length > 0) {
                 this.StartIntervalThink(-1);
-                this.OnDestroy()
-                return
+                this.OnDestroy();
+                return;
             }
         }
-
-
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         GameRules.GameInformation.PlayerRevive(this.player_id);
-        ParticleManager.DestroyParticle(this.cast_fx, true)
-        UTIL_Remove(this.GetParent())
+        ParticleManager.DestroyParticle(this.cast_fx, true);
+        UTIL_Remove(this.GetParent());
     }
 }

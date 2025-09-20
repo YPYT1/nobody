@@ -1,4 +1,4 @@
-import { MissionModule } from "../_mission_module";
+import { MissionModule } from '../_mission_module';
 
 /**
  * 接力赛	
@@ -8,33 +8,31 @@ import { MissionModule } from "../_mission_module";
 失败条件：超时、所有玩家阵亡。"
  */
 export class Mission_Radiant_2 extends MissionModule {
-
     relay_radius = 250; // 接力点范围
     limit_time: number = 15;
     distance_range = [1500, 2000];
 
     last_relay_pos: Vector;
 
-
     ExecuteLogic(start: Vector): void {
         this.progress_max = 5;
         this.progress_value = 0;
         this.SendMissionProgress();
-        this.last_relay_pos = this.GetToNextPoints(start, RandomInt(1500, 2000))
-        this._CreateRelayPoint(this.last_relay_pos)
+        this.last_relay_pos = this.GetToNextPoints(start, RandomInt(1500, 2000));
+        this._CreateRelayPoint(this.last_relay_pos);
     }
 
     /**
      * 创建接力点
-     * @param vOrign 
-     * @param iIndex 
+     * @param vOrign
+     * @param iIndex
      */
     _CreateRelayPoint(vOrign: Vector) {
-        this.AddMoveTips(vOrign, this.limit_time, this.mission_type)
-        let unis = CreateModifierThinker(
+        this.AddMoveTips(vOrign, this.limit_time, this.mission_type);
+        const unis = CreateModifierThinker(
             null,
             null,
-            "modifier_mission_radiant_2_points",
+            'modifier_mission_radiant_2_points',
             {
                 relay_radius: this.relay_radius,
                 duration: this.limit_time,
@@ -42,8 +40,8 @@ export class Mission_Radiant_2 extends MissionModule {
             vOrign,
             DotaTeam.GOODGUYS,
             false
-        )
-        this.units.push(unis)
+        );
+        this.units.push(unis);
     }
 
     AddProgressValue(value: number): void {
@@ -52,16 +50,14 @@ export class Mission_Radiant_2 extends MissionModule {
 
         if (this.progress_value < this.progress_max) {
             // 下一个点
-            this.last_relay_pos = this.GetToNextPoints(this.last_relay_pos, RandomInt(1500, 2000))
-            this._CreateRelayPoint(this.last_relay_pos)
+            this.last_relay_pos = this.GetToNextPoints(this.last_relay_pos, RandomInt(1500, 2000));
+            this._CreateRelayPoint(this.last_relay_pos);
 
-            let end_time = GameRules.GetDOTATime(false, false) + this.limit_time;
-            GameRules.MissionSystem.UpdateMissionEndTime(this.mission_type, this.mission_name, end_time, this.limit_time)
+            const end_time = GameRules.GetDOTATime(false, false) + this.limit_time;
+            GameRules.MissionSystem.UpdateMissionEndTime(this.mission_type, this.mission_name, end_time, this.limit_time);
         } else {
             // 完成任务
-            GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true)
+            GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true);
         }
     }
-
-
 }

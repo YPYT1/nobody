@@ -1,22 +1,21 @@
-import { BaseModifier, registerModifier } from "../utils/dota_ts_adapter";
+import { BaseModifier, registerModifier } from '../utils/dota_ts_adapter';
 
 @registerModifier()
 export class modifier_custom_override extends BaseModifier {
-
     bDirty: boolean;
     player_id: PlayerID;
     hParent: CDOTA_BaseNPC;
 
     IsHidden(): boolean {
-        return true
+        return true;
     }
 
     IsPermanent(): boolean {
-        return true
+        return true;
     }
 
     RemoveOnDeath(): boolean {
-        return false
+        return false;
     }
 
     OnCreated(params: object): void {
@@ -24,19 +23,19 @@ export class modifier_custom_override extends BaseModifier {
         this.hParent = this.GetParent();
         this.player_id = this.GetParent().GetPlayerOwnerID();
         if (IsServer()) {
-            CustomNetTables.SetTableValue("unit_special_value", tostring(this.player_id), this.GetParent().MinorAbilityUpgrades);
+            CustomNetTables.SetTableValue('unit_special_value', tostring(this.player_id), this.GetParent().MinorAbilityUpgrades);
         } else {
-            this.GetParent().MinorAbilityUpgrades = CustomNetTables.GetTableValue("unit_special_value", tostring(this.player_id))
+            this.GetParent().MinorAbilityUpgrades = CustomNetTables.GetTableValue('unit_special_value', tostring(this.player_id));
         }
     }
 
     OnRefresh(params: object): void {
-        this.bDirty = true
+        this.bDirty = true;
         // print("OnRefresh", IsServer(), this.bDirty)
         if (IsServer()) {
-            CustomNetTables.SetTableValue("unit_special_value", tostring(this.player_id), this.GetParent().MinorAbilityUpgrades);
+            CustomNetTables.SetTableValue('unit_special_value', tostring(this.player_id), this.GetParent().MinorAbilityUpgrades);
         } else {
-            this.GetParent().MinorAbilityUpgrades = CustomNetTables.GetTableValue("unit_special_value", tostring(this.player_id))
+            this.GetParent().MinorAbilityUpgrades = CustomNetTables.GetTableValue('unit_special_value', tostring(this.player_id));
         }
         // 更新缓存
         // if (this.GetParent().MinorAbilityUpgrades != null) {
@@ -49,7 +48,6 @@ export class modifier_custom_override extends BaseModifier {
         // }
     }
 
-
     // DeclareFunctions(): ModifierFunction[] {
     //     return [
     //         ModifierFunction.OVERRIDE_ABILITY_SPECIAL,
@@ -60,42 +58,44 @@ export class modifier_custom_override extends BaseModifier {
 
     GetModifierOverrideAbilitySpecial(event: ModifierOverrideAbilitySpecialEvent): 0 | 1 {
         // print("GetModifierOverrideAbilitySpecial:",event.ability.GetAbilityName())
-        if (this.GetParent() == null || event.ability == null) { return 0; }
-        let szAbilityName = event.ability.GetAbilityName();
-        let hUpgrades = this.GetParent().MinorAbilityUpgrades
-        if (hUpgrades == null) {
-            hUpgrades = CustomNetTables.GetTableValue("unit_special_value", tostring(this.player_id))
+        if (this.GetParent() == null || event.ability == null) {
+            return 0;
         }
-        let szSpecialValueName = event.ability_special_value
+        const szAbilityName = event.ability.GetAbilityName();
+        let hUpgrades = this.GetParent().MinorAbilityUpgrades;
+        if (hUpgrades == null) {
+            hUpgrades = CustomNetTables.GetTableValue('unit_special_value', tostring(this.player_id));
+        }
+        const szSpecialValueName = event.ability_special_value;
         if (hUpgrades == null || hUpgrades[szAbilityName] == null) {
-            return 0
+            return 0;
         }
 
         if (hUpgrades[szAbilityName][szSpecialValueName] == null) {
-            return 0
+            return 0;
         }
-        return 1
+        return 1;
     }
 
     GetModifierOverrideAbilitySpecialValue(event: ModifierOverrideAbilitySpecialEvent): number {
-        let hUpgrades = this.GetParent().MinorAbilityUpgrades
+        let hUpgrades = this.GetParent().MinorAbilityUpgrades;
         if (hUpgrades == null) {
-            hUpgrades = CustomNetTables.GetTableValue("unit_special_value", tostring(this.player_id))
+            hUpgrades = CustomNetTables.GetTableValue('unit_special_value', tostring(this.player_id));
         }
 
-        let sSpecialValueName = event.ability_special_value;
-        let nSpecialLevel = event.ability_special_level;
-        let szAbilityName = event.ability.GetAbilityName();
-        let flBaseValue = event.ability.GetLevelSpecialValueNoOverride(sSpecialValueName, nSpecialLevel);
+        const sSpecialValueName = event.ability_special_value;
+        const nSpecialLevel = event.ability_special_level;
+        const szAbilityName = event.ability.GetAbilityName();
+        const flBaseValue = event.ability.GetLevelSpecialValueNoOverride(sSpecialValueName, nSpecialLevel);
         // let sAbilityName = event.ability.GetAbilityName();
         if (hUpgrades == null || hUpgrades[szAbilityName] == null) {
-            return 0
+            return 0;
         }
-        let SpecialValueUpgrades = hUpgrades[szAbilityName][sSpecialValueName];
+        const SpecialValueUpgrades = hUpgrades[szAbilityName][sSpecialValueName];
         if (SpecialValueUpgrades != null) {
             if (SpecialValueUpgrades.cache_value != null) {
                 // print("cache_value", IsServer(), szAbilityName, sSpecialValueName, SpecialValueUpgrades.cache_value)
-                return SpecialValueUpgrades.cache_value
+                return SpecialValueUpgrades.cache_value;
             }
             // let flAddResult = SpecialValueUpgrades.base_value;
             // let flMulResult = SpecialValueUpgrades.mul_value;

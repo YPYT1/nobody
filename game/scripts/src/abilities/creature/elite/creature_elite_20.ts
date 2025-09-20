@@ -1,9 +1,8 @@
-
 // import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
 // import { BaseCreatureAbility } from "../base_creature";
 
 // /**
-//  * creature_elite_20	集体传送	
+//  * creature_elite_20	集体传送
 //  * 开启传送阵吟唱2秒，将自身周围1000码内所有英雄传送到最近的敌方玩家（1名）附近
 //  * 瑞兹大招
 //  */
@@ -106,23 +105,23 @@
 //     }
 // }
 
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
+import { BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 /**
- * creature_elite_20	集体传送	
+ * creature_elite_20	集体传送
  * 开启传送阵吟唱2秒，将自身周围1000码内所有英雄传送到最近的敌方玩家（1名）附近
  * 瑞兹大招
  **/
 @registerAbility()
 export class creature_elite_20 extends BaseCreatureAbility {
     OnSpellStart(): void {
-        let caster = this.GetCaster();
-        let hero_distance = this.GetSpecialValueFor("hero_distance");
-        let radius = 1000; // 固定，也可以用 GetSpecialValueFor("radius")
+        const caster = this.GetCaster();
+        const hero_distance = this.GetSpecialValueFor('hero_distance');
+        const radius = 1000; // 固定，也可以用 GetSpecialValueFor("radius")
 
         // 找最近的敌方英雄
-        let enemies = FindUnitsInRadius(
+        const enemies = FindUnitsInRadius(
             caster.GetTeamNumber(),
             caster.GetAbsOrigin(),
             undefined,
@@ -136,11 +135,11 @@ export class creature_elite_20 extends BaseCreatureAbility {
 
         if (enemies.length == 0) return;
 
-        let nearestEnemy = enemies[0];
-        let enemyPos = nearestEnemy.GetAbsOrigin();
+        const nearestEnemy = enemies[0];
+        const enemyPos = nearestEnemy.GetAbsOrigin();
 
         // 找范围内友方英雄
-        let allies = FindUnitsInRadius(
+        const allies = FindUnitsInRadius(
             caster.GetTeamNumber(),
             caster.GetAbsOrigin(),
             undefined,
@@ -152,14 +151,10 @@ export class creature_elite_20 extends BaseCreatureAbility {
             false
         );
 
-        for (let ally of allies) {
-            let offset = Vector(
-                RandomInt(-hero_distance, hero_distance),
-                RandomInt(-hero_distance, hero_distance),
-                0
-            );
+        for (const ally of allies) {
+            const offset = Vector(RandomInt(-hero_distance, hero_distance), RandomInt(-hero_distance, hero_distance), 0);
             // Ensure the sum is treated as a Vector for TS typing
-            let targetPos = (enemyPos + offset) as Vector;
+            const targetPos = (enemyPos + offset) as Vector;
             ally.SetAbsOrigin(targetPos);
         }
     }

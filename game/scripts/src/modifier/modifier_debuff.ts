@@ -1,31 +1,34 @@
-import { BaseAbility, registerAbility, BaseModifier, registerModifier } from "../utils/dota_ts_adapter";
-
+import { BaseAbility, registerAbility, BaseModifier, registerModifier } from '../utils/dota_ts_adapter';
 
 @registerModifier()
 export class modifier_debuff_disable_special_attack extends BaseModifier {
-
-    IsHidden(): boolean { return true; }
+    IsHidden(): boolean {
+        return true;
+    }
 }
 
 @registerModifier()
 export class modifier_debuff_break extends BaseModifier {
-
-    IsDebuff(): boolean { return true; }
+    IsDebuff(): boolean {
+        return true;
+    }
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return; }
-        let hParent = this.GetParent();
-        hParent.EmitSound("DOTA_Item.SilverEdge.Target");
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
+        hParent.EmitSound('DOTA_Item.SilverEdge.Target');
     }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.PASSIVES_DISABLED]: true
+            [ModifierState.PASSIVES_DISABLED]: true,
         };
     }
 
     GetEffectName() {
-        return "particles/generic_gameplay/generic_break.vpcf";
+        return 'particles/generic_gameplay/generic_break.vpcf';
     }
 
     GetEffectAttachType() {
@@ -35,8 +38,9 @@ export class modifier_debuff_break extends BaseModifier {
 
 @registerModifier()
 export class modifier_debuff_hidden extends BaseModifier {
-
-    IsHidden(): boolean { return true; }
+    IsHidden(): boolean {
+        return true;
+    }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
@@ -51,8 +55,9 @@ export class modifier_debuff_hidden extends BaseModifier {
 
 @registerModifier()
 export class modifier_buff_invisible extends BaseModifier {
-
-    IsHidden(): boolean { return true; }
+    IsHidden(): boolean {
+        return true;
+    }
 
     // sounds/items/ghost_activate.vsnd
     CheckState(): Partial<Record<ModifierState, boolean>> {
@@ -62,17 +67,15 @@ export class modifier_buff_invisible extends BaseModifier {
     }
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return; }
-        let hParent = this.GetParent();
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
         // hParent.EmitSound("")
     }
 
     DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.INVISIBILITY_LEVEL,
-            ModifierFunction.ON_ABILITY_EXECUTED,
-            ModifierFunction.ON_ATTACK
-        ];
+        return [ModifierFunction.INVISIBILITY_LEVEL, ModifierFunction.ON_ABILITY_EXECUTED, ModifierFunction.ON_ATTACK];
     }
 
     OnAttack(event: ModifierAttackEvent): void {
@@ -94,12 +97,10 @@ export class modifier_buff_invisible extends BaseModifier {
     GetModifierInvisibilityLevel(): number {
         return 20;
     }
-
 }
 
 @registerModifier()
 export class modifier_debuff_invincible extends BaseModifier {
-
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
             // [ModifierState.INVULNERABLE]: true,
@@ -110,35 +111,57 @@ export class modifier_debuff_invincible extends BaseModifier {
         };
     }
 
-
     GetStatusEffectName(): string {
-        return "particles/status_fx/status_effect_ancestral_spirit.vpcf";
+        return 'particles/status_fx/status_effect_ancestral_spirit.vpcf';
     }
 }
-
 
 /** 状态免疫模块 */
 @registerModifier()
 export class modifier_debuff_immune extends BaseModifier {
+    IsHidden() {
+        return true;
+    }
 
-    IsHidden() { return true; }
-    IsDebuff() { return false; }
-    IsPurgable() { return false; }
-    IsPurgeException() { return true; }
-    ShouldUseOverheadOffset() { return true; }
+    IsDebuff() {
+        return false;
+    }
+
+    IsPurgable() {
+        return false;
+    }
+
+    IsPurgeException() {
+        return true;
+    }
+
+    ShouldUseOverheadOffset() {
+        return true;
+    }
 }
 
 // DEBUFF模版
 export class modifier_debuff_debuff_template extends BaseModifier {
+    IsHidden() {
+        return false;
+    }
 
-    IsHidden() { return false; }
-    IsDebuff() { return true; }
+    IsDebuff() {
+        return true;
+    }
 
     /** 是否可被驱散 */
-    IsPurgable() { return true; }
-    IsPurgeException() { return true; }
+    IsPurgable() {
+        return true;
+    }
 
-    ShouldUseOverheadOffset() { return true; }
+    IsPurgeException() {
+        return true;
+    }
+
+    ShouldUseOverheadOffset() {
+        return true;
+    }
 
     OnIntervalThink() {
         if (this.GetAbility() == null || this.GetCaster() == null) {
@@ -150,17 +173,16 @@ export class modifier_debuff_debuff_template extends BaseModifier {
 
 @registerModifier()
 export class modifier_debuff_stunned extends modifier_debuff_debuff_template {
-
     IsStunDebuff(): boolean {
         return true;
     }
 
     GetTexture() {
-        return "lich/lich_ti10_immortal_ability_icon/lich_ti10_immortal_sinister_gaze";
+        return 'lich/lich_ti10_immortal_ability_icon/lich_ti10_immortal_sinister_gaze';
     }
 
     GetEffectName() {
-        return "particles/generic_gameplay/generic_stunned.vpcf";
+        return 'particles/generic_gameplay/generic_stunned.vpcf';
     }
 
     GetEffectAttachType() {
@@ -169,48 +191,46 @@ export class modifier_debuff_stunned extends modifier_debuff_debuff_template {
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.STUNNED]: true
+            [ModifierState.STUNNED]: true,
         };
     }
 
     DeclareFunctions() {
-        return [
-            ModifierFunction.OVERRIDE_ANIMATION
-        ];
+        return [ModifierFunction.OVERRIDE_ANIMATION];
     }
 
     GetOverrideAnimation(): GameActivity {
         return GameActivity.DOTA_DISABLED;
     }
-
 }
 
 // 减速
 @registerModifier()
 export class modifier_debuff_slow extends modifier_debuff_debuff_template {
-
     slow: number;
 
     OnCreated(params: any) {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.slow = -1 * math.abs(params.slow);
         this.SetHasCustomTransmitterData(true);
     }
 
     OnRefresh(params: any) {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.slow = -1 * math.abs(params.slow);
     }
 
     DeclareFunctions() {
-        return [
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
-        ];
+        return [ModifierFunction.MOVESPEED_BONUS_PERCENTAGE];
     }
 
     AddCustomTransmitterData() {
         return {
-            value: this.slow
+            value: this.slow,
         };
     }
 
@@ -226,28 +246,33 @@ export class modifier_debuff_slow extends modifier_debuff_debuff_template {
 /** 嘲讽 */
 @registerModifier()
 class modifier_debuff_taunt extends modifier_debuff_debuff_template {
-
     GetStatusEffectName(): string {
-        return "particles/status_fx/status_effect_beserkers_call.vpcf";
+        return 'particles/status_fx/status_effect_beserkers_call.vpcf';
     }
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return; }
-        let hParent = this.GetParent();
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
         hParent.SetForceAttackTarget(this.GetCaster());
         hParent.MoveToTargetToAttack(this.GetCaster());
     }
 
     OnRefresh(params: object): void {
-        if (!IsServer()) { return; }
-        let hParent = this.GetParent();
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
         hParent.SetForceAttackTarget(this.GetCaster());
         hParent.MoveToTargetToAttack(this.GetCaster());
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return; }
-        let hParent = this.GetParent();
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
         hParent.SetForceAttackTarget(null);
     }
 
@@ -261,13 +286,12 @@ class modifier_debuff_taunt extends modifier_debuff_debuff_template {
 // 禁足
 @registerModifier()
 class modifier_debuff_rooted extends modifier_debuff_debuff_template {
-
     GetTexture() {
-        return "ancient_apparition_cold_feet";
+        return 'ancient_apparition_cold_feet';
     }
 
     GetEffectName() {
-        return "particles/units/heroes/hero_oracle/oracle_fortune_purge_root_pnt.vpcf";
+        return 'particles/units/heroes/hero_oracle/oracle_fortune_purge_root_pnt.vpcf';
     }
 
     GetEffectAttachType() {
@@ -276,7 +300,7 @@ class modifier_debuff_rooted extends modifier_debuff_debuff_template {
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.ROOTED]: true
+            [ModifierState.ROOTED]: true,
         };
     }
 }
@@ -284,13 +308,12 @@ class modifier_debuff_rooted extends modifier_debuff_debuff_template {
 // 沉默
 @registerModifier()
 class modifier_debuff_silenced extends modifier_debuff_debuff_template {
-
     GetTexture() {
-        return "silencer_last_word";
+        return 'silencer_last_word';
     }
 
     GetEffectName() {
-        return "particles/generic_gameplay/generic_silence.vpcf";
+        return 'particles/generic_gameplay/generic_silence.vpcf';
     }
 
     GetEffectAttachType() {
@@ -299,21 +322,20 @@ class modifier_debuff_silenced extends modifier_debuff_debuff_template {
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.SILENCED]: true
+            [ModifierState.SILENCED]: true,
         };
     }
-
 }
 
 /** 缴械 */
 @registerModifier()
 class modifier_debuff_disarmed extends modifier_debuff_debuff_template {
-
-
-    IsPurgable() { return false; }
+    IsPurgable() {
+        return false;
+    }
 
     GetEffectName() {
-        return "particles/generic_gameplay/generic_disarm.vpcf";
+        return 'particles/generic_gameplay/generic_disarm.vpcf';
     }
 
     GetEffectAttachType() {
@@ -322,32 +344,33 @@ class modifier_debuff_disarmed extends modifier_debuff_debuff_template {
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.DISARMED]: true
+            [ModifierState.DISARMED]: true,
         };
     }
-
 }
 
 // 中毒
 @registerModifier()
 class modifier_debuff_poison extends modifier_debuff_debuff_template {
-
-    IsHidden(): boolean { return true; }
+    IsHidden(): boolean {
+        return true;
+    }
 
     GetTexture() {
-        return "viper/ti8_immortal_tail/viper_nethertoxin_immortal";
+        return 'viper/ti8_immortal_tail/viper_nethertoxin_immortal';
     }
 }
 
 // 处于读条中，禁止其他操作
 @registerModifier()
 class modifier_debuff_in_channel extends BaseModifier {
-
-    IsHidden() { return true; }
+    IsHidden() {
+        return true;
+    }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.COMMAND_RESTRICTED]: true
+            [ModifierState.COMMAND_RESTRICTED]: true,
         };
     }
 }
@@ -355,31 +378,26 @@ class modifier_debuff_in_channel extends BaseModifier {
 /** 相位移动状态 */
 @registerModifier()
 export class modifier_debuff_phase extends BaseModifier {
-
     IsHidden(): boolean {
         return false;
     }
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return; }
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/items2_fx/phase_boots.vpcf",
-            ParticleAttachment.POINT_FOLLOW,
-            this.GetParent()
-        );
+        if (!IsServer()) {
+            return;
+        }
+        const effect_fx = ParticleManager.CreateParticle('particles/items2_fx/phase_boots.vpcf', ParticleAttachment.POINT_FOLLOW, this.GetParent());
         this.AddParticle(effect_fx, false, false, -1, false, false);
     }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.NO_UNIT_COLLISION]: true
+            [ModifierState.NO_UNIT_COLLISION]: true,
         };
     }
 
     DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
-        ];
+        return [ModifierFunction.MOVESPEED_BONUS_PERCENTAGE];
     }
 
     GetModifierMoveSpeedBonus_Percentage(): number {
@@ -387,10 +405,8 @@ export class modifier_debuff_phase extends BaseModifier {
     }
 }
 
-
 @registerModifier()
 export class modifier_attack_speed_unslowable extends BaseModifier {
-
     attack_speed_reduction_pct: number;
 
     OnCreated(params: any): void {
@@ -407,14 +423,12 @@ export class modifier_attack_speed_unslowable extends BaseModifier {
 
     OnRefresh(params: any): void {
         if (this.GetAbility() != null) {
-            this.attack_speed_reduction_pct = this.GetAbility().GetSpecialValueFor("attack_speed_reduction_pct");
+            this.attack_speed_reduction_pct = this.GetAbility().GetSpecialValueFor('attack_speed_reduction_pct');
         }
     }
 
     DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.ATTACKSPEED_REDUCTION_PERCENTAGE
-        ];
+        return [ModifierFunction.ATTACKSPEED_REDUCTION_PERCENTAGE];
     }
 
     GetModifierAttackSpeedReductionPercentage() {
@@ -423,7 +437,7 @@ export class modifier_attack_speed_unslowable extends BaseModifier {
 
     AddCustomTransmitterData() {
         return {
-            value: this.attack_speed_reduction_pct
+            value: this.attack_speed_reduction_pct,
         };
     }
 
@@ -434,33 +448,41 @@ export class modifier_attack_speed_unslowable extends BaseModifier {
 
 @registerModifier()
 export class modifier_debuff_charm extends BaseModifier {
-
     GetTexture(): string {
-        return "lich_sinister_gaze";
+        return 'lich_sinister_gaze';
     }
 
     OnCreated(params: object): void {
         this.OnRefresh(params);
     }
 
-    IsDebuff(): boolean { return true; }
-    IsPurgable(): boolean { return true; }
+    IsDebuff(): boolean {
+        return true;
+    }
+
+    IsPurgable(): boolean {
+        return true;
+    }
 
     OnRefresh(params: object): void {
-        if (!IsServer()) { return; }
-        let hParent = this.GetParent();
-        if (hParent.HasAbility("public_abyss_boss_state")) {
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
+        if (hParent.HasAbility('public_abyss_boss_state')) {
             this.Destroy();
             return;
         }
-        let hCaster = this.GetCaster();
+        const hCaster = this.GetCaster();
         hParent.SetForceAttackTarget(hCaster);
         hParent.MoveToTargetToAttack(hCaster);
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return; }
-        let hParent = this.GetParent();
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
         hParent.SetForceAttackTarget(hParent);
         hParent.MoveToTargetToAttack(hParent);
         hParent.SetForceAttackTarget(null);
@@ -480,7 +502,7 @@ export class modifier_debuff_charm extends BaseModifier {
             // ModifierFunction.MODEL_CHANGE,
             // ModifierFunction.MOVESPEED_BASE_OVERRIDE,
             ModifierFunction.ATTACKSPEED_BONUS_CONSTANT,
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
+            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
         ];
     }
 
@@ -493,7 +515,7 @@ export class modifier_debuff_charm extends BaseModifier {
     }
 
     GetEffectName(): string {
-        return "particles/custom/generic_charm.vpcf";
+        return 'particles/custom/generic_charm.vpcf';
     }
 
     GetEffectAttachType(): ParticleAttachment {
@@ -504,32 +526,28 @@ export class modifier_debuff_charm extends BaseModifier {
 /** 昏睡 */
 @registerModifier()
 export class modifier_debuff_lethargy extends BaseModifier {
-
     awakening_value: number;
 
     GetTexture(): string {
-        return "bane_nightmare";
+        return 'bane_nightmare';
     }
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.awakening_value = params.awakening_value ?? 0;
         // 昏睡特效
     }
 
-
     CheckState(): Partial<Record<ModifierState, boolean>> {
-
         return {
             [ModifierState.STUNNED]: true,
-
         };
     }
 
     DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
-        ];
+        return [ModifierFunction.INCOMING_DAMAGE_PERCENTAGE];
     }
 
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
@@ -542,7 +560,7 @@ export class modifier_debuff_lethargy extends BaseModifier {
     }
 
     GetEffectName(): string {
-        return "particles/generic_gameplay/generic_sleep.vpcf";
+        return 'particles/generic_gameplay/generic_sleep.vpcf';
     }
 
     GetEffectAttachType(): ParticleAttachment {
@@ -552,12 +570,13 @@ export class modifier_debuff_lethargy extends BaseModifier {
 
 @registerModifier()
 export class modifier_debuff_hexed extends BaseModifier {
-
     OnCreated(params: any): void {
-        this.model_name = "models/props_gameplay/frog.vmdl";
-        if (!IsServer()) { return; }
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/items_fx/item_sheepstick.vpcf",
+        this.model_name = 'models/props_gameplay/frog.vmdl';
+        if (!IsServer()) {
+            return;
+        }
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/items_fx/item_sheepstick.vpcf',
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
         );
@@ -572,12 +591,9 @@ export class modifier_debuff_hexed extends BaseModifier {
             [ModifierState.MUTED]: true,
         };
     }
+
     DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.MODEL_CHANGE,
-            ModifierFunction.MOVESPEED_BASE_OVERRIDE,
-            ModifierFunction.ATTACKSPEED_BONUS_CONSTANT
-        ];
+        return [ModifierFunction.MODEL_CHANGE, ModifierFunction.MOVESPEED_BASE_OVERRIDE, ModifierFunction.ATTACKSPEED_BONUS_CONSTANT];
     }
 
     GetModifierAttackSpeedBonus_Constant() {
@@ -595,18 +611,23 @@ export class modifier_debuff_hexed extends BaseModifier {
     model_name: string;
 }
 
-
 @registerModifier()
 export class modifier_debuff_feared extends BaseModifier {
-
     hCaster: CDOTA_BaseNPC;
     hParent: CDOTA_BaseNPC;
 
-    IsDebuff(): boolean { return true; }
-    IsPurgable(): boolean { return true; }
+    IsDebuff(): boolean {
+        return true;
+    }
+
+    IsPurgable(): boolean {
+        return true;
+    }
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.hCaster = this.GetCaster();
         this.hParent = this.GetParent();
         this.OnIntervalThink();
@@ -618,11 +639,11 @@ export class modifier_debuff_feared extends BaseModifier {
             this.StartIntervalThink(-1);
             return;
         }
-        let vCaster = this.hCaster.GetAbsOrigin();
-        let vParent = this.hParent.GetAbsOrigin();
-        let direction = (vParent - vCaster as Vector).Normalized();
-        let distance = direction.Length2D() + 250;
-        let end_point = vParent + direction * distance as Vector;
+        const vCaster = this.hCaster.GetAbsOrigin();
+        const vParent = this.hParent.GetAbsOrigin();
+        const direction = ((vParent - vCaster) as Vector).Normalized();
+        const distance = direction.Length2D() + 250;
+        const end_point = (vParent + direction * distance) as Vector;
         // DebugDrawCircle(end_point, Vector(255, 0, 0), 10, 128, true, 0.3);
         this.hParent.MoveToPosition(end_point);
         // file://{images}/spellicons/dark_willow/dw_2021_immortal_ability_icon/dw_2021_immortal_terrorize.png
@@ -636,9 +657,7 @@ export class modifier_debuff_feared extends BaseModifier {
     }
 
     DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
-        ];
+        return [ModifierFunction.MOVESPEED_BONUS_PERCENTAGE];
     }
 
     GetModifierMoveSpeedBonus_Percentage(): number {
@@ -646,11 +665,11 @@ export class modifier_debuff_feared extends BaseModifier {
     }
 
     GetStatusEffectName(): string {
-        return "particles/status_fx/status_effect_dark_willow_wisp_fear.vpcf";
+        return 'particles/status_fx/status_effect_dark_willow_wisp_fear.vpcf';
     }
 
     GetEffectName(): string {
-        return "particles/econ/items/dark_willow/dark_willow_immortal_2021/dw_2021_willow_wisp_spell_debuff.vpcf";
+        return 'particles/econ/items/dark_willow/dark_willow_immortal_2021/dw_2021_willow_wisp_spell_debuff.vpcf';
     }
 
     GetEffectAttachType(): ParticleAttachment {
@@ -661,68 +680,62 @@ export class modifier_debuff_feared extends BaseModifier {
 /** 麻痹 */
 @registerModifier()
 export class modifier_debuff_paralysis extends modifier_debuff_debuff_template {
-
     GetTexture(): string {
-        return "harpy_storm_chain_lightning"
+        return 'harpy_storm_chain_lightning';
     }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.ROOTED]: true
-        }
+            [ModifierState.ROOTED]: true,
+        };
     }
 
     DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.ATTACKSPEED_PERCENTAGE
-        ]
+        return [ModifierFunction.ATTACKSPEED_PERCENTAGE];
     }
 
     GetModifierAttackSpeedPercentage(): number {
-        return -50
+        return -50;
     }
 
     GetEffectName(): string {
-        return "particles/debuff/debuff_paralysis.vpcf"
+        return 'particles/debuff/debuff_paralysis.vpcf';
     }
 
     GetEffectAttachType(): ParticleAttachment {
-        return ParticleAttachment.POINT_FOLLOW
+        return ParticleAttachment.POINT_FOLLOW;
     }
 }
 
 /** 混乱 */
 @registerModifier()
 export class modifier_debuff_chaos extends modifier_debuff_debuff_template {
-
     GetTexture(): string {
-        return "life_stealer_control"
+        return 'life_stealer_control';
     }
 
     GetStatusEffectName(): string {
-        return "particles/status_fx/status_effect_dark_willow_wisp_fear.vpcf";
+        return 'particles/status_fx/status_effect_dark_willow_wisp_fear.vpcf';
     }
 
     GetEffectName(): string {
-        return "particles/units/heroes/hero_dark_willow/dark_willow_wisp_spell_debuff.vpcf";
+        return 'particles/units/heroes/hero_dark_willow/dark_willow_wisp_spell_debuff.vpcf';
     }
 
     GetEffectAttachType(): ParticleAttachment {
-        return ParticleAttachment.OVERHEAD_FOLLOW
+        return ParticleAttachment.OVERHEAD_FOLLOW;
     }
-
 }
 
 /** 混乱 */
 @registerModifier()
 export class modifier_debuff_uncontroll extends modifier_debuff_debuff_template {
-
     GetTexture(): string {
-        return "action_stop"
+        return 'action_stop';
     }
 
     GetEffectName() {
-        return "particles/units/heroes/hero_oracle/oracle_fortune_purge_root_pnt.vpcf";
+        return 'particles/units/heroes/hero_oracle/oracle_fortune_purge_root_pnt.vpcf';
     }
 
     GetEffectAttachType() {
@@ -731,8 +744,7 @@ export class modifier_debuff_uncontroll extends modifier_debuff_debuff_template 
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.ROOTED]: true
+            [ModifierState.ROOTED]: true,
         };
     }
-
 }

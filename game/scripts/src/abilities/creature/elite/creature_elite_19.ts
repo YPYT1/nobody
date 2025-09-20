@@ -1,5 +1,5 @@
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
+import { BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 /**
  * creature_elite_19 火刺（简化版）
@@ -10,9 +10,9 @@ export class creature_elite_19 extends BaseCreatureAbility {
     OnSpellStart(): void {
         const caster = this.GetCaster();
         const targetPoint = this.GetCursorPosition();
-        const radius = this.GetSpecialValueFor("radius");
-        const healPct = this.GetSpecialValueFor("heal_max_hp") / 100;
-        const immuneDuration = this.GetSpecialValueFor("knockback_duration");
+        const radius = this.GetSpecialValueFor('radius');
+        const healPct = this.GetSpecialValueFor('heal_max_hp') / 100;
+        const immuneDuration = this.GetSpecialValueFor('knockback_duration');
 
         // 查找范围内的友方单位
         const allies = FindUnitsInRadius(
@@ -28,17 +28,17 @@ export class creature_elite_19 extends BaseCreatureAbility {
         );
         //延迟 莉拉（参考这个人物的技能，先进性播放特效在进行回血处理）
 
-        for(const ally of allies){
+        for (const ally of allies) {
             const healAmount = ally.GetMaxHealth() * healPct;
-            ally.Heal(healAmount,this);
-            ally.AddNewModifier(caster,this,"modifier_creature_elite_19_immune",{
-                duration: immuneDuration
-            })
+            ally.Heal(healAmount, this);
+            ally.AddNewModifier(caster, this, 'modifier_creature_elite_19_immune', {
+                duration: immuneDuration,
+            });
         }
     }
 
     GetAOERadius(): number {
-        return this.GetSpecialValueFor("radius");
+        return this.GetSpecialValueFor('radius');
     }
 }
 
@@ -48,16 +48,16 @@ export class creature_elite_19 extends BaseCreatureAbility {
 @registerModifier()
 export class modifier_creature_elite_19_immune extends BaseModifier {
     //检查
-    IsHidden(): boolean { 
-        return false; 
+    IsHidden(): boolean {
+        return false;
     }
-    
-    IsPurgable(): boolean { 
-        return false; 
+
+    IsPurgable(): boolean {
+        return false;
     }
-    
-    IsDebuff(): boolean { 
-        return false; 
+
+    IsDebuff(): boolean {
+        return false;
     }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
@@ -67,6 +67,6 @@ export class modifier_creature_elite_19_immune extends BaseModifier {
     }
 
     GetEffectName(): string {
-        return "maps/cavern_assets/particles/lamp_cavern_tintable_f.vpcf";
+        return 'maps/cavern_assets/particles/lamp_cavern_tintable_f.vpcf';
     }
 }

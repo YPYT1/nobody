@@ -1,6 +1,5 @@
-
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
+import { BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 /**
  * creature_elite_8	天火	
@@ -10,20 +9,19 @@ import { BaseCreatureAbility } from "../base_creature";
  */
 @registerAbility()
 export class creature_elite_8 extends BaseCreatureAbility {
-
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_invoker/invoker_sun_strike.vpcf",context)
+        precacheResString('particles/units/heroes/hero_invoker/invoker_sun_strike.vpcf', context);
     }
-    
+
     OnAbilityPhaseStart(): boolean {
         this.vPoint = this.GetCursorPosition();
-        this.nPreviewFX = GameRules.WarningMarker.Circular(this._radius, this._cast_point, this.vPoint)
-        return true
+        this.nPreviewFX = GameRules.WarningMarker.Circular(this._radius, this._cast_point, this.vPoint);
+        return true;
     }
 
     OnSpellStart(): void {
-        this.DestroyWarningFx()
-        let enemies = FindUnitsInRadius(
+        this.DestroyWarningFx();
+        const enemies = FindUnitsInRadius(
             this.hCaster.GetTeam(),
             this.vPoint,
             null,
@@ -33,17 +31,17 @@ export class creature_elite_8 extends BaseCreatureAbility {
             UnitTargetFlags.NONE,
             FindOrder.ANY,
             false
-        )
+        );
 
-        for (let enemy of enemies) {
-            enemy.AddNewModifier(this.hCaster, this, "modifier_creature_elite_8_dot", {
+        for (const enemy of enemies) {
+            enemy.AddNewModifier(this.hCaster, this, 'modifier_creature_elite_8_dot', {
                 duration: this._duration + 0.1,
-            })
+            });
         }
 
         // cast_fx
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_invoker/invoker_sun_strike.vpcf",
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_invoker/invoker_sun_strike.vpcf',
             ParticleAttachment.WORLDORIGIN,
             null
         );
@@ -55,20 +53,21 @@ export class creature_elite_8 extends BaseCreatureAbility {
 
 @registerModifier()
 export class modifier_creature_elite_8_dot extends BaseModifier {
-
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf",
+        if (!IsServer()) {
+            return;
+        }
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf',
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
-        )
-        this.AddParticle(effect_fx, false, false, -1, false, false)
-        this.StartIntervalThink(1)
+        );
+        this.AddParticle(effect_fx, false, false, -1, false, false);
+        this.StartIntervalThink(1);
     }
 
     OnIntervalThink(): void {
-        let damage = this.GetParent().GetMaxHealth() * 0.1;
+        const damage = this.GetParent().GetMaxHealth() * 0.1;
         ApplyCustomDamage({
             victim: this.GetParent(),
             attacker: this.GetCaster(),
@@ -76,6 +75,6 @@ export class modifier_creature_elite_8_dot extends BaseModifier {
             damage: damage,
             damage_type: DamageTypes.PHYSICAL,
             miss_flag: 1,
-        })
+        });
     }
 }

@@ -1,62 +1,57 @@
-import { modifier_motion_surround } from "../../../../modifier/modifier_motion";
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import { modifier_motion_surround } from '../../../../modifier/modifier_motion';
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { BaseHeroAbility, BaseHeroModifier } from '../../base_hero_ability';
 
 /**
  * 向空中射出10/12/14/17/20支箭，随机打击范围1000码以内敌人，每支箭制造成攻击力200%的伤害。
  */
 @registerAbility()
 export class drow_3b extends BaseHeroAbility {
-
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf", context)
+        precacheResString('particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf', context);
     }
 
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_3b"
+        return 'modifier_drow_3b';
     }
 
     UpdataAbilityValue(): void {
-        this.SetCustomAbilityType("Aoe", true)
+        this.SetCustomAbilityType('Aoe', true);
     }
 
-    TriggerActive(params: PlayEffectProps): void {
-
-    }
+    TriggerActive(params: PlayEffectProps): void {}
 }
 
 @registerModifier()
 export class modifier_drow_3b extends BaseHeroModifier {
-
     radius: number;
     arrow_count: number;
-    mdf_thinker = "modifier_drow_3b_thinker";
+    mdf_thinker = 'modifier_drow_3b_thinker';
 
     aoe_chance: number;
     UpdataAbilityValue(): void {
-        let hAbility = this.GetAbility();
-        this.radius = hAbility.GetSpecialValueForTypes("radius", 'Aoe', 'skv_aoe_radius');
+        const hAbility = this.GetAbility();
+        this.radius = hAbility.GetSpecialValueForTypes('radius', 'Aoe', 'skv_aoe_radius');
 
-        this.arrow_count = hAbility.GetSpecialValueFor("arrow_count")
-            + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "38", 'bonus_arrow')
+        this.arrow_count =
+            hAbility.GetSpecialValueFor('arrow_count') + GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '38', 'bonus_arrow');
 
-        this.SelfAbilityMul = hAbility.GetSpecialValueFor("base_value");
+        this.SelfAbilityMul = hAbility.GetSpecialValueFor('base_value');
         // rune_44	游侠#19	箭雨的基础伤害提高50%
         this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_44', 'base_value');
         // rune_47	游侠#22	箭雨【急冻】生效时，额外增加的5支箭
-        if (this.caster.rune_level_index.hasOwnProperty("rune_47")) {
-            this.arrow_count += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_47', 'jidong_bonus')
+        if (this.caster.rune_level_index.hasOwnProperty('rune_47')) {
+            this.arrow_count += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_47', 'jidong_bonus');
         }
 
         this.DamageBonusMul = 0;
-        this.aoe_chance = this.ability.GetTypesAffixValue(0, "Aoe", "skv_aoe_chance");
-
+        this.aoe_chance = this.ability.GetTypesAffixValue(0, 'Aoe', 'skv_aoe_chance');
     }
 
     OnIntervalThink(): void {
         if (this.CastingConditions()) {
             // print("this.r",this.radius)
-            let enemies = FindUnitsInRadius(
+            const enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.GetAbsOrigin(),
                 null,
@@ -67,22 +62,24 @@ export class modifier_drow_3b extends BaseHeroModifier {
                 FindOrder.ANY,
                 false
             );
-            if (enemies.length == 0) { return }
-            this.DoExecutedAbility()
-            let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
-            this.PlayEffect({ value: manacost_bonus })
+            if (enemies.length == 0) {
+                return;
+            }
+            this.DoExecutedAbility();
+            const manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
+            this.PlayEffect({ value: manacost_bonus });
         }
     }
 
     PlayEffect(params: PlayEffectProps): void {
-        let vPos = this.caster.GetAbsOrigin();
-        let cast_fx = ParticleManager.CreateParticle(
-            "particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf",
+        const vPos = this.caster.GetAbsOrigin();
+        const cast_fx = ParticleManager.CreateParticle(
+            'particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf',
             ParticleAttachment.POINT,
-            this.caster,
-        )
+            this.caster
+        );
         ParticleManager.ReleaseParticleIndex(cast_fx);
-        let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+        const attack_damage = this.caster.GetAverageTrueAttackDamage(null);
         CreateModifierThinker(
             this.caster,
             this.ability,
@@ -97,58 +94,59 @@ export class modifier_drow_3b extends BaseHeroModifier {
             vPos,
             this.team,
             false
-        )
+        );
 
         if (RollPercentage(this.aoe_chance)) {
-            this.caster.SetContextThink("drow_3b_multicast", () => {
-                this.PlayEffects(2);
-                let vPos = this.caster.GetAbsOrigin();
-                let cast_fx = ParticleManager.CreateParticle(
-                    "particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf",
-                    ParticleAttachment.POINT,
-                    this.caster,
-                )
-                ParticleManager.ReleaseParticleIndex(cast_fx);
-                CreateModifierThinker(
-                    this.caster,
-                    this.ability,
-                    this.mdf_thinker,
-                    {
-                        radius: this.radius,
-                        arrow_count: this.arrow_count,
-                        ability_damage: attack_damage,
-                        SelfAbilityMul: this.SelfAbilityMul,
-                        DamageBonusMul: this.DamageBonusMul,
-                    },
-                    vPos + RandomVector(RandomInt(100, 300)) as Vector,
-                    this.team,
-                    false
-                )
-                return null
-            }, 0.25)
-
+            this.caster.SetContextThink(
+                'drow_3b_multicast',
+                () => {
+                    this.PlayEffects(2);
+                    const vPos = this.caster.GetAbsOrigin();
+                    const cast_fx = ParticleManager.CreateParticle(
+                        'particles/econ/items/mirana/mirana_persona/mirana_starstorm_moonray_arrow.vpcf',
+                        ParticleAttachment.POINT,
+                        this.caster
+                    );
+                    ParticleManager.ReleaseParticleIndex(cast_fx);
+                    CreateModifierThinker(
+                        this.caster,
+                        this.ability,
+                        this.mdf_thinker,
+                        {
+                            radius: this.radius,
+                            arrow_count: this.arrow_count,
+                            ability_damage: attack_damage,
+                            SelfAbilityMul: this.SelfAbilityMul,
+                            DamageBonusMul: this.DamageBonusMul,
+                        },
+                        (vPos + RandomVector(RandomInt(100, 300))) as Vector,
+                        this.team,
+                        false
+                    );
+                    return null;
+                },
+                0.25
+            );
         }
     }
 
     PlayEffects(value: number) {
-        let sound = math.min(value - 1, 3);
-        let sound_cast = "Hero_OgreMagi.Fireblast.x" + sound;
+        const sound = math.min(value - 1, 3);
+        const sound_cast = 'Hero_OgreMagi.Fireblast.x' + sound;
         EmitSoundOn(sound_cast, this.GetCaster());
 
-        let effect_cast = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_ogre_magi/ogre_magi_multicast.vpcf",
+        const effect_cast = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_ogre_magi/ogre_magi_multicast.vpcf',
             ParticleAttachment.OVERHEAD_FOLLOW,
             this.GetCaster()
         );
         ParticleManager.SetParticleControl(effect_cast, 1, Vector(value, 2, 0));
         ParticleManager.ReleaseParticleIndex(effect_cast);
-
     }
 }
 
 @registerModifier()
 export class modifier_drow_3b_thinker extends BaseModifier {
-
     caster: CDOTA_BaseNPC;
     arrow_count: number;
     parent: CDOTA_BaseNPC;
@@ -158,10 +156,12 @@ export class modifier_drow_3b_thinker extends BaseModifier {
     ability: CDOTABaseAbility;
     SelfAbilityMul: number;
     DamageBonusMul: number;
-    arrow_thinker = "modifier_drow_3b_thinker_arrow";
+    arrow_thinker = 'modifier_drow_3b_thinker_arrow';
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.do_destroy = false;
         this.SelfAbilityMul = params.SelfAbilityMul;
         this.DamageBonusMul = params.DamageBonusMul;
@@ -173,16 +173,14 @@ export class modifier_drow_3b_thinker extends BaseModifier {
         this.element_type = ElementTypes.NONE;
         this.parent = this.GetParent();
         this.OnCreated_Extends();
-        this.StartIntervalThink(0.5)
+        this.StartIntervalThink(0.5);
     }
 
-    OnCreated_Extends() {
-
-    }
+    OnCreated_Extends() {}
 
     OnIntervalThink(): void {
         this.StartIntervalThink(-1);
-        let enemies = FindUnitsInRadius(
+        const enemies = FindUnitsInRadius(
             this.GetCaster().GetTeam(),
             this.GetParent().GetAbsOrigin(),
             null,
@@ -195,102 +193,101 @@ export class modifier_drow_3b_thinker extends BaseModifier {
         );
         if (enemies.length > 0) {
             let count = 0;
-            let hCaster = this.GetCaster()
-            let hAbility = this.GetAbility()
-            let ability_damage = this.ability_damage
+            const hCaster = this.GetCaster();
+            const hAbility = this.GetAbility();
+            const ability_damage = this.ability_damage;
 
-            this.parent.SetContextThink("drow_3b", () => {
-                if (count >= this.arrow_count) {
-                    this.Destroy()
-                    return null
-                }
-                let rand = RandomInt(0, enemies.length - 1);
-                let target = enemies[rand];
-                if (target == null || IsValid(target)) {
-                    count += 1
-                    return 0.01
-                }
-                let target_vect = target.GetAbsOrigin()
-                CreateModifierThinker(
-                    hCaster,
-                    hAbility,
-                    this.arrow_thinker,
-                    {
-                        duration: 0.5
-                    },
-                    target_vect,
-                    DotaTeam.GOODGUYS,
-                    false
-                )
-                this.DoDamageTarget(target, ability_damage)
-                count += 1;
+            this.parent.SetContextThink(
+                'drow_3b',
+                () => {
+                    if (count >= this.arrow_count) {
+                        this.Destroy();
+                        return null;
+                    }
+                    const rand = RandomInt(0, enemies.length - 1);
+                    const target = enemies[rand];
+                    if (target == null || IsValid(target)) {
+                        count += 1;
+                        return 0.01;
+                    }
+                    const target_vect = target.GetAbsOrigin();
+                    CreateModifierThinker(
+                        hCaster,
+                        hAbility,
+                        this.arrow_thinker,
+                        {
+                            duration: 0.5,
+                        },
+                        target_vect,
+                        DotaTeam.GOODGUYS,
+                        false
+                    );
+                    this.DoDamageTarget(target, ability_damage);
+                    count += 1;
 
-                return 0.1
-            }, 0.1)
-
+                    return 0.1;
+                },
+                0.1
+            );
         }
-
     }
 
     DoDamageTarget(target: CDOTA_BaseNPC, ability_damage: number) {
-        target.SetContextThink(DoUniqueString("drow3_b_delay"), () => {
-            ApplyCustomDamage({
-                victim: target,
-                attacker: this.caster,
-                damage: ability_damage,
-                damage_type: DamageTypes.MAGICAL,
-                element_type: this.element_type,
-                ability: this.ability,
-                is_primary: true,
-                SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: this.DamageBonusMul
-            });
-            return null
-        }, 0.3)
+        target.SetContextThink(
+            DoUniqueString('drow3_b_delay'),
+            () => {
+                ApplyCustomDamage({
+                    victim: target,
+                    attacker: this.caster,
+                    damage: ability_damage,
+                    damage_type: DamageTypes.MAGICAL,
+                    element_type: this.element_type,
+                    ability: this.ability,
+                    is_primary: true,
+                    SelfAbilityMul: this.SelfAbilityMul,
+                    DamageBonusMul: this.DamageBonusMul,
+                });
+                return null;
+            },
+            0.3
+        );
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        UTIL_Remove(this.GetParent())
+        if (!IsServer()) {
+            return;
+        }
+        UTIL_Remove(this.GetParent());
     }
 }
 
 @registerModifier()
 export class modifier_drow_3b_thinker_arrow extends BaseModifier {
-
     cast_fx: ParticleID;
-    arrow_name = "particles/dev/attack/attack_normal/attack_normal_1.vpcf";
+    arrow_name = 'particles/dev/attack/attack_normal/attack_normal_1.vpcf';
 
     OnCreated(params: object): void {
-        if (!IsServer()) return
-        let target_vect = this.GetParent().GetAbsOrigin()
-        let cast_fx = ParticleManager.CreateParticle(
-            this.arrow_name,
-            ParticleAttachment.CUSTOMORIGIN,
-            null,
-        )
-        ParticleManager.SetParticleControl(cast_fx, 0, Vector(target_vect.x + RandomInt(-500, 500), target_vect.y + RandomInt(-500, 500), 1500))
-        ParticleManager.SetParticleControl(cast_fx, 1, target_vect)
-        ParticleManager.SetParticleControl(cast_fx, 2, Vector(3000, 0, 0))
-        this.AddParticle(cast_fx, false, false, -1, false, false)
+        if (!IsServer()) return;
+        const target_vect = this.GetParent().GetAbsOrigin();
+        const cast_fx = ParticleManager.CreateParticle(this.arrow_name, ParticleAttachment.CUSTOMORIGIN, null);
+        ParticleManager.SetParticleControl(cast_fx, 0, Vector(target_vect.x + RandomInt(-500, 500), target_vect.y + RandomInt(-500, 500), 1500));
+        ParticleManager.SetParticleControl(cast_fx, 1, target_vect);
+        ParticleManager.SetParticleControl(cast_fx, 2, Vector(3000, 0, 0));
+        this.AddParticle(cast_fx, false, false, -1, false, false);
     }
 
     OnDestroy(): void {
-        if (!IsServer()) return
-        UTIL_Remove(this.GetParent())
+        if (!IsServer()) return;
+        UTIL_Remove(this.GetParent());
     }
 }
 
 @registerModifier()
 export class modifier_drow_3b_thinker_arrow_ice extends modifier_drow_3b_thinker_arrow {
-
-    arrow_name = "particles/dev/attack/attack_ice/attack_ice_1.vpcf";
-
+    arrow_name = 'particles/dev/attack/attack_ice/attack_ice_1.vpcf';
 }
 
 @registerModifier()
 export class modifier_drow_3b_thinker_arrow_fire extends modifier_drow_3b_thinker_arrow {
-
-    arrow_name = "particles/dev/attack/attack_flame/attack_flame_1.vpcf";
-
+    arrow_name = 'particles/dev/attack/attack_flame/attack_flame_1.vpcf';
 }

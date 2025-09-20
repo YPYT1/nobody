@@ -1,41 +1,33 @@
-
-
-let loop_index = 0;
+const loop_index = 0;
 
 function StartLoopEconId(e: ScenePanel) {
-
     // full_body_loadout
     // loop_index++;
     // $.Msg(["loop_index", loop_index])
     // 7715375074
     // e.SpawnHeroInScenePanelByPlayerSlot("7715375074", 1,"featured_hero");
-    let state = e.SpawnHeroInScenePanelByHeroId(1, "featured_hero", 22764);
+    const state = e.SpawnHeroInScenePanelByHeroId(1, 'featured_hero', 22764);
 
-    $.Msg(["state", state])
-    e.FireEntityInput("featured_hero","StartGestureOverride","ACT_DOTA_LOADOUT")
+    $.Msg(['state', state]);
+    e.FireEntityInput('featured_hero', 'StartGestureOverride', 'ACT_DOTA_LOADOUT');
     // e.SpawnHeroInScenePanelByPlayerSlotWithFullBodyView( "npc_dota_hero_wisp", 1 );
     $.Schedule(1, () => {
         //     // e.ReloadScene();
         //     StartLoopEconId(e)
         // e.SetUnit("npc_dota_hero_axe", "full_body_right_side", true)
-    })
-
+    });
 }
 
-function LoopEconId(e: ScenePanel) {
-
-}
+function LoopEconId(e: ScenePanel) {}
 
 let heroModel: ScenePanel;
 
 export const WorkshopVoteTreadmil = () => {
-
     return (
         <Panel
             id="WorkshopVoteTreadmil"
             // visible={false}
-            onload={(e) => {
-
+            onload={e => {
                 // let Scene = $.CreatePanel("DOTAUIEconSetPreview", e, "InGamePreviewScene", {
                 //     class: 'Use3DPreview EconSetPreview root',
                 //     hittest: false,
@@ -57,19 +49,16 @@ export const WorkshopVoteTreadmil = () => {
                 //     // heroModel.SetScenePanelToLocalHero(2 as HeroID);
                 //     // let state = heroModel.SetScenePanelToPlayerHero("npc_dota_hero_wisp", 0);
                 //     // $.Msg(["state", state]);
-                const CScenePanel = e.FindChildTraverse("InGamePreviewScene") as ScenePanel;
+                const CScenePanel = e.FindChildTraverse('InGamePreviewScene') as ScenePanel;
                 //     var nItemDef = 4004;
                 //     var nItemStyle = 0;
                 //     var strHero = "npc_dota_hero_axe";
                 //     var strSlotType = "";
-                    StartLoopEconId(CScenePanel);
+                StartLoopEconId(CScenePanel);
                 //     $.DispatchEvent('DOTAEconSetPreviewSetItemDef', heroModel, nItemDef, strHero, strSlotType, nItemStyle, true, false);
                 // })
-
-
             }}
         >
-
             {/* <GenericPanel
                 type="DOTAUIEconSetPreview"
                 id="InGamePreviewScene"
@@ -91,7 +80,6 @@ export const WorkshopVoteTreadmil = () => {
                 stickermap="scenes/stickers/sticker_basic_locked"
             /> */}
 
-
             <DOTAScenePanel
                 id="InGamePreviewScene"
                 map="backgrounds/workshop_vote_treadmil"
@@ -105,16 +93,15 @@ export const WorkshopVoteTreadmil = () => {
                 // environment="full_body_loadout"
                 activity-modifier="run_haste"
 
-            // id="InGamePreviewScene"
-            // map="backgrounds/workshop_vote_treadmil"
-            // camera="hero_camera"
-            // light='light_frontpage'
-            // particleonly={false}
-            // renderdeferred={false}
-            // rendershadows={false}
-            // particleonly={true}
-
+                // id="InGamePreviewScene"
+                // map="backgrounds/workshop_vote_treadmil"
+                // camera="hero_camera"
+                // light='light_frontpage'
+                // particleonly={false}
+                // renderdeferred={false}
+                // rendershadows={false}
+                // particleonly={true}
             />
         </Panel>
-    )
-}
+    );
+};

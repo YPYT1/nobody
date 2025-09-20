@@ -1,11 +1,10 @@
-
-import * as HeroLevelConfig from "../json/config/game/hero_level_config.json";
+import * as HeroLevelConfig from '../json/config/game/hero_level_config.json';
 export class GameConfig {
     constructor() {
         SendToServerConsole('dota_max_physical_items_purchase_limit 9999'); // 用来解决物品数量限制问题
 
-        // if(GetMapName() == "hero_demo_main"){ 
-        //     return 
+        // if(GetMapName() == "hero_demo_main"){
+        //     return
         // }
         // GameRules.SetCustomGameSetupAutoLaunchDelay(3); // 游戏设置时间（默认的游戏设置是最开始的队伍分配）
         // GameRules.SetCustomGameSetupRemainingTime(3); // 游戏设置剩余时间
@@ -50,7 +49,7 @@ export class GameConfig {
         //     GameRules.SetCustomGameTeamMaxPlayers(team, 1);
         // }
 
-        let gameEntity = GameRules.GetGameModeEntity();
+        const gameEntity = GameRules.GetGameModeEntity();
         // gameEntity.SetCustomGameForceHero("npc_dota_hero_wisp");
         GameRules.SetCustomGameTeamMaxPlayers(DotaTeam.GOODGUYS, 4);
         GameRules.SetCustomGameTeamMaxPlayers(DotaTeam.BADGUYS, 0);
@@ -67,7 +66,7 @@ export class GameConfig {
         GameRules.SetCustomGameAllowBattleMusic(false);
         GameRules.SetCustomGameAllowMusicAtGameStart(true);
         // SetUnitCanRespawn
-        GameRules.SetCreepSpawningEnabled(false)
+        GameRules.SetCreepSpawningEnabled(false);
         // bit.band()
         GameRules.LockCustomGameSetupTeamAssignment(true);
         GameRules.EnableCustomGameSetupAutoLaunch(true);
@@ -99,7 +98,7 @@ export class GameConfig {
         gameEntity.SetDaynightCycleDisabled(true);
         // gameEntity.SetTPScrollSlotItemOverride("item_backpack");
         // 平衡性
-        gameEntity.SetCustomGameForceHero("npc_dota_hero_drow_ranger");
+        gameEntity.SetCustomGameForceHero('npc_dota_hero_drow_ranger');
         gameEntity.SetMinimumAttackSpeed(1);
         gameEntity.SetMaximumAttackSpeed(9999);
         gameEntity.SetCustomAttributeDerivedStatValue(AttributeDerivedStats.STRENGTH_DAMAGE, 0);
@@ -117,13 +116,12 @@ export class GameConfig {
 
         const exp_level_list = GetHeroLevelTable();
         gameEntity.SetUseCustomHeroLevels(true);
-        gameEntity.SetCustomXPRequiredToReachNextLevel(exp_level_list)
+        gameEntity.SetCustomXPRequiredToReachNextLevel(exp_level_list);
     }
 }
 
-
 function GetHeroLevelTable(max_level: number = 100) {
-    let hero_xp_table: { [index: number]: number } = {};
+    const hero_xp_table: { [index: number]: number } = {};
     // let param = { LEVEL: 1 };
     for (let i = 0; i < max_level; i++) {
         let xp = 0;

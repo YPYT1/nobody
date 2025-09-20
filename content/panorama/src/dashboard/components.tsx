@@ -3,111 +3,106 @@
 const IsTestMode = false; //Game.IsInToolsMode()
 const FindOfficialHUDUI = GameUI.CustomUIConfig().FindOfficialHUDUI;
 export const DASHBOARD_NAVBAR = {
-
     // 个人档案
-    "personal": {
-        "Show": true,
-        "Sub": { // 子菜单
-            "hero": true,
-            "skill": true,
-            "stone": true,
-        }
+    personal: {
+        Show: true,
+        Sub: {
+            // 子菜单
+            hero: true,
+            skill: true,
+            stone: true,
+        },
     },
 
-    "card": {
-        "Show": true,
-        "Sub": {
-            "handbook": true,
-            "register": true,
-        }
+    card: {
+        Show: true,
+        Sub: {
+            handbook: true,
+            register: true,
+        },
     },
 
-    "backpack": {
-        "Show": true,
-        "Sub": {
-            "all": true,
+    backpack: {
+        Show: true,
+        Sub: {
+            all: true,
             // "type1": true,
             // "type2": true,
-        }
+        },
     },
 
-    "store": {
-        "Show": true,
-        "Sub": {
-            "nav_1": IsTestMode, // 热卖
-            "nav_2": IsTestMode, // 会员
-            "nav_3": IsTestMode, // 铂金商铺
-            "nav_4": true, // 钻石商铺
-            "nav_5": true, // 图鉴兑换
-            "nav_6": true, // 魂石兑换
-            "gacha": true, // 元素祈福
-            "recharge": IsTestMode, // 铂金兑换
+    store: {
+        Show: true,
+        Sub: {
+            nav_1: IsTestMode, // 热卖
+            nav_2: IsTestMode, // 会员
+            nav_3: IsTestMode, // 铂金商铺
+            nav_4: true, // 钻石商铺
+            nav_5: true, // 图鉴兑换
+            nav_6: true, // 魂石兑换
+            gacha: true, // 元素祈福
+            recharge: IsTestMode, // 铂金兑换
             // "nav_8": true, // 成长礼
-        }
+        },
     },
 
-    "event": {
-        "Show": true,
-        "Sub": {
-            "bp": false, // 成长礼
-            "quest": false, // 常驻活动,
-            "exchange":true, // 兑换
-        }
+    event: {
+        Show: true,
+        Sub: {
+            bp: false, // 成长礼
+            quest: false, // 常驻活动,
+            exchange: true, // 兑换
+        },
     },
-
 };
 
 /** 跳转到指定路由 */
-export function DashboardRoute<
-    T extends keyof typeof DASHBOARD_NAVBAR,
-    N1 extends keyof typeof DASHBOARD_NAVBAR[T]
->(dashboard: T, nav: N1) {
+export function DashboardRoute<T extends keyof typeof DASHBOARD_NAVBAR, N1 extends keyof (typeof DASHBOARD_NAVBAR)[T]>(dashboard: T, nav: N1) {
     // $.Msg(["DashboardRoute", dashboard, nav]);
     const nav_str = nav as string;
-    const DashboardList = $("#DashboardList");
-    const DashboardButtonList = $("#DashboardButtonList");
-    const select_id = dashboard + "_" + nav_str;
+    const DashboardList = $('#DashboardList');
+    const DashboardButtonList = $('#DashboardButtonList');
+    const select_id = dashboard + '_' + nav_str;
     for (let i = 0; i < DashboardList.GetChildCount(); i++) {
         const DashRows = DashboardList.GetChild(i)!;
         const DashRowsId = DashRows.id;
-        const Dashbutton = DashboardButtonList.FindChildTraverse("Button" + DashRowsId);
+        const Dashbutton = DashboardButtonList.FindChildTraverse('Button' + DashRowsId);
         // 首先,等于时,切换到该dashboard
         const bEqual = dashboard == DashRowsId;
-        DashRows.SetHasClass("Show", bEqual);
-        if (Dashbutton) Dashbutton.SetHasClass("Selected", bEqual);
+        DashRows.SetHasClass('Show', bEqual);
+        if (Dashbutton) Dashbutton.SetHasClass('Selected', bEqual);
 
         if (bEqual) {
-            const DashboardContainers = DashRows.FindChildTraverse("DashboardContainers")!;
+            const DashboardContainers = DashRows.FindChildTraverse('DashboardContainers')!;
             for (let t1 = 0; t1 < DashboardContainers.GetChildCount(); t1++) {
                 const row_panel = DashboardContainers.GetChild(t1);
                 const sub_id = row_panel?.id;
-                row_panel?.SetHasClass("Show", sub_id == select_id);
+                row_panel?.SetHasClass('Show', sub_id == select_id);
             }
 
-            const NavButtonList = DashRows.FindChildTraverse("NavButtonList");
+            const NavButtonList = DashRows.FindChildTraverse('NavButtonList');
             if (NavButtonList) {
                 for (let t2 = 0; t2 < NavButtonList.GetChildCount(); t2++) {
-                    let RowRadioButto = NavButtonList.GetChild(t2) as RadioButton;
-                    let route = RowRadioButto.Data<PanelDataObject>().route;
+                    const RowRadioButto = NavButtonList.GetChild(t2) as RadioButton;
+                    const route = RowRadioButto.Data<PanelDataObject>().route;
                     RowRadioButto.checked = route == select_id;
                 }
             }
         }
     }
-};
-
+}
 
 const DASHBOARD_LIST = Object.keys(DASHBOARD_NAVBAR);
 export const ClosedDashboard = (e: Panel) => {
-    const DashboardList = $("#DashboardList");
-    const DashboardButtonList = $("#DashboardButtonList");
-    for (let id of DASHBOARD_LIST) {
-        let row_board = DashboardList.FindChildTraverse(id);
-        let row_button = DashboardButtonList.FindChildTraverse("Button" + id);
+    const DashboardList = $('#DashboardList');
+    const DashboardButtonList = $('#DashboardButtonList');
+    for (const id of DASHBOARD_LIST) {
+        const row_board = DashboardList.FindChildTraverse(id);
+        const row_button = DashboardButtonList.FindChildTraverse('Button' + id);
         if (row_board && row_button) {
-            row_board.SetHasClass("Show", false);
-            row_button.SetHasClass("Selected", false);
-        };
+            row_board.SetHasClass('Show', false);
+            row_button.SetHasClass('Selected', false);
+        }
     }
-    DashboardList.SetHasClass("IsOpen", false);
+    DashboardList.SetHasClass('IsOpen', false);
 };

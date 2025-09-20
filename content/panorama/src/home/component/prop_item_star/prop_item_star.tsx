@@ -1,4 +1,4 @@
-export const __COMPONENTS_NAME = "prop_item_star";
+export const __COMPONENTS_NAME = 'prop_item_star';
 
 declare global {
     interface GameComponent_PropItemStar extends Panel {
@@ -13,30 +13,30 @@ const MainPanel = $.GetContextPanel() as GameComponent_PropItemStar;
 
 function _Init(max: number, curr: number, size: number) {
     for (let i = 0; i < MainPanel.GetChildCount(); i++) {
-        let StarPanel = MainPanel.GetChild(i)!;
+        const StarPanel = MainPanel.GetChild(i)!;
         StarPanel.visible = i < max;
-        StarPanel.SetHasClass("On", i < curr)
+        StarPanel.SetHasClass('On', i < curr);
     }
     _SetSize(size);
 }
 
 function _SetMax(max: number) {
     for (let i = 0; i < MainPanel.GetChildCount(); i++) {
-        let StarPanel = MainPanel.GetChild(i)!;
+        const StarPanel = MainPanel.GetChild(i)!;
         StarPanel.visible = i < max;
     }
 }
 
 function _SetStar(curr: number) {
     for (let i = 0; i < MainPanel.GetChildCount(); i++) {
-        let StarPanel = MainPanel.GetChild(i)!;
-        StarPanel.SetHasClass("On", i < curr)
+        const StarPanel = MainPanel.GetChild(i)!;
+        StarPanel.SetHasClass('On', i < curr);
     }
 }
 
 function _SetSize(size: number) {
     for (let i = 0; i < MainPanel.GetChildCount(); i++) {
-        let StarPanel = MainPanel.GetChild(i)!;
+        const StarPanel = MainPanel.GetChild(i)!;
         StarPanel.style.width = `${size}px`;
         StarPanel.style.height = `${size}px`;
     }

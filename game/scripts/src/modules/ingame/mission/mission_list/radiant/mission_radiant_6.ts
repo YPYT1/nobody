@@ -1,4 +1,4 @@
-import { MissionModule } from "../_mission_module";
+import { MissionModule } from '../_mission_module';
 
 /**
  * 破坏箱子	"【天辉的考验】：需要任意玩家去地图内寻找并破坏箱子。
@@ -9,7 +9,6 @@ import { MissionModule } from "../_mission_module";
 
  */
 export class Mission_Radiant_6 extends MissionModule {
-
     box_list: CDOTA_BaseNPC[] = [];
     limit_time: number = 45;
 
@@ -21,20 +20,18 @@ export class Mission_Radiant_6 extends MissionModule {
         this.CreateBox(start, 15);
 
         // 创建定时器
-        this.CreateCountdownThinker(this.limit_time)
+        this.CreateCountdownThinker(this.limit_time);
     }
-
-
 
     CreateBox(vect: Vector, amount: number) {
         for (let i = 0; i < amount; i++) {
-            let box_pos = this.GetToNextPoints(vect, RandomInt(300, 3000))
-            let box = CreateUnitByName("npc_mission_box", box_pos, false, null, null, DotaTeam.BADGUYS);
+            const box_pos = this.GetToNextPoints(vect, RandomInt(300, 3000));
+            const box = CreateUnitByName('npc_mission_box', box_pos, false, null, null, DotaTeam.BADGUYS);
             GameRules.EnemyAttribute.SetUnitAttr(box);
-            box.AddNewModifier(box, null, "modifier_mission_radiant_6_box", { duration: this.limit_time })
+            box.AddNewModifier(box, null, 'modifier_mission_radiant_6_box', { duration: this.limit_time });
             // box.AddNewModifier(box, null, "modifier_basic_countdown", { duration: this.limit_time })
             // box.AddNewModifier(box, null, "modifier_basic_hits", {})
-            this.units.push(box)
+            this.units.push(box);
         }
     }
 
@@ -43,10 +40,10 @@ export class Mission_Radiant_6 extends MissionModule {
         this.SendMissionProgress();
         if (this.progress_value >= this.progress_max) {
             // 完成任务
-            this.mission_state = 1
+            this.mission_state = 1;
             GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true);
             // 移除定时器
-            UTIL_Remove(this.countdown_thinker)
+            UTIL_Remove(this.countdown_thinker);
         }
     }
 
@@ -55,5 +52,4 @@ export class Mission_Radiant_6 extends MissionModule {
             GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(false);
         }
     }
-
 }

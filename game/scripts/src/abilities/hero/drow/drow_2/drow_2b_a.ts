@@ -1,5 +1,5 @@
-import { registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { drow_2b, modifier_drow_2b } from "./drow_2b";
+import { registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { drow_2b, modifier_drow_2b } from './drow_2b';
 
 /**
  * 火力覆盖【弹道型】《火》（3/3）：
@@ -11,7 +11,6 @@ import { drow_2b, modifier_drow_2b } from "./drow_2b";
  */
 @registerAbility()
 export class drow_2b_a extends drow_2b {
-
     heighest_mul: number;
 
     yazhi_value: number;
@@ -19,7 +18,7 @@ export class drow_2b_a extends drow_2b {
 
     miss_finaldmg: number;
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_2b_a"
+        return 'modifier_drow_2b_a';
     }
 
     // GetManaCost(level: number): number {
@@ -33,20 +32,20 @@ export class drow_2b_a extends drow_2b {
     // }
 
     UpdataSpecialValue(): void {
-        this.yazhi_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "21", "bonus_value");
-        this.yazhi_hp_heighest = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "21", "hp_heighest");
+        this.yazhi_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '21', 'bonus_value');
+        this.yazhi_hp_heighest = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '21', 'hp_heighest');
 
-        this.miss_finaldmg = this.GetTypesAffixValue(0, "Missile", "skv_missile_d_final")
+        this.miss_finaldmg = this.GetTypesAffixValue(0, 'Missile', 'skv_missile_d_final');
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            let ability_damage = extraData.a;
-            let SelfAbilityMul = extraData.SelfAbilityMul;
+            const ability_damage = extraData.a;
+            const SelfAbilityMul = extraData.SelfAbilityMul;
             let DamageBonusMul = extraData.DamageBonusMul;
-            let ElementDmgMul = extraData.ElementDmgMul;
+            const ElementDmgMul = extraData.ElementDmgMul;
             if (this.yazhi_value > 0 && target.GetHealthPercent() > this.yazhi_hp_heighest) {
-                DamageBonusMul += this.yazhi_value
+                DamageBonusMul += this.yazhi_value;
             }
 
             ApplyCustomDamage({
@@ -60,35 +59,32 @@ export class drow_2b_a extends drow_2b {
                 SelfAbilityMul: SelfAbilityMul,
                 DamageBonusMul: DamageBonusMul,
                 ElementDmgMul: ElementDmgMul,
-            })
-            return true
+            });
+            return true;
         }
     }
 }
 
 @registerModifier()
 export class modifier_drow_2b_a extends modifier_drow_2b {
-
     manacost: number = 0;
     UpdataSpecialValue(): void {
-        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "19", "bonus_value");
+        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '19', 'bonus_value');
         this.proj_name = G_PorjLinear.drow.fire;
 
         // rune_37	游侠#12	散射【火力覆盖】火元素伤害提高50%
         this.ElementDmgMul = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_37', 'fire_bonus');
 
-        this.manacost = this.caster.GetTalentKv("20", "mana_cost")
+        this.manacost = this.caster.GetTalentKv('20', 'mana_cost');
     }
 
     DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.MANACOST_REDUCTION_CONSTANT
-        ]
+        return [ModifierFunction.MANACOST_REDUCTION_CONSTANT];
     }
 
     GetModifierManacostReduction_Constant(event: ModifierAbilityEvent): number {
         if (event.ability == this.GetAbility()) {
-            return this.manacost
+            return this.manacost;
         }
     }
 }

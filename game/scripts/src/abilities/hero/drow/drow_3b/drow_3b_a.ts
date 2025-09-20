@@ -1,7 +1,6 @@
-import { modifier_element_effect_fire } from "../../../../modifier/modifier_element";
-import { registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { drow_3b, modifier_drow_3b, modifier_drow_3b_thinker, modifier_drow_3b_thinker_arrow } from "./drow_3b";
-
+import { modifier_element_effect_fire } from '../../../../modifier/modifier_element';
+import { registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { drow_3b, modifier_drow_3b, modifier_drow_3b_thinker, modifier_drow_3b_thinker_arrow } from './drow_3b';
 
 /**
  *
@@ -10,37 +9,33 @@ import { drow_3b, modifier_drow_3b, modifier_drow_3b_thinker, modifier_drow_3b_t
  */
 @registerAbility()
 export class drow_3b_a extends drow_3b {
-
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_3b_a"
+        return 'modifier_drow_3b_a';
     }
-
 }
 
 @registerModifier()
 export class modifier_drow_3b_a extends modifier_drow_3b {
-
-    mdf_thinker = "modifier_drow_3b_a_thinker";
+    mdf_thinker = 'modifier_drow_3b_a_thinker';
 }
 
 @registerModifier()
 export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
-
     extra_dmg_pct: number = 0;
-    is_primary: boolean
+    is_primary: boolean;
     dot_duration: number = 0;
     interval_increase: number;
-    arrow_thinker = "modifier_drow_3b_thinker_arrow_fire";
+    arrow_thinker = 'modifier_drow_3b_thinker_arrow_fire';
 
     OnCreated_Extends(): void {
         this.element_type = ElementTypes.FIRE;
-        let extra_dmg_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "36", "extra_dmg_pct")
+        const extra_dmg_pct = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), '36', 'extra_dmg_pct');
         if (extra_dmg_pct > 0) {
-            this.extra_dmg_pct = this.ability.GetTypesAffixValue(extra_dmg_pct, "Buff", "skv_buff_increase");
+            this.extra_dmg_pct = this.ability.GetTypesAffixValue(extra_dmg_pct, 'Buff', 'skv_buff_increase');
         }
-        let level = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), "35", "level");
+        const level = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.GetCaster(), '35', 'level');
         this.is_primary = level < 2;
-        this.dot_duration == this.caster.custom_attribute_value["BurningDuration"];
+        this.dot_duration == this.caster.custom_attribute_value['BurningDuration'];
         // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升100%，持续时间延长至10秒
 
         this.dot_duration += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_duration');
@@ -48,65 +43,67 @@ export class modifier_drow_3b_a_thinker extends modifier_drow_3b_thinker {
         // drow_35 燃烧
         this.dot_duration += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '35', 'burn_duration');
 
-
-        this.interval_increase = this.ability.GetTypesAffixValue(0, "Dot", "skv_dot_interval")
-
+        this.interval_increase = this.ability.GetTypesAffixValue(0, 'Dot', 'skv_dot_interval');
     }
 
     DoDamageTarget(target: CDOTA_BaseNPC, ability_damage: number): void {
-        let hCaster = this.GetCaster();
-        let hAbility = this.GetAbility();
-        target.SetContextThink(DoUniqueString("drow3_b_delay"), () => {
-            if (!target.IsAlive()) { return null }
-            let DamageBonusMul = this.DamageBonusMul;
-            if (this.extra_dmg_pct > 0 && GameRules.ElementEffect.State(target, ElementState.burn)) {
-                DamageBonusMul += this.extra_dmg_pct
-            }
-            ApplyCustomDamage({
-                victim: target,
-                attacker: hCaster,
-                damage: ability_damage,
-                damage_type: DamageTypes.MAGICAL,
-                element_type: this.element_type,
-                ability: hAbility,
-                is_primary: this.is_primary,
-                SelfAbilityMul: this.SelfAbilityMul,
-                DamageBonusMul: DamageBonusMul,
-                // bp_ingame: this.bp_ingame + bp_ingame,
-                // bp_server: this.bp_server,
-            });
-            if (!this.is_primary) {
-                // 添加强灼烧
-                target.AddNewModifier(hCaster, this.GetAbility(), "modifier_drow_3b_a_dot", {
-                    duration: this.dot_duration,
-                    interval_increase: this.interval_increase,
-                })
-            }
-            return null
-        }, 0.3)
+        const hCaster = this.GetCaster();
+        const hAbility = this.GetAbility();
+        target.SetContextThink(
+            DoUniqueString('drow3_b_delay'),
+            () => {
+                if (!target.IsAlive()) {
+                    return null;
+                }
+                let DamageBonusMul = this.DamageBonusMul;
+                if (this.extra_dmg_pct > 0 && GameRules.ElementEffect.State(target, ElementState.burn)) {
+                    DamageBonusMul += this.extra_dmg_pct;
+                }
+                ApplyCustomDamage({
+                    victim: target,
+                    attacker: hCaster,
+                    damage: ability_damage,
+                    damage_type: DamageTypes.MAGICAL,
+                    element_type: this.element_type,
+                    ability: hAbility,
+                    is_primary: this.is_primary,
+                    SelfAbilityMul: this.SelfAbilityMul,
+                    DamageBonusMul: DamageBonusMul,
+                    // bp_ingame: this.bp_ingame + bp_ingame,
+                    // bp_server: this.bp_server,
+                });
+                if (!this.is_primary) {
+                    // 添加强灼烧
+                    target.AddNewModifier(hCaster, this.GetAbility(), 'modifier_drow_3b_a_dot', {
+                        duration: this.dot_duration,
+                        interval_increase: this.interval_increase,
+                    });
+                }
+                return null;
+            },
+            0.3
+        );
     }
 }
 
 @registerModifier()
 export class modifier_drow_3b_a_thinker_arrow extends modifier_drow_3b_thinker_arrow {
-
-    arrow_name = "particles/dev/attack/attack_flame/attack_flame_1.vpcf";
-
+    arrow_name = 'particles/dev/attack/attack_flame/attack_flame_1.vpcf';
 }
 
 // 强化灼烧
 @registerModifier()
 export class modifier_drow_3b_a_dot extends modifier_element_effect_fire {
-
     OnRefresh(params: any): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         let base_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '35', 'burn_dmg') - 25;
         // rune_45	游侠#20	箭雨【燃矢】灼烧伤害提升100%，
-        if (this.caster.rune_level_index.hasOwnProperty("rune_45")) {
-            base_value += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_to_dmg')
+        if (this.caster.rune_level_index.hasOwnProperty('rune_45')) {
+            base_value += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_45', 'rs_to_dmg');
         }
-        base_value += this.caster.custom_attribute_value["BurningDmg"];
+        base_value += this.caster.custom_attribute_value['BurningDmg'];
         this.dot_damage = math.floor(this.caster.GetAverageTrueAttackDamage(null) * base_value * 0.01);
     }
-
 }

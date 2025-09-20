@@ -1,6 +1,6 @@
-import { modifier_basic_move } from "../../../../modifier/modifier_basic";
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import type { modifier_basic_move } from '../../../../modifier/modifier_basic';
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { BaseHeroAbility, BaseHeroModifier } from '../../base_hero_ability';
 
 /**
  * 攻击1名敌人，
@@ -9,16 +9,15 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
  */
 @registerAbility()
 export class skywrath_1 extends BaseHeroAbility {
-
     /** Q技能伤害加成 */
     BasicAbilityDmg: number;
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/econ/items/skywrath_mage/skywrath_arcana/skywrath_arcana_bolt_v2.vpcf",context)
+        precacheResString('particles/econ/items/skywrath_mage/skywrath_arcana/skywrath_arcana_bolt_v2.vpcf', context);
     }
-    
+
     GetIntrinsicModifierName(): string {
-        return "modifier_skywrath_1"
+        return 'modifier_skywrath_1';
     }
 
     UpdataAbilityValue(): void {
@@ -28,9 +27,9 @@ export class skywrath_1 extends BaseHeroAbility {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            let attack_damage = extraData.a;
-            let SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
-            let clone_res = this.CloneRes(extraData);
+            const attack_damage = extraData.a;
+            const SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
+            const clone_res = this.CloneRes(extraData);
 
             ApplyCustomDamage({
                 victim: target,
@@ -44,17 +43,15 @@ export class skywrath_1 extends BaseHeroAbility {
                 // 增伤
                 SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
                 DamageBonusMul: extraData.DamageBonusMul,
-                is_clone: clone_res.Clone
+                is_clone: clone_res.Clone,
                 // DamageBonusMul:0,
-
-            })
+            });
         }
     }
 }
 
 @registerModifier()
 export class modifier_skywrath_1 extends BaseHeroModifier {
-
     // proj_name: string;
     useProjectile: boolean;
     // base_value: number = 0;
@@ -72,25 +69,25 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
         this.fakeAttack = false;
         this.useProjectile = true;
         this.SelfAbilityPow = 1;
-        this.tracking_proj_name = "particles/econ/items/skywrath_mage/skywrath_arcana/skywrath_arcana_bolt_v2.vpcf";
-        this.move_mdf = this.caster.FindModifierByName("modifier_basic_move") as modifier_basic_move;
+        this.tracking_proj_name = 'particles/econ/items/skywrath_mage/skywrath_arcana/skywrath_arcana_bolt_v2.vpcf';
+        this.move_mdf = this.caster.FindModifierByName('modifier_basic_move') as modifier_basic_move;
     }
 
     UpdataAbilityValue(): void {
-        this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
-        this.give_mana = this.ability.GetSpecialValueFor("give_mana");
-
+        this.SelfAbilityMul = this.ability.GetSpecialValueFor('base_value');
+        this.give_mana = this.ability.GetSpecialValueFor('give_mana');
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive()
-            && this.ability.IsActivated()
-            && this.ability.IsMeetCastCondition()
-            && !this.caster.IsHexed()
-            && !this.caster.IsSilenced()
+        if (
+            this.caster.IsAlive() &&
+            this.ability.IsActivated() &&
+            this.ability.IsMeetCastCondition() &&
+            !this.caster.IsHexed() &&
+            !this.caster.IsSilenced()
         ) {
-            let attackrange = this.caster.Script_GetAttackRange() + 64;
-            let enemies = FindUnitsInRadius(
+            const attackrange = this.caster.Script_GetAttackRange() + 64;
+            const enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.GetAbsOrigin(),
                 null,
@@ -100,47 +97,39 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
                 UnitTargetFlags.FOW_VISIBLE,
                 FindOrder.CLOSEST,
                 false
-            )
+            );
             if (enemies.length <= 0) {
                 this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
                 this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
-                return
+                return;
             }
             this.DoExecutedBaseAbility();
-            let hTarget = enemies[0];
-            let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
+            const hTarget = enemies[0];
+            const attack_damage = this.caster.GetAverageTrueAttackDamage(null);
             this.ability.ManaCostAndConverDmgBonus();
             this.caster.GiveMana(this.give_mana);
             this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, 0);
-            let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
-            this.StartIntervalThink(attack_rate)
+            const attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
+            this.StartIntervalThink(attack_rate);
         }
     }
 
-
-    PlayAttackStart(params: PlayEffectProps) { }
+    PlayAttackStart(params: PlayEffectProps) {}
 
     /**
      * 发射箭矢
-     * @param hCaster 施法者 
+     * @param hCaster 施法者
      * @param hTarget 目标
-     * @param attack_damage 攻击力 
+     * @param attack_damage 攻击力
      * @param SelfAbilityMul 技能伤害乘区
      * @param DamageBonusMul 伤害加成
-     * @returns 
+     * @returns
      */
-    PlayPerformAttack(
-        hCaster: CDOTA_BaseNPC,
-        hTarget: CDOTA_BaseNPC,
-        attack_damage: number,
-        SelfAbilityMul: number,
-        DamageBonusMul: number,
-    ) {
+    PlayPerformAttack(hCaster: CDOTA_BaseNPC, hTarget: CDOTA_BaseNPC, attack_damage: number, SelfAbilityMul: number, DamageBonusMul: number) {
         // 清空动作
 
         this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_3);
         this.caster.StartGesture(GameActivity.DOTA_CAST_ABILITY_3);
-
 
         // print("this",this.tracking_proj_name)
         ProjectileManager.CreateTrackingProjectile({
@@ -157,13 +146,13 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
                 SelfAbilityMul: SelfAbilityMul,
                 DamageBonusMul: DamageBonusMul,
                 c: 0,
-            } as ProjectileExtraData
-        })
+            } as ProjectileExtraData,
+        });
 
         // 复制攻击
         const clone_unit = this.caster.clone_unit;
-        if (clone_unit && clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
-            let enemies = FindUnitsInRadius(
+        if (clone_unit && clone_unit.HasModifier('modifier_skywrath_5_clone_show')) {
+            const enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.clone_unit.GetAbsOrigin(),
                 null,
@@ -173,7 +162,7 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
                 UnitTargetFlags.FOW_VISIBLE,
                 FindOrder.CLOSEST,
                 false
-            )
+            );
             if (enemies.length > 0) {
                 ProjectileManager.CreateTrackingProjectile({
                     Source: this.caster.clone_unit,
@@ -190,8 +179,8 @@ export class modifier_skywrath_1 extends BaseHeroModifier {
                         DamageBonusMul: DamageBonusMul,
                         c: 0,
                         clone: 1,
-                    } as ProjectileExtraData
-                })
+                    } as ProjectileExtraData,
+                });
             }
         }
     }

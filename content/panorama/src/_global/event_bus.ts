@@ -1,14 +1,11 @@
-export const Global = "event_bus";
+export const Global = 'event_bus';
 
 declare global {
-
     interface CustomUIConfig {
         EventBus: EventBus;
         ServerEventBus: EventBus;
     }
 }
-
-
 
 interface CustomEventBusList {
     backpack_update: { [id: string]: AM2_Server_Backpack };
@@ -16,8 +13,7 @@ interface CustomEventBusList {
     popup_loading: { show: boolean };
     open_store_purchase: { id: string };
     // open_rmb_purchase: { id: string, recharge?: number };
-    shoping_limit_update: AM2_Server_Shopping_Limit_List
-
+    shoping_limit_update: AM2_Server_Shopping_Limit_List;
 }
 
 interface ICallbackList {
@@ -39,10 +35,7 @@ interface ISubscribe {
 //     clear(eventName: string): void;
 // }
 
-
-
 export class EventBus {
-
     private _eventObject: IEventObject;
     private _callbackId: number;
 
@@ -57,15 +50,15 @@ export class EventBus {
     publish<K extends keyof CustomEventBusList>(eventName: K, object: CustomEventBusList[K], ...args: any): void {
         // 取出当前事件所有的回调函数
         const callbackObject = this._eventObject[eventName];
-        if (!callbackObject) return $.Msg(eventName + " not found!");
+        if (!callbackObject) return $.Msg(eventName + ' not found!');
 
         // 执行每一个回调函数
-        for (let id in callbackObject) {
+        for (const id in callbackObject) {
             // 执行时传入参数
             callbackObject[id](object, ...args);
 
             // 只订阅一次的回调函数需要删除
-            if (id[0] === "d") {
+            if (id[0] === 'd') {
                 delete callbackObject[id];
             }
         }
@@ -84,7 +77,6 @@ export class EventBus {
         // 存储订阅者的回调函数
         // callbackId使用后需要自增，供下一个回调函数使用
         this._eventObject[eventName][id] = callback;
-
 
         // 每一次订阅事件，都生成唯一一个取消订阅的函数
         const unSubscribe = () => {
@@ -109,7 +101,7 @@ export class EventBus {
         }
 
         // 标示为只订阅一次的回调函数
-        const id = "d" + this._callbackId++;
+        const id = 'd' + this._callbackId++;
 
         // 存储订阅者的回调函数
         // callbackId使用后需要自增，供下一个回调函数使用

@@ -26,12 +26,10 @@
         activity (none), activity when leaping
 **/
 
-import { BaseModifierMotionBoth, registerModifier } from "../utils/dota_ts_adapter";
-
+import { BaseModifierMotionBoth, registerModifier } from '../utils/dota_ts_adapter';
 
 @registerModifier()
 export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
-
     interrupted: boolean;
     const1: number;
     const2: number;
@@ -82,27 +80,31 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     }
 
     OnCreated(kv: any) {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this._OnCreated(kv);
         this.interrupted = false;
         this.SetJumpParameters(kv);
         this.Jump();
     }
 
-    _OnCreated(kv: any) { }
+    _OnCreated(kv: any) {}
 
     OnRefresh(kv: any): void {
-        if (!IsServer()) { return }
-        this._OnRefresh(kv)
+        if (!IsServer()) {
+            return;
+        }
+        this._OnRefresh(kv);
     }
 
-    _OnRefresh(kv: any): void {
-
-    }
+    _OnRefresh(kv: any): void {}
 
     OnDestroy(): void {
-        if (!IsServer()) { return; }
-        let pos = this.GetParent().GetOrigin();
+        if (!IsServer()) {
+            return;
+        }
+        const pos = this.GetParent().GetOrigin();
         this.GetParent().RemoveHorizontalMotionController(this);
         this.GetParent().RemoveVerticalMotionController(this);
         if (this.end_offset != 0) {
@@ -111,10 +113,10 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         this._OnDestroy();
     }
 
-    _OnDestroy() { }
+    _OnDestroy() {}
 
     DeclareFunctions(): ModifierFunction[] {
-        let funcs = [ModifierFunction.DISABLE_TURNING];
+        const funcs = [ModifierFunction.DISABLE_TURNING];
         if (this.GetStackCount() > 0) {
             funcs.push(ModifierFunction.OVERRIDE_ANIMATION);
         }
@@ -122,7 +124,9 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     }
 
     GetModifierDisableTurning(): 0 | 1 {
-        if (!this.isForward) { return; }
+        if (!this.isForward) {
+            return;
+        }
         return 1;
     }
 
@@ -131,40 +135,40 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
-
         return {
             [ModifierState.STUNNED]: this.isStun ?? false,
             [ModifierState.COMMAND_RESTRICTED]: this.isRestricted ?? false,
             [ModifierState.NO_UNIT_COLLISION]: true,
-
         };
     }
 
     UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        if ((this.fix_duration && this.GetElapsedTime()) >= this.duration) { return; }
-        let pos = me.GetOrigin() + this.direction * this.speed * dt as Vector;
+        if ((this.fix_duration && this.GetElapsedTime()) >= this.duration) {
+            return;
+        }
+        const pos = (me.GetOrigin() + this.direction * this.speed * dt) as Vector;
         if (this.path == false && GridNav.CanFindPath(me.GetOrigin(), pos) == false) {
-            this.Destroy()
-            return
+            this.Destroy();
+            return;
         }
         me.SetOrigin(pos);
     }
 
     UpdateVerticalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        if ((this.fix_duration && this.GetElapsedTime()) >= this.duration) { return; }
+        if ((this.fix_duration && this.GetElapsedTime()) >= this.duration) {
+            return;
+        }
 
+        const pos = me.GetOrigin();
+        const time = this.GetElapsedTime();
 
-        let pos = me.GetOrigin();
-        let time = this.GetElapsedTime();
-
-
-        let height = pos.z;
-        let speed = this.GetVerticalSpeed(time);
+        const height = pos.z;
+        const speed = this.GetVerticalSpeed(time);
         pos.z = height + speed * dt;
         me.SetOrigin(pos);
 
         if (!this.fix_duration) {
-            let ground = GetGroundHeight(pos, me) + this.end_offset;
+            const ground = GetGroundHeight(pos, me) + this.end_offset;
             if (pos.z <= ground) {
                 pos.z = ground;
                 me.SetOrigin(pos);
@@ -186,7 +190,6 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     SetJumpParameters(kv: any) {
         this.parent = this.GetParent();
 
-
         this.fix_end = true;
         this.fix_duration = true;
         this.fix_height = true;
@@ -205,11 +208,11 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         this.activity = kv.activity ?? 0;
         this.SetStackCount(this.activity);
 
-        this.path = true
+        this.path = true;
         if (kv.target_x && kv.target_y) {
-            let origin = this.parent.GetOrigin();
-            let dir = Vector(kv.target_x, kv.target_y, 0) - origin as Vector;
-            this.distance = dir.Length2D()
+            const origin = this.parent.GetOrigin();
+            let dir = (Vector(kv.target_x, kv.target_y, 0) - origin) as Vector;
+            this.distance = dir.Length2D();
             dir.z = 0;
             dir = dir.Normalized();
             this.direction = dir;
@@ -217,8 +220,6 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
                 this.path = GridNav.CanFindPath(Vector(kv.target_x, kv.target_y, 0), origin);
             }
         }
-
-
 
         if (kv.distance) {
             this.distance = kv.distance;
@@ -231,8 +232,6 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         }
 
         this.duration = kv.duration;
-
-
 
         this.speed = kv.speed;
 
@@ -252,9 +251,9 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         this.start_offset = kv.start_offset ?? 0;
         this.end_offset = kv.end_offset ?? 0;
 
-        let pos_start = this.parent.GetOrigin();
-        let pos_end = pos_start + this.direction * this.distance as Vector;
-        let height_start = GetGroundHeight(pos_start, this.parent) + this.start_offset;
+        const pos_start = this.parent.GetOrigin();
+        const pos_end = (pos_start + this.direction * this.distance) as Vector;
+        const height_start = GetGroundHeight(pos_start, this.parent) + this.start_offset;
         let height_end = GetGroundHeight(pos_end, this.parent) + this.end_offset;
         let height_max = 0;
         if (!this.fix_height) {
@@ -269,11 +268,10 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
             if (tempmin > tempmax) {
                 [tempmin, tempmax] = [tempmax, tempmin];
             }
-            let delta = (tempmax - tempmin) * 2 / 3;
+            const delta = ((tempmax - tempmin) * 2) / 3;
 
             height_max = tempmin + delta + this.height;
         }
-
 
         if (!this.fix_duration) {
             this.SetDuration(-1, false);
@@ -285,7 +283,7 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         this.C_OnCreated(kv);
     }
 
-    C_OnCreated(kv) { }
+    C_OnCreated(kv) {}
     Jump() {
         if (this.distance > 0) {
             if (!this.ApplyHorizontalMotionController()) {
@@ -293,7 +291,6 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
                 this.Destroy();
             }
         }
-
 
         if (this.height > 0) {
             if (!this.ApplyVerticalMotionController()) {
@@ -307,20 +304,17 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
         height_end = height_end - height_start;
         height_max = height_max - height_start;
 
-
         if (height_max < height_end) {
             height_max = height_end + 0.01;
         }
-
 
         if (height_max <= 0) {
             height_max = 0.01;
         }
 
-
-        let duration_end = (1 + math.sqrt(1 - height_end / height_max)) / 2;
-        this.const1 = 4 * height_max * duration_end / duration;
-        this.const2 = 4 * height_max * duration_end * duration_end / (duration * duration);
+        const duration_end = (1 + math.sqrt(1 - height_end / height_max)) / 2;
+        this.const1 = (4 * height_max * duration_end) / duration;
+        this.const2 = (4 * height_max * duration_end * duration_end) / (duration * duration);
     }
 
     GetVerticalPos(time: number) {
@@ -334,11 +328,4 @@ export class modifier_generic_arc_lua extends BaseModifierMotionBoth {
     SetEndCallback(func: void) {
         this.endCallback = func;
     }
-
 }
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-import { MissionModule } from "../_mission_module";
+import { MissionModule } from '../_mission_module';
 
 /**
  * 追逐小猪	"【天辉的考验】：需要任意一名玩家追逐小猪，触碰到小猪就算完成任务。
@@ -9,7 +9,6 @@ import { MissionModule } from "../_mission_module";
 
  */
 export class Mission_Radiant_5 extends MissionModule {
-
     limit_time = 45;
 
     ExecuteLogic(start: Vector): void {
@@ -17,22 +16,22 @@ export class Mission_Radiant_5 extends MissionModule {
         this.progress_max = 1;
         this.progress_value = 0;
         this.SendMissionProgress();
-        this._CreatePig(start)
+        this._CreatePig(start);
     }
 
     _CreatePig(vect: Vector) {
-        let vOrigin = vect + RandomVector(RandomInt(0, 200));
-        let pig = CreateUnitByName("npc_mission_pig", vect, false, null, null, DotaTeam.GOODGUYS);
-        pig.AddNewModifier(pig, null, "modifier_mission_radiant_5_ai", {
-            duration: this.limit_time
-        })
+        const vOrigin = vect + RandomVector(RandomInt(0, 200));
+        const pig = CreateUnitByName('npc_mission_pig', vect, false, null, null, DotaTeam.GOODGUYS);
+        pig.AddNewModifier(pig, null, 'modifier_mission_radiant_5_ai', {
+            duration: this.limit_time,
+        });
 
-        this.units.push(pig)
+        this.units.push(pig);
     }
 
     AddProgressValue(value: number): void {
         this.progress_value += 1;
         this.SendMissionProgress();
-        GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true)
+        GameRules.MissionSystem.RadiantMissionHandle.EndOfMission(true);
     }
 }

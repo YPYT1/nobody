@@ -1,13 +1,12 @@
 // import { FindOfficialHUDUI } from "../../common/panel_operaton"
 
-type CardDashboardPopupsTypes = "PlayerConsumeCard" | "CompoundCard"
+type CardDashboardPopupsTypes = 'PlayerConsumeCard' | 'CompoundCard';
 
 interface KeyValueProps {
-    [key: string]: number | string
+    [key: string]: number | string;
 }
 
-
-const CardDashboardPopupsBg = FindOfficialHUDUI("Card_PopupsBg")!
+const CardDashboardPopupsBg = FindOfficialHUDUI('Card_PopupsBg')!;
 
 function FindOfficialHUDUI(panel_id: string) {
     let hudRoot: any;
@@ -15,7 +14,7 @@ function FindOfficialHUDUI(panel_id: string) {
         hudRoot = panel;
     }
     if (hudRoot) {
-        let comp = hudRoot.FindChildTraverse(panel_id);
+        const comp = hudRoot.FindChildTraverse(panel_id);
         return comp as Panel;
     } else {
         return null;
@@ -24,17 +23,17 @@ function FindOfficialHUDUI(panel_id: string) {
 
 export function CardPopupsToggle(popups: CardDashboardPopupsTypes, open: boolean, input?: KeyValueProps) {
     for (let i = 0; i < CardDashboardPopupsBg.GetChildCount(); i++) {
-        let PopupsRows = CardDashboardPopupsBg.GetChild(i);
+        const PopupsRows = CardDashboardPopupsBg.GetChild(i);
         if (PopupsRows) {
-            let popups_id = PopupsRows.id;
-            PopupsRows.SetHasClass("Show", open && popups_id == popups);
+            const popups_id = PopupsRows.id;
+            PopupsRows.SetHasClass('Show', open && popups_id == popups);
             // $.Msg(["input",input])
             if (popups_id == popups && input) {
-                for (let k in input) {
-                    PopupsRows.Data<PanelDataObject>()[k] = input[k]
+                for (const k in input) {
+                    PopupsRows.Data<PanelDataObject>()[k] = input[k];
                 }
             }
         }
     }
-    CardDashboardPopupsBg.SetHasClass("Show", open);
+    CardDashboardPopupsBg.SetHasClass('Show', open);
 }

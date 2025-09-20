@@ -1,147 +1,141 @@
-
 const player_id = Players.GetLocalPlayer();
-const NpcInteract_GameRestart = $("#NpcInteract_GameRestart");
-const GameRestartVote = $("#GameRestartVote")
-
+const NpcInteract_GameRestart = $('#NpcInteract_GameRestart');
+const GameRestartVote = $('#GameRestartVote');
 
 const InitPanel = () => {
-    SetPanel_GameRestartVote()
+    SetPanel_GameRestartVote();
     SetPanel_NpcInteract_GameRestart();
     Setpanel_Npcinteract_Soulstone_Challenge();
-}
+};
 
 const SetPanel_GameRestartVote = () => {
     // GameRestartVote
     GameRestartVote.RemoveAndDeleteChildren();
-    GameRestartVote.BLoadLayoutSnippet("ConfirmWindow");
-    GameRestartVote.AddClass("CountdownTimer");
-    GameRestartVote.SetDialogVariable("timer", "99");
-    GameRestartVote.SetDialogVariable("btn_text_confirm", "是");
-    GameRestartVote.SetDialogVariable("btn_text_cancel", "否");
-    GameRestartVote.SetDialogVariable("confirm_title", `是否开始新的游戏`);
-    let BtnConfirm = GameRestartVote.FindChildTraverse("BtnConfirm") as Button;
-    let BtnCancel = GameRestartVote.FindChildTraverse("BtnCancel") as Button;
-    BtnConfirm.SetPanelEvent("onactivate", () => {
-        GameRestartVote.RemoveClass("Show");
-        GameUI.SelectUnit(-1 as EntityIndex, false)
-        GameEvents.SendCustomGameEventToServer("MapChapter", {
-            event_name: "PlayerVote",
+    GameRestartVote.BLoadLayoutSnippet('ConfirmWindow');
+    GameRestartVote.AddClass('CountdownTimer');
+    GameRestartVote.SetDialogVariable('timer', '99');
+    GameRestartVote.SetDialogVariable('btn_text_confirm', '是');
+    GameRestartVote.SetDialogVariable('btn_text_cancel', '否');
+    GameRestartVote.SetDialogVariable('confirm_title', `是否开始新的游戏`);
+    const BtnConfirm = GameRestartVote.FindChildTraverse('BtnConfirm') as Button;
+    const BtnCancel = GameRestartVote.FindChildTraverse('BtnCancel') as Button;
+    BtnConfirm.SetPanelEvent('onactivate', () => {
+        GameRestartVote.RemoveClass('Show');
+        GameUI.SelectUnit(-1 as EntityIndex, false);
+        GameEvents.SendCustomGameEventToServer('MapChapter', {
+            event_name: 'PlayerVote',
             params: {
                 vote: 1,
-            }
-        })
-    })
+            },
+        });
+    });
 
-    BtnCancel.SetPanelEvent("onactivate", () => {
-        GameRestartVote.RemoveClass("Show");
-        GameUI.SelectUnit(-1 as EntityIndex, false)
-        GameEvents.SendCustomGameEventToServer("MapChapter", {
-            event_name: "PlayerVote",
+    BtnCancel.SetPanelEvent('onactivate', () => {
+        GameRestartVote.RemoveClass('Show');
+        GameUI.SelectUnit(-1 as EntityIndex, false);
+        GameEvents.SendCustomGameEventToServer('MapChapter', {
+            event_name: 'PlayerVote',
             params: {
                 vote: 0,
-            }
-        })
+            },
+        });
         // GameUI.SelectUnit(Players.GetPlayerHeroEntityIndex(player_id), true)
-    })
-}
+    });
+};
 
 const GameRestartVoteTimer = () => {
-    let game_time = Game.GetDOTATime(false, false);
-    let vote_time = GameRestartVote.Data<PanelDataObject>().time as number;
-    let time_diff = Math.floor(vote_time - game_time);
-    GameRestartVote.SetDialogVariable("timer", `${time_diff}`);
+    const game_time = Game.GetDOTATime(false, false);
+    const vote_time = GameRestartVote.Data<PanelDataObject>().time as number;
+    const time_diff = Math.floor(vote_time - game_time);
+    GameRestartVote.SetDialogVariable('timer', `${time_diff}`);
     // $.Msg(["game_time", game_time, "vote_time", vote_time])
     if (time_diff > 0) {
-        $.Schedule(0.5, GameRestartVoteTimer)
+        $.Schedule(0.5, GameRestartVoteTimer);
     }
-
-}
+};
 const SetPanel_NpcInteract_GameRestart = () => {
-
     NpcInteract_GameRestart.RemoveAndDeleteChildren();
-    NpcInteract_GameRestart.BLoadLayoutSnippet("ConfirmWindow");
-    NpcInteract_GameRestart.SetDialogVariable("confirm_title", `投票开启新游戏`);
-    NpcInteract_GameRestart.SetDialogVariable("btn_text_confirm", "是");
-    NpcInteract_GameRestart.SetDialogVariable("btn_text_cancel", "否");
-    let BtnConfirm = NpcInteract_GameRestart.FindChildTraverse("BtnConfirm") as Button;
-    let BtnCancel = NpcInteract_GameRestart.FindChildTraverse("BtnCancel") as Button;
+    NpcInteract_GameRestart.BLoadLayoutSnippet('ConfirmWindow');
+    NpcInteract_GameRestart.SetDialogVariable('confirm_title', `投票开启新游戏`);
+    NpcInteract_GameRestart.SetDialogVariable('btn_text_confirm', '是');
+    NpcInteract_GameRestart.SetDialogVariable('btn_text_cancel', '否');
+    const BtnConfirm = NpcInteract_GameRestart.FindChildTraverse('BtnConfirm') as Button;
+    const BtnCancel = NpcInteract_GameRestart.FindChildTraverse('BtnCancel') as Button;
 
-    BtnConfirm.SetPanelEvent("onactivate", () => {
-        NpcInteract_GameRestart.RemoveClass("Show");
-        GameEvents.SendCustomGameEventToServer("MapChapter", {
-            event_name: "OpenReopenVote",
-            params: {}
-        })
-    })
+    BtnConfirm.SetPanelEvent('onactivate', () => {
+        NpcInteract_GameRestart.RemoveClass('Show');
+        GameEvents.SendCustomGameEventToServer('MapChapter', {
+            event_name: 'OpenReopenVote',
+            params: {},
+        });
+    });
 
-    BtnCancel.SetPanelEvent("onactivate", () => {
-        NpcInteract_GameRestart.RemoveClass("Show");
-        GameUI.SelectUnit(-1 as EntityIndex, false)
-    })
-}
+    BtnCancel.SetPanelEvent('onactivate', () => {
+        NpcInteract_GameRestart.RemoveClass('Show');
+        GameUI.SelectUnit(-1 as EntityIndex, false);
+    });
+};
 
 const UpdateSelectUnit = () => {
-    let queryUnit = Players.GetLocalPlayerPortraitUnit();
-    let unit_label = Entities.GetUnitLabel(queryUnit);
-    if (queryUnit == Players.GetPlayerHeroEntityIndex(player_id)) { return }
-    let unit_name = Entities.GetUnitName(queryUnit);
-    NpcInteract_GameRestart.SetHasClass("Show", unit_name == "npc_interact_game_restart" && player_id == 0)
-    NpcInteract_SoulstoneChallenge.SetHasClass("Show", unit_name == "npc_interact_soulstone_challenge" && player_id == 0)
-}
+    const queryUnit = Players.GetLocalPlayerPortraitUnit();
+    const unit_label = Entities.GetUnitLabel(queryUnit);
+    if (queryUnit == Players.GetPlayerHeroEntityIndex(player_id)) {
+        return;
+    }
+    const unit_name = Entities.GetUnitName(queryUnit);
+    NpcInteract_GameRestart.SetHasClass('Show', unit_name == 'npc_interact_game_restart' && player_id == 0);
+    NpcInteract_SoulstoneChallenge.SetHasClass('Show', unit_name == 'npc_interact_soulstone_challenge' && player_id == 0);
+};
 
 const CustomGameEventsSubscribe = () => {
-
     GameEvents.Subscribe('MapChapter_GetPlayerVoteData', event => {
         // $.Msg(["MapChapter_GetPlayerVoteData", event])
-        let vote_data = event.data.vote_data;
-        let state = vote_data.state;
-        let playervote = Object.values(vote_data.playervote);
-        let localPlayerState = playervote[player_id] == -1
+        const vote_data = event.data.vote_data;
+        const state = vote_data.state;
+        const playervote = Object.values(vote_data.playervote);
+        const localPlayerState = playervote[player_id] == -1;
         // $.Msg([state == 1, localPlayerState])
-        NpcInteract_GameRestart.SetHasClass("VoteState", state == 1)
+        NpcInteract_GameRestart.SetHasClass('VoteState', state == 1);
         if (state == 1 && localPlayerState) {
-            GameRestartVote.AddClass("Show");
+            GameRestartVote.AddClass('Show');
             GameRestartVote.Data<PanelDataObject>().time = vote_data.vote_time;
-            GameRestartVoteTimer()
+            GameRestartVoteTimer();
         } else {
-            GameRestartVote.RemoveClass("Show");
+            GameRestartVote.RemoveClass('Show');
         }
-    })
-}
+    });
+};
 
-
-const NpcInteract_SoulstoneChallenge = $("#npc_interact_soulstone_challenge")
+const NpcInteract_SoulstoneChallenge = $('#npc_interact_soulstone_challenge');
 function Setpanel_Npcinteract_Soulstone_Challenge() {
     NpcInteract_SoulstoneChallenge.RemoveAndDeleteChildren();
-    NpcInteract_SoulstoneChallenge.BLoadLayoutSnippet("ConfirmWindow");
-    NpcInteract_SoulstoneChallenge.SetDialogVariable("confirm_title", `是否开启魂石挑战`);
-    NpcInteract_SoulstoneChallenge.SetDialogVariable("btn_text_confirm", "是");
-    NpcInteract_SoulstoneChallenge.SetDialogVariable("btn_text_cancel", "否");
-    let BtnConfirm = NpcInteract_SoulstoneChallenge.FindChildTraverse("BtnConfirm") as Button;
-    let BtnCancel = NpcInteract_SoulstoneChallenge.FindChildTraverse("BtnCancel") as Button;
+    NpcInteract_SoulstoneChallenge.BLoadLayoutSnippet('ConfirmWindow');
+    NpcInteract_SoulstoneChallenge.SetDialogVariable('confirm_title', `是否开启魂石挑战`);
+    NpcInteract_SoulstoneChallenge.SetDialogVariable('btn_text_confirm', '是');
+    NpcInteract_SoulstoneChallenge.SetDialogVariable('btn_text_cancel', '否');
+    const BtnConfirm = NpcInteract_SoulstoneChallenge.FindChildTraverse('BtnConfirm') as Button;
+    const BtnCancel = NpcInteract_SoulstoneChallenge.FindChildTraverse('BtnCancel') as Button;
 
-    BtnConfirm.SetPanelEvent("onactivate", () => {
-        NpcInteract_SoulstoneChallenge.RemoveClass("Show");
+    BtnConfirm.SetPanelEvent('onactivate', () => {
+        NpcInteract_SoulstoneChallenge.RemoveClass('Show');
+    });
 
-    })
-
-    BtnCancel.SetPanelEvent("onactivate", () => {
-        NpcInteract_SoulstoneChallenge.RemoveClass("Show");
-        GameUI.SelectUnit(-1 as EntityIndex, false)
-    })
-
+    BtnCancel.SetPanelEvent('onactivate', () => {
+        NpcInteract_SoulstoneChallenge.RemoveClass('Show');
+        GameUI.SelectUnit(-1 as EntityIndex, false);
+    });
 }
 export const Init = () => {
-    InitPanel()
+    InitPanel();
     CustomGameEventsSubscribe();
 
-    GameEvents.Subscribe("dota_player_update_query_unit", UpdateSelectUnit);
-    GameEvents.SendCustomGameEventToServer("MapChapter", {
-        event_name: "GetPlayerVoteData",
-        params: {}
-    })
-}
+    GameEvents.Subscribe('dota_player_update_query_unit', UpdateSelectUnit);
+    GameEvents.SendCustomGameEventToServer('MapChapter', {
+        event_name: 'GetPlayerVoteData',
+        params: {},
+    });
+};
 
 (function () {
-    Init()
+    Init();
 })();

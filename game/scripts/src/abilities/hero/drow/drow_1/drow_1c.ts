@@ -1,5 +1,5 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { drow_1, modifier_drow_1 } from "./drow_1";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { drow_1, modifier_drow_1 } from './drow_1';
 
 /**
  * 分裂箭【目标型】（1/3）：攻击可以同时命中2个敌人。（2/3）：同时命中3个敌人。（3/3）同时命中5个敌人。
@@ -9,11 +9,10 @@ import { drow_1, modifier_drow_1 } from "./drow_1";
  */
 @registerAbility()
 export class drow_1c extends drow_1 {
-
     add_mana: number = 0;
     rune_31_bonus = 0;
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_1c"
+        return 'modifier_drow_1c';
     }
 
     UpdataSpecialValue(): void {
@@ -24,11 +23,11 @@ export class drow_1c extends drow_1 {
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            this.caster.GiveMana(this.add_mana)
-            let SelfAbilityMul = extraData.SelfAbilityMul;
+            this.caster.GiveMana(this.add_mana);
+            const SelfAbilityMul = extraData.SelfAbilityMul;
             let DamageBonusMul = extraData.DamageBonusMul;
             if (this.rune_31_bonus > 0 && UnitIsSlowed(target)) {
-                DamageBonusMul += this.rune_31_bonus
+                DamageBonusMul += this.rune_31_bonus;
             }
             ApplyCustomDamage({
                 victim: target,
@@ -40,22 +39,21 @@ export class drow_1c extends drow_1 {
                 is_primary: true,
                 SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
                 DamageBonusMul: DamageBonusMul,
-            })
+            });
         }
     }
 }
 
 @registerModifier()
 export class modifier_drow_1c extends modifier_drow_1 {
-
     /** 分裂箭 */
     targes: number;
 
     UpdataSpecialValue(): void {
         this.fakeAttack = true;
-        this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "8", 'targes') - 1;
-        let bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "9", "bonus_value");
-        this.SelfAbilityMul += bonus_value
+        this.targes = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '8', 'targes') - 1;
+        const bonus_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '9', 'bonus_value');
+        this.SelfAbilityMul += bonus_value;
         if (bonus_value > 0) {
             this.element_type = ElementTypes.ICE;
             this.damage_type = DamageTypes.MAGICAL;
@@ -66,17 +64,17 @@ export class modifier_drow_1c extends modifier_drow_1 {
     }
 
     PlayAttackStart(params: PlayEffectProps): void {
-        let hTarget = params.hTarget;
-        let targets_chance_list = this.ability.GetTypesAffixSpecialValue("Targeting", "skv_targeting_multiple");
-        let bonus_targets = this.ability.GetTypesAffixValue(0, "Targeting", "skv_targeting_count");
-        let extra_index = GetRandomListIndex(targets_chance_list);
+        const hTarget = params.hTarget;
+        const targets_chance_list = this.ability.GetTypesAffixSpecialValue('Targeting', 'skv_targeting_multiple');
+        let bonus_targets = this.ability.GetTypesAffixValue(0, 'Targeting', 'skv_targeting_count');
+        const extra_index = GetRandomListIndex(targets_chance_list);
         if (extra_index != -1) {
-            bonus_targets += (extra_index + 1)
+            bonus_targets += extra_index + 1;
         }
-        let attack_damage = this.caster.GetAverageTrueAttackDamage(null);
-        let FinalDamageMul = this.ability.GetServerSkillEffect("21", bonus_targets);
-        let DamageBonusMul = this.DamageBonusMul
-        let enemies = FindUnitsInRadius(
+        const attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+        const FinalDamageMul = this.ability.GetServerSkillEffect('21', bonus_targets);
+        const DamageBonusMul = this.DamageBonusMul;
+        const enemies = FindUnitsInRadius(
             this.team,
             this.caster.GetAbsOrigin(),
             null,
@@ -86,20 +84,19 @@ export class modifier_drow_1c extends modifier_drow_1 {
             UnitTargetFlags.FOW_VISIBLE,
             FindOrder.ANY,
             false
-        )
+        );
         this.fakeAttack = false;
         let count = 0;
-        this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, DamageBonusMul, FinalDamageMul)
-        for (let enemy of enemies) {
+        this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, DamageBonusMul, FinalDamageMul);
+        for (const enemy of enemies) {
             if (enemy != hTarget) {
                 count += 1;
-                this.PlayPerformAttack(this.caster, enemy, attack_damage, this.SelfAbilityMul, DamageBonusMul, FinalDamageMul)
+                this.PlayPerformAttack(this.caster, enemy, attack_damage, this.SelfAbilityMul, DamageBonusMul, FinalDamageMul);
             }
             if (count >= this.targes + bonus_targets) {
-                break
+                break;
             }
         }
         this.fakeAttack = true;
     }
-
 }

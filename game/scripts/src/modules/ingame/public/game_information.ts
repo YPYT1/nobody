@@ -1,12 +1,11 @@
-import { reloadable } from "../../../utils/tstl-utils";
-import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
+import { reloadable } from '../../../utils/tstl-utils';
+import { UIEventRegisterClass } from '../../class_extends/ui_event_register_class';
 
 /** 单位扩展 */
 @reloadable
 export class GameInformation extends UIEventRegisterClass {
-
     constructor() {
-        super("GameInformation");
+        super('GameInformation');
     }
 
     player_life_list: number[] = [2, 2, 2, 2, 2, 2];
@@ -16,59 +15,61 @@ export class GameInformation extends UIEventRegisterClass {
     player_die_time: number[] = [0, 0, 0, 0, 0, 0];
 
     //传输状态
-    play_game_head_type : number = 0;
+    play_game_head_type: number = 0;
     //boss倒计时时间
-    boss_time : number = 0 ; //boss时间
+    boss_time: number = 0; //boss时间
 
     /**
      * 设置玩家生命数
-     * @param player_id 
-     * @param count 
+     * @param player_id
+     * @param count
      */
     SetPlayerLife(player_id: PlayerID, count: number) {
         GameRules.GameInformation.player_life_list[player_id] = count;
-        GameRules.GameInformation.GetPlayerLifeData(player_id, {})
+        GameRules.GameInformation.GetPlayerLifeData(player_id, {});
     }
 
     /**
      * 增加或减少玩家生命数
-     * @param player_id 
-     * @param count 
+     * @param player_id
+     * @param count
      */
     AddPlayerLife(player_id: PlayerID, count: number) {
         GameRules.GameInformation.player_life_list[player_id] += count;
-        GameRules.GameInformation.GetPlayerLifeData(player_id, {})
+        GameRules.GameInformation.GetPlayerLifeData(player_id, {});
     }
 
-    HeroDie(unit: CDOTA_BaseNPC_Hero , killer: CDOTA_BaseNPC) {
-
-        let player_id = unit.GetPlayerOwnerID();
+    HeroDie(unit: CDOTA_BaseNPC_Hero, killer: CDOTA_BaseNPC) {
+        const player_id = unit.GetPlayerOwnerID();
         //圣剑处理
-        if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_14"]){
-            delete GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_14"];
-            GameRules.CustomAttribute.DelAttributeInKey(unit, "prop_14_SaintSword");
-            GameRules.ServiceInterface.PostLuaLog(player_id , "失去物品:prop_14");
+        if (GameRules.MysticalShopSystem.player_shop_buy_data[player_id]['prop_14']) {
+            delete GameRules.MysticalShopSystem.player_shop_buy_data[player_id]['prop_14'];
+            GameRules.CustomAttribute.DelAttributeInKey(unit, 'prop_14_SaintSword');
+            GameRules.ServiceInterface.PostLuaLog(player_id, '失去物品:prop_14');
         }
         //不朽之守护
-        if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] && GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] >= 1){
-            GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"] --;
+        if (
+            GameRules.MysticalShopSystem.player_shop_buy_data[player_id]['prop_26'] &&
+            GameRules.MysticalShopSystem.player_shop_buy_data[player_id]['prop_26'] >= 1
+        ) {
+            GameRules.MysticalShopSystem.player_shop_buy_data[player_id]['prop_26']--;
             Timers.CreateTimer(0.7, () => {
                 unit.SetRespawnPosition(unit.GetAbsOrigin());
                 unit.RespawnHero(false, false);
-                unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+                unit.AddNewModifier(unit, null, 'modifier_state_invincible', { duration: 3 });
             });
-            GameRules.ServiceInterface.PostLuaLog(player_id , "失去物品:prop_26");
-            return 
+            GameRules.ServiceInterface.PostLuaLog(player_id, '失去物品:prop_26');
+            return;
         }
         //设置玩家本回合已死状态
         GameRules.Spawn.player_round_die[player_id] = 0;
         let game_over = true;
         //检查全部英雄是否还有剩余生命
-        let player_count = GetPlayerCount();
+        const player_count = GetPlayerCount();
         for (let index = 0 as PlayerID; index < player_count; index++) {
-            let hHero = PlayerResource.GetSelectedHeroEntity(index);
+            const hHero = PlayerResource.GetSelectedHeroEntity(index);
             if (hHero.IsAlive()) {
-                game_over = false
+                game_over = false;
                 break;
             }
         }
@@ -76,41 +77,41 @@ export class GameInformation extends UIEventRegisterClass {
         if (game_over == true) {
             //取消所有玩家的定时器
             for (let index = 0 as PlayerID; index < player_count; index++) {
-                let hHero = PlayerResource.GetSelectedHeroEntity(index);
+                const hHero = PlayerResource.GetSelectedHeroEntity(index);
                 if (!hHero.IsAlive()) {
-                    hHero.StopThink("HeroDie");
+                    hHero.StopThink('HeroDie');
                 }
             }
-            GameRules.MapChapter.GameLoser()
+            GameRules.MapChapter.GameLoser();
             return;
         }
         //游戏没结束才能触发大宗师
-        if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_36"]){
-            killer.Kill( null , unit );
+        if (GameRules.MysticalShopSystem.player_shop_buy_data[player_id]['prop_36']) {
+            killer.Kill(null, unit);
         }
 
         this.player_die_count[player_id]++;
-        let d_time = 10 + (this.player_die_count[player_id] * 5 * (player_count - 1));
+        let d_time = 10 + this.player_die_count[player_id] * 5 * (player_count - 1);
         //【不休尸王的钢盔】 复活时间减少15%
-        if(GameRules.MysticalShopSystem.player_shop_buy_data[player_id]["prop_26"]){
+        if (GameRules.MysticalShopSystem.player_shop_buy_data[player_id]['prop_26']) {
             d_time = Math.ceil(d_time * 0.85);
         }
-        let game_d_time = GameRules.GetDOTATime(false, false) + d_time;
+        const game_d_time = GameRules.GetDOTATime(false, false) + d_time;
         this.player_die_time[player_id] = game_d_time;
         // 这里创建一个救援thinker
-        let hAbility = unit.FindAbilityByName("public_attribute");
+        const hAbility = unit.FindAbilityByName('public_attribute');
         CreateModifierThinker(
             unit,
             hAbility,
-            "modifier_public_revive_thinker",
+            'modifier_public_revive_thinker',
             {
-                duration: d_time
+                duration: d_time,
             },
             unit.GetAbsOrigin(),
             unit.GetTeamNumber(),
             false
-        )
-        this.GetPlayerDieData(-1, {})
+        );
+        this.GetPlayerDieData(-1, {});
 
         // if(this.player_life_list[player_id] > 0){
         //     //测试模式下死亡会增加生命
@@ -141,108 +142,92 @@ export class GameInformation extends UIEventRegisterClass {
     /** 重置死亡次数 */
     ResetNumberofDeaths() {
         for (let i = 0; i < this.player_die_count.length; i++) {
-            this.player_die_count[i] = 0
+            this.player_die_count[i] = 0;
         }
     }
 
     // modifier_public_revive_thinker
     PlayerRevive(player_id: PlayerID) {
-        let unit = PlayerResource.GetSelectedHeroEntity(player_id);
-        let vLocation : Vector = null;
-        if(GameRules.MapChapter._game_select_phase == 999){
+        const unit = PlayerResource.GetSelectedHeroEntity(player_id);
+        let vLocation: Vector = null;
+        if (GameRules.MapChapter._game_select_phase == 999) {
             vLocation = Vector(GameRules.MapChapter.ChapterData.map_centre_x, GameRules.MapChapter.ChapterData.map_centre_y, 0);
-        }else{
+        } else {
             vLocation = unit.GetAbsOrigin();
-            unit.SetRespawnPosition(vLocation)
+            unit.SetRespawnPosition(vLocation);
             unit.RespawnHero(false, false);
-            unit.AddNewModifier(unit, null, "modifier_state_invincible", { duration: 3 });
+            unit.AddNewModifier(unit, null, 'modifier_state_invincible', { duration: 3 });
         }
         this.player_die_time[player_id] = 0;
-        this.GetPlayerDieData(-1, {})
-        
+        this.GetPlayerDieData(-1, {});
     }
+
     /**
-    * 获取玩家死亡倒计时
-    */
-    GetPlayerDieData(player_id: PlayerID, params: CGED["GameInformation"]["GetPlayerDieData"]) {
+     * 获取玩家死亡倒计时
+     */
+    GetPlayerDieData(player_id: PlayerID, params: CGED['GameInformation']['GetPlayerDieData']) {
         if (player_id == -1) {
-            CustomGameEventManager.Send_ServerToAllClients(
-                "GameInformation_GetPlayerDieData",
-                {
-                    data: {
-                        time: this.player_die_time
-                    }
-                }
-            );
+            CustomGameEventManager.Send_ServerToAllClients('GameInformation_GetPlayerDieData', {
+                data: {
+                    time: this.player_die_time,
+                },
+            });
         } else {
-            CustomGameEventManager.Send_ServerToPlayer(
-                PlayerResource.GetPlayer(player_id),
-                "GameInformation_GetPlayerDieData",
-                {
-                    data: {
-                        time: this.player_die_time
-                    }
-                }
-            );
+            CustomGameEventManager.Send_ServerToPlayer(PlayerResource.GetPlayer(player_id), 'GameInformation_GetPlayerDieData', {
+                data: {
+                    time: this.player_die_time,
+                },
+            });
         }
     }
 
     /**
-    * 获取所有玩家生命值
-    */
-    GetPlayerLifeData(player_id: PlayerID, params: CGED["GameInformation"]["GetPlayerLifeData"]) {
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "GameInformation_GetPlayerLifeData",
-            {
-                data: {
-                    "player_life": this.player_life_list[player_id]
-                }
-            }
-        );
+     * 获取所有玩家生命值
+     */
+    GetPlayerLifeData(player_id: PlayerID, params: CGED['GameInformation']['GetPlayerLifeData']) {
+        CustomGameEventManager.Send_ServerToPlayer(PlayerResource.GetPlayer(player_id), 'GameInformation_GetPlayerLifeData', {
+            data: {
+                player_life: this.player_life_list[player_id],
+            },
+        });
     }
+
     /**
      *  头部信息
      */
     play_game_time: number = 0;
 
-    SetPlayGameTime(play_game_head_type : number) {
+    SetPlayGameTime(play_game_head_type: number) {
         GameRules.GameInformation.play_game_head_type = play_game_head_type;
-        GameRules.GameInformation.GetPlayGameHeadData(-1, {})
+        GameRules.GameInformation.GetPlayGameHeadData(-1, {});
     }
 
     /**
-    * 获取局内头部信息
-    */
-    GetPlayGameHeadData(player_id: PlayerID, params: CGED["GameInformation"]["GetPlayGameHeadData"]) {
+     * 获取局内头部信息
+     */
+    GetPlayGameHeadData(player_id: PlayerID, params: CGED['GameInformation']['GetPlayGameHeadData']) {
         if (player_id == -1) {
-            CustomGameEventManager.Send_ServerToAllClients(
-                "GameInformation_GetPlayGameHeadData",
-                {
-                    data: {
-                        time: GameRules.GameInformation.play_game_time,
-                        difficulty: GameRules.MapChapter.GameDifficulty,
-                        round_index : GameRules.Spawn._round_index,
-                        round_max : GameRules.Spawn._round_max,
-                        type : GameRules.GameInformation.play_game_head_type ,  // 
-                        boss_time : GameRules.GameInformation.boss_time ,
-                    }
-                }
-            );
+            CustomGameEventManager.Send_ServerToAllClients('GameInformation_GetPlayGameHeadData', {
+                data: {
+                    time: GameRules.GameInformation.play_game_time,
+                    difficulty: GameRules.MapChapter.GameDifficulty,
+                    round_index: GameRules.Spawn._round_index,
+                    round_max: GameRules.Spawn._round_max,
+                    type: GameRules.GameInformation.play_game_head_type, //
+                    boss_time: GameRules.GameInformation.boss_time,
+                },
+            });
         } else {
-            CustomGameEventManager.Send_ServerToAllClients(
-                "GameInformation_GetPlayGameHeadData",
-                {
-                    data: {
-                        time: GameRules.GameInformation.play_game_time,
-                        difficulty: GameRules.MapChapter.GameDifficulty,
-                        round_index : GameRules.Spawn._round_index,
-                        round_max : GameRules.Spawn._round_max,
-                        type : GameRules.GameInformation.play_game_head_type ,  
-                        boss_time : GameRules.GameInformation.boss_time ,
-                    }
-                }
-            );
+            CustomGameEventManager.Send_ServerToAllClients('GameInformation_GetPlayGameHeadData', {
+                data: {
+                    time: GameRules.GameInformation.play_game_time,
+                    difficulty: GameRules.MapChapter.GameDifficulty,
+                    round_index: GameRules.Spawn._round_index,
+                    round_max: GameRules.Spawn._round_max,
+                    type: GameRules.GameInformation.play_game_head_type,
+                    boss_time: GameRules.GameInformation.boss_time,
+                },
+            });
         }
     }
-}   
+}

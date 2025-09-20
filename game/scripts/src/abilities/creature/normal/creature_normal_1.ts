@@ -1,27 +1,26 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 @registerAbility()
 export class creature_normal_1 extends BaseCreatureAbility {
-
     proj_width: number;
     proj_speed: number;
     proj_name: string;
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/dev/creature/creature_range_attack_fire.vpcf", context)
-        precacheResString("particles/dev/creature/creature_range_attack_ice.vpcf", context)
-        precacheResString("particles/dev/creature/creature_range_attack_thunder.vpcf", context)
-        precacheResString("particles/dev/creature/creature_range_attack_wind.vpcf", context)
+        precacheResString('particles/dev/creature/creature_range_attack_fire.vpcf', context);
+        precacheResString('particles/dev/creature/creature_range_attack_ice.vpcf', context);
+        precacheResString('particles/dev/creature/creature_range_attack_thunder.vpcf', context);
+        precacheResString('particles/dev/creature/creature_range_attack_wind.vpcf', context);
     }
 
     GetIntrinsicModifierName(): string {
-        return "modifier_creature_normal_1"
+        return 'modifier_creature_normal_1';
     }
 
     OnAbilityPhaseStart(): boolean {
-        this.nPreviewFX = GameRules.WarningMarker.CreateExclamation(this.hCaster)
-        return true
+        this.nPreviewFX = GameRules.WarningMarker.CreateExclamation(this.hCaster);
+        return true;
     }
 
     OnSpellStart(): void {
@@ -32,11 +31,11 @@ export class creature_normal_1 extends BaseCreatureAbility {
         // this.proj_name = "particles/dev/creature/creature_range_attack_ice.vpcf";
         // this.proj_name = "particles/dev/creature/creature_range_attack_thunder.vpcf";
         // print("GameRules.GetGameTime()",GameRules.GetGameTime(),GameRules.GetDOTATime(false,false))
-        this.proj_name = "particles/dev/creature/creature_range_attack_wind.vpcf";
-        let origin = this.hCaster.GetAbsOrigin();
-        let attack_game = this.hCaster.GetAverageTrueAttackDamage(null);
-        let target_pos = this.GetCursorPosition()
-        let direction = (target_pos - origin as Vector).Normalized()
+        this.proj_name = 'particles/dev/creature/creature_range_attack_wind.vpcf';
+        const origin = this.hCaster.GetAbsOrigin();
+        const attack_game = this.hCaster.GetAverageTrueAttackDamage(null);
+        const target_pos = this.GetCursorPosition();
+        const direction = ((target_pos - origin) as Vector).Normalized();
         direction.z = 0;
         ProjectileManager.CreateLinearProjectile({
             EffectName: this.proj_name,
@@ -64,44 +63,47 @@ export class creature_normal_1 extends BaseCreatureAbility {
                 damage_type: DamageTypes.PHYSICAL,
                 element_type: 0,
                 miss_flag: 1,
-            })
+            });
 
-            return true
+            return true;
         }
     }
 }
 
 @registerModifier()
 export class modifier_creature_normal_1 extends BaseModifier {
-
     ability: CDOTABaseAbility;
     hullradius: number;
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.caster = this.GetCaster();
         this.ability = this.GetAbility();
-        this.team = this.caster.GetTeam()
+        this.team = this.caster.GetTeam();
         this.hullradius = this.caster.GetHullRadius();
         // print("hullradius",this.hullradius)
-        this.OnRefresh(params)
-        this.StartIntervalThink(0.1)
+        this.OnRefresh(params);
+        this.StartIntervalThink(0.1);
     }
 
     OnRefresh(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.element_type = ElementTypes.ICE;
     }
 
     OnIntervalThink(): void {
         // print("OnIntervalThink")
         if (this.caster.IsAlive() == false) {
-            this.StartIntervalThink(-1)
-            return
+            this.StartIntervalThink(-1);
+            return;
         }
         if (this.ability.IsCooldownReady()) {
-            let origin = this.caster.GetAbsOrigin()
-            let enemies = FindUnitsInRadius(
+            const origin = this.caster.GetAbsOrigin();
+            const enemies = FindUnitsInRadius(
                 this.team,
                 origin,
                 null,
@@ -111,7 +113,7 @@ export class modifier_creature_normal_1 extends BaseModifier {
                 UnitTargetFlags.NONE,
                 FindOrder.ANY,
                 false
-            )
+            );
             if (enemies.length > 0) {
                 // print("enemies", enemies.length)
                 ExecuteOrderFromTable({
@@ -120,12 +122,11 @@ export class modifier_creature_normal_1 extends BaseModifier {
                     AbilityIndex: this.ability.entindex(),
                     Position: enemies[0].GetAbsOrigin(),
                     Queue: false,
-                })
-                this.StartIntervalThink(2)
+                });
+                this.StartIntervalThink(2);
             } else {
-                this.StartIntervalThink(0.1)
+                this.StartIntervalThink(0.1);
             }
-
         }
     }
 }

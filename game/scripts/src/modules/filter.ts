@@ -2,27 +2,25 @@ import { reloadable } from '../utils/tstl-utils';
 
 @reloadable
 export class Filter {
-
-
     constructor() {
         // GameRules.GetGameModeEntity().SetItemAddedToInventoryFilter((params) => this.ItemAddedToInventory(params), this);
-        GameRules.GetGameModeEntity().SetDamageFilter((params) => this.DamageFilter(params), this);
+        GameRules.GetGameModeEntity().SetDamageFilter(params => this.DamageFilter(params), this);
         // GameRules.GetGameModeEntity().SetExecuteOrderFilter((params) => this.ExecuteOrderFilter(params), this);
     }
 
     Reload() {
         // GameRules.GetGameModeEntity().SetItemAddedToInventoryFilter((params) => this.ItemAddedToInventory(params), this);
-        GameRules.GetGameModeEntity().SetDamageFilter((params) => this.DamageFilter(params), this);
+        GameRules.GetGameModeEntity().SetDamageFilter(params => this.DamageFilter(params), this);
         // GameRules.GetGameModeEntity().SetExecuteOrderFilter((params) => this.ExecuteOrderFilter(params), this);
     }
 
     ItemAddedToInventory(keys: ItemAddedToInventoryFilterEvent): boolean {
-        return true
+        return true;
     }
 
     DamageFilter(params: DamageFilterEvent): boolean {
-        let hUnit = EntIndexToHScript(params.entindex_victim_const) as CDOTA_BaseNPC;
-        let player_id = hUnit.GetPlayerOwnerID();
+        const hUnit = EntIndexToHScript(params.entindex_victim_const) as CDOTA_BaseNPC;
+        const player_id = hUnit.GetPlayerOwnerID();
         // if (player_id != -1) {
         //     PopupNumbersToTarget(hUnit, "phy", params.damage);
         // }
@@ -32,18 +30,20 @@ export class Filter {
         //     params.damage = params.damage * damage_income * 0.01;
         // }
         // 倍率
-        const hMulBuff = hUnit.FindModifierByName("");
+        const hMulBuff = hUnit.FindModifierByName('');
         if (hMulBuff) {
-            let iMulStack = hMulBuff.GetStackCount();
+            const iMulStack = hMulBuff.GetStackCount();
             params.damage = params.damage / iMulStack;
         }
-        if (params.damage > 2100000000) { params.damage = 2100000000; }
+        if (params.damage > 2100000000) {
+            params.damage = 2100000000;
+        }
         // print(params.damage)
         return true;
     }
 
     ExecuteOrderFilter(params: ExecuteOrderFilterEvent) {
         // DeepPrintTable(params)
-        return true
+        return true;
     }
 }

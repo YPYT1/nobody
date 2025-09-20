@@ -6,7 +6,6 @@ import { registerModifier, BaseModifierMotionBoth } from '../utils/dota_ts_adapt
  */
 @registerModifier()
 export class modifier_knockback_lua extends BaseModifierMotionBoth {
-
     bFindPath: boolean;
     interrupted: boolean;
 
@@ -23,24 +22,25 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
     fHeightConst1: number;
     fHeightConst2: number;
 
-    IsHidden(): boolean { return true; }
+    IsHidden(): boolean {
+        return true;
+    }
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         // DeepPrintTable(params)
-        let hParent = this.GetParent();
-        if (hParent.HasModifier("modifier_motion_surround")
-            || hParent.HasModifier("modifier_generic_arc_lua")
-            || hParent.IsBossCreature()
-        ) {
+        const hParent = this.GetParent();
+        if (hParent.HasModifier('modifier_motion_surround') || hParent.HasModifier('modifier_generic_arc_lua') || hParent.IsBossCreature()) {
             this.Destroy();
             return;
         }
         this.interrupted = false;
         this.vCenter = Vector(params.center_x, params.center_y, params.center_z ?? 0);
         this.fMovedDistance = 0;
-        const knockback_distance = params.knockback_distance as number ?? 0;
-        const knockback_duration = params.knockback_duration as number ?? 1;
+        const knockback_distance = (params.knockback_distance as number) ?? 0;
+        const knockback_duration = (params.knockback_duration as number) ?? 1;
         /** 可否穿墙 */
         const knockback_cross = params.knockback_cross as number;
         const knockback_activity = params.knockback_activity ?? 0;
@@ -48,7 +48,7 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
         this.fGroundSpeed = knockback_distance / knockback_duration;
         this.fDistance = math.abs(knockback_distance);
         // 如果目标点处于中心点,则随机方向击退
-        this.vDir = (this.GetParent().GetOrigin() - this.vCenter as Vector).Normalized();
+        this.vDir = ((this.GetParent().GetOrigin() - this.vCenter) as Vector).Normalized();
         if (this.vDir.x == 0) {
             this.vDir.x = RandomFloat(0, 1) * (RollPercentage(50) ? -1 : 1);
         }
@@ -56,7 +56,7 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
             this.vDir.y = RandomFloat(0, 1) * (RollPercentage(50) ? -1 : 1);
         }
         // 终点位置
-        this.vFinal = this.GetParent().GetAbsOrigin() + this.vDir * knockback_distance as Vector;
+        this.vFinal = (this.GetParent().GetAbsOrigin() + this.vDir * knockback_distance) as Vector;
         // 如果终点为可到达路过程不用判断寻路,否则到
         if (knockback_cross == 0) {
             this.bFindPath = false;
@@ -65,16 +65,16 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
         }
 
         // 高度
-        const knockback_height = (params.knockback_height ?? 0)as number;
+        const knockback_height = (params.knockback_height ?? 0) as number;
         this.fHeight = knockback_height;
-        let height_start = GetGroundHeight(this.GetParent().GetAbsOrigin(), this.GetParent());
-        let height_end = GetGroundHeight(this.vFinal, this.GetParent());
-        let height_max = height_start + knockback_height;
+        const height_start = GetGroundHeight(this.GetParent().GetAbsOrigin(), this.GetParent());
+        const height_end = GetGroundHeight(this.vFinal, this.GetParent());
+        const height_max = height_start + knockback_height;
         this.InitVerticalArc(height_start, height_max, height_end, knockback_duration);
         this.Jump(params);
     }
 
-    _OnCreated(params: any) { }
+    _OnCreated(params: any) {}
 
     Jump(params: any) {
         if (this.fDistance != 0) {
@@ -104,25 +104,29 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
         this.interrupted = true;
         this.Destroy();
     }
-    
+
     InitVerticalArc(height_start: number, height_max: number, height_end: number, duration: number) {
         height_end = height_end - height_start;
         height_max = height_max - height_start;
-        if (height_max < height_end) { height_max = height_end + 0.01; }
-        if (height_max <= 0) { height_max = 0.01; }
-        let duration_end = (1 + math.sqrt(1 - height_end / height_max)) / 2;
-        this.fHeightConst1 = 4 * height_max * duration_end / duration;
-        this.fHeightConst2 = 4 * height_max * duration_end * duration_end / (duration * duration);
+        if (height_max < height_end) {
+            height_max = height_end + 0.01;
+        }
+        if (height_max <= 0) {
+            height_max = 0.01;
+        }
+        const duration_end = (1 + math.sqrt(1 - height_end / height_max)) / 2;
+        this.fHeightConst1 = (4 * height_max * duration_end) / duration;
+        this.fHeightConst2 = (4 * height_max * duration_end * duration_end) / (duration * duration);
     }
 
     UpdateVerticalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        let pos = me.GetOrigin();
-        let time = this.GetElapsedTime();
-        let height = pos.z;
-        let speed = this.GetVerticalSpeed(time);
+        const pos = me.GetOrigin();
+        const time = this.GetElapsedTime();
+        const height = pos.z;
+        const speed = this.GetVerticalSpeed(time);
         pos.z = height + speed * dt;
         me.SetOrigin(pos);
-        let ground = GetGroundHeight(pos, me);
+        const ground = GetGroundHeight(pos, me);
         if (pos.z <= ground) {
             pos.z = ground;
             me.SetOrigin(pos);
@@ -132,8 +136,8 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
 
     // 水平
     UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        let moved_distance = this.fGroundSpeed * dt;
-        let vNewLocation = this.GetParent().GetOrigin() + this.vDir * this.fGroundSpeed * dt as Vector;
+        const moved_distance = this.fGroundSpeed * dt;
+        const vNewLocation = (this.GetParent().GetOrigin() + this.vDir * this.fGroundSpeed * dt) as Vector;
         if (this.bFindPath == false && GridNav.CanFindPath(this.GetParent().GetOrigin(), vNewLocation) == false) {
             this.Destroy();
             return;
@@ -148,7 +152,7 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
     }
 
     DeclareFunctions(): ModifierFunction[] {
-        let funcs = [];
+        const funcs = [];
         if (this.GetStackCount() > 0) {
             funcs.push(ModifierFunction.OVERRIDE_ANIMATION);
         }
@@ -166,5 +170,4 @@ export class modifier_knockback_lua extends BaseModifierMotionBoth {
     GetVerticalSpeed(time: number) {
         return this.fHeightConst1 - 2 * this.fHeightConst2 * time;
     }
-
 }

@@ -1,10 +1,9 @@
-import { BaseModifier, BaseModifierMotionBoth } from "../../utils/dota_ts_adapter";
+import { BaseModifier, BaseModifierMotionBoth } from '../../utils/dota_ts_adapter';
 
 /**
  * 吸附modifier,默认中心点为施法者
  */
 export class modifier_motion_adsorb extends BaseModifier {
-
     origin: Vector;
     speed: number;
     dt: number;
@@ -14,39 +13,37 @@ export class modifier_motion_adsorb extends BaseModifier {
     }
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.origin = this.GetCaster().GetAbsOrigin();
         this.parent = this.GetParent();
         this.speed = 50;
-        this.dt = GameRules.GetGameFrameTime()
-        this._OnCreated(params)
-        this.StartIntervalThink(this.dt)
+        this.dt = GameRules.GetGameFrameTime();
+        this._OnCreated(params);
+        this.StartIntervalThink(this.dt);
         // if (this.ApplyHorizontalMotionController() == false) {
         //     this.Destroy();
         //     return;
         // }
     }
 
-    _OnCreated(params: any) {
-
-    }
+    _OnCreated(params: any) {}
 
     OnIntervalThink(): void {
-        let target_vect = this.parent.GetAbsOrigin();
-        let direction = target_vect - this.origin as Vector;
-        let distance = direction.Length2D();
+        const target_vect = this.parent.GetAbsOrigin();
+        let direction = (target_vect - this.origin) as Vector;
+        const distance = direction.Length2D();
         direction = direction.Normalized();
         if (distance > 100) {
-            this.parent.SetOrigin(target_vect - direction * this.speed * this.dt as Vector)
+            this.parent.SetOrigin((target_vect - direction * this.speed * this.dt) as Vector);
             // FindClearSpaceForUnit(, false)
         } else {
-            FindClearSpaceForUnit(this.parent, target_vect - direction * this.speed * this.dt as Vector, false)
+            FindClearSpaceForUnit(this.parent, (target_vect - direction * this.speed * this.dt) as Vector, false);
         }
     }
 
-    UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
-
-    }
+    UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {}
 
     // OnDestroy(): void {
     //     if (!IsServer()) { return; }

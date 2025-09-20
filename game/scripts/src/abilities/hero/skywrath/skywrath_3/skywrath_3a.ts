@@ -1,5 +1,5 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { BaseHeroAbility, BaseHeroModifier } from '../../base_hero_ability';
 
 /**
  * 86	元素轰炸	"吟唱施法，吟唱3秒后在自身1000码范围内随机位置生成数个元素爆炸，对范围内敌人造成伤害。
@@ -12,81 +12,79 @@ cd：18秒
  */
 @registerAbility()
 export class skywrath_3a extends BaseHeroAbility {
-
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_sandking/sandking_scorpion_strike_aoe.vpcf", context)
-        precacheResString("particles/units/heroes/hero_sandking/sandking_epicenter.vpcf", context)
-        precacheResString("particles/custom/hero/skywrath3a/element_aoe.vpcf", context)
+        precacheResString('particles/units/heroes/hero_sandking/sandking_scorpion_strike_aoe.vpcf', context);
+        precacheResString('particles/units/heroes/hero_sandking/sandking_epicenter.vpcf', context);
+        precacheResString('particles/custom/hero/skywrath3a/element_aoe.vpcf', context);
     }
 
     GetIntrinsicModifierName(): string {
-        return "modifier_skywrath_3a"
+        return 'modifier_skywrath_3a';
     }
 
     UpdataAbilityValue(): void {
-        this.SetCustomAbilityType("Aoe", true)
+        this.SetCustomAbilityType('Aoe', true);
     }
 }
 
 @registerModifier()
 export class modifier_skywrath_3a extends BaseHeroModifier {
-
     channel_time: number;
 
     UpdataAbilityValue(): void {
-        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value")
-        this.channel_time = this.GetAbility().GetSpecialValueFor("channel")
+        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor('base_value');
+        this.channel_time = this.GetAbility().GetSpecialValueFor('channel');
     }
 
-    UpdataSpecialValue(): void {
-
-    }
+    UpdataSpecialValue(): void {}
 
     OnIntervalThink(): void {
         if (this.CastingConditions()) {
-            this.DoExecutedAbility()
-            let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
+            this.DoExecutedAbility();
+            const manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
             // 开始蓄力
-            this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_3a_channel", {
+            this.caster.AddNewModifier(this.caster, this.GetAbility(), 'modifier_skywrath_3a_channel', {
                 duration: 3,
                 manacost_bonus: manacost_bonus,
                 is_clone: 0,
-            })
+            });
         }
     }
 }
 
 @registerModifier()
 export class modifier_skywrath_3a_channel extends BaseModifier {
-
     least_time: number;
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.caster = this.GetCaster();
         this.manacost_bonus = params.manacost_bonus;
-        this.least_time = GameRules.GetDOTATime(false, false) + this.GetDuration()
-        GameRules.CMsg.AbilityChannel(this.caster, this, 1)
+        this.least_time = GameRules.GetDOTATime(false, false) + this.GetDuration();
+        GameRules.CMsg.AbilityChannel(this.caster, this, 1);
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.CMsg.AbilityChannel(this.caster, this, 0)
+        if (!IsServer()) {
+            return;
+        }
+        GameRules.CMsg.AbilityChannel(this.caster, this, 0);
         if (this.least_time <= GameRules.GetDOTATime(false, false)) {
             // 成功吟唱
-            this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_modifier_skywrath_3a_bombing", {
+            this.caster.AddNewModifier(this.caster, this.GetAbility(), 'modifier_modifier_skywrath_3a_bombing', {
                 manacost_bonus: this.manacost_bonus,
-                is_clone: 0
-            })
+                is_clone: 0,
+            });
 
-            if (this.caster.clone_unit != null && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")) {
-                this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), "modifier_modifier_skywrath_3a_bombing", {
+            if (this.caster.clone_unit != null && this.caster.clone_unit.HasModifier('modifier_skywrath_5_clone_show')) {
+                this.caster.clone_unit.AddNewModifier(this.caster, this.GetAbility(), 'modifier_modifier_skywrath_3a_bombing', {
                     manacost_bonus: this.manacost_bonus,
-                    is_clone: 1
-                })
+                    is_clone: 1,
+                });
             }
         }
-
     }
 }
 
@@ -101,7 +99,6 @@ const element_color = [
 
 @registerModifier()
 export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
-
     max_wave: number;
     wave: number;
     explosion_count: number;
@@ -109,68 +106,64 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
     explosion_radius: number;
     attack_damage: number;
 
-    Aoe_DamageBonusMul:number;
-    
+    Aoe_DamageBonusMul: number;
+
     OnCreated(params: any): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.manacost_bonus = params.manacost_bonus;
-        this.caster = this.GetCaster()
+        this.caster = this.GetCaster();
         this.team = this.caster.GetTeam();
         this.wave = 0;
-        this.max_wave = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "max_wave")
-        this.explosion_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "explosion_count");
-        this.range = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "range");
-        let explosion_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "86", "explosion_radius");
-        this.explosion_radius = this.GetAbility().GetTypesAffixValue(explosion_radius,"Aoe","skv_aoe_radius");
-        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor("base_value");
-        this.Aoe_DamageBonusMul = this.GetAbility().GetTypesAffixValue(0,"Aoe","skv_aoe_d_bonus");
+        this.max_wave = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '86', 'max_wave');
+        this.explosion_count = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '86', 'explosion_count');
+        this.range = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '86', 'range');
+        const explosion_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '86', 'explosion_radius');
+        this.explosion_radius = this.GetAbility().GetTypesAffixValue(explosion_radius, 'Aoe', 'skv_aoe_radius');
+        this.SelfAbilityMul = this.GetAbility().GetSpecialValueFor('base_value');
+        this.Aoe_DamageBonusMul = this.GetAbility().GetTypesAffixValue(0, 'Aoe', 'skv_aoe_d_bonus');
 
         // rune_69	法爷#18	元素轰炸系列的技能基础伤害提高100%
-        this.SelfAbilityMul += this.caster.GetRuneKv("rune_69", "value");
+        this.SelfAbilityMul += this.caster.GetRuneKv('rune_69', 'value');
         this.is_clone = params.is_clone;
-        this.attack_damage = this.caster.GetAverageTrueAttackDamage(null)
-        this.OnIntervalThink()
-        this.StartIntervalThink(1)
+        this.attack_damage = this.caster.GetAverageTrueAttackDamage(null);
+        this.OnIntervalThink();
+        this.StartIntervalThink(1);
     }
 
     OnIntervalThink(): void {
         if (this.wave >= this.max_wave || this.GetAbility() == null) {
-            this.StartIntervalThink(-1)
+            this.StartIntervalThink(-1);
             this.Destroy();
-            return
+            return;
         }
         this.wave += 1;
-        let origin = this.caster.GetAbsOrigin();
-        let aoe_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_sandking/sandking_epicenter.vpcf",
+        const origin = this.caster.GetAbsOrigin();
+        const aoe_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_sandking/sandking_epicenter.vpcf',
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.caster
-        )
-        ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.range, this.range, this.range))
+        );
+        ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.range, this.range, this.range));
         ParticleManager.ReleaseParticleIndex(aoe_fx);
 
         for (let i = 0; i < this.explosion_count; i++) {
-            let vPos = origin + RandomVector(RandomInt(100, this.range)) as Vector;
-            this.PlayBombing(vPos)
+            const vPos = (origin + RandomVector(RandomInt(100, this.range))) as Vector;
+            this.PlayBombing(vPos);
         }
     }
 
     PlayBombing(vPos: Vector) {
         vPos.z + 10;
-        let element_type = RandomInt(1, 4)
-        let aoe_fx = ParticleManager.CreateParticle(
-            "particles/custom/hero/skywrath3a/element_aoe.vpcf",
-            ParticleAttachment.CUSTOMORIGIN,
-            null
-        )
-        ParticleManager.SetParticleControl(aoe_fx, 0, vPos)
-        ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.explosion_radius, 1, 1))
-        ParticleManager.SetParticleControl(aoe_fx, 2, element_color[element_type])
+        const element_type = RandomInt(1, 4);
+        const aoe_fx = ParticleManager.CreateParticle('particles/custom/hero/skywrath3a/element_aoe.vpcf', ParticleAttachment.CUSTOMORIGIN, null);
+        ParticleManager.SetParticleControl(aoe_fx, 0, vPos);
+        ParticleManager.SetParticleControl(aoe_fx, 1, Vector(this.explosion_radius, 1, 1));
+        ParticleManager.SetParticleControl(aoe_fx, 2, element_color[element_type]);
         ParticleManager.ReleaseParticleIndex(aoe_fx);
 
-
-
-        let enemies = FindUnitsInRadius(
+        const enemies = FindUnitsInRadius(
             this.team,
             vPos,
             null,
@@ -182,7 +175,7 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
             false
         );
 
-        for (let enemy of enemies) {
+        for (const enemy of enemies) {
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.caster,
@@ -195,9 +188,7 @@ export class modifier_modifier_skywrath_3a_bombing extends BaseModifier {
                 SelfAbilityMul: this.SelfAbilityMul,
                 DamageBonusMul: this.manacost_bonus + this.Aoe_DamageBonusMul,
                 is_clone: this.is_clone,
-            })
+            });
         }
-
     }
-
 }

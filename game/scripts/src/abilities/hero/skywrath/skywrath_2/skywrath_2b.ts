@@ -1,5 +1,5 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { BaseHeroAbility, BaseHeroModifier } from '../../base_hero_ability';
 
 /**
  * "2技能可选技能：
@@ -12,14 +12,13 @@ cd：12秒
  */
 @registerAbility()
 export class skywrath_2b extends BaseHeroAbility {
-
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_antimage/antimage_spellshield.vpcf", context)
-        precacheResString("particles/units/heroes/hero_antimage/antimage_counter.vpcf", context)
+        precacheResString('particles/units/heroes/hero_antimage/antimage_spellshield.vpcf', context);
+        precacheResString('particles/units/heroes/hero_antimage/antimage_counter.vpcf', context);
     }
 
     GetIntrinsicModifierName(): string {
-        return "modifier_skywrath_2b"
+        return 'modifier_skywrath_2b';
     }
 
     UpdataAbilityValue(): void {
@@ -28,21 +27,20 @@ export class skywrath_2b extends BaseHeroAbility {
 }
 @registerModifier()
 export class modifier_skywrath_2b extends BaseHeroModifier {
-
     duration: number;
 
     UpdataAbilityValue(): void {
-        this.duration = this.GetAbility().GetSpecialValueFor("duration")
+        this.duration = this.GetAbility().GetSpecialValueFor('duration');
     }
 
     OnIntervalThink() {
         if (this.CastingConditions()) {
-            this.DoExecutedAbility()
-            let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
-            this.caster.AddNewModifier(this.caster, this.GetAbility(), "modifier_skywrath_2b_shield", {
+            this.DoExecutedAbility();
+            const manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
+            this.caster.AddNewModifier(this.caster, this.GetAbility(), 'modifier_skywrath_2b_shield', {
                 duration: this.duration,
                 manacost_bonus: manacost_bonus,
-            })
+            });
         }
     }
 }
@@ -50,34 +48,39 @@ export class modifier_skywrath_2b extends BaseHeroModifier {
 /** 雷电屏障 */
 @registerModifier()
 export class modifier_skywrath_2b_shield extends BaseModifier {
-
     ability_damage: number;
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return }
-        let hit_count = 3;
-        this.caster = this.GetCaster()
-        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null)
+        if (!IsServer()) {
+            return;
+        }
+        const hit_count = 3;
+        this.caster = this.GetCaster();
+        this.ability_damage = this.caster.GetAverageTrueAttackDamage(null);
         this.manacost_bonus = params.manacost_bonus;
         this.damage_type = DamageTypes.MAGICAL;
         this.element_type = ElementTypes.THUNDER;
 
-        this.SelfAbilityMul = this.caster.GetTalentKv("75","base_value")
-        this.SelfAbilityMul += this.caster.GetRuneKv("rune_64","value");
+        this.SelfAbilityMul = this.caster.GetTalentKv('75', 'base_value');
+        this.SelfAbilityMul += this.caster.GetRuneKv('rune_64', 'value');
 
         this.SetStackCount(hit_count);
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_antimage/antimage_counter.vpcf",
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_antimage/antimage_counter.vpcf',
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
-        )
+        );
         ParticleManager.SetParticleControlEnt(
-            effect_fx, 0,
+            effect_fx,
+            0,
             this.GetParent(),
-            ParticleAttachment.POINT_FOLLOW, "attach_hitloc", Vector(0, 0, 0), true
-        )
-        ParticleManager.SetParticleControl(effect_fx, 1, Vector(120, 300, 300))
-        this.AddParticle(effect_fx, false, false, -1, false, false)
+            ParticleAttachment.POINT_FOLLOW,
+            'attach_hitloc',
+            Vector(0, 0, 0),
+            true
+        );
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(120, 300, 300));
+        this.AddParticle(effect_fx, false, false, -1, false, false);
     }
 
     _OnHit(hTarget: CDOTA_BaseNPC) {
@@ -95,25 +98,31 @@ export class modifier_skywrath_2b_shield extends BaseModifier {
             damage_vect: this.GetParent().GetAbsOrigin(),
             SelfAbilityMul: this.SelfAbilityMul,
             DamageBonusMul: this.manacost_bonus,
-        })
+        });
     }
 
     OnStackCountChanged(stackCount: number): void {
-        if (!IsServer()) { return }
-        let stack = this.GetStackCount();
+        if (!IsServer()) {
+            return;
+        }
+        const stack = this.GetStackCount();
         if (stack == 0) {
-            let effect_fx = ParticleManager.CreateParticle(
-                "particles/units/heroes/hero_antimage/antimage_spellshield.vpcf",
+            const effect_fx = ParticleManager.CreateParticle(
+                'particles/units/heroes/hero_antimage/antimage_spellshield.vpcf',
                 ParticleAttachment.POINT_FOLLOW,
                 this.GetParent()
-            )
+            );
             ParticleManager.SetParticleControlEnt(
-                effect_fx, 0,
+                effect_fx,
+                0,
                 this.GetParent(),
-                ParticleAttachment.POINT_FOLLOW, "attach_hitloc", Vector(0, 0, 0), true
-            )
-            ParticleManager.ReleaseParticleIndex(effect_fx)
-            this.Destroy()
+                ParticleAttachment.POINT_FOLLOW,
+                'attach_hitloc',
+                Vector(0, 0, 0),
+                true
+            );
+            ParticleManager.ReleaseParticleIndex(effect_fx);
+            this.Destroy();
         }
     }
 }

@@ -1,3 +1,1 @@
-declare interface CDOTA_Item extends CDOTABaseAbility {
-
-}
+declare interface CDOTA_Item extends CDOTABaseAbility {}

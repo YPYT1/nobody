@@ -1,218 +1,209 @@
-
-declare type AttributeMainKey = "AttackDamage"
-    | "AttackSpeed"
-    | "AttackRange"
-    | "AttackRate"
-    | "PhyicalArmor"
-    | "MaxHealth"
-    | "HealthRegen"
-    | "MaxMana"
-    | "ManaRegen"
-    | "MoveSpeed"
-    | "AbilityHaste"
-    | "AbilityCooldown"
-    | "AbilityCooldown2"
-    | "CriticalChance"
-    | "CriticalDamage"
-    | "PickItemRadius"
-    | "DamageBonusMul"
-    | "DamageServerMul"
-    | "FinalDamageMul"
-    | "MeleeDmgPct"
-    | "RangedDmgPct"
-    | "BurningDmg"
-    | "BurningDuration"
-    | "IceMoveSlow"
-    | "FireDamageBonus"
-    | "IceDamageBonus"
-    | "ThunderDamageBonus"
-    | "WindDamageBonus"
-    | "LightDamageBonus"
-    | "DarkDamageBonus"
-    | "KillRestoreHp"
-    | "KillRestoreMp"
-    | "RestoreIncrease"
-    | "AllElementDamageBonus"
-    | "AllElementPent"
-    | "FirePent"
-    | "IcePent"
-    | "ThunderPent"
-    | "WindPent"
-    | "AllElementResist"
-    | "FireResist"
-    | "IceResist"
-    | "ThunderResist"
-    | "WindResist"
-    | "FixedDamage"
-    | "DmgReductionFixed"
-    | "DmgReductionPct"
-    | "SingleExpeIncrease"
-    | "TeamExpeIncrease"
-    | "SacredEquipSkillDmg"
-    | "ManaCostRate"
-    | "AbilityImproved"
-    | "EvasionProb"
-    | "BasicAbilityDmg"
-    | "CreatureDmgLeader"
-    | "CreatureDmgNormal"
-    | "VisionRange"
-    | "SoulGetRate"
-    | "KillsGetRate"
-
-
-    ;
-declare type EnemyAttributeKey = "AllElementResist"
-    | "FireResist"
-    | "IceResist"
-    | "ThunderResist"
-    | "WindResist"
-    | "FixedDamage"
-    | "DmgReductionFixed"
-    | "CriticalChanceResist"
-    | "CriticalDamageReduction"
-    | "DmgReductionPct"
-    | "AbilityHaste"
-    | "DamageBonusMul"
-    | "RestoreIncrease"
-    | "FireDamageIncome"
-    | "IceDamageIncome"
-    | "ThunderDamageIncome"
-    | "WindDamageIncome"
-    | "LightDamageIncome"
-    | "DarkDamageIncome"
-
-    ;
+declare type AttributeMainKey =
+    | 'AttackDamage'
+    | 'AttackSpeed'
+    | 'AttackRange'
+    | 'AttackRate'
+    | 'PhyicalArmor'
+    | 'MaxHealth'
+    | 'HealthRegen'
+    | 'MaxMana'
+    | 'ManaRegen'
+    | 'MoveSpeed'
+    | 'AbilityHaste'
+    | 'AbilityCooldown'
+    | 'AbilityCooldown2'
+    | 'CriticalChance'
+    | 'CriticalDamage'
+    | 'PickItemRadius'
+    | 'DamageBonusMul'
+    | 'DamageServerMul'
+    | 'FinalDamageMul'
+    | 'MeleeDmgPct'
+    | 'RangedDmgPct'
+    | 'BurningDmg'
+    | 'BurningDuration'
+    | 'IceMoveSlow'
+    | 'FireDamageBonus'
+    | 'IceDamageBonus'
+    | 'ThunderDamageBonus'
+    | 'WindDamageBonus'
+    | 'LightDamageBonus'
+    | 'DarkDamageBonus'
+    | 'KillRestoreHp'
+    | 'KillRestoreMp'
+    | 'RestoreIncrease'
+    | 'AllElementDamageBonus'
+    | 'AllElementPent'
+    | 'FirePent'
+    | 'IcePent'
+    | 'ThunderPent'
+    | 'WindPent'
+    | 'AllElementResist'
+    | 'FireResist'
+    | 'IceResist'
+    | 'ThunderResist'
+    | 'WindResist'
+    | 'FixedDamage'
+    | 'DmgReductionFixed'
+    | 'DmgReductionPct'
+    | 'SingleExpeIncrease'
+    | 'TeamExpeIncrease'
+    | 'SacredEquipSkillDmg'
+    | 'ManaCostRate'
+    | 'AbilityImproved'
+    | 'EvasionProb'
+    | 'BasicAbilityDmg'
+    | 'CreatureDmgLeader'
+    | 'CreatureDmgNormal'
+    | 'VisionRange'
+    | 'SoulGetRate'
+    | 'KillsGetRate';
+declare type EnemyAttributeKey =
+    | 'AllElementResist'
+    | 'FireResist'
+    | 'IceResist'
+    | 'ThunderResist'
+    | 'WindResist'
+    | 'FixedDamage'
+    | 'DmgReductionFixed'
+    | 'CriticalChanceResist'
+    | 'CriticalDamageReduction'
+    | 'DmgReductionPct'
+    | 'AbilityHaste'
+    | 'DamageBonusMul'
+    | 'RestoreIncrease'
+    | 'FireDamageIncome'
+    | 'IceDamageIncome'
+    | 'ThunderDamageIncome'
+    | 'WindDamageIncome'
+    | 'LightDamageIncome'
+    | 'DarkDamageIncome';
 /** 自定义属性子类 */
-declare type AttributeSubKey = "Base"
-    | "Bonus"
-    | "Fixed"
-    | "BasePercent"
-    | "BonusPercent"
-    | "TotalPercent"
-    | "PreLvBase"
-    | "PreLvBonus"
-    | "PreLvFixed"
-    | "MulRegion"
-    | "Limit"
-    | "Last" // 是否为最低值
-    | "Up_Base"
-    ;
+declare type AttributeSubKey =
+    | 'Base'
+    | 'Bonus'
+    | 'Fixed'
+    | 'BasePercent'
+    | 'BonusPercent'
+    | 'TotalPercent'
+    | 'PreLvBase'
+    | 'PreLvBonus'
+    | 'PreLvFixed'
+    | 'MulRegion'
+    | 'Limit'
+    | 'Last' // 是否为最低值
+    | 'Up_Base';
 
 /** 敌人属性 */
 declare type EnemyAttributeValueType = {
     [key1 in EnemyAttributeKey]?: {
-        [key2 in AttributeSubKey]?: number
+        [key2 in AttributeSubKey]?: number;
     };
-}
+};
 
 declare type EnemyAttributeTableType = {
     [key1 in EnemyAttributeKey]?: {
-        [key2 in AttributeSubKey]?: number
-    }
-}
-
+        [key2 in AttributeSubKey]?: number;
+    };
+};
 
 /** 英雄属性 */
 declare type CustomAttributeValueType = {
     [key1 in AttributeMainKey | EnemyAttributeKey]?: number;
-}
+};
 
 declare type CustomAttributeShowType = {
     [key1 in AttributeMainKey]?: Record<number, number>;
-}
+};
 
 /** 通用属性表 */
 declare type CustomAttributeTableType = {
     [key1 in AttributeMainKey | EnemyAttributeKey]?: {
-        [key2 in AttributeSubKey]?: number
-    }
-}
+        [key2 in AttributeSubKey]?: number;
+    };
+};
 
 declare type MulCustomAttributeTableType = {
-    [key1 in AttributeMainKey | EnemyAttributeKey]?: { [key: string]: number }
-}
-
-
+    [key1 in AttributeMainKey | EnemyAttributeKey]?: { [key: string]: number };
+};
 
 declare type CustomAttributeConversionType = {
     [key1 in AttributeMainKey]?: {
         [key2 in AttributeMainKey]?: {
-            [key3 in AttributeSubKey]?: number
-        }
-    }
-}
+            [key3 in AttributeSubKey]?: number;
+        };
+    };
+};
 
-declare type CustomHeroAbilityTypes = "Null"
-    | "Summon"
-    | "Ring"
-    | "Surround"
-    | "Aoe"
-    | "Bounce"
-    | "Missile"
-    | "Targeting"
-    | "Dot"
-    | "Orb"
-    | "Resource"
-    | "Growth"
-    | "Buff"
-    | "All"
+declare type CustomHeroAbilityTypes =
+    | 'Null'
+    | 'Summon'
+    | 'Ring'
+    | 'Surround'
+    | 'Aoe'
+    | 'Bounce'
+    | 'Missile'
+    | 'Targeting'
+    | 'Dot'
+    | 'Orb'
+    | 'Resource'
+    | 'Growth'
+    | 'Buff'
+    | 'All';
 
-declare type OverrideSpecialKeyTypes = "skv_missile_count"
-    | "skv_missile_speed"
-    | "skv_missile_distance"
-    | "skv_missile_dmg"
-    | "skv_aoe_radius"
-    | "skv_aoe_chance"
-    | "skv_aoe_correct"
-    | "skv_aoe_dmg"
-    | "skv_dot_duration"
-    | "skv_dot_interval"
-    | "skv_dot_dmg"
-    | "skv_grow_value"
-    | "skv_surround_speed"
-    | "skv_surround_dmg"
-    | "skv_surround_count"
-    | "skv_surround_distance"
-    | "skv_surround_dmg"
-    | "skv_ring_width"
-    | "skv_ring_interval"
-    | "skv_ring_range"
-    | "skv_ring_width"
-    | "skv_ring_dmg"
-    | "skv_bounce_count"
-    | "skv_bounce_increase"
-    | "skv_bounce_reduction"
-    | "skv_bounce_dmg"
-    | "skv_targeting_count"
-    | "skv_targeting_dmg"
-    | "skv_targeting_multiple1"
-    | "skv_targeting_multiple2"
-    | "skv_targeting_multiple3"
-    | "skv_resource_income"
-    | "skv_orb_chance"
-    | "skv_orb_required"
-    | "skv_orb_dmg"
-    | "skv_summon_duration"
-    | "skv_summon_strength"
-    | "skv_summon_haste"
-    | "skv_summon_dmg"
-    | "skv_growth_bonus"
-    | "skv_buff_increase"
-    | "skv_all_haste"
-    | "skv_all_dmg"
-    | "skv_all_manacost"
+declare type OverrideSpecialKeyTypes =
+    | 'skv_missile_count'
+    | 'skv_missile_speed'
+    | 'skv_missile_distance'
+    | 'skv_missile_dmg'
+    | 'skv_aoe_radius'
+    | 'skv_aoe_chance'
+    | 'skv_aoe_correct'
+    | 'skv_aoe_dmg'
+    | 'skv_dot_duration'
+    | 'skv_dot_interval'
+    | 'skv_dot_dmg'
+    | 'skv_grow_value'
+    | 'skv_surround_speed'
+    | 'skv_surround_dmg'
+    | 'skv_surround_count'
+    | 'skv_surround_distance'
+    | 'skv_surround_dmg'
+    | 'skv_ring_width'
+    | 'skv_ring_interval'
+    | 'skv_ring_range'
+    | 'skv_ring_width'
+    | 'skv_ring_dmg'
+    | 'skv_bounce_count'
+    | 'skv_bounce_increase'
+    | 'skv_bounce_reduction'
+    | 'skv_bounce_dmg'
+    | 'skv_targeting_count'
+    | 'skv_targeting_dmg'
+    | 'skv_targeting_multiple1'
+    | 'skv_targeting_multiple2'
+    | 'skv_targeting_multiple3'
+    | 'skv_resource_income'
+    | 'skv_orb_chance'
+    | 'skv_orb_required'
+    | 'skv_orb_dmg'
+    | 'skv_summon_duration'
+    | 'skv_summon_strength'
+    | 'skv_summon_haste'
+    | 'skv_summon_dmg'
+    | 'skv_growth_bonus'
+    | 'skv_buff_increase'
+    | 'skv_all_haste'
+    | 'skv_all_dmg'
+    | 'skv_all_manacost';
 
-    ;
-
-
-declare type OverrideSpecialBonusTypes = "Base" | "Percent" | "Multiple" | "Correct";
-
+declare type OverrideSpecialBonusTypes = 'Base' | 'Percent' | 'Multiple' | 'Correct';
 
 interface OverrideSpecialObjectProps {
     [special_key: string]: {
         // base_value: number;
         mul_list: number[];
-    }
+    };
 }
 
 interface OverrideSpecialValueProps {
@@ -228,25 +219,25 @@ interface OverrideSpecialValueProps {
         /** 结果  = (原始 + 基础) * 倍率 * 修正 */
         // result_value: number;
         cache_value?: number;
-    }
+    };
 }
 
 interface MinorAbilityUpgradesProps {
-    [ability_name: string]: OverrideSpecialValueProps
+    [ability_name: string]: OverrideSpecialValueProps;
 }
 
 /** 资源类型 */
-type PlayerResourceTyps = "Soul" | "Kills" | "SingleExp" | "TeamExp";
+type PlayerResourceTyps = 'Soul' | 'Kills' | 'SingleExp' | 'TeamExp';
 
 interface PlayEffectProps {
     /** 目标 */
-    hTarget?: CDOTA_BaseNPC,
+    hTarget?: CDOTA_BaseNPC;
     /** 坐标点 */
-    vPos?: Vector,
+    vPos?: Vector;
     /** 值 */
-    value?: number,
+    value?: number;
     /** 伤害 */
-    damage?: number,
+    damage?: number;
     /** 触发额外效果 */
     trigger?: boolean;
     /** 类型编号 */
@@ -254,33 +245,31 @@ interface PlayEffectProps {
     /** 额外倍率 */
     bonus_pct?: number;
     /** 临时单位组 */
-    unit_list?: CDOTA_BaseNPC[]
+    unit_list?: CDOTA_BaseNPC[];
     /** 克隆? */
-    is_clone?: number
+    is_clone?: number;
     // 爆炸范围
     radius?: number;
 
-    damage_type?: DamageTypes,
-    element_type?: ElementTypes,
+    damage_type?: DamageTypes;
+    element_type?: ElementTypes;
 
     SelfAbilityMul?: number;
     DamageBonusMul?: number;
     FinalDamageMul?: number;
 }
 
-
 /**
  * 技能类型修正类型,对应支持的修改值类型 `基础` `百分比加成` `独立乘算` `修正值`
  */
 interface SpecialvalueOfTableProps {
-
     Missile: {
         skv_missile_count: number;
         skv_missile_speed: number;
         skv_missile_distance: number;
         skv_missile_d_final: number;
         skv_missile_d_bonus: number;
-        skv_missile_d_ability: number
+        skv_missile_d_ability: number;
     };
     Aoe: {
         skv_aoe_radius: number;
@@ -346,8 +335,6 @@ interface SpecialvalueOfTableProps {
     };
 }
 
-declare type PopupsType = "Damage" | "Miss" | "Heal"
+declare type PopupsType = 'Damage' | 'Miss' | 'Heal';
 
-declare type PlayerAttributeTypes = "drop_double_exp"
-    | "drop_double_soul"
-    | "kill_bonus_soul"
+declare type PlayerAttributeTypes = 'drop_double_exp' | 'drop_double_soul' | 'kill_bonus_soul';

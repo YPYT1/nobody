@@ -1,5 +1,5 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { drow_2a, modifier_drow_2a } from "./drow_2a";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { drow_2a, modifier_drow_2a } from './drow_2a';
 
 /**
  * 15.穿透（3/3）:连续射击可穿透目标，伤害提高20%/40%/60%
@@ -9,7 +9,6 @@ import { drow_2a, modifier_drow_2a } from "./drow_2a";
  */
 @registerAbility()
 export class drow_2a_b extends drow_2a {
-
     bb_chance: number;
     bb_radius: number;
     bb_value: number;
@@ -18,40 +17,40 @@ export class drow_2a_b extends drow_2a {
 
     ability_damage: number;
 
-    aoe_chance:number;
+    aoe_chance: number;
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf", context)
+        precacheResString('particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf', context);
     }
 
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_2a_b"
+        return 'modifier_drow_2a_b';
     }
 
     UpdataSpecialValue(): void {
         // this.DamageBonusMul = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster,  '15', 'bonus_value')
-        this.cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '16', 'cigu_value')
-        this.bb_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "17", "chance");
-        this.bb_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "17", "base_value");
+        this.cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '16', 'cigu_value');
+        this.bb_chance = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '17', 'chance');
+        this.bb_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '17', 'base_value');
         // rune_34	游侠#9	连续射击【冰爆】的伤害提升至500%
-        if (this.caster.rune_level_index.hasOwnProperty("rune_34")) {
-            this.bb_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_34', 'bb_dmg')
+        if (this.caster.rune_level_index.hasOwnProperty('rune_34')) {
+            this.bb_value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_34', 'bb_dmg');
         }
-        let bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "17", "radius");
-        this.bb_radius = this.GetTypesAffixValue(bb_radius, "Aoe", "skv_aoe_radius")
+        const bb_radius = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '17', 'radius');
+        this.bb_radius = this.GetTypesAffixValue(bb_radius, 'Aoe', 'skv_aoe_radius');
         // rune_35	游侠#10	连续射击【冰爆】的范围提高50%，且必定触发冰爆
-        if (this.caster.rune_level_index.hasOwnProperty("rune_35")) {
-            let bb_radius_bonus_pct = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_35', 'bb_radius_bonus_pct') * 0.01;
-            this.bb_radius *= (1 + bb_radius_bonus_pct)
+        if (this.caster.rune_level_index.hasOwnProperty('rune_35')) {
+            const bb_radius_bonus_pct = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_35', 'bb_radius_bonus_pct') * 0.01;
+            this.bb_radius *= 1 + bb_radius_bonus_pct;
             this.bb_state = true;
         }
 
-        this.aoe_chance = this.GetTypesAffixValue(0,"Aoe","skv_aoe_chance");
+        this.aoe_chance = this.GetTypesAffixValue(0, 'Aoe', 'skv_aoe_chance');
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
-            let SelfAbilityMul = extraData.SelfAbilityMul;
-            let DamageBonusMul = extraData.DamageBonusMul;
+            const SelfAbilityMul = extraData.SelfAbilityMul;
+            const DamageBonusMul = extraData.DamageBonusMul;
             this.ability_damage = extraData.a;
             if (this.cigu_value > 0) {
                 ApplyCustomDamage({
@@ -64,7 +63,7 @@ export class drow_2a_b extends drow_2a {
                     is_primary: true,
                     SelfAbilityMul: SelfAbilityMul,
                     DamageBonusMul: DamageBonusMul,
-                })
+                });
             } else {
                 ApplyCustomDamage({
                     victim: target,
@@ -75,33 +74,32 @@ export class drow_2a_b extends drow_2a {
                     is_primary: true,
                     SelfAbilityMul: SelfAbilityMul,
                     DamageBonusMul: DamageBonusMul,
-                })
+                });
             }
-
 
             // 减速的敌人有概率触发冰爆
-            let is_slowed = UnitIsSlowed(target);
+            const is_slowed = UnitIsSlowed(target);
             if (is_slowed && (this.bb_state || RollPercentage(this.bb_chance))) {
-                let vPos = target.GetAbsOrigin()
-                this.TriggerActive({ vPos: vPos })
-                if(RollPercentage(this.aoe_chance)){
-                    this.MultiCastAoe(vPos)
+                const vPos = target.GetAbsOrigin();
+                this.TriggerActive({ vPos: vPos });
+                if (RollPercentage(this.aoe_chance)) {
+                    this.MultiCastAoe(vPos);
                 }
             }
-            return false
+            return false;
         }
     }
 
     TriggerActive(params: PlayEffectProps): void {
-        let vPos = params.vPos;
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf",
+        const vPos = params.vPos;
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova_flash_c.vpcf',
             ParticleAttachment.CUSTOMORIGIN,
             null
         );
         ParticleManager.SetParticleControl(effect_fx, 0, vPos);
         ParticleManager.ReleaseParticleIndex(effect_fx);
-        let enemies = FindUnitsInRadius(
+        const enemies = FindUnitsInRadius(
             this.caster.GetTeam(),
             vPos,
             null,
@@ -113,7 +111,7 @@ export class drow_2a_b extends drow_2a {
             false
         );
 
-        for (let enemy of enemies) {
+        for (const enemy of enemies) {
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.caster,
@@ -124,21 +122,19 @@ export class drow_2a_b extends drow_2a {
                 is_primary: true,
                 SelfAbilityMul: this.bb_value,
                 DamageBonusMul: 0,
-            })
+            });
         }
     }
 }
 
 @registerModifier()
 export class modifier_drow_2a_b extends modifier_drow_2a {
-
     UpdataSpecialValue(): void {
-        let cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '16', 'cigu_value')
+        const cigu_value = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '16', 'cigu_value');
         if (cigu_value > 0) {
             this.proj_name = G_PorjLinear.drow.ice;
         }
 
-        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '15', 'bonus_value')
-
+        this.DamageBonusMul += GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '15', 'bonus_value');
     }
 }

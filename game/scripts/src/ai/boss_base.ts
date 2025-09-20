@@ -1,5 +1,4 @@
 export class CBossBase {
-
     me: CDOTA_BaseNPC;
     sUnitName: string;
     flDefaultInterval: number;
@@ -12,10 +11,10 @@ export class CBossBase {
     /** Boss血量百分比阶段 */
     boss_phase: number[];
     /** 阶段状态 */
-    PhaseStatus: { hpPct: number, activate: boolean; }[];
+    PhaseStatus: { hpPct: number; activate: boolean }[];
 
     /** 技能优先级 */
-    AbilityPriority: { [name: string]: number; };
+    AbilityPriority: { [name: string]: number };
 
     constructor(hUnit: CDOTA_BaseNPC, flInterval: number) {
         this.me = hUnit;
@@ -29,25 +28,29 @@ export class CBossBase {
         this.flAggroAcquireRange = 4500;
         this.hCurrorder = null;
         this.sUnitName = hUnit.GetUnitName();
-        this.me.AddActivityModifier("run");
-        this._Init()
-        this.me.SetContextThink("delay", () => {
-            this.OnSetupAbilities();
-            return null;
-        }, 1);
-        this.me.SetThink("OnBossCommonThink", this, "OnBossCommonThink", 1);
+        this.me.AddActivityModifier('run');
+        this._Init();
+        this.me.SetContextThink(
+            'delay',
+            () => {
+                this.OnSetupAbilities();
+                return null;
+            },
+            1
+        );
+        this.me.SetThink('OnBossCommonThink', this, 'OnBossCommonThink', 1);
     }
 
-    _Init() { }
+    _Init() {}
 
     // 初始化技能和优先级
     OnSetupAbilities() {
-        this.me.RemoveAbility("twin_gate_portal_warp");
-        let ability_count = this.me.GetAbilityCount();
+        this.me.RemoveAbility('twin_gate_portal_warp');
+        const ability_count = this.me.GetAbilityCount();
         for (let i = 0; i < ability_count; i++) {
-            let hAbility = this.me.GetAbilityByIndex(i);
+            const hAbility = this.me.GetAbilityByIndex(i);
             if (hAbility) {
-                let ability_name = hAbility.GetAbilityName();
+                const ability_name = hAbility.GetAbilityName();
                 hAbility.SetLevel(1);
                 hAbility.SetActivated(true);
                 if (!hAbility.IsPassive() && !hAbility.IsHidden()) {
@@ -59,9 +62,9 @@ export class CBossBase {
 
     OnBaseThink(): number {
         if (!this.me || this.me.IsNull() || !this.me.IsAlive()) {
-            return - 1;
+            return -1;
         }
-        let order = null;
+        const order = null;
         if (this.nLastHealthPct > this.me.GetHealthPercent()) {
             this.nLastHealthPct = this.me.GetHealthPercent();
             this.OnHealthPercentThreshold(this.nLastHealthPct);
@@ -73,7 +76,7 @@ export class CBossBase {
             // 普通攻击
             return 0.3;
         }
-        let AbilitiesReady = this.GetReadyAbilitiesAndItems();
+        const AbilitiesReady = this.GetReadyAbilitiesAndItems();
         // print("AbilitiesReady ", AbilitiesReady.length);
         if (AbilitiesReady.length == 0) {
             ExecuteOrderFromTable({
@@ -85,13 +88,13 @@ export class CBossBase {
             return 1;
         } else {
             // 释放技能
-            const hAbility = AbilitiesReady[0]
-            let ability_behavior = hAbility.GetBehaviorInt();
+            const hAbility = AbilitiesReady[0];
+            const ability_behavior = hAbility.GetBehaviorInt();
             let Order: ExecuteOrderOptions;
-            let channel_time = hAbility.GetChannelTime();
-            let cast_point = hAbility.GetCastPoint();
-            let ability_range = hAbility.GetCastRange(this.me.GetOrigin(), this.me);
-            let enemies = FindUnitsInRadius(
+            const channel_time = hAbility.GetChannelTime();
+            const cast_point = hAbility.GetCastPoint();
+            const ability_range = hAbility.GetCastRange(this.me.GetOrigin(), this.me);
+            const enemies = FindUnitsInRadius(
                 this.me.GetTeam(),
                 this.me.GetOrigin(),
                 null,
@@ -144,29 +147,35 @@ export class CBossBase {
     }
 
     OnBossCommonThink() {
-        if (this.me.IsAlive() == false) { return 1; }
-        if (GameRules.IsGamePaused()) { return 0.1; }
-        if (this.me.IsChanneling()) { return 0.1; }
+        if (this.me.IsAlive() == false) {
+            return 1;
+        }
+        if (GameRules.IsGamePaused()) {
+            return 0.1;
+        }
+        if (this.me.IsChanneling()) {
+            return 0.1;
+        }
         return this.OnBaseThink();
     }
 
     /**
      * 获取当前能释放的技能
-     * @returns 
+     * @returns
      */
     GetReadyAbilitiesAndItems() {
-        let AbilitiesReady: CDOTABaseAbility[] = [];
+        const AbilitiesReady: CDOTABaseAbility[] = [];
         // DeepPrintTable(this.AbilityPriority);
         for (const n of $range(0, this.me.GetAbilityCount() - 1)) {
-            let hAbility = this.me.GetAbilityByIndex(n);
+            const hAbility = this.me.GetAbilityByIndex(n);
 
-            if (hAbility
-                && hAbility.IsFullyCastable()
-                && !hAbility.IsPassive()
-                && !hAbility.IsHidden()
-                && hAbility.IsActivated()
-                && hAbility.IsCooldownReady()
-
+            if (
+                hAbility &&
+                hAbility.IsFullyCastable() &&
+                !hAbility.IsPassive() &&
+                !hAbility.IsHidden() &&
+                hAbility.IsActivated() &&
+                hAbility.IsCooldownReady()
             ) {
                 if (this.AbilityPriority[hAbility.GetAbilityName()] != null) {
                     table.insert(AbilitiesReady, hAbility);
@@ -175,8 +184,8 @@ export class CBossBase {
         }
         if (AbilitiesReady.length > 1) {
             table.sort(AbilitiesReady, (h1, h2) => {
-                let caster_range1 = h1.GetCastRange(this.me.GetAbsOrigin(), this.me);
-                let caster_range2 = h2.GetCastRange(this.me.GetAbsOrigin(), this.me);
+                const caster_range1 = h1.GetCastRange(this.me.GetAbsOrigin(), this.me);
+                const caster_range2 = h2.GetCastRange(this.me.GetAbsOrigin(), this.me);
                 // let nAbility1Priority = this.AbilityPriority[h1.GetAbilityName()];
                 // let nAbility2Priority = this.AbilityPriority[h2.GetAbilityName()];
                 return caster_range1 > caster_range2;
@@ -191,7 +200,7 @@ export class CBossBase {
     // 生命值首次达到一定百分比时转阶段或者多新技能
     OnHealthPercentThreshold(nPct: number) {
         //
-        for (let hPhase of this.PhaseStatus) {
+        for (const hPhase of this.PhaseStatus) {
             if (hPhase.activate == false && hPhase.hpPct > nPct) {
                 hPhase.activate = true;
                 this.OnActivationBossNewPhase(hPhase.hpPct);
@@ -200,16 +209,16 @@ export class CBossBase {
     }
 
     /** 激活对应BOSS的阶段 */
-    OnActivationBossNewPhase(hpPct: number) { }
+    OnActivationBossNewPhase(hpPct: number) {}
 
     GetSpellCastTime(hSpell: CDOTABaseAbility) {
-        let flCastPoint = math.max(0.25, hSpell.GetCastPoint());
+        const flCastPoint = math.max(0.25, hSpell.GetCastPoint());
         return flCastPoint + 0.01;
     }
 }
 
 function GetEnemyHeroesInRange(hUnit: CDOTA_BaseNPC, flRange: number = 1500) {
-    let enemies = FindUnitsInRadius(
+    const enemies = FindUnitsInRadius(
         hUnit.GetTeamNumber(),
         hUnit.GetAbsOrigin(),
         null,
@@ -219,6 +228,6 @@ function GetEnemyHeroesInRange(hUnit: CDOTA_BaseNPC, flRange: number = 1500) {
         UnitTargetFlags.NONE,
         FindOrder.CLOSEST,
         false
-    )
-    return enemies
+    );
+    return enemies;
 }

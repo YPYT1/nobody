@@ -1,11 +1,9 @@
-
-import { HeroTalentObject } from "../../kv_data/hero_talent_object";
-import { modifier_picture_abilities } from "../../modifier/picture/modifier_picture_abilities";
-import { modifier_rune_effect } from "../../modifier/rune_effect/modifier_rune_effect";
-import { BaseAbility, BaseModifier } from "../../utils/dota_ts_adapter";
+import { HeroTalentObject } from '../../kv_data/hero_talent_object';
+import type { modifier_picture_abilities } from '../../modifier/picture/modifier_picture_abilities';
+import type { modifier_rune_effect } from '../../modifier/rune_effect/modifier_rune_effect';
+import { BaseAbility, BaseModifier } from '../../utils/dota_ts_adapter';
 
 export class BaseHeroAbility extends BaseAbility {
-
     init: boolean;
     caster: CDOTA_BaseNPC;
     team: DotaTeam;
@@ -37,41 +35,40 @@ export class BaseHeroAbility extends BaseAbility {
     GetManaCost(level: number): number {
         if (IsServer()) {
             if (this.caster.custom_attribute_value == null) {
-                return super.GetManaCost(-1)
+                return super.GetManaCost(-1);
             } else {
-                let ManaCostRate = this.caster.custom_attribute_value.ManaCostRate * 0.01
-                return super.GetManaCost(-1) * ManaCostRate
+                const ManaCostRate = this.caster.custom_attribute_value.ManaCostRate * 0.01;
+                return super.GetManaCost(-1) * ManaCostRate;
             }
         } else {
-            let netdata = CustomNetTables.GetTableValue("unit_attribute", `${this.GetCaster().GetEntityIndex()}`)
+            const netdata = CustomNetTables.GetTableValue('unit_attribute', `${this.GetCaster().GetEntityIndex()}`);
             let cost_rate = 1;
             if (netdata) {
-                cost_rate = netdata.value.ManaCostRate * 0.01
+                cost_rate = netdata.value.ManaCostRate * 0.01;
             }
-            return super.GetManaCost(-1) * cost_rate
+            return super.GetManaCost(-1) * cost_rate;
         }
-
     }
 
     OnUpgrade(): void {
         if (this.init != true) {
             this.init = true;
             this.caster = this.GetCaster();
-            this.player_id = this.caster.GetPlayerOwnerID()
+            this.player_id = this.caster.GetPlayerOwnerID();
             this.team = this.caster.GetTeamNumber();
             this.InitCustomAbilityType();
         }
         this.UpdataOnUpgrade();
-        this.UpdataAbilityValue()
-        this.UpdataSpecialValue()
+        this.UpdataAbilityValue();
+        this.UpdataSpecialValue();
     }
 
     /** 技能升级更新 */
-    UpdataOnUpgrade() { }
+    UpdataOnUpgrade() {}
     /** 技能的Ability更新 */
-    UpdataAbilityValue() { }
+    UpdataAbilityValue() {}
     /** 技能的特殊词条更新 */
-    UpdataSpecialValue() { }
+    UpdataSpecialValue() {}
 
     InitCustomAbilityType() {
         this.custom_ability_types = {
@@ -98,187 +95,186 @@ export class BaseHeroAbility extends BaseAbility {
     }
 
     GetTypesAffixValue<T1 extends keyof SpecialvalueOfTableProps, T2 extends SpecialvalueOfTableProps[T1]>(
-        flBaseValue: number, skv_affix: T1, skv_key: keyof T2
+        flBaseValue: number,
+        skv_affix: T1,
+        skv_key: keyof T2
     ) {
-        if (this.custom_ability_types == null) { return flBaseValue }
-        let skv_type = this.custom_ability_types.skv_type[skv_affix]
-        if (!skv_type) { return flBaseValue }
-        const row_data = GameRules.CustomOverrideAbility.OverrideSpecialValue[this.player_id][skv_key as string]
+        if (this.custom_ability_types == null) {
+            return flBaseValue;
+        }
+        const skv_type = this.custom_ability_types.skv_type[skv_affix];
+        if (!skv_type) {
+            return flBaseValue;
+        }
+        const row_data = GameRules.CustomOverrideAbility.OverrideSpecialValue[this.player_id][skv_key as string];
         if (row_data) {
             // let flBaseValue = value;
-            let flAddResult = row_data.base_value;
-            let flMulResult = row_data.mul_value;
-            let flPercentResult = row_data.percent_value * 0.01;
-            let flCorrResult = math.max(0, row_data.correct_value * 0.01);
-            let flResult = math.floor((flBaseValue + flAddResult) * flPercentResult * flMulResult * flCorrResult);
-            return flResult
+            const flAddResult = row_data.base_value;
+            const flMulResult = row_data.mul_value;
+            const flPercentResult = row_data.percent_value * 0.01;
+            const flCorrResult = math.max(0, row_data.correct_value * 0.01);
+            const flResult = math.floor((flBaseValue + flAddResult) * flPercentResult * flMulResult * flCorrResult);
+            return flResult;
         }
-        return flBaseValue
+        return flBaseValue;
     }
 
     /** 获取特殊型字段值 */
-    GetTypesAffixSpecialValue<T1 extends keyof typeof SpecialvalueOfTableSpecialObject, T2 extends keyof typeof SpecialvalueOfTableSpecialObject[T1]>(
-        skv_affix: T1, skv_key: T2
-    ) {
-        if (this.custom_ability_types == null) { return [] }
-        let skv_type = this.custom_ability_types.skv_type[skv_affix];
-        if (!skv_type) { return [] }
-        let skv_key_list = SpecialvalueOfTableSpecialObject[skv_affix][skv_key];
-        let value_list: number[] = [];
-        for (let _key in skv_key_list) {
-            let value = this.GetTypesAffixValue(0, skv_affix, _key as any);
-            value_list.push(value)
+    GetTypesAffixSpecialValue<
+        T1 extends keyof typeof SpecialvalueOfTableSpecialObject,
+        T2 extends keyof (typeof SpecialvalueOfTableSpecialObject)[T1]
+    >(skv_affix: T1, skv_key: T2) {
+        if (this.custom_ability_types == null) {
+            return [];
         }
-        return value_list
+        const skv_type = this.custom_ability_types.skv_type[skv_affix];
+        if (!skv_type) {
+            return [];
+        }
+        const skv_key_list = SpecialvalueOfTableSpecialObject[skv_affix][skv_key];
+        const value_list: number[] = [];
+        for (const _key in skv_key_list) {
+            const value = this.GetTypesAffixValue(0, skv_affix, _key as any);
+            value_list.push(value);
+        }
+        return value_list;
     }
 
-    GetSpecialValueForTypes
-        <T1 extends keyof SpecialvalueOfTableProps, T2 extends keyof SpecialvalueOfTableProps[T1]>(
-            name: string,
-            skv_affix: T1,
-            skv_key: T2
-        ): number {
-        return this.GetTypesAffixValue(this.GetSpecialValueFor(name), skv_affix, skv_key)
+    GetSpecialValueForTypes<T1 extends keyof SpecialvalueOfTableProps, T2 extends keyof SpecialvalueOfTableProps[T1]>(
+        name: string,
+        skv_affix: T1,
+        skv_key: T2
+    ): number {
+        return this.GetTypesAffixValue(this.GetSpecialValueFor(name), skv_affix, skv_key);
     }
 
     SetCustomAbilityType(type_key: CustomHeroAbilityTypes, type_state: boolean) {
-        if (type_key == 'Null') { return }
+        if (type_key == 'Null') {
+            return;
+        }
         if (this.custom_ability_types.skv_type[type_key] != type_state) {
             this.custom_ability_types.skv_type[type_key] = type_state;
-            CustomNetTables.SetTableValue(
-                "custom_ability_types",
-                `${this.GetEntityIndex()}`,
-                this.custom_ability_types
-            );
+            CustomNetTables.SetTableValue('custom_ability_types', `${this.GetEntityIndex()}`, this.custom_ability_types);
         }
     }
 
     GetCustomAbilityType() {
-        let type_list: CustomHeroAbilityTypes[] = [];
-        for (let _key in this.custom_ability_types.skv_type) {
-            let type_key = _key as CustomHeroAbilityTypes
-            let type_state = this.custom_ability_types.skv_type[type_key];
+        const type_list: CustomHeroAbilityTypes[] = [];
+        for (const _key in this.custom_ability_types.skv_type) {
+            const type_key = _key as CustomHeroAbilityTypes;
+            const type_state = this.custom_ability_types.skv_type[type_key];
             if (type_state) {
-                type_list.push(type_key)
+                type_list.push(type_key);
             }
         }
-        return type_list
+        return type_list;
     }
 
     /** 增加元素 */
     AddCustomAbilityElement(element_key: ElementTypes, type_state: boolean = true) {
-        let index = this.custom_ability_types.element_type.indexOf(element_key);
+        const index = this.custom_ability_types.element_type.indexOf(element_key);
         if (index == -1 && type_state) {
             this.custom_ability_types.element_type.push(element_key);
-            CustomNetTables.SetTableValue(
-                "custom_ability_types",
-                `${this.GetEntityIndex()}`,
-                this.custom_ability_types
-            );
+            CustomNetTables.SetTableValue('custom_ability_types', `${this.GetEntityIndex()}`, this.custom_ability_types);
         }
     }
 
     /** 获取存档技能等级特殊效果 */
     GetServerSkillEffect(key: string, input_value: number) {
-        let skill_level_ojbect = GameRules.ServiceInterface.PlayerServerSkillTypeLevel[this.player_id];
-        if (skill_level_ojbect == null || skill_level_ojbect[key] == null) { return 0 }
-        let test_mode = true;
-        let ss_level = skill_level_ojbect[key].lv;
-        let ability_types = this.custom_ability_types.skv_type
+        const skill_level_ojbect = GameRules.ServiceInterface.PlayerServerSkillTypeLevel[this.player_id];
+        if (skill_level_ojbect == null || skill_level_ojbect[key] == null) {
+            return 0;
+        }
+        const test_mode = true;
+        const ss_level = skill_level_ojbect[key].lv;
+        const ability_types = this.custom_ability_types.skv_type;
         if ((ability_types.Targeting && ss_level > 0) || test_mode) {
-            if (key == "21") {
+            if (key == '21') {
                 // 目标型技能释放时，提升技能（25%*最大额外目标数）的最终伤害
-                return input_value * 25
+                return input_value * 25;
             }
         }
 
-        return 0
-
-
+        return 0;
     }
 
     /** 蓝量转换 */
     ManaCostAndConverDmgBonus() {
-        let cost_mana = this.GetManaCost(-1);
-        let blood_mage = this.caster.HasAbility("special_blood_mage");
+        const cost_mana = this.GetManaCost(-1);
+        const blood_mage = this.caster.HasAbility('special_blood_mage');
         if (blood_mage) {
             this.UseResources(false, false, false, true);
-            let cost_health = this.caster.GetMaxHealth() * 0.01;
-            GameRules.BasicRules.CostHealth(this.caster, cost_health)
-            return 0
+            const cost_health = this.caster.GetMaxHealth() * 0.01;
+            GameRules.BasicRules.CostHealth(this.caster, cost_health);
+            return 0;
         } else {
-            this.UseResources(true, true, true, true)
+            this.UseResources(true, true, true, true);
             let bonus_value = 0;
-            if (this.caster.rune_level_index.hasOwnProperty("rune_4")) {
-                let max_mana = this.caster.GetMaxMana();
-                let cost_percent = math.floor((100 * cost_mana) / max_mana);
-                let value = GameRules.RuneSystem.GetKvOfUnit(this.caster, "rune_4", "value")
+            if (this.caster.rune_level_index.hasOwnProperty('rune_4')) {
+                const max_mana = this.caster.GetMaxMana();
+                const cost_percent = math.floor((100 * cost_mana) / max_mana);
+                const value = GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_4', 'value');
                 // print("has rune_4", 'cost_percent', cost_percent, 'value', value,value * cost_percent)
-                bonus_value += value * cost_percent
+                bonus_value += value * cost_percent;
             }
-            bonus_value += cost_mana * this.caster.GetTalentKv("107", "power")
+            bonus_value += cost_mana * this.caster.GetTalentKv('107', 'power');
 
             // rune_79	法爷#28	聪慧每消耗1点蓝量该次技能提高2%的技能增强
-            bonus_value += cost_mana * this.caster.GetRuneKv("rune_79", "value")
+            bonus_value += cost_mana * this.caster.GetRuneKv('rune_79', 'value');
 
             // 14	双重LV%lv%:释放技能时有10%概率消耗双倍蓝量提高30% 伤害加成
             // TODO...
-            return bonus_value
+            return bonus_value;
         }
 
-        return 0
+        return 0;
     }
 
     /** 满足施法条件 */
     IsMeetCastCondition() {
         // 是否为血法师
-        let blood_mage = this.caster.HasAbility("special_blood_mage");
+        const blood_mage = this.caster.HasAbility('special_blood_mage');
         if (blood_mage) {
-            let enough_hp = this.caster.GetHealthPercent() > 10;
-            return enough_hp
-            // let hp_moret_han = 
+            const enough_hp = this.caster.GetHealthPercent() > 10;
+            return enough_hp;
+            // let hp_moret_han =
         } else {
-            return this.IsOwnersManaEnough()
+            return this.IsOwnersManaEnough();
         }
     }
 
     IsClone(extraData: ProjectileExtraData) {
-        return (extraData.clone ?? 0)
+        return extraData.clone ?? 0;
     }
 
     CloneRes(extraData: ProjectileExtraData) {
         return {
-            Clone: (extraData.clone ?? 0),
-            Shadow: ((extraData.clone ?? 0) == 1) && this.caster.GetTalentKv("117", "shadow") == 1
-        }
-
+            Clone: extraData.clone ?? 0,
+            Shadow: (extraData.clone ?? 0) == 1 && this.caster.GetTalentKv('117', 'shadow') == 1,
+        };
     }
 
     MultiCastAoe(vPos: Vector, fDamage?: number, count: number = 1) {
-        this.caster.AddNewModifier(this.caster, this, "modifier_state_multi_cast_of_aoe", {
+        this.caster.AddNewModifier(this.caster, this, 'modifier_state_multi_cast_of_aoe', {
             pos_x: vPos.x,
             pos_y: vPos.y,
             pos_z: vPos.z,
             _multi_count: count,
             _damage: fDamage ?? 0,
-        })
+        });
     }
 
-    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: ProjectileExtraData): void | boolean {
-
-    }
+    OnProjectileHit_ExtraData(target: CDOTA_BaseNPC, location: Vector, extraData: ProjectileExtraData): void | boolean {}
 }
 
-
 export class BaseHeroModifier extends BaseModifier {
-
     caster: CDOTA_BaseNPC;
 
     team: DotaTeam;
     ability: BaseHeroAbility;
     ability_damage: number;
     fakeAttack: boolean = false;
-    tracking_proj_name: string = "";
+    tracking_proj_name: string = '';
 
     /** `该技能的攻击力加成` */
     SelfAbilityMul = 100;
@@ -296,82 +292,85 @@ export class BaseHeroModifier extends BaseModifier {
     RangedDmgPct = 0;
 
     IsHidden(): boolean {
-        return true
+        return true;
     }
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.caster = this.GetCaster();
         this.element_type = ElementTypes.NONE;
-        this.damage_type = DamageTypes.PHYSICAL
+        this.damage_type = DamageTypes.PHYSICAL;
         this.team = this.caster.GetTeamNumber();
         this.ability = this.GetAbility() as BaseHeroAbility;
         this.ability_damage = 0;
         this.ability.IntrinsicMdf = this;
         this.tracking_proj_name = G_PorjTrack.drow.none;
-        this.SetStackCount(0)
+        this.SetStackCount(0);
         this.C_OnCreated();
-        this.OnRefresh(params)
-        this.StartIntervalThink(0.1)
+        this.OnRefresh(params);
+        this.StartIntervalThink(0.1);
     }
 
-    C_OnCreated(): void {
-
-    }
+    C_OnCreated(): void {}
 
     OnRefresh(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         // print("OnRefresh")
         this.UpdataAbilityValue();
         this.UpdataSpecialValue();
     }
 
     /** 技能的Ability更新 */
-    UpdataAbilityValue() { }
+    UpdataAbilityValue() {}
     /** 技能的特殊词条更新 */
-    UpdataSpecialValue() { }
+    UpdataSpecialValue() {}
 
-    OnIntervalThink(): void { }
+    OnIntervalThink(): void {}
 
-    PlayEffect(params: PlayEffectProps) { }
+    PlayEffect(params: PlayEffectProps) {}
 
     /** 使用技能 */
     DoExecutedAbility() {
-        let buff = this.caster.FindModifierByName("modifier_rune_effect") as modifier_rune_effect;
+        const buff = this.caster.FindModifierByName('modifier_rune_effect') as modifier_rune_effect;
         if (buff) {
-            buff.Rune_ExecutedAbility({})
+            buff.Rune_ExecutedAbility({});
         }
     }
 
-    DoExecutedBaseAbility(){
-        let buff = this.caster.FindModifierByName("modifier_picture_abilities") as modifier_picture_abilities;
+    DoExecutedBaseAbility() {
+        const buff = this.caster.FindModifierByName('modifier_picture_abilities') as modifier_picture_abilities;
         if (buff) {
             // print("buff",buff,buff.GetName())
-            buff._ExecutedBaseAbility()
+            buff._ExecutedBaseAbility();
         }
     }
 
     /** 施法条件 */
     CastingConditions() {
-        return (this.caster.IsAlive()
-            && this.ability.IsActivated()
-            && this.ability.IsCooldownReady()
-            && this.ability.IsMeetCastCondition()
-            && !this.caster.IsHexed()
-        )
+        return (
+            this.caster.IsAlive() &&
+            this.ability.IsActivated() &&
+            this.ability.IsCooldownReady() &&
+            this.ability.IsMeetCastCondition() &&
+            !this.caster.IsHexed()
+        );
     }
 
     CheckClone() {
-        return this.caster.clone_unit != null && this.caster.clone_unit.HasModifier("modifier_skywrath_5_clone_show")
+        return this.caster.clone_unit != null && this.caster.clone_unit.HasModifier('modifier_skywrath_5_clone_show');
     }
 
     PlayMultiCast(value: number) {
-        let sound = math.min(value - 1, 3);
-        let sound_cast = "Hero_OgreMagi.Fireblast.x" + sound;
+        const sound = math.min(value - 1, 3);
+        const sound_cast = 'Hero_OgreMagi.Fireblast.x' + sound;
         EmitSoundOn(sound_cast, this.GetCaster());
 
-        let effect_cast = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_ogre_magi/ogre_magi_multicast.vpcf",
+        const effect_cast = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_ogre_magi/ogre_magi_multicast.vpcf',
             ParticleAttachment.OVERHEAD_FOLLOW,
             this.GetCaster()
         );
@@ -381,12 +380,11 @@ export class BaseHeroModifier extends BaseModifier {
 }
 
 const SpecialvalueOfTableSpecialObject = {
-
     Targeting: {
         skv_targeting_multiple: {
             skv_targeting_multiple1: 0,
             skv_targeting_multiple2: 0,
             skv_targeting_multiple3: 0,
-        }
-    }
-}
+        },
+    },
+};

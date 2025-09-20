@@ -1,5 +1,5 @@
-import { BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import { BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { BaseHeroAbility, BaseHeroModifier } from '../../base_hero_ability';
 
 /**
  * 迷踪步【持续性】	获得10%/20%/30%移动速度加成，持续6秒。cd：15秒,蓝耗：30
@@ -8,46 +8,43 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
  */
 @registerAbility()
 export class drow_4b extends BaseHeroAbility {
-
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_4b"
+        return 'modifier_drow_4b';
     }
 
     GetCooldown(level: number): number {
-        let player_id = this.GetCaster().GetPlayerOwnerID();
-        let netdata = CustomNetTables.GetTableValue("hero_talent", `${player_id}`);
-        if (netdata && netdata["49"]) {
-            let ability_cd_reduce = netdata["49"].uc * 3;
-            return super.GetCooldown(level) - ability_cd_reduce
+        const player_id = this.GetCaster().GetPlayerOwnerID();
+        const netdata = CustomNetTables.GetTableValue('hero_talent', `${player_id}`);
+        if (netdata && netdata['49']) {
+            const ability_cd_reduce = netdata['49'].uc * 3;
+            return super.GetCooldown(level) - ability_cd_reduce;
         }
-        return super.GetCooldown(level)
+        return super.GetCooldown(level);
     }
 }
 
 @registerModifier()
 export class modifier_drow_4b extends BaseHeroModifier {
-
     move_pct: number;
     duration: number;
 
     ability_cd_reduce: number;
 
     UpdataAbilityValue(): void {
-        let duration = this.ability.GetSpecialValueFor("duration");
-        this.duration = this.ability.GetTypesAffixValue(duration, "Dot", "skv_dot_duration");
-        this.ability_cd_reduce = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, "49", 'ability_cd_reduce')
+        const duration = this.ability.GetSpecialValueFor('duration');
+        this.duration = this.ability.GetTypesAffixValue(duration, 'Dot', 'skv_dot_duration');
+        this.ability_cd_reduce = GameRules.HeroTalentSystem.GetTalentKvOfUnit(this.caster, '49', 'ability_cd_reduce');
     }
 
     OnIntervalThink(): void {
         if (this.CastingConditions()) {
-            this.DoExecutedAbility()
-            this.ability.ManaCostAndConverDmgBonus()
-            this.caster.AddNewModifier(this.caster, this.ability, "modifier_drow_4b_buff", {
-                duration: this.duration
-            })
+            this.DoExecutedAbility();
+            this.ability.ManaCostAndConverDmgBonus();
+            this.caster.AddNewModifier(this.caster, this.ability, 'modifier_drow_4b_buff', {
+                duration: this.duration,
+            });
         }
     }
-
 
     // DeclareFunctions(): modifierfunction[] {
     //     return [
@@ -60,22 +57,20 @@ export class modifier_drow_4b extends BaseHeroModifier {
     //     print("cooldown ", IsServer(), event.ability.GetAbilityName())
     //     return 0
     // }
-
 }
 
 @registerModifier()
 export class modifier_drow_4b_buff extends BaseModifier {
-
     move_pct: number;
     phase_state: boolean;
     caster: CDOTA_BaseNPC;
-    buff_key = "drow_4b_buff"
+    buff_key = 'drow_4b_buff';
     OnCreated(params: object): void {
-        this.caster = this.GetCaster()
+        this.caster = this.GetCaster();
         this.phase_state = false;
-        this.OnRefresh(params)
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_windrunner/windrunner_windrun.vpcf",
+        this.OnRefresh(params);
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_windrunner/windrunner_windrun.vpcf',
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.GetParent()
         );
@@ -83,26 +78,27 @@ export class modifier_drow_4b_buff extends BaseModifier {
     }
 
     OnRefresh(params: object): void {
-        this.move_pct = this.GetAbility().GetSpecialValueFor("move_pct");
+        this.move_pct = this.GetAbility().GetSpecialValueFor('move_pct');
         if (IsServer()) {
-            this.phase_state = (this.caster.hero_talent["50"] ?? 0) > 0;
+            this.phase_state = (this.caster.hero_talent['50'] ?? 0) > 0;
             GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
                 MoveSpeed: {
-                    "BasePercent": this.move_pct
-                }
-            })
+                    BasePercent: this.move_pct,
+                },
+            });
         }
     }
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
-            [ModifierState.NO_UNIT_COLLISION]: this.phase_state
-        }
+            [ModifierState.NO_UNIT_COLLISION]: this.phase_state,
+        };
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.CustomAttribute.DelAttributeInKey(this.caster, this.buff_key)
+        if (!IsServer()) {
+            return;
+        }
+        GameRules.CustomAttribute.DelAttributeInKey(this.caster, this.buff_key);
     }
-
 }

@@ -15,15 +15,15 @@ interface CDOTA_BaseNPC {
     /** 怪物属性 */
     enemy_attribute_value: CustomAttributeValueType;
     enemy_attribute_table: CustomAttributeTableType;
-    enemy_attribute_table_key: { [key: string]: EnemyAttributeValueType }
+    enemy_attribute_table_key: { [key: string]: EnemyAttributeValueType };
     /** 属性转换 */
     custom_attribute_conversion: CustomAttributeConversionType;
     /** 减伤百分比列表 */
-    ReductionPct: { [key: string]: number; };
+    ReductionPct: { [key: string]: number };
     /** 减伤百分比列表第二层 */
-    ReductionPct2: { [key: string]: number; };
+    ReductionPct2: { [key: string]: number };
     /** 减伤百分比列表第三层 */
-    ReductionPct3: { [key: string]: number; };
+    ReductionPct3: { [key: string]: number };
 
     /** 减伤最终结果 */
     ReductionResult: number;
@@ -39,7 +39,7 @@ interface CDOTA_BaseNPC {
 
     is_picking: boolean;
     /** 所有技能的内置冷却相应 */
-    CDResp: { [key: string]: number }
+    CDResp: { [key: string]: number };
 
     drop_resource_type: PlayerResourceTyps;
     drop_resource_amount: number;
@@ -61,9 +61,9 @@ interface CDOTA_BaseNPC {
     in_process_attack: boolean;
 
     //英雄定时器
-    CustomVariables: { [key: string]: number; };
+    CustomVariables: { [key: string]: number };
     /** 特殊标记 */
-    SpecialMark: { [key: string]: number; };
+    SpecialMark: { [key: string]: number };
     //天赋分配情况
     hero_talent: { [key: string]: number };
     //符文被动
@@ -73,7 +73,7 @@ interface CDOTA_BaseNPC {
 
     rune_level_index: { [key in RuneName]?: number }; //值是技能下标志
 
-    prop_count: { [key in PropName]?: number } // 这个修改成数量
+    prop_count: { [key in PropName]?: number }; // 这个修改成数量
 
     rune_trigger_count: { [key in RuneName]?: number }; //值是触发子次数
     /**
@@ -81,23 +81,20 @@ interface CDOTA_BaseNPC {
      */
     pictuer_ability_name: { [key in PictuerFetterAbilityName]?: number }; // 图鉴技能
 
-    
-
     /** 饰品原始模型 */
     wrarable_model: string;
     /** 上次击退时间 */
     knockback_time: number;
     /** 自身元素类型 */
-    element_type: ElementTypes
+    element_type: ElementTypes;
     manacost_bonus: number;
     clone_unit: CDOTA_BaseNPC;
     is_clone: number;
 
     custom_animation: {
         [key: string]: {
-            seq: string,
-            act: GameActivity_t
-        }
-    }
+            seq: string;
+            act: GameActivity_t;
+        };
+    };
 }
-

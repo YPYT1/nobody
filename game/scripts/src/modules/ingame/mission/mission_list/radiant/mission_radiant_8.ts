@@ -1,4 +1,4 @@
-import { MissionModule } from "../_mission_module";
+import { MissionModule } from '../_mission_module';
 
 /**
  * 逮捕大鱼人	"【天辉的考验】：出现一只免疫减速的大鱼人，无法攻击且受伤害后会逃跑。
@@ -9,7 +9,6 @@ import { MissionModule } from "../_mission_module";
 
  */
 export class Mission_Radiant_8 extends MissionModule {
-
     fish: CDOTA_BaseNPC;
     limit_time = 60;
 
@@ -18,13 +17,13 @@ export class Mission_Radiant_8 extends MissionModule {
         this.progress_value = 0;
         this.SendMissionProgress();
         // 创建鱼人
-        let fish_hp = 500
-        this.fish = GameRules.Spawn.CreepNormalCreate("npc_mission_big_fish", start + RandomVector(200) as Vector)
+        const fish_hp = 500;
+        this.fish = GameRules.Spawn.CreepNormalCreate('npc_mission_big_fish', (start + RandomVector(200)) as Vector);
         this.fish.SetBaseMaxHealth(fish_hp);
         this.fish.SetMaxHealth(fish_hp);
         this.fish.SetHealth(fish_hp);
-        this.fish.AddNewModifier(this.fish, null, "modifier_mission_radiant_8_ai", { duration: this.limit_time })
+        this.fish.AddNewModifier(this.fish, null, 'modifier_mission_radiant_8_ai', { duration: this.limit_time });
         // this.fish.AddNewModifier(this.fish, null, "modifier_basic_countdown", { duration: this.limit_time })
-        this.units.push(this.fish)
+        this.units.push(this.fish);
     }
 }

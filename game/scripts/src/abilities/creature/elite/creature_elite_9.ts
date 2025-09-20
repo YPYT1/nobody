@@ -1,24 +1,21 @@
-
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
-
+import { BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 /**
- * creature_elite_9	极冰之路	
+ * creature_elite_9	极冰之路
  * 引导1秒，向玩家方向铺出一条极冰之路，对玩家造成伤害（伤害值为玩家最大生命值20%）并减速50%，
  * 怪物在路径上行走会加速25%。路径长700码，宽200码。施法距离700码。
  */
 @registerAbility()
 export class creature_elite_9 extends BaseCreatureAbility {
-
-    line_width: number
-    line_distance: number
+    line_width: number;
+    line_distance: number;
     OnAbilityPhaseStart(): boolean {
         // let hTarget = this.GetCursorTarget();
-        this.vOrigin = this.hCaster.GetAbsOrigin()
+        this.vOrigin = this.hCaster.GetAbsOrigin();
         this.vPoint = this.GetCursorPosition();
-        this.line_width = this.GetSpecialValueFor("line_width")
-        this.line_distance = this.GetSpecialValueFor("line_distance");
+        this.line_width = this.GetSpecialValueFor('line_width');
+        this.line_distance = this.GetSpecialValueFor('line_distance');
         this.nPreviewFX = GameRules.WarningMarker.Line(
             this.hCaster,
             this.line_width,
@@ -26,19 +23,19 @@ export class creature_elite_9 extends BaseCreatureAbility {
             this.vPoint,
             this.line_distance,
             this._cast_point
-        )
-        return true
+        );
+        return true;
     }
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
         // particles/units/heroes/hero_jakiro/jakiro_ice_path.vpcf
-        let dir = (this.vPoint - this.hCaster.GetAbsOrigin() as Vector).Normalized();
-        let vTarget = this.hCaster.GetAbsOrigin() + dir * this.line_distance as Vector;
+        const dir = ((this.vPoint - this.hCaster.GetAbsOrigin()) as Vector).Normalized();
+        const vTarget = (this.hCaster.GetAbsOrigin() + dir * this.line_distance) as Vector;
         CreateModifierThinker(
             this.hCaster,
             this,
-            "modifier_creature_elite_9_path",
+            'modifier_creature_elite_9_path',
             {
                 duration: 5,
                 x: vTarget.x,
@@ -47,9 +44,9 @@ export class creature_elite_9 extends BaseCreatureAbility {
             this.hCaster.GetAbsOrigin(),
             this.hCaster.GetTeam(),
             false
-        )
+        );
         // 伤害
-        let enemies = FindUnitsInLine(
+        const enemies = FindUnitsInLine(
             this._team,
             this.vOrigin,
             vTarget,
@@ -58,9 +55,9 @@ export class creature_elite_9 extends BaseCreatureAbility {
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE
-        )
-        for (let enemy of enemies) {
-            let damage = enemy.GetMaxHealth() * 0.2;
+        );
+        for (const enemy of enemies) {
+            const damage = enemy.GetMaxHealth() * 0.2;
             ApplyCustomDamage({
                 victim: enemy,
                 attacker: this.hCaster,
@@ -68,14 +65,13 @@ export class creature_elite_9 extends BaseCreatureAbility {
                 damage: damage,
                 damage_type: DamageTypes.PHYSICAL,
                 miss_flag: 1,
-            })
+            });
         }
     }
 }
 
 @registerModifier()
 export class modifier_creature_elite_9_path extends BaseModifier {
-
     start: Vector;
     end: Vector;
     team: DotaTeam;
@@ -83,26 +79,28 @@ export class modifier_creature_elite_9_path extends BaseModifier {
     line_width: number;
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return }
-        this.line_width = this.GetAbility().GetSpecialValueFor("line_width")
+        if (!IsServer()) {
+            return;
+        }
+        this.line_width = this.GetAbility().GetSpecialValueFor('line_width');
         this.start = this.GetParent().GetAbsOrigin();
         this.end = Vector(params.x, params.y, this.start.z);
         this.team = this.GetCaster().GetTeam();
-        let cast_fx = ParticleManager.CreateParticle(
-            "particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path_b.vpcf",
+        const cast_fx = ParticleManager.CreateParticle(
+            'particles/econ/items/jakiro/jakiro_ti7_immortal_head/jakiro_ti7_immortal_head_ice_path_b.vpcf',
             ParticleAttachment.CUSTOMORIGIN,
             null
-        )
-        ParticleManager.SetParticleControl(cast_fx, 0, this.start)
-        ParticleManager.SetParticleControl(cast_fx, 1, this.end)
-        ParticleManager.SetParticleControl(cast_fx, 2, Vector(this.GetDuration(), 0, 0))
-        this.AddParticle(cast_fx, false, false, -1, false, false)
-        this.OnIntervalThink()
-        this.StartIntervalThink(0.1)
+        );
+        ParticleManager.SetParticleControl(cast_fx, 0, this.start);
+        ParticleManager.SetParticleControl(cast_fx, 1, this.end);
+        ParticleManager.SetParticleControl(cast_fx, 2, Vector(this.GetDuration(), 0, 0));
+        this.AddParticle(cast_fx, false, false, -1, false, false);
+        this.OnIntervalThink();
+        this.StartIntervalThink(0.1);
     }
 
     OnIntervalThink(): void {
-        let line_unit = FindUnitsInLine(
+        const line_unit = FindUnitsInLine(
             this.GetParent().GetTeam(),
             this.start,
             this.end,
@@ -111,60 +109,60 @@ export class modifier_creature_elite_9_path extends BaseModifier {
             UnitTargetTeam.BOTH,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE
-        )
-        for (let unit of line_unit) {
+        );
+        for (const unit of line_unit) {
             if (unit.GetTeamNumber() == this.team) {
                 // 加速
-                unit.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_9_buff", { duration: 0.5 })
+                unit.AddNewModifier(this.GetCaster(), this.GetAbility(), 'modifier_creature_elite_9_buff', { duration: 0.5 });
             } else {
                 // 伤害减速
-                unit.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_elite_9_debuff", { duration: 0.5 })
+                unit.AddNewModifier(this.GetCaster(), this.GetAbility(), 'modifier_creature_elite_9_debuff', { duration: 0.5 });
             }
         }
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        UTIL_Remove(this.GetParent())
+        if (!IsServer()) {
+            return;
+        }
+        UTIL_Remove(this.GetParent());
     }
 }
 
 @registerModifier()
 export class modifier_creature_elite_9_buff extends BaseModifier {
-
     DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.MOVESPEED_BONUS_PERCENTAGE
-        ]
+        return [ModifierFunction.MOVESPEED_BONUS_PERCENTAGE];
     }
 
     GetModifierMoveSpeedBonus_Percentage(): number {
-        return 25
+        return 25;
     }
 }
 
 @registerModifier()
 export class modifier_creature_elite_9_debuff extends BaseModifier {
-
-    buff_key = "elite_9_debuff";
+    buff_key = 'elite_9_debuff';
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         GameRules.CustomAttribute.SetAttributeInKey(this.GetParent(), this.buff_key, {
-            "MoveSpeed": {
-                "BasePercent": -50
-            }
-        })
+            MoveSpeed: {
+                BasePercent: -50,
+            },
+        });
         // this.OnIntervalThink()
         // this.StartIntervalThink(1)
     }
 
-    OnIntervalThink(): void {
-
-    }
+    OnIntervalThink(): void {}
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key)
+        if (!IsServer()) {
+            return;
+        }
+        GameRules.CustomAttribute.DelAttributeInKey(this.GetParent(), this.buff_key);
     }
 }

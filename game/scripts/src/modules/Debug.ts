@@ -2,14 +2,11 @@ import { reloadable } from '../utils/tstl-utils';
 
 @reloadable
 export class Debug {
-
     DebugEnabled = false;
     // 在线测试白名单
-    OnlineDebugWhiteList = [
-        188898517,
-    ];
+    OnlineDebugWhiteList = [188898517];
 
-    debug_name: string[] = []
+    debug_name: string[] = [];
 
     constructor() {
         // 工具模式下开启调试
@@ -20,7 +17,7 @@ export class Debug {
     /** 该模块加入Debug命令 */
     RegisterDebug(name: string) {
         if (this.debug_name.indexOf(name) == -1) {
-            this.debug_name.push(name)
+            this.debug_name.push(name);
         }
     }
 
@@ -42,26 +39,21 @@ export class Debug {
         // commands that only work in debug mode below:
         if (!this.DebugEnabled) return;
 
-        if (cmd == "-entity") {
-            let all_entities = Entities.FindAllInSphere(Vector(0, 0, 0), 16288);
-            for (let entity of all_entities) {
-                print(
-                    entity.GetEntityIndex(),
-                    entity.GetName() ?? "No Name",
-                    entity.GetClassname() ?? "No Classmame",
-
-                );
+        if (cmd == '-entity') {
+            const all_entities = Entities.FindAllInSphere(Vector(0, 0, 0), 16288);
+            for (const entity of all_entities) {
+                print(entity.GetEntityIndex(), entity.GetName() ?? 'No Name', entity.GetClassname() ?? 'No Classmame');
                 // if (entity.IsBaseNPC()) {
                 //     print(entity.GetUnitName());
                 // }
-                if (entity.GetClassname() == "npc_dota_thinker") {
+                if (entity.GetClassname() == 'npc_dota_thinker') {
                     DebugDrawCircle(entity.GetAbsOrigin(), Vector(255, 0, 0), 10, 64, true, 20);
                 }
             }
-            print("entity count", all_entities.length);
+            print('entity count', all_entities.length);
         }
-        if (cmd == "-kvload") {
-            print("Playtesting_UpdateAddOnKeyValues")
+        if (cmd == '-kvload') {
+            print('Playtesting_UpdateAddOnKeyValues');
             GameRules.Playtesting_UpdateAddOnKeyValues();
         }
 
@@ -78,11 +70,13 @@ export class Debug {
         //     Say(HeroList.GetHero(0), `${version}: ${key}`, true);
         // }
 
-        if (GameRules.Development) { GameRules.Development.DebugChat(cmd, args, keys.playerid) }
+        if (GameRules.Development) {
+            GameRules.Development.DebugChat(cmd, args, keys.playerid);
+        }
 
-        for (let name of this.debug_name) {
-            if (GameRules[name] && GameRules[name]["Debug"]) {
-                GameRules[name]["Debug"](cmd, args, keys.playerid)
+        for (const name of this.debug_name) {
+            if (GameRules[name] && GameRules[name]['Debug']) {
+                GameRules[name]['Debug'](cmd, args, keys.playerid);
             }
         }
         // GameRules.CustomAttribute.Debug(cmd, args, keys.playerid)

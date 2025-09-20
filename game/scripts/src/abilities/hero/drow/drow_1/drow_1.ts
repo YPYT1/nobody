@@ -1,6 +1,6 @@
-import { modifier_basic_move } from "../../../../modifier/modifier_basic";
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import type { modifier_basic_move } from '../../../../modifier/modifier_basic';
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { BaseHeroAbility, BaseHeroModifier } from '../../base_hero_ability';
 
 /**
  * 攻击1名敌人，
@@ -9,11 +9,10 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
  */
 @registerAbility()
 export class drow_1 extends BaseHeroAbility {
-
     BasicAbilityDmg: number;
 
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_1"
+        return 'modifier_drow_1';
     }
 
     UpdataAbilityValue(): void {
@@ -25,9 +24,11 @@ export class drow_1 extends BaseHeroAbility {
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
         if (target) {
             let attack_damage = extraData.a;
-            let SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
-            let has_run50buff = this.caster.HasModifier("modifier_drow_5_buff_rune50");
-            if (has_run50buff) { attack_damage *= 2 }
+            const SelfAbilityMul = extraData.SelfAbilityMul ?? 100;
+            const has_run50buff = this.caster.HasModifier('modifier_drow_5_buff_rune50');
+            if (has_run50buff) {
+                attack_damage *= 2;
+            }
             ApplyCustomDamage({
                 victim: target,
                 attacker: this.caster,
@@ -41,15 +42,13 @@ export class drow_1 extends BaseHeroAbility {
                 SelfAbilityMul: SelfAbilityMul + this.BasicAbilityDmg,
                 DamageBonusMul: extraData.DamageBonusMul,
                 // DamageBonusMul:0,
-
-            })
+            });
         }
     }
 }
 
 @registerModifier()
 export class modifier_drow_1 extends BaseHeroModifier {
-
     proj_name: string;
     useProjectile: boolean;
     // base_value: number = 0;
@@ -67,25 +66,25 @@ export class modifier_drow_1 extends BaseHeroModifier {
         this.fakeAttack = false;
         this.useProjectile = true;
         this.SelfAbilityPow = 1;
-        this.move_mdf = this.caster.FindModifierByName("modifier_basic_move") as modifier_basic_move;
+        this.move_mdf = this.caster.FindModifierByName('modifier_basic_move') as modifier_basic_move;
     }
 
-
     UpdataAbilityValue(): void {
-        this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
-        this.give_mana = this.ability.GetSpecialValueFor("give_mana");
+        this.SelfAbilityMul = this.ability.GetSpecialValueFor('base_value');
+        this.give_mana = this.ability.GetSpecialValueFor('give_mana');
         this.tracking_proj_name = G_PorjTrack.drow.none;
     }
 
     OnIntervalThink(): void {
-        if (this.caster.IsAlive()
-            && this.ability.IsActivated()
-            && this.ability.IsMeetCastCondition()
-            && !this.caster.IsHexed()
-            && !this.caster.IsSilenced()
+        if (
+            this.caster.IsAlive() &&
+            this.ability.IsActivated() &&
+            this.ability.IsMeetCastCondition() &&
+            !this.caster.IsHexed() &&
+            !this.caster.IsSilenced()
         ) {
-            let attackrange = this.caster.Script_GetAttackRange() + 64;
-            let enemies = FindUnitsInRadius(
+            const attackrange = this.caster.Script_GetAttackRange() + 64;
+            const enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.GetAbsOrigin(),
                 null,
@@ -95,15 +94,15 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 UnitTargetFlags.FOW_VISIBLE,
                 FindOrder.CLOSEST,
                 false
-            )
+            );
             if (enemies.length <= 0) {
                 this.caster.FadeGesture(GameActivity.DOTA_ATTACK);
                 this.caster.FadeGesture(GameActivity.DOTA_CAST_ABILITY_1);
-                return
+                return;
             }
             this.DoExecutedBaseAbility();
-            let hTarget = enemies[0];
-            let attack_damage = this.caster.GetAverageTrueAttackDamage(null)
+            const hTarget = enemies[0];
+            const attack_damage = this.caster.GetAverageTrueAttackDamage(null);
             this.ability.ManaCostAndConverDmgBonus();
             // 清空动作
             if (this.caster.move_state) {
@@ -115,23 +114,22 @@ export class modifier_drow_1 extends BaseHeroModifier {
             }
             this.caster.GiveMana(this.give_mana);
             this.PlayPerformAttack(this.caster, hTarget, attack_damage, this.SelfAbilityMul, 0);
-            this.PlayAttackStart({ hTarget: hTarget })
-            let attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
-            this.StartIntervalThink(attack_rate)
+            this.PlayAttackStart({ hTarget: hTarget });
+            const attack_rate = 1 / this.caster.GetAttacksPerSecond(true);
+            this.StartIntervalThink(attack_rate);
         }
     }
 
-
-    PlayAttackStart(params: PlayEffectProps) { }
+    PlayAttackStart(params: PlayEffectProps) {}
 
     /**
      * 发射箭矢
-     * @param hCaster 施法者 
+     * @param hCaster 施法者
      * @param hTarget 目标
-     * @param attack_damage 攻击力 
+     * @param attack_damage 攻击力
      * @param SelfAbilityMul 技能伤害乘区
      * @param DamageBonusMul 伤害加成
-     * @returns 
+     * @returns
      */
     PlayPerformAttack(
         hCaster: CDOTA_BaseNPC,
@@ -139,9 +137,11 @@ export class modifier_drow_1 extends BaseHeroModifier {
         attack_damage: number,
         SelfAbilityMul: number,
         DamageBonusMul: number,
-        FinalDamageMul: number = 0,
+        FinalDamageMul: number = 0
     ) {
-        if (this.fakeAttack) { return }
+        if (this.fakeAttack) {
+            return;
+        }
         // print("this",this.tracking_proj_name)
         ProjectileManager.CreateTrackingProjectile({
             Source: hCaster,
@@ -156,8 +156,8 @@ export class modifier_drow_1 extends BaseHeroModifier {
                 dt: this.damage_type,
                 SelfAbilityMul: SelfAbilityMul,
                 DamageBonusMul: DamageBonusMul,
-                FinalDamageMul: FinalDamageMul
-            } as ProjectileExtraData
-        })
+                FinalDamageMul: FinalDamageMul,
+            } as ProjectileExtraData,
+        });
     }
 }

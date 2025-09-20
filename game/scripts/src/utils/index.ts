@@ -8,8 +8,8 @@ require('timers');
 require('tools');
 require('lfun');
 
-if(IsClient()){
-    require('client_mode')
+if (IsClient()) {
+    require('client_mode');
 }
 // rename SHA and make it global
 globalThis.SHA = require('sha');

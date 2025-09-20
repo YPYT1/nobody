@@ -1,4 +1,4 @@
-import { MissionModule } from "../_mission_module";
+import { MissionModule } from '../_mission_module';
 
 /**
  * 踢足球	
@@ -10,50 +10,47 @@ import { MissionModule } from "../_mission_module";
 
  */
 export class Mission_Radiant_1 extends MissionModule {
-
     start_vect: Vector;
     /** 门框半径 */
     goal_radius: number = 250;
     /** 任务限时 */
     limit_time = 60;
 
-
     ExecuteLogic(vect: Vector) {
         this.limit_time = 60;
         this.progress_value = 0;
-        this.progress_max = 1
+        this.progress_max = 1;
         this.mission_state = -1;
         this.start_vect = vect;
         this.units = [];
         this.SendMissionProgress();
         // 创建终点
-        let goal_vect = this.GetFoolballGoalVect(vect);
+        const goal_vect = this.GetFoolballGoalVect(vect);
         this.CreateFootballGoal(goal_vect);
-        this.CreateFootball(this.start_vect, goal_vect)
+        this.CreateFootball(this.start_vect, goal_vect);
         if (PlayerResource.GetPlayerCount() > 2) {
-            this.progress_max += 1
-            this.CreateFootball(this.start_vect, goal_vect)
+            this.progress_max += 1;
+            this.CreateFootball(this.start_vect, goal_vect);
         }
 
-        this.CreateCountdownThinker(this.limit_time)
+        this.CreateCountdownThinker(this.limit_time);
     }
-
 
     /** 创建足球 */
     CreateFootball(vect: Vector, goal_vect: Vector) {
-        let rand_vect = vect + RandomVector(200) as Vector
-        let football = CreateUnitByName("npc_football", rand_vect, false, null, null, DotaTeam.GOODGUYS);
+        const rand_vect = (vect + RandomVector(200)) as Vector;
+        const football = CreateUnitByName('npc_football', rand_vect, false, null, null, DotaTeam.GOODGUYS);
         // 添加门框指示线
         // football.AddNewModifier(football, null, "modifier_basic_countdown", { duration: this.limit_time })
-        football.AddNewModifier(football, null, "modifier_mission_radiant_1_football", {
+        football.AddNewModifier(football, null, 'modifier_mission_radiant_1_football', {
             goal_x: goal_vect.x,
             goal_y: goal_vect.y,
             goal_z: goal_vect.z,
             goal_radius: this.goal_radius,
             duration: this.limit_time,
-        })
-        
-        this.units.push(football)
+        });
+
+        this.units.push(football);
     }
 
     /** 创建足球终点 */
@@ -61,7 +58,7 @@ export class Mission_Radiant_1 extends MissionModule {
         this.mdf_thinker = CreateModifierThinker(
             null,
             null,
-            "modifier_mission_radiant_1_football_goal",
+            'modifier_mission_radiant_1_football_goal',
             {
                 duration: this.limit_time,
                 goal_radius: this.goal_radius,
@@ -69,17 +66,17 @@ export class Mission_Radiant_1 extends MissionModule {
             vect,
             DotaTeam.GOODGUYS,
             false
-        )
+        );
 
-        return this.mdf_thinker.GetAbsOrigin()
+        return this.mdf_thinker.GetAbsOrigin();
     }
 
     GetFoolballGoalVect(vStart: Vector): Vector {
         // 门框的位置必须要单位能移动到
-        let direction = (vStart - this.vMapCenter as Vector).Normalized()
-        let next_pos = vStart + direction * -3000 as Vector;
-        let final = RotatePosition(vStart, QAngle(0, RandomInt(-45, 45), 0), next_pos)
-        return final
+        const direction = ((vStart - this.vMapCenter) as Vector).Normalized();
+        const next_pos = (vStart + direction * -3000) as Vector;
+        const final = RotatePosition(vStart, QAngle(0, RandomInt(-45, 45), 0), next_pos);
+        return final;
     }
 
     AddProgressValue(value: number): void {
@@ -88,15 +85,14 @@ export class Mission_Radiant_1 extends MissionModule {
         this.SendMissionProgress();
         // 成功条件
         if (this.progress_value >= this.progress_max) {
-            this.mission_state = 1
-            this.EndOfMission(true)
+            this.mission_state = 1;
+            this.EndOfMission(true);
         }
     }
 
     MissionOverTime(): void {
-        if(this.mission_state == -1){
-            this.EndOfMission(false)
+        if (this.mission_state == -1) {
+            this.EndOfMission(false);
         }
     }
-
 }

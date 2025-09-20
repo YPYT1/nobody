@@ -1,5 +1,4 @@
-import { MissionModule } from "../_mission_module";
-
+import { MissionModule } from '../_mission_module';
 
 /**
  * 匆匆忙忙	夜魇的试炼	"【夜魇的试炼】：限制时间内，所有敌军移动速度翻倍。
@@ -10,26 +9,25 @@ import { MissionModule } from "../_mission_module";
 
  */
 export class Mission_Dire_8 extends MissionModule {
-
     limit_time: number = 20;
 
     ExecuteLogic(start: Vector): void {
         this.progress_value = 0;
-        this.progress_max = this.limit_time
+        this.progress_max = this.limit_time;
         this.mdf_thinker = CreateModifierThinker(
             null,
             null,
-            "modifier_mission_dire_8_thinker",
+            'modifier_mission_dire_8_thinker',
             {
-                duration: this.limit_time
+                duration: this.limit_time,
             },
             this.vMapCenter,
             DotaTeam.BADGUYS,
             false
-        )
+        );
     }
 
     MissionOverTime(): void {
-        this.EndOfMission(true)
+        this.EndOfMission(true);
     }
 }

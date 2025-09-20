@@ -1,4 +1,4 @@
-import { MissionModule } from "../_mission_module";
+import { MissionModule } from '../_mission_module';
 
 /**
  * 怒火野马	夜魇的试炼	"【梦魇的试炼】：生成一只巨大的人马，锁定一名玩家英雄进行追击。
@@ -8,20 +8,19 @@ import { MissionModule } from "../_mission_module";
  */
 
 export class Mission_Dire_2 extends MissionModule {
-
     limit_time = 90;
 
     ExecuteLogic(start: Vector): void {
         this.progress_value = 0;
-        this.progress_max = this.limit_time
-        let unit = GameRules.Spawn.CreepNormalCreate("npc_mission_centaur", start + RandomVector(300) as Vector);
-        unit.AddNewModifier(unit, null, "modifier_mission_dire_2", { duration: this.limit_time })
-        unit.AddNewModifier(unit, null, "modifier_basic_countdown", { duration: this.limit_time })
-        this.CreateCountdownThinker(this.limit_time)
-        this.units.push(unit)
+        this.progress_max = this.limit_time;
+        const unit = GameRules.Spawn.CreepNormalCreate('npc_mission_centaur', (start + RandomVector(300)) as Vector);
+        unit.AddNewModifier(unit, null, 'modifier_mission_dire_2', { duration: this.limit_time });
+        unit.AddNewModifier(unit, null, 'modifier_basic_countdown', { duration: this.limit_time });
+        this.CreateCountdownThinker(this.limit_time);
+        this.units.push(unit);
     }
 
     MissionOverTime(): void {
-        this.EndOfMission(false)
+        this.EndOfMission(false);
     }
 }

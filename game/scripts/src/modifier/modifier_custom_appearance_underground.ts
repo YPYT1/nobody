@@ -3,46 +3,53 @@ import { BaseModifierMotionBoth, registerModifier } from '../utils/dota_ts_adapt
 /** 单位地上登场 */
 @registerModifier()
 export class modifier_custom_appearance_underground extends BaseModifierMotionBoth {
-
     init_vect: Vector;
     bMoved: boolean;
     flOffsetZ: number;
 
-    IsDebuff(): boolean { return false; }
-    GetPriority(): ModifierPriority { return ModifierPriority.ULTRA + 100000; }
+    IsDebuff(): boolean {
+        return false;
+    }
+
+    GetPriority(): ModifierPriority {
+        return ModifierPriority.ULTRA + 100000;
+    }
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
-        let hParent = this.GetParent();
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
         this.init_vect = hParent.GetOrigin();
         this.bMoved = true;
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/econ/events/fall_2021/teleport_end_fall_2021_lvl1.vpcf",
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/econ/events/fall_2021/teleport_end_fall_2021_lvl1.vpcf',
             ParticleAttachment.WORLDORIGIN,
             null
         );
         ParticleManager.SetParticleControl(effect_fx, 0, this.GetParent().GetAbsOrigin());
         ParticleManager.SetParticleControlForward(effect_fx, 0, this.GetParent().GetForwardVector());
         this.AddParticle(effect_fx, false, false, -1, false, false);
-        let fHeight = 190 * this.GetDuration();
+        const fHeight = 190 * this.GetDuration();
         this.flOffsetZ = fHeight / (this.GetDuration() + 0.1);
         // print(fHeight, this.flOffsetZ)
-        let vOffetPos = this.GetParent().GetAbsOrigin() + Vector(0, 0, -1 * fHeight) as Vector;
+        const vOffetPos = (this.GetParent().GetAbsOrigin() + Vector(0, 0, -1 * fHeight)) as Vector;
         this.GetParent().SetOrigin(vOffetPos);
         //
-        AddFOWViewer(DotaTeam.GOODGUYS, this.init_vect, 300, this.GetDuration(), true)
+        AddFOWViewer(DotaTeam.GOODGUYS, this.init_vect, 300, this.GetDuration(), true);
         if (this.ApplyVerticalMotionController() == false || this.ApplyHorizontalMotionController() == false) {
             this.Destroy();
             return;
         }
-
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return; }
-        // 加特效 
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_ursa/ursa_earthshock.vpcf",
+        if (!IsServer()) {
+            return;
+        }
+        // 加特效
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_ursa/ursa_earthshock.vpcf',
             ParticleAttachment.WORLDORIGIN,
             null
         );
@@ -66,8 +73,10 @@ export class modifier_custom_appearance_underground extends BaseModifierMotionBo
     }
 
     UpdateVerticalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        if (!IsServer()) { return; }
-        let vNewPos = this.GetParent().GetAbsOrigin() + Vector(0, 0, this.flOffsetZ * dt) as Vector;
+        if (!IsServer()) {
+            return;
+        }
+        const vNewPos = (this.GetParent().GetAbsOrigin() + Vector(0, 0, this.flOffsetZ * dt)) as Vector;
         if (vNewPos.z >= this.init_vect.z) {
             this.Destroy();
             return;
@@ -76,7 +85,9 @@ export class modifier_custom_appearance_underground extends BaseModifierMotionBo
     }
 
     UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
     }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
@@ -88,6 +99,4 @@ export class modifier_custom_appearance_underground extends BaseModifierMotionBo
             [ModifierState.UNSELECTABLE]: true,
         };
     }
-
-
 }

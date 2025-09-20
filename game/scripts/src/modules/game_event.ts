@@ -24,7 +24,7 @@ import { HeroTalentSystem } from './ingame/hero_extend/hero_talent_system';
 import { NpcSystem } from './map_chapter/npc_system';
 import { RuneSystem } from './ingame/rune/rune_system';
 import { EnemyAttribute } from './ingame/hero_extend/enemy_attribute';
-import { MissionSystem } from './ingame/mission/mission_system';
+import type { MissionSystem } from './ingame/mission/mission_system';
 import { Altar } from './additional/altar';
 import { PlayerAttribute } from './ingame/hero_extend/player_attribute';
 import { ServiceTalent } from '../server/https/service_talent';
@@ -33,7 +33,6 @@ import { InvestSystem } from './ingame/invest';
 import { HeroAbilityType } from './ingame/hero_extend/hero_ability_type';
 
 declare global {
-
     interface CDOTAGameRules {
         // 声明所有的GameRules模块，这个主要是为了方便其他地方的引用（保证单例模式）
         NewArmsEvolution: NewArmsEvolution;
@@ -52,7 +51,7 @@ declare global {
         CMsg: CMsg;
         GameInformation: GameInformation;
         NpcSystem: NpcSystem;
-        InvestSystem : InvestSystem;
+        InvestSystem: InvestSystem;
 
         SummonedSystem: SummonedSystem;
         CustomMechanics: CustomMechanics;
@@ -65,39 +64,39 @@ declare global {
         ServiceData: ServiceData;
         ServiceInterface: ServiceInterface;
         ServiceEquipment: ServiceEquipment;
-        ServiceTalent : ServiceTalent;
-        ServiceSoul : ServiceSoul;
+        ServiceTalent: ServiceTalent;
+        ServiceSoul: ServiceSoul;
 
         WarningMarker: WarningMarker;
 
         MissionSystem: MissionSystem;
-        Altar:Altar;
-        PlayerAttribute:PlayerAttribute;
-        HeroAbilityType:HeroAbilityType;
+        Altar: Altar;
+        PlayerAttribute: PlayerAttribute;
+        HeroAbilityType: HeroAbilityType;
     }
 }
 
 @reloadable
 export class GameEvent {
-
     constructor() {
-        ListenToGameEvent("entity_killed", event => this.OnEntityKilled(event), this);
-        ListenToGameEvent("game_rules_state_change", event => this.OnGameRulesStateChange(), this);
-        ListenToGameEvent("dota_on_hero_finish_spawn", event => this.OnEntityDotaOnHeroFinishSpawn(event), this);
-        ListenToGameEvent("player_disconnect", event => this.OnPlayerDisconnect(event), this)
-        ListenToGameEvent("player_connect", event => this.OnPlayerConnect(event), this)
-        ListenToGameEvent("player_connect_full", event => this.OnPlayerConnectFull(event), this)
+        ListenToGameEvent('entity_killed', event => this.OnEntityKilled(event), this);
+        ListenToGameEvent('game_rules_state_change', event => this.OnGameRulesStateChange(), this);
+        ListenToGameEvent('dota_on_hero_finish_spawn', event => this.OnEntityDotaOnHeroFinishSpawn(event), this);
+        ListenToGameEvent('player_disconnect', event => this.OnPlayerDisconnect(event), this);
+        ListenToGameEvent('player_connect', event => this.OnPlayerConnect(event), this);
+        ListenToGameEvent('player_connect_full', event => this.OnPlayerConnectFull(event), this);
         // ListenToGameEvent("dota_player_gained_level", event => this.OnPlayerGainedLevel(event), this)
     }
 
     OnGameRulesStateChange() {
-        print("[OnGameRulesStateChange]:", GameRules.State_Get())
-        let State_Get = GameRules.State_Get();
-        if (State_Get == GameState.INIT) { //初始化阶段
-
-        } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) { //加载阶段
-
-        } else if (State_Get == GameState.CUSTOM_GAME_SETUP) { //游戏设置阶段
+        print('[OnGameRulesStateChange]:', GameRules.State_Get());
+        const State_Get = GameRules.State_Get();
+        if (State_Get == GameState.INIT) {
+            //初始化阶段
+        } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) {
+            //加载阶段
+        } else if (State_Get == GameState.CUSTOM_GAME_SETUP) {
+            //游戏设置阶段
             GameRules.ArchiveService = new ArchiveService();
             GameRules.NewArmsEvolution = new NewArmsEvolution();
             GameRules.BasicRules = new BasicRules();
@@ -128,54 +127,57 @@ export class GameEvent {
             // @ts-expect-error @eslint-disable-next-line
             GameRules.ModuleActivated = true;
             GameRules.ArchiveService.CheckjhmCode(0);
-        } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段
+        } else if (State_Get == GameState.HERO_SELECTION) {
+            //英雄选择阶段
             GameRules.CustomMechanics = new CustomMechanics();
-        } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段
-
-        } else if (State_Get == GameState.TEAM_SHOWCASE) { //队伍展示阶段
-
-        } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段
+        } else if (State_Get == GameState.STRATEGY_TIME) {
+            //战略阶段
+        } else if (State_Get == GameState.TEAM_SHOWCASE) {
+            //队伍展示阶段
+        } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) {
+            //地图加载阶段
             new Filter(); // 加载过滤器
             GameRules.MapChapter.InitChapterMap();
             //创建游戏
             GameRules.ArchiveService.CreateGame();
             GameRules.Altar = new Altar();
-            
-        } else if (State_Get == GameState.PRE_GAME) { //赛前阶段
-
-        } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段
-
-        } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段
+        } else if (State_Get == GameState.PRE_GAME) {
+            //赛前阶段
+        } else if (State_Get == GameState.SCENARIO_SETUP) {
+            //场景设置阶段
+        } else if (State_Get == GameState.GAME_IN_PROGRESS) {
+            //游戏开始阶段
             GameRules.EnemyAttribute = new EnemyAttribute();
-            SendToConsole("dota_hud_healthbars 1"); // 血条设置
+            SendToConsole('dota_hud_healthbars 1'); // 血条设置
             if (!IsInToolsMode() && GameRules.IsCheatMode()) {
                 // GameRules.TwiceGameProcess.GameLoser();
                 GameRules.SetGameWinner(DotaTeam.BADGUYS);
             }
-        } else if (State_Get == GameState.POST_GAME) { //推送结果阶段
-
-        } else if (State_Get == GameState.DISCONNECT) { //断开阶段
-
+        } else if (State_Get == GameState.POST_GAME) {
+            //推送结果阶段
+        } else if (State_Get == GameState.DISCONNECT) {
+            //断开阶段
         }
     }
 
     OnEntityKilled(event: GameEventProvidedProperties & EntityKilledEvent) {
-
-        GameRules.EntityKilled.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)
+        GameRules.EntityKilled.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor);
         //单位死亡后续处理
-        GameRules.Spawn.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor)
+        GameRules.Spawn.GeneralKilledEvent(event.entindex_killed, event.entindex_attacker, event.entindex_inflictor);
     }
 
     OnEntityDotaOnHeroFinishSpawn(event: GameEventProvidedProperties & DotaOnHeroFinishSpawnEvent) {
-        let hUnit = EntIndexToHScript(event.heroindex as EntityIndex) as CDOTA_BaseNPC_Hero;
-        let unitclass = hUnit.GetUnitName();
-        const _game_select_phase = GameRules.MapChapter._game_select_phase
-        if(_game_select_phase == 0){ return }
+        const hUnit = EntIndexToHScript(event.heroindex as EntityIndex) as CDOTA_BaseNPC_Hero;
+        const unitclass = hUnit.GetUnitName();
+        const _game_select_phase = GameRules.MapChapter._game_select_phase;
+        if (_game_select_phase == 0) {
+            return;
+        }
         if (hUnit.isSpawned != true) {
-            let player_id = hUnit.GetPlayerOwnerID()
+            const player_id = hUnit.GetPlayerOwnerID();
             // 英雄重新配置
             hUnit.isSpawned = true;
-            GameRules.CustomAttribute.InitHeroAttribute(hUnit)
+            GameRules.CustomAttribute.InitHeroAttribute(hUnit);
             //初始化可选技能
             GameRules.NewArmsEvolution.InitPlayerUpgradeStatus(player_id);
             //初始化可用符文
@@ -187,26 +189,26 @@ export class GameEvent {
 
             //初始化数据存储相关
             hUnit.pictuer_ability_name = {};
-            
-            let vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
-            hUnit.SetOrigin(vect)
+
+            const vect = Vector(GameRules.MapChapter.MAP_CAMP.x, GameRules.MapChapter.MAP_CAMP.y, 128);
+            hUnit.SetOrigin(vect);
             // 刷新完成之后发送至前端
         }
     }
 
     OnPlayerDisconnect(event: GameEventProvidedProperties & PlayerDisconnectEvent) {
-        print("[OnPlayerDisconnect]");
+        print('[OnPlayerDisconnect]');
         DeepPrintTable(event);
     }
 
     OnPlayerConnect(event: GameEventProvidedProperties & PlayerConnectEvent) {
-        print("[OnPlayerDisconnect]");
-        DeepPrintTable(event)
+        print('[OnPlayerDisconnect]');
+        DeepPrintTable(event);
     }
 
     OnPlayerConnectFull(event: GameEventProvidedProperties & PlayerConnectFullEvent) {
-        print("[OnPlayerDisconnect Full]");
-        DeepPrintTable(event)
+        print('[OnPlayerDisconnect Full]');
+        DeepPrintTable(event);
     }
 
     // OnPlayerGainedLevel(event: GameEventProvidedProperties & DotaPlayerGainedLevelEvent) {
@@ -222,36 +224,36 @@ export function ReloadModules() {
     if (!GameRules.ModuleActivated) {
         return;
     }
-    print("ReloadAllModules Reload");
+    print('ReloadAllModules Reload');
     //根据游戏进程选择更新某些模块
-    let State_Get = GameRules.State_Get();
+    const State_Get = GameRules.State_Get();
     GameRules.CustomAttribute.Reload();
-    
-    if (State_Get == GameState.INIT) { //初始化阶段---无UI
 
-    } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) { //加载阶段---无UI
-
-    } else if (State_Get == GameState.CUSTOM_GAME_SETUP) { //游戏设置阶段---队伍选择UI
-
-    } else if (State_Get == GameState.HERO_SELECTION) { //英雄选择阶段---英雄选择UI
-
-    } else if (State_Get == GameState.STRATEGY_TIME) { //战略阶段---英雄选择UI
-
-    } else if (State_Get == GameState.TEAM_SHOWCASE) { //队伍展示阶段---英雄选择UI
-
-    } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) { //地图加载阶段---无UI
-
-    } else if (State_Get == GameState.PRE_GAME) { //赛前阶段---无UI
-
-    } else if (State_Get == GameState.SCENARIO_SETUP) { //场景设置阶段---无UI
-
-    } else if (State_Get == GameState.GAME_IN_PROGRESS) { //游戏开始阶段---游戏内UI
+    if (State_Get == GameState.INIT) {
+        //初始化阶段---无UI
+    } else if (State_Get == GameState.WAIT_FOR_PLAYERS_TO_LOAD) {
+        //加载阶段---无UI
+    } else if (State_Get == GameState.CUSTOM_GAME_SETUP) {
+        //游戏设置阶段---队伍选择UI
+    } else if (State_Get == GameState.HERO_SELECTION) {
+        //英雄选择阶段---英雄选择UI
+    } else if (State_Get == GameState.STRATEGY_TIME) {
+        //战略阶段---英雄选择UI
+    } else if (State_Get == GameState.TEAM_SHOWCASE) {
+        //队伍展示阶段---英雄选择UI
+    } else if (State_Get == GameState.WAIT_FOR_MAP_TO_LOAD) {
+        //地图加载阶段---无UI
+    } else if (State_Get == GameState.PRE_GAME) {
+        //赛前阶段---无UI
+    } else if (State_Get == GameState.SCENARIO_SETUP) {
+        //场景设置阶段---无UI
+    } else if (State_Get == GameState.GAME_IN_PROGRESS) {
+        //游戏开始阶段---游戏内UI
         GameRules.EnemyAttribute = new EnemyAttribute();
-        if(GameRules.MissionSystem != null) GameRules.MissionSystem.Reload();
-    } else if (State_Get == GameState.POST_GAME) { //推送结果阶段---游戏内UI
-
-    } else if (State_Get == GameState.DISCONNECT) { //断开阶段---游戏内UI
-
+        if (GameRules.MissionSystem != null) GameRules.MissionSystem.Reload();
+    } else if (State_Get == GameState.POST_GAME) {
+        //推送结果阶段---游戏内UI
+    } else if (State_Get == GameState.DISCONNECT) {
+        //断开阶段---游戏内UI
     }
-
 }

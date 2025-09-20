@@ -1,47 +1,48 @@
-import { default as NpcAbilityCustom } from "./../json/npc_abilities_custom.json";
-import { FormatDescription, FormatDescriptionExtra } from "./method";
+import { default as NpcAbilityCustom } from './../json/npc_abilities_custom.json';
+import { FormatDescription, FormatDescriptionExtra } from './method';
 
-
-const DamageTypeLabel: { [key: string]: string; } = {
-    "0": "无",
-    "1": "<span class='fire'>火元素</span>",
-    "2": "<span class='water'>冰元素</span>",
-    "3": "<span class='thunder'>雷元素</span>",
-    "4": "<span class='wind'>风元素</span>",
-    "5": "<span class='light'>光元素</span>",
-    "6": "<span class='dark'>暗元素</span>",
+const DamageTypeLabel: { [key: string]: string } = {
+    '0': '无',
+    '1': "<span class='fire'>火元素</span>",
+    '2': "<span class='water'>冰元素</span>",
+    '3': "<span class='thunder'>雷元素</span>",
+    '4': "<span class='wind'>风元素</span>",
+    '5': "<span class='light'>光元素</span>",
+    '6': "<span class='dark'>暗元素</span>",
 };
 
 /** 被动伤害公式 */
 export function HeroPassiveDamageFormula(abilityName: string, formula: string, level: number, element: number = 0) {
-    if (formula == null) { return "0"; }
-    let attr_list = formula.split("+");
-    let str_arr: string[] = [];
-    let abilityData = NpcAbilityCustom[abilityName as "public_template"];
-    for (let k of attr_list) {
-        const bHasAsterisk = k.includes("*")
-        let arr1: string[] = [];
-        let attr2 = k.split("*");
-        for (let k2 of attr2) {
+    if (formula == null) {
+        return '0';
+    }
+    const attr_list = formula.split('+');
+    const str_arr: string[] = [];
+    const abilityData = NpcAbilityCustom[abilityName as 'public_template'];
+    for (const k of attr_list) {
+        const bHasAsterisk = k.includes('*');
+        const arr1: string[] = [];
+        const attr2 = k.split('*');
+        for (const k2 of attr2) {
             if (parseFloat(k2)) {
-                let value = bHasAsterisk ? (parseFloat(k2) * 100).toFixed(0) + "%" : k2
+                const value = bHasAsterisk ? (parseFloat(k2) * 100).toFixed(0) + '%' : k2;
                 arr1.push(`<span class="Variable">${value}</span>`);
             } else {
-                let attr_text = $.Localize(`#custom_attribute_${k2}`);
-                let special_num = abilityData.AbilityValues[k2 as keyof typeof abilityData.AbilityValues] as number | string;
+                const attr_text = $.Localize(`#custom_attribute_${k2}`);
+                const special_num = abilityData.AbilityValues[k2 as keyof typeof abilityData.AbilityValues] as number | string;
                 // $.Msg(["special_num", special_num]);
                 if (special_num != null) {
                     let value = 0;
-                    if (typeof (special_num) == "number") {
+                    if (typeof special_num == 'number') {
                         value = parseFloat(`${special_num}`);
                     } else {
-                        if (level > special_num.split(" ").length) {
-                            level = special_num.split(" ").length;
+                        if (level > special_num.split(' ').length) {
+                            level = special_num.split(' ').length;
                         } else if (level == 0) {
                             level = 1;
                         }
                         // $.Msg(["level",level])
-                        value = parseFloat(special_num.split(" ")[level - 1]);
+                        value = parseFloat(special_num.split(' ')[level - 1]);
                     }
 
                     if (value != 0) {
@@ -50,31 +51,29 @@ export function HeroPassiveDamageFormula(abilityName: string, formula: string, l
                 } else {
                     arr1.push(`<span class="AttributeVar">${attr_text}</span>`);
                 }
-
             }
         }
         if (arr1.length > 0) {
-            str_arr.push(arr1.join(""));
+            str_arr.push(arr1.join(''));
         }
     }
-    let element_dam_label = " · " + DamageTypeLabel[`${element}`]
-    return str_arr.join("+") + element_dam_label;
+    const element_dam_label = ' · ' + DamageTypeLabel[`${element}`];
+    return str_arr.join('+') + element_dam_label;
 }
 
-export function SetAbilityDescription(
-    ability_name: string,
-    level: number = 1,
-    show_all: boolean = false,
-) {
-
-    let abilityData = NpcAbilityCustom[ability_name as "public_template"];
-    if (abilityData == null) { return "" }
-    let AbilityValues: CAPropAbilityValues = abilityData.AbilityValues;
-    let description_txt = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}_Description`);
+export function SetAbilityDescription(ability_name: string, level: number = 1, show_all: boolean = false) {
+    const abilityData = NpcAbilityCustom[ability_name as 'public_template'];
+    if (abilityData == null) {
+        return '';
+    }
+    const AbilityValues: CAPropAbilityValues = abilityData.AbilityValues;
+    const description_txt = $.Localize(`#DOTA_Tooltip_Ability_${ability_name}_Description`);
     let original_description_txt = FormatDescription(description_txt, AbilityValues, level, show_all);
-    if (original_description_txt.search("#") == 0) { return ""; }
+    if (original_description_txt.search('#') == 0) {
+        return '';
+    }
     original_description_txt = original_description_txt.replaceAll(
-        "%AbilityCooldown%",
+        '%AbilityCooldown%',
         `<span class="GameplayVariable">${abilityData.AbilityCooldown ?? 0}</span>`
     );
     // if (abilityData.DamageFormula || abilityData.DamageFormula == "0") {
@@ -93,26 +92,24 @@ export function SetAbilityDescription(
 }
 
 export const GetAbilityInfoData = (ability_name: string) => {
+    const ability_info = {
+        Element: 0,
+        Category: ['null'],
+        Rarity: 0,
+    };
+};
 
-    let ability_info = {
-        "Element": 0,
-        "Category": ["null"],
-        "Rarity": 0,
-    }
-}
-
-
-/** 获取技能品质 
+/** 获取技能品质
  *  1白2绿3蓝4紫5金6橙7红8黑9彩
-*/
+ */
 export const GetAbilityRarity = (ability_name: string) => {
-    let abilityData = NpcAbilityCustom[ability_name as "public_template"];
+    const abilityData = NpcAbilityCustom[ability_name as 'public_template'];
     if (abilityData != null) {
-        return abilityData.Rarity ?? 1
+        return abilityData.Rarity ?? 1;
     } else {
-        return 1
+        return 1;
     }
-}
+};
 
 // export const GetAbilityTypeCategory = (ability_name: string) => {
 //     let abilityData = NpcAbilityCustom[ability_name as "arms_t0_1"];
@@ -148,13 +145,13 @@ export const SetLabelDescriptionExtra = (
     AbilityValues: CAPropAbilityValues,
     ObjectValues: CAPropObjectValues | null,
     showAll: boolean = false,
-    ObjectPercent: number = 100,
+    ObjectPercent: number = 100
 ) => {
     if (AbilityValues) {
-        text = FormatDescription(text, AbilityValues, index + 1, showAll)
+        text = FormatDescription(text, AbilityValues, index + 1, showAll);
     }
     if (ObjectValues) {
-        text = FormatDescriptionExtra(text, ObjectValues, index + 1, showAll , ObjectPercent)
+        text = FormatDescriptionExtra(text, ObjectValues, index + 1, showAll, ObjectPercent);
     }
-    return text
-}
+    return text;
+};

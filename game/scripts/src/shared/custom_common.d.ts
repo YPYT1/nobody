@@ -1,13 +1,17 @@
+declare interface AbilityValuesProps {
+    [key: string]: number;
+}
 
-declare interface AbilityValuesProps { [key: string]: number; }
-
-declare interface CAPropAbilityValues { [attr: string]: string | number }
-declare interface CAPropObjectValues { [attr: string]: { [attr_type: string]: string | number } }
+declare interface CAPropAbilityValues {
+    [attr: string]: string | number;
+}
+declare interface CAPropObjectValues {
+    [attr: string]: { [attr_type: string]: string | number };
+}
 /**
  * 数据驱动技能类参数
  */
 declare interface CGDatadrivenProps {
-
     unit: CDOTA_BaseNPC;
     target: CDOTA_BaseNPC;
     Target: CDOTA_BaseNPC;
@@ -75,7 +79,7 @@ declare interface ApplyCustomDamageOptions {
     MeleeDmgPct?: number;
     RangedDmgPct?: number;
     /** 来自克隆体 */
-    is_clone?:number
+    is_clone?: number;
 }
 
 declare interface ProjectileExtraData {
@@ -91,7 +95,7 @@ declare interface ProjectileExtraData {
     /** code */
     c?: number;
     /** 来自克隆体 */
-    clone?:number;
+    clone?: number;
     /** 技能基础伤害  */
     SelfAbilityMul?: number;
     /** `伤害加成` 后续会转为百分比小数  */

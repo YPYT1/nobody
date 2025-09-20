@@ -1,5 +1,4 @@
-import { reloadable } from "../../utils/tstl-utils";
-
+import { reloadable } from '../../utils/tstl-utils';
 
 /** 启动之后圣坛延迟 */
 const ALTAR_START_DELAY = 1;
@@ -7,7 +6,6 @@ const ALTAR_START_DELAY = 1;
 
 @reloadable
 export class Altar {
-
     altar_index_list: number[];
     altar_index: number;
     altar_npc: CDOTA_BaseNPC[] = [];
@@ -16,9 +14,9 @@ export class Altar {
     vMapCenter: Vector;
 
     constructor() {
-        print("Init Altar");
-        GameRules.Debug.RegisterDebug(this.constructor.name)
-        this._Init()
+        print('Init Altar');
+        GameRules.Debug.RegisterDebug(this.constructor.name);
+        this._Init();
     }
 
     ReLoad() {
@@ -32,83 +30,87 @@ export class Altar {
 
     /** 设置地图中心和尺寸 */
     SetMapCenter() {
-        let ChapterData = GameRules.MapChapter.ChapterData
+        const ChapterData = GameRules.MapChapter.ChapterData;
         this.vMapCenter = Vector(ChapterData.map_centre_x, ChapterData.map_centre_y, 128);
     }
 
     Start(delay: number) {
         // 开始执行圣坛计时
         this.altar_index = 0;
-        GameRules.GetGameModeEntity().SetContextThink("ALTAR_FIRST_START", () => {
-            GameRules.Altar.StartAltarProcess()
-            return null
-        }, delay)
-
+        GameRules.GetGameModeEntity().SetContextThink(
+            'ALTAR_FIRST_START',
+            () => {
+                GameRules.Altar.StartAltarProcess();
+                return null;
+            },
+            delay
+        );
     }
 
     Stop() {
-        GameRules.GetGameModeEntity().SetContextThink("ALTAR_FIRST_START", null, 0)
-        GameRules.GetGameModeEntity().SetContextThink("ALTAR_START_DELAY", null, 0)
-        for (let altar_npc of this.altar_npc) {
+        GameRules.GetGameModeEntity().SetContextThink('ALTAR_FIRST_START', null, 0);
+        GameRules.GetGameModeEntity().SetContextThink('ALTAR_START_DELAY', null, 0);
+        for (const altar_npc of this.altar_npc) {
             if (altar_npc || IsValid(altar_npc) == false) {
-                UTIL_Remove(altar_npc)
+                UTIL_Remove(altar_npc);
             }
         }
         this.altar_npc = [];
     }
 
     StartAltarProcess() {
-        this.altar_index += 1
+        this.altar_index += 1;
         if (this.altar_index == 1) {
-            this.CreateAltar()
+            this.CreateAltar();
         } else {
-            let altar_delay = RandomInt(120, 300);
+            const altar_delay = RandomInt(120, 300);
             // print("wait altar_delay:", altar_delay)
-            GameRules.GetGameModeEntity().SetContextThink("ALTAR_START_DELAY", () => {
-                GameRules.Altar.CreateAltar();
-                return null
-            }, altar_delay)
+            GameRules.GetGameModeEntity().SetContextThink(
+                'ALTAR_START_DELAY',
+                () => {
+                    GameRules.Altar.CreateAltar();
+                    return null;
+                },
+                altar_delay
+            );
         }
-
     }
 
     CreateAltar() {
-        let vStart = this.vMapCenter + RandomVector(RandomInt(1500, 2500)) as Vector;
-        let altar_npc = CreateUnitByName("npc_altar", vStart, false, null, null, DotaTeam.GOODGUYS);
-        let altar_index = this.altar_index_list[RandomInt(0, this.altar_index_list.length - 1)]
-        altar_npc.AddNewModifier(altar_npc, null, "modifier_altar_npc", {
+        const vStart = (this.vMapCenter + RandomVector(RandomInt(1500, 2500))) as Vector;
+        const altar_npc = CreateUnitByName('npc_altar', vStart, false, null, null, DotaTeam.GOODGUYS);
+        const altar_index = this.altar_index_list[RandomInt(0, this.altar_index_list.length - 1)];
+        altar_npc.AddNewModifier(altar_npc, null, 'modifier_altar_npc', {
             altar_index: altar_index,
             altar_radius: this.altar_radius,
-            duration: 60
-        })
+            duration: 60,
+        });
 
         // prop_55	【神圣指向】
-        for (let hHero of HeroList.GetAllHeroes()) {
-            if (hHero.prop_count["55"]) {
-                altar_npc.AddNewModifier(hHero, null, "modifier_altar_npc_prop55", {
-                    duration: 60
-                })
+        for (const hHero of HeroList.GetAllHeroes()) {
+            if (hHero.prop_count['55']) {
+                altar_npc.AddNewModifier(hHero, null, 'modifier_altar_npc_prop55', {
+                    duration: 60,
+                });
             }
-
         }
-
     }
 
     /** 圣坛存在时间超时 */
     Timeout() {
         // 进入下个等待时间
-        this.StartAltarProcess()
+        this.StartAltarProcess();
     }
 
     /** 获得圣坛效果 */
     ApplayAltarEffect(altar_index: number, hUnits: CDOTA_BaseNPC[]) {
         // print("ApplayEffect",altar_index,hUnits.length)
-        for (let hHero of hUnits) {
-            hHero.AddNewModifier(hHero, null, "modifier_altar_effect_" + altar_index, {
+        for (const hHero of hUnits) {
+            hHero.AddNewModifier(hHero, null, 'modifier_altar_effect_' + altar_index, {
                 duration: 15,
-            })
+            });
         }
-        this.StartAltarProcess()
+        this.StartAltarProcess();
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID): void {
@@ -117,13 +119,13 @@ export class Altar {
             this.CreateAltar();
         }
 
-        if (cmd == "-apa") {
-            let altar_index = tonumber(args[0] ?? "1");
-            for (let hHero of HeroList.GetAllHeroes()) {
-                hHero.RemoveModifierByName("modifier_altar_effect_" + altar_index)
-                hHero.AddNewModifier(hHero, null, "modifier_altar_effect_" + altar_index, {
+        if (cmd == '-apa') {
+            const altar_index = tonumber(args[0] ?? '1');
+            for (const hHero of HeroList.GetAllHeroes()) {
+                hHero.RemoveModifierByName('modifier_altar_effect_' + altar_index);
+                hHero.AddNewModifier(hHero, null, 'modifier_altar_effect_' + altar_index, {
                     duration: 15,
-                })
+                });
             }
         }
     }

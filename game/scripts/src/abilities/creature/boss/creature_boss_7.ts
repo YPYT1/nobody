@@ -1,89 +1,90 @@
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
+import { BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 /**
- * creature_boss_7	静止空间	
+ * creature_boss_7	静止空间
  * 蓄力2秒后开启提示，玩家必须在3秒内保持原地不动，
  * 如果动了则会受到天降雷电的打击造成高额伤害。（伤害为玩家最大生命值75%）
  */
 @registerAbility()
 export class creature_boss_7 extends BaseCreatureAbility {
-
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf",context)
+        precacheResString('particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf', context);
     }
-    
+
     OnAbilityPhaseStart(): boolean {
-        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
+        this.hCaster.AddNewModifier(this.hCaster, this, 'modifier_state_boss_invincible', {});
         this.vOrigin = this.hCaster.GetAbsOrigin();
-        this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
-        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+        this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin);
+        GameRules.CMsg.BossCastWarning(true, 'custom_text_boss_cast_warning', {
             unitname: this.hCaster.GetUnitName(),
             ability: this.GetAbilityName(),
-        })
-        return true
+        });
+        return true;
     }
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
-        for (let enemy of HeroList.GetAllHeroes()) {
-            enemy.AddNewModifier(this.hCaster, this, "modifier_creature_boss_7", {
+        for (const enemy of HeroList.GetAllHeroes()) {
+            enemy.AddNewModifier(this.hCaster, this, 'modifier_creature_boss_7', {
                 duration: this._duration,
-            })
+            });
         }
-        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_5", {})
+        GameRules.CMsg.BossCastWarning(true, 'custom_text_boss_cast_warning_5', {});
     }
 
     ClearCurrentPhase(): void {
-        for (let enemy of HeroList.GetAllHeroes()) {
-            enemy.RemoveModifierByName("modifier_creature_boss_7")
+        for (const enemy of HeroList.GetAllHeroes()) {
+            enemy.RemoveModifierByName('modifier_creature_boss_7');
         }
     }
-
-
 }
 
 // 禁止移动
 @registerModifier()
 export class modifier_creature_boss_7 extends BaseModifier {
-
     origin: Vector;
     state: boolean;
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.state = false;
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/title_fx/title00028/title00028.vpcf",
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/title_fx/title00028/title00028.vpcf',
             ParticleAttachment.OVERHEAD_FOLLOW,
             this.GetParent()
-        )
-        ParticleManager.SetParticleControl(effect_fx, 1, Vector(15, 0, 0))
-        this.AddParticle(effect_fx, false, false, -1, false, false)
-        this.StartIntervalThink(2)
+        );
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(15, 0, 0));
+        this.AddParticle(effect_fx, false, false, -1, false, false);
+        this.StartIntervalThink(2);
     }
 
     OnIntervalThink(): void {
-        if (this.origin == null) { this.origin = this.GetParent().GetAbsOrigin() }
-        const pos = this.GetParent().GetAbsOrigin()
+        if (this.origin == null) {
+            this.origin = this.GetParent().GetAbsOrigin();
+        }
+        const pos = this.GetParent().GetAbsOrigin();
         if (pos == this.origin) {
-            this.StartIntervalThink(0.1)
-            return
+            this.StartIntervalThink(0.1);
+            return;
         }
         this.state = true;
-        this.StartIntervalThink(-1)
+        this.StartIntervalThink(-1);
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        if (this.state) {
-            this.ApplyDamage(this.GetParent())
+        if (!IsServer()) {
+            return;
         }
-        GameRules.CMsg.BossCastWarning(false)
+        if (this.state) {
+            this.ApplyDamage(this.GetParent());
+        }
+        GameRules.CMsg.BossCastWarning(false);
     }
 
     ApplyDamage(hTarget: CDOTA_BaseNPC) {
-
         const damage = hTarget.GetMaxHealth() * 0.75;
         ApplyCustomDamage({
             victim: hTarget,
@@ -92,26 +93,26 @@ export class modifier_creature_boss_7 extends BaseModifier {
             damage: damage,
             damage_type: DamageTypes.PHYSICAL,
             miss_flag: 1,
-        })
+        });
 
-        let effect_px = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf",
+        const effect_px = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_zuus/zuus_thundergods_wrath_start.vpcf',
             ParticleAttachment.OVERHEAD_FOLLOW,
             hTarget
-        )
+        );
         ParticleManager.SetParticleControl(effect_px, 1, hTarget.GetAbsOrigin());
         ParticleManager.SetParticleControl(effect_px, 2, this.GetCaster().GetAbsOrigin());
         ParticleManager.ReleaseParticleIndex(effect_px);
-
     }
 
     ShouldUseOverheadOffset(): boolean {
-        return true
+        return true;
     }
 }
 
 @registerModifier()
 export class modifier_creature_boss_7_dmg_interval extends BaseModifier {
-
-    IsHidden(): boolean { return true }
+    IsHidden(): boolean {
+        return true;
+    }
 }

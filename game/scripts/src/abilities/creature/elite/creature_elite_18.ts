@@ -1,29 +1,28 @@
-import { modifier_generic_arc_lua } from "../../../modifier/modifier_generic_arc_lua";
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
+import { modifier_generic_arc_lua } from '../../../modifier/modifier_generic_arc_lua';
+import { BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 /**
  * creature_elite_1	追踪导弹复刻	发射一枚导弹，追踪玩家，造成爆炸伤害（400）
  */
 @registerAbility()
 export class creature_elite_18 extends BaseCreatureAbility {
-
     // 配置参数
     private CONFIG = {
-        ATTACK_INTERVAL: 0.2,           // 攻击间隔（秒）
-        SEARCH_RADIUS: 500,             // 索敌范围
-        PROJECTILE_SPEED: 900,          // 弹道速度（单位/秒）
-        PARTICLE_HIT : "particles/units/heroes/hero_phoenix/phoenix_base_attack_explosion_ember.vpcf",//命中特效
-        PARTICLE_PROJECTILE: "particles/units/heroes/hero_phoenix/phoenix_base_attack.vpcf", // 弹道特效
+        ATTACK_INTERVAL: 0.2, // 攻击间隔（秒）
+        SEARCH_RADIUS: 500, // 索敌范围
+        PROJECTILE_SPEED: 900, // 弹道速度（单位/秒）
+        PARTICLE_HIT: 'particles/units/heroes/hero_phoenix/phoenix_base_attack_explosion_ember.vpcf', //命中特效
+        PARTICLE_PROJECTILE: 'particles/units/heroes/hero_phoenix/phoenix_base_attack.vpcf', // 弹道特效
     };
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_phoenix/phoenix_base_attack.vpcf", context)
-        precacheResString("particles/units/heroes/hero_phoenix/phoenix_base_attack_explosion_ember.vpcf", context)
+        precacheResString('particles/units/heroes/hero_phoenix/phoenix_base_attack.vpcf', context);
+        precacheResString('particles/units/heroes/hero_phoenix/phoenix_base_attack_explosion_ember.vpcf', context);
     }
 
     OnAbilityPhaseStart(): boolean {
-        let hTarget = this.GetCursorTarget();
+        const hTarget = this.GetCursorTarget();
         // this.line_width = this.GetSpecialValueFor("line_width");
         // this.line_distance = this.GetSpecialValueFor("line_distance");
         // this.vPoint = this.GetCursorPosition();
@@ -35,26 +34,24 @@ export class creature_elite_18 extends BaseCreatureAbility {
         //     this.line_distance,
         //     this._cast_point
         // )
-        return true
+        return true;
     }
 
     OnSpellStart(): void {
-        let hTarget = this.GetCursorTarget();
-        let caster = this.GetCaster();
+        const hTarget = this.GetCursorTarget();
+        const caster = this.GetCaster();
 
-        const p_info : CreateTrackingProjectileOptions = {
-                EffectName: this.CONFIG.PARTICLE_PROJECTILE,
-                Source: caster,
-                Target: hTarget,
-                Ability: this,
-                iSourceAttachment: ProjectileAttachment.ATTACK_1,
-                // vSourceLoc: SourceLoc,
-                iMoveSpeed: this.CONFIG.PROJECTILE_SPEED,
-                ExtraData: {
-
-                }
-            }
-        ProjectileManager.CreateTrackingProjectile(p_info)
+        const p_info: CreateTrackingProjectileOptions = {
+            EffectName: this.CONFIG.PARTICLE_PROJECTILE,
+            Source: caster,
+            Target: hTarget,
+            Ability: this,
+            iSourceAttachment: ProjectileAttachment.ATTACK_1,
+            // vSourceLoc: SourceLoc,
+            iMoveSpeed: this.CONFIG.PROJECTILE_SPEED,
+            ExtraData: {},
+        };
+        ProjectileManager.CreateTrackingProjectile(p_info);
 
         // let Missile = CreateUnitByName(
         //     "npc_public_homing_missile",
@@ -75,8 +72,7 @@ export class creature_elite_18 extends BaseCreatureAbility {
 
     //命中回调
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: object): boolean | void {
-        
-        print("target : " , target)
+        print('target : ', target);
         if (!target) return;
         // 计算伤害
         // let ablilty_damage = this.GetCaster().custom_total_attribute.Intellect  + 10;
@@ -84,9 +80,9 @@ export class creature_elite_18 extends BaseCreatureAbility {
         //     this.damage_pro = this.GetSpecialValueFor("damage_pro") * 0.01;
         // }
         // ablilty_damage = ablilty_damage * this.damage_pro;
-        let hero = this.GetCaster();
+        const hero = this.GetCaster();
         let damage = 500;
-        if(hero.IsHero()){
+        if (hero.IsHero()) {
             damage = hero.GetHealth();
         }
         ApplyCustomDamage({
@@ -96,32 +92,23 @@ export class creature_elite_18 extends BaseCreatureAbility {
             damage: damage,
             damage_type: DamageTypes.PHYSICAL,
             miss_flag: 1,
-        })
+        });
         // 命中特效
-        ParticleManager.ReleaseParticleIndex(
-            ParticleManager.CreateParticle(
-                this.CONFIG.PARTICLE_HIT,
-                ParticleAttachment.ABSORIGIN,
-                target
-            )
-        );
+        ParticleManager.ReleaseParticleIndex(ParticleManager.CreateParticle(this.CONFIG.PARTICLE_HIT, ParticleAttachment.ABSORIGIN, target));
     }
 }
 
 @registerModifier()
 export class modifier_creature_elite_1 extends modifier_generic_arc_lua {
-
     // IsHidden(): boolean {
     //     return true
     // }
-
     // IsAura(): boolean { return true; }
     // GetAuraRadius(): number { return 100; }
     // GetAuraSearchFlags() { return UnitTargetFlags.NONE; }
     // GetAuraSearchTeam() { return UnitTargetTeam.ENEMY; }
     // GetAuraSearchType() { return UnitTargetType.HERO + UnitTargetType.BASIC; }
     // GetModifierAura() { return "modifier_creature_elite_1_aura"; }
-
     // _OnCreated(kv: any): void {
     //     let effect_fx = ParticleManager.CreateParticle(
     //         "particles/units/heroes/hero_spirit_breaker/spirit_breaker_charge.vpcf",
@@ -134,12 +121,10 @@ export class modifier_creature_elite_1 extends modifier_generic_arc_lua {
 
 @registerModifier()
 export class modifier_creature_elite_1_aura extends BaseModifier {
-
     // knockback_duration: number;
     // IsHidden(): boolean {
     //     return true
     // }
-
     // OnCreated(params: object): void {
     //     if (!IsServer()) { return }
     //     // 击飞500码
@@ -148,7 +133,6 @@ export class modifier_creature_elite_1_aura extends BaseModifier {
     //     let hCaster = this.GetCaster();
     //     let vCaster = hCaster.GetAbsOrigin()
     //     let damage = hParent.GetMaxHealth() * 0.2;
-
     //     ApplyCustomDamage({
     //         victim: hParent,
     //         attacker: hCaster,
@@ -157,7 +141,6 @@ export class modifier_creature_elite_1_aura extends BaseModifier {
     //         damage_type: DamageTypes.PHYSICAL,
     //         miss_flag: 1,
     //     })
-
     //     hParent.AddNewModifier(hCaster, null, "modifier_knockback_lua", {
     //         center_x: vCaster.x,
     //         center_y: vCaster.y,
@@ -167,8 +150,6 @@ export class modifier_creature_elite_1_aura extends BaseModifier {
     //         knockback_duration: this.knockback_duration,
     //         duration: this.knockback_duration,
     //     })
-
-
     //     this.OnDestroy();
     // }
 }

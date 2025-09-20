@@ -1,42 +1,42 @@
-
-import { reloadable } from "../../../utils/tstl-utils";
-import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
+import { reloadable } from '../../../utils/tstl-utils';
+import { UIEventRegisterClass } from '../../class_extends/ui_event_register_class';
 // import * as ArmsJson from "../../../json/abilities/arms.json";
-import * as ElementBondJson from "../../../json/config/game/element_bond.json";
+import * as ElementBondJson from '../../../json/config/game/element_bond.json';
 
-const element_label: CElementType[] = ["null", "fire", "ice", "thunder", "wind", "light", "dark"];
+const element_label: CElementType[] = ['null', 'fire', 'ice', 'thunder', 'wind', 'light', 'dark'];
 
 /** 技能升级相关 */
 @reloadable
 export class NewArmsEvolution extends UIEventRegisterClass {
     //每个玩家可选列表
     PlayerUpgradePool: {
-        [player: number]: { //玩家
-            [qualiy: number]: {  //品质
-                key: string[], //物品key
+        [player: number]: {
+            //玩家
+            [qualiy: number]: {
+                //品质
+                key: string[]; //物品key
                 pro: number[]; //物品概率
-            }   
-        }
-    } = {}; 
+            };
+        };
+    } = {};
 
-    kill_list : number[] = [ 50 , 50 , 100 , 200 , 400 , 600 , 800 , 1000 , 1000 , 1000 , 1000];
+    kill_list: number[] = [50, 50, 100, 200, 400, 600, 800, 1000, 1000, 1000, 1000];
 
     /**
      * 全局限购记录
      */
     arms_global_count: {
         [key: string]: {
-            count: number,
-            max: number,
-        },
+            count: number;
+            max: number;
+        };
     } = {};
 
-
-    ItemQmax: number = 7; //物品最高品质    
+    ItemQmax: number = 7; //物品最高品质
     //技能点
-    EvolutionPoint: number[] = []
+    EvolutionPoint: number[] = [];
     //已使用的技能点
-    ConsumeEvolutionPoint: number[] = []
+    ConsumeEvolutionPoint: number[] = [];
 
     //技能刷新次数
     PlayerRefreshCount: number[] = [];
@@ -46,7 +46,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     PlayerSelectData: PlayerUpgradeSelectServerData[] = [];
     //是否第一次选择
     PlayerFirstState: boolean[] = [];
-    //第一次选择的技能                
+    //第一次选择的技能
     PlayerUpgradePoolFirstData: string[][] = [];
 
     //玩家羁绊数据--技能
@@ -55,78 +55,78 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     ElementBondDateExtra: ElementBondDateList[] = [];
     //玩家羁绊数据--总和
     ElementBondDateCount: ElementBondDateList[] = [];
-    // 羁绊表   
+    // 羁绊表
     ElementBondTable: { [element: string]: number[] };
 
     constructor() {
-        super("NewArmsEvolution")
+        super('NewArmsEvolution');
         for (let index = 0; index < GameRules.PUBLIC_CONST.PLAYER_COUNT; index++) {
             this.PlayerUpgradePool[index] = {};
             this.EvolutionPoint.push(0);
             // this.PlayerRefreshCount.push(GameRules.PUBLIC_CONST.PLAYER_REFRESH_COUNT)
             // this.PlayerSelectAmount.push(GameRules.PUBLIC_CONST.PLAYER_ARMS_SELECT_MAX)
-            this.PlayerFirstState.push(false)
-            this.PlayerUpgradePoolFirstData.push([])
+            this.PlayerFirstState.push(false);
+            this.PlayerUpgradePoolFirstData.push([]);
 
             this.ElementBondDateSkill.push({
-                "Element": {
+                Element: {
                     [ElementTypeEnum.null]: 0,
                     [ElementTypeEnum.fire]: 0,
                     [ElementTypeEnum.ice]: 0,
                     [ElementTypeEnum.thunder]: 0,
                     [ElementTypeEnum.wind]: 0,
                     [ElementTypeEnum.light]: 0,
-                    [ElementTypeEnum.dark]: 0
-                }
-            })
+                    [ElementTypeEnum.dark]: 0,
+                },
+            });
 
             this.ElementBondDateExtra.push({
-                "Element" : {
-                    [ElementTypeEnum.null] : 0,
-                    [ElementTypeEnum.fire] : 0,
-                    [ElementTypeEnum.ice] : 0,
-                    [ElementTypeEnum.thunder] : 0,
+                Element: {
+                    [ElementTypeEnum.null]: 0,
+                    [ElementTypeEnum.fire]: 0,
+                    [ElementTypeEnum.ice]: 0,
+                    [ElementTypeEnum.thunder]: 0,
                     [ElementTypeEnum.wind]: 0,
-                    [ElementTypeEnum.light] : 0,
-                    [ElementTypeEnum.dark] : 0
-                }
-            })
+                    [ElementTypeEnum.light]: 0,
+                    [ElementTypeEnum.dark]: 0,
+                },
+            });
 
             this.ElementBondDateCount.push({
-                "Element" : {
-                    [ElementTypeEnum.null] : 0,
-                    [ElementTypeEnum.fire] : 0,
-                    [ElementTypeEnum.ice] : 0,
-                    [ElementTypeEnum.thunder] : 0,
+                Element: {
+                    [ElementTypeEnum.null]: 0,
+                    [ElementTypeEnum.fire]: 0,
+                    [ElementTypeEnum.ice]: 0,
+                    [ElementTypeEnum.thunder]: 0,
                     [ElementTypeEnum.wind]: 0,
-                    [ElementTypeEnum.light] : 0,
-                    [ElementTypeEnum.dark] : 0
-                }
-            })
+                    [ElementTypeEnum.light]: 0,
+                    [ElementTypeEnum.dark]: 0,
+                },
+            });
 
             this.PlayerSelectData.push({
-                "arms_list": {},
-                "is_select": 0,
-                "index": 0,
+                arms_list: {},
+                is_select: 0,
+                index: 0,
             });
         }
         // 构造一个羁绊表
         this.ElementBondTable = {};
-        for (let k in ElementBondJson) {
-            let row_data = ElementBondJson[k as keyof typeof ElementBondJson];
-            let element_key = element_label[row_data.CElementType];
-            let activate_count = row_data.activate_count;
+        for (const k in ElementBondJson) {
+            const row_data = ElementBondJson[k as keyof typeof ElementBondJson];
+            const element_key = element_label[row_data.CElementType];
+            const activate_count = row_data.activate_count;
             if (this.ElementBondTable[element_key] == null) {
-                this.ElementBondTable[element_key] = []
+                this.ElementBondTable[element_key] = [];
             }
-            this.ElementBondTable[element_key].push(activate_count)
+            this.ElementBondTable[element_key].push(activate_count);
         }
-
     }
+
     /**
      * 重新初始化全局限购
      */
-    ArmsGlobalInit(){
+    ArmsGlobalInit() {
         // let playercount = GetPlayerCount();
         // for (const [key, val] of pairs(ArmsJson)) {
         //     if (val.Rarity > 0 && val.Disable) {
@@ -137,60 +137,60 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         //     }
         // }
     }
+
     /**
      * 初始化玩家可选物品概率(可重复调用)
-     * @param player_id 
+     * @param player_id
      */
     InitPlayerUpgradeStatus(player_id: PlayerID) {
-
         //重置生命
-        GameRules.GameInformation.SetPlayerLife(player_id , 2)
+        GameRules.GameInformation.SetPlayerLife(player_id, 2);
         this.PlayerUpgradePool[player_id] = {};
         this.EvolutionPoint[player_id] = 0;
         //初始给与一点技能点 且不消耗灵魂
         this.AddEvolutionPoint(player_id, 1);
         this.PlayerFirstState[player_id] = true;
         this.PlayerSelectData[player_id] = {
-            "arms_list": {},
-            "is_select": 0,
-            "index": -1,
+            arms_list: {},
+            is_select: 0,
+            index: -1,
         };
         this.ElementBondDateSkill[player_id] = {
-            "Element": {
+            Element: {
                 [ElementTypeEnum.null]: 0,
                 [ElementTypeEnum.fire]: 0,
                 [ElementTypeEnum.ice]: 0,
                 [ElementTypeEnum.thunder]: 0,
                 [ElementTypeEnum.wind]: 0,
                 [ElementTypeEnum.light]: 0,
-                [ElementTypeEnum.dark]: 0
-            }
-        }
+                [ElementTypeEnum.dark]: 0,
+            },
+        };
         this.ElementBondDateExtra[player_id] = {
-            "Element" : {
-                [ElementTypeEnum.null] : 0,
-                [ElementTypeEnum.fire] : 0,
-                [ElementTypeEnum.ice] : 0,
-                [ElementTypeEnum.thunder] : 0,
+            Element: {
+                [ElementTypeEnum.null]: 0,
+                [ElementTypeEnum.fire]: 0,
+                [ElementTypeEnum.ice]: 0,
+                [ElementTypeEnum.thunder]: 0,
                 [ElementTypeEnum.wind]: 0,
-                [ElementTypeEnum.light] : 0,
-                [ElementTypeEnum.dark] : 0
-            }
-        }
+                [ElementTypeEnum.light]: 0,
+                [ElementTypeEnum.dark]: 0,
+            },
+        };
 
         this.ElementBondDateCount[player_id] = {
-            "Element" : {
-                [ElementTypeEnum.null] : 0,
-                [ElementTypeEnum.fire] : 0,
-                [ElementTypeEnum.ice] : 0,
-                [ElementTypeEnum.thunder] : 0,
+            Element: {
+                [ElementTypeEnum.null]: 0,
+                [ElementTypeEnum.fire]: 0,
+                [ElementTypeEnum.ice]: 0,
+                [ElementTypeEnum.thunder]: 0,
                 [ElementTypeEnum.wind]: 0,
-                [ElementTypeEnum.light] : 0,
-                [ElementTypeEnum.dark] : 0
-            }
-        }
+                [ElementTypeEnum.light]: 0,
+                [ElementTypeEnum.dark]: 0,
+            },
+        };
 
-        this.GetArmssElementBondDateList(player_id, {})
+        this.GetArmssElementBondDateList(player_id, {});
 
         this.PlayerUpgradePoolFirstData[player_id] = [];
 
@@ -216,16 +216,15 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     }
 
     /**
-     * 获取当前升级选项 
+     * 获取当前升级选项
      * 1.默认是3个,如果其他则可以多选
      * 2.符合条件后会出现特殊升级
      */
-    CreatArmssSelectData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssSelectData"]) {
+    CreatArmssSelectData(player_id: PlayerID, param: CGED['NewArmsEvolution']['CreatArmssSelectData']) {
         // //阶段2之前不可用
-        // if (GameRules.MapChapter._game_select_phase <= 2) { 
+        // if (GameRules.MapChapter._game_select_phase <= 2) {
         //     return
-        // } 
-
+        // }
         // if (this.PlayerSelectData[player_id].is_select == 0) {
         //     //验证是否满足条件
         //     if (this.EvolutionPoint[player_id] <= 0) {
@@ -257,7 +256,6 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         //             //技能点减少
         //             this.AddEvolutionPoint(player_id, - skillcount)
         //         }
-
         //         this.PlayerFirstState[player_id] = false;
         //         for (let i = 0; i < amount; i++) {
         //             amount_count++;
@@ -271,7 +269,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         //             let arms_key = this.PlayerUpgradePoolFirstData[player_id][index]
         //             //重复物品跳过
         //             if (shop_wp_list.includes(arms_key)) {
-        //                 //跳过本次 
+        //                 //跳过本次
         //                 i--;
         //                 continue;
         //             }
@@ -310,14 +308,14 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         //             let arms_key = key_list[GetCommonProbability(pro_list)];
         //             //重复物品跳过
         //             if (shop_wp_list.includes(arms_key)) {
-        //                 //跳过本次 
+        //                 //跳过本次
         //                 i--;
         //                 continue;
         //             }
         //             //全局唯一数量验证
         //             if(this.arms_global_count.hasOwnProperty(arms_key)){
         //                 if(this.arms_global_count[arms_key].count >= this.arms_global_count[arms_key].max){
-        //                     //跳过本次 
+        //                     //跳过本次
         //                     i--;
         //                     continue;
         //                 }
@@ -341,7 +339,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
      * 技能重随
      * 1.默认是三选一
      */
-    CreatArmssWeightData(player_id: PlayerID, param: CGED["NewArmsEvolution"]["CreatArmssWeightData"]) {
+    CreatArmssWeightData(player_id: PlayerID, param: CGED['NewArmsEvolution']['CreatArmssWeightData']) {
         // //阶段2之前不可用
         // if (GameRules.MapChapter._game_select_phase <= 2) {
         //     return
@@ -386,14 +384,14 @@ export class NewArmsEvolution extends UIEventRegisterClass {
         //         let arms_key = key_list[GetCommonProbability(pro_list)];
         //         //重复物品跳过
         //         if (shop_wp_list.includes(arms_key)) {
-        //             //跳过本次 
+        //             //跳过本次
         //             i--;
         //             continue;
         //         }
         //         //全局唯一数量验证
         //         if(this.arms_global_count.hasOwnProperty(arms_key)){
         //             if(this.arms_global_count[arms_key].count >= this.arms_global_count[arms_key].max){
-        //                 //跳过本次 
+        //                 //跳过本次
         //                 i--;
         //                 continue;
         //             }
@@ -415,7 +413,7 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     /**
      * 升级
      */
-    ArmsUpgrade(player_id: PlayerID, param: CGED["NewArmsEvolution"]["ArmsUpgrade"]) {
+    ArmsUpgrade(player_id: PlayerID, param: CGED['NewArmsEvolution']['ArmsUpgrade']) {
         // let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
         // let Index = param.index;
         // let Ability = MyHero.GetAbilityByIndex(Index);
@@ -438,140 +436,130 @@ export class NewArmsEvolution extends UIEventRegisterClass {
 
     /**
      * 替换技能
-     * @param player_id 
-     * @param params    
+     * @param player_id
+     * @param params
      */
     ReplaceAbility(ability_name: string, order: number, queryUnit: CDOTA_BaseNPC_Hero) {
         const hUnit = queryUnit;
-        let order_ability = hUnit.GetAbilityByIndex(order);
+        const order_ability = hUnit.GetAbilityByIndex(order);
         if (order_ability) {
-            order_ability.RemoveSelf()
-            hUnit.RemoveAbilityByHandle(order_ability)
+            order_ability.RemoveSelf();
+            hUnit.RemoveAbilityByHandle(order_ability);
         }
-        let new_ability = hUnit.AddAbility(ability_name)
+        const new_ability = hUnit.AddAbility(ability_name);
         new_ability.SetLevel(1);
     }
-
 
     /**
      * 选择列表
      */
-    PostSelectArms(player_id: PlayerID, params: CGED["NewArmsEvolution"]["PostSelectArms"]) {
-        let index = params.index;
-        let PlayerSelectDataInfo = this.PlayerSelectData[player_id];
+    PostSelectArms(player_id: PlayerID, params: CGED['NewArmsEvolution']['PostSelectArms']) {
+        const index = params.index;
+        const PlayerSelectDataInfo = this.PlayerSelectData[player_id];
         if (!PlayerSelectDataInfo.arms_list.hasOwnProperty(index)) {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "没有此选项！！！");
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, '没有此选项！！！');
             return;
         }
         if (PlayerSelectDataInfo.is_select == 0) {
-            GameRules.CMsg.SendErrorMsgToPlayer(player_id, "没有刷新技能！！");
+            GameRules.CMsg.SendErrorMsgToPlayer(player_id, '没有刷新技能！！');
             return;
         }
-        let ability_name = PlayerSelectDataInfo.arms_list[index].key;
+        const ability_name = PlayerSelectDataInfo.arms_list[index].key;
 
-        let Index = PlayerSelectDataInfo.index;
-        let MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
+        const Index = PlayerSelectDataInfo.index;
+        const MyHero = PlayerResource.GetSelectedHeroEntity(player_id);
 
         //减少原来的元素羁绊
-        let Ability = MyHero.GetAbilityByIndex(Index);
-        let Key = Ability.GetAbilityName();
+        const Ability = MyHero.GetAbilityByIndex(Index);
+        const Key = Ability.GetAbilityName();
         // // let Rarity = ArmsJson[Key as keyof typeof ArmsJson].Rarity;
         // //被替换的技能回归池子
         // if(Rarity != 0){
         //     this.arms_global_count[Key].count --;
         // }
-        
-        this.GetArmssElementBondDateList(player_id, {})
 
-        GameRules.NewArmsEvolution.ReplaceAbility(ability_name, Index, MyHero)
+        this.GetArmssElementBondDateList(player_id, {});
 
+        GameRules.NewArmsEvolution.ReplaceAbility(ability_name, Index, MyHero);
 
         //其他未选中的回归池子
-        for( let k in PlayerSelectDataInfo.arms_list){
-            let kint = parseInt(k);
-            if(index != kint){
+        for (const k in PlayerSelectDataInfo.arms_list) {
+            const kint = parseInt(k);
+            if (index != kint) {
                 //回归池子
-                let arms_key = PlayerSelectDataInfo.arms_list[k].key
-                this.arms_global_count[arms_key].count --;
+                const arms_key = PlayerSelectDataInfo.arms_list[k].key;
+                this.arms_global_count[arms_key].count--;
             }
         }
-        
+
         PlayerSelectDataInfo.is_select = 0;
         PlayerSelectDataInfo.index = -1;
         PlayerSelectDataInfo.arms_list = {};
 
-        
         this.GetArmssSelectData(player_id, {});
     }
 
     /**
      * 获取物品信息初始化信息
      */
-    GetArmssSelectData(player_id: PlayerID, params: CGED["NewArmsEvolution"]["GetArmssSelectData"]) {
+    GetArmssSelectData(player_id: PlayerID, params: CGED['NewArmsEvolution']['GetArmssSelectData']) {
         //商店组成 1未刷新 2未挑战
-        let data: PlayerUpgradeSelectRetData = {
+        const data: PlayerUpgradeSelectRetData = {
             Data: this.PlayerSelectData[player_id], //列表
         };
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "NewArmsEvolution_GetArmssSelectData",
-            {
-                data
-            }
-        );
+        CustomGameEventManager.Send_ServerToPlayer(PlayerResource.GetPlayer(player_id), 'NewArmsEvolution_GetArmssSelectData', {
+            data,
+        });
     }
 
     /**
-    * 获取物品信息初始化信息
-    */
-    GetArmssElementBondDateList(player_id: PlayerID, params: CGED["NewArmsEvolution"]["GetArmssElementBondDateList"]) {
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "NewArmsEvolution_GetArmssElementBondDateList",
-            {
-                data: this.ElementBondDateCount[player_id]
-            }
-        );
+     * 获取物品信息初始化信息
+     */
+    GetArmssElementBondDateList(player_id: PlayerID, params: CGED['NewArmsEvolution']['GetArmssElementBondDateList']) {
+        CustomGameEventManager.Send_ServerToPlayer(PlayerResource.GetPlayer(player_id), 'NewArmsEvolution_GetArmssElementBondDateList', {
+            data: this.ElementBondDateCount[player_id],
+        });
     }
 
     /**
-     * 修改元素属性 -- 
+     * 修改元素属性 --
      * @param player_id 玩家id
      * @param Element 元素
      * @param count 数量
      * @param type  元素来源类型 1 技能 可重置 2 额外 不可重置
      */
-    SetElementBondDate(player_id : PlayerID , Element : ElementTypeEnum , count : number , type : number = 1){ //1 为技能（技能要重置） 2为额外不重置
+    SetElementBondDate(player_id: PlayerID, Element: ElementTypeEnum, count: number, type: number = 1) {
+        //1 为技能（技能要重置） 2为额外不重置
         //先处理光暗特殊情况
-        if(Element == ElementTypeEnum.dark || Element == ElementTypeEnum.light){
-            if(count > 0){ //处理增加的情况
-                let max = ElementTypeEnum.dark;
+        if (Element == ElementTypeEnum.dark || Element == ElementTypeEnum.light) {
+            if (count > 0) {
+                //处理增加的情况
+                const max = ElementTypeEnum.dark;
                 //寻找最高元素的值
                 let HighestElement = 0;
                 //唯一标识
-                let only_status = false;    
-                for (let index = 1; index <= max ; index++) {
+                let only_status = false;
+                for (let index = 1; index <= max; index++) {
                     //下一个元素如果等于了此数量则不唯一
-                    if(HighestElement == this.ElementBondDateCount[player_id].Element[index]){
+                    if (HighestElement == this.ElementBondDateCount[player_id].Element[index]) {
                         only_status = false;
                     }
 
-                    if(HighestElement < this.ElementBondDateCount[player_id].Element[index]){
-                        HighestElement = this.ElementBondDateCount[player_id].Element[index]
+                    if (HighestElement < this.ElementBondDateCount[player_id].Element[index]) {
+                        HighestElement = this.ElementBondDateCount[player_id].Element[index];
                         only_status = true;
                     }
-                    
                 }
-                if(HighestElement != 0 && only_status == true){
+                if (HighestElement != 0 && only_status == true) {
                     //处理暗
-                    if(Element == ElementTypeEnum.dark){
-                        for (let index = 1; index <= max ; index++) {
-                            if(index != ElementTypeEnum.dark){
-                                if(HighestElement == this.ElementBondDateCount[player_id].Element[index]){
+                    if (Element == ElementTypeEnum.dark) {
+                        for (let index = 1; index <= max; index++) {
+                            if (index != ElementTypeEnum.dark) {
+                                if (HighestElement == this.ElementBondDateCount[player_id].Element[index]) {
                                     this.ElementBondDateCount[player_id].Element[index] -= count;
-                                    if(type == 1){
+                                    if (type == 1) {
                                         this.ElementBondDateSkill[player_id].Element[index] -= count;
-                                    }else{
+                                    } else {
                                         this.ElementBondDateExtra[player_id].Element[index] -= count;
                                     }
                                 }
@@ -579,14 +567,14 @@ export class NewArmsEvolution extends UIEventRegisterClass {
                         }
                     }
                     //处理光
-                    if(Element == ElementTypeEnum.light){
-                        for (let index = 1; index <= max ; index++) {
-                            if(index != ElementTypeEnum.light){
-                                if(HighestElement == this.ElementBondDateCount[player_id].Element[index]){
+                    if (Element == ElementTypeEnum.light) {
+                        for (let index = 1; index <= max; index++) {
+                            if (index != ElementTypeEnum.light) {
+                                if (HighestElement == this.ElementBondDateCount[player_id].Element[index]) {
                                     this.ElementBondDateCount[player_id].Element[index] += count;
-                                    if(type == 1){
+                                    if (type == 1) {
                                         this.ElementBondDateSkill[player_id].Element[index] += count;
-                                    }else{
+                                    } else {
                                         this.ElementBondDateExtra[player_id].Element[index] += count;
                                     }
                                 }
@@ -599,65 +587,66 @@ export class NewArmsEvolution extends UIEventRegisterClass {
 
         //再添加元素
         this.ElementBondDateCount[player_id].Element[Element] += count;
-        if(type == 1){
+        if (type == 1) {
             this.ElementBondDateSkill[player_id].Element[Element] += count;
-        }else{
+        } else {
             this.ElementBondDateExtra[player_id].Element[Element] += count;
         }
 
         this.UpdateElementBondEffect(player_id);
 
-        this.GetArmssElementBondDateList(player_id, {})
+        this.GetArmssElementBondDateList(player_id, {});
     }
+
     /**
      * 初始化来源于技能上的元素属性
-     * @param player_id 
+     * @param player_id
      */
-    ElementSkillInit(player_id: PlayerID){
-
+    ElementSkillInit(player_id: PlayerID) {
         this.ElementBondDateSkill[player_id] = {
-            "Element": {
+            Element: {
                 [ElementTypeEnum.null]: 0,
                 [ElementTypeEnum.fire]: 0,
                 [ElementTypeEnum.ice]: 0,
                 [ElementTypeEnum.thunder]: 0,
                 [ElementTypeEnum.wind]: 0,
                 [ElementTypeEnum.light]: 0,
-                [ElementTypeEnum.dark]: 0
-            }
-        }
-        for (let index = 0; index < Object.keys(this.ElementBondDateCount[player_id].Element).length ; index++) {
+                [ElementTypeEnum.dark]: 0,
+            },
+        };
+        for (let index = 0; index < Object.keys(this.ElementBondDateCount[player_id].Element).length; index++) {
             this.ElementBondDateCount[player_id].Element[index] = this.ElementBondDateExtra[player_id].Element[index];
         }
 
         this.UpdateElementBondEffect(player_id);
 
-        this.GetArmssElementBondDateList(player_id, {})
-
+        this.GetArmssElementBondDateList(player_id, {});
     }
 
     /** 更新元素羁绊效果 */
     UpdateElementBondEffect(player_id: PlayerID) {
         const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
         const element_bond = this.ElementBondDateCount[player_id].Element;
-        for (let k in element_bond) {
-            let kint = parseInt(k);
-            if (kint == 0) { continue }
-            let key_index = parseInt(k) as keyof typeof element_bond;
-            let element_key = element_label[key_index];
-            let element_count = element_bond[key_index];
-            let RowElementBondTable = this.ElementBondTable[element_key];
-            
-            for (let count of RowElementBondTable) {
-                let bond_key = element_label[key_index] + "_" + count;
+        for (const k in element_bond) {
+            const kint = parseInt(k);
+            if (kint == 0) {
+                continue;
+            }
+            const key_index = parseInt(k) as keyof typeof element_bond;
+            const element_key = element_label[key_index];
+            const element_count = element_bond[key_index];
+            const RowElementBondTable = this.ElementBondTable[element_key];
+
+            for (const count of RowElementBondTable) {
+                const bond_key = element_label[key_index] + '_' + count;
                 if (element_count >= count) {
-                    let row_element_bond = ElementBondJson[bond_key as keyof typeof ElementBondJson];
-                    let row_kv_data = row_element_bond.AbilityValues as CustomAttributeTableType;
+                    const row_element_bond = ElementBondJson[bond_key as keyof typeof ElementBondJson];
+                    const row_kv_data = row_element_bond.AbilityValues as CustomAttributeTableType;
                     if (row_kv_data) {
-                        GameRules.CustomAttribute.SetAttributeInKey(hHero, bond_key, row_kv_data)
+                        GameRules.CustomAttribute.SetAttributeInKey(hHero, bond_key, row_kv_data);
                     }
                 } else {
-                    GameRules.CustomAttribute.DelAttributeInKey(hHero, bond_key)
+                    GameRules.CustomAttribute.DelAttributeInKey(hHero, bond_key);
                 }
             }
         }
@@ -666,18 +655,15 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     /**
      * 获取物品信息初始化信息
      */
-    GetEvolutionPoint(player_id: PlayerID, params: CGED["NewArmsEvolution"]["GetEvolutionPoint"]) {
+    GetEvolutionPoint(player_id: PlayerID, params: CGED['NewArmsEvolution']['GetEvolutionPoint']) {
         //商店组成 1未刷新 2未挑战
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "NewArmsEvolution_GetEvolutionPoint",
-            {
-                data: {
-                    EvolutionPoint: this.EvolutionPoint[player_id]
-                }
-            }
-        );
+        CustomGameEventManager.Send_ServerToPlayer(PlayerResource.GetPlayer(player_id), 'NewArmsEvolution_GetEvolutionPoint', {
+            data: {
+                EvolutionPoint: this.EvolutionPoint[player_id],
+            },
+        });
     }
+
     /**
      * 增加技能点
      */
@@ -687,51 +673,51 @@ export class NewArmsEvolution extends UIEventRegisterClass {
     }
 
     GetArmsElementType(hAbility: CDOTABaseAbility) {
-        let ability_name = hAbility.GetAbilityName();
+        const ability_name = hAbility.GetAbilityName();
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
-        if (cmd == "-arms_add") {
-            let count = args[0] ? parseInt(args[0]) : 1;
+        if (cmd == '-arms_add') {
+            const count = args[0] ? parseInt(args[0]) : 1;
             this.AddEvolutionPoint(player_id, count);
         }
-        if (cmd == "-iu") {
-            let index = parseInt(args[0]) ?? 1;
+        if (cmd == '-iu') {
+            const index = parseInt(args[0]) ?? 1;
             this.ArmsUpgrade(player_id, {
-                index: index
-            })
+                index: index,
+            });
         }
-        if (cmd == "--CreatArmssSelectData") {
-            let index = args[0] ? parseInt(args[0]) : 0;
-            this.CreatArmssSelectData(player_id, { index: index })
+        if (cmd == '--CreatArmssSelectData') {
+            const index = args[0] ? parseInt(args[0]) : 0;
+            this.CreatArmssSelectData(player_id, { index: index });
         }
-        if (cmd == "--PostSelectArms") {
-            let index = args[0] ? parseInt(args[0]) : 0;
-            this.PostSelectArms(player_id, { index: index })
+        if (cmd == '--PostSelectArms') {
+            const index = args[0] ? parseInt(args[0]) : 0;
+            this.PostSelectArms(player_id, { index: index });
         }
-        if (cmd == "--SetElementBondDate") {
-            let Element = args[0] ? parseInt(args[0]) : 1;
-            let count = args[1] ? parseInt(args[1]) : 1;
-            this.SetElementBondDate(player_id, Element, count , 0)
+        if (cmd == '--SetElementBondDate') {
+            const Element = args[0] ? parseInt(args[0]) : 1;
+            const count = args[1] ? parseInt(args[1]) : 1;
+            this.SetElementBondDate(player_id, Element, count, 0);
         }
-        if(cmd == "--addResource"){
-            let Type = args[0] ? parseInt(args[0]) : 1;
-            let count = args[1] ? parseInt(args[1]) : 1;
-            let key = "Gold";
-            if(Type == 1){
-                key = "Gold"
-            }else if(Type == 2){
-                key = "Soul"
-            }else if(Type == 3){
-                key = "Kills"
-            }else if(Type == 4){
-                key = "TeamExp"
-            }else if(Type == 5){
-                key = "SingleExp"
+        if (cmd == '--addResource') {
+            const Type = args[0] ? parseInt(args[0]) : 1;
+            const count = args[1] ? parseInt(args[1]) : 1;
+            let key = 'Gold';
+            if (Type == 1) {
+                key = 'Gold';
+            } else if (Type == 2) {
+                key = 'Soul';
+            } else if (Type == 3) {
+                key = 'Kills';
+            } else if (Type == 4) {
+                key = 'TeamExp';
+            } else if (Type == 5) {
+                key = 'SingleExp';
             }
-            GameRules.ResourceSystem.ModifyResource(player_id , {
-                [key] : count
-            })
+            GameRules.ResourceSystem.ModifyResource(player_id, {
+                [key]: count,
+            });
         }
     }
 }

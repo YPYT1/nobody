@@ -1,12 +1,11 @@
 declare interface CDOTA_Buff {
-
     damage_type: DamageTypes;
     element_type: ElementTypes;
     caster: CDOTA_BaseNPC;
     parent: CDOTA_BaseNPC;
     team: DotaTeam;
     origin: Vector;
-    
+
     manacost_bonus: number;
     attack_damage: number;
     /** `该技能加成` */
@@ -28,7 +27,7 @@ declare interface CDOTA_Buff {
     // /** 吞噬效果 */
     // is_devour:boolean;
 
-    surround_d_final:number;
-    
-    OnBeInjured(params: ApplyCustomDamageOptions):boolean
+    surround_d_final: number;
+
+    OnBeInjured(params: ApplyCustomDamageOptions): boolean;
 }

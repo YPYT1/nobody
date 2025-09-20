@@ -2,38 +2,43 @@ const path = require('path');
 const fs = require('fs');
 
 const GetImportPathFileList = (path_dir) => {
-    let context = path.resolve(__dirname, 'src/' + path_dir);
-    let xml_list = [];
+    const srcRoot = path.resolve(__dirname, 'src');
+    const toPosix = (value) => value.split(path.sep).join('/');
+    const context = path.resolve(srcRoot, path_dir);
+    const xml_list = [];
 
     function readFilesInDirectory(directoryPath) {
         const files = fs.readdirSync(directoryPath);
+        const relativeDir = toPosix(path.relative(srcRoot, directoryPath));
 
         files.forEach(file => {
             const filePath = path.join(directoryPath, file);
             const stats = fs.statSync(filePath);
 
             if (stats.isFile()) {
-                if (filePath.endsWith("xml")) {
-                    let dir_path = directoryPath.replace(__dirname + "\\src\\", "./") + "/"
-                    let import_file = (dir_path + "/" + file).replaceAll("\\", "/").replaceAll("//", "/")
-                    
-                    if (dir_path == './' + path_dir + "/" == false) {
-                        // console.log("import_file",import_file)
-                        if(import_file.indexOf("_temp") == -1){
-                            xml_list.push({ import: import_file, filename: import_file.replace("./", "") })
-                        }
-                        
+                if (filePath.endsWith('xml')) {
+                    const relativeFile = toPosix(path.relative(srcRoot, filePath));
+
+                    if (relativeDir === path_dir) {
+                        return;
                     }
+
+                    if (relativeFile.includes('_temp')) {
+                        return;
+                    }
+
+                    const import_file = `./${relativeFile}`;
+                    xml_list.push({ import: import_file, filename: relativeFile });
                 }
             } else if (stats.isDirectory()) {
                 readFilesInDirectory(filePath);
             }
         });
     }
-    readFilesInDirectory(context)
 
-    return xml_list
+    readFilesInDirectory(context);
 
+    return xml_list;
 };
 
 const ImportDashBoard = GetImportPathFileList("dashboard");

@@ -1,27 +1,25 @@
-import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
+import { BaseModifier, registerModifier } from '../../utils/dota_ts_adapter';
 
 @registerModifier()
 export class modifier_mission_radiant_6_box extends BaseModifier {
-
-    is_kill: boolean
+    is_kill: boolean;
     timer_fx: ParticleID;
 
     OnCreated(params: object): void {
         this.is_kill = false;
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
     }
 
-
     DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.INCOMING_DAMAGE_PERCENTAGE,
-        ]
+        return [ModifierFunction.INCOMING_DAMAGE_PERCENTAGE];
     }
 
     GetModifierIncomingDamage_Percentage(event: ModifierAttackEvent): number {
         // 增加进度
         this.is_kill = true;
-        return 0
+        return 0;
     }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
@@ -33,7 +31,9 @@ export class modifier_mission_radiant_6_box extends BaseModifier {
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         if (this.is_kill == true) {
             GameRules.MissionSystem.RadiantMissionHandle.AddProgressValue(1);
         }

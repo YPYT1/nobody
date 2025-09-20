@@ -1,4 +1,3 @@
-
 // import { reloadable } from "../../../utils/tstl-utils";
 
 // /**
@@ -9,7 +8,7 @@
 
 //     /**
 //     * [设置]一个减伤/增伤乘区
-//     * @param hUnit 
+//     * @param hUnit
 //     * @param key 索引key
 //     * @param value 值,正数为减伤,负数为增伤
 //     * @param timer 持续时间.默认永久

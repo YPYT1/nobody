@@ -1,5 +1,5 @@
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
+import { BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 /**
  * 灵魂吸取	蓄力2秒，向前方宽300码，长900码进行灵魂吸取，不断将敌人吸取到技能释放点，
@@ -8,21 +8,20 @@ import { BaseCreatureAbility } from "../base_creature";
  */
 @registerAbility()
 export class creature_boss_6 extends BaseCreatureAbility {
-
     line_width: number;
     line_distance: number;
 
     Precache(context: CScriptPrecacheContext): void {
-        precacheResString("particles/units/heroes/hero_enigma/enigma_black_hole_scepter_pull_debuff.vpcf", context)
-        precacheResString("particles/custom_diy/lion/lion_spell_mana_drain_demon.vpcf", context)
+        precacheResString('particles/units/heroes/hero_enigma/enigma_black_hole_scepter_pull_debuff.vpcf', context);
+        precacheResString('particles/custom_diy/lion/lion_spell_mana_drain_demon.vpcf', context);
     }
 
     OnAbilityPhaseStart(): boolean {
-        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
+        this.hCaster.AddNewModifier(this.hCaster, this, 'modifier_state_boss_invincible', {});
         this.vPoint = this.GetCursorPosition();
         this.vOrigin = this.hCaster.GetAbsOrigin();
-        this.line_width = this.GetSpecialValueFor("line_width");
-        this.line_distance = this.GetSpecialValueFor("line_distance");
+        this.line_width = this.GetSpecialValueFor('line_width');
+        this.line_distance = this.GetSpecialValueFor('line_distance');
         this.channel_timer = this.GetChannelTime();
         this.nPreviewFX = GameRules.WarningMarker.Line(
             this.hCaster,
@@ -31,40 +30,33 @@ export class creature_boss_6 extends BaseCreatureAbility {
             this.vPoint,
             this.line_distance,
             this._cast_point
-        )
-        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+        );
+        GameRules.CMsg.BossCastWarning(true, 'custom_text_boss_cast_warning', {
             unitname: this.hCaster.GetUnitName(),
             ability: this.GetAbilityName(),
-        })
-        return true
+        });
+        return true;
     }
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
-        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
-        this.hCaster.AddNewModifier(
-            this.hCaster,
-            this,
-            "modifier_creature_boss_6_channel",
-            {
-                duration: this.channel_timer,
-
-            }
-        )
-        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_4", {})
+        this.hCaster.AddNewModifier(this.hCaster, this, 'modifier_state_boss_invincible_channel', {});
+        this.hCaster.AddNewModifier(this.hCaster, this, 'modifier_creature_boss_6_channel', {
+            duration: this.channel_timer,
+        });
+        GameRules.CMsg.BossCastWarning(true, 'custom_text_boss_cast_warning_4', {});
     }
 
     OnChannelFinish(interrupted: boolean): void {
-        this.hCaster.RemoveModifierByName("modifier_creature_boss_6_channel")
-        this.hCaster.RemoveModifierByName("modifier_state_boss_invincible_channel");
+        this.hCaster.RemoveModifierByName('modifier_creature_boss_6_channel');
+        this.hCaster.RemoveModifierByName('modifier_state_boss_invincible_channel');
         this.OnKnockback(300);
-        GameRules.CMsg.BossCastWarning(false)
+        GameRules.CMsg.BossCastWarning(false);
     }
 }
 
 @registerModifier()
 export class modifier_creature_boss_6_channel extends BaseModifier {
-
     caster: CDOTA_BaseNPC;
     origin: Vector;
     target_vect: Vector;
@@ -79,19 +71,21 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
     timer: number;
     speed: number;
     OnCreated(params: object): void {
-        this.timer = 0
-        this.interval = GameRules.GetGameFrameTime()
-        if (!IsServer()) { return }
+        this.timer = 0;
+        this.interval = GameRules.GetGameFrameTime();
+        if (!IsServer()) {
+            return;
+        }
         this.speed = 300;
         this.npc_list = [];
-        this.line_width = this.GetAbility().GetSpecialValueFor("line_width");
-        this.line_distance = this.GetAbility().GetSpecialValueFor("line_distance");
-        this.caster = this.GetCaster()
+        this.line_width = this.GetAbility().GetSpecialValueFor('line_width');
+        this.line_distance = this.GetAbility().GetSpecialValueFor('line_distance');
+        this.caster = this.GetCaster();
         this.team = this.caster.GetTeam();
-        this.origin = this.GetParent().GetAbsOrigin()
-        this.line_vect = this.origin + this.caster.GetForwardVector() * (this.line_distance - this.line_width * 0.5) as Vector
-        this.target_vect = this.origin + this.caster.GetForwardVector() * (this.line_distance + this.line_width * 0.5) as Vector
-        this.StartIntervalThink(this.interval)
+        this.origin = this.GetParent().GetAbsOrigin();
+        this.line_vect = (this.origin + this.caster.GetForwardVector() * (this.line_distance - this.line_width * 0.5)) as Vector;
+        this.target_vect = (this.origin + this.caster.GetForwardVector() * (this.line_distance + this.line_width * 0.5)) as Vector;
+        this.StartIntervalThink(this.interval);
 
         this.PlayEffect(this.target_vect);
         // let offset_vect1 = RotatePosition(this.origin, QAngle(0, 15, 0), this.target_vect);
@@ -101,51 +95,27 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
     }
 
     PlayEffect(vPos) {
-        AddFOWViewer(DotaTeam.GOODGUYS, vPos, 600, this.GetDuration(), false)
+        AddFOWViewer(DotaTeam.GOODGUYS, vPos, 600, this.GetDuration(), false);
         vPos.z += 50;
-        const dummy = CreateModifierThinker(
-            this.caster,
-            this.GetAbility(),
-            "modifier_creature_boss_6_dummy",
-            {},
-            vPos,
-            DotaTeam.GOODGUYS,
-            false
-        )
+        const dummy = CreateModifierThinker(this.caster, this.GetAbility(), 'modifier_creature_boss_6_dummy', {}, vPos, DotaTeam.GOODGUYS, false);
 
-        this.npc_list.push(dummy)
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/custom_diy/lion/lion_spell_mana_drain_demon.vpcf",
+        this.npc_list.push(dummy);
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/custom_diy/lion/lion_spell_mana_drain_demon.vpcf',
             ParticleAttachment.CUSTOMORIGIN,
             null
-        )
+        );
         vPos.z += 30;
-        ParticleManager.SetParticleControlEnt(
-            effect_fx,
-            0,
-            dummy,
-            ParticleAttachment.POINT_FOLLOW,
-            "attach_hitloc",
-            Vector(0, 0, 50),
-            true
-        )
-        ParticleManager.SetParticleControlEnt(
-            effect_fx,
-            1,
-            this.caster,
-            ParticleAttachment.POINT_FOLLOW,
-            "attach_hitloc",
-            Vector(0, 0, 0),
-            true
-        )
+        ParticleManager.SetParticleControlEnt(effect_fx, 0, dummy, ParticleAttachment.POINT_FOLLOW, 'attach_hitloc', Vector(0, 0, 50), true);
+        ParticleManager.SetParticleControlEnt(effect_fx, 1, this.caster, ParticleAttachment.POINT_FOLLOW, 'attach_hitloc', Vector(0, 0, 0), true);
         // print("caster forward", this.caster.GetForwardVector())
-        ParticleManager.SetParticleControlTransformForward(effect_fx, 2, this.caster.GetAbsOrigin(), this.caster.GetForwardVector())
-        this.AddParticle(effect_fx, false, false, -1, false, false)
+        ParticleManager.SetParticleControlTransformForward(effect_fx, 2, this.caster.GetAbsOrigin(), this.caster.GetForwardVector());
+        this.AddParticle(effect_fx, false, false, -1, false, false);
     }
 
     OnIntervalThink(): void {
-        this.timer += this.interval
-        let enemies = FindUnitsInLine(
+        this.timer += this.interval;
+        const enemies = FindUnitsInLine(
             this.team,
             this.origin,
             this.line_vect,
@@ -154,26 +124,27 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
             UnitTargetTeam.ENEMY,
             UnitTargetType.BASIC + UnitTargetType.HERO,
             UnitTargetFlags.NONE
-        )
+        );
         // print("this.timer ", this.timer)
-        for (let enemy of enemies) {
+        for (const enemy of enemies) {
             if (this.timer > 1) {
-                this.ApplyDamage(enemy)
+                this.ApplyDamage(enemy);
             }
             // 吸附效果
-            this.PlayAdsorbEffect(enemy)
+            this.PlayAdsorbEffect(enemy);
         }
 
         if (this.timer > 1) {
-            this.timer = 0
+            this.timer = 0;
         }
     }
 
     PlayAdsorbEffect(hTarget: CDOTA_BaseNPC) {
-        hTarget.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_boss_6_adsorb", {
-            duration: 0.1
-        })
+        hTarget.AddNewModifier(this.GetCaster(), this.GetAbility(), 'modifier_creature_boss_6_adsorb', {
+            duration: 0.1,
+        });
     }
+
     ApplyDamage(hTarget: CDOTA_BaseNPC) {
         const damage = hTarget.GetMaxHealth() * 0.25;
         ApplyCustomDamage({
@@ -183,66 +154,75 @@ export class modifier_creature_boss_6_channel extends BaseModifier {
             damage: damage,
             damage_type: DamageTypes.PHYSICAL,
             miss_flag: 1,
-        })
-        GameRules.BasicRules.RestoreMana(hTarget, -30, this.GetAbility())
+        });
+        GameRules.BasicRules.RestoreMana(hTarget, -30, this.GetAbility());
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        for (let unit of this.npc_list) {
-            UTIL_Remove(unit)
+        if (!IsServer()) {
+            return;
+        }
+        for (const unit of this.npc_list) {
+            UTIL_Remove(unit);
         }
     }
 }
 
 @registerModifier()
 export class modifier_creature_boss_6_dummy extends BaseModifier {
-
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        UTIL_Remove(this.GetParent())
+        if (!IsServer()) {
+            return;
+        }
+        UTIL_Remove(this.GetParent());
     }
 }
 
 @registerModifier()
 export class modifier_creature_boss_6_adsorb extends BaseModifier {
-
     me: CDOTA_BaseNPC;
     dt: number;
     speed: number;
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.speed = 300;
         this.caster = this.GetCaster();
-        this.origin = this.caster.GetOrigin()
+        this.origin = this.caster.GetOrigin();
         this.me = this.GetParent();
-        this.dt = GameRules.GetGameFrameTime()
-        this.StartIntervalThink(this.dt)
+        this.dt = GameRules.GetGameFrameTime();
+        this.StartIntervalThink(this.dt);
 
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/units/heroes/hero_enigma/enigma_black_hole_scepter_pull_debuff.vpcf",
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_enigma/enigma_black_hole_scepter_pull_debuff.vpcf',
             ParticleAttachment.POINT_FOLLOW,
             this.GetParent()
-        )
-        ParticleManager.SetParticleControlEnt(effect_fx, 0, this.GetParent(),
+        );
+        ParticleManager.SetParticleControlEnt(
+            effect_fx,
+            0,
+            this.GetParent(),
             ParticleAttachment.POINT_FOLLOW,
-            "attach_hitloc", Vector(0, 0, 0), true
-        )
-        ParticleManager.SetParticleControl(effect_fx, 1, this.origin)
-        this.AddParticle(effect_fx, false, false, -1, false, false)
+            'attach_hitloc',
+            Vector(0, 0, 0),
+            true
+        );
+        ParticleManager.SetParticleControl(effect_fx, 1, this.origin);
+        this.AddParticle(effect_fx, false, false, -1, false, false);
     }
 
     OnIntervalThink(): void {
-        let target_vect = this.me.GetAbsOrigin();
-        let direction = target_vect - this.origin as Vector;
-        let distance = direction.Length2D();
+        const target_vect = this.me.GetAbsOrigin();
+        let direction = (target_vect - this.origin) as Vector;
+        const distance = direction.Length2D();
         direction = direction.Normalized();
         if (distance > 100) {
-            this.me.SetOrigin(target_vect - direction * this.speed * this.dt as Vector)
+            this.me.SetOrigin((target_vect - direction * this.speed * this.dt) as Vector);
             // FindClearSpaceForUnit(, false)
         } else {
-            FindClearSpaceForUnit(this.me, target_vect - direction * this.speed * this.dt as Vector, false)
+            FindClearSpaceForUnit(this.me, (target_vect - direction * this.speed * this.dt) as Vector, false);
         }
     }
 }

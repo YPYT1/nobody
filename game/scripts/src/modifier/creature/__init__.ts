@@ -1,1 +1,1 @@
-import "./modifier_creature_acceleration";
+import './modifier_creature_acceleration';

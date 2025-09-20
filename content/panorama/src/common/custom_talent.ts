@@ -1,42 +1,38 @@
-import { default as TalentTreeConfig } from "./../json/config/game/hero/talent_tree/talent_tree_config.json";
+import { default as TalentTreeConfig } from './../json/config/game/hero/talent_tree/talent_tree_config.json';
 
-
-
-export const HeroTreeObject = TalentTreeConfig
+export const HeroTreeObject = TalentTreeConfig;
 
 // type HeroName = keyof typeof HeroTreeObject;
-type TalentTreeRowProps = typeof HeroTreeObject["1"];
+type TalentTreeRowProps = (typeof HeroTreeObject)['1'];
 
 // interface HeroTalentObject = {
-        
+
 // }
 
-export const GetAllHeroTalentTree = ()=>{
-    return HeroTreeObject
-}
+export const GetAllHeroTalentTree = () => {
+    return HeroTreeObject;
+};
 export const GetHeroTalentTreeObject = () => {
-    let res_obj = HeroTreeObject
+    const res_obj = HeroTreeObject;
     if (res_obj) {
-        return res_obj
+        return res_obj;
     } else {
-        return {} as typeof res_obj
+        return {} as typeof res_obj;
     }
-}
-
+};
 
 export const GetHeroTalentTreeRowData = (key: string) => {
-    let res_obj = HeroTreeObject
-    return res_obj[key as "1"]
-}
+    const res_obj = HeroTreeObject;
+    return res_obj[key as '1'];
+};
 
 interface TalentTreeObject {
-    name: string,
-    max: number,
+    name: string;
+    max: number;
     img: string;
-    sub: number[]
+    sub: number[];
 }
 
 interface TalentTreeProps {
     [index: string]: TalentTreeObject[];
 }
-

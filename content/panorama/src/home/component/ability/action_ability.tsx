@@ -1,22 +1,22 @@
-"use strict";
-import { HideCustomTooltip, ShowCustomTextTooltip, ShowCustomTooltip } from "../../../utils/custom_tooltip";
-import { default as NpcAbilityCustom } from "../../../json/npc_abilities_custom.json";
-import { GetAbilityRarity } from "../../../utils/ability_description";
-import { GetTextureSrc } from "../../../common/custom_kv_method";
+'use strict';
+import { HideCustomTooltip, ShowCustomTextTooltip, ShowCustomTooltip } from '../../../utils/custom_tooltip';
+import { default as NpcAbilityCustom } from '../../../json/npc_abilities_custom.json';
+import { GetAbilityRarity } from '../../../utils/ability_description';
+import { GetTextureSrc } from '../../../common/custom_kv_method';
 
 const localPlayer = Players.GetLocalPlayer();
 let MainPanel = $.GetContextPanel();
-let CooldownOverlay = $("#CooldownOverlay");
-let Shine = $("#Shine");
-let AbilityContainer = MainPanel.GetChild(1) as Panel;
+const CooldownOverlay = $('#CooldownOverlay');
+const Shine = $('#Shine');
+const AbilityContainer = MainPanel.GetChild(1) as Panel;
 let m_Ability = -1 as AbilityEntityIndex;
-let m_QueryUnit = -1 as EntityIndex;
-let LevelUpBtn = $("#LevelUpBtn") as Button;
+const m_QueryUnit = -1 as EntityIndex;
+const LevelUpBtn = $('#LevelUpBtn') as Button;
 
 // let m_SlotIndex = 0;
 
 function GetAbilityData(ability_name: string) {
-    let data = NpcAbilityCustom[ability_name as keyof typeof NpcAbilityCustom]
+    const data = NpcAbilityCustom[ability_name as keyof typeof NpcAbilityCustom];
 }
 
 function AutoUpdateAbility() {
@@ -26,7 +26,7 @@ function AutoUpdateAbility() {
 
 function UpdateAbility() {
     // let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
-    const queryUnit = Players.GetPlayerHeroEntityIndex(localPlayer);// Players.GetLocalPlayerPortraitUnit();
+    const queryUnit = Players.GetPlayerHeroEntityIndex(localPlayer); // Players.GetLocalPlayerPortraitUnit();
 
     const isHidden = Abilities.IsHidden(m_Ability);
 
@@ -35,30 +35,30 @@ function UpdateAbility() {
 
     const have_nmana = Entities.GetMana(queryUnit);
 
-    const is_enabled = Abilities.IsActivated(m_Ability)
+    const is_enabled = Abilities.IsActivated(m_Ability);
     const need_mana = Abilities.GetManaCost(m_Ability);
-    const cooldown_ready = Abilities.IsCooldownReady(m_Ability)
+    const cooldown_ready = Abilities.IsCooldownReady(m_Ability);
 
-    const is_blood_mage = Entities.GetAbilityByName(queryUnit, "special_blood_mage") != -1;
+    const is_blood_mage = Entities.GetAbilityByName(queryUnit, 'special_blood_mage') != -1;
 
     if (is_blood_mage) {
-        const health_pct = Entities.GetHealthPercent(queryUnit)
-        MainPanel.SetHasClass("insufficient_mana", health_pct < 10);
+        const health_pct = Entities.GetHealthPercent(queryUnit);
+        MainPanel.SetHasClass('insufficient_mana', health_pct < 10);
     } else {
-        MainPanel.SetHasClass("insufficient_mana", have_nmana < need_mana);
+        MainPanel.SetHasClass('insufficient_mana', have_nmana < need_mana);
     }
 
-    MainPanel.SetHasClass("is_disable", !is_enabled);
+    MainPanel.SetHasClass('is_disable', !is_enabled);
 
     // cooldown
     const cooldownLength = Abilities.GetCooldownLength(m_Ability);
     const cooldownRemaining = Abilities.GetCooldownTimeRemaining(m_Ability);
-    MainPanel.SetHasClass("in_cooldown", !cooldown_ready);
-    MainPanel.SetHasClass("in_ready", cooldown_ready);
+    MainPanel.SetHasClass('in_cooldown', !cooldown_ready);
+    MainPanel.SetHasClass('in_ready', cooldown_ready);
 
-    let cooldown_total = Abilities.GetCooldown(m_Ability) == 0 ? -1 : Abilities.GetCooldown(m_Ability);
-    let deg = Math.ceil(-360 * cooldownRemaining / cooldown_total);
-    MainPanel.SetDialogVariableInt("cooldown_timer", cooldownRemaining);
+    const cooldown_total = Abilities.GetCooldown(m_Ability) == 0 ? -1 : Abilities.GetCooldown(m_Ability);
+    const deg = Math.ceil((-360 * cooldownRemaining) / cooldown_total);
+    MainPanel.SetDialogVariableInt('cooldown_timer', cooldownRemaining);
     // Shine.SetHasClass("do_shine", cooldown_ready);
     CooldownOverlay.style.clip = `radial( 50.0% 50.0%, 0.0deg, ${deg}deg)`;
     // setManaCost(need_mana);
@@ -66,71 +66,63 @@ function UpdateAbility() {
     // m_QueryUnit = Players.GetLocalPlayerPortraitUnit();
 
     // let AbilityImage = $("#AbilityImage") as AbilityImage;
-    // AbilityImage.contextEntityIndex = 
+    // AbilityImage.contextEntityIndex =
 }
 
 function AbilityShowTooltip() {
-    let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex
-    ShowCustomTooltip(AbilityContainer, "ability", "", m_Ability, m_SlotIndex)
+    const m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
+    ShowCustomTooltip(AbilityContainer, 'ability', '', m_Ability, m_SlotIndex);
 }
 
 function AbilityHideTooltip() {
-    HideCustomTooltip()
+    HideCustomTooltip();
 }
 
-function ActivateAbility() {
-
-}
-
-
+function ActivateAbility() {}
 
 function SetAbility(slot: number, innate: boolean = false) {
-    MainPanel.Data<PanelDataObject>().m_SlotIndex = slot
+    MainPanel.Data<PanelDataObject>().m_SlotIndex = slot;
     UpdateAbilityVar();
-    AbilityContainer.SetPanelEvent("onmouseover", AbilityShowTooltip)
-    AbilityContainer.SetPanelEvent("onmouseout", AbilityHideTooltip)
-    MainPanel.SetHasClass("Innate", innate)
-    MainPanel.AddClass("Ability" + slot)
-
+    AbilityContainer.SetPanelEvent('onmouseover', AbilityShowTooltip);
+    AbilityContainer.SetPanelEvent('onmouseout', AbilityHideTooltip);
+    MainPanel.SetHasClass('Innate', innate);
+    MainPanel.AddClass('Ability' + slot);
 }
 
 function UpdateAbilityVar() {
-    let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex
-    let m_QueryUnit = Players.GetPlayerHeroEntityIndex(localPlayer);// Players.GetLocalPlayerPortraitUnit();
+    const m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
+    const m_QueryUnit = Players.GetPlayerHeroEntityIndex(localPlayer); // Players.GetLocalPlayerPortraitUnit();
 
     m_Ability = Entities.GetAbility(m_QueryUnit, m_SlotIndex);
-    let is_hidden = m_Ability < 1 || Abilities.IsHidden(m_Ability)
-    let ability_name = Abilities.GetAbilityName(m_Ability)
+    const is_hidden = m_Ability < 1 || Abilities.IsHidden(m_Ability);
+    const ability_name = Abilities.GetAbilityName(m_Ability);
     // MainPanel.visible = !is_hidden;
-    MainPanel.SetHasClass("is_hidden", is_hidden)
-    let AbilityImage = $("#AbilityImage") as ImagePanel;
-    let ability_data = NpcAbilityCustom[ability_name as keyof typeof NpcAbilityCustom];
-    let texture = ""
+    MainPanel.SetHasClass('is_hidden', is_hidden);
+    const AbilityImage = $('#AbilityImage') as ImagePanel;
+    const ability_data = NpcAbilityCustom[ability_name as keyof typeof NpcAbilityCustom];
+    let texture = '';
     if (m_Ability) {
         texture = Abilities.GetAbilityTextureName(m_Ability);
     }
 
-    AbilityImage.SetImage(GetTextureSrc(texture, "UpdateAbilityVar"))
+    AbilityImage.SetImage(GetTextureSrc(texture, 'UpdateAbilityVar'));
 
     // 变更品质
     const rarity = GetAbilityRarity(ability_name);
     SetAbilityRarity(rarity);
-
-
 }
 
 function SetAbilityRarity(rarity: number) {
     // $.Msg(["SetAbilityRarity", rarity])
     for (let i = 0; i < 9; i++) {
-        $.GetContextPanel().SetHasClass("Rarity" + i, rarity == i)
+        $.GetContextPanel().SetHasClass('Rarity' + i, rarity == i);
     }
 
-    $.GetContextPanel().SetHasClass("is_ability", rarity > 0)
+    $.GetContextPanel().SetHasClass('is_ability', rarity > 0);
 }
 
 function RegisterArmsEvent() {
-
-    // let order = 
+    // let order =
     // let m_SlotIndex = MainPanel.Data<PanelDataObject>().m_SlotIndex;
     // MainPanel.SetPanelEvent("onactivate", () => {
     //     GameEvents.SendCustomGameEventToServer("NewArmsEvolution", {
@@ -140,7 +132,6 @@ function RegisterArmsEvent() {
     //         }
     //     })
     // })
-
     // const AbilityReselect = MainPanel.FindChildTraverse("AbilityReselect") as Button;
     // // AbilityReselect.enabled = false;
     // AbilityReselect.SetPanelEvent("onactivate", () => {
@@ -152,22 +143,19 @@ function RegisterArmsEvent() {
     //         }
     //     })
     // })
-
     // AbilityReselect.SetPanelEvent("onmouseover", () => {
     //     ShowCustomTextTooltip(AbilityReselect, "", "重新随机技能")
     // })
-
     // AbilityReselect.SetPanelEvent("onmouseout", () => {
     //     HideCustomTooltip()
     // })
-
 }
 (function () {
     $.GetContextPanel().Data<PanelDataObject>().SetAbility = SetAbility;
     $.GetContextPanel().Data<PanelDataObject>().UpdateAbilityVar = UpdateAbilityVar;
     $.GetContextPanel().Data<PanelDataObject>().RegisterArmsEvent = RegisterArmsEvent;
 
-    MainPanel = $.GetContextPanel()
+    MainPanel = $.GetContextPanel();
     AutoUpdateAbility();
-    MainPanel.SetDialogVariable("manaCost", "0")
+    MainPanel.SetDialogVariable('manaCost', '0');
 })();

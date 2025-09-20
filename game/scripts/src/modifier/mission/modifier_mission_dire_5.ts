@@ -1,9 +1,7 @@
-import { BaseModifier, registerModifier } from "../../utils/dota_ts_adapter";
-
+import { BaseModifier, registerModifier } from '../../utils/dota_ts_adapter';
 
 @registerModifier()
 export class modifier_mission_dire_5_thinker extends BaseModifier {
-
     origin: Vector;
     current_hp: number;
     timer: number;
@@ -17,47 +15,49 @@ export class modifier_mission_dire_5_thinker extends BaseModifier {
     units: CDOTA_BaseNPC[];
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.units = [];
         this.state = true;
         this.timer = 0;
-        this.interval = 0.1
+        this.interval = 0.1;
         this.radius = params.radius;
-        this.current_hp = 100;//GameRules.Spawn.GetCurrentRoundHP(-1, "normal")
-        this.origin = this.GetParent().GetAbsOrigin()
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/econ/events/fall_2022/teleport/teleport_fall2022_end_lvl1.vpcf",
+        this.current_hp = 100; //GameRules.Spawn.GetCurrentRoundHP(-1, "normal")
+        this.origin = this.GetParent().GetAbsOrigin();
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/econ/events/fall_2022/teleport/teleport_fall2022_end_lvl1.vpcf',
             ParticleAttachment.ABSORIGIN_FOLLOW,
             this.GetParent()
-        )
-        ParticleManager.SetParticleControl(effect_fx, 2, Vector(150, 0, 0))
+        );
+        ParticleManager.SetParticleControl(effect_fx, 2, Vector(150, 0, 0));
         this.AddParticle(effect_fx, false, false, -1, false, false);
 
-        let origin_fx = ParticleManager.CreateParticle(
-            "particles/diy_particles/event_ring_anim/event_ring_anim_origin.vpcf",
+        const origin_fx = ParticleManager.CreateParticle(
+            'particles/diy_particles/event_ring_anim/event_ring_anim_origin.vpcf',
             ParticleAttachment.POINT,
             this.GetParent()
-        )
-        ParticleManager.SetParticleControl(origin_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
-        ParticleManager.SetParticleControl(origin_fx, 2, Vector(this.radius - 32, 0, 0))
-        ParticleManager.SetParticleControl(origin_fx, 3, Vector(255, 100, 100))
-        this.AddParticle(origin_fx, false, false, -1, false, false)
-        this.viewer = AddFOWViewer(DotaTeam.GOODGUYS, this.origin, 300, this.GetDuration(), false)
-        this.StartIntervalThink(this.interval)
+        );
+        ParticleManager.SetParticleControl(origin_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5));
+        ParticleManager.SetParticleControl(origin_fx, 2, Vector(this.radius - 32, 0, 0));
+        ParticleManager.SetParticleControl(origin_fx, 3, Vector(255, 100, 100));
+        this.AddParticle(origin_fx, false, false, -1, false, false);
+        this.viewer = AddFOWViewer(DotaTeam.GOODGUYS, this.origin, 300, this.GetDuration(), false);
+        this.StartIntervalThink(this.interval);
     }
 
     OnIntervalThink(): void {
-        this.timer += 1
+        this.timer += 1;
         if (this.timer % 10 == 0) {
-            let hUnit = GameRules.Spawn.CreepNormalCreate("npc_mission_dire_5", this.origin + RandomVector(50) as Vector);
-            hUnit.AddNewModifier(hUnit, null, "modifier_mission_dire_5_unit", {})
-            FindClearSpaceForUnit(hUnit, this.origin, false)
-            this.units.push(hUnit)
+            const hUnit = GameRules.Spawn.CreepNormalCreate('npc_mission_dire_5', (this.origin + RandomVector(50)) as Vector);
+            hUnit.AddNewModifier(hUnit, null, 'modifier_mission_dire_5_unit', {});
+            FindClearSpaceForUnit(hUnit, this.origin, false);
+            this.units.push(hUnit);
             // hUnit.SetControllableByPlayer(0, false)
             // GameRules.Spawn.SetUnitHealthLimit(hUnit, this.current_hp);
         }
 
-        let heroes = FindUnitsInRadius(
+        const heroes = FindUnitsInRadius(
             DotaTeam.BADGUYS,
             this.origin,
             null,
@@ -67,21 +67,23 @@ export class modifier_mission_dire_5_thinker extends BaseModifier {
             UnitTargetFlags.NONE,
             FindOrder.ANY,
             false
-        )
+        );
         if (heroes.length == 0) {
-            this.state = false
+            this.state = false;
             this.StartIntervalThink(-1);
             this.Destroy();
         }
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        print("this.timer", this.timer)
-        RemoveFOWViewer(DotaTeam.GOODGUYS, this.viewer)
+        if (!IsServer()) {
+            return;
+        }
+        print('this.timer', this.timer);
+        RemoveFOWViewer(DotaTeam.GOODGUYS, this.viewer);
         GameRules.MissionSystem.DireMissionHandle.EndOfMission(this.state);
 
-        for (let hUnit of this.units) {
+        for (const hUnit of this.units) {
             if (hUnit && !hUnit.IsNull()) {
                 UTIL_Remove(hUnit);
             }
@@ -92,19 +94,22 @@ export class modifier_mission_dire_5_thinker extends BaseModifier {
 
 @registerModifier()
 export class modifier_mission_dire_5_unit extends BaseModifier {
-
     caster: CDOTA_BaseNPC;
 
-    IsHidden(): boolean { return true }
+    IsHidden(): boolean {
+        return true;
+    }
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
         this.caster = this.GetCaster();
-        this.StartIntervalThink(1)
+        this.StartIntervalThink(1);
     }
 
     OnIntervalThink(): void {
-        let enemies = FindUnitsInRadius(
+        const enemies = FindUnitsInRadius(
             DotaTeam.BADGUYS,
             this.GetParent().GetAbsOrigin(),
             null,
@@ -117,8 +122,8 @@ export class modifier_mission_dire_5_unit extends BaseModifier {
         );
 
         if (enemies.length > 0) {
-            for (let enemy of enemies) {
-                let attack_damage = enemy.GetMaxHealth() * 0.1;
+            for (const enemy of enemies) {
+                const attack_damage = enemy.GetMaxHealth() * 0.1;
                 ApplyCustomDamage({
                     victim: enemy,
                     attacker: this.caster,
@@ -127,33 +132,26 @@ export class modifier_mission_dire_5_unit extends BaseModifier {
                     ability: this.GetAbility(),
                     element_type: ElementTypes.NONE,
                     // is_primary: true,
-                })
+                });
             }
             // 播放声音
 
             // 动作
-            this.caster.StartGesture(GameActivity.DOTA_ATTACK)
+            this.caster.StartGesture(GameActivity.DOTA_ATTACK);
         }
-
     }
 
-
     DeclareFunctions(): modifierfunction[] {
-        return [
-            ModifierFunction.ATTACKSPEED_BASE_OVERRIDE
-        ]
+        return [ModifierFunction.ATTACKSPEED_BASE_OVERRIDE];
     }
 
     GetModifierAttackSpeedBaseOverride(): number {
-        return 0.001
+        return 0.001;
     }
 
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
             [ModifierState.NO_HEALTH_BAR]: true,
-
-        }
+        };
     }
-
-
 }

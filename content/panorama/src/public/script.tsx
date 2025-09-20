@@ -1,10 +1,7 @@
-const PublicPopup = $("#PublicPopup");
+const PublicPopup = $('#PublicPopup');
 
-export function Init() {
-
-}
-
+export function Init() {}
 
 (function () {
-    Init()
+    Init();
 })();

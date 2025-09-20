@@ -1,4 +1,4 @@
-/** 元素类型 
+/** 元素类型
  * 0.无元素
  * 1.火
  * 2.冰
@@ -6,8 +6,8 @@
  * 4.风
  * 5.光
  * 6.暗
-*/
-type CElementType = "null" | "fire" | "ice" | "thunder" | "wind" | "light" | "dark" ;
+ */
+type CElementType = 'null' | 'fire' | 'ice' | 'thunder' | 'wind' | 'light' | 'dark';
 
 declare const enum ElementTypes {
     NONE = 0,
@@ -16,7 +16,7 @@ declare const enum ElementTypes {
     THUNDER = 3,
     WIND = 4,
     LIGHT = 5,
-    DARK = 6    
+    DARK = 6,
 }
 
 declare const enum ElementTypeEnum {
@@ -26,7 +26,7 @@ declare const enum ElementTypeEnum {
     thunder = 3,
     wind = 4,
     light = 5,
-    dark = 6    
+    dark = 6,
 }
 
 // declare const enum ArmsAbilityCategory {
@@ -44,7 +44,7 @@ declare const enum ElementTypeEnum {
 
 // }
 /** 按键移动方向 */
-type CMoveDirection = "UP" | "DOWN" | "LEFT" | "RIGHT" | "SPACE";
+type CMoveDirection = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' | 'SPACE';
 
 /** 负面状态类型 */
 declare const enum DebuffTypes {
@@ -60,7 +60,7 @@ declare const enum DebuffTypes {
     rooted = 4,
     /** 缴械 [无法攻击]*/
     disarmed = 5,
-    /** 魅惑 [缓慢靠近施法者]*/  
+    /** 魅惑 [缓慢靠近施法者]*/
     charm = 6,
     /** 破坏 [被动失效]*/
     break = 7,
@@ -78,7 +78,6 @@ declare const enum DebuffTypes {
     frozen = 13,
     /** 致命 */
     fatal = 14,
-
 }
 
 declare const enum CGMessageEventType {
@@ -90,12 +89,12 @@ declare const enum CGMessageEventType {
     MESSAGE6 = 106, //对应消息 他们又来了，他们更强了…… 持续时间3秒
     // BOSS警告
     WARNINGBOSS = 201, // boss警告 持续时间3秒
-    // 
+    //
     WARNINGTS = 202, // boss警告 持续时间3秒
 }
 
 /** 元素特性状态 */
 declare const enum ElementState {
     null = 0,
-    burn = 1,  
+    burn = 1,
 }

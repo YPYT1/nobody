@@ -1,5 +1,4 @@
-import { MissionModule } from "../_mission_module";
-
+import { MissionModule } from '../_mission_module';
 
 /**
  * 躲避流星	夜魇的试炼	"【夜魇的试炼】：短暂延迟5秒之后，开始从天降流星轰击每一名玩家。
@@ -10,7 +9,6 @@ import { MissionModule } from "../_mission_module";
 
  */
 export class Mission_Dire_3 extends MissionModule {
-
     limit_time: number = 30;
 
     sun_radius = 200;
@@ -20,12 +18,12 @@ export class Mission_Dire_3 extends MissionModule {
     ExecuteLogic(start: Vector): void {
         this.mission_state = -1;
         this.progress_value = 0;
-        this.progress_max = this.limit_time
-        
+        this.progress_max = this.limit_time;
+
         const the_npc = CreateModifierThinker(
             null,
             null,
-            "modifier_mission_dire_3_thinker",
+            'modifier_mission_dire_3_thinker',
             {
                 duration: this.limit_time,
                 sun_radius: this.sun_radius,
@@ -35,14 +33,11 @@ export class Mission_Dire_3 extends MissionModule {
             start,
             DotaTeam.BADGUYS,
             false
-        )
-        this.units.push(the_npc)
+        );
+        this.units.push(the_npc);
     }
-
 
     MissionOverTime(): void {
-        this.EndOfMission(true)
+        this.EndOfMission(true);
     }
-
-    
 }

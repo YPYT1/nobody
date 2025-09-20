@@ -1,4 +1,4 @@
-import { MissionModule } from "../_mission_module";
+import { MissionModule } from '../_mission_module';
 
 /**
  * 求生	"【天辉的考验】：强制将所有玩家牵引到一个半径1000码范围内，玩家需要生存相应时间。
@@ -10,7 +10,6 @@ import { MissionModule } from "../_mission_module";
 
  */
 export class Mission_Radiant_7 extends MissionModule {
-
     check_radius: number;
     limit_time = 20;
 
@@ -23,23 +22,23 @@ export class Mission_Radiant_7 extends MissionModule {
         this.mission_state = -1;
 
         // 所有英雄强制移动
-        for (let hHero of HeroList.GetAllHeroes()) {
+        for (const hHero of HeroList.GetAllHeroes()) {
             // let distance = (hHero.GetAbsOrigin() - start as Vector).Length2D();
-            hHero.AddNewModifier(hHero, null, "modifier_generic_arc_lua", {
+            hHero.AddNewModifier(hHero, null, 'modifier_generic_arc_lua', {
                 target_x: start.x,
                 target_y: start.y,
                 height: 100,
                 speed: 600,
                 // duration: this.motion_time,
                 // fix_duration: 1,
-            })
+            });
         }
 
         // 创建限制范围
-        let thinker = CreateModifierThinker(
+        const thinker = CreateModifierThinker(
             null,
             null,
-            "modifier_mission_radiant_7_zone",
+            'modifier_mission_radiant_7_zone',
             {
                 duration: this.limit_time,
                 radius: this.check_radius,
@@ -47,7 +46,7 @@ export class Mission_Radiant_7 extends MissionModule {
             start,
             DotaTeam.GOODGUYS,
             false
-        )
-        this.units.push(thinker)
+        );
+        this.units.push(thinker);
     }
 }

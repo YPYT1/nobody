@@ -1,5 +1,5 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { BaseHeroAbility, BaseHeroModifier } from '../../base_hero_ability';
 
 /**
  * B.散射（5/5）：散射5支箭，造成攻击力120%/140%/160%/190%/240%的伤害。
@@ -9,9 +9,8 @@ cd：3秒
  */
 @registerAbility()
 export class drow_2b extends BaseHeroAbility {
-
     GetIntrinsicModifierName(): string {
-        return "modifier_drow_2b"
+        return 'modifier_drow_2b';
     }
 
     OnProjectileHit_ExtraData(target: CDOTA_BaseNPC | undefined, location: Vector, extraData: ProjectileExtraData): boolean | void {
@@ -24,16 +23,15 @@ export class drow_2b extends BaseHeroAbility {
                 ability: this,
                 is_primary: true,
                 SelfAbilityMul: extraData.SelfAbilityMul,
-                DamageBonusMul: extraData.DamageBonusMul
-            })
-            return true
+                DamageBonusMul: extraData.DamageBonusMul,
+            });
+            return true;
         }
     }
 }
 
 @registerModifier()
 export class modifier_drow_2b extends BaseHeroModifier {
-
     arrow_count: number;
     arrow_angle: number;
 
@@ -42,29 +40,28 @@ export class modifier_drow_2b extends BaseHeroModifier {
     proj_name: string;
     proj_distance: number;
 
-    
     UpdataAbilityValue(): void {
-        this.SelfAbilityMul = this.ability.GetSpecialValueFor("base_value");
+        this.SelfAbilityMul = this.ability.GetSpecialValueFor('base_value');
         this.DamageBonusMul = 0;
         this.ElementDmgMul = 0;
-        this.arrow_count = this.ability.GetSpecialValueForTypes("arrow_count", 'Missile', 'skv_missile_count');
-        this.arrow_angle = this.ability.GetSpecialValueFor("arrow_angle");
-        this.proj_width = this.ability.GetSpecialValueFor("proj_width");
+        this.arrow_count = this.ability.GetSpecialValueForTypes('arrow_count', 'Missile', 'skv_missile_count');
+        this.arrow_angle = this.ability.GetSpecialValueFor('arrow_angle');
+        this.proj_width = this.ability.GetSpecialValueFor('proj_width');
         this.proj_speed = this.caster.GetProjectileSpeed();
         this.proj_name = G_PorjLinear.drow.none;
-        this.proj_distance = this.ability.GetSpecialValueFor("proj_distance");
+        this.proj_distance = this.ability.GetSpecialValueFor('proj_distance');
 
-        this.proj_distance = this.ability.GetTypesAffixValue(this.proj_distance, "Missile", "skv_missile_distance");
+        this.proj_distance = this.ability.GetTypesAffixValue(this.proj_distance, 'Missile', 'skv_missile_distance');
         // rune_36	游侠#11	散射的基础伤害提高200%
-        if (this.caster.rune_level_index.hasOwnProperty("rune_36")) {
-            this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_36', 'base_value')
+        if (this.caster.rune_level_index.hasOwnProperty('rune_36')) {
+            this.SelfAbilityMul += GameRules.RuneSystem.GetKvOfUnit(this.caster, 'rune_36', 'base_value');
         }
     }
 
     OnIntervalThink() {
         // print(this.caster.GetMana() , this.ability.GetManaCost(-1))
         if (this.CastingConditions()) {
-            let enemies = FindUnitsInRadius(
+            const enemies = FindUnitsInRadius(
                 this.team,
                 this.caster.GetAbsOrigin(),
                 null,
@@ -75,39 +72,43 @@ export class modifier_drow_2b extends BaseHeroModifier {
                 FindOrder.ANY,
                 false
             );
-            if (enemies.length == 0) { return }
+            if (enemies.length == 0) {
+                return;
+            }
             // 根据蓝耗提高伤害
-            let manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
-            this.DoExecutedAbility()
-            let hTarget = enemies[0];
-            this.PlayEffect({ hTarget: hTarget, value: manacost_bonus })
+            const manacost_bonus = this.ability.ManaCostAndConverDmgBonus();
+            this.DoExecutedAbility();
+            const hTarget = enemies[0];
+            this.PlayEffect({ hTarget: hTarget, value: manacost_bonus });
         }
     }
 
     PlayEffect(params: PlayEffectProps): void {
-        let vTarget = params.hTarget.GetAbsOrigin()
+        const vTarget = params.hTarget.GetAbsOrigin();
         this.MultiShot(vTarget, params.value);
     }
 
     MultiShot(vTarget: Vector, bonus_pct: number) {
-        let vCaster = this.caster.GetAbsOrigin();
-        let direction = vTarget - vCaster as Vector;
+        const vCaster = this.caster.GetAbsOrigin();
+        let direction = (vTarget - vCaster) as Vector;
         direction.z = 0;
         direction = direction.Normalized();
-        let attack_game = this.caster.GetAverageTrueAttackDamage(null);
+        const attack_game = this.caster.GetAverageTrueAttackDamage(null);
         // let bp_ingame = (this.base_value - 100) + this.bonus_value + bonus_pct;
         // let bp_server = 0;
-        this.ShotArrow(attack_game, vCaster, direction, bonus_pct)
+        this.ShotArrow(attack_game, vCaster, direction, bonus_pct);
 
-        let last_count = this.arrow_count - 1
+        const last_count = this.arrow_count - 1;
         for (let i = 0; i < last_count; i++) {
-            let is_even = i % 2 == 0; // 偶数
-            let angle_y = is_even ? (this.arrow_angle / last_count) * math.floor(1 + i / 2) : (this.arrow_angle / -last_count) * math.floor(1 + i / 2);
-            let vPoint = RotatePosition(vCaster, QAngle(0, angle_y, 0), vTarget);
-            let direction = vPoint - vCaster as Vector;
+            const is_even = i % 2 == 0; // 偶数
+            const angle_y = is_even
+                ? (this.arrow_angle / last_count) * math.floor(1 + i / 2)
+                : (this.arrow_angle / -last_count) * math.floor(1 + i / 2);
+            const vPoint = RotatePosition(vCaster, QAngle(0, angle_y, 0), vTarget);
+            let direction = (vPoint - vCaster) as Vector;
             direction.z = 0;
             direction = direction.Normalized();
-            this.ShotArrow(attack_game, vCaster, direction, bonus_pct)
+            this.ShotArrow(attack_game, vCaster, direction, bonus_pct);
         }
     }
 
@@ -132,7 +133,7 @@ export class modifier_drow_2b extends BaseHeroModifier {
                 SelfAbilityMul: this.SelfAbilityMul,
                 DamageBonusMul: this.DamageBonusMul + bonus_pct,
                 ElementDmgMul: this.ElementDmgMul,
-            } as ProjectileExtraData
+            } as ProjectileExtraData,
         });
     }
 }

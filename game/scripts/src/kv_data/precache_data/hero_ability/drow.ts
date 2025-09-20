@@ -1,8 +1,8 @@
 export const drow_precache = [
     'models/test/drow/drow_arcana.vmdl',
-    "particles/units/heroes/hero_wisp/wisp_guardian_.vpcf",
-    "particles/econ/items/lich/frozen_chains_ti6/lich_frozenchains_frostnova.vpcf",
-    "particles/units/heroes/hero_windrunner/windrunner_windrun.vpcf",
+    'particles/units/heroes/hero_wisp/wisp_guardian_.vpcf',
+    'particles/econ/items/lich/frozen_chains_ti6/lich_frozenchains_frostnova.vpcf',
+    'particles/units/heroes/hero_windrunner/windrunner_windrun.vpcf',
     'particles/econ/items/abaddon/abaddon_alliance/abaddon_death_coil_alliance_explosion.vpcf',
     'particles/econ/items/drow/drow_arcana/drow_arcana_ambient.vpcf',
     'particles/econ/items/drow/drow_arcana/drow_arcana_weapon_ambient_debut_traces.vpcf',
@@ -26,13 +26,11 @@ export const drow_precache = [
     'particles/dev/tornado/tornado_4.vpcf',
     'particles/econ/items/crystal_maiden/crystal_maiden_cowl_of_ice/maiden_crystal_nova_cowlofice.vpcf',
     // 复仇
-    'particles/units/heroes/hero_brewmaster/brewmaster_drunken_stance_earth.vpcf',  //风
+    'particles/units/heroes/hero_brewmaster/brewmaster_drunken_stance_earth.vpcf', //风
     'particles/units/heroes/hero_brewmaster/brewmaster_drunken_stance_fire.vpcf', // 火
     'particles/units/heroes/hero_brewmaster/brewmaster_drunken_stance_storm.vpcf', // 雷
     'particles/dev/hero/drow/drow_4/vengeance_ice.vpcf', // 冰
     'particles/dev/hero/drow/drow_4/vengeance.vpcf', // 无属性
     // 能量回复
     'particles/units/heroes/hero_keeper_of_the_light/keeper_chakra_magic.vpcf',
-
-
-] 
+];

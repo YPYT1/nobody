@@ -1,12 +1,11 @@
 import { OutputStream } from './OutputStream';
 
-'use strict';
+('use strict');
 /**
  * Base64EncodeOutputStream
  * @author Kazuhiko Arase
  */
 export class Base64EncodeOutputStream extends OutputStream {
-
     private buffer = 0;
     private buflen = 0;
     private length = 0;
@@ -16,7 +15,6 @@ export class Base64EncodeOutputStream extends OutputStream {
     }
 
     public writeByte(n: number): void {
-
         this.buffer = (this.buffer << 8) | (n & 0xff);
         this.buflen += 8;
         this.length += 1;
@@ -36,7 +34,7 @@ export class Base64EncodeOutputStream extends OutputStream {
 
         if (this.length % 3 != 0) {
             // padding
-            var padlen = 3 - this.length % 3;
+            var padlen = 3 - (this.length % 3);
             for (var i = 0; i < padlen; i += 1) {
                 this.ostream.writeByte('='.charCodeAt(0));
             }

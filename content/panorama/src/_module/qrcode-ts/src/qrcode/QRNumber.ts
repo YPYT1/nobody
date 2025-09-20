@@ -1,54 +1,52 @@
 import { QRData } from './QRData';
 import { Mode } from './Mode';
-import { BitBuffer } from './BitBuffer';
+import type { BitBuffer } from './BitBuffer';
 
-'use strict';
+('use strict');
 /**
  * QRNumber
  * @author Kazuhiko Arase
  */
 export class QRNumber extends QRData {
-
-  constructor(data: string) {
-    super(Mode.MODE_NUMBER, data);
-  }
-
-  public write(buffer: BitBuffer): void {
-
-    var data = this.getData();
-
-    var i = 0;
-
-    while (i + 2 < data.length) {
-      buffer.put(QRNumber.strToNum(data.substring(i, i + 3)), 10);
-      i += 3;
+    constructor(data: string) {
+        super(Mode.MODE_NUMBER, data);
     }
 
-    if (i < data.length) {
-      if (data.length - i == 1) {
-        buffer.put(QRNumber.strToNum(data.substring(i, i + 1)), 4);
-      } else if (data.length - i == 2) {
-        buffer.put(QRNumber.strToNum(data.substring(i, i + 2)), 7);
-      }
-    }
-  }
+    public write(buffer: BitBuffer): void {
+        var data = this.getData();
 
-  public getLength(): number {
-    return this.getData().length;
-  }
+        var i = 0;
 
-  private static strToNum(s: string): number {
-    var num = 0;
-    for (var i = 0; i < s.length; i += 1) {
-      num = num * 10 + QRNumber.chatToNum(s.charAt(i));
-    }
-    return num;
-  }
+        while (i + 2 < data.length) {
+            buffer.put(QRNumber.strToNum(data.substring(i, i + 3)), 10);
+            i += 3;
+        }
 
-  private static chatToNum(c: string): number {
-    if ('0' <= c && c <= '9') {
-      return c.charCodeAt(0) - '0'.charCodeAt(0);
+        if (i < data.length) {
+            if (data.length - i == 1) {
+                buffer.put(QRNumber.strToNum(data.substring(i, i + 1)), 4);
+            } else if (data.length - i == 2) {
+                buffer.put(QRNumber.strToNum(data.substring(i, i + 2)), 7);
+            }
+        }
     }
-    throw 'illegal char :' + c;
-  }
+
+    public getLength(): number {
+        return this.getData().length;
+    }
+
+    private static strToNum(s: string): number {
+        var num = 0;
+        for (var i = 0; i < s.length; i += 1) {
+            num = num * 10 + QRNumber.chatToNum(s.charAt(i));
+        }
+        return num;
+    }
+
+    private static chatToNum(c: string): number {
+        if ('0' <= c && c <= '9') {
+            return c.charCodeAt(0) - '0'.charCodeAt(0);
+        }
+        throw 'illegal char :' + c;
+    }
 }

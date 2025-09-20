@@ -1,29 +1,28 @@
-import { reloadable } from "../../../utils/tstl-utils";
-import * as SpecialKeyvalueJson from "./../../../json/config/game/special_keyvalue.json"
-import { UIEventRegisterClass } from "../../class_extends/ui_event_register_class";
+import { reloadable } from '../../../utils/tstl-utils';
+import * as SpecialKeyvalueJson from './../../../json/config/game/special_keyvalue.json';
+import { UIEventRegisterClass } from '../../class_extends/ui_event_register_class';
 
 declare type OverrideSpecialInputProps = {
     [primary in OverrideSpecialKeyTypes]?: {
-        [type_key in OverrideSpecialBonusTypes]?: number
-    }
-}
+        [type_key in OverrideSpecialBonusTypes]?: number;
+    };
+};
 
 declare type AbilitySpecialInputProps = {
     [special_key: string]: {
-        [type_key in OverrideSpecialBonusTypes]?: number
-    }
-}
+        [type_key in OverrideSpecialBonusTypes]?: number;
+    };
+};
 
 /** 修改技能 */
 @reloadable
 export class CustomOverrideAbility extends UIEventRegisterClass {
-
     // OverrideSpecialMul: { [player: string]: OverrideSpecialObjectProps };
     OverrideSpecialValue: { [player: string]: OverrideSpecialValueProps };
 
     // PlayerUpgradesTable:{}; // 玩家升级树
     constructor() {
-        super("CustomOverrideAbility");
+        super('CustomOverrideAbility');
         this.OverrideSpecialValue = {};
     }
 
@@ -46,39 +45,41 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
     }
 
     ModifyOverrideSpecialValue(player_id: PlayerID, special_input: OverrideSpecialInputProps) {
-        for (let override_key in special_input) {
+        for (const override_key in special_input) {
             if (this.OverrideSpecialValue[player_id][override_key] == null) {
                 this.OverrideSpecialValue[player_id][override_key] = {
                     base_value: 0,
                     mul_value: 1,
                     percent_value: 100,
                     correct_value: 100,
-                }
+                };
             }
-            let RowInput = special_input[override_key as keyof typeof special_input];
-            if (RowInput.Base) { this.OverrideSpecialValue[player_id][override_key].base_value += RowInput.Base }
+            const RowInput = special_input[override_key as keyof typeof special_input];
+            if (RowInput.Base) {
+                this.OverrideSpecialValue[player_id][override_key].base_value += RowInput.Base;
+            }
             if (RowInput.Percent) {
-                this.OverrideSpecialValue[player_id][override_key].percent_value += RowInput.Percent
+                this.OverrideSpecialValue[player_id][override_key].percent_value += RowInput.Percent;
             }
             if (RowInput.Multiple) {
-                let mul_input = (100 + RowInput.Multiple) * 0.01
-                this.OverrideSpecialValue[player_id][override_key].mul_value *= mul_input
+                const mul_input = (100 + RowInput.Multiple) * 0.01;
+                this.OverrideSpecialValue[player_id][override_key].mul_value *= mul_input;
             }
             if (RowInput.Correct) {
-                this.OverrideSpecialValue[player_id][override_key].correct_value += RowInput.Correct
+                this.OverrideSpecialValue[player_id][override_key].correct_value += RowInput.Correct;
             }
         }
 
         // DeepPrintTable(this.OverrideSpecialValue[player_id])
         // 刷新一次技能
-        GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id)
-        this.GetUpdateSpecialValue(player_id)
+        GameRules.CustomAttribute.UpdataPlayerSpecialValue(player_id);
+        this.GetUpdateSpecialValue(player_id);
     }
 
     /**
-    * 更新技能SV值
-    * @param player_id 
-    */
+     * 更新技能SV值
+     * @param player_id
+     */
     // UpdateSpecialValue(player_id: PlayerID, abilityname?: string) {
     //     const hHero = PlayerResource.GetSelectedHeroEntity(player_id);
     //     let MinorAbilityUpgrades = hHero.MinorAbilityUpgrades;
@@ -134,33 +135,29 @@ export class CustomOverrideAbility extends UIEventRegisterClass {
     //     this.GetUpdateSpecialValue(player_id)
     // }
 
-    GetUpdateSpecialValue(player_id: PlayerID, params?: CGED["CustomOverrideAbility"]["GetUpdateSpecialValue"]) {
-        CustomGameEventManager.Send_ServerToPlayer(
-            PlayerResource.GetPlayer(player_id),
-            "CustomOverrideAbility_UpdateSpecialValue",
-            {
-                data: this.OverrideSpecialValue[player_id]
-            }
-        )
+    GetUpdateSpecialValue(player_id: PlayerID, params?: CGED['CustomOverrideAbility']['GetUpdateSpecialValue']) {
+        CustomGameEventManager.Send_ServerToPlayer(PlayerResource.GetPlayer(player_id), 'CustomOverrideAbility_UpdateSpecialValue', {
+            data: this.OverrideSpecialValue[player_id],
+        });
     }
 
     Debug(cmd: string, args: string[], player_id: PlayerID) {
-        if (cmd == "-coa") {
+        if (cmd == '-coa') {
             this.ModifyOverrideSpecialValue(player_id, {
-                "skv_aoe_radius": {
-                    "Base": 10,
-                    "Percent": 10,
+                skv_aoe_radius: {
+                    Base: 10,
+                    Percent: 10,
                 },
-                "skv_targeting_multiple1": {
-                    "Base": 10
+                skv_targeting_multiple1: {
+                    Base: 10,
                 },
-                "skv_targeting_multiple2": {
-                    "Base": 7
+                skv_targeting_multiple2: {
+                    Base: 7,
                 },
-                "skv_targeting_multiple3": {
-                    "Base": 5
+                skv_targeting_multiple3: {
+                    Base: 5,
                 },
-            })
+            });
         }
     }
 }

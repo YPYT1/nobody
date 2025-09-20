@@ -1,4 +1,3 @@
-
 // 预载入KV文件中的所有资源
 function precacheEveryResourceInKV(kvFileList: string[], context: CScriptPrecacheContext) {
     kvFileList.forEach(file => {
@@ -30,7 +29,7 @@ function precacheUnits(unitNamesList: string[], context?: CScriptPrecacheContext
         });
     } else {
         unitNamesList.forEach(unitName => {
-            PrecacheUnitByNameAsync(unitName, () => { });
+            PrecacheUnitByNameAsync(unitName, () => {});
         });
     }
 }

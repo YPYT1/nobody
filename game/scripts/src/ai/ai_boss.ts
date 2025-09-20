@@ -1,8 +1,8 @@
 /** @noSelfInFile */
-import { CBossBase } from "./boss_base";
-import * as NpcUnitsCustom from "./../json/npc_units_custom.json"
-import * as MapInfoDifficulty from "./../json/config/map_info_difficulty.json"
-import { BaseCreatureAbility } from "../abilities/creature/base_creature";
+import { CBossBase } from './boss_base';
+import * as NpcUnitsCustom from './../json/npc_units_custom.json';
+import * as MapInfoDifficulty from './../json/config/map_info_difficulty.json';
+import type { BaseCreatureAbility } from '../abilities/creature/base_creature';
 
 declare const thisEntity: CDOTA_BaseNPC;
 
@@ -13,13 +13,16 @@ Object.assign(getfenv(), {
 });
 
 export function Spawn(entityKeyValues: any) {
-    if (!IsServer()) { return; }
-    if (!thisEntity) { return; }
-    let BossAI = new CustomAI_Boss(thisEntity, 0.25);
+    if (!IsServer()) {
+        return;
+    }
+    if (!thisEntity) {
+        return;
+    }
+    const BossAI = new CustomAI_Boss(thisEntity, 0.25);
 }
 
 export class CustomAI_Boss {
-
     me: CDOTA_BaseNPC;
     sUnitName: string;
     flDefaultInterval: number;
@@ -32,11 +35,10 @@ export class CustomAI_Boss {
     /** Boss血量百分比阶段 */
     boss_phase: number[];
     /** 阶段状态 */
-    PhaseStatus: { hpPct: number, activate: boolean; abilityname: string, mdf?: CDOTA_Buff }[];
+    PhaseStatus: { hpPct: number; activate: boolean; abilityname: string; mdf?: CDOTA_Buff }[];
 
     /** 技能优先级 */
-    AbilityPriority: { [name: string]: number; };
-
+    AbilityPriority: { [name: string]: number };
 
     constructor(hUnit: CDOTA_BaseNPC, flInterval: number) {
         this.me = hUnit;
@@ -50,54 +52,58 @@ export class CustomAI_Boss {
         this.flAggroAcquireRange = 4500;
         this.hCurrorder = null;
         this.sUnitName = hUnit.GetUnitName();
-        this.me.AddActivityModifier("run");
+        this.me.AddActivityModifier('run');
 
         // print("CBossBase constructor")
         this._Init();
-        this.me.SetContextThink("delay", () => {
-            this.OnSetup();
-            return null;
-        }, 0.5);
-        this.me.SetThink("OnBossCommonThink", this, "OnBossCommonThink", 1);
+        this.me.SetContextThink(
+            'delay',
+            () => {
+                this.OnSetup();
+                return null;
+            },
+            0.5
+        );
+        this.me.SetThink('OnBossCommonThink', this, 'OnBossCommonThink', 1);
     }
 
-    _Init() { }
+    _Init() {}
 
     // 初始化技能和优先级
     OnSetup() {
         // 获取技能池子
-        this.me.RemoveAbility("twin_gate_portal_warp");
-        let ability_pool: string[] = []
+        this.me.RemoveAbility('twin_gate_portal_warp');
+        const ability_pool: string[] = [];
         for (let i = 1; i < this.me.GetAbilityCount(); i++) {
-            let hAbility = this.me.GetAbilityByIndex(i);
+            const hAbility = this.me.GetAbilityByIndex(i);
             if (hAbility) {
-                let ability_name = hAbility.GetAbilityName();
-                ability_pool.push(ability_name)
+                const ability_name = hAbility.GetAbilityName();
+                ability_pool.push(ability_name);
             }
         }
         // 打乱技能池子
-        ArrayScramblingByString(ability_pool)
+        ArrayScramblingByString(ability_pool);
 
         // 读取当前难度信息
-        let game_setting = CustomNetTables.GetTableValue("game_setting", "game_mode");
-        let difficulty = game_setting.difficulty;
-        let diff_data = MapInfoDifficulty[difficulty as "101"]
-        let is_final = this.me.GetIntAttr("is_final") == 1;
+        const game_setting = CustomNetTables.GetTableValue('game_setting', 'game_mode');
+        const difficulty = game_setting.difficulty;
+        const diff_data = MapInfoDifficulty[difficulty as '101'];
+        const is_final = this.me.GetIntAttr('is_final') == 1;
         // 得到当前难度对应的血量阶段
-        let boss_hp_phase = is_final ? diff_data.pt_boss : diff_data.ww_boss;
+        const boss_hp_phase = is_final ? diff_data.pt_boss : diff_data.ww_boss;
         // let boss_hp_phase = [75, 50, 25];
-        boss_hp_phase.sort((a, b) => b - a)
+        boss_hp_phase.sort((a, b) => b - a);
         // DeepPrintTable(boss_hp_phase)
-        let index = 0
-        for (let hp_phase of boss_hp_phase) {
+        let index = 0;
+        for (const hp_phase of boss_hp_phase) {
             if (hp_phase != 0) {
                 if (ability_pool[index] != null) {
                     this.PhaseStatus.push({
                         hpPct: hp_phase,
                         activate: false,
                         abilityname: ability_pool[index],
-                        mdf: null
-                    })
+                        mdf: null,
+                    });
                     index += 1;
                 }
             }
@@ -105,23 +111,22 @@ export class CustomAI_Boss {
 
         // 读取技能来配置阶段
         if (boss_hp_phase[0] > 0) {
-            const mdf = this.me.AddNewModifier(this.me, null, "modifier_state_boss_phase_hp", {})
-            mdf.SetStackCount(boss_hp_phase[0])
+            const mdf = this.me.AddNewModifier(this.me, null, 'modifier_state_boss_phase_hp', {});
+            mdf.SetStackCount(boss_hp_phase[0]);
         }
 
         // 注册移动动作
-        if (this.me.custom_animation["move"]) {
-            let act = this.me.custom_animation["move"].seq
+        if (this.me.custom_animation['move']) {
+            const act = this.me.custom_animation['move'].seq;
             // this.me.ClearActivityModifiers();
-            this.me.AddActivityModifier(act)
+            this.me.AddActivityModifier(act);
             // this.me.SetSequence(act)
         }
-
     }
 
     OnBaseThink(): number {
         if (!this.me || this.me.IsNull() || !this.me.IsAlive()) {
-            return - 1;
+            return -1;
         }
         // let order = null;
         if (this.nLastHealthPct > this.me.GetHealthPercent()) {
@@ -135,10 +140,12 @@ export class CustomAI_Boss {
             // 普通攻击
             return 0.3;
         }
-        let AbilitiesReady = this.GetReadyAbilitiesAndItems();
+        const AbilitiesReady = this.GetReadyAbilitiesAndItems();
         // print("AbilitiesReady ", AbilitiesReady.length);
         if (AbilitiesReady.length == 0) {
-            if (IsInToolsMode()) { return 1 }
+            if (IsInToolsMode()) {
+                return 1;
+            }
             ExecuteOrderFromTable({
                 UnitIndex: this.me.entindex(),
                 OrderType: UnitOrder.ATTACK_MOVE,
@@ -148,38 +155,39 @@ export class CustomAI_Boss {
             return 1;
         } else {
             // 释放技能
-
         }
 
         return 0.5;
     }
 
     OnBossCommonThink() {
-        if (this.me.IsAlive() == false) { return 1; }
-        if (GameRules.IsGamePaused()) { return 0.03; }
-        if (this.me.IsChanneling()) { return 0.1; }
+        if (this.me.IsAlive() == false) {
+            return 1;
+        }
+        if (GameRules.IsGamePaused()) {
+            return 0.03;
+        }
+        if (this.me.IsChanneling()) {
+            return 0.1;
+        }
         return this.OnBaseThink();
     }
 
     /**
      * 获取当前能释放的技能
-     * @returns 
+     * @returns
      */
     GetReadyAbilitiesAndItems() {
-        let AbilitiesReady: CDOTABaseAbility[] = [];
+        const AbilitiesReady: CDOTABaseAbility[] = [];
         // DeepPrintTable(this.AbilityPriority);
 
         for (const n of $range(0, this.me.GetAbilityCount() - 1)) {
-            let hAbility = this.me.GetAbilityByIndex(n);
+            const hAbility = this.me.GetAbilityByIndex(n);
             // print(hAbility, n)
-            if (hAbility == null) { continue }
-            if (hAbility.IsFullyCastable()
-                && !hAbility.IsPassive()
-                && !hAbility.IsHidden()
-                && hAbility.IsActivated()
-                && hAbility.IsCooldownReady()
-
-            ) {
+            if (hAbility == null) {
+                continue;
+            }
+            if (hAbility.IsFullyCastable() && !hAbility.IsPassive() && !hAbility.IsHidden() && hAbility.IsActivated() && hAbility.IsCooldownReady()) {
                 if (this.AbilityPriority[hAbility.GetAbilityName()] != null) {
                     table.insert(AbilitiesReady, hAbility);
                 }
@@ -189,8 +197,8 @@ export class CustomAI_Boss {
         if (AbilitiesReady.length >= 1) {
             // let AbilityPriority = this.AbilityPriority
             table.sort(AbilitiesReady, (h1, h2) => {
-                let caster_range1 = h1.GetCastRange(this.me.GetAbsOrigin(), this.me);
-                let caster_range2 = h2.GetCastRange(this.me.GetAbsOrigin(), this.me);
+                const caster_range1 = h1.GetCastRange(this.me.GetAbsOrigin(), this.me);
+                const caster_range2 = h2.GetCastRange(this.me.GetAbsOrigin(), this.me);
                 return caster_range1 > caster_range2;
             });
 
@@ -203,45 +211,45 @@ export class CustomAI_Boss {
     // 生命值首次达到一定百分比时转阶段
     OnHealthPercentThreshold(nPct: number) {
         for (let i = 0; i < this.PhaseStatus.length; i++) {
-            let hPhase = this.PhaseStatus[i]
+            const hPhase = this.PhaseStatus[i];
 
             if (hPhase.activate == false && hPhase.hpPct > nPct) {
                 hPhase.activate = true;
 
                 // 该阶段激活 移除上阶段的技能效果
                 if (i > 0) {
-                    let LasthPhase = this.PhaseStatus[i - 1];
-                    let LasthAbility = this.me.FindAbilityByName(LasthPhase.abilityname) as BaseCreatureAbility;
+                    const LasthPhase = this.PhaseStatus[i - 1];
+                    const LasthAbility = this.me.FindAbilityByName(LasthPhase.abilityname) as BaseCreatureAbility;
                     LasthAbility.ClearCurrentPhase();
                 }
 
                 // 执行技能效果
-                let hAbility = this.me.FindAbilityByName(hPhase.abilityname)
+                const hAbility = this.me.FindAbilityByName(hPhase.abilityname);
                 // 移除锁血
-                this.me.RemoveModifierByName("modifier_state_boss_phase_hp");
+                this.me.RemoveModifierByName('modifier_state_boss_phase_hp');
                 // 为下个阶段添加锁血
                 if (i < this.PhaseStatus.length - 1) {
-                    let nexthPhase = this.PhaseStatus[i + 1];
-                    const mdf = this.me.AddNewModifier(this.me, null, "modifier_state_boss_phase_hp", {})
-                    mdf.SetStackCount(nexthPhase.hpPct)
+                    const nexthPhase = this.PhaseStatus[i + 1];
+                    const mdf = this.me.AddNewModifier(this.me, null, 'modifier_state_boss_phase_hp', {});
+                    mdf.SetStackCount(nexthPhase.hpPct);
                 }
-                return this.CastAbility(hAbility)
+                return this.CastAbility(hAbility);
             }
         }
 
-        return this.flDefaultInterval
+        return this.flDefaultInterval;
     }
 
     /** 激活对应BOSS的阶段 */
-    OnActivationBossNewPhase(hpPct: number) { }
+    OnActivationBossNewPhase(hpPct: number) {}
 
     CastAbility(hAbility: CDOTABaseAbility) {
-        let ability_behavior = hAbility.GetBehaviorInt();
+        const ability_behavior = hAbility.GetBehaviorInt();
         let Order: ExecuteOrderOptions;
-        let channel_time = hAbility.GetChannelTime();
-        let cast_point = hAbility.GetCastPoint();
-        let ability_range = hAbility.GetCastRange(this.me.GetOrigin(), this.me);
-        let hPlayerHeroes = FindUnitsInRadius(
+        const channel_time = hAbility.GetChannelTime();
+        const cast_point = hAbility.GetCastPoint();
+        const ability_range = hAbility.GetCastRange(this.me.GetOrigin(), this.me);
+        const hPlayerHeroes = FindUnitsInRadius(
             this.me.GetTeam(),
             this.me.GetOrigin(),
             this.me,
@@ -291,14 +299,13 @@ export class CustomAI_Boss {
     }
 
     GetSpellCastTime(hSpell: CDOTABaseAbility) {
-        let flCastPoint = math.max(0.25, hSpell.GetCastPoint());
+        const flCastPoint = math.max(0.25, hSpell.GetCastPoint());
         return flCastPoint + 0.01;
     }
 }
 
-
 function GetEnemyHeroesInRange(hUnit: CDOTA_BaseNPC, flRange: number = 1500) {
-    let enemies = FindUnitsInRadius(
+    const enemies = FindUnitsInRadius(
         hUnit.GetTeamNumber(),
         hUnit.GetAbsOrigin(),
         null,
@@ -308,6 +315,6 @@ function GetEnemyHeroesInRange(hUnit: CDOTA_BaseNPC, flRange: number = 1500) {
         UnitTargetFlags.NONE,
         FindOrder.CLOSEST,
         false
-    )
-    return enemies
+    );
+    return enemies;
 }

@@ -5,21 +5,23 @@ export class UIEventRegisterClass {
      */
     ui_event_filter_func: string[] = [];
     /**
-     * 
+     *
      * @param eventName 监听名
      * @param filter_func 禁止调用方法
      */
     constructor(eventName: string, open_debug = false) {
-        CustomGameEventManager.RegisterListener(eventName, (_, event) => { this._UIEventRegister(event) });
+        CustomGameEventManager.RegisterListener(eventName, (_, event) => {
+            this._UIEventRegister(event);
+        });
         if (open_debug) {
-            GameRules.Debug.RegisterDebug(eventName)
+            GameRules.Debug.RegisterDebug(eventName);
         }
     }
 
     _UIEventRegister(event: any) {
-        let player_id = event.PlayerID as PlayerID;
-        let event_name = event.event_name as string;
-        let params = event.params ?? {};
+        const player_id = event.PlayerID as PlayerID;
+        const event_name = event.event_name as string;
+        const params = event.params ?? {};
         // 前端禁用方法
         // print(this.constructor.name, event_name)
         if (GameRules[this.constructor.name][event_name]) {
@@ -28,20 +30,18 @@ export class UIEventRegisterClass {
     }
 
     StopMove(hUnit: CDOTA_BaseNPC) {
-        hUnit.AddNewModifier(hUnit, null, "modifier_basic_move", {
-            "UP": 0,
-            "DOWN": 0,
-            "LEFT": 0,
-            "RIGHT": 0
-        })
+        hUnit.AddNewModifier(hUnit, null, 'modifier_basic_move', {
+            UP: 0,
+            DOWN: 0,
+            LEFT: 0,
+            RIGHT: 0,
+        });
         ExecuteOrderFromTable({
             UnitIndex: hUnit.entindex(),
             OrderType: UnitOrder.STOP,
             Queue: false,
-        })
+        });
     }
-    
-    Debug(cmd: string, args: string[], player_id: PlayerID) {
 
-    }
+    Debug(cmd: string, args: string[], player_id: PlayerID) {}
 }

@@ -1,1 +1,1 @@
-import "./cdota_basenpc_extend";
+import './cdota_basenpc_extend';

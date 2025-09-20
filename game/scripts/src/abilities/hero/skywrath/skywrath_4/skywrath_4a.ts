@@ -1,5 +1,5 @@
-import { BaseAbility, BaseModifier, registerAbility, registerModifier } from "../../../../utils/dota_ts_adapter";
-import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
+import { BaseAbility, BaseModifier, registerAbility, registerModifier } from '../../../../utils/dota_ts_adapter';
+import { BaseHeroAbility, BaseHeroModifier } from '../../base_hero_ability';
 
 /**
  * 105	充沛	最大蓝量提升50/70/100点。
@@ -9,42 +9,40 @@ import { BaseHeroAbility, BaseHeroModifier } from "../../base_hero_ability";
  */
 @registerAbility()
 export class skywrath_4a extends BaseHeroAbility {
-
     GetIntrinsicModifierName(): string {
-        return "modifier_skywrath_4a"
+        return 'modifier_skywrath_4a';
     }
-
 }
 @registerModifier()
 export class modifier_skywrath_4a extends BaseHeroModifier {
-
-    buff_key = "skywrath_4a";
+    buff_key = 'skywrath_4a';
     max_mana: number;
     mana_regen: number;
 
     UpdataAbilityValue(): void {
-        this.max_mana = this.caster.GetTalentKv("105", "value");
-        this.mana_regen = this.caster.GetTalentKv("106", "value");
+        this.max_mana = this.caster.GetTalentKv('105', 'value');
+        this.mana_regen = this.caster.GetTalentKv('106', 'value');
 
-        this.max_mana = this.ability.GetTypesAffixValue(this.max_mana, "Buff", "skv_buff_increase");
-        this.mana_regen = this.ability.GetTypesAffixValue(this.mana_regen, "Buff", "skv_buff_increase");
+        this.max_mana = this.ability.GetTypesAffixValue(this.max_mana, 'Buff', 'skv_buff_increase');
+        this.mana_regen = this.ability.GetTypesAffixValue(this.mana_regen, 'Buff', 'skv_buff_increase');
         GameRules.CustomAttribute.SetAttributeInKey(this.caster, this.buff_key, {
-            "MaxMana": {
-                "Base": this.max_mana,
+            MaxMana: {
+                Base: this.max_mana,
             },
-            "ManaRegen": {
-                "Base": this.mana_regen
-            }
-        })
+            ManaRegen: {
+                Base: this.mana_regen,
+            },
+        });
     }
-
 
     OnIntervalThink(): void {
         this.StartIntervalThink(-1);
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        GameRules.CustomAttribute.DelAttributeInKey(this.caster, this.buff_key)
+        if (!IsServer()) {
+            return;
+        }
+        GameRules.CustomAttribute.DelAttributeInKey(this.caster, this.buff_key);
     }
 }

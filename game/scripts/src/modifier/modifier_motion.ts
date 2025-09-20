@@ -1,9 +1,8 @@
-import { BaseHeroAbility } from '../abilities/hero/base_hero_ability';
+import type { BaseHeroAbility } from '../abilities/hero/base_hero_ability';
 import { BaseModifier, registerModifier, BaseModifierMotionBoth, BaseModifierMotionHorizontal } from '../utils/dota_ts_adapter';
 
 @registerModifier()
 export class modifier_pick_animation2 extends BaseModifierMotionBoth {
-
     fSpeed: number;
     target: CDOTA_BaseNPC;
     vBezier: Vector;
@@ -18,18 +17,20 @@ export class modifier_pick_animation2 extends BaseModifierMotionBoth {
     }
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
-        let vParent = this.GetParent().GetAbsOrigin()
+        if (!IsServer()) {
+            return;
+        }
+        const vParent = this.GetParent().GetAbsOrigin();
         this.fCount = 0;
         this.target = this.GetCaster();
         this.bState = false;
 
         this.vOrigin = vParent;
         // 中间点
-        let direction = vParent - this.target.GetAbsOrigin() as Vector;
+        let direction = (vParent - this.target.GetAbsOrigin()) as Vector;
         direction.z = 0;
         direction = direction.Normalized();
-        let mid_vect = vParent + direction * 300 as Vector;
+        const mid_vect = (vParent + direction * 300) as Vector;
         // DebugDrawCircle(mid_vect, Vector(255, 0, 0), 255, 75, true, 1)
         this.vBezier = RotatePosition(vParent, QAngle(0, RandomInt(0, 0), 0), mid_vect);
         if (this.ApplyHorizontalMotionController() == false) {
@@ -40,38 +41,41 @@ export class modifier_pick_animation2 extends BaseModifierMotionBoth {
     }
 
     UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        if (!IsServer()) { return; }
-        if (IsValid(this.target)) { this.Destroy(); }
+        if (!IsServer()) {
+            return;
+        }
+        if (IsValid(this.target)) {
+            this.Destroy();
+        }
         this.fCount += dt * 1;
-        const distance = (this.GetCaster().GetAbsOrigin() - this.GetParent().GetAbsOrigin() as Vector).Length2D();
+        const distance = ((this.GetCaster().GetAbsOrigin() - this.GetParent().GetAbsOrigin()) as Vector).Length2D();
         // print("distance", distance)
         if (distance < 36) {
             this.Destroy();
             return;
         }
         // print("this.fCount", this.fCount)
-        let b1 = GetQuadraticVector(this.GetParent().GetOrigin(), this.target.GetOrigin(), this.vBezier, this.fCount);
+        const b1 = GetQuadraticVector(this.GetParent().GetOrigin(), this.target.GetOrigin(), this.vBezier, this.fCount);
         this.GetParent().SetOrigin(b1);
-
-
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         //移除这个单位 造成伤害
         UTIL_RemoveImmediate(this.GetParent());
     }
 
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
-            [ModifierState.OUT_OF_GAME]: true
-        }
+            [ModifierState.OUT_OF_GAME]: true,
+        };
     }
 }
 
 @registerModifier()
 export class modifier_motion_bezier extends BaseModifierMotionBoth {
-
     _return: number; // 填1表示会回旋
     _end_point: Vector;
     _origin: Vector;
@@ -86,16 +90,18 @@ export class modifier_motion_bezier extends BaseModifierMotionBoth {
     _to_return: boolean;
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this._to_return = false;
         this._speed = params.movespeed / 25;
         this._origin = this.GetParent().GetOrigin();
         this._end_point = Vector(params.point_x, params.point_y, params.point_z);
-        let mid_point = this._origin.Lerp(this._end_point, 0.8);
+        const mid_point = this._origin.Lerp(this._end_point, 0.8);
         this._mid_point = RotatePosition(this._origin, QAngle(0, -30, 0), mid_point);
         this._mid_point2 = RotatePosition(this._origin, QAngle(0, 30, 0), mid_point);
-        this._init_distance = (this._origin - this._end_point as Vector).Length2D();
-        this._pre_speed = (params.movespeed / 25) / this._init_distance;
+        this._init_distance = ((this._origin - this._end_point) as Vector).Length2D();
+        this._pre_speed = params.movespeed / 25 / this._init_distance;
         this._value = 0;
         this.C_OnCreated(params);
         // DebugDrawCircle(this._origin, Vector(255, 0, 0), 1, 100, true, 1);
@@ -109,7 +115,7 @@ export class modifier_motion_bezier extends BaseModifierMotionBoth {
         }
     }
 
-    _ToTargetPoint(vPoint: Vector) { }
+    _ToTargetPoint(vPoint: Vector) {}
 
     UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
         let b1: Vector;
@@ -129,13 +135,11 @@ export class modifier_motion_bezier extends BaseModifierMotionBoth {
         }
     }
 
-    C_OnCreated(params: any) { }
-
+    C_OnCreated(params: any) {}
 }
 
 @registerModifier()
 export class modifier_pick_animation extends modifier_motion_bezier {
-
     parent: CDOTA_BaseNPC;
     caster: CDOTA_BaseNPC;
     outer_point: Vector;
@@ -149,7 +153,9 @@ export class modifier_pick_animation extends modifier_motion_bezier {
     pre_ratio: number;
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         const movespeed = params.movespeed ?? 450;
         this.caster = EntIndexToHScript(params.picker) as CDOTA_BaseNPC;
         this.parent = this.GetParent();
@@ -162,28 +168,26 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         this._origin = this.GetParent().GetOrigin();
         this._end_point = this.caster.GetAbsOrigin();
 
-
-        let direction = this._origin - this._end_point as Vector;
+        let direction = (this._origin - this._end_point) as Vector;
         this.init_distance = direction.Length2D();
         if (this.init_distance > this.base_distance) {
-            this.pre_ratio = math.min(0.5, this.base_distance / this.init_distance)
+            this.pre_ratio = math.min(0.5, this.base_distance / this.init_distance);
         }
         direction.z = 0;
         direction = direction.Normalized();
         // let mid_point = this._origin + direction * 650 as Vector;
-        let outer_point = this._origin + direction * this.base_distance * 2 as Vector;
+        const outer_point = (this._origin + direction * this.base_distance * 2) as Vector;
         this.outer_point = outer_point;
-        let dir = Vector(outer_point.x, outer_point.y, 0) - this._origin as Vector;
+        let dir = (Vector(outer_point.x, outer_point.y, 0) - this._origin) as Vector;
         dir.z = 0;
         dir = dir.Normalized();
         this.launch_direction = dir;
-        this._pre_speed = movespeed / (this.base_distance);
+        this._pre_speed = movespeed / this.base_distance;
         this._value = 0;
 
-
-        let height_start = GetGroundHeight(this._origin, this.parent);
-        let height_end = GetGroundHeight(this._end_point, this.parent);
-        let height_max = height_start + 400;
+        const height_start = GetGroundHeight(this._origin, this.parent);
+        const height_end = GetGroundHeight(this._end_point, this.parent);
+        const height_max = height_start + 400;
         // this.InitVerticalArc(height_start, height_max, height_end, 2);
         this.C_OnCreated(params);
         // DebugDrawCircle(this._origin, Vector(255, 0, 0), 1, 100, true, 1);
@@ -203,29 +207,28 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         let b1: Vector;
         // print("_pre_speed", this._pre_speed)
         // 贝塞尔曲线点
-        let vCaster = this.caster.GetAbsOrigin()
+        const vCaster = this.caster.GetAbsOrigin();
 
         if (this._to_return) {
             this._value += this._pre_speed * dt * this.pre_ratio;
             // print("this._value", this._value)
-            this._value += 0.01
-            let back_vect = GetQuadraticVector(this._origin, vCaster, this.outer_point, this._value);
+            this._value += 0.01;
+            const back_vect = GetQuadraticVector(this._origin, vCaster, this.outer_point, this._value);
             me.SetOrigin(back_vect);
-            const distance = (me.GetAbsOrigin() - vCaster as Vector).Length2D();
+            const distance = ((me.GetAbsOrigin() - vCaster) as Vector).Length2D();
             if (distance < 36 || this._value > 1) {
                 this.Destroy();
-                return
+                return;
             }
         } else {
             this._value += this._pre_speed * dt;
-            let launch_vect = GetQuadraticVector(this._origin, vCaster, this.outer_point, this._value);
+            const launch_vect = GetQuadraticVector(this._origin, vCaster, this.outer_point, this._value);
             me.SetOrigin(launch_vect);
             if (this._value > 0.5) {
                 this._to_return = true;
                 // me.SetModelScale(5);
             }
         }
-
     }
 
     // UpdateVerticalMotion(me: CDOTA_BaseNPC, dt: number): void {
@@ -253,73 +256,73 @@ export class modifier_pick_animation extends modifier_motion_bezier {
         height_end = height_end - height_start;
         height_max = height_max - height_start;
 
-
         if (height_max < height_end) {
             height_max = height_end + 0.01;
         }
-
 
         if (height_max <= 0) {
             height_max = 0.01;
         }
 
-
-        let duration_end = (1 + math.sqrt(1 - height_end / height_max)) / 2;
-        this.const1 = 4 * height_max * duration_end / duration;
-        this.const2 = 4 * height_max * duration_end * duration_end / (duration * duration);
+        const duration_end = (1 + math.sqrt(1 - height_end / height_max)) / 2;
+        this.const1 = (4 * height_max * duration_end) / duration;
+        this.const2 = (4 * height_max * duration_end * duration_end) / (duration * duration);
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return; }
-        let hCaster = this.caster;
-        let hParent = this.GetParent();
+        if (!IsServer()) {
+            return;
+        }
+        const hCaster = this.caster;
+        const hParent = this.GetParent();
         // print("OnDestroy", hCaster, hParent)
-        if (hParent == null) { return }
-        if (hCaster == null) { return }
-        let resource_type = hParent.drop_resource_type;
-        let resource_amount = hParent.drop_resource_amount;
+        if (hParent == null) {
+            return;
+        }
+        if (hCaster == null) {
+            return;
+        }
+        const resource_type = hParent.drop_resource_type;
+        const resource_amount = hParent.drop_resource_amount;
         UTIL_Remove(this.GetParent());
-        if (resource_type == null || resource_amount == null) { return }
+        if (resource_type == null || resource_amount == null) {
+            return;
+        }
         // print("resource_type", resource_type, "resource_amount", resource_amount)
-        GameRules.ResourceSystem.ModifyResource(hCaster.GetPlayerOwnerID(), {
-            [resource_type]: resource_amount
-        }, hCaster, true)
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/diy/pick_item_fx2.vpcf",
-            ParticleAttachment.ABSORIGIN_FOLLOW,
-            hCaster
-        )
-        ParticleManager.ReleaseParticleIndex(effect_fx)
-
+        GameRules.ResourceSystem.ModifyResource(
+            hCaster.GetPlayerOwnerID(),
+            {
+                [resource_type]: resource_amount,
+            },
+            hCaster,
+            true
+        );
+        const effect_fx = ParticleManager.CreateParticle('particles/diy/pick_item_fx2.vpcf', ParticleAttachment.ABSORIGIN_FOLLOW, hCaster);
+        ParticleManager.ReleaseParticleIndex(effect_fx);
     }
 
     DeclareFunctions(): ModifierFunction[] {
-        return [
-            ModifierFunction.MODEL_SCALE,
-            ModifierFunction.MODEL_SCALE_ANIMATE_TIME,
-        ]
+        return [ModifierFunction.MODEL_SCALE, ModifierFunction.MODEL_SCALE_ANIMATE_TIME];
     }
 
     GetModifierModelScaleAnimateTime() {
-        return 0.5
+        return 0.5;
     }
 
     GetModifierModelScale(): number {
         if (this._to_return) {
-            return 0.01
+            return 0.01;
         } else {
-            return 75
+            return 75;
         }
     }
 }
-
 
 /**
  * Modifier 环绕
  */
 @registerModifier()
 export class modifier_motion_surround extends BaseModifierMotionBoth {
-
     /** 环绕高度 */
     surround_height: number;
     /** 当前环绕目标距离 */
@@ -346,9 +349,17 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
     parent: CDOTA_BaseNPC;
     caster: CDOTA_BaseNPC;
 
-    IsHidden(): boolean { return true; }
-    IsPurgable() { return false; }
-    RemoveOnDeath(): boolean { return true; }
+    IsHidden(): boolean {
+        return true;
+    }
+
+    IsPurgable() {
+        return false;
+    }
+
+    RemoveOnDeath(): boolean {
+        return true;
+    }
 
     GetPriority(): ModifierPriority {
         return ModifierPriority.ULTRA + 100;
@@ -362,9 +373,10 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
         };
     }
 
-
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         // this.GetParent().RemoveHorizontalMotionController(this);
         // this.GetParent().RemoveVerticalMotionController(this);
         this.surround_distance = params.surround_distance;
@@ -373,8 +385,8 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
         this.surround_speed = params.surround_speed * 0.01;
         if (this.GetAbility() != null) {
             const hAbility = this.GetAbility() as BaseHeroAbility;
-            this.surround_speed = hAbility.GetTypesAffixValue(params.surround_speed, "Surround", "skv_surround_speed") * 0.01;
-            this.final_distance = hAbility.GetTypesAffixValue(params.surround_distance, "Surround", "skv_surround_distance");
+            this.surround_speed = hAbility.GetTypesAffixValue(params.surround_speed, 'Surround', 'skv_surround_speed') * 0.01;
+            this.final_distance = hAbility.GetTypesAffixValue(params.surround_distance, 'Surround', 'skv_surround_distance');
         }
         this.surround_entity = params.surround_entity;
         this.surround_height = params.surround_height ?? 0;
@@ -399,10 +411,12 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
         this.C_OnCreated(params);
     }
 
-    C_OnCreated(params: any) { }
+    C_OnCreated(params: any) {}
 
     OnRefresh(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         // 变更坐标
         this.final_distance = params.surround_distance;
     }
@@ -416,39 +430,46 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
         this._OnIntervalThink();
     }
 
-    _OnIntervalThink() { }
+    _OnIntervalThink() {}
 
     OnDestroy(): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.GetParent().RemoveHorizontalMotionController(this);
         this.GetParent().RemoveVerticalMotionController(this);
-        this.C_OnDestroy()
+        this.C_OnDestroy();
     }
 
-    C_OnDestroy() {
+    C_OnDestroy() {}
 
-    }
     OnVerticalMotionInterrupted() {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.Destroy();
     }
 
     UpdateVerticalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        if (!IsServer()) { return; }
-        let vCenterPos = this._base_entity.GetAbsOrigin();
-        let vPos = me.GetAbsOrigin();
+        if (!IsServer()) {
+            return;
+        }
+        const vCenterPos = this._base_entity.GetAbsOrigin();
+        const vPos = me.GetAbsOrigin();
         vPos.z = vCenterPos.z + this.surround_height;
         me.SetOrigin(vPos);
     }
 
     // 水平
     UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         if (IsValid(this._base_entity)) {
             this.Destroy();
             return;
         }
-        let center_point = this._base_entity.GetAbsOrigin() + this._base_entity.GetForwardVector() * this.forward_offset as Vector;
+        const center_point = (this._base_entity.GetAbsOrigin() + this._base_entity.GetForwardVector() * this.forward_offset) as Vector;
         let int_offset: Vector;
         if (this.final_distance == this.surround_distance) {
             // 如果距离等于
@@ -458,32 +479,30 @@ export class modifier_motion_surround extends BaseModifierMotionBoth {
             int_offset = Vector(center_point.x, center_point.y + this.surround_distance + this._distance_bonus, center_point.z);
             this.surround_distance += math.floor(this.final_distance - this.surround_distance) * 0.05;
         }
-        let next_pos = RotatePosition(
-            center_point,
-            QAngle(0, (this.surround_qangle + this._rote_value), 0),
-            int_offset
-        );
+        const next_pos = RotatePosition(center_point, QAngle(0, this.surround_qangle + this._rote_value, 0), int_offset);
         this._rote_value += this.surround_speed;
-        if (this._rote_value > 360) { this._rote_value -= 360; }
+        if (this._rote_value > 360) {
+            this._rote_value -= 360;
+        }
         me.SetAbsOrigin(next_pos);
         if (this.lock_forward == 1) {
-            let direction = this.GetCaster().GetOrigin() - me.GetOrigin() as Vector;
-            let angleX = GetAngleByPosOfX(direction);
+            const direction = (this.GetCaster().GetOrigin() - me.GetOrigin()) as Vector;
+            const angleX = GetAngleByPosOfX(direction);
             me.SetAngles(0, angleX, 0);
         }
     }
-
 }
 
 @registerModifier()
 export class modifier_motion_hit_target extends BaseModifierMotionHorizontal {
-
     speed: number;
 
     OnCreated(params: any): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         this.fCount = 0;
-        this.speed = params.speed ?? 100;;
+        this.speed = params.speed ?? 100;
         this.target = EntIndexToHScript(params.target_entity) as CDOTA_BaseNPC;
         // 贝塞尔曲线 参考点
         // let mid_vect = this.GetParent().GetOrigin().Lerp(this.target.GetOrigin(), 0.2);
@@ -496,7 +515,7 @@ export class modifier_motion_hit_target extends BaseModifierMotionHorizontal {
         // this.SetDuration(2, false);
     }
 
-    _OnCreated(params: any): void { }
+    _OnCreated(params: any): void {}
     CheckState(): Partial<Record<ModifierState, boolean>> {
         return {
             [ModifierState.NO_HEALTH_BAR]: true,
@@ -509,29 +528,33 @@ export class modifier_motion_hit_target extends BaseModifierMotionHorizontal {
     }
 
     UpdateHorizontalMotion(me: CDOTA_BaseNPC, dt: number): void {
-        if (!IsServer()) { return; }
-        if (IsValid(this.target)) { this.Destroy(); }
-        let vMePos = me.GetAbsOrigin();
-        let distance = (this.target.GetAbsOrigin() - vMePos as Vector).Length2D();
-        if (distance < 32) {
-            this.Destroy()
-            return
+        if (!IsServer()) {
+            return;
         }
-        let direction = (this.target.GetAbsOrigin() - vMePos as Vector).Normalized();
+        if (IsValid(this.target)) {
+            this.Destroy();
+        }
+        const vMePos = me.GetAbsOrigin();
+        const distance = ((this.target.GetAbsOrigin() - vMePos) as Vector).Length2D();
+        if (distance < 32) {
+            this.Destroy();
+            return;
+        }
+        const direction = ((this.target.GetAbsOrigin() - vMePos) as Vector).Normalized();
         direction.z = 0;
         // 每秒朝目标点移动
-        let vNew = vMePos + direction * dt * this.speed as Vector;
-        let angle = VectorAngles(direction);
+        const vNew = (vMePos + direction * dt * this.speed) as Vector;
+        const angle = VectorAngles(direction);
         me.SetAbsOrigin(vNew);
-        me.SetAbsAngles(0, angle.y, 0)
-
+        me.SetAbsAngles(0, angle.y, 0);
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return; }
+        if (!IsServer()) {
+            return;
+        }
         //移除这个单位 造成伤害
         UTIL_RemoveImmediate(this.GetParent());
-
     }
 
     fDamage: number;

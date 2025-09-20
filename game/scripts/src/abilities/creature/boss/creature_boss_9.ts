@@ -1,5 +1,5 @@
-import { BaseModifier, registerAbility, registerModifier } from "../../../utils/dota_ts_adapter";
-import { BaseCreatureAbility } from "../base_creature";
+import { BaseModifier, registerAbility, registerModifier } from '../../../utils/dota_ts_adapter';
+import { BaseCreatureAbility } from '../base_creature';
 
 /**
  * creature_boss_9	垃圾分类	"蓄力1秒，召唤两个垃圾区域（范围直径300码）在自身周围直径1000码内的任意位置，
@@ -14,27 +14,26 @@ import { BaseCreatureAbility } from "../base_creature";
  */
 @registerAbility()
 export class creature_boss_9 extends BaseCreatureAbility {
-
     OnAbilityPhaseStart(): boolean {
-        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible", {})
+        this.hCaster.AddNewModifier(this.hCaster, this, 'modifier_state_boss_invincible', {});
         this.vOrigin = this.hCaster.GetAbsOrigin();
-        this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin)
-        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning", {
+        this.nPreviewFX = GameRules.WarningMarker.Circular(this._cast_range, this._cast_point, this.vOrigin);
+        GameRules.CMsg.BossCastWarning(true, 'custom_text_boss_cast_warning', {
             unitname: this.hCaster.GetUnitName(),
             ability: this.GetAbilityName(),
-        })
-        return true
+        });
+        return true;
     }
 
     OnSpellStart(): void {
         this.DestroyWarningFx();
         // 自身1000范围内随机两个点
-        let recovery_vect1 = this.vOrigin + RandomVector(1000) as Vector
-        let recovery_vect2 = RotatePosition(this.vOrigin, QAngle(0, 180, 0), recovery_vect1);
+        const recovery_vect1 = (this.vOrigin + RandomVector(1000)) as Vector;
+        const recovery_vect2 = RotatePosition(this.vOrigin, QAngle(0, 180, 0), recovery_vect1);
         this.CreateRecoveryZone(recovery_vect1, 0);
         this.CreateRecoveryZone(recovery_vect2, 1);
 
-        let enemies = FindUnitsInRadius(
+        const enemies = FindUnitsInRadius(
             this._team,
             this.vOrigin,
             null,
@@ -44,90 +43,84 @@ export class creature_boss_9 extends BaseCreatureAbility {
             UnitTargetFlags.NONE,
             FindOrder.ANY,
             false
-        )
+        );
 
-        for (let enemy of enemies) {
+        for (const enemy of enemies) {
             const state = RandomInt(0, 1);
-            enemy.AddNewModifier(this.hCaster, this, "modifier_creature_boss_9_debuff_" + state, {
+            enemy.AddNewModifier(this.hCaster, this, 'modifier_creature_boss_9_debuff_' + state, {
                 duration: this.channel_timer,
-            })
+            });
         }
 
-        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_creature_boss_9", {
-            duration: this.channel_timer
-        })
-        this.hCaster.AddNewModifier(this.hCaster, this, "modifier_state_boss_invincible_channel", {})
-        GameRules.CMsg.BossCastWarning(true, "custom_text_boss_cast_warning_7", {})
+        this.hCaster.AddNewModifier(this.hCaster, this, 'modifier_creature_boss_9', {
+            duration: this.channel_timer,
+        });
+        this.hCaster.AddNewModifier(this.hCaster, this, 'modifier_state_boss_invincible_channel', {});
+        GameRules.CMsg.BossCastWarning(true, 'custom_text_boss_cast_warning_7', {});
     }
 
     CreateRecoveryZone(pos: Vector, type: number) {
         CreateModifierThinker(
             this.hCaster,
             this,
-            "modifier_creature_boss_9_thinker_" + type,
+            'modifier_creature_boss_9_thinker_' + type,
             {
                 duration: this.channel_timer + 0.1,
             },
             pos,
             this._team,
             false
-        )
+        );
     }
-
-
 }
 
 @registerModifier()
 export class modifier_creature_boss_9 extends BaseModifier {
-
     IsHidden(): boolean {
-        return true
+        return true;
     }
+
     CheckState(): Partial<Record<modifierstate, boolean>> {
         return {
             [ModifierState.INVULNERABLE]: true,
             [ModifierState.UNSELECTABLE]: true,
-        }
+        };
     }
-
 }
 @registerModifier()
 export class modifier_creature_boss_9_thinker_0 extends BaseModifier {
-
     radius: number;
 
     icon_index = 13;
     color = Vector(0, 255, 0);
-    mdf = "modifier_creature_boss_9_debuff_0";
+    mdf = 'modifier_creature_boss_9_debuff_0';
 
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
+        if (!IsServer()) {
+            return;
+        }
 
-        this.origin = this.GetParent().GetAbsOrigin()
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/title_fx/title00028/title00028.vpcf",
-            ParticleAttachment.POINT,
-            this.GetParent()
-        )
-        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.icon_index, 0, 0))
-        this.AddParticle(effect_fx, false, false, -1, false, false)
+        this.origin = this.GetParent().GetAbsOrigin();
+        const effect_fx = ParticleManager.CreateParticle('particles/title_fx/title00028/title00028.vpcf', ParticleAttachment.POINT, this.GetParent());
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.icon_index, 0, 0));
+        this.AddParticle(effect_fx, false, false, -1, false, false);
 
         // 范围
-        this.radius = this.GetAbility().GetSpecialValueFor("radius")
+        this.radius = this.GetAbility().GetSpecialValueFor('radius');
         const origin_fx = ParticleManager.CreateParticle(
-            "particles/diy_particles/event_ring_anim/event_ring_anim_origin.vpcf",
+            'particles/diy_particles/event_ring_anim/event_ring_anim_origin.vpcf',
             ParticleAttachment.POINT,
             this.GetParent()
-        )
-        ParticleManager.SetParticleControl(origin_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5))
-        ParticleManager.SetParticleControl(origin_fx, 2, Vector(this.radius - 32, 0, 0))
-        ParticleManager.SetParticleControl(origin_fx, 3, this.color)
+        );
+        ParticleManager.SetParticleControl(origin_fx, 0, Vector(this.origin.x, this.origin.y, this.origin.z + 5));
+        ParticleManager.SetParticleControl(origin_fx, 2, Vector(this.radius - 32, 0, 0));
+        ParticleManager.SetParticleControl(origin_fx, 3, this.color);
         this.AddParticle(effect_fx, false, false, -1, false, false);
-        this.StartIntervalThink(0.2)
+        this.StartIntervalThink(0.2);
     }
 
     OnIntervalThink(): void {
-        let enemies = FindUnitsInRadius(
+        const enemies = FindUnitsInRadius(
             this.GetCaster().GetTeam(),
             this.origin,
             null,
@@ -137,51 +130,54 @@ export class modifier_creature_boss_9_thinker_0 extends BaseModifier {
             UnitTargetFlags.NONE,
             FindOrder.ANY,
             false
-        )
-        for (let enemy of enemies) {
+        );
+        for (const enemy of enemies) {
             if (enemy.HasModifier(this.mdf)) {
-                enemy.AddNewModifier(this.GetCaster(), this.GetAbility(), "modifier_creature_boss_9_correct", { duration: 0.5 })
+                enemy.AddNewModifier(this.GetCaster(), this.GetAbility(), 'modifier_creature_boss_9_correct', { duration: 0.5 });
             } else {
-                enemy.RemoveModifierByName("modifier_creature_boss_9_correct")
+                enemy.RemoveModifierByName('modifier_creature_boss_9_correct');
             }
         }
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        UTIL_Remove(this.GetParent())
+        if (!IsServer()) {
+            return;
+        }
+        UTIL_Remove(this.GetParent());
     }
 }
 
 @registerModifier()
 export class modifier_creature_boss_9_thinker_1 extends modifier_creature_boss_9_thinker_0 {
-
     icon_index = 14;
     color = Vector(255, 0, 0);
-    mdf = "modifier_creature_boss_9_debuff_1";
-
+    mdf = 'modifier_creature_boss_9_debuff_1';
 }
 
 @registerModifier()
 export class modifier_creature_boss_9_debuff_0 extends BaseModifier {
-
     icon = 13;
     OnCreated(params: object): void {
-        if (!IsServer()) { return }
-        this.origin = this.GetParent().GetAbsOrigin()
-        let effect_fx = ParticleManager.CreateParticle(
-            "particles/title_fx/title00028/title00028.vpcf",
+        if (!IsServer()) {
+            return;
+        }
+        this.origin = this.GetParent().GetAbsOrigin();
+        const effect_fx = ParticleManager.CreateParticle(
+            'particles/title_fx/title00028/title00028.vpcf',
             ParticleAttachment.OVERHEAD_FOLLOW,
             this.GetParent()
-        )
-        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.icon, 0, 0))
-        this.AddParticle(effect_fx, false, false, -1, false, false)
+        );
+        ParticleManager.SetParticleControl(effect_fx, 1, Vector(this.icon, 0, 0));
+        this.AddParticle(effect_fx, false, false, -1, false, false);
     }
 
     OnDestroy(): void {
-        if (!IsServer()) { return }
-        let hParent = this.GetParent();
-        if (!hParent.HasModifier("modifier_creature_boss_9_correct")) {
+        if (!IsServer()) {
+            return;
+        }
+        const hParent = this.GetParent();
+        if (!hParent.HasModifier('modifier_creature_boss_9_correct')) {
             const damage = hParent.GetMaxHealth() * 0.75;
             ApplyCustomDamage({
                 victim: hParent,
@@ -190,18 +186,15 @@ export class modifier_creature_boss_9_debuff_0 extends BaseModifier {
                 damage: damage,
                 damage_type: DamageTypes.PHYSICAL,
                 miss_flag: 1,
-            })
+            });
         }
     }
 }
 
 @registerModifier()
 export class modifier_creature_boss_9_debuff_1 extends modifier_creature_boss_9_debuff_0 {
-
     icon = 14;
 }
 
 @registerModifier()
-export class modifier_creature_boss_9_correct extends BaseModifier {
-
-}
+export class modifier_creature_boss_9_correct extends BaseModifier {}

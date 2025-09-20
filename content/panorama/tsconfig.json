@@ -1,12 +1,15 @@
 {
-    "include": ["src"],
+    "include": [
+        "src",
+        "../game/scripts/src/shared/**/*.d.ts"
+    ],
     "compilerOptions": {
         "target": "es2021",
         "lib": ["es2021"],
         "resolveJsonModule": true,
         "types": ["@moddota/panorama-types"],
         "moduleResolution": "node",
-        "strict": true,
+        "strict": false,
         "preserveSymlinks": false,
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
