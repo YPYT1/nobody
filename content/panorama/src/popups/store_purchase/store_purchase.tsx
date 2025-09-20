@@ -42,7 +42,7 @@ export const Init = () => {
 
     CancelButton.SetPanelEvent('onactivate', () => {
         MainPanel.SetHasClass('Show', false);
-        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel().id);
+        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel());
     });
 
     // GameUI.CustomUIConfig().ServerEventBus.clear("open_store_purchase");
@@ -181,7 +181,7 @@ export const Init = () => {
             },
         });
 
-        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel().id);
+        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel());
     });
 };
 

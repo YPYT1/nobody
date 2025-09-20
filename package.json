@@ -7,17 +7,17 @@
         "lint": "eslint --ext .js,.ts,.tsx --quiet --fix \"./content/panorama/src/**/*.{js,ts,tsx}\" \"./game/scripts/src/**/*.{js,ts,tsx}\" \"./scripts/**/*.{js,ts,tsx}\"",
         "postinstall": "node scripts/install.js",
         "launch": "node scripts/launch.js",
-        "prod": "node scripts/prepublish.js && run-s prod:* && node scripts/publish.js",
-        "prod:gulp": "gulp prod",
-        "prod:panorama": "node --preserve-symlinks node_modules/webpack/bin/webpack.js --config content/panorama/webpack.prod.js && gulp compile_less",
-        "prod:vscripts": "tstl --project game/scripts/tsconfig.json",
-        "predev": "node scripts/install.js && gulp predev",
-        "dev": "run-p dev:*",
-        "dev:gulp": "gulp dev",
+        "prod": "node scripts/prepublish.js && node ./node_modules/npm-run-all/bin/run-s/index.js prod:* && node scripts/publish.js",
+        "prod:gulp": "node ./node_modules/gulp/bin/gulp.js prod",
+        "prod:panorama": "node --preserve-symlinks node_modules/webpack/bin/webpack.js --config content/panorama/webpack.prod.js && node ./node_modules/gulp/bin/gulp.js compile_less",
+        "prod:vscripts": "node ./node_modules/typescript-to-lua/dist/tstl.js --project game/scripts/tsconfig.json",
+        "predev": "node scripts/install.js && node ./node_modules/gulp/bin/gulp.js predev",
+        "dev": "node ./node_modules/npm-run-all/bin/run-p/index.js dev:*",
+        "dev:gulp": "node ./node_modules/gulp/bin/gulp.js dev",
         "dev:panorama": "node --preserve-symlinks node_modules/webpack/bin/webpack.js --config content/panorama/webpack.dev.js --watch",
-        "dev:vscripts": "tstl --project game/scripts/tsconfig.json --watch",
+        "dev:vscripts": "node ./node_modules/typescript-to-lua/dist/tstl.js --project game/scripts/tsconfig.json --watch",
         "compile": "node scripts/compile.js",
-        "jssync": "gulp jssync",
+        "jssync": "node ./node_modules/gulp/bin/gulp.js jssync",
         "api": "openapi --input scripts/server_api.json --output game/scripts/src/server --exportCore false && node scripts/clean_api.js"
     },
     "devDependencies": {
@@ -84,3 +84,4 @@
         "recursive-readdir": "^2.2.3"
     }
 }
+

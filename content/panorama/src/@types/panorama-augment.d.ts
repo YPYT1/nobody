@@ -1,23 +1,39 @@
+type CgedEvent<K extends keyof CGED> = {
+    [P in keyof CGED[K]]: {
+        event_name: P;
+        params: CGED[K][P];
+    };
+}[keyof CGED[K]];
+
 declare global {
     interface CustomGameEventDeclarations {
-        ServiceInterface: {
-            event_name: string;
-            params: any;
-        };
-        ArchiveService?: {
-            event_name: string;
-            params: any;
-        };
+        ServiceInterface: CgedEvent<'ServiceInterface'>;
+        ServiceTalent: CgedEvent<'ServiceTalent'>;
+        ServiceSoul: CgedEvent<'ServiceSoul'>;
+        HeroTalentSystem: CgedEvent<'HeroTalentSystem'>;
+        ArchiveService: CgedEvent<'ArchiveService'>;
+        Development: CgedEvent<'Development'>;
+        ResourceSystem: CgedEvent<'ResourceSystem'>;
+        CustomOverrideAbility: CgedEvent<'CustomOverrideAbility'>;
+        CMsg: CgedEvent<'CMsg'>;
+        MissionSystem: CgedEvent<'MissionSystem'>;
+        MapChapter: CgedEvent<'MapChapter'>;
+        BasicRules: CgedEvent<'BasicRules'>;
+        GameInformation: CgedEvent<'GameInformation'>;
+        InvestSystem: CgedEvent<'InvestSystem'>;
+        MysticalShopSystem: CgedEvent<'MysticalShopSystem'>;
+        NewArmsEvolution: CgedEvent<'NewArmsEvolution'>;
+        RuneSystem: CgedEvent<'RuneSystem'>;
     }
 
-    interface CustomNetTableDeclarations {
-        hero_talent: Record<string, any>;
-        custom_ability_types: Record<string, any>;
-        unit_attribute: Record<string, any>;
-    }
+    interface DollarStatic {
+        RegisterEventHandler(
+            eventName: 'DragStart' | 'DragEnter' | 'DragDrop' | 'DragLeave' | 'DragEnd',
+            panel: PanelBase | string,
+            callback: (panel: Panel, draggedPanel: Panel) => boolean | void,
+        ): void;
 
-    interface CustomUIConfig {
-        KvData: any;
+        RegisterForUnhandledEvent(eventName: string, callback: (...args: any[]) => void): UnhandledEventListenerID;
     }
 }
 

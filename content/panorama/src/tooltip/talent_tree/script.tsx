@@ -1,4 +1,4 @@
-import { GetTextureSrc } from '../../common/custom_kv_method';
+﻿import { GetTextureSrc } from '../../common/custom_kv_method';
 import { default as talent_tree } from '../../json/config/game/hero/talent_tree/talent_tree_config.json';
 import { SetLabelDescriptionExtra } from '../../utils/ability_description';
 import { FormatDescription } from '../../utils/method';
@@ -41,11 +41,11 @@ function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
     if (description_lv2.indexOf('#') != 0) {
         const is_act = level >= 1;
         const desc_lv2 = SetLabelDescriptionExtra(description_lv2, 2, AbilityValues, ObjectValues, true);
-        description_txt += `<br><br><span class="${is_act ? 'on' : 'off'}">新增: ${desc_lv2}</span>`;
+        description_txt += `<br><br><span class="${is_act ? 'on' : 'off'}">鏂板: ${desc_lv2}</span>`;
     }
 
     MainPanel.SetDialogVariable('talent_desc', description_txt);
-    // 风格
+    // 椋庢牸
     MainPanel.SetHasClass('IsAbility', talent_data.is_ability == 1);
     // extra
     const has_element = talent_data.mark_element;
@@ -65,19 +65,21 @@ function UpdateTalentTootipDesc(hero: string, key: string, level: number) {
         }
     }
 
-    // 天赋类型
+    // 澶╄祴绫诲瀷
 }
-function PlayerTalentUpdateCallback<TName extends keyof CustomNetTableDeclarations, T extends CustomNetTableDeclarations['hero_talent']>(
-    tableName: TName,
-    key: keyof T,
-    value: NetworkedData<T[keyof T]>
+type HeroTalentNetTable = CustomNetTableDeclarations['hero_talent'];
+
+function PlayerTalentUpdateCallback<Key extends keyof HeroTalentNetTable>(
+    tableName: 'hero_talent',
+    key: Key,
+    value: NetworkedData<HeroTalentNetTable[Key]>
 ) {
     const unit = Players.GetLocalPlayerPortraitUnit();
     const player_id = Entities.GetPlayerOwnerID(unit);
-    if (player_id == key) {
+    if (String(player_id) == String(key)) {
         const hero = MainPanel.Data<PanelDataObject>().hero as string;
         const talent_index = MainPanel.Data<PanelDataObject>().key as string;
-        const row_data = value[talent_index];
+        const row_data = (value as Record<string, { uc: number }>)[talent_index];
         if (row_data == null) {
             return;
         }
@@ -100,3 +102,4 @@ function UpdateTooltip() {
 (function () {
     Init();
 })();
+

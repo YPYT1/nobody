@@ -1,7 +1,7 @@
 {
     "include": [
         "src",
-        "../game/scripts/src/shared/**/*.d.ts"
+        "../../game/scripts/src/shared/**/*.d.ts"
     ],
     "compilerOptions": {
         "target": "es2021",
@@ -9,7 +9,7 @@
         "resolveJsonModule": true,
         "types": ["@moddota/panorama-types"],
         "moduleResolution": "node",
-        "strict": false,
+        "strict": true,
         "preserveSymlinks": false,
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,

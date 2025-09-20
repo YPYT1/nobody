@@ -34,7 +34,7 @@ export const Init = () => {
         Pay_alipay.checked = false;
         CanvasPanel.ClearJS(`rgba(255,255,255,0)`);
         MainPanel.SetHasClass('Show', false);
-        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel().id);
+        $.DispatchEvent('UIPopupButtonClicked', $.GetContextPanel());
 
         if (g_order.length > 10) {
             GameUI.CustomUIConfig().EventBus.publish('popup_loading', { show: true });

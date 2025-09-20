@@ -1,4 +1,5 @@
 const path = require('path');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { PanoramaManifestPlugin, PanoramaTargetPlugin } = require('webpack-panorama-x');
 const { WatchIgnorePlugin } = require('webpack');
 
@@ -85,6 +86,11 @@ module.exports = {
 
     plugins: [
         new PanoramaTargetPlugin(),
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                configFile: path.resolve(__dirname, 'tsconfig.json'),
+            },
+        }),
         // new PanoramaManifestPlugin({
         //     entries: [
 
@@ -94,4 +100,3 @@ module.exports = {
         new WatchIgnorePlugin({ paths: [/\.less$/] }),
     ],
 };
-

@@ -5,6 +5,8 @@ type ErrorCallback = (code: number, body: string) => void;
 
 interface InternalRequestOptions extends HttpRequestOptions {
     useGateway?: boolean;
+    retries?: number;
+    logTag?: string;
 }
 
 const JSON_MEDIA_TYPE = 'application/json; charset=utf-8';
@@ -144,77 +146,88 @@ class HttpRequestClass {
         const useGateway = options?.useGateway ?? false;
         const useTestServer = this.shouldUseTestServer(player_id);
         const payload = this.preparePayload(options?.param, player_id);
+        const logTag = options?.logTag ?? action;
+        const retries = options?.retries ?? 0;
+        const maxAttempts = math.max(1, retries + 1);
+
         const url = this.buildUrl(action, method, payload, useGateway, useTestServer);
-        const request = CreateHTTPRequestScriptVM(method, url);
-
-        if (!request) {
-            if (failed) {
-                failed(0, 'CreateHTTPRequestScriptVM returned null');
-            }
-            return;
-        }
-
         const headers: { [key: string]: string } = options?.header ? { ...options.header } : {};
         if (headers['Content-Type'] == null) {
             headers['Content-Type'] = JSON_MEDIA_TYPE;
         }
-
         headers['server-map-code'] = headers['server-map-code'] ?? SERVER_MAP_CODE;
         headers['server-key'] = headers['server-key'] ?? Server_Key;
 
-        this.applyHeaders(request, headers);
-
         const timeoutSeconds = options?.timeout ?? this.defaultTimeoutSeconds;
-        request.SetHTTPRequestAbsoluteTimeoutMS(timeoutSeconds * 1000);
-        request.SetHTTPRequestNetworkActivityTimeout(timeoutSeconds * 1000);
+        const requestBody = method !== 'GET'
+            ? (() => {
+                  if (payload == null) {
+                      return JSON.encode({});
+                  }
+                  if (type(payload) === 'table') {
+                      return JSON.encode(payload);
+                  }
+                  return tostring(payload);
+              })()
+            : undefined;
 
-        if (method !== 'GET') {
-            let body: string | undefined;
-            if (payload == null) {
-                body = JSON.encode({});
-            } else if (type(payload) === 'table') {
-                body = JSON.encode(payload);
-            } else {
-                body = tostring(payload);
+        const handleFailure = (code: number, body: string, attempt: number) => {
+            print(`[HttpRequest] ${logTag} attempt ${attempt}/${maxAttempts} failed with code ${code}`);
+            if (attempt < maxAttempts) {
+                attemptRequest(attempt + 1);
+            } else if (failed) {
+                failed(code, body);
             }
+        };
 
-            request.SetHTTPRequestRawPostBody(JSON_MEDIA_TYPE, body);
-        }
-
-        request.Send(result => {
-            if (!result) {
-                if (failed) {
-                    failed(0, 'HTTPRequest failed: unknown error');
-                }
+        const attemptRequest = (attempt: number) => {
+            const request = CreateHTTPRequestScriptVM(method, url);
+            if (!request) {
+                handleFailure(0, 'CreateHTTPRequestScriptVM returned null', attempt);
                 return;
             }
 
-            if (result.StatusCode !== 200) {
-                if (failed) {
-                    failed(result.StatusCode, result.Body ?? '');
-                }
-                return;
+            this.applyHeaders(request, headers);
+            request.SetHTTPRequestAbsoluteTimeoutMS(timeoutSeconds * 1000);
+            request.SetHTTPRequestNetworkActivityTimeout(timeoutSeconds * 1000);
+
+            if (requestBody != undefined) {
+                request.SetHTTPRequestRawPostBody(JSON_MEDIA_TYPE, requestBody);
             }
 
-            if (!result.Body) {
-                if (success) {
-                    success({} as T);
+            request.Send(result => {
+                if (!result) {
+                    handleFailure(0, 'HTTPRequest failed: unknown error', attempt);
+                    return;
                 }
-                return;
-            }
 
-            try {
-                const data = JSON.decode(result.Body) as T;
-                if (success) {
-                    success(data);
+                if (result.StatusCode !== 200) {
+                    handleFailure(result.StatusCode, result.Body ?? '', attempt);
+                    return;
                 }
-            } catch (e) {
-                print('[HttpRequest] JSON decode error:', e);
-                if (failed) {
-                    failed(result.StatusCode, result.Body);
+
+                if (!result.Body) {
+                    print(`[HttpRequest] ${logTag} succeeded with empty body at attempt ${attempt}`);
+                    if (success) {
+                        success({} as T);
+                    }
+                    return;
                 }
-            }
-        });
+
+                try {
+                    const data = JSON.decode(result.Body) as T;
+                    print(`[HttpRequest] ${logTag} succeeded at attempt ${attempt}`);
+                    if (success) {
+                        success(data);
+                    }
+                } catch (e) {
+                    print('[HttpRequest] JSON decode error:', e);
+                    handleFailure(result.StatusCode, result.Body, attempt);
+                }
+            });
+        };
+
+        attemptRequest(1);
     }
 }
 

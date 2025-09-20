@@ -89,7 +89,10 @@ const SetAbilityBaseInfo = (name: string, entityIndex: AbilityEntityIndex) => {
 
     // 技能类型 技能元素
     if (entityIndex > 0) {
-        const nt_data = CustomNetTables.GetTableValue('custom_ability_types', `${entityIndex}`);
+        const nt_data = CustomNetTables.GetTableValue(
+            'custom_ability_types',
+            `${entityIndex}` as keyof CustomNetTableDeclarations['custom_ability_types']
+        );
         // $.Msg(nt_data)
         if (nt_data) {
             const skv_type = nt_data.skv_type;
@@ -190,7 +193,10 @@ function SetExtraAbilityDesc(ability_name: string, ability_level: number) {
 
     // $.Msg(["heroname", heroname, ability_name])
     const in_slot = $.GetContextPanel().GetAttributeInt('slot', -1);
-    const netdata = CustomNetTables.GetTableValue('hero_talent', `${player_id}`);
+    const netdata = CustomNetTables.GetTableValue(
+        'hero_talent',
+        `${player_id}` as keyof CustomNetTableDeclarations['hero_talent']
+    );
     // $.Msg(netdata)
     const extra_desc = '';
     MainPanel.SetDialogVariable('description', '');

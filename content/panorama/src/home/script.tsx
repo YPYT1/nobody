@@ -43,13 +43,13 @@ const FindCursorItemID = (itemName: string) => {
 };
 
 export const RegisterCustomTooltip = () => {
-    $.RegisterForUnhandledEvent('DOTAShowAbilityTooltip', function (panel: Panel, itemName: string) {
+    $.RegisterForUnhandledEvent('DOTAShowAbilityTooltip', (panel, itemName: string) => {
         $.Schedule(0, () => {
-            ShowCustomTooltip(panel, 'ability', itemName);
+            ShowCustomTooltip(panel as Panel, 'ability', itemName);
         });
     });
 
-    $.RegisterForUnhandledEvent('DOTAHideAbilityTooltip', function (panel: Panel, itemName: string) {
+    $.RegisterForUnhandledEvent('DOTAHideAbilityTooltip', () => {
         HideCustomTooltip();
     });
 
@@ -67,14 +67,14 @@ export const RegisterCustomTooltip = () => {
     //     })
     // })
 
-    $.RegisterForUnhandledEvent('DOTAShowDroppedItemTooltip', function (panel, x, y, itemName: string, num, boolean) {
+    $.RegisterForUnhandledEvent('DOTAShowDroppedItemTooltip', (panel, x, y, itemName: string) => {
         $.Msg(['DOTAShowDroppedItemTooltip']);
         // let TooltipPanel = $("#CustomItemTooltip");
         // TooltipPanel.SetPositionInPixels(x / panel.actualuiscale_x, y / panel.actualuiscale_y, 0);
         const ItemIndex = FindCursorItemID(itemName);
         // //$.Msg([itemName,ItemIndex])
-        $.Schedule(0, function () {
-            ShowCustomTooltip(panel, 'item', '', ItemIndex);
+        $.Schedule(0, () => {
+            ShowCustomTooltip(panel as Panel, 'item', '', ItemIndex);
         });
     });
 
