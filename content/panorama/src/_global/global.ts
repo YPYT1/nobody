@@ -10,6 +10,9 @@ export const GLOBAL_FILE = 'global';
 
 const AttributeConst = GameUI.CustomUIConfig().KvData.AttributeConst;
 
+
+
+type names =  keyof typeof AttributeConst
 declare global {
     interface CustomUIConfig {
         CreateServerItem(item_id: string, item_count: number, parent: Panel): Panel;
@@ -179,7 +182,8 @@ GameUI.CustomUIConfig().SendCustomEvent = function <T1 extends keyof CGED, T2 ex
 
 const PercentAttrKeyList: AttributeSubKey[] = ['BasePercent', 'BonusPercent', 'TotalPercent'];
 GameUI.CustomUIConfig().CheckAttrIsPercent = function (MainAttr: AttributeMainKey, SubAttr: AttributeSubKey) {
-    const attr_data = AttributeConst[MainAttr];
+    let a = MainAttr as names;
+    const attr_data = AttributeConst[a];
     const is_pct = attr_data.is_pct == 1;
     const sub_pct = PercentAttrKeyList.indexOf(SubAttr) != -1;
     return is_pct || sub_pct;

@@ -57,7 +57,11 @@ declare type AttributeMainKey =
     | 'CreatureDmgNormal'
     | 'VisionRange'
     | 'SoulGetRate'
-    | 'KillsGetRate';
+    | 'KillsGetRate'
+    | 'damage_hp_factor'
+    | 'bonus_gold'
+    | 'DamageHpFactor'
+    | 'BonusGold';
 declare type EnemyAttributeKey =
     | 'AllElementResist'
     | 'FireResist'

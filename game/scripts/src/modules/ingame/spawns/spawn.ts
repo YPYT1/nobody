@@ -1366,6 +1366,7 @@ export class Spawn extends UIEventRegisterClass {
         if (cmd == '-st') {
         }
         if (cmd == '-elite') {
+            GameRules.Spawn._round_index = 1;
             const elite_name = args[0] ?? 'npc_monster_elite_1';
             GameRules.Spawn.CreateElite(elite_name);
         }
@@ -1381,7 +1382,7 @@ export class Spawn extends UIEventRegisterClass {
     }
 
     CreepNormalCreate(unit_name: string, vPos: Vector, is_mine_spawn: boolean = false) {
-        const unit = CreateUnitByName(unit_name, vPos, true, null, null, DotaTeam.BADGUYS);
+        const unit = CreateUnitByName("npc_monster_elite_1", Vector( 0 , 0 , 0), true, null, null, DotaTeam.BADGUYS);
         GameRules.EnemyAttribute.SetUnitAttr(unit);
         // GameRules.EnemyAttribute.ModifyAttribute(unit,{
         //     'DamageBonusMul'

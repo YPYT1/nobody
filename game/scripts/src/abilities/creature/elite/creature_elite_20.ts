@@ -6,6 +6,8 @@
 //  * 开启传送阵吟唱2秒，将自身周围1000码内所有英雄传送到最近的敌方玩家（1名）附近
 //  * 瑞兹大招
 //  */
+
+
 // @registerAbility()
 // export class creature_elite_20 extends BaseCreatureAbility {
 

@@ -61,7 +61,7 @@ export const registerAbility = (name?: string) => (ability: new () => CDOTA_Abil
         }
     };
 };
-
+    
 export const registerModifier = (name?: string) => (modifier: new () => CDOTA_Modifier_Lua) => {
     if (name !== undefined) {
         // @ts-ignore

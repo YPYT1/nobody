@@ -2,8 +2,7 @@ import { BaseModifier, registerAbility, registerModifier } from '../../../utils/
 import { BaseCreatureAbility } from '../base_creature';
 
 /**
- * creature_elite_19 火刺（简化版）
- * 对指定区域内的友方单位进行治疗并给予魔法免疫
+ * creature_elite_19 
  */
 @registerAbility()
 export class creature_elite_19 extends BaseCreatureAbility {
@@ -14,7 +13,6 @@ export class creature_elite_19 extends BaseCreatureAbility {
         const healPct = this.GetSpecialValueFor('heal_max_hp') / 100;
         const immuneDuration = this.GetSpecialValueFor('knockback_duration');
 
-        // 查找范围内的友方单位
         const allies = FindUnitsInRadius(
             caster.GetTeamNumber(),
             targetPoint,
@@ -26,7 +24,6 @@ export class creature_elite_19 extends BaseCreatureAbility {
             FindOrder.ANY,
             false
         );
-        //延迟 莉拉（参考这个人物的技能，先进性播放特效在进行回血处理）
 
         for (const ally of allies) {
             const healAmount = ally.GetMaxHealth() * healPct;
@@ -42,12 +39,9 @@ export class creature_elite_19 extends BaseCreatureAbility {
     }
 }
 
-/**
- * 魔法免疫修饰器
- */
 @registerModifier()
 export class modifier_creature_elite_19_immune extends BaseModifier {
-    //检查
+
     IsHidden(): boolean {
         return false;
     }

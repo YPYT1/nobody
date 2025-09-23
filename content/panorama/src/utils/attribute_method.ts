@@ -2,6 +2,9 @@ import { default as AttributeConst } from '../json/config/game/attribute_const.j
 import { default as NpcItemCustom } from '../json/npc_items_custom.json';
 import { default as NpcAbilitiesCustom } from '../json/npc_abilities_custom.json';
 
+
+type names =  keyof typeof AttributeConst
+
 /** 获取物品的属性 */
 export const GetItemAttribute = (item_name: string) => {
     const item_data = NpcItemCustom[item_name as keyof typeof NpcItemCustom];
@@ -110,7 +113,8 @@ export const FormatKeyValueToText = (
 };
 
 export const ConvertAttributeToLabel = (attr_key: AttributeMainKey, value: number = 0) => {
-    const is_pct = AttributeConst[attr_key].is_pct == 1;
+    let a = attr_key as names;
+    const is_pct = AttributeConst[a].is_pct == 1;
     let res_label = '0';
     if (is_pct) {
         res_label = `${value.toFixed(2)}%`;
@@ -122,5 +126,6 @@ export const ConvertAttributeToLabel = (attr_key: AttributeMainKey, value: numbe
 
 // 该属性是否为百分比属性
 export const AttributeIsPercent = (attr_key: AttributeMainKey) => {
-    return AttributeConst[attr_key].is_pct == 1;
+    let a = attr_key as names;
+    return AttributeConst[a].is_pct == 1;
 };
