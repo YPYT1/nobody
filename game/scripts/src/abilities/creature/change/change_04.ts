@@ -47,7 +47,7 @@ export class change_04 extends BaseCreatureAbility{
         print("开始技能-爆裂毒液");
         this.caster = this.GetCaster();
         this.target = this.GetCursorTarget();
-        if (!this.target || this.target.IsNull() || !this.target.IsAlive()) false;
+        if (!this.target || this.target.IsNull() || !this.target.IsAlive()) return;
         print("通过检查");
 
         this.bounce_left = this.GetSpecialValueFor('bounce_count');
@@ -70,8 +70,6 @@ export class change_04 extends BaseCreatureAbility{
   
         const damage = this.GetSpecialValueFor('damage');
         const stun_duration = this.GetSpecialValueFor('stun_duration');
-
-        // 爆炸特效
         const fx = ParticleManager.CreateParticle(
             'particles/units/heroes/hero_alchemist/alchemist_unstable_concoction_explosion.vpcf',
             ParticleAttachment.WORLDORIGIN,
