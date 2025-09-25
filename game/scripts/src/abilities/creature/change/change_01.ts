@@ -14,6 +14,7 @@ export class change_01 extends BaseCreatureAbility {
         PrecacheResource('particle', 'particles/units/heroes/hero_hoodwink/hoodwink_hunters_boomrang_d.vpcf', context);
         PrecacheResource('particle', 'particles/units/heroes/hero_gyrocopter/gyro_calldown_explosion.vpcf', context);
     }
+
     OnSpellStart(): void {
         const caster = this.GetCaster();
         const duration = this.GetSpecialValueFor('duration');
@@ -36,6 +37,7 @@ export class modifier_change_01 extends BaseModifier {
     IsPurgable(): boolean {
         return false;
     }
+
     RemoveOnDeath(): boolean {
         return false;
     }
@@ -129,7 +131,7 @@ export class modifier_change_01 extends BaseModifier {
             parent.Kill(this.GetAbility(), parent);
             print('开始造成伤害');
             const ability = this.GetAbility();
-            let Caster = this.GetCaster();
+            const Caster = this.GetCaster();
             const pos = parent.GetAbsOrigin();
             const damage = Caster.GetDamageMax() * this.damageFactor;
             print('damage', damage);
@@ -143,7 +145,7 @@ export class modifier_change_01 extends BaseModifier {
             ParticleManager.SetParticleControl(fx, 0, pos);
             ParticleManager.SetParticleControl(fx, 1, Vector(this.radius, 0, 0));
             ParticleManager.ReleaseParticleIndex(fx);
-            let new_pos = Vector(pos.x, pos.y, 0);
+            const new_pos = Vector(pos.x, pos.y, 0);
             const enemies = FindUnitsInRadius(
                 parent.GetTeamNumber(),
                 new_pos,

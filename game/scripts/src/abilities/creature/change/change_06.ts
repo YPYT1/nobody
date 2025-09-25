@@ -19,10 +19,15 @@ export class change_06 extends BaseCreatureAbility {
         PrecacheResource('particle', 'particles/units/heroes/hero_windrunner/windrunner_spell_powershot.vpcf', context);
         PrecacheResource('particle', 'particles/units/heroes/hero_windrunner/windrunner_spell_powershot_destruction.vpcf', context);
     }
+
     target: CDOTA_BaseNPC;
+
     private pierceWidth: number = 120;
+
     private finalDamageToTarget: number = 0;
+
     private finalSpeedToTarget: number = 0;
+
     OnAbilityPhaseStart(): boolean {
         this.caster = this.GetCaster();
         const cast_range = this.GetSpecialValueFor('cast_range');
@@ -34,6 +39,7 @@ export class change_06 extends BaseCreatureAbility {
     OnAbilityPhaseInterrupted(): void {
         this.DestroyWarningFx();
     }
+
     OnSpellStart(): void {
         print('--------强力击开始技能');
         this.DestroyWarningFx();
