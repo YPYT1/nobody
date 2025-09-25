@@ -10,20 +10,24 @@ import { BaseCreatureAbility } from '../base_creature';
 
 @registerAbility()
 export class change_01 extends BaseCreatureAbility {
+    Precache(context: CScriptPrecacheContext): void {
+        PrecacheResource('particle', 'particles/units/heroes/hero_hoodwink/hoodwink_hunters_boomrang_d.vpcf', context);
+        PrecacheResource('particle', 'particles/units/heroes/hero_gyrocopter/gyro_calldown_explosion.vpcf', context);
+    }
     OnSpellStart(): void {
         const caster = this.GetCaster();
-        const duration = this.GetSpecialValueFor('duration'); 
-        caster.AddNewModifier(caster, this, 'modifier_change_01', { duration }); 
+        const duration = this.GetSpecialValueFor('duration');
+        caster.AddNewModifier(caster, this, 'modifier_change_01', { duration });
     }
 }
 
 @registerModifier()
 export class modifier_change_01 extends BaseModifier {
-    private radius = 0; // 坠机爆炸的半径。
-    private damageFactor = 0; // 坠机伤害与攻击力的倍率。
-    private moveSpeed = 0; // 飞行阶段额外的移动速度。
-    private crashChance = 0; // 每秒自爆的百分比几率。
-    private exploded = false; // 标记是否已经触发坠机，防止重复执行。
+    private radius = 0;
+    private damageFactor = 0;
+    private moveSpeed = 0;
+    private crashChance = 0;
+    private exploded = false;
 
     IsHidden(): boolean {
         return false;
@@ -37,17 +41,20 @@ export class modifier_change_01 extends BaseModifier {
     }
 
     OnCreated(params: object): void {
-        this.ReadValues(); 
-        this.exploded = false; 
+        this.ReadValues();
+        this.exploded = false;
 
         if (!IsServer()) {
-            return; 
+            return;
         }
-    
-        this.StartIntervalThink(1); 
-        this.CreateFlightFx(); 
+
+        this.StartIntervalThink(1);
+        this.CreateFlightFx();
     }
 
+    // DeclareFunctions(): modifierfunction[] {
+    //     return [ModifierFunction.MOVESPEED_BONUS_CONSTANT, ModifierFunction.ON_DEATH];
+    // }
     DeclareFunctions(): modifierfunction[] {
         return [ModifierFunction.MOVESPEED_BONUS_CONSTANT, ModifierFunction.ON_DEATH];
     }
@@ -56,10 +63,46 @@ export class modifier_change_01 extends BaseModifier {
         return this.moveSpeed;
     }
 
+    // OnDeath(event: ModifierInstanceEvent): void {
+    //     if (event.unit !== this.GetParent() || this.exploded) {
+    //         return;
+    //     }
+    //     if (!IsServer()) {
+    //         return;
+    //     }
+
+    //     const parent = this.GetParent();
+
+    //     const deathFx = ParticleManager.CreateParticle(
+    //         'particles/units/heroes/hero_hoodwink/hoodwink_hunters_boomrang_d0.vpcf',
+    //         ParticleAttachment.ABSORIGIN_FOLLOW,
+    //         parent
+    //     );
+    //     ParticleManager.SetParticleControl(deathFx, 0, parent.GetAbsOrigin());
+    //     ParticleManager.ReleaseParticleIndex(deathFx);
+
+    //     parent.EmitSound('Hero_Tinker.Heat-Seeking_Missile');
+
+    //     this.exploded = true;
+    // }
     OnDeath(event: ModifierInstanceEvent): void {
         if (event.unit !== this.GetParent() || this.exploded) {
-            return; 
+            return;
         }
+        if (!IsServer()) {
+            return;
+        }
+        const parent = this.GetParent();
+        const death_fx = ParticleManager.CreateParticle(
+            'particles/units/heroes/hero_hoodwink/hoodwink_hunters_boomrang_d.vpcf',
+            ParticleAttachment.ABSORIGIN_FOLLOW,
+            parent
+        );
+        ParticleManager.SetParticleControl(death_fx, 0, parent.GetAbsOrigin());
+        ParticleManager.ReleaseParticleIndex(death_fx);
+
+        parent.EmitSound('Hero_Tinker.Heat-Seeking_Missile');
+
         this.exploded = true;
     }
 
@@ -70,44 +113,40 @@ export class modifier_change_01 extends BaseModifier {
             [ModifierState.NO_UNIT_COLLISION]: true,
         };
     }
-    // 服务器端每秒进行一次坠机概率判定；命中时通过 Kill 触发 OnDeath。
+
     OnIntervalThink(): void {
         if (!IsServer()) {
             return;
         }
-        print("计时器开始进行判定");
+        print('计时器开始进行判定');
         const parent = this.GetParent();
         if (!parent.IsAlive()) {
-            return; 
+            return;
         }
         if (RollPercentage(this.crashChance)) {
             const parent = this.GetParent();
-            print("自杀")
-            //自杀
-            parent.Kill(this.GetAbility(), parent); 
-            print("开始造成伤害")
-            //造成伤害
+            print('自杀');
+            parent.Kill(this.GetAbility(), parent);
+            print('开始造成伤害');
             const ability = this.GetAbility();
-            if (!ability) {
-                return;
-            }
+            let Caster = this.GetCaster();
             const pos = parent.GetAbsOrigin();
-            const damage = parent.GetAverageTrueAttackDamage(null) * this.damageFactor; 
-            print("damage",damage);
-            print("damageFactor",this.damageFactor);
-    
+            const damage = Caster.GetDamageMax() * this.damageFactor;
+            print('damage', damage);
+            print('damageFactor', this.damageFactor);
+
             const fx = ParticleManager.CreateParticle(
                 'particles/units/heroes/hero_gyrocopter/gyro_calldown_explosion.vpcf',
                 ParticleAttachment.WORLDORIGIN,
                 undefined
             );
             ParticleManager.SetParticleControl(fx, 0, pos);
-            ParticleManager.SetParticleControl(fx, 1, Vector(this.radius, 0, 0)); 
+            ParticleManager.SetParticleControl(fx, 1, Vector(this.radius, 0, 0));
             ParticleManager.ReleaseParticleIndex(fx);
-    
+            let new_pos = Vector(pos.x, pos.y, 0);
             const enemies = FindUnitsInRadius(
                 parent.GetTeamNumber(),
-                pos,
+                new_pos,
                 undefined,
                 this.radius,
                 UnitTargetTeam.ENEMY,
@@ -123,25 +162,24 @@ export class modifier_change_01 extends BaseModifier {
                     ability,
                     damage,
                     damage_type: DamageTypes.PHYSICAL,
-                    miss_flag: 1, 
+                    miss_flag: 1,
                 });
             }
-
+            // StopSoundOn("Hero_Tinker.Heat-Seeking_Missile" , this.GetCaster());
         }
-        print("计时器结束")
+        print('计时器结束');
     }
-
 
     private ReadValues(): void {
         const ability = this.GetAbility();
         if (!ability) {
-            return; 
+            return;
         }
         this.radius = ability.GetSpecialValueFor('radius');
         this.damageFactor = ability.GetSpecialValueFor('damage_atk_factor');
         this.moveSpeed = ability.GetSpecialValueFor('move_speed_bonus');
         const rawChance = ability.GetSpecialValueFor('crash_chance');
-        this.crashChance = math.min(100, rawChance > 1 ? rawChance : rawChance * 100); 
+        this.crashChance = math.min(100, rawChance > 1 ? rawChance : rawChance * 100);
     }
 
     private CreateFlightFx(): void {
@@ -152,6 +190,6 @@ export class modifier_change_01 extends BaseModifier {
             parent
         );
         ParticleManager.SetParticleControl(fx, 1, Vector(1, 0, 0));
-        this.AddParticle(fx, false, false, -1, false, false); 
+        this.AddParticle(fx, false, false, -1, false, false);
     }
 }

@@ -1382,7 +1382,7 @@ export class Spawn extends UIEventRegisterClass {
     }
 
     CreepNormalCreate(unit_name: string, vPos: Vector, is_mine_spawn: boolean = false) {
-        const unit = CreateUnitByName("npc_monster_elite_1", Vector( 0 , 0 , 0), true, null, null, DotaTeam.BADGUYS);
+        const unit = CreateUnitByName(unit_name, vPos, true, null, null, DotaTeam.BADGUYS);
         GameRules.EnemyAttribute.SetUnitAttr(unit);
         // GameRules.EnemyAttribute.ModifyAttribute(unit,{
         //     'DamageBonusMul'
