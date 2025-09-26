@@ -69,7 +69,7 @@ export function sheetToKV(options: SheetToKVOptions) {
         if (da == null || da.match == null) return da;
 
         // 如果da中包含别名，那么先将别名替换掉（可能是中文替换中文，或者中文替换成英文等等）
-        aliasKeys.forEach((aliasKey) => {
+        aliasKeys.forEach(aliasKey => {
             da = da.replace(aliasKey, aliasList[aliasKey]);
         });
 
@@ -77,10 +77,8 @@ export function sheetToKV(options: SheetToKVOptions) {
         let reg = /[\u4e00-\u9fa5]+/g;
         let match = s.match(reg);
         if (match != null) {
-            match.forEach((m) => {
-                s = s
-                    .replace(m, pinyin(m, { toneType: 'none', type: 'array' }).join('_'))
-                    .replace('ü', 'v');
+            match.forEach(m => {
+                s = s.replace(m, pinyin(m, { toneType: 'none', type: 'array' }).join('_')).replace('ü', 'v');
             });
         }
         return s;
@@ -106,11 +104,7 @@ export function sheetToKV(options: SheetToKVOptions) {
         function checkSpace(key: string) {
             if (typeof key == 'string' && key.trim != null && key != key.trim()) {
                 key = key.trim();
-                console.warn(
-                    cli.red(
-                        `${main_key} 键值对中的 ${key} 前后有空格，已自动去掉空格，请检查！如果要强行使用空格，请使用&nbsp;`
-                    )
-                );
+                console.warn(cli.red(`${main_key} 键值对中的 ${key} 前后有空格，已自动去掉空格，请检查！如果要强行使用空格，请使用&nbsp;`));
                 // 如果强行要写空格要写成 &nbsp;，这里把 &nbsp; 替换成空格
                 key = key.replace(/&nbsp;/g, ' ');
             }
@@ -151,43 +145,37 @@ export function sheetToKV(options: SheetToKVOptions) {
                     if (attachWearablesBlock && key == '[}]') attachWearablesBlock = false;
 
                     // 处理技能的特殊键值对，现在只需要处理顶部key作为通用key，value为数组的情况
-                    if (key == `AbilityValues[{]` 
-                    || key == `ConversionValue[{]`
-                    || key == `ObjectValues[{]`
-                    ) abilityValuesBlock = true;
+                    if (key == `AbilityValues[{]` || key == `ConversionValue[{]` || key == `ObjectValues[{]`) abilityValuesBlock = true;
                     if (abilityValuesBlock && key == '[}]') abilityValuesBlock = false;
 
-                    if ( key == 'ListValues[{]' ) listValuesBlock = true;
+                    if (key == 'ListValues[{]') listValuesBlock = true;
                     if (listValuesBlock && key == '[}]') listValuesBlock = false;
 
                     // 获取该单元格的值
                     let cell: string = row[i];
                     checkSpace(cell);
 
-                    if (
-                        attachWearablesBlock &&
-                        key !== `AttachWearables[{]` &&
-                        cell != `` &&
-                        cell != undefined
-                    ) {
+                    if (attachWearablesBlock && key !== `AttachWearables[{]` && cell != `` && cell != undefined) {
                         let value = cell.toString().split(` `);
                         // console.log(cell,value)
                         let res_str = `${indentStr}"${key}" {  `;
-                        if(value[0]){ res_str += `"ItemDef" "${value[0]}"`}
-                        if(value[1]){ res_str += `  "Skin" "${value[1]}"`}
-                        res_str += `}`
+                        if (value[0]) {
+                            res_str += `"ItemDef" "${value[0]}"`;
+                        }
+                        if (value[1]) {
+                            res_str += `  "Skin" "${value[1]}"`;
+                        }
+                        res_str += `}`;
                         return res_str;
                     }
 
-                    if ( listValuesBlock 
-                        && key !== `ListValues[{]`
-                    ){
+                    if (listValuesBlock && key !== `ListValues[{]`) {
                         // console.log(["listvalue",key,cell])
                         if (cell == `` || cell == undefined) return;
                         let values_key = `${key}`;
                         let datas = cell.toString().split(' ');
                         cell = cell.replace(`${datas[0]} `, `"${datas[0]}"`);
-                        
+
                         /**
                          * LIST输出格式
                          * 01 {
@@ -200,7 +188,7 @@ export function sheetToKV(options: SheetToKVOptions) {
                          */
                         let sub_indentStr = (indent || `\t`).repeat(indentLevel + 1);
                         let end_indentStr = (indent || `\t`).repeat(indentLevel);
-                        let cell_text = cell.replaceAll("\n","\n"+ sub_indentStr).replaceAll("\n}","}");
+                        let cell_text = cell.replaceAll('\n', '\n' + sub_indentStr).replaceAll('\n}', '}');
                         return `${indentStr}"${values_key}"{\n${sub_indentStr}${cell_text}\n${end_indentStr}}`;
                     }
                     // 处理写excel文件中的本地化文本
@@ -217,14 +205,13 @@ export function sheetToKV(options: SheetToKVOptions) {
                         return; // 不输出到kv文件
                     }
 
-                    if (abilityValuesBlock && 
-                        (key !== `AbilityValues[{]` 
-                        && key !== `ConversionValue[{]` 
-                        && key !== `AttributeValues[{]`
-                        && key !== `ObjectValues[{]`
-                        && key !== `ListValues[{]`
-                        )
-                    
+                    if (
+                        abilityValuesBlock &&
+                        key !== `AbilityValues[{]` &&
+                        key !== `ConversionValue[{]` &&
+                        key !== `AttributeValues[{]` &&
+                        key !== `ObjectValues[{]` &&
+                        key !== `ListValues[{]`
                     ) {
                         if (cell == `` || cell == undefined) return;
                         let values_key = '';
@@ -265,7 +252,7 @@ export function sheetToKV(options: SheetToKVOptions) {
                         // 如果输出中包含 { } 等，那么直接输出value，不加双引号
                         if (cell != null && cell.toString().trimStart().startsWith('{')) {
                             let sub_indentStr = (indent || `\t`).repeat(indentLevel + 1);
-                            let cell_text = cell.replaceAll("\n","\n"+ sub_indentStr).replaceAll("\t}","}");
+                            let cell_text = cell.replaceAll('\n', '\n' + sub_indentStr).replaceAll('\t}', '}');
 
                             return `${indentStr}"${values_key}" ${cell_text}`;
                         }
@@ -290,17 +277,14 @@ export function sheetToKV(options: SheetToKVOptions) {
                     const output_value = deal_with_kv_value(cell);
 
                     // 如果输出中包含 { } 等，那么直接输出value，不加双引号
-                    if (
-                        output_value != null &&
-                        output_value.toString().trimStart().startsWith('{')
-                    ) {
+                    if (output_value != null && output_value.toString().trimStart().startsWith('{')) {
                         return `${indentStr}"${key}" ${output_value}`;
                     }
 
                     return `${indentStr}"${key}" "${deal_with_kv_value(cell)}"`;
                 })
-                .filter((row) => row != null)
-                .map((s) => (chineseToPinyin ? convert_chinese_to_pinyin(s) : s))
+                .filter(row => row != null)
+                .map(s => (chineseToPinyin ? convert_chinese_to_pinyin(s) : s))
                 .join('\n') +
             '\n' +
             `${indent}}`
@@ -324,25 +308,17 @@ export function sheetToKV(options: SheetToKVOptions) {
         if (file.isBuffer()) {
             console.log(`${PLUGIN_NAME} Converting ${file.path} to kv`);
             const workbook = xlsx.parse(file.contents);
-            workbook.forEach((sheet) => {
+            workbook.forEach(sheet => {
                 let sheet_name = sheet.name;
 
                 if (new RegExp(sheetsIgnore).test(sheet_name)) {
-                    console.log(
-                        cli.red(
-                            `${PLUGIN_NAME} Ignoring sheet ${sheet_name} in workbook ${file.path} 【已忽略表${sheet_name}】`
-                        )
-                    );
+                    console.log(cli.red(`${PLUGIN_NAME} Ignoring sheet ${sheet_name} in workbook ${file.path} 【已忽略表${sheet_name}】`));
                     return;
                 }
 
                 // 如果名称中包含中文，那么弹出一个提示，说可以把中文名称的表格忽略
                 if (sheet_name.match(/[\u4e00-\u9fa5]+/g)) {
-                    console.log(
-                        cli.yellow(
-                            `${PLUGIN_NAME} Warning: ${sheet_name} 包含中文，将其转换为英文输出`
-                        )
-                    );
+                    console.log(cli.yellow(`${PLUGIN_NAME} Warning: ${sheet_name} 包含中文，将其转换为英文输出`));
                     console.log(cli.yellow(`如果你不想输出这个表，请将其名称加入sheetsIgnore中`));
                     sheet_name = convert_chinese_to_pinyin(sheet_name);
                 }
@@ -351,25 +327,17 @@ export function sheetToKV(options: SheetToKVOptions) {
                 const sheet_data_length = sheet_data.length;
                 if (sheet_data_length === 0) {
                     if (verbose) {
-                        console.log(
-                            cli.red(
-                                `${PLUGIN_NAME} Ignoring empty sheet ${sheet_name} in workbook ${file.path}`
-                            )
-                        );
+                        console.log(cli.red(`${PLUGIN_NAME} Ignoring empty sheet ${sheet_name} in workbook ${file.path}`));
                     }
                     return;
                 }
 
-                let key_row = sheet_data[1].map((i) => i.toString()); // 第二行为key行
+                let key_row = sheet_data[1].map(i => i.toString()); // 第二行为key行
                 const kv_data = sheet_data.slice(2);
                 const kv_data_length = kv_data.length;
                 if (kv_data_length === 0) {
                     if (verbose) {
-                        console.log(
-                            cli.red(
-                                `${PLUGIN_NAME} Ignoring no data sheet ${sheet_name} in workbook ${file.path}`
-                            )
-                        );
+                        console.log(cli.red(`${PLUGIN_NAME} Ignoring no data sheet ${sheet_name} in workbook ${file.path}`));
                     }
                     return;
                 }
@@ -377,12 +345,12 @@ export function sheetToKV(options: SheetToKVOptions) {
                 let kv_data_str = '';
 
                 if (key_row.length == 2 && autoSimpleKV) {
-                    const kv_data_simple = kv_data.map((row) => {
+                    const kv_data_simple = kv_data.map(row => {
                         return `\t"${row[0]}" "${row[1]}"`;
                     });
                     kv_data_str = `${kv_data_simple.join('\n')}`;
                 } else {
-                    const kv_data_complex = kv_data.map((row) => {
+                    const kv_data_complex = kv_data.map(row => {
                         if (row[0] == `` || row[0] == null) return;
                         return convert_row_to_kv(row, key_row);
                     });

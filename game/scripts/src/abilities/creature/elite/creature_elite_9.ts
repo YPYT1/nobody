@@ -53,7 +53,7 @@ export class creature_elite_9 extends BaseCreatureAbility {
     OnSpellStart(): void {
         // 技能开始时，销毁之前创建的预警特效
         this.DestroyWarningFx();
-        
+
         // 计算从施法者指向目标点的单位向量（方向）
         const dir = ((this.vPoint - this.hCaster.GetAbsOrigin()) as Vector).Normalized();
         // 根据方向和技能距离，计算出极冰之路的最终目标位置

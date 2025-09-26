@@ -51,11 +51,7 @@ async function readSteamRootsFromRegistry() {
         return [];
     }
 
-    const keys = [
-        'HKCU\\Software\\Valve\\Steam',
-        'HKLM\\SOFTWARE\\WOW6432Node\\Valve\\Steam',
-        'HKLM\\SOFTWARE\\Valve\\Steam',
-    ];
+    const keys = ['HKCU\\Software\\Valve\\Steam', 'HKLM\\SOFTWARE\\WOW6432Node\\Valve\\Steam', 'HKLM\\SOFTWARE\\Valve\\Steam'];
 
     const roots = [];
 
@@ -106,11 +102,7 @@ function gatherEnvironmentCandidates() {
         candidates.add(process.env.DOTA_PATH.trim());
     }
 
-    const steamEnvVars = [
-        process.env.STEAM_PATH,
-        process.env.STEAM_HOME,
-        process.env.STEAM_ROOT,
-    ].filter(Boolean);
+    const steamEnvVars = [process.env.STEAM_PATH, process.env.STEAM_HOME, process.env.STEAM_ROOT].filter(Boolean);
 
     for (const steamVar of steamEnvVars) {
         candidates.add(path.join(steamVar.trim(), 'steamapps', 'common', 'dota 2 beta'));
@@ -136,13 +128,7 @@ function defaultPlatformCandidates() {
 
     if (process.platform === 'win32') {
         const drives = ['C', 'D', 'E', 'F', 'G'];
-        const suffixes = [
-            '\\Program Files (x86)\\Steam',
-            '\\Program Files\\Steam',
-            '\\Steam',
-            '\\SteamLibrary',
-            '\\Games\\Steam',
-        ];
+        const suffixes = ['\\Program Files (x86)\\Steam', '\\Program Files\\Steam', '\\Steam', '\\SteamLibrary', '\\Games\\Steam'];
         for (const drive of drives) {
             for (const suffix of suffixes) {
                 candidates.add(path.join(`${drive}:`, suffix, 'steamapps', 'common', 'dota 2 beta'));

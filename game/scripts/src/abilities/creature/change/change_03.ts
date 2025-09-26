@@ -16,6 +16,7 @@ export class change_03 extends BaseCreatureAbility {
     Precache(context: CScriptPrecacheContext): void {
         PrecacheResource('particle', 'particles/units/heroes/hero_drow/drow_ranger_glacier_projectile_proj.vpcf', context);
     }
+
     OnSpellStart(): void {
         print('--------开始技能');
         const caster = this.GetCaster();
@@ -75,12 +76,14 @@ export class modifier_change_03 extends BaseModifier {
         this.slow_pct = ability.GetSpecialValueFor('slow_pct');
         this.damage_amp_pct = ability.GetSpecialValueFor('damage_amp_pct');
     }
+
     DeclareFunctions(): ModifierFunction[] {
         return [
             ModifierFunction.MOVESPEED_BONUS_PERCENTAGE,
             // ModifierFunction.INCOMING_DAMAGE_PERCENTAGE
         ];
     }
+
     GetModifierMoveSpeedBonus_Percentage(): number {
         return -this.slow_pct;
     }

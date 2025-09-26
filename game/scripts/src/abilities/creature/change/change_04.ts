@@ -33,6 +33,7 @@ export class change_04 extends BaseCreatureAbility {
         );
         PrecacheResource('particle', 'particles/units/heroes/hero_alchemist/alchemist_berserk_potion_flying_bottle.vpcf', context);
     }
+
     OnSpellStart(): void {
         print('开始技能-爆裂毒液');
         this.caster = this.GetCaster();

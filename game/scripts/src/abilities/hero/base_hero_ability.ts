@@ -122,7 +122,7 @@ export class BaseHeroAbility extends BaseAbility {
     /** 获取特殊型字段值 */
     GetTypesAffixSpecialValue<
         T1 extends keyof typeof SpecialvalueOfTableSpecialObject,
-        T2 extends keyof (typeof SpecialvalueOfTableSpecialObject)[T1]
+        T2 extends keyof (typeof SpecialvalueOfTableSpecialObject)[T1],
     >(skv_affix: T1, skv_key: T2) {
         if (this.custom_ability_types == null) {
             return [];

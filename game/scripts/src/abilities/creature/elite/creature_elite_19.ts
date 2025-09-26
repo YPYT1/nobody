@@ -2,7 +2,7 @@ import { BaseModifier, registerAbility, registerModifier } from '../../../utils/
 import { BaseCreatureAbility } from '../base_creature';
 
 /**
- * creature_elite_19 
+ * creature_elite_19
  */
 @registerAbility()
 export class creature_elite_19 extends BaseCreatureAbility {
@@ -41,7 +41,6 @@ export class creature_elite_19 extends BaseCreatureAbility {
 
 @registerModifier()
 export class modifier_creature_elite_19_immune extends BaseModifier {
-
     IsHidden(): boolean {
         return false;
     }

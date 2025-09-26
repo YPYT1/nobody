@@ -1,47 +1,60 @@
 {
-    "parser": "@typescript-eslint/parser",
-    "extends": ["plugin:prettier/recommended", "plugin:react-hooks/recommended"],
-    "settings": {
-        "import/resolver": {
-            "node": {
-                "extensions": [".js", ".ts", ".jsx", ".tsx"]
-            }
-        },
-        "import/extensions": [".js", ".ts", ".jsx", ".tsx"]
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    // 建议将社区推荐的配置放在前面
+    "plugin:react-hooks/recommended",
+    // **重点优化:** 将所有 Prettier 相关的配置放在最后，以确保它覆盖所有前面的格式化规则
+    "plugin:prettier/recommended" // 这一条已经包含了 "prettier" 配置，关闭了冲突规则
+  ],
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts", ".jsx", ".tsx"]
+      }
     },
-    "plugins": ["@typescript-eslint", "import", "prettier", "react", "react-hooks"],
-    "rules": {
-        "prettier/prettier": [
-            "error",
-            {
-                "endOfLine": "auto"
-            }
-        ],
-        "no-restricted-imports": [
-            "error",
-            {
-                "paths": [
-                    {
-                        "name": "@mui/material",
-                        "importNames": ["makeStyles", "createMuiTheme"],
-                        "message": "Please import from @mui/material/styles instead. See https://material-ui.com/guides/minimizing-bundle-size/#option-2 for more information"
-                    }
-                ]
-            }
-        ],
-        "@typescript-eslint/consistent-type-imports": [
-            "error",
-            {
-                "prefer": "type-imports"
-            }
-        ],
-        "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
-        "prefer-const": "error",
-        "no-eval": "error",
-        "no-redeclare": "off",
-        "import/no-anonymous-default-export": "off",
-        "@typescript-eslint/no-redeclare": ["off"],
-        "react-hooks/exhaustive-deps": "warn",
-        "react-hooks/rules-of-hooks": "error"
-    }
+    "import/extensions": [".js", ".ts", ".jsx", ".tsx"]
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "prettier", // 插件本身保留
+    "react",
+    "react-hooks"
+  ],
+  "rules": {
+    // 这一规则设置 "error" 是为了让 ESLint 在 CI/CD 流程中强制检查 Prettier 格式
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto" // 保持你的自定义 Prettier 选项
+      }
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "@mui/material",
+            "importNames": ["makeStyles", "createMuiTheme"],
+            "message": "Please import from @mui/material/styles instead. See https://material-ui.com/guides/minimizing-bundle-size/#option-2 for more information"
+          }
+        ]
+      }
+    ],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports"
+      }
+    ],
+    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+    "prefer-const": "error",
+    "no-eval": "error",
+    // 保持你对 no-redeclare 的配置，关闭 ESLint 默认，使用 TS 版本的 off
+    "no-redeclare": "off",
+    "import/no-anonymous-default-export": "off",
+    "@typescript-eslint/no-redeclare": ["off"],
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "error"
+  }
 }

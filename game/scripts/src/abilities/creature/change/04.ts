@@ -40,8 +40,8 @@ export class change_04 extends BaseCreatureAbility {
         const baseMS = caster.GetBaseMoveSpeed
             ? caster.GetBaseMoveSpeed()
             : caster.GetIdealSpeed
-            ? caster.GetIdealSpeed()
-            : caster.GetMoveSpeedModifier(0, false);
+              ? caster.GetIdealSpeed()
+              : caster.GetMoveSpeedModifier(0, false);
 
         const damage = baseAtk * (A / 100) + baseMS * B;
 

@@ -159,17 +159,18 @@ class HttpRequestClass {
         headers['server-key'] = headers['server-key'] ?? Server_Key;
 
         const timeoutSeconds = options?.timeout ?? this.defaultTimeoutSeconds;
-        const requestBody = method !== 'GET'
-            ? (() => {
-                  if (payload == null) {
-                      return JSON.encode({});
-                  }
-                  if (type(payload) === 'table') {
-                      return JSON.encode(payload);
-                  }
-                  return tostring(payload);
-              })()
-            : undefined;
+        const requestBody =
+            method !== 'GET'
+                ? (() => {
+                      if (payload == null) {
+                          return JSON.encode({});
+                      }
+                      if (type(payload) === 'table') {
+                          return JSON.encode(payload);
+                      }
+                      return tostring(payload);
+                  })()
+                : undefined;
 
         const handleFailure = (code: number, body: string, attempt: number) => {
             print(`[HttpRequest] ${logTag} attempt ${attempt}/${maxAttempts} failed with code ${code}`);
